@@ -1008,9 +1008,12 @@ public class JenkinsApi {
    */
   public boolean getJobBuildResultByConsoleText(String consoleText, String proType) {
     boolean isSuccess = false;
+    StringBuilder sb = new StringBuilder(consoleText);
+    // Delete commit message
+    sb.delete(sb.indexOf("Commit message"), sb.lastIndexOf(" > git rev-list"));
 
-    if ((proType.equals("OOP") && consoleText.contains("BUILD SUCCESS"))
-        || (proType.equals("WEB") && consoleText.contains("===Build success==="))) {
+    if ((proType.equals("OOP") && sb.toString().contains("BUILD SUCCESS"))
+        || (proType.equals("WEB") && sb.toString().contains("===Build success==="))) {
       isSuccess = true;
     }
     return isSuccess;
