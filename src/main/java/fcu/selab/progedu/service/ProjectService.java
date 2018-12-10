@@ -83,6 +83,8 @@ public class ProjectService {
   private String testZipChecksum = "";
   private String testZipUrl = "";
 
+  AssignmentTypeMethod assignmentTypeMethod;
+
   /**
    * Constuctor
    */
@@ -101,12 +103,19 @@ public class ProjectService {
 
   /**
    * 
-   * @param name                abc
-   * @param readMe              abc
-   * @param fileType            abc
-   * @param uploadedInputStream abc
-   * @param fileDetail          abc
+   * @param name
+   *          abc
+   * @param readMe
+   *          abc
+   * @param assignmentType
+   *          abc
+   * @param uploadedInputStream
+   *          abc
+   * @param fileDetail
+   *          abc
    * @return abc
+   * @throws Exception
+   *           abc
    */
   @POST
   @Path("create")
@@ -114,14 +123,22 @@ public class ProjectService {
   @Produces(MediaType.APPLICATION_JSON)
   public Response newProject(@FormDataParam("Hw_Name") String name,
       @FormDataParam("Hw_Deadline") String deadline, @FormDataParam("Hw_README") String readMe,
-      @FormDataParam("fileRadio") String fileType,
+      @FormDataParam("fileRadio") String assignmentType,
       @FormDataParam("file") InputStream uploadedInputStream,
-      @FormDataParam("file") FormDataContentDisposition fileDetail) {
+      @FormDataParam("file") FormDataContentDisposition fileDetail) throws Exception {
 
     String rootProjectUrl = null;
     String folderName = null;
     String filePath = null;
     boolean hasTemplate = false;
+
+    if (assignmentType == "Javac") {
+      assignmentTypeMethod = new JavacAssignment();
+    } else if (assignmentType == "Maven") {
+      assignmentTypeMethod = new MavenAssignment();
+    } else if (assignmentType == "Web") {
+      assignmentTypeMethod = new WebAssignment();
+    }
 
     // 1. Create root project and get project id and url
     createRootProject(name);
@@ -141,31 +158,18 @@ public class ProjectService {
       // store to C://User/AppData/Temp/uploads/
       filePath = storeFileToTemp(fileDetail.getFileName(), uploadedInputStream);
     } else {
-      if (fileType != null && !"".equals(fileType)) {
-        // fileType is not null
-        if (fileType.equals("Javac")) {
-          // fileType == Javac
-          filePath = this.getClass().getResource(JAVAC_QUICK_START).getFile();
-          folderName = JAVAC_QUICK_START;
-        } else if (fileType.equals("Maven")) {
-          // fileType == Maven
-          filePath = this.getClass().getResource("MvnQuickStart.zip").getFile();
-          folderName = "MvnQuickStart.zip";
-        } else if (fileType.equals("Web")) {
-          // fileType == Web
-          filePath = this.getClass().getResource("WebQuickStart.zip").getFile();
-          folderName = "WebQuickStart.zip";
-        }
-      } else {
-        // fileType is null
-        fileType = "Javac";
-        filePath = this.getClass().getResource(JAVAC_QUICK_START).getFile();
-        folderName = JAVAC_QUICK_START;
+      if (assignmentType != null && !"".equals(assignmentType)) {
+        filePath = this.getClass().getResource(assignmentTypeMethod.getSampleZip()).getFile();
       }
     }
 
     // 4. Unzip the file to the root project
-    unzipFile(filePath, folderName, name, fileType);
+    try {
+      assignmentTypeMethod.unzip(filePath, folderName, name);
+      setTestFileInfo();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
 
     // 5. if README is not null
     if (!readMe.equals("<br>") || !"".equals(readMe) || !readMe.isEmpty()) {
@@ -194,7 +198,7 @@ public class ProjectService {
     SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     sdFormat.setTimeZone(TimeZone.getTimeZone("Asia/Taipei"));
     String dateTime = sdFormat.format(date);
-    addProject(name, dateTime, deadline, readMe, fileType, hasTemplate, testZipChecksum,
+    addProject(name, dateTime, deadline, readMe, assignmentType, hasTemplate, testZipChecksum,
         testZipUrl);
 
     List<GitlabUser> users = conn.getUsers();
@@ -209,7 +213,7 @@ public class ProjectService {
     }
 
     // 12. Create each Jenkins Jobs
-    createJenkinsJob(name, fileType);
+    assignmentTypeMethod.createJenkinsJob(name, jenkinsRootUsername, jenkinsRootPassword);
 
     Response response = Response.ok().build();
     if (!isSave) {
@@ -290,8 +294,10 @@ public class ProjectService {
   /**
    * 123123
    * 
-   * @param command  123
-   * @param filePath 123
+   * @param command
+   *          123
+   * @param filePath
+   *          123
    */
   public void execLinuxCommandInFile(String command, String filePath) {
     Process process;
@@ -330,8 +336,10 @@ public class ProjectService {
   /**
    * Utility method to save InputStream data to target location/file
    * 
-   * @param inStream - InputStream to be saved
-   * @param target   - full path to destination file
+   * @param inStream
+   *          - InputStream to be saved
+   * @param target
+   *          - full path to destination file
    */
   private void saveToFile(InputStream inStream, String target) throws IOException {
     int read = 0;
@@ -348,24 +356,15 @@ public class ProjectService {
   /**
    * Creates a folder to desired location if it not already exists
    * 
-   * @param dirName - full path to the folder
-   * @throws SecurityException - in case you don't have permission to create the
-   *                           folder
+   * @param dirName
+   *          - full path to the folder
+   * @throws SecurityException
+   *           - in case you don't have permission to create the folder
    */
   private void createFolderIfNotExists(String dirName) {
     File theDir = new File(dirName);
     if (!theDir.exists()) {
       theDir.mkdir();
-    }
-  }
-
-  private void unzipFile(String filePath, String folderName, String projectName, String fileType) {
-    try {
-      // unzip file
-      zipHandler.unzip(filePath, folderName, projectName, fileType);
-      setTestFileInfo();
-    } catch (IOException e) {
-      e.printStackTrace();
     }
   }
 
@@ -404,22 +403,24 @@ public class ProjectService {
     }
   }
 
-  private void createJenkinsJob(String name, String fileType) {
-    String jenkinsCrumb = jenkins.getCrumb(jenkinsRootUsername, jenkinsRootPassword);
-    StringBuilder sb = zipHandler.getStringBuilder();
-    jenkins.createRootJob(name, jenkinsCrumb, fileType, sb);
-    List<GitlabUser> users = conn.getUsers();
-    Collections.reverse(users);
-    for (GitlabUser user : users) {
-      if (user.getId() == 1) {
-        jenkins.buildJob(user.getUsername(), name, jenkinsCrumb);
-        continue;
-      }
-      jenkins.createJenkinsJob(user.getUsername(), name, jenkinsCrumb, fileType, sb);
-      jenkins.buildJob(user.getUsername(), name, jenkinsCrumb);
-    }
-
-  }
+  // private void createJenkinsJob(String name) {
+  // String jenkinsCrumb = jenkins.getCrumb(jenkinsRootUsername,
+  // jenkinsRootPassword);
+  // StringBuilder sb = zipHandler.getStringBuilder();
+  // jenkins.createRootJob(name, jenkinsCrumb, fileType, sb);
+  // List<GitlabUser> users = conn.getUsers();
+  // Collections.reverse(users);
+  // for (GitlabUser user : users) {
+  // if (user.getId() == 1) {
+  // jenkins.buildJob(user.getUsername(), name, jenkinsCrumb);
+  // continue;
+  // }
+  // jenkins.createJenkinsJob(user.getUsername(), name, jenkinsCrumb, fileType,
+  // sb);
+  // jenkins.buildJob(user.getUsername(), name, jenkinsCrumb);
+  // }
+  //
+  // }
 
   private void createReadmeFile(String readMe, String projectName) {
     String projectDir = uploadDir + projectName;
@@ -437,11 +438,16 @@ public class ProjectService {
   /**
    * Add a project to database
    * 
-   * @param name        Project name
-   * @param deadline    Project deadline
-   * @param readMe      Project readme
-   * @param fileType    File type
-   * @param hasTemplate Has template
+   * @param name
+   *          Project name
+   * @param deadline
+   *          Project deadline
+   * @param readMe
+   *          Project readme
+   * @param fileType
+   *          File type
+   * @param hasTemplate
+   *          Has template
    */
   public void addProject(String name, String createTime, String deadline, String readMe,
       String fileType, boolean hasTemplate, String testZipChecksum, String testZipUrl) {
@@ -462,7 +468,8 @@ public class ProjectService {
   /**
    * delete projects
    * 
-   * @param name project name
+   * @param name
+   *          project name
    * @return response
    */
   @POST
@@ -506,7 +513,8 @@ public class ProjectService {
   /**
    * edit projects
    * 
-   * @param name project name
+   * @param name
+   *          project name
    * @return response
    */
   @POST
@@ -542,7 +550,8 @@ public class ProjectService {
   /**
    * get project checksum
    * 
-   * @param projectName project name
+   * @param projectName
+   *          project name
    * @return checksum
    */
   @GET
@@ -578,8 +587,10 @@ public class ProjectService {
   /**
    * Edit test case upload test case to test folder
    * 
-   * @param fileName            file name
-   * @param uploadedInputStream file
+   * @param fileName
+   *          file name
+   * @param uploadedInputStream
+   *          file
    */
   private String storeFileToTestsFolder(String fileName, InputStream uploadedInputStream) {
     try {

@@ -248,16 +248,16 @@
             <%@ include file="projectLight.jsp" %>
             <table class="table table-striped" style="margin-top: 20px; width: 100%">
                 <thead>
-	                <tr>
-	                    <th style="font-weight: 900; font-size: 18px"><fmt:message key="dashboard_th_studentId"/></th>
-	                    <%
-	                        for(Project project : dbProjects){
-	                    %>
-	                    <th style="font-weight: 900; font-size: 18px"><%=project.getName() %></th>
-	                    <%
-	                        }
-	                    %>
-	                </tr>
+                <tr>
+                    <th style="font-weight: 900; font-size: 18px"><fmt:message key="dashboard_th_studentId"/></th>
+                    <%
+                        for(Project project : dbProjects){
+                    %>
+                    <th style="font-weight: 900; font-size: 18px"><%=project.getName() %></th>
+                    <%
+                        }
+                    %>
+                </tr>
                 </thead>
                 <tbody id="dashboard">
 
@@ -336,7 +336,6 @@
                 content += '</tr>';
                 $('#dashboard').append(content)
             } else {
-            	console.log("is N/A");//temp
                 for (var i=0; i<projectCount; i++) {
                     content += '<td style="padding: 10px 0px 0px 30px;">';
                     content += '<p>N/A</p></td>';

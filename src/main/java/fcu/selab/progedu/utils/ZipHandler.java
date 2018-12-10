@@ -41,7 +41,7 @@ public class ZipHandler {
   GitlabConfig gitData = GitlabConfig.getInstance();
   CourseConfig courseData = CourseConfig.getInstance();
 
-  private String serverIp;
+  public String serverIp;
 
   StringBuilder sb = new StringBuilder();
 
@@ -64,99 +64,13 @@ public class ZipHandler {
   private static final int BUFFER_SIZE = 4096;
 
   /**
-   * Extracts a zip file specified by the zipFilePath to a directory specified by
-   * destDirectory (will be created if does not exists)
-   * 
-   * @param zipFilePath   The zip file's path
-   * @param zipFolderName The zip folder name
-   * @throws IOException on fileinputstream call error
-   */
-  public void unzip(String zipFilePath, String zipFolderName, String projectName, String fileType)
-      throws IOException {
-    String parentDir = null;
-    int parDirLength = 0;
-    // -4 because .zip
-    zipFolderName = zipFolderName.substring(0, zipFolderName.length() - 4);
-
-    File fileUploadDir = new File(UPLOAD_DIR);
-    if (!fileUploadDir.exists()) {
-      fileUploadDir.mkdir();
-    }
-
-    String destDirectory = UPLOAD_DIR + projectName;
-    File destDir = new File(destDirectory);
-    if (!destDir.exists()) {
-      destDir.mkdir();
-    }
-
-    String testDirectory = TEST_DIR + projectName;
-    File testDir = new File(testDirectory);
-    if (!testDir.exists()) {
-      testDir.mkdir();
-    }
-
-    ZipInputStream zipIn = new ZipInputStream(new FileInputStream(zipFilePath));
-    ZipEntry entry = zipIn.getNextEntry();
-    // iterates over entries in the zip file
-    while (entry != null) {
-      String filePath = destDirectory + File.separator + entry.getName();
-      File newFile = new File(filePath);
-
-      // create all non exists folders
-      // else you will hit FileNotFoundException for compressed folder
-      new File(newFile.getParent()).mkdirs();
-
-      if (filePath.substring(filePath.length() - 4).equals("src/") && parDirLength == 0) {
-        parentDir = getParentDir(filePath);
-        parDirLength = parentDir.length() + 1;
-      }
-      String entryNewName = filePath.substring(parDirLength);
-
-      if (!entry.isDirectory()) {
-        // if the entry is a file, extracts it
-        extractFile(zipIn, filePath);
-
-        // if filePath equals pom.xml, modify the project name
-        if (filePath.substring(filePath.length() - 7, filePath.length()).equals("pom.xml")) {
-          modifyPomXml(filePath, projectName);
-        }
-
-        // Search the java file which jenkins java config needs.
-        if (fileType.equals("Javac") || fileType.equals("Maven")) {
-          searchJavaFile(entryNewName);
-        } else if (fileType.equals("Web")) {
-          searchWebFile(entryNewName);
-        }
-
-      } else {
-        // if the entry is a directory, make the directory
-        File dir = new File(filePath);
-        dir.mkdir();
-      }
-      zipIn.closeEntry();
-      entry = zipIn.getNextEntry();
-    }
-
-    copyTestFile(destDir, destDirectory, testDirectory);
-
-    File testFile = new File(testDirectory);
-    if (testFile.exists()) {
-      zipTestFolder(testDirectory);
-
-      setUrlForJenkinsDownloadTestFile(
-          serverIp + "/ProgEdu/webapi/jenkins/getTestFile?filePath=" + testDir + ".zip");
-    }
-    zipIn.close();
-  }
-
-  /**
    * Extracts a zip entry (file entry)
    * 
    * @param zipIn    The zip inputstream
    * @param filePath The file path
    * @throws IOException on fileoutputstream call error
    */
-  private void extractFile(ZipInputStream zipIn, String filePath) throws IOException {
+  public void extractFile(ZipInputStream zipIn, String filePath) throws IOException {
     try (BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(filePath));) {
       byte[] bytesIn = new byte[BUFFER_SIZE];
       int read = 0;
@@ -188,45 +102,45 @@ public class ZipHandler {
     return dir;
   }
 
-  private void searchJavaFile(String entryName) {
-    // ".java" length = 5
-    String last = "";
-    if (entryName.endsWith(".java")) {
-      last = entryName.substring(entryName.length() - 5, entryName.length());
-    }
-    String fileName = null;
-    for (int i = 0; i < entryName.length() - 3; i++) {
-      if (entryName.substring(i, i + 3).equals("src")) {
-        fileName = entryName.substring(i);
-        System.out.println("Search java file fileName : " + fileName);
-        if (last.equals(".java")) {
-          sb.append("javac " + fileName + "\n");
-          sb.append("echo \"BUILD SUCCESS\"");
-          setStringBuilder(sb);
-        }
-      }
-    }
-  }
+//  private void searchJavaFile(String entryName) {
+//    // ".java" length = 5
+//    String last = "";
+//    if (entryName.endsWith(".java")) {
+//      last = entryName.substring(entryName.length() - 5, entryName.length());
+//    }
+//    String fileName = null;
+//    for (int i = 0; i < entryName.length() - 3; i++) {
+//      if (entryName.substring(i, i + 3).equals("src")) {
+//        fileName = entryName.substring(i);
+//        System.out.println("Search java file fileName : " + fileName);
+//        if (last.equals(".java")) {
+//          sb.append("javac " + fileName + "\n");
+//          sb.append("echo \"BUILD SUCCESS\"");
+//          setStringBuilder(sb);
+//        }
+//      }
+//    }
+//  }
 
-  private void searchWebFile(String entryName) {
-    String last = "";
-    if (entryName.endsWith(".py")) {
-      last = entryName.substring(entryName.length() - 3, entryName.length());
-    }
-    String fileName = null;
-    for (int i = 0; i < entryName.length() - 3; i++) {
-      if (entryName.substring(i, i + 3).equals("src")) {
-        fileName = entryName.substring(i);
-        System.out.println("Search web file fileName : " + fileName);
-        if (last.equals(".py")) {
-          sb.append("python3 " + fileName + "\n");
-          setStringBuilder(sb);
-        }
-      }
-    }
-  }
+//  private void searchWebFile(String entryName) {
+//    String last = "";
+//    if (entryName.endsWith(".py")) {
+//      last = entryName.substring(entryName.length() - 3, entryName.length());
+//    }
+//    String fileName = null;
+//    for (int i = 0; i < entryName.length() - 3; i++) {
+//      if (entryName.substring(i, i + 3).equals("src")) {
+//        fileName = entryName.substring(i);
+//        System.out.println("Search web file fileName : " + fileName);
+//        if (last.equals(".py")) {
+//          sb.append("python3 " + fileName + "\n");
+//          setStringBuilder(sb);
+//        }
+//      }
+//    }
+//  }
 
-  private void modifyPomXml(String filePath, String projectName) {
+  public void modifyPomXml(String filePath, String projectName) {
     try {
       System.out.println("modify filePath : " + filePath);
       System.out.println("projectName : " + projectName);
@@ -253,7 +167,7 @@ public class ZipHandler {
     }
   }
 
-  private void zipTestFolder(String testFilePath) {
+  public void zipTestFolder(String testFilePath) {
     File testFile = new File(testFilePath);
     zipDirectory(testFile, testFilePath + ".zip");
   }
@@ -316,30 +230,6 @@ public class ZipHandler {
 
   public String getUrlForJenkinsDownloadTestFile() {
     return urlForJenkinsDownloadTestFile;
-  }
-
-  private void copyTestFile(File folder, String strFolder, String testFilePath) {
-    for (final File fileEntry : folder.listFiles()) {
-      if (fileEntry.isDirectory()) {
-        copyTestFile(fileEntry, strFolder, testFilePath);
-      } else {
-        if (fileEntry.getAbsolutePath().contains("src")) {
-          String entry = fileEntry.getAbsolutePath();
-          if (entry.contains("src/test")) {
-
-            File dataFile = new File(strFolder + "/src/test");
-            File targetFile = new File(testFilePath + "/src/test");
-            try {
-              FileUtils.copyDirectory(dataFile, targetFile);
-              FileUtils.deleteDirectory(dataFile);
-            } catch (IOException e) {
-              e.printStackTrace();
-            }
-          }
-        }
-
-      }
-    }
   }
 
 }
