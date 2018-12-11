@@ -42,26 +42,25 @@ public abstract class AssignmentTypeMethod implements AssignmentTypeSelector {
       e.printStackTrace();
     }
 
-    final String TEMP_DIR = System.getProperty("java.io.tmpdir");
-    final String UPLOAD_DIR = TEMP_DIR + "/uploads/";
-    final String TEST_DIR = TEMP_DIR + "/tests/";
+    final String tempDir = System.getProperty("java.io.tmpdir");
+    final String uploadDir = tempDir + "/uploads/";
     String parentDir = null;
     int parDirLength = 0;
     // -4 because .zip
     zipFolderName = zipFolderName.substring(0, zipFolderName.length() - 4);
 
-    File fileUploadDir = new File(UPLOAD_DIR);
+    File fileUploadDir = new File(uploadDir);
     if (!fileUploadDir.exists()) {
       fileUploadDir.mkdir();
     }
 
-    String destDirectory = UPLOAD_DIR + projectName;
+    String destDirectory = uploadDir + projectName;
     File destDir = new File(destDirectory);
     if (!destDir.exists()) {
       destDir.mkdir();
     }
 
-    String testDirectory = TEST_DIR + projectName;
+    String testDirectory = tempDir + "/tests/" + projectName;
     File testDir = new File(testDirectory);
     if (!testDir.exists()) {
       testDir.mkdir();

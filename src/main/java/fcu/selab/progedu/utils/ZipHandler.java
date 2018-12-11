@@ -22,7 +22,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.apache.commons.io.FileUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
@@ -34,10 +33,6 @@ import fcu.selab.progedu.exception.LoadConfigFailureException;
 
 public class ZipHandler {
   HttpConnect httpConn = new HttpConnect();
-  private static final String TEMP_DIR = System.getProperty("java.io.tmpdir");
-  private static final String UPLOAD_DIR = TEMP_DIR + "/uploads/";
-  private static final String TEST_DIR = TEMP_DIR + "/tests/";
-
   GitlabConfig gitData = GitlabConfig.getInstance();
   CourseConfig courseData = CourseConfig.getInstance();
 
@@ -66,9 +61,12 @@ public class ZipHandler {
   /**
    * Extracts a zip entry (file entry)
    * 
-   * @param zipIn    The zip inputstream
-   * @param filePath The file path
-   * @throws IOException on fileoutputstream call error
+   * @param zipIn
+   *          The zip inputstream
+   * @param filePath
+   *          The file path
+   * @throws IOException
+   *           on fileoutputstream call error
    */
   public void extractFile(ZipInputStream zipIn, String filePath) throws IOException {
     try (BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(filePath));) {
@@ -92,7 +90,8 @@ public class ZipHandler {
 
   /**
    * 
-   * @param filePath a
+   * @param filePath
+   *          a
    * @return aa
    */
   public String getParentDir(String filePath) {
@@ -102,44 +101,52 @@ public class ZipHandler {
     return dir;
   }
 
-//  private void searchJavaFile(String entryName) {
-//    // ".java" length = 5
-//    String last = "";
-//    if (entryName.endsWith(".java")) {
-//      last = entryName.substring(entryName.length() - 5, entryName.length());
-//    }
-//    String fileName = null;
-//    for (int i = 0; i < entryName.length() - 3; i++) {
-//      if (entryName.substring(i, i + 3).equals("src")) {
-//        fileName = entryName.substring(i);
-//        System.out.println("Search java file fileName : " + fileName);
-//        if (last.equals(".java")) {
-//          sb.append("javac " + fileName + "\n");
-//          sb.append("echo \"BUILD SUCCESS\"");
-//          setStringBuilder(sb);
-//        }
-//      }
-//    }
-//  }
+  // private void searchJavaFile(String entryName) {
+  // // ".java" length = 5
+  // String last = "";
+  // if (entryName.endsWith(".java")) {
+  // last = entryName.substring(entryName.length() - 5, entryName.length());
+  // }
+  // String fileName = null;
+  // for (int i = 0; i < entryName.length() - 3; i++) {
+  // if (entryName.substring(i, i + 3).equals("src")) {
+  // fileName = entryName.substring(i);
+  // System.out.println("Search java file fileName : " + fileName);
+  // if (last.equals(".java")) {
+  // sb.append("javac " + fileName + "\n");
+  // sb.append("echo \"BUILD SUCCESS\"");
+  // setStringBuilder(sb);
+  // }
+  // }
+  // }
+  // }
 
-//  private void searchWebFile(String entryName) {
-//    String last = "";
-//    if (entryName.endsWith(".py")) {
-//      last = entryName.substring(entryName.length() - 3, entryName.length());
-//    }
-//    String fileName = null;
-//    for (int i = 0; i < entryName.length() - 3; i++) {
-//      if (entryName.substring(i, i + 3).equals("src")) {
-//        fileName = entryName.substring(i);
-//        System.out.println("Search web file fileName : " + fileName);
-//        if (last.equals(".py")) {
-//          sb.append("python3 " + fileName + "\n");
-//          setStringBuilder(sb);
-//        }
-//      }
-//    }
-//  }
+  // private void searchWebFile(String entryName) {
+  // String last = "";
+  // if (entryName.endsWith(".py")) {
+  // last = entryName.substring(entryName.length() - 3, entryName.length());
+  // }
+  // String fileName = null;
+  // for (int i = 0; i < entryName.length() - 3; i++) {
+  // if (entryName.substring(i, i + 3).equals("src")) {
+  // fileName = entryName.substring(i);
+  // System.out.println("Search web file fileName : " + fileName);
+  // if (last.equals(".py")) {
+  // sb.append("python3 " + fileName + "\n");
+  // setStringBuilder(sb);
+  // }
+  // }
+  // }
+  // }
 
+  /**
+   * modifyPomXml
+   * 
+   * @param filePath
+   *          The file path
+   * @throws projectName
+   *           projectName
+   */
   public void modifyPomXml(String filePath, String projectName) {
     try {
       System.out.println("modify filePath : " + filePath);

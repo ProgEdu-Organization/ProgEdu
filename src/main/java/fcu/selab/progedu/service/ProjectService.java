@@ -74,7 +74,6 @@ public class ProjectService {
   private CommitResultService commitResultService = new CommitResultService();
 
   private static final String TEMP_DIR = System.getProperty("java.io.tmpdir");
-  private static final String JAVAC_QUICK_START = "JavacQuickStart.zip";
   private static String uploadDir = TEMP_DIR + "/uploads/";
   private static String testDir = TEMP_DIR + "/tests/";
 
@@ -83,7 +82,7 @@ public class ProjectService {
   private String testZipChecksum = "";
   private String testZipUrl = "";
 
-  AssignmentTypeMethod assignmentTypeMethod;
+  AssignmentTypeSelector assignmentTypeSelector;
 
   /**
    * Constuctor
@@ -132,13 +131,7 @@ public class ProjectService {
     String filePath = null;
     boolean hasTemplate = false;
 
-    if (assignmentType == "Javac") {
-      assignmentTypeMethod = new JavacAssignment();
-    } else if (assignmentType == "Maven") {
-      assignmentTypeMethod = new MavenAssignment();
-    } else if (assignmentType == "Web") {
-      assignmentTypeMethod = new WebAssignment();
-    }
+    assignmentTypeSelector = AssignmentTypeFactory.getAssignmentType(assignmentType);
 
     // 1. Create root project and get project id and url
     createRootProject(name);
@@ -159,13 +152,13 @@ public class ProjectService {
       filePath = storeFileToTemp(fileDetail.getFileName(), uploadedInputStream);
     } else {
       if (assignmentType != null && !"".equals(assignmentType)) {
-        filePath = this.getClass().getResource(assignmentTypeMethod.getSampleZip()).getFile();
+        filePath = this.getClass().getResource(assignmentTypeSelector.getSampleZip()).getFile();
       }
     }
 
     // 4. Unzip the file to the root project
     try {
-      assignmentTypeMethod.unzip(filePath, folderName, name);
+      assignmentTypeSelector.unzip(filePath, folderName, name);
       setTestFileInfo();
     } catch (IOException e) {
       e.printStackTrace();
@@ -213,7 +206,7 @@ public class ProjectService {
     }
 
     // 12. Create each Jenkins Jobs
-    assignmentTypeMethod.createJenkinsJob(name, jenkinsRootUsername, jenkinsRootPassword);
+    assignmentTypeSelector.createJenkinsJob(name, jenkinsRootUsername, jenkinsRootPassword);
 
     Response response = Response.ok().build();
     if (!isSave) {
@@ -247,28 +240,6 @@ public class ProjectService {
       }
     }
     return url;
-  }
-
-  private void execCmd(String command, String projectName) {
-    Process process;
-
-    try {
-      process = Runtime.getRuntime().exec(command, // path to
-                                                   // executable
-          null, // env vars, null means pass parent env
-          new File(uploadDir));
-      BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()));
-      String line;
-      while (true) {
-        line = br.readLine();
-        if (line == null) {
-          break;
-        }
-        System.out.println(line);
-      }
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
   }
 
   private void execLinuxCommand(String command) {

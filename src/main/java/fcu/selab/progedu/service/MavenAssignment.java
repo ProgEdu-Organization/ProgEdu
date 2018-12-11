@@ -17,24 +17,27 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
-import fcu.selab.progedu.exception.LoadConfigFailureException;
-import fcu.selab.progedu.utils.ZipHandler;
-
-public class MavenAssignment extends AssignmentTypeMethod { 
+public class MavenAssignment extends AssignmentTypeMethod {
 
   public String getSampleZip() {
     String folderName = "MavenQuickStart.zip";
     return folderName;
   }
 
-  public void createJenkinsJob() {
-    
-  }
-  
   public void searchFile(String entryNewName) {
 
   }
-  
+
+  /**
+   * copyTestFile
+   * 
+   * @param folder
+   *          folder
+   * @param strFolder
+   *          strFolder
+   * @param testFilePath
+   *          testFilePath
+   */
   public void copyTestFile(File folder, String strFolder, String testFilePath) {
     for (final File fileEntry : folder.listFiles()) {
       if (fileEntry.isDirectory()) {
@@ -62,12 +65,25 @@ public class MavenAssignment extends AssignmentTypeMethod {
   public String getJenkinsConfig() {
     return "config_maven.xml";
   }
-  
+
+  /**
+   * modifyXmlFile
+   * 
+   * @param filePath
+   *          filePath
+   * @param updateDbUrl
+   *          updateDbUrl
+   * @throws userName
+   *           userName
+   * @throws proName
+   *           proName
+   * @throws tomcatUrl
+   *           tomcatUrl
+   * @throws sb
+   *           sb
+   */
   public void modifyXmlFile(String filePath, String updateDbUrl, String userName, String proName,
       String tomcatUrl, StringBuilder sb) {
-    final String PROGEDU_DB_URL = "progeduDbUrl";
-    final String JOB_NAME = "jobName";
-    final String PRO_NAME = "proName";
     try {
       String filepath = filePath;
       DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
@@ -75,7 +91,7 @@ public class MavenAssignment extends AssignmentTypeMethod {
       Document doc = docBuilder.parse(filepath);
 
       String strJobName = userName + "_" + proName;
-      Node jobName = doc.getElementsByTagName(JOB_NAME).item(0);
+      Node jobName = doc.getElementsByTagName("jobName").item(0);
       jobName.setTextContent(strJobName);
 
       Node testFileName = doc.getElementsByTagName("testFileName").item(0);
@@ -84,13 +100,13 @@ public class MavenAssignment extends AssignmentTypeMethod {
       Node proDetailUrl = doc.getElementsByTagName("proDetailUrl").item(0);
       proDetailUrl.setTextContent(tomcatUrl);
 
-      Node progeduDbUrl = doc.getElementsByTagName(PROGEDU_DB_URL).item(0);
+      Node progeduDbUrl = doc.getElementsByTagName("progeduDbUrl").item(0);
       progeduDbUrl.setTextContent(updateDbUrl);
 
       Node user = doc.getElementsByTagName("user").item(0);
       user.setTextContent(userName);
 
-      Node ndProName = doc.getElementsByTagName(PRO_NAME).item(0);
+      Node ndProName = doc.getElementsByTagName("proName").item(0);
       ndProName.setTextContent(proName);
 
       // write the content into xml file
@@ -102,9 +118,7 @@ public class MavenAssignment extends AssignmentTypeMethod {
     } catch (ParserConfigurationException | TransformerException | SAXException | IOException e) {
       e.printStackTrace();
     }
-    
-    
-    
+
   }
-  
+
 }

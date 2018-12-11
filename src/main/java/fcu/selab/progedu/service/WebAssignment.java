@@ -17,9 +17,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
-import fcu.selab.progedu.exception.LoadConfigFailureException;
-import fcu.selab.progedu.utils.ZipHandler;
-
 public class WebAssignment extends AssignmentTypeMethod {
 
   public String getSampleZip() {
@@ -27,14 +24,20 @@ public class WebAssignment extends AssignmentTypeMethod {
     return folderName;
   }
 
-  public void createJenkinsJob() {
-    
-  }
-
   public void searchFile(String entryNewName) {
 
   }
-  
+
+  /**
+   * copyTestFile
+   * 
+   * @param folder
+   *          folder
+   * @param strFolder
+   *          strFolder
+   * @param testFilePath
+   *          testFilePath
+   */
   public void copyTestFile(File folder, String strFolder, String testFilePath) {
     for (final File fileEntry : folder.listFiles()) {
       if (fileEntry.isDirectory()) {
@@ -42,7 +45,6 @@ public class WebAssignment extends AssignmentTypeMethod {
       } else {
         // web project
         if (fileEntry.getAbsolutePath().contains("features")) {
-          String entry = fileEntry.getAbsolutePath();
           File dataFile = new File(strFolder + "/features");
           File targetFile = new File(testFilePath + "/features");
           try {
@@ -56,16 +58,29 @@ public class WebAssignment extends AssignmentTypeMethod {
       }
     }
   }
-  
+
   public String getJenkinsConfig() {
     return "config_web.xml";
   }
-  
+
+  /**
+   * modifyXmlFile
+   * 
+   * @param filePath
+   *          filePath
+   * @param updateDbUrl
+   *          updateDbUrl
+   * @param userName
+   *          userName
+   * @param proName
+   *          proName
+   * @param tomcatUrl
+   *          tomcatUrl
+   * @param sb
+   *          sb
+   */
   public void modifyXmlFile(String filePath, String updateDbUrl, String userName, String proName,
       String tomcatUrl, StringBuilder sb) {
-    final String PROGEDU_DB_URL = "progeduDbUrl";
-    final String JOB_NAME = "jobName";
-    final String PRO_NAME = "proName";
     try {
       String filepath = filePath;
       DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
@@ -73,7 +88,7 @@ public class WebAssignment extends AssignmentTypeMethod {
       Document doc = docBuilder.parse(filepath);
 
       String strJobName = userName + "_" + proName;
-      Node jobName = doc.getElementsByTagName(JOB_NAME).item(0);
+      Node jobName = doc.getElementsByTagName("jobName").item(0);
       jobName.setTextContent(strJobName);
 
       Node ndUrl = doc.getElementsByTagName("command").item(0);
@@ -82,13 +97,13 @@ public class WebAssignment extends AssignmentTypeMethod {
       Node testFileName = doc.getElementsByTagName("testFileName").item(0);
       testFileName.setTextContent(proName);
 
-      Node progeduDbUrl = doc.getElementsByTagName(PROGEDU_DB_URL).item(0);
+      Node progeduDbUrl = doc.getElementsByTagName("progeduDbUrl").item(0);
       progeduDbUrl.setTextContent(updateDbUrl);
 
       Node user = doc.getElementsByTagName("user").item(0);
       user.setTextContent(userName);
 
-      Node ndProName = doc.getElementsByTagName(PRO_NAME).item(0);
+      Node ndProName = doc.getElementsByTagName("proName").item(0);
       ndProName.setTextContent(proName);
 
       Node proDetailUrl = doc.getElementsByTagName("proDetailUrl").item(0);
@@ -103,12 +118,6 @@ public class WebAssignment extends AssignmentTypeMethod {
     } catch (ParserConfigurationException | TransformerException | SAXException | IOException e) {
       e.printStackTrace();
     }
-    
-    
-  }
 
-  public void createJenkinsJob(String name) {
-    
   }
-
 }

@@ -27,6 +27,12 @@ public class JavacAssignment extends AssignmentTypeMethod {
     return folderName;
   }
 
+  /**
+   * searchFile
+   * 
+   * @param entryNewName
+   *          entryNewName
+   */
   public void searchFile(String entryNewName) {
     ZipHandler zipHandler = null;
     try {
@@ -54,6 +60,16 @@ public class JavacAssignment extends AssignmentTypeMethod {
     }
   }
 
+  /**
+   * copyTestFile
+   * 
+   * @param folder
+   *          folder
+   * @param strFolder
+   *          strFolder
+   * @param testFilePath
+   *          testFilePath
+   */
   public void copyTestFile(File folder, String strFolder, String testFilePath) {
     for (final File fileEntry : folder.listFiles()) {
       if (fileEntry.isDirectory()) {
@@ -82,10 +98,24 @@ public class JavacAssignment extends AssignmentTypeMethod {
     return "config_javac.xml";
   }
 
+  /**
+   * modifyXmlFile
+   * 
+   * @param filePath
+   *          filePath
+   * @param updateDbUrl
+   *          updateDbUrl
+   * @throws userName
+   *           userName
+   * @throws proName
+   *           proName
+   * @throws tomcatUrl
+   *           tomcatUrl
+   * @throws sb
+   *           sb
+   */
   public void modifyXmlFile(String filePath, String updateDbUrl, String userName, String proName,
       String tomcatUrl, StringBuilder sb) {
-    final String PROGEDU_DB_URL = "progeduDbUrl";
-    final String PRO_NAME = "proName";
     try {
       String filepath = filePath;
       DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
@@ -95,13 +125,13 @@ public class JavacAssignment extends AssignmentTypeMethod {
       Node ndUrl = doc.getElementsByTagName("command").item(0);
       ndUrl.setTextContent(sb.toString());
 
-      Node progeduDbUrl = doc.getElementsByTagName(PROGEDU_DB_URL).item(0);
+      Node progeduDbUrl = doc.getElementsByTagName("progeduDbUrl").item(0);
       progeduDbUrl.setTextContent(updateDbUrl);
 
       Node user = doc.getElementsByTagName("user").item(0);
       user.setTextContent(userName);
 
-      Node ndProName = doc.getElementsByTagName(PRO_NAME).item(0);
+      Node ndProName = doc.getElementsByTagName("proName").item(0);
       ndProName.setTextContent(proName);
 
       // write the content into xml file
@@ -113,10 +143,6 @@ public class JavacAssignment extends AssignmentTypeMethod {
     } catch (ParserConfigurationException | TransformerException | SAXException | IOException e) {
       e.printStackTrace();
     }
-
-  }
-
-  public void createJenkinsJob(String name) {
 
   }
 
