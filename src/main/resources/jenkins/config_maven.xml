@@ -51,7 +51,7 @@
       <secretToken>e2p05zNL5GQgsbZnVcGlCQ==</secretToken>
     </com.dabsquared.gitlabjenkins.GitLabPushTrigger>
     <hudson.triggers.SCMTrigger>
-      <spec>*/5 * * * *</spec>
+      <spec>*/1 * * * *</spec>
       <ignorePostCommitHooks>false</ignorePostCommitHooks>
     </hudson.triggers.SCMTrigger>
   </triggers>

@@ -11,6 +11,7 @@
 <%@ page import="org.json.JSONArray, org.json.JSONException, org.json.JSONObject" %>
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="fcu.selab.progedu.conn.*" %>
+<%@ page import="fcu.selab.progedu.status.*" %>
 
 <%
 	if(session.getAttribute("username") == null || session.getAttribute("username").toString().equals("")){
@@ -307,12 +308,15 @@
 		
        		<!-- iFrame -->
 			<%
+				StudentDashChoosePro studentDashChoosePro = new StudentDashChoosePro();
+				String color = studentDashChoosePro.getLastColor(choosedUser.getUsername(),projectName);
+				Status status = StatusFactory.getStatus(color);
 				int num = lastBuildMessageNum;
 				String jobName = choosedUser.getUsername() + "_" + projectName;
 				String jenkinsBuildNumUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName;
 				String lastBuildUrl = jenkinsBuildNumUrl + "/" +  num + "/consoleText";
-				String consoleText = jenkins.getConsoleText(lastBuildUrl);
-				String checkstyleInfo = jenkins.getCheckstyleInfo(consoleText);
+				String detailConsoleText = jenkins.getConsoleText(lastBuildUrl);
+				String console = status.getConsole(detailConsoleText);
 			%>
 			<h4><a id="iFrameTitle" href="<%=jenkinsBuildNumUrl%>">Feedback Information (#<%=num %>)</a></h4>
 			<!--  <div style="margin:10px;">
@@ -321,7 +325,7 @@
 				</iframe>
 			</div>-->
 			<div id="container">
-				<pre> <%=checkstyleInfo%></pre>
+				<pre> <%=console%></pre>
 			</div>
 			<!-- iFrame -->
        </div>

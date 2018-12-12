@@ -848,10 +848,10 @@ public class JenkinsApi {
   }
 
   /**
-   * Get
+   * get checkstyle information
    * 
-   * @param consoleText
-   * @return checkstyleInfo
+   * @param consoleText consoleText
+   * @return checkstyleInfo checkstyleInfo
    */
   public String getCheckstyleInfo(String consoleText) {
     String checkstyleInfo;
