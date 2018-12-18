@@ -756,7 +756,18 @@ public class JenkinsApi {
    * @param strUrl strUrl
    * @return console
    */
-  public String getConsoleText(String strUrl) {
+  public String getCompleteConsoleText(String userName, String proName, int num) {
+    String url = getConsoleUrl(userName, proName, num);
+    return getCompleteConsoleText(url);
+  }
+
+  /**
+   * Get
+   * 
+   * @param strUrl strUrl
+   * @return console
+   */
+  public String getCompleteConsoleText(String strUrl) {
     String console = "";
     HttpURLConnection conn = null;
 
@@ -804,65 +815,65 @@ public class JenkinsApi {
    * @param strUrl strUrl
    * @return console
    */
-  public String getConsoleTextCommitMessage(String strUrl) {
-    String console = "";
-    HttpURLConnection conn = null;
-
-    try {
-      if (Thread.interrupted()) {
-        throw new InterruptedException();
-      }
-      URL url = new URL(strUrl);
-      conn = (HttpURLConnection) url.openConnection();
-      String input = jenkinsData.getJenkinsRootUsername() + ":"
-          + jenkinsData.getJenkinsRootPassword();
-      Base64.Encoder encoder = Base64.getEncoder();
-      String encoding = encoder.encodeToString(input.getBytes());
-      conn.setRequestProperty(AUTHORIZATION, BASIC + encoding);
-      conn.setReadTimeout(10000);
-      conn.setConnectTimeout(15000);
-      conn.setRequestMethod("GET");
-      conn.connect();
-      if (Thread.interrupted()) {
-        throw new InterruptedException();
-      }
-      try (BufferedReader br = new BufferedReader(
-          new InputStreamReader(conn.getInputStream(), UTF_8));) {
-        String str = "";
-        StringBuilder sb = new StringBuilder();
-        while (null != (str = br.readLine())) {
-          if (str.contains("Commit message:")) {
-            console = str;
-            break;
-          }
-        }
-      }
-    } catch (Exception e) {
-      e.printStackTrace();
-    } finally {
-      if (conn != null) {
-        conn.disconnect();
-      }
-    }
-    return console;
+  public String getConsoleText(String strUrl) {
+    String completeConsole = getCompleteConsoleText(strUrl);
+    return deleteCommitMessage(completeConsole);
   }
 
   /**
-   * get checkstyle information
+   * Get
    * 
-   * @param consoleText consoleText
-   * @return checkstyleInfo checkstyleInfo
+   * @param userName proName num
+   * @return console
    */
-  public String getCheckstyleInfo(String consoleText) {
-    String checkstyleInfo;
-    String checkstyleStart = "Starting audit...";
-    String checkstyleEnd = "Audit done.";
-    checkstyleInfo = consoleText.substring(
-        consoleText.indexOf(checkstyleStart) + checkstyleStart.length(),
-        consoleText.indexOf(checkstyleEnd));
+  public String getConsoleText(String userName, String proName, int num) {
+    String url = getConsoleUrl(userName, proName, num);
+    return getConsoleText(url);
+  }
 
-    return checkstyleInfo;
+  /**
+   * Delete commit message
+   * 
+   * @param console text
+   * @return console
+   */
+  private String deleteCommitMessage(String console) {
+    StringBuilder sb = new StringBuilder(console);
+    String startStr = "Commit message: ";
+    String endStr = " > git rev-list";
+    int startIndex = console.indexOf(startStr);
+    int endIndex = console.lastIndexOf(endStr);
+    // Delete commit message
+    sb.delete(startIndex, endIndex);
+    return sb.toString();
+  }
 
+  /**
+   * Get commitMessage
+   * 
+   * @param console console
+   * @return commitMessage commitMessage
+   */
+
+  public String getConsoleTextCommitMessage(String console) {
+    String commitMessage;
+    String startStr = "Commit message: ";
+    String endStr = "\n";
+    int startIndex = console.indexOf(startStr) + startStr.length() + 1;
+    int endIndex = console.indexOf(endStr, startIndex) - 1;
+
+    commitMessage = console.substring(startIndex, endIndex);
+    return commitMessage;
+  }
+
+  /**
+   * Get jenkins console url
+   * 
+   * @param strUrl strUrl
+   * @return console
+   */
+  public String getConsoleUrl(String userName, String proName, int num) {
+    return (jenkinsHostUrl + "/job/" + userName + "_" + proName + "/" + num + "/consoleText");
   }
 
   /**
@@ -1026,15 +1037,43 @@ public class JenkinsApi {
    */
   public boolean getJobBuildResultByConsoleText(String consoleText, String proType) {
     boolean isSuccess = false;
-    StringBuilder sb = new StringBuilder(consoleText);
-    // Delete commit message
-    sb.delete(sb.indexOf("Commit message"), sb.lastIndexOf(" > git rev-list"));
+//    StringBuilder sb = new StringBuilder(consoleText);
+//    // Delete commit message
+//    sb.delete(sb.indexOf("Commit message"), sb.lastIndexOf(" > git rev-list"));
 
-    if ((proType.equals("OOP") && sb.toString().contains("BUILD SUCCESS"))
-        || (proType.equals("WEB") && sb.toString().contains("===Build success==="))) {
+    if ((proType.equals("OOP") && consoleText.contains("BUILD SUCCESS"))
+        || (proType.equals("WEB") && consoleText.contains("===Build success==="))) {
       isSuccess = true;
     }
     return isSuccess;
+  }
+
+  /**
+   * Check is Not Built
+   * 
+   * @param num num
+   * @return boolean
+   */
+  public boolean checkIsNotBuilt(int num) {
+    boolean isNotBuilt = false;
+    if (num == 1) {
+      isNotBuilt = true;
+    }
+    return isNotBuilt;
+  }
+
+  /**
+   * Check is build success
+   * 
+   * @param result result
+   * @return boolean
+   */
+  public boolean checkIsBuildSuccess(String result) {
+    boolean isBuildSuccess = false;
+    if (result.contains("SUCCESS")) {
+      isBuildSuccess = true;
+    }
+    return isBuildSuccess;
   }
 
   /**
@@ -1053,6 +1092,23 @@ public class JenkinsApi {
       isCheckstyleError = !(consoleText.contains(webCheckstyleSuccess));
     }
     return isCheckstyleError;
+  }
+
+  /**
+   * Check is Test error
+   *
+   * @param console Protype
+   * @return boolean
+   */
+  public boolean checkIsTestError(String console, String proType) {
+    boolean isTestError = false;
+    if (proType.equals("OOP")) {
+      isTestError = checkIsJunitError(console);
+    } else if (proType.equals("WEB")) {
+      isTestError = checkIsWebTestError(console);
+    }
+    return isTestError;
+
   }
 
   /**
