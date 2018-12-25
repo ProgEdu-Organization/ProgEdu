@@ -154,37 +154,8 @@ public class JenkinsService {
     final String strDate = stuDashChoPro.getCommitTime(buildApiJson);
     String commitMessage = stuDashChoPro.getCommitMessage(num, userName, proName);
     String proType = proName.substring(0, 3);
-    commitMessage = commitMessage.replace("Commit message: ", "");
-    if (null != commitMessage && !"".equals(commitMessage)) {
-      commitMessage = commitMessage.substring(1, commitMessage.length() - 1);
-    }
-
-    String color = stuDashChoPro.getCommitColor(num, userName, proName, buildApiJson);
-    if (num == 1) {
-      color = "NB";
-    }
-    if (color.equals("red")) {
-      String consoleText = checkErrorStyle(jenkinsData, userName, proName, num);
-      boolean isCheckStyle = jenkins.checkIsCheckstyleError(consoleText, proType);
-      boolean isTestError = false;
-      if (proType.equals("OOP")) {
-        boolean isJunitError = jenkins.checkIsJunitError(consoleText);
-        isTestError = isJunitError;
-      } else if (proType.equals("WEB")) {
-        boolean isWebTestError = jenkins.checkIsWebTestError(consoleText);
-        isTestError = isWebTestError;
-      }
-
-      if (isTestError) {
-        color = "CTF";
-      } else if (isCheckStyle) {
-        color = "CSF";
-      } else {
-        color = "red";
-      }
-    }
-    color = "circle " + color;
-
+    String status = stuDashChoPro.getCommitColor(num, userName, proName, buildApiJson, proType);
+    String color = "circle " + status;
     JSONObject ob = new JSONObject();
     ob.put("num", num);
     ob.put("color", color);

@@ -141,21 +141,31 @@ public class StudentDashChoosePro {
     return color;
   }
 
-  private String checkColor(String result, String projectJenkinsUrl) {
-    String color = null;
-    if (result.equals("SUCCESS")) {
-      color = "blue";
+  private String checkStatus(String result, String userName, String projectName, int num,
+      String proType) {
+    String status;
 
+    if (jenkins.checkIsNotBuilt(num)) {
+      // is not built;
+      status = "NB";
     } else {
-      color = "red";
-      // check if is checkstyle error
-      String consoleText = jenkins.getConsoleText(projectJenkinsUrl);
-      boolean ifCheckStyle = consoleText.contains("Checkstyle violation");
-      if (ifCheckStyle) {
-        color = "orange";
+      String console = jenkins.getConsoleText(userName, projectName, num);
+      if (jenkins.checkIsBuildSuccess(result)) {
+        // is build success
+        status = "S";
+      } else if (jenkins.checkIsTestError(console, proType)) {
+        // is test failure
+        status = "CTF";
+      } else if (jenkins.checkIsCheckstyleError(console, proType)) {
+        // is checkstyle failure = true
+        status = "CSF";
+      } else {
+        // is compile failure
+        status = "CPF";
       }
     }
-    return color;
+    return status;
+
   }
 
   /**
@@ -176,45 +186,31 @@ public class StudentDashChoosePro {
    * Get commit color
    * 
    * @param num         commit number
-   * @param username    username
-   * @param projectName project name
+   * @param userName    user name
+   * @param projectName projectName
+   * @param apiJson     apiJson
+   * @param proType     proType
    * @return color
    */
-  public String getCommitColor(int num, String username, String projectName, String apiJson) {
-    String color = null;
-    String jobName = username + "_" + projectName;
-    try {
-      String result = jenkins.getJobBuildResult(apiJson);
+  public String getCommitColor(int num, String userName, String projectName, String apiJson,
+      String proType) {
+    String result = jenkins.getJobBuildResult(apiJson);
+    return checkStatus(result, userName, projectName, num, proType);
 
-      String projectJenkinsUrl = jenkinsData.getJenkinsHostUrl() + JOB + jobName + "/" + num
-          + "/consoleText";
-
-      color = checkColor(result, projectJenkinsUrl);
-    } catch (LoadConfigFailureException e) {
-      e.printStackTrace();
-    }
-    return color;
   }
 
   /**
    * get
    * 
    * @param num         buuild num
-   * @param username    student name
+   * @param userName    student name
    * @param projectName project name
    * @return commit message
    */
-  public String getCommitMessage(int num, String username, String projectName) {
-    String jobName = username + "_" + projectName;
-    String console = "";
-    try {
-      String projectJenkinsUrl = jenkinsData.getJenkinsHostUrl() + JOB + jobName + "/" + num
-          + "/consoleText";
-      console = jenkins.getConsoleTextCommitMessage(projectJenkinsUrl);
-    } catch (LoadConfigFailureException e) {
-      e.printStackTrace();
-    }
-    return console;
+  public String getCommitMessage(int num, String userName, String projectName) {
+    String console = jenkins.getCompleteConsoleText(userName, projectName, num);
+    return jenkins.getConsoleTextCommitMessage(console);
+
   }
 
   /**
