@@ -2,7 +2,7 @@ package fcu.selab.progedu.status;
 
 public class UnitTestFailure implements Status {
   @Override
-  public String getConsole(String consoleText) {
+  public String extractFailureMsg(String consoleText) {
     String consoleTest = "";
     String[] str = consoleText.split("\n");
     int start = 0;

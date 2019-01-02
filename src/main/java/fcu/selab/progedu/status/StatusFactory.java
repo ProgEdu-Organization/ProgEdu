@@ -7,20 +7,21 @@ public class StatusFactory {
    * @return Status status
    */
   public static Status getStatus(String type) {
-    switch (type) {
-      case "NB": {
-        return new NotBuilt();
+    StatusEnum statusEnum = StatusEnum.getStatusEnum(type);
+    switch (statusEnum) {
+      case INITIALIZATION: {
+        return new Initialization();
       }
-      case "CPF": {
+      case COMPILE_FAILURE: {
         return new CompileFailure();
       }
-      case "CSF": {
+      case CHECKSTYLE_FAILURE: {
         return new CheckstyleFailure();
       }
-      case "CTF": {
+      case UNIT_TEST_FAILURE: {
         return new UnitTestFailure();
       }
-      case "S": {
+      case BUILD_SUCCESS: {
         return new BuildSuccess();
       }
 

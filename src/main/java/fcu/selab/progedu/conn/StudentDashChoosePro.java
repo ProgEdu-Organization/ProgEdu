@@ -16,6 +16,7 @@ import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.jenkins.JenkinsApi;
 import fcu.selab.progedu.jenkins.JobStatus;
 import fcu.selab.progedu.service.CommitResultService;
+import fcu.selab.progedu.status.StatusEnum;
 
 public class StudentDashChoosePro {
   private static final String JOB = "/job/";
@@ -145,23 +146,23 @@ public class StudentDashChoosePro {
       String proType) {
     String status;
 
-    if (jenkins.checkIsNotBuilt(num)) {
-      // is not built;
-      status = "NB";
+    if (jenkins.checkIsInitialization(num)) {
+      // is Initialization;
+      status = StatusEnum.INITIALIZATION.getTypeName();
     } else {
       String console = jenkins.getConsoleText(userName, projectName, num);
       if (jenkins.checkIsBuildSuccess(result)) {
-        // is build success
-        status = "S";
+        // is Initialization
+        status = StatusEnum.BUILD_SUCCESS.getTypeName();
       } else if (jenkins.checkIsTestError(console, proType)) {
         // is test failure
-        status = "CTF";
+        status = StatusEnum.UNIT_TEST_FAILURE.getTypeName();
       } else if (jenkins.checkIsCheckstyleError(console, proType)) {
         // is checkstyle failure = true
-        status = "CSF";
+        status = StatusEnum.CHECKSTYLE_FAILURE.getTypeName();
       } else {
         // is compile failure
-        status = "CPF";
+        status = StatusEnum.COMPILE_FAILURE.getTypeName();
       }
     }
     return status;

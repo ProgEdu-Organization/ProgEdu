@@ -840,9 +840,9 @@ public class JenkinsApi {
   private String deleteCommitMessage(String console) {
     StringBuilder sb = new StringBuilder(console);
     String startStr = "Commit message: ";
-    String endStr = " > git rev-list";
+    String endStr = "\n";
     int startIndex = console.indexOf(startStr);
-    int endIndex = console.lastIndexOf(endStr);
+    int endIndex = console.indexOf(endStr, startIndex);
     // Delete commit message
     sb.delete(startIndex, endIndex);
     return sb.toString();
@@ -1054,12 +1054,12 @@ public class JenkinsApi {
    * @param num num
    * @return boolean
    */
-  public boolean checkIsNotBuilt(int num) {
-    boolean isNotBuilt = false;
+  public boolean checkIsInitialization(int num) {
+    boolean isInitialization = false;
     if (num == 1) {
-      isNotBuilt = true;
+      isInitialization = true;
     }
-    return isNotBuilt;
+    return isInitialization;
   }
 
   /**

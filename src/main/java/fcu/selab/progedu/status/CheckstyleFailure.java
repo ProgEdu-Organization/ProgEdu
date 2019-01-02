@@ -9,7 +9,7 @@ public class CheckstyleFailure implements Status {
    * @return checkstyle information
    */
   @Override
-  public String getConsole(String consoleText) {
+  public String extractFailureMsg(String consoleText) {
     String checkstyleInfo;
     String checkstyleStart = "Starting audit...";
     String checkstyleEnd = "Audit done.";

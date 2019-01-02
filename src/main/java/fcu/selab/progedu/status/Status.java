@@ -1,5 +1,5 @@
 package fcu.selab.progedu.status;
 
 public interface Status {
-  public String getConsole(String consoleText);
+  public String extractFailureMsg(String consoleText);
 }
