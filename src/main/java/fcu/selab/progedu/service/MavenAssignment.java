@@ -24,8 +24,29 @@ public class MavenAssignment extends AssignmentTypeMethod {
     return folderName;
   }
 
+  /**
+   * searchFile
+   * 
+   * @param entryNewName
+   *          entryNewName
+   */
   public void searchFile(String entryNewName) {
-
+    StringBuilder sb = new StringBuilder();
+    String last = "";
+    if (entryNewName.endsWith(".java")) {
+      last = entryNewName.substring(entryNewName.length() - 5, entryNewName.length());
+    }
+    String fileName = null;
+    for (int i = 0; i < entryNewName.length() - 3; i++) {
+      if (entryNewName.substring(i, i + 3).equals("src")) {
+        fileName = entryNewName.substring(i);
+        System.out.println("Search java file fileName : " + fileName);
+        if (last.equals(".java")) {
+          sb.append("javac " + fileName + "\n");
+          zipHandler.setStringBuilder(sb);
+        }
+      }
+    }
   }
 
   /**

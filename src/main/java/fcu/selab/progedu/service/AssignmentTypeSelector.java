@@ -3,12 +3,14 @@ package fcu.selab.progedu.service;
 import java.io.File;
 import java.io.IOException;
 
+import fcu.selab.progedu.utils.ZipHandler;
+
 public interface AssignmentTypeSelector {
 
   public String getSampleZip();
 
-  public void unzip(String zipFilePath, String zipFolderName, String projectName)
-      throws IOException;
+  public void unzip(String zipFilePath, String zipFolderName, String projectName,
+      ZipHandler zipHandler) throws IOException;
 
   public void searchFile(String entryNewName);
 

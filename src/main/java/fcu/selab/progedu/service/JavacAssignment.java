@@ -17,9 +17,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
-import fcu.selab.progedu.exception.LoadConfigFailureException;
-import fcu.selab.progedu.utils.ZipHandler;
-
 public class JavacAssignment extends AssignmentTypeMethod {
 
   public String getSampleZip() {
@@ -34,29 +31,22 @@ public class JavacAssignment extends AssignmentTypeMethod {
    *          entryNewName
    */
   public void searchFile(String entryNewName) {
-    ZipHandler zipHandler = null;
-    try {
-      zipHandler = new ZipHandler();
-      StringBuilder sb = new StringBuilder();
-      String last = "";
-      if (entryNewName.endsWith(".java")) {
-        last = entryNewName.substring(entryNewName.length() - 5, entryNewName.length());
-      }
-      String fileName = null;
-      for (int i = 0; i < entryNewName.length() - 3; i++) {
-        if (entryNewName.substring(i, i + 3).equals("src")) {
-          fileName = entryNewName.substring(i);
-          System.out.println("Search java file fileName : " + fileName);
-          if (last.equals(".java")) {
-            sb.append("javac " + fileName + "\n");
-            sb.append("echo \"BUILD SUCCESS\"");
-            zipHandler.setStringBuilder(sb);
-          }
+    StringBuilder sb = new StringBuilder();
+    String last = "";
+    if (entryNewName.endsWith(".java")) {
+      last = entryNewName.substring(entryNewName.length() - 5, entryNewName.length());
+    }
+    String fileName = null;
+    for (int i = 0; i < entryNewName.length() - 3; i++) {
+      if (entryNewName.substring(i, i + 3).equals("src")) {
+        fileName = entryNewName.substring(i);
+        System.out.println("Search java file fileName : " + fileName);
+        if (last.equals(".java")) {
+          sb.append("javac " + fileName + "\n");
+          sb.append("echo \"BUILD SUCCESS\"");
+          zipHandler.setStringBuilder(sb);
         }
       }
-
-    } catch (LoadConfigFailureException e) {
-      e.printStackTrace();
     }
   }
 

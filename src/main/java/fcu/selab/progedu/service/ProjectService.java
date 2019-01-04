@@ -158,7 +158,7 @@ public class ProjectService {
 
     // 4. Unzip the file to the root project
     try {
-      assignmentTypeSelector.unzip(filePath, folderName, name);
+      assignmentTypeSelector.unzip(filePath, folderName, name, zipHandler);
       setTestFileInfo();
     } catch (IOException e) {
       e.printStackTrace();

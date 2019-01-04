@@ -34,16 +34,13 @@ public abstract class AssignmentTypeMethod implements AssignmentTypeSelector {
    *          projectName
    */
 
-  public void unzip(String zipFilePath, String zipFolderName, String projectName)
-      throws IOException {
-    try {
-      zipHandler = new ZipHandler();
-    } catch (LoadConfigFailureException e) {
-      e.printStackTrace();
-    }
+  public void unzip(String zipFilePath, String zipFolderName, String projectName,
+      ZipHandler unzipHandler) throws IOException {
 
+    zipHandler = unzipHandler;
     final String tempDir = System.getProperty("java.io.tmpdir");
     final String uploadDir = tempDir + "/uploads/";
+    final String testDir = tempDir + "/tests/";
     String parentDir = null;
     int parDirLength = 0;
     // -4 because .zip
@@ -60,10 +57,17 @@ public abstract class AssignmentTypeMethod implements AssignmentTypeSelector {
       destDir.mkdir();
     }
 
-    String testDirectory = tempDir + "/tests/" + projectName;
-    File testDir = new File(testDirectory);
-    if (!testDir.exists()) {
-      testDir.mkdir();
+    File fileTestDir = new File(testDir);
+    if (!fileTestDir.exists()) {
+      fileTestDir.mkdir();
+    }
+
+    String testDirectory = testDir + projectName;
+    File testsDir = new File(testDirectory);
+    if (!testsDir.exists()) {
+      testsDir.mkdir();
+    } else {
+      System.out.println(testDirectory);
     }
 
     ZipInputStream zipIn = new ZipInputStream(new FileInputStream(zipFilePath));
@@ -107,8 +111,10 @@ public abstract class AssignmentTypeMethod implements AssignmentTypeSelector {
     if (testFile.exists()) {
       zipHandler.zipTestFolder(testDirectory);
 
-      zipHandler.setUrlForJenkinsDownloadTestFile(
-          zipHandler.serverIp + "/ProgEdu/webapi/jenkins/getTestFile?filePath=" + testDir + ".zip");
+      zipHandler.setUrlForJenkinsDownloadTestFile(zipHandler.serverIp
+          + "/ProgEdu/webapi/jenkins/getTestFile?filePath=" + testsDir + ".zip");
+    } else {
+      System.out.println("test file not exists");
     }
     zipIn.close();
   }
