@@ -1,7 +1,6 @@
 /target/
 
 pom.xml
-
 .properties
 .checkstyle
 .classpath
