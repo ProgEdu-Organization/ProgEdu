@@ -186,7 +186,6 @@ public class CommitResultService {
       JenkinsService jenkinsService = new JenkinsService();
       JenkinsApi jenkinsApi = new JenkinsApi();
       StudentDashChoosePro stuDashChoPro = new StudentDashChoosePro();
-      JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
 
       String[] result = jenkinsService.getColor(proName, userName).split(",");
 
@@ -200,25 +199,24 @@ public class CommitResultService {
       }
 
       String color = "";
-      String consoleText = checkErrorStyle(jenkinsData, userName, proName, buildNum.get(num));
+      String consoleText = jenkinsApi.getConsoleText(userName, proName, buildNum.get(num));
       String proType = proName.substring(0, 3);
+
       boolean isSuccess = jenkinsApi.getJobBuildResultByConsoleText(consoleText, proType);
       if (!isSuccess) {
         boolean isCheckStyle = jenkinsApi.checkIsCheckstyleError(consoleText, proType);
         boolean isTestError = false;
 
         if (proType.equals("OOP")) {
-          boolean isJunitError = jenkinsApi.checkIsJunitError(consoleText);
-          isTestError = isJunitError;
+          isTestError = jenkinsApi.checkIsJunitError(consoleText);
         } else if (proType.equals("WEB")) {
-          boolean isWebTestError = jenkinsApi.checkIsWebTestError(consoleText);
-          isTestError = isWebTestError;
+          isTestError = jenkinsApi.checkIsWebTestError(consoleText);
         }
 
         if (isTestError) {
-          color = "CTF";
+          color = StatusEnum.UNIT_TEST_FAILURE.getTypeName();
         } else if (isCheckStyle) {
-          color = "CSF";
+          color = StatusEnum.CHECKSTYLE_FAILURE.getTypeName();
         } else {
           if (proType.equals("WEB")) {
             color = "blue";
@@ -240,13 +238,13 @@ public class CommitResultService {
 
       switch (color) {
         case "blue":
-          color = "S";
+          color = StatusEnum.BUILD_SUCCESS.getTypeName();
           break;
         case "red":
-          color = "CPF";
+          color = StatusEnum.COMPILE_FAILURE.getTypeName();
           break;
         case "gray":
-          color = "NB";
+          color = StatusEnum.INITIALIZATION.getTypeName();
           break;
 
         default:
@@ -264,11 +262,11 @@ public class CommitResultService {
       boolean check = db.checkJenkinsJobTimestamp(id, proName);
       if (check) {
         db.updateJenkinsCommitCount(id, proName, commit, color);
-        db.updateJenkinsJobTimestamp(id, proName, strDate);
+
       } else {
         db.insertJenkinsCommitCount(id, proName, commit, color);
-        db.updateJenkinsJobTimestamp(id, proName, strDate);
       }
+      db.updateJenkinsJobTimestamp(id, proName, strDate);
 
       boolean inDb = commitRecordDb.checkRecord(id, proName, color, dates[0], dates[1]);
       if (!inDb) {
