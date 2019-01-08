@@ -20,7 +20,7 @@ import fcu.selab.progedu.db.CommitRecordDbManager;
 import fcu.selab.progedu.db.ProjectDbManager;
 import fcu.selab.progedu.db.UserDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
-
+/*
 public class TestInsertCommitRecord {
 
   public static void main(String[] args) {
@@ -112,3 +112,4 @@ public class TestInsertCommitRecord {
     return jsonStringBuilder.toString();
   }
 }
+*/

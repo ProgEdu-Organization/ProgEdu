@@ -15,6 +15,7 @@ import org.json.JSONObject;
 import fcu.selab.progedu.db.CommitRecordDbManager;
 import fcu.selab.progedu.db.CommitRecordStateDbManager;
 import fcu.selab.progedu.db.ProjectDbManager;
+import fcu.selab.progedu.status.StatusEnum;
 
 @Path("commits/")
 public class CommitRecordStateService {
@@ -52,36 +53,36 @@ public class CommitRecordStateService {
 
       Map<String, Integer> map = commitRecordDb.getCommitRecordStateCounts(name);
 
-      int success = 0;
-      int nb = 0;
-      int ctf = 0;
+      int bs = 0;
+      int ini = 0;
+      int utf = 0;
       int csf = 0;
       int cpf = 0;
 
-      if (map.containsKey("S")) {
-        success = map.get("S");
+      if (map.containsKey(StatusEnum.BUILD_SUCCESS.getTypeName())) {
+        bs = map.get(StatusEnum.BUILD_SUCCESS.getTypeName());
       }
 
-      if (map.containsKey("NB")) {
-        nb = map.get("NB");
+      if (map.containsKey(StatusEnum.INITIALIZATION.getTypeName())) {
+        ini = map.get(StatusEnum.INITIALIZATION.getTypeName());
       }
 
-      if (map.containsKey("CTF")) {
-        ctf = map.get("CTF");
+      if (map.containsKey(StatusEnum.UNIT_TEST_FAILURE.getTypeName())) {
+        utf = map.get(StatusEnum.UNIT_TEST_FAILURE.getTypeName());
       }
 
-      if (map.containsKey("CSF")) {
-        csf = map.get("CSF");
+      if (map.containsKey(StatusEnum.CHECKSTYLE_FAILURE.getTypeName())) {
+        csf = map.get(StatusEnum.CHECKSTYLE_FAILURE.getTypeName());
       }
 
-      if (map.containsKey("CPF")) {
-        cpf = map.get("CPF");
+      if (map.containsKey(StatusEnum.COMPILE_FAILURE.getTypeName())) {
+        cpf = map.get(StatusEnum.COMPILE_FAILURE.getTypeName());
       }
 
       int ccs = 0;
-      ccs = success + ctf + csf + cpf;
+      ccs = bs + utf + csf + cpf;
 
-      commitRecordStateDb.addCommitRecordState(name, success, csf, cpf, ctf, nb, ccs);
+      commitRecordStateDb.addCommitRecordState(name, bs, csf, cpf, utf, ini, ccs);
 
     }
 

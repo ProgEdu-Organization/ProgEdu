@@ -40,6 +40,7 @@ import fcu.selab.progedu.db.ProjectDbManager;
 import fcu.selab.progedu.db.UserDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.jenkins.JenkinsApi;
+import fcu.selab.progedu.status.StatusEnum;
 
 @Path("commits/")
 public class CommitResultService {
@@ -52,37 +53,37 @@ public class CommitResultService {
   /**
    * get counts by different color.
    * 
-   * @param color color
+   * @param type type
    * @return counts
    */
   @GET
   @Path("color")
   @Produces(MediaType.APPLICATION_JSON)
-  public Response getCounts(@QueryParam("color") String color) {
-    JSONObject commitCounts = db.getCounts(color);
+  public Response getCounts(@QueryParam("color") String type) {
+    JSONObject commitCounts = db.getCounts(type);
     List<Integer> counts = new ArrayList<>();
     List<String> pnames = projectDb.listAllProjectNames();
-
+    String status = "";
     for (String pname : pnames) {
       int count = commitCounts.optInt(pname);
       counts.add(count);
     }
-
-    switch (color) {
-      case "S":
-        color = "success";
+    StatusEnum statusEnum = StatusEnum.getStatusEnum(type);
+    switch (statusEnum) {
+      case BUILD_SUCCESS:
+        status = "success";
         break;
-      case "CPF":
-        color = "compile failure";
+      case COMPILE_FAILURE:
+        status = "compile failure";
         break;
-      case "CSF":
-        color = "checkstyle failure";
+      case CHECKSTYLE_FAILURE:
+        status = "checkstyle failure";
         break;
-      case "CTF":
-        color = "JUnit failure";
+      case UNIT_TEST_FAILURE:
+        status = "JUnit failure";
         break;
-      case "NB":
-        color = "not build";
+      case INITIALIZATION:
+        status = "not build";
         break;
       default:
         break;
@@ -90,7 +91,7 @@ public class CommitResultService {
 
     JSONObject ob = new JSONObject();
     ob.put("data", counts);
-    ob.put("name", color);
+    ob.put("name", status);
     return Response.ok().entity(ob.toString()).build();
   }
 
@@ -185,7 +186,6 @@ public class CommitResultService {
       JenkinsService jenkinsService = new JenkinsService();
       JenkinsApi jenkinsApi = new JenkinsApi();
       StudentDashChoosePro stuDashChoPro = new StudentDashChoosePro();
-      JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
 
       String[] result = jenkinsService.getColor(proName, userName).split(",");
 
@@ -199,25 +199,24 @@ public class CommitResultService {
       }
 
       String color = "";
-      String consoleText = checkErrorStyle(jenkinsData, userName, proName, buildNum.get(num));
+      String consoleText = jenkinsApi.getConsoleText(userName, proName, buildNum.get(num));
       String proType = proName.substring(0, 3);
+
       boolean isSuccess = jenkinsApi.getJobBuildResultByConsoleText(consoleText, proType);
       if (!isSuccess) {
         boolean isCheckStyle = jenkinsApi.checkIsCheckstyleError(consoleText, proType);
         boolean isTestError = false;
 
         if (proType.equals("OOP")) {
-          boolean isJunitError = jenkinsApi.checkIsJunitError(consoleText);
-          isTestError = isJunitError;
+          isTestError = jenkinsApi.checkIsJunitError(consoleText);
         } else if (proType.equals("WEB")) {
-          boolean isWebTestError = jenkinsApi.checkIsWebTestError(consoleText);
-          isTestError = isWebTestError;
+          isTestError = jenkinsApi.checkIsWebTestError(consoleText);
         }
 
         if (isTestError) {
-          color = "CTF";
+          color = StatusEnum.UNIT_TEST_FAILURE.getTypeName();
         } else if (isCheckStyle) {
-          color = "CSF";
+          color = StatusEnum.CHECKSTYLE_FAILURE.getTypeName();
         } else {
           if (proType.equals("WEB")) {
             color = "blue";
@@ -239,13 +238,13 @@ public class CommitResultService {
 
       switch (color) {
         case "blue":
-          color = "S";
+          color = StatusEnum.BUILD_SUCCESS.getTypeName();
           break;
         case "red":
-          color = "CPF";
+          color = StatusEnum.COMPILE_FAILURE.getTypeName();
           break;
         case "gray":
-          color = "NB";
+          color = StatusEnum.INITIALIZATION.getTypeName();
           break;
 
         default:
@@ -263,11 +262,11 @@ public class CommitResultService {
       boolean check = db.checkJenkinsJobTimestamp(id, proName);
       if (check) {
         db.updateJenkinsCommitCount(id, proName, commit, color);
-        db.updateJenkinsJobTimestamp(id, proName, strDate);
+
       } else {
         db.insertJenkinsCommitCount(id, proName, commit, color);
-        db.updateJenkinsJobTimestamp(id, proName, strDate);
       }
+      db.updateJenkinsJobTimestamp(id, proName, strDate);
 
       boolean inDb = commitRecordDb.checkRecord(id, proName, color, dates[0], dates[1]);
       if (!inDb) {
@@ -302,43 +301,43 @@ public class CommitResultService {
 
       Map<String, Integer> map = commitRecordDb.getCommitRecordStateCounts(name);
 
-      int success = 0;
-      int nb = 0;
-      int ctf = 0;
+      int bs = 0;
+      int ini = 0;
+      int utf = 0;
       int csf = 0;
       int cpf = 0;
 
-      if (map.containsKey("S")) {
-        success = map.get("S");
+      if (map.containsKey(StatusEnum.BUILD_SUCCESS.getTypeName())) {
+        bs = map.get(StatusEnum.BUILD_SUCCESS.getTypeName());
       }
 
-      if (map.containsKey("NB")) {
-        nb = map.get("NB");
+      if (map.containsKey(StatusEnum.INITIALIZATION.getTypeName())) {
+        ini = map.get(StatusEnum.INITIALIZATION.getTypeName());
       }
 
-      if (map.containsKey("CTF")) {
-        ctf = map.get("CTF");
+      if (map.containsKey(StatusEnum.UNIT_TEST_FAILURE.getTypeName())) {
+        utf = map.get(StatusEnum.UNIT_TEST_FAILURE.getTypeName());
       }
 
-      if (map.containsKey("CSF")) {
-        csf = map.get("CSF");
+      if (map.containsKey(StatusEnum.CHECKSTYLE_FAILURE.getTypeName())) {
+        csf = map.get(StatusEnum.CHECKSTYLE_FAILURE.getTypeName());
       }
 
-      if (map.containsKey("CPF")) {
-        cpf = map.get("CPF");
+      if (map.containsKey(StatusEnum.COMPILE_FAILURE.getTypeName())) {
+        cpf = map.get(StatusEnum.COMPILE_FAILURE.getTypeName());
       }
 
       int ccs = 0;
-      ccs = success + ctf + csf + cpf;
+      ccs = bs + utf + csf + cpf;
 
       boolean check;
       check = crsdb.checkCommitRecordStatehw(name);
 
       if (check) {
-        crsdb.updateCommitRecordState(name, success, csf, cpf, ctf, nb, ccs);
+        crsdb.updateCommitRecordState(name, bs, csf, cpf, utf, ini, ccs);
 
       } else {
-        crsdb.addCommitRecordState(name, success, csf, cpf, ctf, nb, ccs);
+        crsdb.addCommitRecordState(name, bs, csf, cpf, utf, ini, ccs);
       }
 
     }
