@@ -114,16 +114,16 @@
         .CPF {
             background: #e52424;
         }
-        .S {
+        .BS {
             background: #5fa7e8;
         }
-        .NB {
+        .INI {
             background: #878787;
         }
         .CSF {
             background: gold;
         }
-        .CTF {
+        .UTF {
             background: #32CD32;
         }
 		

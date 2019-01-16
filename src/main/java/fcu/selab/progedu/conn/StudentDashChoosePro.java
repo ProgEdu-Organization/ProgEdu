@@ -88,6 +88,46 @@ public class StudentDashChoosePro {
   }
 
   /**
+   * Get the jenkins last build color
+   * 
+   * @param username    user name
+   * @param projectName project name
+   * @return color
+   */
+  public String getLastColor(String username, String projectName) {
+    String color = null;
+    color = commitResultService.getCommitResult(username, projectName);
+    return color;
+  }
+
+  private String checkStatus(String result, String userName, String projectName, int num,
+      String proType) {
+    String status;
+
+    if (jenkins.checkIsInitialization(num)) {
+      // is Initialization;
+      status = StatusEnum.INITIALIZATION.getTypeName();
+    } else {
+      String console = jenkins.getConsoleText(userName, projectName, num);
+      if (jenkins.checkIsBuildSuccess(result)) {
+        // is Initialization
+        status = StatusEnum.BUILD_SUCCESS.getTypeName();
+      } else if (jenkins.checkIsTestError(console, proType)) {
+        // is test failure
+        status = StatusEnum.UNIT_TEST_FAILURE.getTypeName();
+      } else if (jenkins.checkIsCheckstyleError(console, proType)) {
+        // is checkstyle failure = true
+        status = StatusEnum.CHECKSTYLE_FAILURE.getTypeName();
+      } else {
+        // is compile failure
+        status = StatusEnum.COMPILE_FAILURE.getTypeName();
+      }
+    }
+    return status;
+
+  }
+
+  /**
    * count for SCM build
    * 
    * @param username    student name
@@ -127,46 +167,6 @@ public class StudentDashChoosePro {
       }
     }
     return counts;
-  }
-
-  /**
-   * Get the jenkins last build color
-   * 
-   * @param username    user name
-   * @param projectName project name
-   * @return color
-   */
-  public String getLastColor(String username, String projectName) {
-    String color = null;
-    color = commitResultService.getCommitResult(username, projectName);
-    return color;
-  }
-
-  private String checkStatus(String result, String userName, String projectName, int num,
-      String proType) {
-    String status;
-
-    if (jenkins.checkIsInitialization(num)) {
-      // is Initialization;
-      status = StatusEnum.INITIALIZATION.getTypeName();
-    } else {
-      String console = jenkins.getConsoleText(userName, projectName, num);
-      if (jenkins.checkIsBuildSuccess(result)) {
-        // is Initialization
-        status = StatusEnum.BUILD_SUCCESS.getTypeName();
-      } else if (jenkins.checkIsTestError(console, proType)) {
-        // is test failure
-        status = StatusEnum.UNIT_TEST_FAILURE.getTypeName();
-      } else if (jenkins.checkIsCheckstyleError(console, proType)) {
-        // is checkstyle failure = true
-        status = StatusEnum.CHECKSTYLE_FAILURE.getTypeName();
-      } else {
-        // is compile failure
-        status = StatusEnum.COMPILE_FAILURE.getTypeName();
-      }
-    }
-    return status;
-
   }
 
   /**
