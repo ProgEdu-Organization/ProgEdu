@@ -5,7 +5,8 @@ public class CheckstyleFailure implements Status {
   /**
    * get checkstyle information
    * 
-   * @param detail console text
+   * @param consoleText
+   *          detail
    * @return checkstyle information
    */
   @Override
