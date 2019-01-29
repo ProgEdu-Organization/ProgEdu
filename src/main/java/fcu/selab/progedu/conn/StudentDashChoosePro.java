@@ -193,7 +193,7 @@ public class StudentDashChoosePro {
    * @param proType     proType
    * @return color
    */
-  public String getCommitColor(int num, String userName, String projectName, String apiJson,
+  public String getCommitStatus(int num, String userName, String projectName, String apiJson,
       String proType) {
     String result = jenkins.getJobBuildResult(apiJson);
     return checkStatus(result, userName, projectName, num, proType);

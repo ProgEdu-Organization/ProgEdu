@@ -6,7 +6,7 @@ public class CommitResult {
 
   private String hw;
 
-  private String color;
+  private String status;
 
   private int commit;
 
@@ -26,12 +26,12 @@ public class CommitResult {
     this.hw = hw;
   }
 
-  public String getColor() {
-    return color;
+  public String getStatus() {
+    return status;
   }
 
-  public void setColor(String color) {
-    this.color = color;
+  public void setStatus(String status) {
+    this.status = status;
   }
 
   public int getCommit() {

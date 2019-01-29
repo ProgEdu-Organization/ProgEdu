@@ -154,7 +154,7 @@ public class JenkinsService {
     final String strDate = stuDashChoPro.getCommitTime(buildApiJson);
     String commitMessage = stuDashChoPro.getCommitMessage(num, userName, proName);
     String proType = proName.substring(0, 3);
-    String status = stuDashChoPro.getCommitColor(num, userName, proName, buildApiJson, proType);
+    String status = stuDashChoPro.getCommitStatus(num, userName, proName, buildApiJson, proType);
     String color = "circle " + status;
     JSONObject ob = new JSONObject();
     ob.put("num", num);

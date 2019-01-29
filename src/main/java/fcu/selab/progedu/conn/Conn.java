@@ -445,13 +445,14 @@ public class Conn {
    * @throws IOException on gitlab api call error
    */
   public boolean createRootProject(String proName) {
+    boolean isSuccess = false;
     try {
-      gitlab.createUserProject(1, proName, null, null, null, null, null, null, null, null, 10,
-          null);
+      gitlab.createUserProject(1, proName);
+      isSuccess = true;
     } catch (IOException e) {
       e.printStackTrace();
     }
-    return true;
+    return isSuccess;
   }
 
   /**

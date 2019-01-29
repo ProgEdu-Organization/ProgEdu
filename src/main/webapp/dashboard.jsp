@@ -310,7 +310,7 @@
                         var hw = commits[k];
                         var hwName = hw.hw;
                         var commit = hw.commit + 1;
-                        var color = 'circle ' + hw.color;
+                        var status = 'circle ' + hw.status;
                         if(thName == hwName) {
                             pName = hwName;
                             break;
@@ -326,7 +326,7 @@
                     } else {
                         pName = hwName;
                         content += '<td style="padding: 10px 0px 0px 30px;">';
-                        content += '<p id="' + userName + '_' + hwName + '" class="' + color + '">';
+                        content += '<p id="' + userName + '_' + hwName + '" class="' + status + '">';
                         content += '<a id="' + userName + '_' + hwName + '_commit" href="dashProjectChoosed.jsp?userId=' + gitlabId + '&proName=' + hwName + '">';
                         content += commit;
                         content += '</a>';

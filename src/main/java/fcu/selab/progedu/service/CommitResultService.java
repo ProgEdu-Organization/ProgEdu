@@ -115,7 +115,7 @@ public class CommitResultService {
     int id = userDb.getUser(userName).getId();
 
     CommitResult commitResult = db.getCommitResultByStudentAndHw(id, proName);
-    String circleColor = "circle " + commitResult.getColor();
+    String circleColor = "circle " + commitResult.getStatus();
     String result = userName + "_" + proName + "," + circleColor + ","
         + (commitResult.getCommit() + 1);
 
@@ -153,7 +153,7 @@ public class CommitResultService {
    */
   public String getCommitResult(String userName, String proName) {
     int id = userDb.getUser(userName).getId();
-    return db.getCommitResultByStudentAndHw(id, proName).getColor();
+    return db.getCommitResultByStudentAndHw(id, proName).getStatus();
   }
 
   /**
@@ -179,7 +179,7 @@ public class CommitResultService {
       String buildApiJson = stuDashChoPro.getBuildApiJson(lastCommitNum, userName, proName);
       String strDate = stuDashChoPro.getCommitTime(buildApiJson);
       String[] dates = strDate.split(" ");
-      String status = stuDashChoPro.getCommitColor(lastCommitNum, userName, proName, buildApiJson,
+      String status = stuDashChoPro.getCommitStatus(lastCommitNum, userName, proName, buildApiJson,
           proType);
       int id = userDb.getUser(userName).getId();
 
@@ -192,7 +192,7 @@ public class CommitResultService {
       }
       db.updateJenkinsJobTimestamp(id, proName, strDate);
 
-      boolean inDb = commitRecordDb.checkRecord(id, proName, status, dates[0], dates[1]);
+      boolean inDb = commitRecordDb.checkRecord(id, proName, dates[0], dates[1]);
       if (inDb) {
         commitRecordDb.updateRecordStatus(id, proName, status, dates[0], dates[1]);
       } else {
