@@ -13,6 +13,8 @@ import java.util.Map;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import fcu.selab.progedu.status.StatusEnum;
+
 public class CommitRecordDbManager {
   private static final String COUNT_COLOR = "count(color)";
   private static CommitRecordDbManager dbManager = new CommitRecordDbManager();
@@ -163,8 +165,9 @@ public class CommitRecordDbManager {
    * @return records
    */
   public JSONArray getCountGroupByHwAndTime(String hw) {
-    String query = "select date, time, count(color) from Commit_Record where hw=?  and color!='NB'"
-        + "group by date, time";
+    String status = StatusEnum.INITIALIZATION.getTypeName();
+    String query = "select date, time, count(color) from Commit_Record where hw=?  and color!="
+        + "'" + status + "'" + "group by date, time";
     JSONArray records = new JSONArray();
 
     try (Connection conn = database.getConnection();
