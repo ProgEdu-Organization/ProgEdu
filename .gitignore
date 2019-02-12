@@ -1,6 +1,6 @@
 /target/
 
-pom.properties
+.properties
 .checkstyle
 .classpath
 .project
