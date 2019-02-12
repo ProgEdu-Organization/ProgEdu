@@ -120,7 +120,7 @@
 <link rel="shortcut icon" href="img/favicon.ico" />
 <link rel="bookmark" href="img/favicon.ico" />
 <script src="//d3js.org/d3.v3.min.js"></script>
-<title>ProgEdu4Web</title>
+<title>ProgEdu</title>
 </head>
 <body>
 	<%

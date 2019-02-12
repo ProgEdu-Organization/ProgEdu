@@ -167,7 +167,7 @@
 
     <link rel="shortcut icon" href="img/favicon.ico"/>
     <link rel="bookmark" href="img/favicon.ico"/>
-    <title>ProgEdu4Web</title>
+    <title>ProgEdu</title>
     <META HTTP-EQUIV="CACHE-CONTROL" CONTENT="PUBLIC">
 </head>
 <body>
