@@ -12,7 +12,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>ProgEdu4Web</title>
+<title>ProgEdu</title>
 <meta charset="UTF-8">
 
 <link rel="shortcut icon" href="img/favicon.ico" />

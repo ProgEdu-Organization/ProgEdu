@@ -3,7 +3,7 @@ package fcu.selab.progedu.data;
 public class Student {
   private String team;
   private boolean teamLeader;
-  private String studentID;
+  private String studentId;
   private String name;
 
   public void setTeam(String team) {
@@ -14,8 +14,8 @@ public class Student {
     this.teamLeader = teamLeader;
   }
 
-  public void setStudentID(String studentID) {
-    this.studentID = studentID;
+  public void setStudentId(String studentId) {
+    this.studentId = studentId;
   }
 
   public void setName(String name) {
@@ -30,8 +30,8 @@ public class Student {
     return teamLeader;
   }
 
-  public String getStudentID() {
-    return studentID;
+  public String getStudentId() {
+    return studentId;
   }
 
   public String getName() {
