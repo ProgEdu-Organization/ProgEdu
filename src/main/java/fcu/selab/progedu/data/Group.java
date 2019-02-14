@@ -33,4 +33,8 @@ public class Group {
     this.contributor = contributor;
   }
 
+  public void addContributor(String contributorName) {
+    this.contributor.add(contributorName);
+  }
+
 }
