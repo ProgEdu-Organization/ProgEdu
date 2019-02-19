@@ -132,7 +132,7 @@
         }
         #container{
 		  width: 100%;
-		  height: 500px;
+		  height: auto;
 		  margin: 10px; 
 		  background: #fff3cd;
 		}
@@ -325,7 +325,7 @@
 				</iframe>
 			</div>-->
 			<div id="container">
-				<pre> <%=console%></pre>
+				<pre style="overflow: auto;"><%=console%></pre>
 			</div>
 			<!-- iFrame -->
        </div>
