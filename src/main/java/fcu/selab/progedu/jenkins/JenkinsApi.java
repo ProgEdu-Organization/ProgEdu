@@ -756,7 +756,6 @@ public class JenkinsApi {
   /**
    * Get jenkins console url
    * 
-   * @param strUrl strUrl
    * @return console
    */
   public String getConsoleUrl(String userName, String proName, int num) {
@@ -766,7 +765,6 @@ public class JenkinsApi {
   /**
    * Get
    * 
-   * @param strUrl strUrl
    * @return console
    */
   public String getCompleteConsoleText(String userName, String proName, int num) {

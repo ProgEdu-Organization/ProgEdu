@@ -204,7 +204,6 @@ public class StudentDashChoosePro {
    * get
    * 
    * @param num         buuild num
-   * @param username    student name
    * @param projectName project name
    * @return commit message
    */
