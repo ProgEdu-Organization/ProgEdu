@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
@@ -25,6 +26,8 @@ import fcu.selab.progedu.conn.StudentDashChoosePro;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.jenkins.JenkinsApi;
 import fcu.selab.progedu.jenkins.JobStatus;
+import fcu.selab.progedu.status.Status;
+import fcu.selab.progedu.status.StatusFactory;
 
 @Path("jenkins/")
 public class JenkinsService {
@@ -49,8 +52,10 @@ public class JenkinsService {
   /**
    * get project built color
    * 
-   * @param proName  project name
-   * @param userName student name
+   * @param proName
+   *          project name
+   * @param userName
+   *          student name
    * @return color and commit count
    */
 
@@ -92,8 +97,10 @@ public class JenkinsService {
   /**
    * get project commit count
    * 
-   * @param proName  project name
-   * @param userName student name
+   * @param proName
+   *          project name
+   * @param userName
+   *          student name
    * @return count
    */
   @GET
@@ -139,9 +146,12 @@ public class JenkinsService {
   /**
    * get student build detail info
    * 
-   * @param num      build num
-   * @param userName student id
-   * @param proName  project name
+   * @param num
+   *          build num
+   * @param userName
+   *          student id
+   * @param proName
+   *          project name
    * @return build detail
    */
   @GET
@@ -167,10 +177,14 @@ public class JenkinsService {
   /**
    * get build error type
    * 
-   * @param jenkinsData connect to jenkins
-   * @param userName    student id
-   * @param proName     project name
-   * @param num         build num
+   * @param jenkinsData
+   *          connect to jenkins
+   * @param userName
+   *          student id
+   * @param proName
+   *          project name
+   * @param num
+   *          build num
    * @return type
    */
   public static String checkErrorStyle(JenkinsConfig jenkinsData, String userName, String proName,
@@ -209,7 +223,8 @@ public class JenkinsService {
   /**
    * get test folder
    * 
-   * @param filePath folder directory
+   * @param filePath
+   *          folder directory
    * @return zip file
    */
   @GET
@@ -221,5 +236,79 @@ public class JenkinsService {
     ResponseBuilder response = Response.ok((Object) file);
     response.header("Content-Disposition", "attachment;filename=");
     return response.build();
+  }
+
+  /**
+   * 
+   * @param url
+   *          full console url
+   * @return console
+   */
+  @POST
+
+  @Path("getFeedbackInfo")
+  public String getFeedbackInfo(String url) {
+    JSONObject apiData = getColorTypeData(url);
+    int num = apiData.getInt("num");
+    String username = apiData.getString("username");
+    String projName = apiData.getString("projName");
+
+    String colorState = getColorType(num, username, projName);
+    Status status = StatusFactory.getStatus(colorState);
+    String detailConsoleText = jenkins.getConsoleText(url);
+    String console = status.extractFailureMsg(detailConsoleText);
+
+    return console;
+  }
+
+  /**
+   * 
+   * @param url
+   *          jenkins consoleText url
+   * @return colorTypeData: username �B project name �B commit number
+   */
+  private JSONObject getColorTypeData(String url) {
+    JSONObject colorTypeData = new JSONObject();
+
+    // username
+    int startChar = url.indexOf("job") + 4;
+    int endChar = url.indexOf("_");
+    colorTypeData.put("username", url.substring(startChar, endChar));
+
+    // projName
+    startChar = endChar + 1;
+    endChar = url.indexOf("/", startChar);
+    colorTypeData.put("projName", url.substring(startChar, endChar));
+
+    // num
+    startChar = endChar + 1;
+    endChar = url.indexOf("/", startChar);
+    colorTypeData.put("num", Integer.valueOf(url.substring(startChar, endChar)));
+
+    return colorTypeData;
+  }
+
+  /**
+   * 
+   * @param num
+   *          commit number
+   * @param userName
+   *          user name
+   * @param proName
+   *          project name
+   * @return color type
+   */
+  public String getColorType(int num, String userName, String proName) {
+    StudentDashChoosePro stuDashChoPro = new StudentDashChoosePro();
+    String buildApiJson = stuDashChoPro.getBuildApiJson(num, userName, proName);
+    String commitMessage = stuDashChoPro.getCommitMessage(num, userName, proName);
+    String proType = proName.substring(0, 3);
+    commitMessage = commitMessage.replace("Commit message: ", "");
+    if (null != commitMessage && !"".equals(commitMessage)) {
+      commitMessage = commitMessage.substring(1, commitMessage.length() - 1);
+    }
+
+    String color = stuDashChoPro.getCommitColor(num, userName, proName, buildApiJson, proType);
+    return color;
   }
 }

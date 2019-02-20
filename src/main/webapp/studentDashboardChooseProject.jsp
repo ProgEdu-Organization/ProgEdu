@@ -451,9 +451,9 @@
 		function changeIframe(tr){
 			var u = '<%=url%>' + tr.id + '/consoleText';
 			$('#jenkinsOutput').attr('src',u);
-			document.getElementById("iFrameTitle").innerHTML = "Feedback Information (#" + tr.id + ")";
+			$('#iFrameTitle').html("Feedback Information (#" + tr.id + ")");
 			$('#projectTbody tr').removeClass("tableActive");
-			document.getElementById(tr.id).className = "tableActive";
+			$('#'+tr.id).addClass("tableActive");
 		}
 	</script>
 </html>
