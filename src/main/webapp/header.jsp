@@ -83,7 +83,7 @@
           
 	</style>
 	<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-	  		<a class="navbar-brand" href="dashboard.jsp">ProgEdu4Web</a>
+	  		<a class="navbar-brand" href="dashboard.jsp">ProgEdu</a>
 	  		<button class="navbar-toggler" type="button" data-toggle="collapse"
       			data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault"
       			aria-expanded="false" aria-label="Toggle navigation">

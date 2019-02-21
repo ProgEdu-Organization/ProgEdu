@@ -118,21 +118,21 @@
         .CPF {
             background: #e52424;
         }
-        .S {
+        .BS {
             background: #5fa7e8;
         }
-        .NB {
+        .INI {
             background: #878787;
         }
         .CSF {
             background: gold;
         }
-        .CTF {
+        .UTF {
             background: #32CD32;
         }
         #container{
 		  width: 100%;
-		  height: 500px;
+		  height: auto;
 		  margin: 10px; 
 		  background: #fff3cd;
 		}
@@ -316,7 +316,7 @@
 				String jenkinsBuildNumUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName;
 				String lastBuildUrl = jenkinsBuildNumUrl + "/" +  num + "/consoleText";
 				String detailConsoleText = jenkins.getConsoleText(lastBuildUrl);
-				//String console = status.extractFailureMsg(detailConsoleText);
+				String console = status.extractFailureMsg(detailConsoleText);
 			%>
 			<h4><a id="iFrameTitle" href="<%=jenkinsBuildNumUrl%>">Feedback Information (#<%=num %>)</a></h4>
 			<!--  <div style="margin:10px;">
@@ -325,7 +325,7 @@
 				</iframe>
 			</div>-->
 			<div id="container">
-				<pre><%=detailConsoleText%></pre>
+				<pre style="overflow: auto;"><%=console%></pre>
 			</div>
 			<!-- iFrame -->
        </div>
@@ -383,16 +383,15 @@
 	</script>
 	<script type="text/javascript">
 		function changeIframe(tr){
-			var num = tr.id;
 			var url = '<%=jenkinsBuildNumUrl%>' + '/' + tr.id + '/consoleText';
-			/*$.ajax({
+			$.ajax({
 				url: 'webapi/jenkins/getFeedbackInfo',
 				type: 'POST',
 				data: url,
 				success: function(res){
-					$('#jenkinsOutput pre').html(res);
+					$('#container pre').html(res);
 				}
-			})*/
+			})
 			$('#iFrameTitle').html("Feedback Information (#" + tr.id + ")");
 			$('#projectTbody tr').removeClass("tableActive");
 			$('#'+tr.id).addClass("tableActive");

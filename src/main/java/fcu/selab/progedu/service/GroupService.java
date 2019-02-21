@@ -1,13 +1,11 @@
 package fcu.selab.progedu.service;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -51,54 +49,29 @@ public class GroupService {
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   public Response upload(@FormDataParam("file") InputStream uploadedInputStream,
       @FormDataParam("file") FormDataContentDisposition fileDetail) {
-    boolean isSave = true;
+    Response response;
+    boolean isSuccess = false;
+    List<String> groupList;
 
-    String tempDir = System.getProperty("java.io.tmpdir");
-
-    String uploadDir = tempDir + "/uploads/";
-
-    File fileUploadDir = new File(uploadDir);
-    if (!fileUploadDir.exists()) {
-      fileUploadDir.mkdirs();
-    }
-    String fileName = fileDetail.getFileName();
-    String uploadedFileLocation = uploadDir + fileName;
-    List<String> groupList = new ArrayList<>();
-
-    try (
-        FileOutputStream out = new FileOutputStream(new File(uploadedFileLocation));
-    ) {
-      int read = 0;
-      byte[] bytes = new byte[1024];
-      while ((read = uploadedInputStream.read(bytes)) != -1) {
-        out.write(bytes, 0, read);
+    StringBuilder sb = new StringBuilder();
+    int read = 0;
+    try {
+      while ((read = uploadedInputStream.read()) != -1) {
+        // converts integer to character and append to StringBuilder
+        sb.append((char) read);
       }
-
-      // parse file
-      try (
-          FileReader fr = new FileReader(uploadedFileLocation);
-          BufferedReader br = new BufferedReader(fr)
-      ) {
-        String line = "";
-
-        while ((line = br.readLine()) != null) {
-          StringBuilder stringBuilder = new StringBuilder();
-          String[] row = line.split(",");
-          stringBuilder.append(row[0]);
-          for (int i = 1; i < row.length; i++) {
-            stringBuilder.append("," + row[i]);
-          }
-          groupList.add(stringBuilder.toString());
-        }
-
-        newGroup(groupList);
-      }
+      isSuccess = true;
     } catch (IOException e) {
-      isSave = false;
+
       e.printStackTrace();
     }
-    Response response = Response.ok().build();
-    if (!isSave) {
+
+    groupList = new ArrayList<>(Arrays.asList(sb.toString().split("\r\n")));
+    newGroup(groupList);
+
+    if (isSuccess) {
+      response = Response.ok().build();
+    } else {
       response = Response.serverError().status(Status.INTERNAL_SERVER_ERROR).build();
     }
     return response;
@@ -253,9 +226,7 @@ public class GroupService {
     String filepath = downloadDir + "StdentList.csv";
 
     final File file = new File(filepath);
-    try (
-        final FileWriter writer = new FileWriter(filepath);
-    ) {
+    try (final FileWriter writer = new FileWriter(filepath);) {
       StringBuilder build = new StringBuilder();
 
       String[] csvTitle = { "Team", "TeamLeader", "Student_Id", "name" };

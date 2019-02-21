@@ -12,7 +12,7 @@ import fcu.selab.progedu.data.CommitResult;
 import fcu.selab.progedu.data.User;
 
 public class CommitResultDbManager {
-  private static final String COLOR = "color";
+  private static final String STATUS = "status";
   private static final String COMMIT = "commit";
   private static CommitResultDbManager dbManager = new CommitResultDbManager();
   private UserDbManager udb = UserDbManager.getInstance();
@@ -32,21 +32,20 @@ public class CommitResultDbManager {
    * @param id     student id
    * @param hw     hw name
    * @param commit commit count
-   * @param color  build color
+   * @param status build status
    * @return check
    */
-  public boolean insertJenkinsCommitCount(int id, String hw, int commit, String color) {
-    String sql = "INSERT INTO Commit_Result" + "(stuId, hw, commit, color) " + "VALUES(?, ?, ?, ?)";
+  public boolean insertJenkinsCommitCount(int id, String hw, int commit, String status) {
+    String sql = "INSERT INTO Commit_Result" + "(stuId, hw, commit, status) "
+        + "VALUES(?, ?, ?, ?)";
     boolean check = false;
 
-    try (
-        Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)
-    ) {
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(sql)) {
       preStmt.setInt(1, id);
       preStmt.setString(2, hw);
       preStmt.setInt(3, commit);
-      preStmt.setString(4, color);
+      preStmt.setString(4, status);
       preStmt.executeUpdate();
       check = true;
     } catch (SQLException e) {
@@ -67,10 +66,8 @@ public class CommitResultDbManager {
     String sql = "UPDATE Commit_Result SET time=? WHERE stuId=? AND hw=?";
     boolean check = false;
 
-    try (
-        Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)
-    ) {
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(sql)) {
       preStmt.setString(1, time);
       preStmt.setInt(2, id);
       preStmt.setString(3, hw);
@@ -93,15 +90,11 @@ public class CommitResultDbManager {
     String query = "SELECT * FROM Commit_Result WHERE stuId=? AND hw=?";
     boolean check = false;
 
-    try (
-        Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(query)
-    ) {
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(query)) {
       preStmt.setInt(1, id);
       preStmt.setString(2, hw);
-      try (
-          ResultSet rs = preStmt.executeQuery();
-      ) {
+      try (ResultSet rs = preStmt.executeQuery();) {
         while (rs.next()) {
           check = true;
         }
@@ -118,19 +111,17 @@ public class CommitResultDbManager {
    * @param id     student id
    * @param hw     hw name
    * @param commit commit count
-   * @param color  build color
+   * @param status build status
    * @return check
    */
-  public boolean updateJenkinsCommitCount(int id, String hw, int commit, String color) {
-    String sql = "UPDATE Commit_Result SET commit=?, color=? WHERE stuId=? AND hw=?";
+  public boolean updateJenkinsCommitCount(int id, String hw, int commit, String status) {
+    String sql = "UPDATE Commit_Result SET commit=?, status=? WHERE stuId=? AND hw=?";
     boolean check = false;
 
-    try (
-        Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)
-    ) {
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(sql)) {
       preStmt.setInt(1, commit);
-      preStmt.setString(2, color);
+      preStmt.setString(2, status);
       preStmt.setInt(3, id);
       preStmt.setString(4, hw);
       preStmt.executeUpdate();
@@ -146,21 +137,18 @@ public class CommitResultDbManager {
    *
    * @return counts
    */
-  public JSONObject getCounts(String color) {
-    String query = "SELECT hw,count(color) FROM Commit_Result " + "where color like ? group by hw";
+  public JSONObject getCounts(String status) {
+    String query = "SELECT hw,count(status) FROM Commit_Result "
+        + "where status like ? group by hw";
     JSONObject ob = new JSONObject();
 
-    try (
-        Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(query)
-    ) {
-      preStmt.setString(1, color);
-      try (
-          ResultSet rs = preStmt.executeQuery();
-      ) {
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(query)) {
+      preStmt.setString(1, status);
+      try (ResultSet rs = preStmt.executeQuery();) {
         while (rs.next()) {
           String hw = rs.getString("hw");
-          int count = rs.getInt("count(color)");
+          int count = rs.getInt("count(status)");
 
           ob.put(hw, count);
         }
@@ -182,23 +170,19 @@ public class CommitResultDbManager {
     String query = "SELECT * FROM Commit_Result WHERE stuId=? AND hw=?";
     CommitResult result = new CommitResult();
 
-    try (
-        Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(query)
-    ) {
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(query)) {
       preStmt.setInt(1, id);
       preStmt.setString(2, hw);
 
-      try (
-          ResultSet rs = preStmt.executeQuery();
-      ) {
+      try (ResultSet rs = preStmt.executeQuery();) {
         while (rs.next()) {
-          String color = rs.getString(COLOR);
+          String status = rs.getString(STATUS);
           int commit = rs.getInt(COMMIT);
 
           result.setStuId(id);
           result.setHw(hw);
-          result.setColor(color);
+          result.setStatus(status);
           result.setCommit(commit);
         }
       }
@@ -228,26 +212,22 @@ public class CommitResultDbManager {
     ob.put("gitlabId", gitlabId);
     ob.put("name", user.getName());
 
-    try (
-        Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(query)
-    ) {
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(query)) {
       preStmt.setInt(1, id);
 
-      try (
-          ResultSet rs = preStmt.executeQuery();
-      ) {
+      try (ResultSet rs = preStmt.executeQuery();) {
         while (rs.next()) {
 
           String hw = rs.getString("hw");
 
-          String color = rs.getString(COLOR);
+          String status = rs.getString(STATUS);
           int commit = rs.getInt(COMMIT);
 
           JSONObject eachHw = new JSONObject();
           eachHw.put("hw", hw);
           eachHw.put(COMMIT, commit);
-          eachHw.put(COLOR, color);
+          eachHw.put(STATUS, status);
           array.put(eachHw);
         }
       }
@@ -268,23 +248,19 @@ public class CommitResultDbManager {
     String query = "SELECT * FROM Commit_Result";
     JSONArray array = new JSONArray();
 
-    try (
-        Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(query)
-    ) {
-      try (
-          ResultSet rs = preStmt.executeQuery();
-      ) {
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(query)) {
+      try (ResultSet rs = preStmt.executeQuery();) {
         while (rs.next()) {
           JSONObject ob = new JSONObject();
           int id = rs.getInt("stuId");
-          String color = rs.getString(COLOR);
+          String status = rs.getString(STATUS);
           int commit = rs.getInt(COMMIT);
 
           User user = udb.getUser(id);
 
           ob.put("user", user.getUserName());
-          ob.put(COLOR, color);
+          ob.put(STATUS, status);
           ob.put(COMMIT, commit + 1);
           array.put(ob);
         }
@@ -315,14 +291,10 @@ public class CommitResultDbManager {
     }
     build.append("\n");
 
-    try (
-        Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(query)
-    ) {
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(query)) {
       preStmt.setString(1, hw);
-      try (
-          ResultSet rs = preStmt.executeQuery();
-      ) {
+      try (ResultSet rs = preStmt.executeQuery();) {
         while (rs.next()) {
           int commit = rs.getInt("count(commit)");
           String fullTime = rs.getString("time");
@@ -350,10 +322,8 @@ public class CommitResultDbManager {
   public void deleteResult(String hw) {
     String sql = "DELETE FROM Commit_Result WHERE hw=?";
 
-    try (
-        Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)
-    ) {
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(sql)) {
       preStmt.setString(1, hw);
       preStmt.executeUpdate();
     } catch (SQLException e) {

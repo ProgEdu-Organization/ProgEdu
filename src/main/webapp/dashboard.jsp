@@ -147,16 +147,16 @@
         .CPF {
             background: #e52424;
         }
-        .S {
+        .BS {
             background: #5fa7e8;
         }
-        .NB {
+        .INI {
             background: #878787;
         }
         .CSF {
             background: gold;
         }
-        .CTF {
+        .UTF {
             background: #32CD32;
         }
         .circle a {
@@ -167,7 +167,7 @@
 
     <link rel="shortcut icon" href="img/favicon.ico"/>
     <link rel="bookmark" href="img/favicon.ico"/>
-    <title>ProgEdu4Web</title>
+    <title>ProgEdu</title>
     <META HTTP-EQUIV="CACHE-CONTROL" CONTENT="PUBLIC">
 </head>
 <body>
@@ -310,7 +310,7 @@
                         var hw = commits[k];
                         var hwName = hw.hw;
                         var commit = hw.commit + 1;
-                        var color = 'circle ' + hw.color;
+                        var status = 'circle ' + hw.status;
                         if(thName == hwName) {
                             pName = hwName;
                             break;
@@ -326,7 +326,7 @@
                     } else {
                         pName = hwName;
                         content += '<td style="padding: 10px 0px 0px 30px;">';
-                        content += '<p id="' + userName + '_' + hwName + '" class="' + color + '">';
+                        content += '<p id="' + userName + '_' + hwName + '" class="' + status + '">';
                         content += '<a id="' + userName + '_' + hwName + '_commit" href="dashProjectChoosed.jsp?userId=' + gitlabId + '&proName=' + hwName + '">';
                         content += commit;
                         content += '</a>';

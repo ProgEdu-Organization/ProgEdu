@@ -1,18 +1,9 @@
 package fcu.selab.progedu.service;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
@@ -27,7 +18,6 @@ import javax.ws.rs.core.Response;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import fcu.selab.progedu.config.JenkinsConfig;
 import fcu.selab.progedu.conn.StudentDashChoosePro;
 import fcu.selab.progedu.data.CommitResult;
 import fcu.selab.progedu.data.User;
@@ -38,8 +28,6 @@ import fcu.selab.progedu.db.IDatabase;
 import fcu.selab.progedu.db.MySqlDatabase;
 import fcu.selab.progedu.db.ProjectDbManager;
 import fcu.selab.progedu.db.UserDbManager;
-import fcu.selab.progedu.exception.LoadConfigFailureException;
-import fcu.selab.progedu.jenkins.JenkinsApi;
 import fcu.selab.progedu.status.StatusEnum;
 
 @Path("commits/")
@@ -127,7 +115,7 @@ public class CommitResultService {
     int id = userDb.getUser(userName).getId();
 
     CommitResult commitResult = db.getCommitResultByStudentAndHw(id, proName);
-    String circleColor = "circle " + commitResult.getColor();
+    String circleColor = "circle " + commitResult.getStatus();
     String result = userName + "_" + proName + "," + circleColor + ","
         + (commitResult.getCommit() + 1);
 
@@ -165,7 +153,7 @@ public class CommitResultService {
    */
   public String getCommitResult(String userName, String proName) {
     int id = userDb.getUser(userName).getId();
-    return db.getCommitResultByStudentAndHw(id, proName).getColor();
+    return db.getCommitResultByStudentAndHw(id, proName).getStatus();
   }
 
   /**
@@ -181,110 +169,45 @@ public class CommitResultService {
       @FormParam("proName") String proName) {
     JSONObject ob = new JSONObject();
     if (!userName.equals("root")) {
-      ob.put("userName", userName);
-      ob.put("proName", proName);
+
       JenkinsService jenkinsService = new JenkinsService();
-      JenkinsApi jenkinsApi = new JenkinsApi();
       StudentDashChoosePro stuDashChoPro = new StudentDashChoosePro();
 
-      String[] result = jenkinsService.getColor(proName, userName).split(",");
-
-      int commit = Integer.valueOf(result[1]) - 1;
-      ob.put("commit", commit);
-
-      List<Integer> buildNum = stuDashChoPro.getScmBuildCounts(userName, proName);
-      int num = 0;
-      if (buildNum.size() > 1) {
-        num = buildNum.size() - 1;
-      }
-
-      String color = "";
-      String consoleText = jenkinsApi.getConsoleText(userName, proName, buildNum.get(num));
+      int lastCommitNum = jenkinsService.getProjectCommitCount(proName, userName);
+      int commitCount = lastCommitNum - 1;
       String proType = proName.substring(0, 3);
-
-      boolean isSuccess = jenkinsApi.getJobBuildResultByConsoleText(consoleText, proType);
-      if (!isSuccess) {
-        boolean isCheckStyle = jenkinsApi.checkIsCheckstyleError(consoleText, proType);
-        boolean isTestError = false;
-
-        if (proType.equals("OOP")) {
-          isTestError = jenkinsApi.checkIsJunitError(consoleText);
-        } else if (proType.equals("WEB")) {
-          isTestError = jenkinsApi.checkIsWebTestError(consoleText);
-        }
-
-        if (isTestError) {
-          color = StatusEnum.UNIT_TEST_FAILURE.getTypeName();
-        } else if (isCheckStyle) {
-          color = StatusEnum.CHECKSTYLE_FAILURE.getTypeName();
-        } else {
-          if (proType.equals("WEB")) {
-            color = "blue";
-          } else {
-            color = "red";
-          }
-        }
-        ob.put("isCheckStyle", isCheckStyle);
-        ob.put("isJunitError", isTestError);
-      } else {
-        color = "blue";
-      }
-
-      if (commit == 0) {
-        color = "gray";
-      }
-      ob.put("num", num);
-      ob.put("color", color);
-
-      switch (color) {
-        case "blue":
-          color = StatusEnum.BUILD_SUCCESS.getTypeName();
-          break;
-        case "red":
-          color = StatusEnum.COMPILE_FAILURE.getTypeName();
-          break;
-        case "gray":
-          color = StatusEnum.INITIALIZATION.getTypeName();
-          break;
-
-        default:
-          break;
-      }
-      ob.put("color1", color);
-
-      String buildApiJson = stuDashChoPro.getBuildApiJson(buildNum.get(num), userName, proName);
+      String buildApiJson = stuDashChoPro.getBuildApiJson(lastCommitNum, userName, proName);
       String strDate = stuDashChoPro.getCommitTime(buildApiJson);
       String[] dates = strDate.split(" ");
+      String status = stuDashChoPro.getCommitStatus(lastCommitNum, userName, proName, buildApiJson,
+          proType);
       int id = userDb.getUser(userName).getId();
-      ob.put("dates", dates[0]);
-      ob.put("dates1", dates[1]);
 
       boolean check = db.checkJenkinsJobTimestamp(id, proName);
       if (check) {
-        db.updateJenkinsCommitCount(id, proName, commit, color);
+        db.updateJenkinsCommitCount(id, proName, commitCount, status);
 
       } else {
-        db.insertJenkinsCommitCount(id, proName, commit, color);
+        db.insertJenkinsCommitCount(id, proName, commitCount, status);
       }
       db.updateJenkinsJobTimestamp(id, proName, strDate);
 
-      boolean inDb = commitRecordDb.checkRecord(id, proName, color, dates[0], dates[1]);
-      if (!inDb) {
-        commitRecordDb.insertCommitRecord(id, proName, color, dates[0], dates[1]);
+      boolean inDb = commitRecordDb.checkRecord(id, proName, dates[0], dates[1]);
+      if (inDb) {
+        commitRecordDb.updateRecordStatus(id, proName, status, dates[0], dates[1]);
       } else {
-        commitRecordDb.updateRecordStatus(id, proName, color, dates[0], dates[1]);
+        commitRecordDb.insertCommitRecord(id, proName, status, dates[0], dates[1]);
       }
 
       updateCommitRecordState();
-    }
 
-    Logger log = Logger.getLogger("my.logger");
-    log.setLevel(Level.ALL);
-    ConsoleHandler handler = new ConsoleHandler();
-    handler.setFormatter(new SimpleFormatter());
-    handler.setLevel(Level.ALL);
-    log.addHandler(handler);
-    log.fine(ob.toString());
+      ob.put("userName", userName);
+      ob.put("proName", proName);
+      ob.put("commitCount", commitCount);
+      ob.put("dates", dates[0]);
+      ob.put("dates1", dates[1]);
+      ob.put("status", status);
+    }
 
     return Response.ok().entity(ob.toString()).build();
   }
@@ -342,49 +265,6 @@ public class CommitResultService {
 
     }
 
-  }
-
-  /**
-   * check if error is checkstyle error.
-   * 
-   * @param jenkinsData connect jenkins
-   * @param userName    stu id
-   * @param proName     project name
-   * @param num         build number
-   * @return result string
-   */
-  public static String checkErrorStyle(JenkinsConfig jenkinsData, String userName, String proName,
-      int num) {
-    StringBuilder jsonStringBuilder = new StringBuilder();
-    try {
-      HttpURLConnection connUrl = null;
-      String consoleUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + userName + "_" + proName + "/"
-          + num + "/consoleText";
-      URL url = new URL(consoleUrl);
-      connUrl = (HttpURLConnection) url.openConnection();
-      connUrl.setReadTimeout(10000);
-      connUrl.setConnectTimeout(15000);
-      connUrl.setRequestMethod("GET");
-      connUrl.connect();
-      if (Thread.interrupted()) {
-        throw new InterruptedException();
-      }
-      try (BufferedReader reader = new BufferedReader(
-          new InputStreamReader(connUrl.getInputStream(), "UTF-8"));) {
-        String line = "";
-
-        while ((line = reader.readLine()) != null) {
-          jsonStringBuilder.append(line);
-        }
-      }
-
-    } catch (LoadConfigFailureException | IOException e) {
-      e.printStackTrace();
-    } catch (InterruptedException e) {
-      e.printStackTrace();
-      Thread.currentThread().interrupt();
-    }
-    return jsonStringBuilder.toString();
   }
 
   /**

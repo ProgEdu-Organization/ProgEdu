@@ -16,7 +16,8 @@ import org.json.JSONObject;
 import fcu.selab.progedu.status.StatusEnum;
 
 public class CommitRecordDbManager {
-  private static final String COUNT_COLOR = "count(color)";
+  UserDbManager userDbManager = UserDbManager.getInstance();
+  private static final String COUNT_STATUS = "count(status)";
   private static CommitRecordDbManager dbManager = new CommitRecordDbManager();
 
   public static CommitRecordDbManager getInstance() {
@@ -28,14 +29,18 @@ public class CommitRecordDbManager {
   /**
    * insert student commit records into db
    *
-   * @param stuId studrnt id
-   * @param hw    hw number
-   * @param color build result
-   * @param time  commit time
+   * @param stuId
+   *          studrnt id
+   * @param hw
+   *          hw number
+   * @param status
+   *          build result
+   * @param time
+   *          commit time
    * @return check
    */
-  public boolean insertCommitRecord(int stuId, String hw, String color, String date, String time) {
-    String sql = "INSERT INTO Commit_Record" + "(stuId, hw, color, date, time) "
+  public boolean insertCommitRecord(int stuId, String hw, String status, String date, String time) {
+    String sql = "INSERT INTO Commit_Record" + "(stuId, hw, status, date, time) "
         + "VALUES(?, ?, ?, ?, ?)";
     boolean check = false;
 
@@ -43,7 +48,7 @@ public class CommitRecordDbManager {
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
       preStmt.setInt(1, stuId);
       preStmt.setString(2, hw);
-      preStmt.setString(3, color);
+      preStmt.setString(3, status);
       preStmt.setString(4, date);
       preStmt.setString(5, time);
       preStmt.executeUpdate();
@@ -59,16 +64,16 @@ public class CommitRecordDbManager {
    *
    * @return counts
    */
-  public List<Integer> getCounts(String color) {
-    String query = "SELECT hw,count(color) FROM Commit_Record where color like ? group by hw";
+  public List<Integer> getCounts(String status) {
+    String query = "SELECT hw,count(status) FROM Commit_Record where status like ? group by hw";
     List<Integer> array = new ArrayList<>();
 
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(query)) {
-      preStmt.setString(1, color);
+      preStmt.setString(1, status);
       try (ResultSet rs = preStmt.executeQuery();) {
         while (rs.next()) {
-          array.add(rs.getInt(COUNT_COLOR));
+          array.add(rs.getInt(COUNT_STATUS));
         }
       }
     } catch (SQLException e) {
@@ -80,11 +85,12 @@ public class CommitRecordDbManager {
   /**
    * get each hw's CommitRecordStateCounts
    * 
-   * @param hw hw number
+   * @param hw
+   *          hw number
    * @return map
    */
   public Map<String, Integer> getCommitRecordStateCounts(String hw) {
-    String query = "SELECT hw,color,count(color) FROM Commit_Record where hw = ? group by color";
+    String query = "SELECT hw,status,count(status) FROM Commit_Record where hw = ? group by status";
     Map<String, Integer> map = new HashMap<>();
 
     try (Connection conn = database.getConnection();
@@ -92,7 +98,7 @@ public class CommitRecordDbManager {
       preStmt.setString(1, hw);
       try (ResultSet rs = preStmt.executeQuery();) {
         while (rs.next()) {
-          map.put(rs.getString("color"), rs.getInt(COUNT_COLOR));
+          map.put(rs.getString("status"), rs.getInt(COUNT_STATUS));
         }
       }
     } catch (SQLException e) {
@@ -102,15 +108,50 @@ public class CommitRecordDbManager {
   }
 
   /**
+   * get each hw's CommitRecordStateCounts
+   * 
+   * @param projName
+   *          username num
+   * @return status
+   */
+  public String getCommitRecordStatus(String projName, String username, int num) {
+    String status = "";
+    String query = "SELECT status FROM Commit_Record where hw = ? and stuId = ?";
+    int stuId = userDbManager.getUserIdByUsername(username);
+
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(query)) {
+      preStmt.setString(1, projName);
+      preStmt.setInt(2, stuId);
+
+      try (ResultSet rs = preStmt.executeQuery();) {
+        int init = 0;
+        while (rs.next() && init < num) {
+          status = rs.getString("status");
+          init++;
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+
+    return status;
+  }
+
+  /**
    * check if record is in db
    *
-   * @param stuId student id
-   * @param hw    he number
-   * @param color color
-   * @param time  commit time
+   * @param stuId
+   *          student id
+   * @param hw
+   *          he number
+   * @param date
+   *          date
+   * @param time
+   *          commit time
    * @return boolean
    */
-  public boolean checkRecord(int stuId, String hw, String color, String date, String time) {
+  public boolean checkRecord(int stuId, String hw, String date, String time) {
     String query = "SELECT * FROM Commit_Record where stuId=? and hw=? and date=? and time=?";
 
     boolean check = false;
@@ -133,20 +174,25 @@ public class CommitRecordDbManager {
   }
 
   /**
-   * update record color
+   * update record status
    * 
-   * @param stuId student
-   * @param hw    hw
-   * @param color color
-   * @param date  date
-   * @param time  time
+   * @param stuId
+   *          student
+   * @param hw
+   *          hw
+   * @param status
+   *          status
+   * @param date
+   *          date
+   * @param time
+   *          time
    */
-  public void updateRecordStatus(int stuId, String hw, String color, String date, String time) {
-    String sql = "UPDATE Commit_Record SET color=? where stuId=? and hw=? and date=? and time=?";
+  public void updateRecordStatus(int stuId, String hw, String status, String date, String time) {
+    String sql = "UPDATE Commit_Record SET status=? where stuId=? and hw=? and date=? and time=?";
 
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
-      preStmt.setString(1, color);
+      preStmt.setString(1, status);
       preStmt.setInt(2, stuId);
       preStmt.setString(3, hw);
       preStmt.setString(4, date);
@@ -161,12 +207,13 @@ public class CommitRecordDbManager {
   /**
    * get Count Group By Hw And Time
    * 
-   * @param hw hw number
+   * @param hw
+   *          hw number
    * @return records
    */
   public JSONArray getCountGroupByHwAndTime(String hw) {
     String status = StatusEnum.INITIALIZATION.getTypeName();
-    String query = "select date, time, count(color) from Commit_Record where hw=?  and color!="
+    String query = "select date, time, count(status) from Commit_Record where hw=?  and status!="
         + "'" + status + "'" + "group by date, time";
     JSONArray records = new JSONArray();
 
@@ -188,7 +235,7 @@ public class CommitRecordDbManager {
           xlabel.setHours(0);
           xlabel.setMinutes(0);
           xlabel.setSeconds(0);
-          int count = rs.getInt(COUNT_COLOR);
+          int count = rs.getInt(COUNT_STATUS);
           JSONObject record = new JSONObject();
           record.put("x", xlabel.getTime());
           record.put("y", timeValue);
@@ -207,7 +254,8 @@ public class CommitRecordDbManager {
   /**
    * delete built record of specific hw
    *
-   * @param hw hw
+   * @param hw
+   *          hw
    */
   public void deleteRecord(String hw) {
     String sql = "DELETE FROM Commit_Record WHERE hw=?";

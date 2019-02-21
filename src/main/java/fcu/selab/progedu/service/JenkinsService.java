@@ -23,6 +23,7 @@ import org.json.JSONObject;
 
 import fcu.selab.progedu.config.JenkinsConfig;
 import fcu.selab.progedu.conn.StudentDashChoosePro;
+import fcu.selab.progedu.db.CommitRecordDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.jenkins.JenkinsApi;
 import fcu.selab.progedu.jenkins.JobStatus;
@@ -164,7 +165,7 @@ public class JenkinsService {
     final String strDate = stuDashChoPro.getCommitTime(buildApiJson);
     String commitMessage = stuDashChoPro.getCommitMessage(num, userName, proName);
     String proType = proName.substring(0, 3);
-    String status = stuDashChoPro.getCommitColor(num, userName, proName, buildApiJson, proType);
+    String status = stuDashChoPro.getCommitStatus(num, userName, proName, buildApiJson, proType);
     String color = "circle " + status;
     JSONObject ob = new JSONObject();
     ob.put("num", num);
@@ -248,13 +249,14 @@ public class JenkinsService {
 
   @Path("getFeedbackInfo")
   public String getFeedbackInfo(String url) {
+    CommitRecordDbManager dbManager = new CommitRecordDbManager();
     JSONObject apiData = getColorTypeData(url);
     int num = apiData.getInt("num");
     String username = apiData.getString("username");
     String projName = apiData.getString("projName");
 
-    String colorState = getColorType(num, username, projName);
-    Status status = StatusFactory.getStatus(colorState);
+    String colorStatus = dbManager.getCommitRecordStatus(projName, username, num);
+    Status status = StatusFactory.getStatus(colorStatus);
     String detailConsoleText = jenkins.getConsoleText(url);
     String console = status.extractFailureMsg(detailConsoleText);
 
@@ -286,29 +288,5 @@ public class JenkinsService {
     colorTypeData.put("num", Integer.valueOf(url.substring(startChar, endChar)));
 
     return colorTypeData;
-  }
-
-  /**
-   * 
-   * @param num
-   *          commit number
-   * @param userName
-   *          user name
-   * @param proName
-   *          project name
-   * @return color type
-   */
-  public String getColorType(int num, String userName, String proName) {
-    StudentDashChoosePro stuDashChoPro = new StudentDashChoosePro();
-    String buildApiJson = stuDashChoPro.getBuildApiJson(num, userName, proName);
-    String commitMessage = stuDashChoPro.getCommitMessage(num, userName, proName);
-    String proType = proName.substring(0, 3);
-    commitMessage = commitMessage.replace("Commit message: ", "");
-    if (null != commitMessage && !"".equals(commitMessage)) {
-      commitMessage = commitMessage.substring(1, commitMessage.length() - 1);
-    }
-
-    String color = stuDashChoPro.getCommitColor(num, userName, proName, buildApiJson, proType);
-    return color;
   }
 }
