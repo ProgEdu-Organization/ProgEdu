@@ -12,7 +12,10 @@
 <%@ page import="fcu.selab.progedu.data.User, fcu.selab.progedu.data.Project" %>
 <%@ page import="fcu.selab.progedu.jenkins.JobStatus, java.text.SimpleDateFormat" %>
 <%@ page import="fcu.selab.progedu.conn.StudentDash" %>
-<%@ page import="fcu.selab.progedu.conn.StudentDashChoosePro" %> 
+<%@ page import="fcu.selab.progedu.conn.StudentDashChoosePro" %>
+<%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="fcu.selab.progedu.conn.*" %>
+<%@ page import="fcu.selab.progedu.status.*" %>
 
 <%
 	String private_token = null;
@@ -177,6 +180,12 @@
 			.tableActive {
 				background-color: #ddd;
 			}
+			#container{
+			  width: 100%;
+			  height: auto;
+			  margin: 10px; 
+			  background: #fff3cd;
+			}
 		</style>
 		<script type="text/javascript">
 				function handleClick(cb, divId){
@@ -221,6 +230,19 @@
 			StudentConn sConn = new StudentConn(private_token);
 			GitlabUser user = sConn.getUser();
 			List<GitlabProject> projects = sConn.getProject();
+			Collections.reverse(projects);
+			
+			UserDbManager db = UserDbManager.getInstance();
+			ProjectDbManager Pdb = ProjectDbManager.getInstance();
+			List<User> users = db.listAllUsers();
+			List<Project> dbProjects = Pdb.listAllProjects();
+			
+			// gitlab jenkins course��Data
+			GitlabConfig gitData = GitlabConfig.getInstance();
+			
+			JenkinsApi jenkins = JenkinsApi.getInstance();
+			
+			GitlabUser choosedUser = conn.getUserById(userId);
 			Collections.reverse(projects);
 		%>
 		
@@ -385,12 +407,16 @@
 				String jenkinsBuildNumUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName;
 				String lastBuildUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/" + num + "/consoleText";
 				String url = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/";
+			
+				StudentDashChoosePro studentDashChoosePro = new StudentDashChoosePro();
+				String color = studentDashChoosePro.getLastColor(choosedUser.getUsername(),projectName);
+				Status status = StatusFactory.getStatus(color);
+				String detailConsoleText = jenkins.getConsoleText(lastBuildUrl);
+				String console = status.extractFailureMsg(detailConsoleText);
 			%>
 			<h4><a id="iFrameTitle" href="<%=jenkinsBuildNumUrl%>">Feedback Information (#<%=num %>)</a></h4>
-			<div style="margin:10px;">
-				<iframe src="<%=lastBuildUrl %>" width="100%" height="500px" style="background: #fff3cd;" id="jenkinsOutput">
-			  		<p>Your browser does not support iframes.</p>
-				</iframe>
+			<div id="container">
+				<pre style="overflow: auto;"><%=console%></pre>
 			</div>
 			<!-- iFrame -->
 		</div>
@@ -449,8 +475,15 @@
 	</script>
 	<script type="text/javascript">
 		function changeIframe(tr){
-			var u = '<%=url%>' + tr.id + '/consoleText';
-			$('#jenkinsOutput').attr('src',u);
+			var url = '<%=jenkinsBuildNumUrl%>' + '/' + tr.id + '/consoleText';
+			$.ajax({
+				url: 'webapi/jenkins/getFeedbackInfo',
+				type: 'POST',
+				data: url,
+				success: function(res){
+					$('#container pre').html(res);
+				}
+			})
 			$('#iFrameTitle').html("Feedback Information (#" + tr.id + ")");
 			$('#projectTbody tr').removeClass("tableActive");
 			$('#'+tr.id).addClass("tableActive");

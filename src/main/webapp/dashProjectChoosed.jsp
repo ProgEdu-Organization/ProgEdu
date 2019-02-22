@@ -319,11 +319,6 @@
 				String console = status.extractFailureMsg(detailConsoleText);
 			%>
 			<h4><a id="iFrameTitle" href="<%=jenkinsBuildNumUrl%>">Feedback Information (#<%=num %>)</a></h4>
-			<!--  <div style="margin:10px;">
-				<iframe src="<%=lastBuildUrl %>" width="100%" height="500px" style="background: #fff3cd;" id="jenkinsOutput">
-			  		<p>Your browser does not support iframes.</p>
-				</iframe>
-			</div>-->
 			<div id="container">
 				<pre style="overflow: auto;"><%=console%></pre>
 			</div>
