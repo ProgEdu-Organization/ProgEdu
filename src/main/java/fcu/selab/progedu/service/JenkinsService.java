@@ -25,6 +25,7 @@ import fcu.selab.progedu.config.JenkinsConfig;
 import fcu.selab.progedu.conn.StudentDashChoosePro;
 import fcu.selab.progedu.db.CommitRecordDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
+import fcu.selab.progedu.jenkins.ColorStatusData;
 import fcu.selab.progedu.jenkins.JenkinsApi;
 import fcu.selab.progedu.jenkins.JobStatus;
 import fcu.selab.progedu.status.Status;
@@ -250,43 +251,14 @@ public class JenkinsService {
   @Path("getFeedbackInfo")
   public String getFeedbackInfo(String url) {
     CommitRecordDbManager dbManager = new CommitRecordDbManager();
-    JSONObject apiData = getColorTypeData(url);
-    int num = apiData.getInt("num");
-    String username = apiData.getString("username");
-    String projName = apiData.getString("projName");
+    ColorStatusData colorStatusData = new ColorStatusData(url);
 
-    String colorStatus = dbManager.getCommitRecordStatus(projName, username, num);
+    String colorStatus = dbManager.getCommitRecordStatus(colorStatusData.getProjectName(),
+        colorStatusData.getUsername(), colorStatusData.getNumber());
     Status status = StatusFactory.getStatus(colorStatus);
     String detailConsoleText = jenkins.getConsoleText(url);
     String console = status.extractFailureMsg(detailConsoleText);
 
     return console;
-  }
-
-  /**
-   * 
-   * @param url
-   *          jenkins consoleText url
-   * @return colorTypeData: username �B project name �B commit number
-   */
-  private JSONObject getColorTypeData(String url) {
-    JSONObject colorTypeData = new JSONObject();
-
-    // username
-    int startChar = url.indexOf("job") + 4;
-    int endChar = url.indexOf("_");
-    colorTypeData.put("username", url.substring(startChar, endChar));
-
-    // projName
-    startChar = endChar + 1;
-    endChar = url.indexOf("/", startChar);
-    colorTypeData.put("projName", url.substring(startChar, endChar));
-
-    // num
-    startChar = endChar + 1;
-    endChar = url.indexOf("/", startChar);
-    colorTypeData.put("num", Integer.valueOf(url.substring(startChar, endChar)));
-
-    return colorTypeData;
   }
 }

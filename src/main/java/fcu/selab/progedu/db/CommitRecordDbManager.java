@@ -116,19 +116,18 @@ public class CommitRecordDbManager {
    */
   public String getCommitRecordStatus(String projName, String username, int num) {
     String status = "";
-    String query = "SELECT status FROM Commit_Record where hw = ? and stuId = ?";
+    String query = "SELECT status FROM Commit_Record where hw = ? and stuId = ? limit ?,1";
     int stuId = userDbManager.getUserIdByUsername(username);
 
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(query)) {
       preStmt.setString(1, projName);
       preStmt.setInt(2, stuId);
+      preStmt.setInt(3, num - 1);
 
       try (ResultSet rs = preStmt.executeQuery();) {
-        int init = 0;
-        while (rs.next() && init < num) {
+        if (rs.next()) {
           status = rs.getString("status");
-          init++;
         }
       }
     } catch (SQLException e) {
