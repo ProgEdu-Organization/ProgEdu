@@ -198,38 +198,6 @@ public class JenkinsApi {
    *          command
    * @return config file path
    */
-  // public String modifyXml(String userName, String proName, String proUrl,
-  // String command,
-  // StringBuilder sb) {
-  // String filePath = null;
-  // String configType = getConfigType(fileType);
-  // filePath = this.getClass().getResource("/jenkins/" + configType).getPath();
-  //
-  // try {
-  // String tomcatUrl;
-  // tomcatUrl = courseData.getTomcatServerIp() +
-  // "/ProgEdu/webapi/project/checksum?proName="
-  // + proName;
-  // String updateDbUrl = courseData.getTomcatServerIp() +
-  // "/ProgEdu/webapi/commits/update";
-  // // proUrl project name toLowerCase
-  // proUrl = proUrl.toLowerCase();
-  // modifyXmlFileUrl(filePath, proUrl);
-  // if ("Javac".equals(fileType)) {
-  // modifyXmlFileCommand(filePath, sb, updateDbUrl, userName, proName);
-  // }
-  // if ("Web".equals(fileType)) {
-  // modifyWebXmlFile(filePath, updateDbUrl, userName, proName, tomcatUrl);
-  // }
-  // if ("Maven".equals(fileType)) {
-  // modifyXmlFileProgEdu(filePath, userName, proName, tomcatUrl, updateDbUrl);
-  // }
-  // } catch (LoadConfigFailureException e) {
-  // e.printStackTrace();
-  // }
-  //
-  // return filePath;
-  // }
 
   /**
    * backup job config
@@ -810,7 +778,8 @@ public class JenkinsApi {
   /**
    * Get jenkins console url
    * 
-   * @param userName userName
+   * @param userName
+   *          userName
    * @return console
    */
   public String getConsoleUrl(String userName, String proName, int num) {
@@ -820,7 +789,8 @@ public class JenkinsApi {
   /**
    * Get
    * 
-   * @param userName userName
+   * @param userName
+   *          userName
    * @return console
    */
   public String getCompleteConsoleText(String userName, String proName, int num) {

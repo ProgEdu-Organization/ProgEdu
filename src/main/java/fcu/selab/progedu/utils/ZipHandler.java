@@ -101,44 +101,6 @@ public class ZipHandler {
     return dir;
   }
 
-  // private void searchJavaFile(String entryName) {
-  // // ".java" length = 5
-  // String last = "";
-  // if (entryName.endsWith(".java")) {
-  // last = entryName.substring(entryName.length() - 5, entryName.length());
-  // }
-  // String fileName = null;
-  // for (int i = 0; i < entryName.length() - 3; i++) {
-  // if (entryName.substring(i, i + 3).equals("src")) {
-  // fileName = entryName.substring(i);
-  // System.out.println("Search java file fileName : " + fileName);
-  // if (last.equals(".java")) {
-  // sb.append("javac " + fileName + "\n");
-  // sb.append("echo \"BUILD SUCCESS\"");
-  // setStringBuilder(sb);
-  // }
-  // }
-  // }
-  // }
-
-  // private void searchWebFile(String entryName) {
-  // String last = "";
-  // if (entryName.endsWith(".py")) {
-  // last = entryName.substring(entryName.length() - 3, entryName.length());
-  // }
-  // String fileName = null;
-  // for (int i = 0; i < entryName.length() - 3; i++) {
-  // if (entryName.substring(i, i + 3).equals("src")) {
-  // fileName = entryName.substring(i);
-  // System.out.println("Search web file fileName : " + fileName);
-  // if (last.equals(".py")) {
-  // sb.append("python3 " + fileName + "\n");
-  // setStringBuilder(sb);
-  // }
-  // }
-  // }
-  // }
-
   /**
    * modifyPomXml
    * 
