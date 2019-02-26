@@ -25,7 +25,7 @@ import fcu.selab.progedu.config.JenkinsConfig;
 import fcu.selab.progedu.conn.StudentDashChoosePro;
 import fcu.selab.progedu.db.CommitRecordDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
-import fcu.selab.progedu.jenkins.ColorStatusData;
+import fcu.selab.progedu.jenkins.AssigmentStatusData;
 import fcu.selab.progedu.jenkins.JenkinsApi;
 import fcu.selab.progedu.jenkins.JobStatus;
 import fcu.selab.progedu.status.Status;
@@ -251,10 +251,10 @@ public class JenkinsService {
   @Path("getFeedbackInfo")
   public String getFeedbackInfo(String url) {
     CommitRecordDbManager dbManager = new CommitRecordDbManager();
-    ColorStatusData colorStatusData = new ColorStatusData(url);
+    AssigmentStatusData assigmentStatusData = new AssigmentStatusData(url);
 
-    String colorStatus = dbManager.getCommitRecordStatus(colorStatusData.getProjectName(),
-        colorStatusData.getUsername(), colorStatusData.getNumber());
+    String colorStatus = dbManager.getCommitRecordStatus(assigmentStatusData.getProjectName(),
+        assigmentStatusData.getUsername(), assigmentStatusData.getNumber());
     Status status = StatusFactory.getStatus(colorStatus);
     String detailConsoleText = jenkins.getConsoleText(url);
     String console = status.extractFailureMsg(detailConsoleText);

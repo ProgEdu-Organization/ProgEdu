@@ -1,6 +1,6 @@
 package fcu.selab.progedu.jenkins;
 
-public class ColorStatusData {
+public class AssigmentStatusData {
 
   private String username;
   private String projName;
@@ -12,7 +12,7 @@ public class ColorStatusData {
    * @param url
    *          project url
    */
-  public ColorStatusData(String url) {
+  public AssigmentStatusData(String url) {
 
     // username
     int startChar = url.indexOf("job") + 4;
