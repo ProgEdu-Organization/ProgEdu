@@ -1,5 +1,6 @@
 package fcu.selab.progedu.data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Group {
@@ -33,7 +34,16 @@ public class Group {
     this.contributor = contributor;
   }
 
+  /**
+   * add contirbutor to list
+   * 
+   * @param contributorName contirbutor
+   */
   public void addContributor(String contributorName) {
+    if (this.contributor == null) {
+      this.contributor = new ArrayList<>();
+    }
+
     this.contributor.add(contributorName);
   }
 

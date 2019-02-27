@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -27,6 +28,7 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 
 import fcu.selab.progedu.conn.Conn;
 import fcu.selab.progedu.data.Group;
+import fcu.selab.progedu.data.Student;
 import fcu.selab.progedu.db.GroupDbManager;
 
 @Path("group/")
@@ -52,7 +54,7 @@ public class GroupService {
     Response response;
     boolean isSuccess = false;
     List<String> groupList;
-
+    List<Student> studentList;
     StringBuilder sb = new StringBuilder();
     int read = 0;
     try {
@@ -67,7 +69,10 @@ public class GroupService {
     }
 
     groupList = new ArrayList<>(Arrays.asList(sb.toString().split("\r\n")));
-    newGroup(groupList);
+    studentList = map(groupList);
+    studentList = sort(studentList);
+    List<Group> groups = group(studentList);
+    newGroup(groups);
 
     if (isSuccess) {
       response = Response.ok().build();
@@ -78,65 +83,87 @@ public class GroupService {
   }
 
   /**
-   * parse csv file to create a group
+   * map to Student
    * 
-   * @param data group data
+   * @param groupList groupList
+   * @return studentList studentList
    */
-  public void newGroup(List<String> data) {
+  public List<Student> map(List<String> groupList) {
+    List<Student> studentList = new ArrayList<>();
+    for (String eachData : groupList) {
+      String[] attribute = eachData.split(",");
+      if (!attribute[0].equals("Team")) {
+        Student student = new Student();
+        student.setTeam(attribute[0]);
+        // if teamLeader is not empty , this student is teamLeader.
+        student.setTeamLeader(!attribute[1].isEmpty());
+        student.setStudentId(attribute[2]);
+        student.setName(attribute[3]);
+        studentList.add(student);
+      }
+
+    }
+    return studentList;
+  }
+
+  /**
+   * group
+   * 
+   * @param studentList sorted studentList
+   * @return groupList groupList
+   */
+  public List<Group> group(List<Student> studentList) {
+    List<Group> groupList = new ArrayList<>();
     String groupName = "";
-    String masterName = "";
-    List<String> cons = new ArrayList<>();
-    List<Group> groups = new ArrayList<>();
-    Group group = new Group();
-
-    int number = 0;
-    int flag = 0;
-
-    for (String lsData : data) {
-      number++;
-      String[] row = lsData.split(",");
-
-      if (row[0].equals("Team")) {
-        continue;
-      }
-      if (!row[0].isEmpty()) { // Team
-        if (flag == 1) {
-          group.setGroupName(groupName);
-          group.setMaster(masterName);
-          group.setContributor(cons);
-
-          groups.add(group);
-
-          flag = 0;
+    Group group = null;
+    for (int index = 0; index < studentList.size(); index++) {
+      if (!groupName.equals(studentList.get(index).getTeam())) {
+        if (!(groupName == null || groupName.isEmpty())) {
+          groupList.add(group);
         }
+
+        groupName = studentList.get(index).getTeam();
         group = new Group();
-        cons = new ArrayList<>();
-        groupName = row[0];
-        if (!row[1].isEmpty()) {
-          masterName = row[3]; // teamLeader
-        } else {
-          cons.add(row[3]);
-        }
-      } else {
-        flag = 1;
-        if (!row[1].isEmpty()) {
-          masterName = row[3]; // teamLeader
-        } else {
-          cons.add(row[3]);
-        }
-      }
-      if (number == data.size()) {
         group.setGroupName(groupName);
-        group.setMaster(masterName);
-        group.setContributor(cons);
-        groups.add(group);
+      }
+
+      if (studentList.get(index).getTeamLeader()) {
+        group.setMaster(studentList.get(index).getName());
+      } else {
+        group.addContributor(studentList.get(index).getName());
       }
     }
-    for (Group g : groups) {
-      if (g.getGroupName().equals("")) {
-        continue;
+    if (!(groupName == null || groupName.isEmpty())) {
+      groupList.add(group);
+    }
+
+    return groupList;
+  }
+
+  /**
+   * sort studentList
+   * 
+   * @param studentList unsorted studentList
+   * @return studentList sorted studentList
+   */
+  public List<Student> sort(List<Student> studentList) {
+    Collections.sort(studentList, new Comparator<Student>() {
+      @Override
+      public int compare(Student s1, Student s2) {
+        return s1.getTeam().compareTo(s2.getTeam());
       }
-      createGroup(g);
+    });
+    return studentList;
+  }
+
+  /**
+   * parse csv file to create a group
+   * 
+   * @param groups group data
+   */
+  public void newGroup(List<Group> groups) {
+    for (Group group : groups) {
+      createGroup(group);
     }
   }
 
