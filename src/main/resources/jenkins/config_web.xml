@@ -65,14 +65,10 @@
       <testFilePath/>
     </org.jenkinsci.plugins.AssessmentBuilder>
     <hudson.tasks.Shell>
-      <command>python3 src/test/indexTest.py
-</command>
-    </hudson.tasks.Shell>
-    <hudson.tasks.Shell>
-      <command>echo ===Test success===
-eslint -c src/test/.eslintrc.js --ext .html,.css -f checkstyle ./ -o eslintReport.xml
-htmlhint -f checkstyle ./ &gt; htmlhintReport.xml
-echo ===Checkstyle success===</command>
+      <command>npm install --save selenium-webdriver
+npm run test
+eslint -c ./src/test/.eslintrc.js --ext .js,.html -f checkstyle ./src/web/ -o eslintReport.xml 
+htmlhint -f checkstyle ./ > htmlhintReport.xml</command>
     </hudson.tasks.Shell>
   </builders>
   <publishers>

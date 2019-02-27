@@ -39,16 +39,15 @@ public class UserDbManager {
   /**
    * Add gitlab user to database
    * 
-   * @param user The gitlab user
+   * @param user
+   *          The gitlab user
    */
   public void addUser(GitlabUser user) {
     String sql = "INSERT INTO " + "User(gitLabId, userName, name, password, email, privateToken)  "
         + "VALUES(?, ?, ?, ?, ?, ?)";
 
-    try (
-        Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)
-    ) {
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(sql)) {
       String password = passwordMD5(user.getUsername());
       password += user.getUsername();
       preStmt.setInt(1, user.getId());
@@ -66,9 +65,11 @@ public class UserDbManager {
   /**
    * encrypt the user password
    * 
-   * @param password The user's password
+   * @param password
+   *          The user's password
    * @return MD5 string
-   * @throws NoSuchAlgorithmException on security api call error
+   * @throws NoSuchAlgorithmException
+   *           on security api call error
    */
   public String passwordMD5(String password) {
     String hashtext = "";
@@ -95,21 +96,18 @@ public class UserDbManager {
   /**
    * get user password
    * 
-   * @param userName user stu id
+   * @param userName
+   *          user stu id
    * @return password
    */
   public String getPassword(String userName) {
     String password = "";
     String query = "SELECT * FROM User WHERE userName = ?";
 
-    try (
-        Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(query)
-    ) {
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(query)) {
       preStmt.setString(1, userName);
-      try (
-          ResultSet rs = preStmt.executeQuery()
-      ) {
+      try (ResultSet rs = preStmt.executeQuery()) {
         while (rs.next()) {
           password = rs.getString(PASSWORD);
         }
@@ -123,16 +121,16 @@ public class UserDbManager {
   /**
    * update user db password
    * 
-   * @param userName user stu id
-   * @param password user new password
+   * @param userName
+   *          user stu id
+   * @param password
+   *          user new password
    */
   public void modifiedUserPassword(String userName, String password) {
     String query = "UPDATE User SET password=? WHERE userName = ?";
 
-    try (
-        Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(query)
-    ) {
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(query)) {
       String newPass = passwordMD5(password) + userName;
       preStmt.setString(1, newPass);
       preStmt.setString(2, userName);
@@ -145,8 +143,10 @@ public class UserDbManager {
   /**
    * check old password
    * 
-   * @param userName user stu id
-   * @param password user old password
+   * @param userName
+   *          user stu id
+   * @param password
+   *          user old password
    * @return T or F
    */
   public boolean checkPassword(String userName, String password) {
@@ -162,21 +162,18 @@ public class UserDbManager {
   /**
    * Get user from database
    * 
-   * @param userName The gitlab user name
+   * @param userName
+   *          The gitlab user name
    * @return user
    */
   public User getUser(String userName) {
     User user = new User();
     String query = "SELECT * FROM User WHERE userName = ?";
 
-    try (
-        Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(query)
-    ) {
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(query)) {
       preStmt.setString(1, userName);
-      try (
-          ResultSet rs = preStmt.executeQuery()
-      ) {
+      try (ResultSet rs = preStmt.executeQuery()) {
         while (rs.next()) {
           int gitLabId = rs.getInt(GIT_LAB_ID);
           int id = rs.getInt("id");
@@ -204,20 +201,17 @@ public class UserDbManager {
   /**
    * Get user from database
    *
-   * @param id The gitlab user id
+   * @param id
+   *          The gitlab user id
    * @return user
    */
   public User getUser(int id) {
     User user = new User();
 
-    try (
-        Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(QUERY)
-    ) {
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(QUERY)) {
       preStmt.setInt(1, id);
-      try (
-          ResultSet rs = preStmt.executeQuery();
-      ) {
+      try (ResultSet rs = preStmt.executeQuery();) {
         while (rs.next()) {
           int gitLabId = rs.getInt(GIT_LAB_ID);
           String stuId = rs.getString(USER_NAME);
@@ -244,20 +238,17 @@ public class UserDbManager {
   /**
    * Get user from database
    *
-   * @param userId The db user id
+   * @param userId
+   *          The db user id
    * @return user
    */
   public String getName(int userId) {
     String name = "";
 
-    try (
-        Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(QUERY)
-    ) {
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(QUERY)) {
       preStmt.setInt(1, userId);
-      try (
-          ResultSet rs = preStmt.executeQuery();
-      ) {
+      try (ResultSet rs = preStmt.executeQuery();) {
         while (rs.next()) {
           name = rs.getString(NAME);
         }
@@ -271,20 +262,17 @@ public class UserDbManager {
   /**
    * Get user from database
    *
-   * @param userId The db user id
+   * @param userId
+   *          The db user id
    * @return user
    */
   public String getUserName(int userId) {
     String name = "";
 
-    try (
-        Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(QUERY)
-    ) {
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(QUERY)) {
       preStmt.setInt(1, userId);
-      try (
-          ResultSet rs = preStmt.executeQuery();
-      ) {
+      try (ResultSet rs = preStmt.executeQuery();) {
         while (rs.next()) {
           name = rs.getString(USER_NAME);
         }
@@ -298,21 +286,43 @@ public class UserDbManager {
   /**
    * user name to find userId in db
    * 
-   * @param name user's name
+   * @param name
+   *          user's name
    * @return id
    */
   public int getUserId(String name) {
     String query = "SELECT * FROM User WHERE name = ?";
     int id = -1;
 
-    try (
-        Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(query)
-    ) {
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(query)) {
       preStmt.setString(1, name);
-      try (
-          ResultSet rs = preStmt.executeQuery();
-      ) {
+      try (ResultSet rs = preStmt.executeQuery();) {
+        while (rs.next()) {
+          id = rs.getInt("id");
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return id;
+  }
+
+  /**
+   * user name to find userId in db
+   * 
+   * @param username
+   *          user's name
+   * @return id
+   */
+  public int getUserIdByUsername(String username) {
+    String query = "SELECT * FROM User WHERE userName = ?";
+    int id = -1;
+
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(query)) {
+      preStmt.setString(1, username);
+      try (ResultSet rs = preStmt.executeQuery();) {
         while (rs.next()) {
           id = rs.getInt("id");
         }
@@ -332,13 +342,8 @@ public class UserDbManager {
     List<User> lsUsers = new ArrayList<>();
     String sql = "SELECT * FROM User";
 
-    try (
-        Connection conn = database.getConnection();
-        Statement stmt = conn.createStatement()
-    ) {
-      try (
-          ResultSet rs = stmt.executeQuery(sql)
-      ) {
+    try (Connection conn = database.getConnection(); Statement stmt = conn.createStatement()) {
+      try (ResultSet rs = stmt.executeQuery(sql)) {
         while (rs.next()) {
           int id = rs.getInt("id");
           int gitLabId = rs.getInt(GIT_LAB_ID);

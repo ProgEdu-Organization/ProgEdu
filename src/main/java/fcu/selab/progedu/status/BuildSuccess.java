@@ -4,7 +4,7 @@ public class BuildSuccess implements Status {
 
   @Override
   public String extractFailureMsg(String consoleText) {
-    return null;
+    return "Success";
   }
 
 }

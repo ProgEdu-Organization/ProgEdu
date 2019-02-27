@@ -3,7 +3,12 @@ package fcu.selab.progedu.status;
 public class CompileFailure implements Status {
   @Override
   public String extractFailureMsg(String consoleText) {
-    return null;
+    String feedback;
+    String feedbackStart = "[ERROR] COMPILATION ERROR :";
+    String feedbackEnd = "[INFO] BUILD FAILURE";
+    feedback = consoleText.substring(consoleText.indexOf(feedbackStart),
+        consoleText.indexOf(feedbackEnd) + 20);
+    return feedback;
   }
 
 }
