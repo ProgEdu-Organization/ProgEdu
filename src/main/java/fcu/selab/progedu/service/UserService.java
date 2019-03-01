@@ -1,9 +1,6 @@
 package fcu.selab.progedu.service;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -20,6 +17,8 @@ import org.gitlab.api.models.GitlabUser;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
+import com.csvreader.CsvReader;
+
 import fcu.selab.progedu.config.CourseConfig;
 import fcu.selab.progedu.config.GitlabConfig;
 import fcu.selab.progedu.config.JenkinsConfig;
@@ -28,7 +27,6 @@ import fcu.selab.progedu.data.Project;
 import fcu.selab.progedu.data.User;
 import fcu.selab.progedu.db.ProjectDbManager;
 import fcu.selab.progedu.db.UserDbManager;
-import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.jenkins.JenkinsApi;
 
 @Path("user/")
@@ -55,55 +53,29 @@ public class UserService {
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   public Response upload(@FormDataParam("file") InputStream uploadedInputStream,
       @FormDataParam("file") FormDataContentDisposition fileDetail) {
-    boolean isSave = true;
+    boolean isSuccess = true;
+
+    List<User> userList = new ArrayList<>();
 
     try {
-      String tempDir = System.getProperty("java.io.tmpdir");
-      String uploadDir = tempDir + "/uploads/";
-
-      File fileUploadDir = new File(uploadDir);
-      if (!fileUploadDir.exists()) {
-        fileUploadDir.mkdirs();
+      CsvReader csvReader = new CsvReader(new InputStreamReader(uploadedInputStream, "UTF-8"));
+      csvReader.readHeaders();
+      while (csvReader.readRecord()) {
+        User user = new User();
+        user.setUserName(csvReader.get("StudentId"));
+        user.setName(csvReader.get("Name"));
+        user.setEmail(csvReader.get("Email"));
+        user.setPassword(csvReader.get("Password"));
+        userList.add(user);
       }
-      String fileName = fileDetail.getFileName();
-      String uploadedFileLocation = uploadDir + fileName;
-      System.out.println("uploadDir : " + uploadDir);
-      System.out.println("fileName : " + fileName);
-      System.out.println("uploadedFileLocation : " + uploadedFileLocation);
-
-      List<String> studentList = new ArrayList<>();
-
-      try (FileOutputStream out = new FileOutputStream(new File(uploadedFileLocation))) {
-        int read = 0;
-        byte[] bytes = new byte[1024];
-        while ((read = uploadedInputStream.read(bytes)) != -1) {
-          out.write(bytes, 0, read);
-        }
-
-        // parse file
-        File file = new File(uploadedFileLocation);
-        try (InputStreamReader fr = new InputStreamReader(new FileInputStream(file), "BIG5");
-            BufferedReader br = new BufferedReader(fr)) {
-          String line = "";
-
-          while ((line = br.readLine()) != null) {
-            StringBuilder stringBuilder = new StringBuilder();
-            String[] row = line.split(",");
-            stringBuilder.append(row[0]);
-            for (int i = 1; i < row.length; i++) {
-              stringBuilder.append("," + row[i]);
-            }
-            studentList.add(stringBuilder.toString());
-          }
-          register(studentList);
-        }
-      }
-    } catch (Exception e) {
-      isSave = false;
+      csvReader.close();
+    } catch (IOException e) {
+      isSuccess = false;
       e.printStackTrace();
     }
+    register(userList);
     Response response = Response.ok().build();
-    if (!isSave) {
+    if (!isSuccess) {
       response = Response.serverError().status(Status.INTERNAL_SERVER_ERROR).build();
     }
     return response;
@@ -112,50 +84,13 @@ public class UserService {
   /**
    * Translate uploaded file content to string and parse to register
    * 
-   * @param data file content to string
+   * @param userList file content to string
    */
-  public void register(List<String> data) {
-    List<User> lsStudent = new ArrayList<>();
-    for (String lsData : data) {
-      String[] row = lsData.split(",");
-      String password;
-      password = row[0];
-
-      String userName;
-      userName = row[0];
-
-      String fullName;
-      fullName = row[1];
-
-      String email = "";
-
-      if (row[0].equalsIgnoreCase("studentid")) {
-        continue;
-      }
-
-      if (row.length >= 3) {
-        email = row[2];
-      } else {
-        try {
-          email = row[0] + course.getSchoolEmail();
-        } catch (LoadConfigFailureException e) {
-          e.printStackTrace();
-        }
-      }
-
-      User student = new User();
-      student.setUserName(userName);
-      student.setPassword(password);
-      student.setEmail(email);
-      student.setName(fullName);
-      lsStudent.add(student);
-      boolean check = userConn.createUser(email, password, userName, fullName);
-
-      if (check) {
-        System.out.println("register " + row[1] + " success!");
-      }
+  public void register(List<User> userList) {
+    for (User user : userList) {
+      userConn.createUser(user.getEmail(), user.getPassword(), user.getUserName(), user.getName());
     }
-    printStudent(lsStudent);
+    printStudent(userList);
   }
 
   /**

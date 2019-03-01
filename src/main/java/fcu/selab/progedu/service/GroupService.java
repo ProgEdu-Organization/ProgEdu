@@ -4,8 +4,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -25,6 +25,8 @@ import org.gitlab.api.models.GitlabGroup;
 import org.gitlab.api.models.GitlabUser;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
+
+import com.csvreader.CsvReader;
 
 import fcu.selab.progedu.conn.Conn;
 import fcu.selab.progedu.data.Group;
@@ -52,24 +54,27 @@ public class GroupService {
   public Response upload(@FormDataParam("file") InputStream uploadedInputStream,
       @FormDataParam("file") FormDataContentDisposition fileDetail) {
     Response response;
-    boolean isSuccess = false;
-    List<String> groupList;
-    List<Student> studentList;
-    StringBuilder sb = new StringBuilder();
-    int read = 0;
-    try {
-      while ((read = uploadedInputStream.read()) != -1) {
-        // converts integer to character and append to StringBuilder
-        sb.append((char) read);
-      }
-      isSuccess = true;
-    } catch (IOException e) {
+    boolean isSuccess = true;
+    List<Student> studentList = new ArrayList<>();
 
+    try {
+      CsvReader csvReader = new CsvReader(new InputStreamReader(uploadedInputStream, "UTF-8"));
+      csvReader.readHeaders();
+      while (csvReader.readRecord()) {
+        Student student = new Student();
+        student.setTeam(csvReader.get("Team"));
+        // if teamLeader is not empty , this student is teamLeader.
+        student.setTeamLeader(!csvReader.get("TeamLeader").isEmpty());
+        student.setStudentId(csvReader.get("Student_Id"));
+        student.setName(csvReader.get("name"));
+        studentList.add(student);
+      }
+      csvReader.close();
+    } catch (IOException e) {
+      isSuccess = false;
       e.printStackTrace();
     }
 
-    groupList = new ArrayList<>(Arrays.asList(sb.toString().split("\r\n")));
-    studentList = map(groupList);
     studentList = sort(studentList);
     List<Group> groups = group(studentList);
     newGroup(groups);
