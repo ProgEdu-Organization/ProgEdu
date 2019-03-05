@@ -1,20 +1,18 @@
-<?xml version="1.0" encoding="UTF-8"?><project>
+<?xml version='1.1' encoding='UTF-8'?>
+<project>
   <actions/>
-  <description/>
+  <description></description>
   <keepDependencies>false</keepDependencies>
   <properties>
-    <com.sonyericsson.jenkins.plugins.bfa.model.ScannerJobProperty plugin="build-failure-analyzer@1.19.0">
-      <doNotScan>false</doNotScan>
-    </com.sonyericsson.jenkins.plugins.bfa.model.ScannerJobProperty>
-    <com.dabsquared.gitlabjenkins.connection.GitLabConnectionProperty plugin="gitlab-plugin@1.4.3">
+    <com.dabsquared.gitlabjenkins.connection.GitLabConnectionProperty plugin="gitlab-plugin@1.5.11">
       <gitLabConnection>gitlab</gitLabConnection>
     </com.dabsquared.gitlabjenkins.connection.GitLabConnectionProperty>
   </properties>
-  <scm class="hudson.plugins.git.GitSCM" plugin="git@3.5.1">
+  <scm class="hudson.plugins.git.GitSCM" plugin="git@3.9.3">
     <configVersion>2</configVersion>
     <userRemoteConfigs>
       <hudson.plugins.git.UserRemoteConfig>
-        <url>http://140.134.26.71:20080/d0350510/web-hw1.git</url>
+        <url>http://140.134.26.71:20008/m0707350/web-hw2.git</url>
         <credentialsId>gitlab_root</credentialsId>
       </hudson.plugins.git.UserRemoteConfig>
     </userRemoteConfigs>
@@ -33,10 +31,14 @@
   <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
   <authToken>02031fefb728e700973b6f3e5023a64c</authToken>
   <triggers>
-    <com.dabsquared.gitlabjenkins.GitLabPushTrigger plugin="gitlab-plugin@1.4.3">
-      <spec/>
+    <com.dabsquared.gitlabjenkins.GitLabPushTrigger plugin="gitlab-plugin@1.5.11">
+      <spec></spec>
       <triggerOnPush>true</triggerOnPush>
       <triggerOnMergeRequest>true</triggerOnMergeRequest>
+      <triggerOnPipelineEvent>false</triggerOnPipelineEvent>
+      <triggerOnAcceptedMergeRequest>false</triggerOnAcceptedMergeRequest>
+      <triggerOnClosedMergeRequest>false</triggerOnClosedMergeRequest>
+      <triggerOnApprovedMergeRequest>false</triggerOnApprovedMergeRequest>
       <triggerOpenMergeRequestOnPush>never</triggerOpenMergeRequestOnPush>
       <triggerOnNoteRequest>true</triggerOnNoteRequest>
       <noteRegex>Jenkins please retry a build</noteRegex>
@@ -44,10 +46,13 @@
       <skipWorkInProgressMergeRequest>true</skipWorkInProgressMergeRequest>
       <setBuildDescription>true</setBuildDescription>
       <branchFilterType>All</branchFilterType>
-      <includeBranchesSpec/>
-      <excludeBranchesSpec/>
-      <targetBranchRegex/>
-      <secretToken>e2p05zNL5GQgsbZnVcGlCQ==</secretToken>
+      <includeBranchesSpec></includeBranchesSpec>
+      <excludeBranchesSpec></excludeBranchesSpec>
+      <sourceBranchRegex></sourceBranchRegex>
+      <targetBranchRegex></targetBranchRegex>
+      <secretToken>{AQAAABAAAAAgh4rZEmyyPIZ06860xqSQDQizLqnvdxT+41yK4AScsA+4jSIOeKCHz6WpoZyiHhWz}</secretToken>
+      <pendingBuildName></pendingBuildName>
+      <cancelPendingBuildsOnUpdate>false</cancelPendingBuildsOnUpdate>
     </com.dabsquared.gitlabjenkins.GitLabPushTrigger>
     <hudson.triggers.SCMTrigger>
       <spec>*/1 * * * *</spec>
@@ -57,48 +62,48 @@
   <concurrentBuild>false</concurrentBuild>
   <builders>
     <org.jenkinsci.plugins.AssessmentBuilder plugin="jenkins-progedu@1.0-SNAPSHOT">
-      <jobName>D00001235_OOP-HW2</jobName>
-      <testFileName>OOP-HW2</testFileName>
-      <proDetailUrl>http://140.134.26.71:10088/ProgEdu/webapi/project/checksum?proName=OOP-HW2</proDetailUrl>
-      <testFileUrl>http://140.134.26.71:10088/ProgEdu/webapi/jenkins/getTestFile?filePath=/usr/local/tomcat/temp/tests/OOP-HW2.zip</testFileUrl>
-      <testFileChecksum>2120768370</testFileChecksum>
+      <jobName>M0707350_WEB-HW2</jobName>
+      <testFileName>WEB-HW2</testFileName>
+      <proDetailUrl>http://140.134.26.71:10008/ProgEdu/webapi/project/checksum?proName=WEB-HW2</proDetailUrl>
+      <testFileUrl>http://140.134.26.71:10008/ProgEdu/webapi/jenkins/getTestFile?filePath=/usr/local/tomcat/temp/tests/WEB-HW2.zip</testFileUrl>
+      <testFileChecksum>3447884790</testFileChecksum>
       <testFilePath></testFilePath>
     </org.jenkinsci.plugins.AssessmentBuilder>
     <hudson.tasks.Shell>
       <command>npm install --save selenium-webdriver
 npm run test
 eslint -c ./src/test/.eslintrc.js --ext .js,.html -f checkstyle ./src/web/ -o eslintReport.xml 
-htmlhint -f checkstyle ./ > htmlhintReport.xml</command>
+htmlhint -f checkstyle ./ &gt; htmlhintReport.xml</command>
     </hudson.tasks.Shell>
   </builders>
   <publishers>
-    <hudson.plugins.checkstyle.CheckStylePublisher plugin="checkstyle@3.49">
-      <healthy/>
-      <unHealthy/>
+    <hudson.plugins.checkstyle.CheckStylePublisher plugin="checkstyle@4.0.0">
+      <healthy></healthy>
+      <unHealthy></unHealthy>
       <thresholdLimit>low</thresholdLimit>
       <pluginName>[CHECKSTYLE] </pluginName>
-      <defaultEncoding/>
+      <defaultEncoding></defaultEncoding>
       <canRunOnFailed>true</canRunOnFailed>
       <usePreviousBuildAsReference>false</usePreviousBuildAsReference>
       <useStableBuildAsReference>false</useStableBuildAsReference>
       <useDeltaValues>false</useDeltaValues>
-      <thresholds plugin="analysis-core@1.90">
-        <unstableTotalAll/>
-        <unstableTotalHigh/>
-        <unstableTotalNormal/>
-        <unstableTotalLow/>
-        <unstableNewAll/>
-        <unstableNewHigh/>
-        <unstableNewNormal/>
-        <unstableNewLow/>
-        <failedTotalAll/>
-        <failedTotalHigh/>
-        <failedTotalNormal/>
-        <failedTotalLow/>
-        <failedNewAll/>
-        <failedNewHigh/>
-        <failedNewNormal/>
-        <failedNewLow/>
+      <thresholds plugin="analysis-core@1.95">
+        <unstableTotalAll></unstableTotalAll>
+        <unstableTotalHigh></unstableTotalHigh>
+        <unstableTotalNormal></unstableTotalNormal>
+        <unstableTotalLow></unstableTotalLow>
+        <unstableNewAll></unstableNewAll>
+        <unstableNewHigh></unstableNewHigh>
+        <unstableNewNormal></unstableNewNormal>
+        <unstableNewLow></unstableNewLow>
+        <failedTotalAll></failedTotalAll>
+        <failedTotalHigh></failedTotalHigh>
+        <failedTotalNormal></failedTotalNormal>
+        <failedTotalLow></failedTotalLow>
+        <failedNewAll></failedNewAll>
+        <failedNewHigh></failedNewHigh>
+        <failedNewNormal></failedNewNormal>
+        <failedNewLow></failedNewLow>
       </thresholds>
       <shouldDetectModules>false</shouldDetectModules>
       <dontComputeNew>true</dontComputeNew>
@@ -106,14 +111,14 @@ htmlhint -f checkstyle ./ > htmlhintReport.xml</command>
       <pattern>eslintReport.xml,htmlhintReport.xml</pattern>
     </hudson.plugins.checkstyle.CheckStylePublisher>
     <org.jenkinsci.plugins.UpdatingDbPublisher plugin="jenkins-progedu@1.0-SNAPSHOT">
-      <progeduDbUrl>http://140.134.26.71:10088/ProgEdu/webapi/commits/update</progeduDbUrl>
-      <user>D0350510</user>
-      <proName>WEB-HW1</proName>
+      <progeduDbUrl>http://140.134.26.71:10008/ProgEdu/webapi/commits/update</progeduDbUrl>
+      <user>M0707350</user>
+      <proName>WEB-HW2</proName>
     </org.jenkinsci.plugins.UpdatingDbPublisher>
   </publishers>
   <buildWrappers>
-    <jenkins.plugins.nodejs.NodeJSBuildWrapper plugin="nodejs@1.2.4">
-      <nodeJSInstallationName>v9.1.0</nodeJSInstallationName>
+    <jenkins.plugins.nodejs.NodeJSBuildWrapper plugin="nodejs@1.2.7">
+      <nodeJSInstallationName>Global</nodeJSInstallationName>
     </jenkins.plugins.nodejs.NodeJSBuildWrapper>
   </buildWrappers>
 </project>

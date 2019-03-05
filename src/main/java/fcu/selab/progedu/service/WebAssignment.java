@@ -33,7 +33,7 @@ public class WebAssignment extends AssignmentTypeMethod {
   public void searchFile(String entryNewName) {
     StringBuilder sb = new StringBuilder();
     String last = "";
-    if (entryNewName.endsWith(".js")) {
+    if (entryNewName.endsWith(".js") || entryNewName.endsWith(".eslintrc.js")) {
       last = entryNewName.substring(entryNewName.length() - 3, entryNewName.length());
     }
     String fileName = null;
