@@ -200,6 +200,12 @@
 									</div>
 								</div>
 								<div class="form-group row" style="text-align: right">
+									<label class="col-sm-2 col-form-label">Student's Password</label>
+									<div class="col-sm-3">
+										<input type="text" class="form-control" name="password">
+									</div>
+								</div>
+								<div class="form-group row" style="text-align: right">
 									<label class="col-sm-2 col-form-label">Student's email</label>
 									<div class="col-sm-3">
 										<input type="text" class="form-control" name="studentEmail">

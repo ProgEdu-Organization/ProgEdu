@@ -54,7 +54,7 @@ public class UserService {
   public Response upload(@FormDataParam("file") InputStream uploadedInputStream,
       @FormDataParam("file") FormDataContentDisposition fileDetail) {
     Response response = Response.ok().build();
-    boolean passwordTooShort = false;
+    boolean errorFlag = false;
     List<User> userList = new ArrayList<>();
 
     try {
@@ -62,11 +62,23 @@ public class UserService {
       csvReader.readHeaders();
       while (csvReader.readRecord()) {
         if (csvReader.get("Password").length() < 8) {
-          passwordTooShort = true;
-          response = Response.serverError().entity("password must be at least 8 characters long")
+          errorFlag = true;
+          response = Response.serverError().entity("password must be at least 8 characters.")
               .build();
           break;
-        } else {
+        } else if (dbManager.checkUserName(csvReader.get("StudentId"))) {
+          errorFlag = true;
+          response = Response.serverError()
+              .entity("username : " + csvReader.get("StudentId") + " is exist.").build();
+          break;
+        } else if (dbManager.checkEmail(csvReader.get("Email"))) {
+          errorFlag = true;
+          response = Response.serverError()
+              .entity("Email : " + csvReader.get("Email") + " is exist.").build();
+          break;
+        }
+
+        else {
           User user = new User();
           user.setUserName(csvReader.get("StudentId"));
           user.setName(csvReader.get("Name"));
@@ -75,7 +87,7 @@ public class UserService {
           userList.add(user);
         }
       }
-      if (!passwordTooShort) {
+      if (!errorFlag) {
         register(userList);
       }
 
@@ -111,10 +123,12 @@ public class UserService {
   @Path("new")
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   public Response createAStudentAccount(@FormDataParam("studentName") String name,
-      @FormDataParam("studentId") String id, @FormDataParam("studentEmail") String email) {
+      @FormDataParam("studentId") String id, @FormDataParam("studentEmail") String email,
+      @FormDataParam("password") String password) {
+    System.out.println(email + password + id + name);
     boolean isSave = false;
     try {
-      isSave = userConn.createUser(email, id, id, name);
+      isSave = userConn.createUser(email, password, id, name);
       User user = dbManager.getUser(id);
       boolean isSuccess = importPreviousProject(user);
       isSave = isSave && isSuccess;
