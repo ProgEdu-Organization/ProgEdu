@@ -1,4 +1,5 @@
 /target/
+.properties
 .checkstyle
 .classpath
 .project
