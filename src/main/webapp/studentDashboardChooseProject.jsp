@@ -277,6 +277,7 @@
 				List<String> jobCommitCounts = stuDash.getMainTableJobCommitCount(stuProjects);
 				ProjectDbManager pDb = ProjectDbManager.getInstance();
 				Project project = pDb.getProjectByName(projectName);
+				
 			%>
 			<div style="margin: 10px 10px 10px 10px;">
 				<h2 style="white-space: nowrap"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp; <%=projectName%></h2>
@@ -410,7 +411,8 @@
 			
 				StudentDashChoosePro studentDashChoosePro = new StudentDashChoosePro();
 				String color = studentDashChoosePro.getLastColor(choosedUser.getUsername(),projectName);
-				Status status = StatusFactory.getStatus(color);
+			
+				Status status = StatusFactory.getStatus(color, project.getType());
 				String detailConsoleText = jenkins.getConsoleText(lastBuildUrl);
 				String console = status.extractFailureMsg(detailConsoleText);
 			%>

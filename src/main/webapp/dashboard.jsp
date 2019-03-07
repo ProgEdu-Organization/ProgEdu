@@ -347,4 +347,25 @@
         document.getElementById('loadingBackground').style.display = 'none';
     }
 </script>
+<script type="text/javascript">
+		function test(){
+			var url = 'http://140.134.26.71:48321/job/M0707350_WEB-HW3/3/console';
+			$.ajax({
+				url: './webapi/jenkins/getFeedbackInfo',
+				type: 'POST',
+				data: url,
+				success: function(res){
+					console.log(res);
+					console.log('sul');
+				},
+				error:function(){
+					console.log('eroor');
+				}
+			})
+			$('#iFrameTitle').html("Feedback Information (#" + tr.id + ")");
+			$('#projectTbody tr').removeClass("tableActive");
+			$('#'+tr.id).addClass("tableActive");
+		}
+		test()
+	</script>
 </html>

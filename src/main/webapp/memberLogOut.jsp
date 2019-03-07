@@ -12,7 +12,6 @@
 	<%
 		session.setAttribute("username", null);
 		session.removeAttribute("enterError");
-
 		response.sendRedirect("index.jsp");
 	%>
 </body>
