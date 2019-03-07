@@ -88,30 +88,6 @@ public class GroupService {
   }
 
   /**
-   * map to Student
-   * 
-   * @param groupList groupList
-   * @return studentList studentList
-   */
-  public List<Student> map(List<String> groupList) {
-    List<Student> studentList = new ArrayList<>();
-    for (String eachData : groupList) {
-      String[] attribute = eachData.split(",");
-      if (!attribute[0].equals("Team")) {
-        Student student = new Student();
-        student.setTeam(attribute[0]);
-        // if teamLeader is not empty , this student is teamLeader.
-        student.setTeamLeader(!attribute[1].isEmpty());
-        student.setStudentId(attribute[2]);
-        student.setName(attribute[3]);
-        studentList.add(student);
-      }
-
-    }
-    return studentList;
-  }
-
-  /**
    * group
    * 
    * @param studentList sorted studentList
@@ -126,7 +102,6 @@ public class GroupService {
         if (!(groupName == null || groupName.isEmpty())) {
           groupList.add(group);
         }
-
         groupName = studentList.get(index).getTeam();
         group = new Group();
         group.setGroupName(groupName);
@@ -141,7 +116,6 @@ public class GroupService {
     if (!(groupName == null || groupName.isEmpty())) {
       groupList.add(group);
     }
-
     return groupList;
   }
 

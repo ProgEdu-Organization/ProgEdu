@@ -53,31 +53,38 @@ public class UserService {
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   public Response upload(@FormDataParam("file") InputStream uploadedInputStream,
       @FormDataParam("file") FormDataContentDisposition fileDetail) {
-    boolean isSuccess = true;
-
+    Response response = Response.ok().build();
+    boolean passwordTooShort = false;
     List<User> userList = new ArrayList<>();
 
     try {
       CsvReader csvReader = new CsvReader(new InputStreamReader(uploadedInputStream, "UTF-8"));
       csvReader.readHeaders();
       while (csvReader.readRecord()) {
-        User user = new User();
-        user.setUserName(csvReader.get("StudentId"));
-        user.setName(csvReader.get("Name"));
-        user.setEmail(csvReader.get("Email"));
-        user.setPassword(csvReader.get("Password"));
-        userList.add(user);
+        if (csvReader.get("Password").length() < 8) {
+          passwordTooShort = true;
+          response = Response.serverError().entity("password must be at least 8 characters long")
+              .build();
+          break;
+        } else {
+          User user = new User();
+          user.setUserName(csvReader.get("StudentId"));
+          user.setName(csvReader.get("Name"));
+          user.setEmail(csvReader.get("Email"));
+          user.setPassword(csvReader.get("Password"));
+          userList.add(user);
+        }
       }
+      if (!passwordTooShort) {
+        register(userList);
+      }
+
       csvReader.close();
     } catch (IOException e) {
-      isSuccess = false;
+      response = Response.serverError().entity("Fail !").build();
       e.printStackTrace();
     }
-    register(userList);
-    Response response = Response.ok().build();
-    if (!isSuccess) {
-      response = Response.serverError().status(Status.INTERNAL_SERVER_ERROR).build();
-    }
+
     return response;
   }
 

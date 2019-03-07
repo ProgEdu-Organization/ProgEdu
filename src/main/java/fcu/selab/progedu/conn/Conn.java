@@ -363,17 +363,19 @@ public class Conn {
    * @throws IOException                on gitlab api call error
    */
   public boolean createUser(String email, String password, String userName, String fullName) {
+    boolean isSuccess = true;
     GitlabUser user = new GitlabUser();
     try {
       user = gitlab.createUser(email, password, userName, fullName, "", "", "", "", 10, null, null,
           "", false, true, null);
     } catch (IOException e) {
+      isSuccess = false;
       e.printStackTrace();
     }
     String privateToken = instance.getSession(userName, password).getPrivateToken();
     user.setPrivateToken(privateToken);
     dbManager.addUser(user);
-    return true;
+    return isSuccess;
   }
 
   /**

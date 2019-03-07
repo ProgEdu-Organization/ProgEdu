@@ -100,12 +100,13 @@
 				enctype : 'multipart/form-data',
 				processData : false,
 				success : function(response) {
+					//console.log(response)
 					alert("uploaded!");
 					top.location.href = "studentManagement.jsp";
 				}, 
-				error : function(a, b, c) {
-				    console.log(a.status, b, c)
-					alert("failed!");
+				error : function(response) {
+				    console.log(response.responseText)
+					alert(response.responseText);
                     location.reload();
 				}
 			});
