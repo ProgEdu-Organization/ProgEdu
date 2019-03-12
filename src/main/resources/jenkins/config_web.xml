@@ -72,8 +72,7 @@
     <hudson.tasks.Shell>
       <command>npm install --save selenium-webdriver
 npm run test
-eslint -c ./src/test/.eslintrc.js --ext .js,.html -f checkstyle ./src/web/ -o eslintReport.xml 
-htmlhint -f checkstyle ./ &gt; htmlhintReport.xml</command>
+npm run checkstyle</command>
     </hudson.tasks.Shell>
   </builders>
   <publishers>
