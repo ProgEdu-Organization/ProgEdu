@@ -4,22 +4,19 @@ public class StatusFactory {
   /**
    * 
    * @param type is the status type
-   * @param projectType is the  projectType
+   * @param assignmentType is the  projectType
    * @return Status status
    */
-  public static Status getStatus(String type, String projectType) {
+  public static Status getStatus(String type, String assignmentType) {
     StatusEnum statusEnum = StatusEnum.getStatusEnum(type);
-    StatusProjectTypeEnum statusProjectType = StatusProjectTypeEnum
-        .getStatusProjectTypeEnum(projectType);
+    StatusAssigmentTypeEnum statusProjectType = StatusAssigmentTypeEnum
+        .getStatusProjectTypeEnum(assignmentType);
 
     switch (statusProjectType) {
       case WEB: {
         switch (statusEnum) {
           case INITIALIZATION: {
             return new Initialization();
-          }
-          case COMPILE_FAILURE: {
-            return new WebCompileFailure();
           }
           case CHECKSTYLE_FAILURE: {
             return new WebCheckstyleFailure();

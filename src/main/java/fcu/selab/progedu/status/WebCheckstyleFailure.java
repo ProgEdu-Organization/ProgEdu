@@ -5,11 +5,11 @@ public class WebCheckstyleFailure implements Status {
   @Override
   public String extractFailureMsg(String consoleText) {
     String checkstyleInfo;
-    String checkstyleStart = "Successfully parsed";
-    String checkstyleEnd = "duplicates";
+    String checkstyleStart = "> eslint -c ./src/test/.eslintrc.js ./ & htmlhint ./";
+    String checkstyleEnd = "Scanned";
     
     checkstyleInfo = consoleText.substring(consoleText.indexOf(checkstyleStart),
-        consoleText.indexOf(checkstyleEnd) + checkstyleEnd.length());
+        consoleText.indexOf("\n",consoleText.indexOf(checkstyleEnd)));
     return checkstyleInfo;
   }
 }

@@ -115,7 +115,7 @@
           						<a class="dropdown-item" href="dashboard.jsp?lang=en"><i class="fa fa-globe" aria-hidden="true"></i>&nbsp;<fmt:message key="top_navbar_lanEnglish"/></a>
           					</div>
         				</li>
-        				<li class="nav-item active"><a class="nav-link" href="memberLogOut.jsp"> <fmt:message key="top_navbar_signOut"/> <i
+        				<li class="nav-item active"><a class="nav-link" href="./memberLogout.jsp"> <fmt:message key="top_navbar_signOut"/> <i
             				class="fa fa-sign-out" aria-hidden="true"></i></a>
         				</li>
       				</ul>

@@ -1,6 +1,6 @@
 package fcu.selab.progedu.status;
 
-public enum StatusProjectTypeEnum {
+public enum StatusAssigmentTypeEnum {
   JAVA("Javac"), Maven("Maven"), WEB("Web"), APP("App");
 
   private String type;
@@ -9,7 +9,7 @@ public enum StatusProjectTypeEnum {
     return type;
   }
 
-  private StatusProjectTypeEnum(String projectType) {
+  private StatusAssigmentTypeEnum(String projectType) {
     this.type = projectType;
   }
 
@@ -18,8 +18,8 @@ public enum StatusProjectTypeEnum {
    * @param type is proJectStatus String
    * @return status is getStatusProjecTypeEnum object
    */
-  public static StatusProjectTypeEnum getStatusProjectTypeEnum(String type) {
-    for (StatusProjectTypeEnum status : StatusProjectTypeEnum.values()) {
+  public static StatusAssigmentTypeEnum getStatusProjectTypeEnum(String type) {
+    for (StatusAssigmentTypeEnum status : StatusAssigmentTypeEnum.values()) {
       if (status.getTypeName().equals(type)) {
         return status;
       }
