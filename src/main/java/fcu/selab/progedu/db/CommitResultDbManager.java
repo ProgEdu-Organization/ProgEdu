@@ -29,10 +29,14 @@ public class CommitResultDbManager {
   /**
    * aggregate jenkins situation
    *
-   * @param id     student id
-   * @param hw     hw name
-   * @param commit commit count
-   * @param status build status
+   * @param id
+   *          student id
+   * @param hw
+   *          hw name
+   * @param commit
+   *          commit count
+   * @param status
+   *          build status
    * @return check
    */
   public boolean insertJenkinsCommitCount(int id, String hw, int commit, String status) {
@@ -57,9 +61,12 @@ public class CommitResultDbManager {
   /**
    * insert job last commit time to db
    *
-   * @param id   stu id
-   * @param hw   hw number
-   * @param time commit time
+   * @param id
+   *          stu id
+   * @param hw
+   *          hw number
+   * @param time
+   *          commit time
    * @return check
    */
   public boolean updateJenkinsJobTimestamp(int id, String hw, String time) {
@@ -82,8 +89,10 @@ public class CommitResultDbManager {
   /**
    * check if result is in db
    *
-   * @param id student id
-   * @param hw he number
+   * @param id
+   *          student id
+   * @param hw
+   *          he number
    * @return boolean
    */
   public boolean checkJenkinsJobTimestamp(int id, String hw) {
@@ -108,10 +117,14 @@ public class CommitResultDbManager {
   /**
    * update jenkins situation
    *
-   * @param id     student id
-   * @param hw     hw name
-   * @param commit commit count
-   * @param status build status
+   * @param id
+   *          student id
+   * @param hw
+   *          hw name
+   * @param commit
+   *          commit count
+   * @param status
+   *          build status
    * @return check
    */
   public boolean updateJenkinsCommitCount(int id, String hw, int commit, String status) {
@@ -162,8 +175,10 @@ public class CommitResultDbManager {
   /**
    * get commit result by student
    *
-   * @param id stuId
-   * @param hw hw
+   * @param id
+   *          stuId
+   * @param hw
+   *          hw
    * @return commit result
    */
   public CommitResult getCommitResultByStudentAndHw(int id, String hw) {
@@ -195,7 +210,8 @@ public class CommitResultDbManager {
   /**
    * get commit result by student
    *
-   * @param id stuId
+   * @param id
+   *          stuId
    * @return commit result
    */
   public JSONObject getCommitResultByStudent(int id) {
@@ -235,7 +251,6 @@ public class CommitResultDbManager {
       e.printStackTrace();
       return new JSONObject();
     }
-    System.out.println(ob.toString());
     return ob;
   }
 
@@ -274,7 +289,8 @@ public class CommitResultDbManager {
   /**
    * get hw commit timestamp
    *
-   * @param hw hw number
+   * @param hw
+   *          hw number
    */
   public void getCommitTimestamp(String hw) {
     String query = "SELECT hw, count(commit), time FROM Commit_Result"
@@ -317,7 +333,8 @@ public class CommitResultDbManager {
   /**
    * delete build result of specific hw
    *
-   * @param hw hw
+   * @param hw
+   *          hw
    */
   public void deleteResult(String hw) {
     String sql = "DELETE FROM Commit_Result WHERE hw=?";
