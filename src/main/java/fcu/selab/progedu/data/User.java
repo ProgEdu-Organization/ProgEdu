@@ -19,6 +19,25 @@ public class User implements Serializable {
 
   private String privateToken;
 
+  public User() {
+
+  }
+
+  /**
+   * User constructor
+   * 
+   * @param userName studentId
+   * @param name     student's full name
+   * @param email    student's email
+   * @param password student's password
+   */
+  public User(String userName, String name, String email, String password) {
+    this.userName = userName;
+    this.name = name;
+    this.email = email;
+    this.password = password;
+  }
+
   public int getId() {
     return id;
   }

@@ -142,10 +142,9 @@ public class UserDbManager {
    * @return T or F
    */
   public boolean checkPassword(String userName, String password) {
-    String currPassword = getPassword(userName);
-    String newPassword = passwordMD5(password) + userName;
     boolean check = false;
-    if (currPassword.equals(newPassword)) {
+    String currPassword = getPassword(userName);
+    if (currPassword.equals(passwordMD5(password) + userName)) {
       check = true;
     }
     return check;
@@ -358,18 +357,18 @@ public class UserDbManager {
   }
 
   /**
-   * check user name
+   * check username
    * 
-   * @param userName user name
+   * @param username username
    * @return isExist
    */
-  public boolean checkUserName(String userName) {
+  public boolean checkUsername(String username) {
     boolean isExist = false;
     String query = "SELECT count(*) FROM User WHERE userName = ?";
 
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(query)) {
-      preStmt.setString(1, userName);
+      preStmt.setString(1, username);
       try (ResultSet rs = preStmt.executeQuery()) {
         rs.next();
         if (rs.getInt("count(*)") > 0) {

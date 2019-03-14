@@ -76,7 +76,7 @@
 						top.location.href = "index.jsp";
 					},
 					error : function(response) {
-						alert("Failed! Please try again.");
+						alert(response.responseText);
 					}
 				});
 			}
