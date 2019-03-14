@@ -18,11 +18,12 @@ import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
 import fcu.selab.progedu.status.JavacStatusFactory;
-import fcu.selab.progedu.status.Status;
-import fcu.selab.progedu.status.StatusFactory;
 
 public class JavacAssignment extends AssignmentTypeMethod {
-  StatusFactory javacStatusFactory = new JavacStatusFactory();
+  
+  public JavacAssignment() {
+    super(new JavacStatusFactory());
+  }
   
   public String getSampleZip() {
     String folderName = "JavacQuickStart.zip";
@@ -140,13 +141,4 @@ public class JavacAssignment extends AssignmentTypeMethod {
     }
 
   }
-
-  /**
-   * @param statusType status.
-   */
-  public Status getStatus(String statusType) {
-    return javacStatusFactory.getStatus(statusType);
-  }
-  
-
 }

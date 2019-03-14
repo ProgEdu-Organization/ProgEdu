@@ -17,13 +17,13 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
-import fcu.selab.progedu.status.JavacStatusFactory;
 import fcu.selab.progedu.status.MavenStatusFactory;
-import fcu.selab.progedu.status.Status;
-import fcu.selab.progedu.status.StatusFactory;
 
 public class MavenAssignment extends AssignmentTypeMethod {
-  StatusFactory mavenStatusFactory = new MavenStatusFactory();
+  
+  public MavenAssignment() {
+    super(new MavenStatusFactory());
+  }
   
   public String getSampleZip() {
     String folderName = "MavenQuickStart.zip";
@@ -147,12 +147,4 @@ public class MavenAssignment extends AssignmentTypeMethod {
     }
 
   }
-
-  /**
-   * @param statusType status.
-   */
-  public Status getStatus(String statusType) {
-    return mavenStatusFactory.getStatus(statusType);
-  }
-
 }

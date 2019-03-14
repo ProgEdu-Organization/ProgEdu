@@ -16,14 +16,13 @@ import org.apache.commons.io.FileUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
-
-import fcu.selab.progedu.status.JavacStatusFactory;
-import fcu.selab.progedu.status.Status;
-import fcu.selab.progedu.status.StatusFactory;
 import fcu.selab.progedu.status.WebStatusFactory;
 
 public class WebAssignment extends AssignmentTypeMethod {
-  StatusFactory webStatusFactory = new WebStatusFactory();
+  
+  public WebAssignment() {
+    super(new WebStatusFactory());
+  }
   
   public String getSampleZip() {
     String folderName = "WebQuickStart.zip";
@@ -142,12 +141,5 @@ public class WebAssignment extends AssignmentTypeMethod {
       e.printStackTrace();
     }
 
-  }
-  
-  /**
-   * @param statusType status.
-   */
-  public Status getStatus(String statusType) {
-    return webStatusFactory.getStatus(statusType);
   }
 }

@@ -15,13 +15,20 @@ import fcu.selab.progedu.config.GitlabConfig;
 import fcu.selab.progedu.conn.Conn;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.jenkins.JenkinsApi;
+import fcu.selab.progedu.status.Status;
+import fcu.selab.progedu.status.StatusFactory;
 import fcu.selab.progedu.utils.ZipHandler;
 
 public abstract class AssignmentTypeMethod implements AssignmentTypeSelector {
 
+  StatusFactory statusFactory = null;
   ZipHandler zipHandler = null;
   JenkinsApi jenkinsApi = null;
 
+  public AssignmentTypeMethod(StatusFactory statusFactory) {
+    this.statusFactory = statusFactory;
+  }
+  
   public abstract String getSampleZip();
 
   /**
@@ -226,6 +233,13 @@ public abstract class AssignmentTypeMethod implements AssignmentTypeSelector {
     }
 
     return filePath;
+  }
+  
+  /**
+   * @param statusType status.
+   */
+  public Status getStatus(String statusType) {
+    return statusFactory.getStatus(statusType);
   }
 
 }
