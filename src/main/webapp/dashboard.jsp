@@ -316,7 +316,6 @@
                             break;
                         }
                         else {
-                        	console.log("thName: ${thName} hwName: ${hwName}" );
                             pName = 'N/A';
                         }
                     }
