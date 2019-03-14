@@ -4,10 +4,10 @@ public class CompileFailure implements Status {
   @Override
   public String extractFailureMsg(String consoleText) {
     String feedback;
-    String feedbackStart = "[ERROR] COMPILATION ERROR :";
-    String feedbackEnd = "[INFO] BUILD FAILURE";
+    String feedbackStart = "[INFO] Scanning for projects...";
+    String feedbackEnd = "Build step";
     feedback = consoleText.substring(consoleText.indexOf(feedbackStart),
-        consoleText.indexOf(feedbackEnd) + 20);
+        consoleText.indexOf(feedbackEnd));
     return feedback;
   }
 
