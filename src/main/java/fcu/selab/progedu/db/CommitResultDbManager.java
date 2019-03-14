@@ -220,7 +220,6 @@ public class CommitResultDbManager {
         while (rs.next()) {
 
           String hw = rs.getString("hw");
-
           String status = rs.getString(STATUS);
           int commit = rs.getInt(COMMIT);
 
@@ -236,6 +235,7 @@ public class CommitResultDbManager {
       e.printStackTrace();
       return new JSONObject();
     }
+    System.out.println(ob.toString());
     return ob;
   }
 

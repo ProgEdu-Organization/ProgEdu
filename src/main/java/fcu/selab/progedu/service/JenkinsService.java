@@ -23,7 +23,9 @@ import org.json.JSONObject;
 
 import fcu.selab.progedu.config.JenkinsConfig;
 import fcu.selab.progedu.conn.StudentDashChoosePro;
+import fcu.selab.progedu.data.Project;
 import fcu.selab.progedu.db.CommitRecordDbManager;
+import fcu.selab.progedu.db.ProjectDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.jenkins.AssigmentStatusData;
 import fcu.selab.progedu.jenkins.JenkinsApi;
@@ -54,10 +56,8 @@ public class JenkinsService {
   /**
    * get project built color
    * 
-   * @param proName
-   *          project name
-   * @param userName
-   *          student name
+   * @param proName  project name
+   * @param userName student name
    * @return color and commit count
    */
 
@@ -99,10 +99,8 @@ public class JenkinsService {
   /**
    * get project commit count
    * 
-   * @param proName
-   *          project name
-   * @param userName
-   *          student name
+   * @param proName  project name
+   * @param userName student name
    * @return count
    */
   @GET
@@ -148,12 +146,9 @@ public class JenkinsService {
   /**
    * get student build detail info
    * 
-   * @param num
-   *          build num
-   * @param userName
-   *          student id
-   * @param proName
-   *          project name
+   * @param num      build num
+   * @param userName student id
+   * @param proName  project name
    * @return build detail
    */
   @GET
@@ -179,14 +174,10 @@ public class JenkinsService {
   /**
    * get build error type
    * 
-   * @param jenkinsData
-   *          connect to jenkins
-   * @param userName
-   *          student id
-   * @param proName
-   *          project name
-   * @param num
-   *          build num
+   * @param jenkinsData connect to jenkins
+   * @param userName    student id
+   * @param proName     project name
+   * @param num         build num
    * @return type
    */
   public static String checkErrorStyle(JenkinsConfig jenkinsData, String userName, String proName,
@@ -225,8 +216,7 @@ public class JenkinsService {
   /**
    * get test folder
    * 
-   * @param filePath
-   *          folder directory
+   * @param filePath folder directory
    * @return zip file
    */
   @GET
@@ -242,8 +232,7 @@ public class JenkinsService {
 
   /**
    * 
-   * @param url
-   *          full console url
+   * @param url full console url
    * @return console
    */
   @POST
@@ -251,14 +240,19 @@ public class JenkinsService {
   @Path("getFeedbackInfo")
   public String getFeedbackInfo(String url) {
     CommitRecordDbManager dbManager = new CommitRecordDbManager();
+    ProjectDbManager dbProjectManaget = ProjectDbManager.getInstance();
     AssigmentStatusData assigmentStatusData = new AssigmentStatusData(url);
+
+    Project project = dbProjectManaget.getProjectByName(assigmentStatusData.getProjectName());
 
     String colorStatus = dbManager.getCommitRecordStatus(assigmentStatusData.getProjectName(),
         assigmentStatusData.getUsername(), assigmentStatusData.getNumber());
-    Status status = StatusFactory.getStatus(colorStatus);
+
+    Status status = StatusFactory.getStatus(colorStatus, project.getType());
     String detailConsoleText = jenkins.getConsoleText(url);
     String console = status.extractFailureMsg(detailConsoleText);
 
     return console;
   }
+
 }

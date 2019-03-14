@@ -297,8 +297,8 @@
 							  	<%
 							  	i++;
 							  	lastBuildMessageNum = num;
-							}
-						%>
+							   }
+						       %>
 					</tbody>
 				</table>
         	</div>
@@ -310,7 +310,7 @@
 			<%
 				StudentDashChoosePro studentDashChoosePro = new StudentDashChoosePro();
 				String color = studentDashChoosePro.getLastColor(choosedUser.getUsername(),projectName);
-				Status status = StatusFactory.getStatus(color);
+				Status status = StatusFactory.getStatus(color, project.getType());
 				int num = lastBuildMessageNum;
 				String jobName = choosedUser.getUsername() + "_" + projectName;
 				String jenkinsBuildNumUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName;

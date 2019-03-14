@@ -297,7 +297,6 @@
             var gitlabId = student.gitlabId;
             var commits = student.commits;
             var name = student.name;
-
             content = '<tr id="allProject">';
             content += '<td width="10%" id="allProject"><a href="dashStuChoosed.jsp?studentId=' + gitlabId + '">' + userName + "  " + name + '</a></td>';
 
@@ -311,11 +310,13 @@
                         var hwName = hw.hw;
                         var commit = hw.commit + 1;
                         var status = 'circle ' + hw.status;
+                        
                         if(thName == hwName) {
-                            pName = hwName;
+                            pName = hwName;id="dashboard"
                             break;
                         }
                         else {
+                        	console.log("thName: ${thName} hwName: ${hwName}" );
                             pName = 'N/A';
                         }
                     }
