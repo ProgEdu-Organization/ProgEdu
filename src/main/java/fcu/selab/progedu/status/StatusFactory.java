@@ -3,8 +3,8 @@ package fcu.selab.progedu.status;
 public class StatusFactory {
   /**
    * 
-   * @param type is the status type
-   * @param assignmentType is the  projectType
+   * @param type           is the status type
+   * @param assignmentType is the projectType
    * @return Status status
    */
   public static Status getStatus(String type, String assignmentType) {
@@ -27,7 +27,7 @@ public class StatusFactory {
           case BUILD_SUCCESS: {
             return new BuildSuccess();
           }
-  
+
           default: {
             return null;
           }
@@ -50,14 +50,30 @@ public class StatusFactory {
           case BUILD_SUCCESS: {
             return new BuildSuccess();
           }
-  
+
           default: {
             return null;
           }
         }
       }
+      case JAVA: {
+        switch (statusEnum) {
+          case INITIALIZATION: {
+            return new Initialization();
+          }
+          case COMPILE_FAILURE: {
+            return new JavacCompileFailure();
+          }
+          case BUILD_SUCCESS: {
+            return new BuildSuccess();
+          }
+
+          default: {
+            return null;
+          }
+        }
+      }
+
     }
   }
 }
-
-
