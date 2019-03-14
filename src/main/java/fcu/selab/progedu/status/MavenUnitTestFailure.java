@@ -1,6 +1,6 @@
 package fcu.selab.progedu.status;
 
-public class UnitTestFailure implements Status {
+public class MavenUnitTestFailure implements Status {
   @Override
   public String extractFailureMsg(String consoleText) {
     String unitTest = "";

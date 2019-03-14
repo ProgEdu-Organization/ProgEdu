@@ -4,12 +4,13 @@ public class WebUnitTestFailure implements Status {
 
   @Override
   public String extractFailureMsg(String consoleText) {
-    String checkstyleInfo;
+    String unitTestInfo;
     String unitTestFailureStart = "+ npm run test";
     String unitTestFailureEnd = "(Session info:";
+    unitTestInfo = consoleText.substring(consoleText.indexOf(unitTestFailureStart) 
+        + unitTestFailureStart.length(), consoleText.indexOf(unitTestFailureEnd));
 
-
-    return "123";
+    return unitTestInfo;
   }
 
 }
