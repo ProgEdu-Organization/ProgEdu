@@ -51,7 +51,7 @@
       <secretToken>e2p05zNL5GQgsbZnVcGlCQ==</secretToken>
     </com.dabsquared.gitlabjenkins.GitLabPushTrigger>
     <hudson.triggers.SCMTrigger>
-      <spec>*/1 * * * *</spec>
+      <spec>*/5 * * * *</spec>
       <ignorePostCommitHooks>false</ignorePostCommitHooks>
     </hudson.triggers.SCMTrigger>
   </triggers>
@@ -299,19 +299,6 @@
       <user>D00001235</user>
       <proName>OOP-HW2</proName>
     </org.jenkinsci.plugins.UpdatingDbPublisher>
-    <hudson.plugins.ws__cleanup.WsCleanup plugin="ws-cleanup@0.32">
-      <patterns class="empty-list"/>
-      <deleteDirs>false</deleteDirs>
-      <skipWhenFailed>false</skipWhenFailed>
-      <cleanWhenSuccess>true</cleanWhenSuccess>
-      <cleanWhenUnstable>true</cleanWhenUnstable>
-      <cleanWhenFailure>true</cleanWhenFailure>
-      <cleanWhenNotBuilt>true</cleanWhenNotBuilt>
-      <cleanWhenAborted>true</cleanWhenAborted>
-      <notFailBuild>false</notFailBuild>
-      <cleanupMatrixParent>false</cleanupMatrixParent>
-      <externalDelete></externalDelete>
-    </hudson.plugins.ws__cleanup.WsCleanup>
   </publishers>
   <buildWrappers/>
 </project>

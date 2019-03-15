@@ -18,6 +18,7 @@ import fcu.selab.progedu.status.StatusEnum;
 public class CommitRecordDbManager {
   UserDbManager userDbManager = UserDbManager.getInstance();
   private static final String COUNT_STATUS = "count(status)";
+  private static final String FIELD_NAME_STATUS = "status";
   private static CommitRecordDbManager dbManager = new CommitRecordDbManager();
 
   public static CommitRecordDbManager getInstance() {
@@ -127,7 +128,7 @@ public class CommitRecordDbManager {
 
       try (ResultSet rs = preStmt.executeQuery();) {
         if (rs.next()) {
-          status = rs.getString("status");
+          status = rs.getString(FIELD_NAME_STATUS);
         }
       }
     } catch (SQLException e) {

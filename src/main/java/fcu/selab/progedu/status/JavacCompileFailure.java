@@ -1,14 +1,15 @@
 package fcu.selab.progedu.status;
 
-public class CompileFailure implements Status {
+public class JavacCompileFailure implements Status {
+
   @Override
   public String extractFailureMsg(String consoleText) {
     String feedback;
-    String feedbackStart = "[INFO] Scanning for projects...";
-    String feedbackEnd = "Build step";
+    String feedbackStart = "+ javac";
+    String feedbackEnd = "Build step 'Execute shell' marked build as failure";
     feedback = consoleText.substring(consoleText.indexOf(feedbackStart),
         consoleText.indexOf(feedbackEnd));
     return feedback;
-  }
 
+  }
 }

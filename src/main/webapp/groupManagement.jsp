@@ -31,7 +31,7 @@
 
 <body style="background-color:#F5F5F5;">
 	
-	<%@ include file="header.jsp" %>
+<%@ include file="header.jsp" %>
 <script>
 	$(document).ready(function() {
 		$('#upload').submit(function(evt) {
