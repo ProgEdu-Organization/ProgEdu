@@ -63,7 +63,7 @@ public class GroupService {
       while (csvReader.readRecord()) {
         Student student = new Student();
         student.setTeam(csvReader.get("Team"));
-        // if teamLeader is not empty , this student is teamLeader.
+        // if teamLeader is not empty , the student is teamLeader.
         student.setTeamLeader(!csvReader.get("TeamLeader").isEmpty());
         student.setStudentId(csvReader.get("Student_Id"));
         student.setName(csvReader.get("name"));
@@ -74,7 +74,6 @@ public class GroupService {
       isSuccess = false;
       e.printStackTrace();
     }
-
     studentList = sort(studentList);
     List<Group> groups = group(studentList);
     newGroup(groups);
@@ -120,7 +119,7 @@ public class GroupService {
   }
 
   /**
-   * sort studentList
+   * sort studentList by group's name
    * 
    * @param studentList unsorted studentList
    * @return studentList sorted studentList

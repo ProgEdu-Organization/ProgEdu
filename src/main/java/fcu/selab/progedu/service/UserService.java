@@ -93,10 +93,8 @@ public class UserService {
    */
   public Response checkForDuplicates(List<User> userList) {
     Response response = null;
-    int index = 0;
-    int index2 = 0;
-    for (index = 0; index < userList.size() - 1; index++) {
-      for (index2 = index + 1; index2 < userList.size(); index2++) {
+    for (int index = 0; index < userList.size() - 1; index++) {
+      for (int index2 = index + 1; index2 < userList.size(); index2++) {
         if (userList.get(index).getUserName().equals(userList.get(index2).getUserName())) {
           response = Response.serverError().entity(
               "username : " + userList.get(index).getUserName() + " is duplicated in student list.")
