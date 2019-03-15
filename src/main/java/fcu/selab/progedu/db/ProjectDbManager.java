@@ -205,4 +205,27 @@ public class ProjectDbManager {
       e.printStackTrace();
     }
   }
+
+  /**
+   * get assignment type
+   * 
+   * @param name assignment name
+   * @return type assignment type
+   */
+  public String getAssignmentType(String name) {
+    String type = null;
+    String sql = "SELECT * FROM Assignment WHERE name=?";
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+      preStmt.setString(1, name);
+      try (ResultSet rs = preStmt.executeQuery()) {
+        while (rs.next()) {
+          type = rs.getString("type");
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return type;
+  }
 }

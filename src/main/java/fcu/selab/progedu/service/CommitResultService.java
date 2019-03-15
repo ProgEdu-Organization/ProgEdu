@@ -175,7 +175,7 @@ public class CommitResultService {
 
       int lastCommitNum = jenkinsService.getProjectCommitCount(proName, userName);
       int commitCount = lastCommitNum - 1;
-      String proType = proName.substring(0, 3);
+      String proType = projectDb.getAssignmentType(proName);
       String buildApiJson = stuDashChoPro.getBuildApiJson(lastCommitNum, userName, proName);
       String strDate = stuDashChoPro.getCommitTime(buildApiJson);
       String[] dates = strDate.split(" ");
