@@ -4,13 +4,13 @@ public class WebCheckstyleFailure implements Status {
 
   @Override
   public String extractFailureMsg(String consoleText) {
-    String checkStyleInfo;
-    String checkStyleStart = "> eslint -c ./src/test/.eslintrc.js ./ & htmlhint ./";
-    String checkStyleEnd = "Scanned";
+    String checkstyleInfo = "WebCheckstyleFailure";
+    String checkstyleStart = "> eslint -c ./src/test/.eslintrc.js ./ & htmlhint ./";
+    String checkstyleEnd = "Scanned";
     
-    checkStyleInfo = consoleText.substring(consoleText.indexOf(checkStyleStart) 
-        + checkStyleStart.length(), consoleText.indexOf(checkStyleEnd ));
+    /*checkstyleInfo = consoleText.substring(consoleText.indexOf(checkstyleStart) 
+        +  checkstyleStart.length(), consoleText.indexOf(checkstyleEnd));*/
     
-    return checkStyleInfo;
+    return checkstyleInfo;
   }
 }

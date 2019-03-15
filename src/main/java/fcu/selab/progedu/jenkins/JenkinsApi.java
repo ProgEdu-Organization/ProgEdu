@@ -1070,22 +1070,7 @@ public class JenkinsApi {
     return buildResult;
   }
 
-  /**
-   * get job build result
-   * 
-   * @param consoleText
-   *          build detail
-   * @return is build success or not
-   */
-  public boolean getJobBuildResultByConsoleText(String consoleText, String proType) {
-    boolean isSuccess = false;
-
-    if ((proType.equals("OOP") && consoleText.contains("BUILD SUCCESS"))
-        || (proType.equals("WEB") && consoleText.contains("===Build success==="))) {
-      isSuccess = true;
-    }
-    return isSuccess;
-  }
+ 
 
   /**
    * Check is checkstyle error
@@ -1100,8 +1085,8 @@ public class JenkinsApi {
       String checkstyleError = "Failed during checkstyle execution";
       isCheckstyleError = consoleText.contains(checkstyleError);
     } else if (proType.equals("WEB")) {
-      String webCheckstyleSuccess = "===Checkstyle success===";
-      isCheckstyleError = !(consoleText.contains(webCheckstyleSuccess));
+      String webCheckstyleSuccess = "checkstyle script.";
+      isCheckstyleError = consoleText.contains(webCheckstyleSuccess);
     }
     return isCheckstyleError;
   }
@@ -1140,7 +1125,7 @@ public class JenkinsApi {
    */
   public boolean checkIsWebTestError(String consoleText) {
     boolean isWebTestError = false;
-    if (consoleText.contains("assert")) {
+    if (consoleText.contains("test script.")) {
       isWebTestError = true;
     } else {
       // do nothing.
