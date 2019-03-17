@@ -8,5 +8,3 @@ public abstract class StatusFactory {
    */
   public abstract Status getStatus(String statusType);
 }
-
-

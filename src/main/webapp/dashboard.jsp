@@ -312,7 +312,8 @@
                         var status = 'circle ' + hw.status;
                         
                         if(thName == hwName) {
-                            pName = hwName;id="dashboard"
+                            pName = hwName;
+                            id="dashboard";
                             break;
                         }
                         else {

@@ -8,9 +8,8 @@ public class WebCheckstyleFailure implements Status {
     String checkstyleStart = "> eslint -c ./src/test/.eslintrc.js ./ & htmlhint ./";
     String checkstyleEnd = "Scanned";
     
-    /*checkstyleInfo = consoleText.substring(consoleText.indexOf(checkstyleStart) 
-        +  checkstyleStart.length(), consoleText.indexOf(checkstyleEnd));*/
-    
+    checkstyleInfo = consoleText.substring(consoleText.indexOf(checkstyleStart) 
+        +  checkstyleStart.length(), consoleText.lastIndexOf(checkstyleEnd));
     return checkstyleInfo;
   }
 }

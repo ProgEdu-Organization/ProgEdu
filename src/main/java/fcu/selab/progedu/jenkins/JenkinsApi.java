@@ -76,8 +76,7 @@ public class JenkinsApi {
   /**
    * constructor
    * 
-   * @throws LoadConfigFailureException
-   *           on properties call error
+   * @throws LoadConfigFailureException on properties call error
    */
   public JenkinsApi() {
     try {
@@ -99,14 +98,10 @@ public class JenkinsApi {
   /**
    * Create gitlab root job on jenkins
    * 
-   * @param proName
-   *          The project name
-   * @param jenkinsCrumb
-   *          The jenkins crumb
-   * @param fileType
-   *          The file type
-   * @param sb
-   *          The config build job command
+   * @param proName      The project name
+   * @param jenkinsCrumb The jenkins crumb
+   * @param fileType     The file type
+   * @param sb           The config build job command
    */
   // public void createRootJob(String proName, String jenkinsCrumb,
   // StringBuilder sb) {
@@ -123,18 +118,12 @@ public class JenkinsApi {
   /**
    * Create all user jenkins job
    * 
-   * @param proName
-   *          Project name
-   * @param jenkinsCrumb
-   *          Jenkins crumb
-   * @param fileType
-   *          File type
-   * @param sb
-   *          The config build job command
-   * @throws LoadConfigFailureException
-   *           on properties call error
-   * @throws IOException
-   *           on gitlab getuser call error
+   * @param proName      Project name
+   * @param jenkinsCrumb Jenkins crumb
+   * @param fileType     File type
+   * @param sb           The config build job command
+   * @throws LoadConfigFailureException on properties call error
+   * @throws IOException                on gitlab getuser call error
    */
   // public void createJenkinsJob(String userName, String proName, String
   // jenkinsCrumb, StringBuilder sb) {
@@ -149,12 +138,9 @@ public class JenkinsApi {
   /**
    * Httppost to create jenkins job
    * 
-   * @param proUrl
-   *          Gitlab project url
-   * @param jenkinsCrumb
-   *          Jenkins crumb
-   * @param filePath
-   *          File path
+   * @param proUrl       Gitlab project url
+   * @param jenkinsCrumb Jenkins crumb
+   * @param filePath     File path
    */
   public static void postCreateJob(String userName, String proName, String proUrl,
       String jenkinsCrumb, String filePath) {
@@ -186,24 +172,18 @@ public class JenkinsApi {
   /**
    * modify job config
    * 
-   * @param userName
-   *          student id
-   * @param proName
-   *          project name
-   * @param proUrl
-   *          project url
-   * @param fileType
-   *          job type
-   * @param sb
-   *          command
+   * @param userName student id
+   * @param proName  project name
+   * @param proUrl   project url
+   * @param fileType job type
+   * @param sb       command
    * @return config file path
    */
 
   /**
    * backup job config
    * 
-   * @param source
-   *          source file
+   * @param source source file
    */
   public static void backupConfig(String source, String proName) {
     String tempDir = System.getProperty("java.io.tmpdir");
@@ -219,10 +199,8 @@ public class JenkinsApi {
   /**
    * Get the jenkins crumb
    * 
-   * @param username
-   *          Jenkins root user name
-   * @param password
-   *          Jenkins root password
+   * @param username Jenkins root user name
+   * @param password Jenkins root password
    * @return jenkins crumb
    */
   public String getCrumb(String username, String password) {
@@ -266,8 +244,7 @@ public class JenkinsApi {
   /**
    * Get the config file
    * 
-   * @param filePath
-   *          Config file path
+   * @param filePath Config file path
    * @return config content
    */
   public static StringBuilder getConfig(String filePath) {
@@ -289,10 +266,8 @@ public class JenkinsApi {
   /**
    * Change the config file's project url
    * 
-   * @param filePath
-   *          Config file path
-   * @param url
-   *          Project url
+   * @param filePath Config file path
+   * @param url      Project url
    */
   public static void modifyXmlFileUrl(String filePath, String url) {
     try {
@@ -318,14 +293,10 @@ public class JenkinsApi {
   /**
    * Change the config file command (Maven or Javac)
    * 
-   * @param filePath
-   *          Config file path
-   * @param sb
-   *          Command string
-   * @param updateDbUrl
-   *          tomcat db url
-   * @param userName
-   *          user name
+   * @param filePath    Config file path
+   * @param sb          Command string
+   * @param updateDbUrl tomcat db url
+   * @param userName    user name
    */
   public void modifyXmlFileCommand(String filePath, StringBuilder sb, String updateDbUrl,
       String userName, String proName) {
@@ -361,10 +332,8 @@ public class JenkinsApi {
   /**
    * Change the config file command (Maven or Javac)
    * 
-   * @param filePath
-   *          Config file path
-   * @param userName
-   *          user name
+   * @param filePath Config file path
+   * @param userName user name
    */
   public void modifyXmlFileCommand(String filePath, String userName, String proName) {
     try {
@@ -393,14 +362,10 @@ public class JenkinsApi {
   /**
    * Change the config ProgEdu plugin content
    * 
-   * @param userName
-   *          user name
-   * @param proName
-   *          project name
-   * @param tomcatUrl
-   *          tomcat project url
-   * @param updateDbUrl
-   *          updating db url
+   * @param userName    user name
+   * @param proName     project name
+   * @param tomcatUrl   tomcat project url
+   * @param updateDbUrl updating db url
    */
   public void modifyXmlFileProgEdu(String filePath, String userName, String proName,
       String tomcatUrl, String updateDbUrl) {
@@ -443,10 +408,8 @@ public class JenkinsApi {
   /**
    * Change the config ProgEdu plugin content
    * 
-   * @param userName
-   *          user name
-   * @param proName
-   *          project name
+   * @param userName user name
+   * @param proName  project name
    */
   public void modifyXmlFileProgEdu(String filePath, String userName, String proName) {
     try {
@@ -479,16 +442,11 @@ public class JenkinsApi {
   /**
    * Change the config file command (Maven or Javac)
    * 
-   * @param filePath
-   *          Config file path
-   * @param sb
-   *          Command string
-   * @param updateDbUrl
-   *          tomcat db url
-   * @param userName
-   *          user name
-   * @param tomcatUrl
-   *          tomcat project url
+   * @param filePath    Config file path
+   * @param sb          Command string
+   * @param updateDbUrl tomcat db url
+   * @param userName    user name
+   * @param tomcatUrl   tomcat project url
    */
   public void modifyWebXmlFile(String filePath, StringBuilder sb, String updateDbUrl,
       String userName, String proName, String tomcatUrl) {
@@ -534,10 +492,8 @@ public class JenkinsApi {
   /**
    * Change the config ProgEdu plugin content
    * 
-   * @param userName
-   *          user name
-   * @param proName
-   *          project name
+   * @param userName user name
+   * @param proName  project name
    */
   public void modifyWebXmlFile(String filePath, String userName, String proName) {
     try {
@@ -570,8 +526,7 @@ public class JenkinsApi {
   /**
    * Get the jenkins job status color
    * 
-   * @param jobApiJson
-   *          job api json
+   * @param jobApiJson job api json
    * @return color
    */
   public String getJobJsonColor(String jobApiJson) {
@@ -584,12 +539,9 @@ public class JenkinsApi {
   /**
    * get jekins job all build number
    * 
-   * @param username
-   *          jenkins user name
-   * @param password
-   *          jenkins user password
-   * @param jobUrl
-   *          jenkins job url
+   * @param username jenkins user name
+   * @param password jenkins user password
+   * @param jobUrl   jenkins job url
    * @return number list
    */
   public List<Integer> getJenkinsJobAllBuildNumber(String username, String password,
@@ -642,12 +594,9 @@ public class JenkinsApi {
   /**
    * Jenkins build the job
    * 
-   * @param proName
-   *          Jenkins job name
-   * @param jenkinsCrumb
-   *          Jenkins crumb
-   * @throws IOException
-   *           on gitlab getuser call error
+   * @param proName      Jenkins job name
+   * @param jenkinsCrumb Jenkins crumb
+   * @throws IOException on gitlab getuser call error
    */
   public void buildJob(String userName, String proName, String jenkinsCrumb) {
     String jobName = null;
@@ -658,10 +607,8 @@ public class JenkinsApi {
   /**
    * Httppost to build jenkins job
    * 
-   * @param jobName
-   *          Jenkins job name
-   * @param jenkinsCrumb
-   *          Jenkins crumb
+   * @param jobName      Jenkins job name
+   * @param jenkinsCrumb Jenkins crumb
    */
   public void postBuildJob(String jobName, String jenkinsCrumb) {
     HttpClient client = new DefaultHttpClient();
@@ -749,8 +696,7 @@ public class JenkinsApi {
   /**
    * Delete the jenkins job
    * 
-   * @param jobName
-   *          Jenkins job name
+   * @param jobName Jenkins job name
    */
   public void deleteJob(String jobName, String crumb) {
     HttpClient client = new DefaultHttpClient();
@@ -778,8 +724,7 @@ public class JenkinsApi {
   /**
    * Get jenkins console url
    * 
-   * @param userName
-   *          userName
+   * @param userName userName
    * @return console
    */
   public String getConsoleUrl(String userName, String proName, int num) {
@@ -789,8 +734,7 @@ public class JenkinsApi {
   /**
    * Get
    * 
-   * @param userName
-   *          userName
+   * @param userName userName
    * @return console
    */
   public String getCompleteConsoleText(String userName, String proName, int num) {
@@ -801,8 +745,7 @@ public class JenkinsApi {
   /**
    * Get
    * 
-   * @param strUrl
-   *          strUrl
+   * @param strUrl strUrl
    * @return console
    */
   public String getCompleteConsoleText(String strUrl) {
@@ -850,8 +793,7 @@ public class JenkinsApi {
   /**
    * Get
    * 
-   * @param strUrl
-   *          strUrl
+   * @param strUrl strUrl
    * @return console
    */
   public String getConsoleText(String strUrl) {
@@ -862,8 +804,7 @@ public class JenkinsApi {
   /**
    * Get
    * 
-   * @param userName
-   *          proName num
+   * @param userName proName num
    * @return console
    */
   public String getConsoleText(String userName, String proName, int num) {
@@ -874,8 +815,7 @@ public class JenkinsApi {
   /**
    * Get
    * 
-   * @param console
-   *          console
+   * @param console console
    * @return commitMessage commitMessage
    */
   public String getConsoleTextCommitMessage(String console) {
@@ -892,8 +832,7 @@ public class JenkinsApi {
   /**
    * Delete commit message
    * 
-   * @param console
-   *          text
+   * @param console text
    * @return console
    */
   private String deleteCommitMessage(String console) {
@@ -910,12 +849,9 @@ public class JenkinsApi {
   /**
    * Get Job Api Json
    * 
-   * @param username
-   *          jenkins username
-   * @param password
-   *          jenkins password
-   * @param jobUrl
-   *          job url
+   * @param username jenkins username
+   * @param password jenkins password
+   * @param jobUrl   job url
    * @return api json
    */
   public String getJobApiJson(String username, String password, String jobUrl) {
@@ -957,8 +893,7 @@ public class JenkinsApi {
   /**
    * Get checkstyle description
    * 
-   * @param jobApiJson
-   *          job api json
+   * @param jobApiJson job api json
    * @return description
    */
   public JSONObject getCheckstyleDes(String jobApiJson) {
@@ -974,8 +909,7 @@ public class JenkinsApi {
   /**
    * Get error amount
    * 
-   * @param checkstyleDes
-   *          description
+   * @param checkstyleDes description
    * @return amount
    */
   public int getCheckstyleErrorAmount(JSONObject checkstyleDes) {
@@ -994,8 +928,7 @@ public class JenkinsApi {
   /**
    * Check if project is Maven
    * 
-   * @param jobApiJson
-   *          api json
+   * @param jobApiJson api json
    * @return boolean
    */
   public Boolean checkProjectIsMvn(String jobApiJson) {
@@ -1008,12 +941,9 @@ public class JenkinsApi {
   /**
    * Get job build api json
    * 
-   * @param username
-   *          root username
-   * @param password
-   *          root password
-   * @param buildUrl
-   *          job build url
+   * @param username root username
+   * @param password root password
+   * @param buildUrl job build url
    * @return api json
    */
   public String getJobBuildApiJson(String username, String password, String buildUrl) {
@@ -1057,8 +987,7 @@ public class JenkinsApi {
   /**
    * Get the jenkins job all status color
    * 
-   * @param apiJson
-   *          jenkins job api json
+   * @param apiJson jenkins job api json
    * 
    * @return job status color
    */
@@ -1070,23 +999,36 @@ public class JenkinsApi {
     return buildResult;
   }
 
- 
+  /**
+   * get job build result
+   * 
+   * @param consoleText build detail
+   * @return is build success or not
+   */
+  public boolean getJobBuildResultByConsoleText(String consoleText, String proType) {
+    boolean isSuccess = false;
+
+    if ((proType.equals("OOP") && consoleText.contains("BUILD SUCCESS"))
+        || (proType.equals("WEB") && consoleText.contains("===Build success==="))) {
+      isSuccess = true;
+    }
+    return isSuccess;
+  }
 
   /**
    * Check is checkstyle error
    * 
-   * @param consoleText
-   *          jenkins job console text
+   * @param consoleText jenkins job console text
    * @return boolean
    */
   public boolean checkIsCheckstyleError(String consoleText, String proType) {
     boolean isCheckstyleError = false;
-    if (proType.equals("OOP")) {
+    if (proType.equals("Maven")) {
       String checkstyleError = "Failed during checkstyle execution";
       isCheckstyleError = consoleText.contains(checkstyleError);
-    } else if (proType.equals("WEB")) {
-      String webCheckstyleSuccess = "checkstyle script.";
-      isCheckstyleError = consoleText.contains(webCheckstyleSuccess);
+    } else if (proType.equals("Web")) {
+      String webCheckstyleSuccess = "===Checkstyle success===";
+      isCheckstyleError = !(consoleText.contains(webCheckstyleSuccess));
     }
     return isCheckstyleError;
   }
@@ -1094,8 +1036,7 @@ public class JenkinsApi {
   /**
    * Check is JUnit error
    *
-   * @param consoleText
-   *          jenkins job console text
+   * @param consoleText jenkins job console text
    * @return boolean
    */
   public boolean checkIsJunitError(String consoleText) {
@@ -1119,8 +1060,7 @@ public class JenkinsApi {
   /**
    * Check is Web test error
    *
-   * @param consoleText
-   *          jenkins job console text
+   * @param consoleText jenkins job console text
    * @return boolean
    */
   public boolean checkIsWebTestError(String consoleText) {
@@ -1162,8 +1102,7 @@ public class JenkinsApi {
   /**
    * Check is Initialization
    * 
-   * @param num
-   *          num
+   * @param num num
    * @return boolean
    */
   public boolean checkIsInitialization(int num) {
@@ -1177,15 +1116,14 @@ public class JenkinsApi {
   /**
    * Check is Test error
    *
-   * @param console
-   *          Protype
+   * @param console Protype
    * @return boolean
    */
   public boolean checkIsTestError(String console, String proType) {
     boolean isTestError = false;
-    if (proType.equals("OOP")) {
+    if (proType.equals("Maven")) {
       isTestError = checkIsJunitError(console);
-    } else if (proType.equals("WEB")) {
+    } else if (proType.equals("Web")) {
       isTestError = checkIsWebTestError(console);
     }
     return isTestError;
@@ -1195,8 +1133,7 @@ public class JenkinsApi {
   /**
    * Check is build success
    * 
-   * @param result
-   *          result
+   * @param result result
    * @return boolean
    */
   public boolean checkIsBuildSuccess(String result) {

@@ -55,7 +55,7 @@
       <cancelPendingBuildsOnUpdate>false</cancelPendingBuildsOnUpdate>
     </com.dabsquared.gitlabjenkins.GitLabPushTrigger>
     <hudson.triggers.SCMTrigger>
-      <spec>*/1 * * * *</spec>
+      <spec>*/5 * * * *</spec>
       <ignorePostCommitHooks>false</ignorePostCommitHooks>
     </hudson.triggers.SCMTrigger>
   </triggers>
@@ -72,8 +72,7 @@
     <hudson.tasks.Shell>
       <command>npm install --save selenium-webdriver
 npm run test
-eslint -c ./src/test/.eslintrc.js --ext .js,.html -f checkstyle ./src/web/ -o eslintReport.xml 
-htmlhint -f checkstyle ./ &gt; htmlhintReport.xml</command>
+npm run checkstyle</command>
     </hudson.tasks.Shell>
   </builders>
   <publishers>

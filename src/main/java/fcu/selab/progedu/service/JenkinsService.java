@@ -156,11 +156,12 @@ public class JenkinsService {
   @Produces(MediaType.APPLICATION_JSON)
   public Response getBuildDetail(@QueryParam("num") int num,
       @QueryParam("userName") String userName, @QueryParam("proName") String proName) {
+    ProjectDbManager projectDb = ProjectDbManager.getInstance();
     StudentDashChoosePro stuDashChoPro = new StudentDashChoosePro();
     String buildApiJson = stuDashChoPro.getBuildApiJson(num, userName, proName);
     final String strDate = stuDashChoPro.getCommitTime(buildApiJson);
     String commitMessage = stuDashChoPro.getCommitMessage(num, userName, proName);
-    String proType = proName.substring(0, 3);
+    String proType = projectDb.getAssignmentType(proName);
     String status = stuDashChoPro.getCommitStatus(num, userName, proName, buildApiJson, proType);
     String color = "circle " + status;
     JSONObject ob = new JSONObject();
