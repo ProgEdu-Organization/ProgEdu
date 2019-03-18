@@ -9,7 +9,7 @@ public class WebCheckstyleFailure implements Status {
     String checkstyleEnd = "Scanned";
     
     checkstyleInfo = consoleText.substring(consoleText.indexOf(checkstyleStart) 
-        +  checkstyleStart.length(), consoleText.lastIndexOf(checkstyleEnd));
-    return checkstyleInfo;
+        + checkstyleStart.length() + 1, consoleText.lastIndexOf(checkstyleEnd) - 1);
+    return checkstyleInfo.trim();
   }
 }

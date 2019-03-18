@@ -197,6 +197,7 @@ public class CommitResultService {
         commitRecordDb.updateRecordStatus(id, proName, status, dates[0], dates[1]);
       } else {
         commitRecordDb.insertCommitRecord(id, proName, status, dates[0], dates[1]);
+        System.out.println(status);
       }
 
       updateCommitRecordState();

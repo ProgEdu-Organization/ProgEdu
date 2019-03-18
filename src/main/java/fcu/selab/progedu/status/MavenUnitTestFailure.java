@@ -11,6 +11,7 @@ public class MavenUnitTestFailure implements Status {
     unitTest = consoleText.substring(consoleText.indexOf(startStr), goalStr - 1);
     //<, > will be HTML tag, change to the " 
     unitTest = unitTest.replaceAll("<", "\"").replaceAll(">", "\"");
-    return unitTest;
+    
+    return unitTest.trim();
   }
 }

@@ -8,7 +8,7 @@ public class MavenCompileFailure implements Status {
     String feedbackEnd = "Build step";
     feedback = consoleText.substring(consoleText.indexOf(feedbackStart),
         consoleText.indexOf(feedbackEnd));
-    return feedback;
+    return feedback.trim();
   }
 
 }

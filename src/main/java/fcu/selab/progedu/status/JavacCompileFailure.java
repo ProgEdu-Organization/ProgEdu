@@ -9,7 +9,7 @@ public class JavacCompileFailure implements Status {
     String feedbackEnd = "Build step 'Execute shell' marked build as failure";
     feedback = consoleText.substring(consoleText.indexOf(feedbackStart),
         consoleText.indexOf(feedbackEnd));
-    return feedback;
+    return feedback.trim();
 
   }
 }

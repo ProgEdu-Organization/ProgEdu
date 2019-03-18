@@ -17,7 +17,7 @@ public class MavenCheckstyleFailure implements Status {
     checkstyleInfo = consoleText.substring(consoleText.indexOf(checkstyleStart),
         consoleText.indexOf(checkstyleEnd)) + checkstyleEnd;
 
-    return checkstyleInfo;
+    return checkstyleInfo.trim();
   }
 
 }
