@@ -149,7 +149,7 @@
 						<fmt:message key="top_navbar_lanEnglish" /></a>
 				</div>
 			</li>
-			<li class="nav-item active"><a class="nav-link" href="memberLogOut.jsp">
+			<li class="nav-item active"><a class="nav-link" href="memberLogout.jsp">
 					<fmt:message key="top_navbar_signOut" /> <i class="fa fa-sign-out" aria-hidden="true"></i></a>
 			</li>
 		</ul>
