@@ -248,12 +248,14 @@ public class JenkinsService {
 
     String colorStatus = dbManager.getCommitRecordStatus(assigmentStatusData.getProjectName(),
         assigmentStatusData.getUsername(), assigmentStatusData.getNumber());
-
-    Status status = StatusFactory.getStatus(colorStatus, project.getType());
+    
+    AssignmentTypeSelector assignmentTypeSelector = 
+        AssignmentTypeFactory.getAssignmentType(project.getType());
+    Status status = assignmentTypeSelector.getStatus(colorStatus);
+    
     String detailConsoleText = jenkins.getConsoleText(url);
     String console = status.extractFailureMsg(detailConsoleText);
 
     return console;
   }
-
 }

@@ -17,8 +17,14 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
-public class MavenAssignment extends AssignmentTypeMethod {
+import fcu.selab.progedu.status.MavenStatusFactory;
 
+public class MavenAssignment extends AssignmentTypeMethod {
+  
+  public MavenAssignment() {
+    super(new MavenStatusFactory());
+  }
+  
   public String getSampleZip() {
     String folderName = "MavenQuickStart.zip";
     return folderName;
@@ -141,5 +147,4 @@ public class MavenAssignment extends AssignmentTypeMethod {
     }
 
   }
-
 }

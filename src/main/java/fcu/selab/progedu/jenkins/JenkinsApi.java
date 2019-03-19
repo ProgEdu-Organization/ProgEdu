@@ -1065,7 +1065,7 @@ public class JenkinsApi {
    */
   public boolean checkIsWebTestError(String consoleText) {
     boolean isWebTestError = false;
-    if (consoleText.contains("assert")) {
+    if (consoleText.contains("test script.")) {
       isWebTestError = true;
     } else {
       // do nothing.

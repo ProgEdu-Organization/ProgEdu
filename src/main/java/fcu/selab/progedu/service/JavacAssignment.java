@@ -17,8 +17,14 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
-public class JavacAssignment extends AssignmentTypeMethod {
+import fcu.selab.progedu.status.JavacStatusFactory;
 
+public class JavacAssignment extends AssignmentTypeMethod {
+  
+  public JavacAssignment() {
+    super(new JavacStatusFactory());
+  }
+  
   public String getSampleZip() {
     String folderName = "JavacQuickStart.zip";
     return folderName;
@@ -135,5 +141,4 @@ public class JavacAssignment extends AssignmentTypeMethod {
     }
 
   }
-
 }

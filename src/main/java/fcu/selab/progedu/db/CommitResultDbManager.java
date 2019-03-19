@@ -238,7 +238,6 @@ public class CommitResultDbManager {
           String hw = rs.getString("hw");
           String status = rs.getString(STATUS);
           int commit = rs.getInt(COMMIT);
-
           JSONObject eachHw = new JSONObject();
           eachHw.put("hw", hw);
           eachHw.put(COMMIT, commit);

@@ -111,7 +111,7 @@
         </li>
 
         <li class="nav-item active">
-        	<a class="nav-link" href="memberLogOut.jsp"><i class="fa fa-sign-out" aria-hidden="true"></i> <fmt:message key="top_navbar_signOut"/> </a>
+        	<a class="nav-link" href="memberLogout.jsp"><i class="fa fa-sign-out" aria-hidden="true"></i> <fmt:message key="top_navbar_signOut"/> </a>
         </li>
       </ul>
     </div>

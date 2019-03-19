@@ -1,6 +1,6 @@
 package fcu.selab.progedu.status;
 
-public class CheckstyleFailure implements Status {
+public class MavenCheckstyleFailure implements Status {
 
   /**
    * get checkstyle information
@@ -17,7 +17,7 @@ public class CheckstyleFailure implements Status {
     checkstyleInfo = consoleText.substring(consoleText.indexOf(checkstyleStart),
         consoleText.indexOf(checkstyleEnd)) + checkstyleEnd;
 
-    return checkstyleInfo;
+    return checkstyleInfo.trim();
   }
 
 }
