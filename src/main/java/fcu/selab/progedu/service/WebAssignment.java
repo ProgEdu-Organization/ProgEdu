@@ -16,9 +16,14 @@ import org.apache.commons.io.FileUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
+import fcu.selab.progedu.status.WebStatusFactory;
 
 public class WebAssignment extends AssignmentTypeMethod {
-
+  
+  public WebAssignment() {
+    super(new WebStatusFactory());
+  }
+  
   public String getSampleZip() {
     String folderName = "WebQuickStart.zip";
     return folderName;

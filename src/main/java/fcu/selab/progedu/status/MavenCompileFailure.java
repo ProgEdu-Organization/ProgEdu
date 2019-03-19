@@ -1,6 +1,6 @@
 package fcu.selab.progedu.status;
 
-public class CompileFailure implements Status {
+public class MavenCompileFailure implements Status {
   @Override
   public String extractFailureMsg(String consoleText) {
     String feedback;
@@ -8,7 +8,7 @@ public class CompileFailure implements Status {
     String feedbackEnd = "Build step";
     feedback = consoleText.substring(consoleText.indexOf(feedbackStart),
         consoleText.indexOf(feedbackEnd));
-    return feedback;
+    return feedback.trim();
   }
 
 }

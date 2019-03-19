@@ -1,6 +1,6 @@
 package fcu.selab.progedu.status;
 
-public class UnitTestFailure implements Status {
+public class MavenUnitTestFailure implements Status {
   @Override
   public String extractFailureMsg(String consoleText) {
     String unitTest = "";
@@ -11,6 +11,7 @@ public class UnitTestFailure implements Status {
     unitTest = consoleText.substring(consoleText.indexOf(startStr), goalStr - 1);
     //<, > will be HTML tag, change to the " 
     unitTest = unitTest.replaceAll("<", "\"").replaceAll(">", "\"");
-    return unitTest;
+    
+    return unitTest.trim();
   }
 }

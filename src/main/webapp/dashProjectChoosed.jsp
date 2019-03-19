@@ -12,6 +12,9 @@
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="fcu.selab.progedu.conn.*" %>
 <%@ page import="fcu.selab.progedu.status.*" %>
+<%@ page import="fcu.selab.progedu.service.AssignmentTypeFactory" %>
+<%@ page import="fcu.selab.progedu.service.AssignmentTypeSelector" %>
+<%@ page import="fcu.selab.progedu.service.AssignmentTypeSelector" %>
 
 <%
 	if(session.getAttribute("username") == null || session.getAttribute("username").toString().equals("")){
@@ -310,7 +313,10 @@
 			<%
 				StudentDashChoosePro studentDashChoosePro = new StudentDashChoosePro();
 				String color = studentDashChoosePro.getLastColor(choosedUser.getUsername(),projectName);
-				Status status = StatusFactory.getStatus(color, project.getType());
+				AssignmentTypeSelector assignmentTypeSelector = 
+			        AssignmentTypeFactory.getAssignmentType(project.getType());
+				
+				Status status = assignmentTypeSelector.getStatus(color);
 				int num = lastBuildMessageNum;
 				String jobName = choosedUser.getUsername() + "_" + projectName;
 				String jenkinsBuildNumUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName;
