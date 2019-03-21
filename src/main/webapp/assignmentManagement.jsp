@@ -351,10 +351,15 @@
 			</div>
 			<div class="card-block" style="padding: 20px 20px 20px 20px;">
 				<form id="newHw" style="margin-top: 10px;">
-					<div class="form-group col-md-3" style="padding-left: 0px;">
+					<div class="form-group col-md-3" style="padding-left: 0px; max-width:100%">
+						
 						<label for="Hw_Name"><h4><i class="fa fa-minus" aria-hidden="true"></i>&nbsp; <fmt:message key="teacherManageHW_label_hwName"/></h4></label>
-						<input id="Hw_Name" type="text" class="form-control" name="Hw_Name" required="required" placeholder="eg. <%=courseName%>-HW1" required/>
+						<div name="Hw_limit">
+						<input id="Hw_Name" type="text" class="form-control" name="Hw_Name" maxlength="10"   required="required" placeholder="eg. <%=courseName%>-HW1" required style="display:inline-block;max-width:fit-content"/>
+                     	<span style="color:gray"><fmt:message key="teacherManageHW_hw_name_lenth_limit"/></span>	
+                     	</div>			
 					</div>
+
 					<%
 						TimeZone.setDefault(TimeZone.getTimeZone("Asia/Taipei"));
 						Date now = new Date();
