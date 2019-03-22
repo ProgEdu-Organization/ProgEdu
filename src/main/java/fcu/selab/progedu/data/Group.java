@@ -6,9 +6,9 @@ import java.util.List;
 public class Group {
   private String groupName;
 
-  private String master;
+  private String masterId;
 
-  private List<String> contributor;
+  private List<String> contributorId;
 
   public String getGroupName() {
     return groupName;
@@ -19,19 +19,19 @@ public class Group {
   }
 
   public String getMaster() {
-    return master;
+    return masterId;
   }
 
   public void setMaster(String master) {
-    this.master = master;
+    this.masterId = master;
   }
 
   public List<String> getContributor() {
-    return contributor;
+    return contributorId;
   }
 
   public void setContributor(List<String> contributorId) {
-    this.contributor = contributorId;
+    this.contributorId = contributorId;
   }
 
   /**
@@ -40,11 +40,11 @@ public class Group {
    * @param contributorId contirbutor's username
    */
   public void addContributor(String contributorId) {
-    if (this.contributor == null) {
-      this.contributor = new ArrayList<>();
+    if (this.contributorId == null) {
+      this.contributorId = new ArrayList<>();
     }
 
-    this.contributor.add(contributorId);
+    this.contributorId.add(contributorId);
   }
 
 }
