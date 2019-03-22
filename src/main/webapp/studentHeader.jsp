@@ -97,6 +97,8 @@
       <ul class="navbar-nav mr-auto">
         <li class="nav-item active"><a class="nav-link" href="studentDashboard.jsp"><fmt:message key="top_navbar_dashboard"/></a>
         </li>
+        <li class="nav-item active"><a class="nav-link" href="./javaStyle/javaStyle.jsp"><fmt:message key="top_navbar_javaStyle"/></a>
+        </li>
       </ul>
       <ul class="navbar-nav navbar-toggler-right">
         <li class="nav-item dropdown active"><a class="nav-link dropdown-toggle" href=""
