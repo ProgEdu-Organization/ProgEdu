@@ -30,21 +30,21 @@ public class Group {
     return contributor;
   }
 
-  public void setContributor(List<String> contributor) {
-    this.contributor = contributor;
+  public void setContributor(List<String> contributorId) {
+    this.contributor = contributorId;
   }
 
   /**
    * add contirbutor to list
    * 
-   * @param contributorName contirbutor
+   * @param contributorId contirbutor's username
    */
-  public void addContributor(String contributorName) {
+  public void addContributor(String contributorId) {
     if (this.contributor == null) {
       this.contributor = new ArrayList<>();
     }
 
-    this.contributor.add(contributorName);
+    this.contributor.add(contributorId);
   }
 
 }

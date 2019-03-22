@@ -107,9 +107,9 @@ public class GroupService {
       }
 
       if (studentList.get(index).getTeamLeader()) {
-        group.setMaster(studentList.get(index).getName());
+        group.setMaster(studentList.get(index).getStudentId());
       } else {
-        group.addContributor(studentList.get(index).getName());
+        group.addContributor(studentList.get(index).getStudentId());
       }
     }
     if (!(groupName == null || groupName.isEmpty())) {
@@ -177,12 +177,12 @@ public class GroupService {
 
     groupId = newGroupId(newGroup(group.getGroupName()));
 
-    masterId = findUser(group.getMaster());
+    masterId = findUserByUsername(group.getMaster());
     conn.addMember(groupId, masterId, 40); // add member on GitLab
     gdb.addGroup(group.getGroupName(), group.getMaster(), true); // insert into db
 
     for (String developName : group.getContributor()) {
-      developerId = findUser(developName);
+      developerId = findUserByUsername(developName);
       conn.addMember(groupId, developerId, 30); // add member on GitLab
       gdb.addGroup(group.getGroupName(), developName, false); // insert into db
     }
@@ -191,16 +191,34 @@ public class GroupService {
   }
 
   /**
-   * Find user by user name
+   * Find user by user's full name
    * 
-   * @param name user name
+   * @param name user's full name
    * @return user id
    */
-  public int findUser(String name) {
+  public int findUserByName(String name) {
     List<GitlabUser> users;
     users = conn.getUsers();
     for (GitlabUser user : users) {
       if (user.getName().equals(name)) {
+        return user.getId();
+      }
+    }
+
+    return -1;
+  }
+
+  /**
+   * Find user by username
+   * 
+   * @param username username
+   * @return user id
+   */
+  public int findUserByUsername(String username) {
+    List<GitlabUser> users;
+    users = conn.getUsers();
+    for (GitlabUser user : users) {
+      if (user.getUsername().equals(username)) {
         return user.getId();
       }
     }
