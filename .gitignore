@@ -7,7 +7,3 @@
 .idea/
 .vscode/
 progedu.iml
-src/main/resources/config/jenkins_config.properties
-src/main/resources/config/gitlab_config.properties
-src/main/resources/config/course_config.properties
-src/main/resources/config/db_config.properties
