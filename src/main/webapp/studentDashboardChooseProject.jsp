@@ -188,6 +188,10 @@
 			  margin: 10px; 
 			  background: #fff3cd;
 			}
+			#reference{
+				text-align: right;
+				display: none;
+			}
 		</style>
 		<script type="text/javascript">
 				function handleClick(cb, divId){
@@ -420,7 +424,10 @@
 				String detailConsoleText = jenkins.getConsoleText(lastBuildUrl);
 				String console = status.extractFailureMsg(detailConsoleText);
 			%>
-			<h4><a id="iFrameTitle" href="<%=jenkinsBuildNumUrl%>">Feedback Information (#<%=num %>)</a></h4>
+			<div>
+				<h4><a id="iFrameTitle" href="<%=jenkinsBuildNumUrl%>">Feedback Information (#<%=num %>)</a></h4>
+				<h6 id="reference"><a href="https://blog.mosil.biz/2014/05/java-style-guide/" target="_blank">java-style-guide</a></h6>
+			<div>
 			<div id="container">
 				<pre style="overflow: auto;"><%=console%></pre>
 			</div>
@@ -493,6 +500,19 @@
 			$('#iFrameTitle').html("Feedback Information (#" + tr.id + ")");
 			$('#projectTbody tr').removeClass("tableActive");
 			$('#'+tr.id).addClass("tableActive");
+			
+			//show javaStyle Reference
+			var errorStatus = ['UTF', 'CSF', 'CPF'];
+			var $className = $(tr).children('td').find('p').attr('class');
+			$className = $className.replace('circle ','');
+			for(var s in errorStatus){
+				if(errorStatus[s] == $className){
+					$('#reference').show();
+					break;
+				}else{
+					$('#reference').hide();
+				}
+			}
 		}
 	</script>
 </html>
