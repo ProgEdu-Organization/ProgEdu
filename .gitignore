@@ -1,6 +1,6 @@
 /target/
 .checkstyle
-.properties
+*.properties
 .classpath
 .project
 .settings/
