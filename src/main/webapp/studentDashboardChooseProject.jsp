@@ -208,7 +208,7 @@
 	<link rel="bookmark" href="img/favicon.ico"/>
 	<title>ProgEdu</title>
 	</head>
-	<body>
+	<body onload="init()">
 		<%@ include file="studentHeader.jsp"%>
 	
 		<%
@@ -434,8 +434,7 @@
 			<!-- iFrame -->
 		</div>
 		<!-- -----main----- -->
-	</body>
-	<script type="text/javascript">
+		<script type="text/javascript">
 		function copyToClipboard(elem) {
 			  // create hidden text element, if it doesn't already exist
 		    var targetId = "_hiddenCopyText_";
@@ -500,9 +499,12 @@
 			$('#iFrameTitle').html("Feedback Information (#" + tr.id + ")");
 			$('#projectTbody tr').removeClass("tableActive");
 			$('#'+tr.id).addClass("tableActive");
-			
-			//show javaStyle Reference
-			var errorStatus = ['UTF', 'CSF', 'CPF'];
+			showJavaStyle(tr);
+		}
+		
+		//show javaStyle Reference
+		function showJavaStyle(tr){
+			var errorStatus = ['CSF'];
 			var $className = $(tr).children('td').find('p').attr('class');
 			$className = $className.replace('circle ','');
 			for(var s in errorStatus){
@@ -514,5 +516,15 @@
 				}
 			}
 		}
+		function init() {
+			setTimeout(function(){
+				var errorStatus = ['CSF'];
+				var num = <%=num %>;
+				var tr = $("tr[id='"+ num + "']");
+				showJavaStyle(tr);
+			},1500);
+		};
+	
 	</script>
+	</body>
 </html>
