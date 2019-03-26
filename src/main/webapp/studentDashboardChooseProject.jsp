@@ -18,7 +18,6 @@
 <%@ page import="fcu.selab.progedu.status.*" %>
 <%@ page import="fcu.selab.progedu.service.AssignmentTypeFactory" %>
 <%@ page import="fcu.selab.progedu.service.AssignmentTypeSelector" %>
-
 <%
 	String private_token = null;
 	if(null != session.getAttribute("private_token") && !"".equals(session.getAttribute("private_token")) ){
