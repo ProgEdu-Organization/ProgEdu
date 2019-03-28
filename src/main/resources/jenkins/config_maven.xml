@@ -57,21 +57,38 @@
   </triggers>
   <concurrentBuild>false</concurrentBuild>
   <builders>
-    <org.jenkinsci.plugins.AssessmentBuilder plugin="jenkins-progedu@1.0-SNAPSHOT">
-      <jobName>D00001235_OOP-HW2</jobName>
-      <testFileName>OOP-HW2</testFileName>
-      <proDetailUrl>http://140.134.26.71:10088/ProgEdu/webapi/project/checksum?proName=OOP-HW2</proDetailUrl>
-      <testFileUrl>http://140.134.26.71:10088/ProgEdu/webapi/jenkins/getTestFile?filePath=/usr/local/tomcat/temp/tests/OOP-HW2.zip</testFileUrl>
-      <testFileChecksum>2120768370</testFileChecksum>
-      <testFilePath></testFilePath>
-    </org.jenkinsci.plugins.AssessmentBuilder>
-    <hudson.tasks.Maven>
-      <targets>package</targets>
-      <mavenName>Global</mavenName>
-      <usePrivateRepository>false</usePrivateRepository>
-      <settings class="jenkins.mvn.DefaultSettingsProvider"/>
-      <globalSettings class="jenkins.mvn.DefaultGlobalSettingsProvider"/>
-    </hudson.tasks.Maven>
+    <hudson.plugins.build__timeout.BuildStepWithTimeout plugin="build-timeout@1.19">
+      <strategy class="hudson.plugins.build_timeout.impl.AbsoluteTimeOutStrategy">
+        <timeoutMinutes>15</timeoutMinutes>
+      </strategy>
+      <buildStep class="org.jenkinsci.plugins.AssessmentBuilder" plugin="jenkins-progedu@1.0-SNAPSHOT">
+        <jobName>root_OOP-HW4</jobName>
+        <testFileName>OOP-HW4</testFileName>
+        <proDetailUrl>http://140.134.26.71:10008/ProgEdu/webapi/project/checksum?proName=OOP-HW4</proDetailUrl>
+        <testFileUrl>http://140.134.26.71:10088/ProgEdu/webapi/jenkins/getTestFile?filePath=/usr/local/tomcat/temp/tests/OOP-HW2.zip</testFileUrl>
+        <testFileChecksum>2120768370</testFileChecksum>
+        <testFilePath></testFilePath>
+      </buildStep>
+      <operationList>
+        <hudson.plugins.build__timeout.operations.FailOperation/>
+      </operationList>
+    </hudson.plugins.build__timeout.BuildStepWithTimeout>
+    <hudson.plugins.build__timeout.BuildStepWithTimeout plugin="build-timeout@1.19">
+      <strategy class="hudson.plugins.build_timeout.impl.AbsoluteTimeOutStrategy">
+        <timeoutMinutes>15</timeoutMinutes>
+      </strategy>
+      <buildStep class="hudson.tasks.Maven">
+        <targets>package</targets>
+        <mavenName>Global</mavenName>
+        <usePrivateRepository>false</usePrivateRepository>
+        <settings class="jenkins.mvn.DefaultSettingsProvider"/>
+        <globalSettings class="jenkins.mvn.DefaultGlobalSettingsProvider"/>
+        <injectBuildVariables>false</injectBuildVariables>
+      </buildStep>
+      <operationList>
+        <hudson.plugins.build__timeout.operations.FailOperation/>
+      </operationList>
+    </hudson.plugins.build__timeout.BuildStepWithTimeout>
   </builders>
   <publishers>
     <hudson.plugins.checkstyle.CheckStylePublisher plugin="checkstyle@3.49">
