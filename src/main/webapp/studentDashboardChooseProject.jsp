@@ -188,7 +188,7 @@
 			  background: #fff3cd;
 			}
 			#reference{
-				text-align: right;
+				text-align: left;
 				display: none;
 			}
 		</style>
@@ -416,8 +416,10 @@
 			
 				StudentDashChoosePro studentDashChoosePro = new StudentDashChoosePro();
 				String color = studentDashChoosePro.getLastColor(choosedUser.getUsername(),projectName);
+				String  projectType = project.getType();
+				
 				AssignmentTypeSelector assignmentTypeSelector = 
-			        AssignmentTypeFactory.getAssignmentType(project.getType());
+			        AssignmentTypeFactory.getAssignmentType(projectType);
 				Status status = assignmentTypeSelector.getStatus(color);
 				
 				String detailConsoleText = jenkins.getConsoleText(lastBuildUrl);
@@ -504,24 +506,28 @@
 		//show javaStyle Reference
 		function showJavaStyle(tr){
 			var errorStatus = ['CSF'];
-			var $className = $(tr).children('td').find('p').attr('class');
-			$className = $className.replace('circle ','');
-			for(var s in errorStatus){
-				if(errorStatus[s] == $className){
-					$('#reference').show();
-					break;
-				}else{
-					$('#reference').hide();
+			var projectType = "<%=projectType%>";
+			if(projectType == "Maven"){
+				var $className = $(tr).children('td').find('p').attr('class');
+				$className = $className.replace('circle ','');
+				for(var s in errorStatus){
+					if(errorStatus[s] == $className){
+						$('#reference').show();
+						break;
+					}else{
+						$('#reference').hide();
+					}
 				}
 			}
+			
 		}
 		function init() {
 			setTimeout(function(){
 				var errorStatus = ['CSF'];
-				var num = <%=num %>;
+				var num = <%=num%>;
 				var tr = $("tr[id='"+ num + "']");
 				showJavaStyle(tr);
-			},1500);
+			},1000);
 		};
 	
 	</script>
