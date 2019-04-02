@@ -283,6 +283,7 @@
 				ProjectDbManager pDb = ProjectDbManager.getInstance();
 				Project project = pDb.getProjectByName(projectName);
 				
+				
 			%>
 			<div style="margin: 10px 10px 10px 10px;">
 				<h2 style="white-space: nowrap"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp; <%=projectName%></h2>
@@ -502,7 +503,6 @@
 			$('#'+tr.id).addClass("tableActive");
 			showJavaStyle(tr);
 		}
-		
 		//show javaStyle Reference
 		function showJavaStyle(tr){
 			var errorStatus = ['CSF'];
