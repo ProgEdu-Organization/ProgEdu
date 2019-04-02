@@ -18,7 +18,6 @@
 <%@ page import="fcu.selab.progedu.status.*" %>
 <%@ page import="fcu.selab.progedu.service.AssignmentTypeFactory" %>
 <%@ page import="fcu.selab.progedu.service.AssignmentTypeSelector" %>
-
 <%
 	String private_token = null;
 	if(null != session.getAttribute("private_token") && !"".equals(session.getAttribute("private_token")) ){
@@ -188,6 +187,10 @@
 			  margin: 10px; 
 			  background: #fff3cd;
 			}
+			#reference{
+				text-align: left;
+				display: none;
+			}
 		</style>
 		<script type="text/javascript">
 				function handleClick(cb, divId){
@@ -204,7 +207,7 @@
 	<link rel="bookmark" href="img/favicon.ico"/>
 	<title>ProgEdu</title>
 	</head>
-	<body>
+	<body onload="init()">
 		<%@ include file="studentHeader.jsp"%>
 	
 		<%
@@ -279,6 +282,7 @@
 				List<String> jobCommitCounts = stuDash.getMainTableJobCommitCount(stuProjects);
 				ProjectDbManager pDb = ProjectDbManager.getInstance();
 				Project project = pDb.getProjectByName(projectName);
+				
 				
 			%>
 			<div style="margin: 10px 10px 10px 10px;">
@@ -413,22 +417,26 @@
 			
 				StudentDashChoosePro studentDashChoosePro = new StudentDashChoosePro();
 				String color = studentDashChoosePro.getLastColor(choosedUser.getUsername(),projectName);
+				String  projectType = project.getType();
+				
 				AssignmentTypeSelector assignmentTypeSelector = 
-			        AssignmentTypeFactory.getAssignmentType(project.getType());
+			        AssignmentTypeFactory.getAssignmentType(projectType);
 				Status status = assignmentTypeSelector.getStatus(color);
 				
 				String detailConsoleText = jenkins.getConsoleText(lastBuildUrl);
 				String console = status.extractFailureMsg(detailConsoleText);
 			%>
-			<h4><a id="iFrameTitle" href="<%=jenkinsBuildNumUrl%>">Feedback Information (#<%=num %>)</a></h4>
+			<div>
+				<h4><a id="iFrameTitle" href="<%=jenkinsBuildNumUrl%>">Feedback Information (#<%=num %>)</a></h4>
+				<h6 id="reference"><a href="https://blog.mosil.biz/2014/05/java-style-guide/" target="_blank">java-style-guide</a></h6>
+			<div>
 			<div id="container">
 				<pre style="overflow: auto;"><%=console%></pre>
 			</div>
 			<!-- iFrame -->
 		</div>
 		<!-- -----main----- -->
-	</body>
-	<script type="text/javascript">
+		<script type="text/javascript">
 		function copyToClipboard(elem) {
 			  // create hidden text element, if it doesn't already exist
 		    var targetId = "_hiddenCopyText_";
@@ -493,6 +501,35 @@
 			$('#iFrameTitle').html("Feedback Information (#" + tr.id + ")");
 			$('#projectTbody tr').removeClass("tableActive");
 			$('#'+tr.id).addClass("tableActive");
+			showJavaStyle(tr);
 		}
+		//show javaStyle Reference
+		function showJavaStyle(tr){
+			var errorStatus = ['CSF'];
+			var projectType = "<%=projectType%>";
+			if(projectType == "Maven"){
+				var $className = $(tr).children('td').find('p').attr('class');
+				$className = $className.replace('circle ','');
+				for(var s in errorStatus){
+					if(errorStatus[s] == $className){
+						$('#reference').show();
+						break;
+					}else{
+						$('#reference').hide();
+					}
+				}
+			}
+			
+		}
+		function init() {
+			setTimeout(function(){
+				var errorStatus = ['CSF'];
+				var num = <%=num%>;
+				var tr = $("tr[id='"+ num + "']");
+				showJavaStyle(tr);
+			},1000);
+		};
+	
 	</script>
+	</body>
 </html>

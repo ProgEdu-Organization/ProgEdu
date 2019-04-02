@@ -96,7 +96,7 @@
     <div class="collapse navbar-collapse" id="navbarsExampleDefault">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item active"><a class="nav-link" href="studentDashboard.jsp"><fmt:message key="top_navbar_dashboard"/></a>
-        </li>
+        </li>  
       </ul>
       <ul class="navbar-nav navbar-toggler-right">
         <li class="nav-item dropdown active"><a class="nav-link dropdown-toggle" href=""

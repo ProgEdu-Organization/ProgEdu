@@ -12,7 +12,7 @@
     <configVersion>2</configVersion>
     <userRemoteConfigs>
       <hudson.plugins.git.UserRemoteConfig>
-        <url>http://140.134.26.71:20008/m0707350/web-hw2.git</url>
+        <url>http://140.134.26.71:20008/root/web-hw4.git</url>
         <credentialsId>gitlab_root</credentialsId>
       </hudson.plugins.git.UserRemoteConfig>
     </userRemoteConfigs>
@@ -50,7 +50,7 @@
       <excludeBranchesSpec></excludeBranchesSpec>
       <sourceBranchRegex></sourceBranchRegex>
       <targetBranchRegex></targetBranchRegex>
-      <secretToken>{AQAAABAAAAAgh4rZEmyyPIZ06860xqSQDQizLqnvdxT+41yK4AScsA+4jSIOeKCHz6WpoZyiHhWz}</secretToken>
+      <secretToken>{AQAAABAAAAAgvKvsLTn070k2c+VwHsXs5d2MYAzeGzXzROR+JPIInEF3RNjbBFPbdWNgFLAyA8eQ}</secretToken>
       <pendingBuildName></pendingBuildName>
       <cancelPendingBuildsOnUpdate>false</cancelPendingBuildsOnUpdate>
     </com.dabsquared.gitlabjenkins.GitLabPushTrigger>
@@ -61,19 +61,35 @@
   </triggers>
   <concurrentBuild>false</concurrentBuild>
   <builders>
-    <org.jenkinsci.plugins.AssessmentBuilder plugin="jenkins-progedu@1.0-SNAPSHOT">
-      <jobName>M0707350_WEB-HW2</jobName>
-      <testFileName>WEB-HW2</testFileName>
-      <proDetailUrl>http://140.134.26.71:10008/ProgEdu/webapi/project/checksum?proName=WEB-HW2</proDetailUrl>
-      <testFileUrl>http://140.134.26.71:10008/ProgEdu/webapi/jenkins/getTestFile?filePath=/usr/local/tomcat/temp/tests/WEB-HW2.zip</testFileUrl>
-      <testFileChecksum>3447884790</testFileChecksum>
-      <testFilePath></testFilePath>
-    </org.jenkinsci.plugins.AssessmentBuilder>
-    <hudson.tasks.Shell>
-      <command>npm install --save selenium-webdriver
+    <hudson.plugins.build__timeout.BuildStepWithTimeout plugin="build-timeout@1.19">
+      <strategy class="hudson.plugins.build_timeout.impl.AbsoluteTimeOutStrategy">
+        <timeoutMinutes>15</timeoutMinutes>
+      </strategy>
+      <buildStep class="org.jenkinsci.plugins.AssessmentBuilder" plugin="jenkins-progedu@1.0-SNAPSHOT">
+        <jobName>root_WEB-HW1</jobName>
+        <testFileName>WEB-HW1</testFileName>
+        <proDetailUrl>http://140.134.26.71:10008/ProgEdu/webapi/project/checksum?proName=WEB-HW1</proDetailUrl>
+        <testFileUrl>http://140.134.26.71:10008/ProgEdu/webapi/jenkins/getTestFile?filePath=/usr/local/tomcat/temp/tests/WEB-HW1.zip</testFileUrl>
+        <testFileChecksum>2354726748</testFileChecksum>
+        <testFilePath></testFilePath>
+      </buildStep>
+      <operationList>
+        <hudson.plugins.build__timeout.operations.FailOperation/>
+      </operationList>
+    </hudson.plugins.build__timeout.BuildStepWithTimeout>
+    <hudson.plugins.build__timeout.BuildStepWithTimeout plugin="build-timeout@1.19">
+      <strategy class="hudson.plugins.build_timeout.impl.AbsoluteTimeOutStrategy">
+        <timeoutMinutes>15</timeoutMinutes>
+      </strategy>
+      <buildStep class="hudson.tasks.Shell">
+        <command>npm install --save selenium-webdriver
 npm run test
 npm run checkstyle</command>
-    </hudson.tasks.Shell>
+      </buildStep>
+      <operationList>
+        <hudson.plugins.build__timeout.operations.FailOperation/>
+      </operationList>
+    </hudson.plugins.build__timeout.BuildStepWithTimeout>
   </builders>
   <publishers>
     <hudson.plugins.checkstyle.CheckStylePublisher plugin="checkstyle@4.0.0">
@@ -111,12 +127,26 @@ npm run checkstyle</command>
     </hudson.plugins.checkstyle.CheckStylePublisher>
     <org.jenkinsci.plugins.UpdatingDbPublisher plugin="jenkins-progedu@1.0-SNAPSHOT">
       <progeduDbUrl>http://140.134.26.71:10008/ProgEdu/webapi/commits/update</progeduDbUrl>
-      <user>M0707350</user>
-      <proName>WEB-HW2</proName>
+      <user>root</user>
+      <proName>WEB-HW4</proName>
     </org.jenkinsci.plugins.UpdatingDbPublisher>
+    <hudson.plugins.ws__cleanup.WsCleanup plugin="ws-cleanup@0.37">
+      <patterns class="empty-list"/>
+      <deleteDirs>false</deleteDirs>
+      <skipWhenFailed>false</skipWhenFailed>
+      <cleanWhenSuccess>true</cleanWhenSuccess>
+      <cleanWhenUnstable>true</cleanWhenUnstable>
+      <cleanWhenFailure>true</cleanWhenFailure>
+      <cleanWhenNotBuilt>true</cleanWhenNotBuilt>
+      <cleanWhenAborted>true</cleanWhenAborted>
+      <notFailBuild>false</notFailBuild>
+      <cleanupMatrixParent>false</cleanupMatrixParent>
+      <externalDelete></externalDelete>
+      <disableDeferredWipeout>false</disableDeferredWipeout>
+    </hudson.plugins.ws__cleanup.WsCleanup>
   </publishers>
   <buildWrappers>
-    <jenkins.plugins.nodejs.NodeJSBuildWrapper plugin="nodejs@1.2.7">
+    <jenkins.plugins.nodejs.NodeJSBuildWrapper plugin="nodejs@1.2.8">
       <nodeJSInstallationName>Global</nodeJSInstallationName>
     </jenkins.plugins.nodejs.NodeJSBuildWrapper>
   </buildWrappers>

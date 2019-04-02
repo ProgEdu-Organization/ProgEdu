@@ -14,7 +14,6 @@
 <%@ page import="fcu.selab.progedu.status.*" %>
 <%@ page import="fcu.selab.progedu.service.AssignmentTypeFactory" %>
 <%@ page import="fcu.selab.progedu.service.AssignmentTypeSelector" %>
-<%@ page import="fcu.selab.progedu.service.AssignmentTypeSelector" %>
 
 <%
 	if(session.getAttribute("username") == null || session.getAttribute("username").toString().equals("")){
