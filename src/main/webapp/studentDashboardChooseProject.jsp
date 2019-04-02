@@ -18,6 +18,9 @@
 <%@ page import="fcu.selab.progedu.status.*" %>
 <%@ page import="fcu.selab.progedu.service.AssignmentTypeFactory" %>
 <%@ page import="fcu.selab.progedu.service.AssignmentTypeSelector" %>
+<%@ include file="language.jsp"%>
+<%@ include file="studentHeader.jsp"%>
+
 <%
 	String private_token = null;
 	if(null != session.getAttribute("private_token") && !"".equals(session.getAttribute("private_token")) ){
@@ -48,8 +51,6 @@
 	}
 	
 %>
-
-<%@ include file="language.jsp"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 	<head>
@@ -208,8 +209,6 @@
 	<title>ProgEdu</title>
 	</head>
 	<body onload="init()">
-		<%@ include file="studentHeader.jsp"%>
-	
 		<%
 			//To display the under html code (about some if-else)
 			StudentDash stuDash = new StudentDash(private_token);
