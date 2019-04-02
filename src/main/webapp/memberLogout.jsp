@@ -13,6 +13,7 @@
 <body>
 	<%
 		session.setAttribute("username", null);
+		session.removeAttribute("page");
 		session.removeAttribute("enterError");
 		response.sendRedirect("index.jsp");
 	%>

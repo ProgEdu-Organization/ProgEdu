@@ -15,13 +15,11 @@
 <%@ page import="fcu.selab.progedu.conn.Language" %>
 <%@ page import="javax.servlet.http.Cookie" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ include file="language.jsp"%>
+<%@ include file="studentHeader.jsp"%>
 
 <%
-	if(null == session.getAttribute("username") || ("").equals(session.getAttribute("username").toString())){
-		response.sendRedirect("index.jsp");
-	}
 	session.putValue("page", "studentDashboard");
-	
 	// Set the student private_token
 	String private_token = null;
 	
@@ -52,8 +50,6 @@
 	System.out.println("lan : " + lan);
 	System.out.println("basename : " + basename);*/
 %>
-
-<%@ include file="language.jsp"%>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -191,9 +187,6 @@
 		// Get the user's Gitlab project
   		List<GitlabProject> stuProjects = stuDash.getStuProject();
 	%>
-	
-	<%@ include file="studentHeader.jsp"%>
-	
 		<!-- -----sidebar----- -->
 		<div id="sidebar">
 			<ul class="nav flex-column" style="padding-top: 20px;">
