@@ -25,6 +25,10 @@
 	</style>
 	
 	<%
+		if(null == session.getAttribute("username") || ("").equals(session.getAttribute("username").toString())){
+			response.sendRedirect("index.jsp");
+		}
+		session.putValue("page", "studentDashboard");
 		int userId = 0;
 		Cookie[] cookiesUserId = request.getCookies();
 		Cookie cooUserId = null;
