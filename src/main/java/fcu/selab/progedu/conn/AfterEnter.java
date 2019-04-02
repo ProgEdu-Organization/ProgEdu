@@ -52,9 +52,7 @@ public class AfterEnter extends HttpServlet {
     final HttpSession session = request.getSession();
     String username = request.getParameter(USER_NAME);
     String password = request.getParameter("password");
-
     String privateToken = checkEnter(username, password);
-
     sendRedirect(response, session, privateToken, username);
   }
 
