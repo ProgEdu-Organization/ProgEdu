@@ -210,10 +210,10 @@ public class StudentDashChoosePro {
    */
   public String getCommitMessage(int num, String userName, String projectName) {
     String console = jenkins.getCompleteConsoleText(userName, projectName, num);
-    // String modifiedCommit = jenkins.getConsoleTextCommitMessage(console);
-    // modifiedCommit = modifiedCommit.replaceAll("<script>", "
-    // ").replaceAll("</script>", " ");
-    return jenkins.getConsoleTextCommitMessage(console);
+    String modifiedCommit = jenkins.getConsoleTextCommitMessage(console);
+    // Removing "<" and ">" to prevent js function.
+    modifiedCommit = modifiedCommit.replaceAll("<", "").replaceAll(">", "");
+    return modifiedCommit;
   }
 
   /**
