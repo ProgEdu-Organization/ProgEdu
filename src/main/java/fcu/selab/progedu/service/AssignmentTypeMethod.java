@@ -18,6 +18,8 @@ import fcu.selab.progedu.jenkins.JenkinsApi;
 import fcu.selab.progedu.status.Status;
 import fcu.selab.progedu.status.StatusFactory;
 import fcu.selab.progedu.utils.ZipHandler;
+import net.lingala.zip4j.core.ZipFile;
+import net.lingala.zip4j.exception.ZipException;
 
 public abstract class AssignmentTypeMethod implements AssignmentTypeSelector {
 
@@ -28,17 +30,14 @@ public abstract class AssignmentTypeMethod implements AssignmentTypeSelector {
   public AssignmentTypeMethod(StatusFactory statusFactory) {
     this.statusFactory = statusFactory;
   }
-  
+
   public abstract String getSampleZip();
 
   /**
    * 
-   * @param zipFilePath
-   *          zipFilePath
-   * @param zipFolderName
-   *          zipFolderName
-   * @param projectName
-   *          projectName
+   * @param zipFilePath   zipFilePath
+   * @param zipFolderName zipFolderName
+   * @param projectName   projectName
    */
 
   public void unzip(String zipFilePath, String zipFolderName, String projectName,
@@ -75,6 +74,21 @@ public abstract class AssignmentTypeMethod implements AssignmentTypeSelector {
       testsDir.mkdir();
     } else {
       System.out.println(testDirectory);
+    }
+
+    String targetDirectory = testDir + projectName + "-COMPLETE";
+    File targetDir = new File(targetDirectory);
+    if (!targetDir.exists()) {
+      targetDir.mkdir();
+    } else {
+      System.out.println(targetDir);
+    }
+
+    try {
+      ZipFile zipFile = new ZipFile(zipFilePath);
+      zipFile.extractAll(targetDirectory);
+    } catch (ZipException e) {
+      e.printStackTrace();
     }
 
     ZipInputStream zipIn = new ZipInputStream(new FileInputStream(zipFilePath));
@@ -128,12 +142,9 @@ public abstract class AssignmentTypeMethod implements AssignmentTypeSelector {
 
   /**
    * 
-   * @param name
-   *          name
-   * @param jenkinsRootUsername
-   *          jenkinsRootUsername
-   * @param jenkinsRootPassword
-   *          jenkinsRootPassword
+   * @param name                name
+   * @param jenkinsRootUsername jenkinsRootUsername
+   * @param jenkinsRootPassword jenkinsRootPassword
    */
   public void createJenkinsJob(String name, String jenkinsRootUsername, String jenkinsRootPassword)
       throws Exception {
@@ -157,14 +168,10 @@ public abstract class AssignmentTypeMethod implements AssignmentTypeSelector {
 
   /**
    * 
-   * @param userName
-   *          userName
-   * @param proName
-   *          proName
-   * @param jenkinsCrumb
-   *          jenkinsCrumb
-   * @param sb
-   *          sb
+   * @param userName     userName
+   * @param proName      proName
+   * @param jenkinsCrumb jenkinsCrumb
+   * @param sb           sb
    */
   public void createAllJenkinsJob(String userName, String proName, String jenkinsCrumb,
       StringBuilder sb) {
@@ -183,12 +190,9 @@ public abstract class AssignmentTypeMethod implements AssignmentTypeSelector {
 
   /**
    * 
-   * @param proName
-   *          proName
-   * @param jenkinsCrumb
-   *          jenkinsCrumb
-   * @param sb
-   *          sb
+   * @param proName      proName
+   * @param jenkinsCrumb jenkinsCrumb
+   * @param sb           sb
    */
   public void createRootJob(String proName, String jenkinsCrumb, StringBuilder sb)
       throws Exception {
@@ -204,14 +208,10 @@ public abstract class AssignmentTypeMethod implements AssignmentTypeSelector {
 
   /**
    * 
-   * @param userName
-   *          userName
-   * @param proName
-   *          proName
-   * @param proUrl
-   *          proUrl
-   * @param sb
-   *          sb
+   * @param userName userName
+   * @param proName  proName
+   * @param proUrl   proUrl
+   * @param sb       sb
    */
   public String modifyXml(String userName, String proName, String proUrl, StringBuilder sb) {
     String filePath = null;
@@ -234,7 +234,7 @@ public abstract class AssignmentTypeMethod implements AssignmentTypeSelector {
 
     return filePath;
   }
-  
+
   /**
    * @param statusType status.
    */

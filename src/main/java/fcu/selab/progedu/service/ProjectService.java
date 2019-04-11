@@ -437,6 +437,9 @@ public class ProjectService {
 
     String removeZipTestFileCommand = "rm tests/" + name + ".zip";
     execLinuxCommandInFile(removeZipTestFileCommand, TEMP_DIR);
+
+    String removeFileCommand = "rm -rf tests/" + name + "-COMPLETE";
+    execLinuxCommandInFile(removeFileCommand, TEMP_DIR);
     // delete db
     dbManager.deleteProject(name);
     commitRecordService.deleteRecord(name);
