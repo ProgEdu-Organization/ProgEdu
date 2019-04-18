@@ -282,8 +282,6 @@
 						var str = JSON.stringify(responseText);
 						var obj = JSON.parse(str);
 						chart2Array.push(obj);
-						console.log("obj:"+obj);
-						console.log("str:"+str);
 					}, 
 					error : function(responseText,A,B) {
 						console.log(responseText,A,B);

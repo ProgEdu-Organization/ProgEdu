@@ -165,4 +165,22 @@ public class CommitRecordStateDbManager {
     }
     return array;
   }
+
+  /**
+   * delete built record state of specific hw
+   *
+   * @param hw
+   *          hw
+   */
+  public void deleteRecordState(String hw) {
+    String sql = "DELETE FROM Commit_Record_State WHERE hw=?";
+
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+      preStmt.setString(1, hw);
+      preStmt.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
 }
