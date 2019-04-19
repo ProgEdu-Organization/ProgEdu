@@ -6,7 +6,7 @@ import org.gitlab.api.models.GitlabUser;
 
 import fcu.selab.progedu.conn.Conn;
 import fcu.selab.progedu.jenkins.JenkinsApi;
-import fcu.selab.progedu.service.ProjectService;
+import fcu.selab.progedu.utils.Linux;
 
 public class JenkinsApiTest {
   JenkinsApi jenkins = JenkinsApi.getInstance();
@@ -14,11 +14,11 @@ public class JenkinsApiTest {
   List<GitlabUser> users = conn.getUsers();
 
   public static void main(String[] args) {
-    ProjectService ps2 = new ProjectService();
+    Linux linuxApi = new Linux();
     String tempDir = System.getProperty("java.io.tmpdir");
     String uploadDir = tempDir + "/uploads/";
     String projectName = "OOP-HW2";
     String command = "rm -rf " + projectName;
-    ps2.execLinuxCommandInFile(command, uploadDir);
+    linuxApi.execLinuxCommandInFile(command, uploadDir);
   }
 }
