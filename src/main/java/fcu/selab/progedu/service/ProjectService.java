@@ -178,8 +178,8 @@ public class ProjectService {
     linuxApi.execLinuxCommandInFile(pushCommand, cloneFilePath);
 
     // remove project file in linux
-//    String removeFileCommand = "rm -rf uploads/";
-//    linuxApi.execLinuxCommandInFile(removeFileCommand, TEMP_DIR);
+    String removeFileCommand = "rm -rf uploads/";
+    linuxApi.execLinuxCommandInFile(removeFileCommand, TEMP_DIR);
 
     // 9. Add project to database
     Date date = new Date();
