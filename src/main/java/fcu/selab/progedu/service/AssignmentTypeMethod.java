@@ -42,7 +42,6 @@ public abstract class AssignmentTypeMethod implements AssignmentTypeSelector {
 
   public void unzip(String zipFilePath, String zipFolderName, String projectName,
       ZipHandler unzipHandler) throws IOException {
-
     zipHandler = unzipHandler;
     final String tempDir = System.getProperty("java.io.tmpdir");
     final String uploadDir = tempDir + "/uploads/";
