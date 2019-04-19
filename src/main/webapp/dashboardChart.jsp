@@ -243,7 +243,7 @@
 				%>
 			</script>
 			<%
-				String[] colors = {"S", "CPF", "CSF", "CTF", "NB"};
+				String[] colors = {"BS", "CPF", "CSF", "UTF", "INI"};
 				for (String color : colors) {
 			%>
 					<script type="text/javascript">
