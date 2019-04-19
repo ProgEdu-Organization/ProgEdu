@@ -16,16 +16,38 @@ import org.apache.commons.io.FileUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
+import fcu.selab.progedu.status.WebStatusFactory;
 
 public class WebAssignment extends AssignmentTypeMethod {
-
+  
+  public WebAssignment() {
+    super(new WebStatusFactory());
+  }
+  
   public String getSampleZip() {
     String folderName = "WebQuickStart.zip";
     return folderName;
   }
 
+  /**
+   * searchFile
+   * 
+   * @param entryNewName
+   *          entryNewName
+   */
   public void searchFile(String entryNewName) {
-
+    StringBuilder sb = new StringBuilder();
+    String last = "";
+    if (entryNewName.endsWith(".js") || entryNewName.endsWith(".eslintrc.js")) {
+      last = entryNewName.substring(entryNewName.length() - 3, entryNewName.length());
+    }
+    String fileName = null;
+    for (int i = 0; i < entryNewName.length() - 3; i++) {
+      if (entryNewName.substring(i, i + 3).equals("src")) {
+        fileName = entryNewName.substring(i);
+        System.out.println("Search web file fileName : " + fileName);
+      }
+    }
   }
 
   /**
@@ -44,16 +66,19 @@ public class WebAssignment extends AssignmentTypeMethod {
         copyTestFile(fileEntry, strFolder, testFilePath);
       } else {
         // web project
-        if (fileEntry.getAbsolutePath().contains("features")) {
-          File dataFile = new File(strFolder + "/features");
-          File targetFile = new File(testFilePath + "/features");
-          try {
-            FileUtils.copyDirectory(dataFile, targetFile);
-            FileUtils.deleteDirectory(dataFile);
-          } catch (IOException e) {
-            e.printStackTrace();
-          }
+        if (fileEntry.getAbsolutePath().contains("src")) {
+          String entry = fileEntry.getAbsolutePath();
+          if (entry.contains("src/test")) {
 
+            File dataFile = new File(strFolder + "/src/test");
+            File targetFile = new File(testFilePath + "/src/test");
+            try {
+              FileUtils.copyDirectory(dataFile, targetFile);
+              FileUtils.deleteDirectory(dataFile);
+            } catch (IOException e) {
+              e.printStackTrace();
+            }
+          }
         }
       }
     }
@@ -91,11 +116,11 @@ public class WebAssignment extends AssignmentTypeMethod {
       Node jobName = doc.getElementsByTagName("jobName").item(0);
       jobName.setTextContent(strJobName);
 
-      Node ndUrl = doc.getElementsByTagName("command").item(0);
-      ndUrl.setTextContent(sb.toString());
-
       Node testFileName = doc.getElementsByTagName("testFileName").item(0);
       testFileName.setTextContent(proName);
+
+      Node proDetailUrl = doc.getElementsByTagName("proDetailUrl").item(0);
+      proDetailUrl.setTextContent(tomcatUrl);
 
       Node progeduDbUrl = doc.getElementsByTagName("progeduDbUrl").item(0);
       progeduDbUrl.setTextContent(updateDbUrl);
@@ -105,9 +130,6 @@ public class WebAssignment extends AssignmentTypeMethod {
 
       Node ndProName = doc.getElementsByTagName("proName").item(0);
       ndProName.setTextContent(proName);
-
-      Node proDetailUrl = doc.getElementsByTagName("proDetailUrl").item(0);
-      proDetailUrl.setTextContent(tomcatUrl);
 
       // write the content into xml file
       TransformerFactory transformerFactory = TransformerFactory.newInstance();

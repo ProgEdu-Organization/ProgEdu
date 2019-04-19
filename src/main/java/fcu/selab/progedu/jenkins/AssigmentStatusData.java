@@ -13,7 +13,7 @@ public class AssigmentStatusData {
    *          project url
    */
   public AssigmentStatusData(String url) {
-
+    // suppose url = http://140.134.26.71:8888/job/M0000001_OOP-HW1/1/console
     // username
     int startChar = url.indexOf("job") + 4;
     int endChar = url.indexOf("_");

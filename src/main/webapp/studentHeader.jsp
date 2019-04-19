@@ -25,6 +25,10 @@
 	</style>
 	
 	<%
+		if(null == session.getAttribute("username") || ("").equals(session.getAttribute("username").toString())){
+			response.sendRedirect("index.jsp");
+		}
+		session.putValue("page", "studentDashboard");
 		int userId = 0;
 		Cookie[] cookiesUserId = request.getCookies();
 		Cookie cooUserId = null;
@@ -96,7 +100,7 @@
     <div class="collapse navbar-collapse" id="navbarsExampleDefault">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item active"><a class="nav-link" href="studentDashboard.jsp"><fmt:message key="top_navbar_dashboard"/></a>
-        </li>
+        </li>  
       </ul>
       <ul class="navbar-nav navbar-toggler-right">
         <li class="nav-item dropdown active"><a class="nav-link dropdown-toggle" href=""
@@ -111,7 +115,7 @@
         </li>
 
         <li class="nav-item active">
-        	<a class="nav-link" href="memberLogOut.jsp"><i class="fa fa-sign-out" aria-hidden="true"></i> <fmt:message key="top_navbar_signOut"/> </a>
+        	<a class="nav-link" href="memberLogout.jsp"><i class="fa fa-sign-out" aria-hidden="true"></i> <fmt:message key="top_navbar_signOut"/> </a>
         </li>
       </ul>
     </div>

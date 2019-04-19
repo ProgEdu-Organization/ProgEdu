@@ -1,13 +1,11 @@
 package fcu.selab.progedu.service;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
@@ -50,6 +48,7 @@ import fcu.selab.progedu.data.Project;
 import fcu.selab.progedu.db.ProjectDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.jenkins.JenkinsApi;
+import fcu.selab.progedu.utils.Linux;
 import fcu.selab.progedu.utils.ZipHandler;
 
 @Path("project/")
@@ -72,6 +71,7 @@ public class ProjectService {
   private ProjectDbManager dbManager = ProjectDbManager.getInstance();
   private CommitRecordService commitRecordService = new CommitRecordService();
   private CommitResultService commitResultService = new CommitResultService();
+  private CommitRecordStateService commitRecordStateService = new CommitRecordStateService();
 
   private static final String TEMP_DIR = System.getProperty("java.io.tmpdir");
   private static String uploadDir = TEMP_DIR + "/uploads/";
@@ -125,7 +125,7 @@ public class ProjectService {
       @FormDataParam("fileRadio") String assignmentType,
       @FormDataParam("file") InputStream uploadedInputStream,
       @FormDataParam("file") FormDataContentDisposition fileDetail) throws Exception {
-
+    final Linux linuxApi = new Linux();
     String rootProjectUrl = null;
     String folderName = null;
     String filePath = null;
@@ -140,7 +140,7 @@ public class ProjectService {
     // 2. Clone the project to C:\\Users\\users\\AppData\\Temp\\uploads
     String cloneFilePath = uploadDir + name;
     String cloneCommand = "git clone " + rootProjectUrl + " " + cloneFilePath;
-    execLinuxCommand(cloneCommand);
+    linuxApi.execLinuxCommand(cloneCommand);
     System.out.println("cloneCommand : " + cloneCommand);
 
     // 3. Store Zip File to folder if file is not empty
@@ -163,6 +163,8 @@ public class ProjectService {
     } catch (IOException e) {
       e.printStackTrace();
     }
+    // Add .gitkeep if folder is empty.
+    findEmptyFolder(cloneFilePath);
 
     // 5. if README is not null
     if (!readMe.equals("<br>") || !"".equals(readMe) || !readMe.isEmpty()) {
@@ -172,19 +174,19 @@ public class ProjectService {
 
     // 6. Cmd gitlab add
     String addCommand = "git add .";
-    execLinuxCommandInFile(addCommand, cloneFilePath);
+    linuxApi.execLinuxCommandInFile(addCommand, cloneFilePath);
 
     // 7. Cmd gitlab commit
     String commitCommand = "git commit -m \"Instructor&nbsp;Commit\"";
-    execLinuxCommandInFile(commitCommand, cloneFilePath);
+    linuxApi.execLinuxCommandInFile(commitCommand, cloneFilePath);
 
     // 8. Cmd gitlab push
     String pushCommand = "git push";
-    execLinuxCommandInFile(pushCommand, cloneFilePath);
+    linuxApi.execLinuxCommandInFile(pushCommand, cloneFilePath);
 
     // remove project file in linux
     String removeFileCommand = "rm -rf uploads/";
-    execLinuxCommandInFile(removeFileCommand, TEMP_DIR);
+    linuxApi.execLinuxCommandInFile(removeFileCommand, TEMP_DIR);
 
     // 9. Add project to database
     Date date = new Date();
@@ -240,53 +242,6 @@ public class ProjectService {
       }
     }
     return url;
-  }
-
-  private void execLinuxCommand(String command) {
-    Process process;
-
-    try {
-      process = Runtime.getRuntime().exec(command);
-      BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()));
-      String line;
-      while (true) {
-        line = br.readLine();
-        if (line == null) {
-          break;
-        }
-        System.out.println(line);
-      }
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-
-  }
-
-  /**
-   * 123123
-   * 
-   * @param command
-   *          123
-   * @param filePath
-   *          123
-   */
-  public void execLinuxCommandInFile(String command, String filePath) {
-    Process process;
-    String line;
-    try {
-      process = Runtime.getRuntime().exec(command, null, new File(filePath));
-      BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()));
-
-      while (true) {
-        // command output
-        line = br.readLine();
-        if (line == null) {
-          break;
-        }
-      }
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
   }
 
   private String storeFileToTemp(String fileName, InputStream uploadedInputStream) {
@@ -448,11 +403,21 @@ public class ProjectService {
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   @Produces(MediaType.APPLICATION_JSON)
   public Response deleteProject(@FormDataParam("del_Hw_Name") String name) {
+    Linux linuxApi = new Linux();
+    // delete tomcat test file
+    String removeTestDirectoryCommand = "rm -rf tests/" + name;
+    linuxApi.execLinuxCommandInFile(removeTestDirectoryCommand, TEMP_DIR);
 
+    String removeZipTestFileCommand = "rm tests/" + name + ".zip";
+    linuxApi.execLinuxCommandInFile(removeZipTestFileCommand, TEMP_DIR);
+
+    String removeFileCommand = "rm -rf tests/" + name + "-COMPLETE";
+    linuxApi.execLinuxCommandInFile(removeFileCommand, TEMP_DIR);
     // delete db
     dbManager.deleteProject(name);
     commitRecordService.deleteRecord(name);
     commitResultService.deleteResult(name);
+    commitRecordStateService.deleteRecordState(name);
 
     // delete gitlab
     conn.deleteProjects(name);
@@ -597,5 +562,31 @@ public class ProjectService {
       e.printStackTrace();
     }
     return strChecksum;
+  }
+
+  private void findEmptyFolder(String path) {
+    File dir = new File(path);
+    File[] files = dir.listFiles();
+
+    if (dir.exists() && dir.isDirectory()) {
+      if (files.length == 0) {
+        addGitkeep(path);
+      } else {
+        for (int i = 0; i < files.length; i++) {
+          findEmptyFolder(files[i].getPath());
+        }
+      }
+    }
+  }
+
+  private void addGitkeep(String path) {
+    File gitkeep = new File(path + "/.gitkeep");
+    if (!gitkeep.exists()) {
+      try {
+        gitkeep.createNewFile();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
   }
 }

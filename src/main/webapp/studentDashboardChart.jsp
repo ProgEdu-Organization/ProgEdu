@@ -21,6 +21,9 @@
 </head>
 <body>
 <%
+if(null == session.getAttribute("username") || ("").equals(session.getAttribute("username").toString())){
+	response.sendRedirect("index.jsp");
+}
 List<JSONObject> jsons = new ArrayList<JSONObject>();
 %>
 <div class="card" style="margin-top: 30px">

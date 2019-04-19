@@ -25,14 +25,20 @@ public class CommitRecordStateDbManager {
   /**
    * add each hw CommitRecordState counts
    * 
-   * @param hw      hw's number
-   * @param success build success
-   * @param csf     check style error
-   * @param cpf     build fault
-   * @param ctf     junit fault
-   * @param nb      not build
+   * @param hw
+   *          hw's number
+   * @param success
+   *          build success
+   * @param csf
+   *          check style error
+   * @param cpf
+   *          build fault
+   * @param utf
+   *          junit fault
+   * @param ini
+   *          not build
    */
-  public void addCommitRecordState(String hw, int success, int csf, int cpf, int ctf, int nb,
+  public void addCommitRecordState(String hw, int success, int csf, int cpf, int utf, int ini,
       int ccs) {
     String sql = "INSERT INTO " + "Commit_Record_State(hw, success, checkStyleError, compileFailure"
         + ", testFailure, notBuild, commitCounts)  " + "VALUES(?, ?, ?, ?, ?, ?, ?)";
@@ -43,8 +49,8 @@ public class CommitRecordStateDbManager {
       preStmt.setInt(2, success);
       preStmt.setInt(3, csf);
       preStmt.setInt(4, cpf);
-      preStmt.setInt(5, ctf);
-      preStmt.setInt(6, nb);
+      preStmt.setInt(5, utf);
+      preStmt.setInt(6, ini);
       preStmt.setInt(7, ccs);
       preStmt.executeUpdate();
     } catch (SQLException e) {
@@ -55,14 +61,20 @@ public class CommitRecordStateDbManager {
   /**
    * add each hw CommitRecordState counts
    * 
-   * @param hw      hw's number
-   * @param success build success
-   * @param csf     check style error
-   * @param cpf     build fault
-   * @param ctf     junit fault
-   * @param nb      not build
+   * @param hw
+   *          hw's number
+   * @param success
+   *          build success
+   * @param csf
+   *          check style error
+   * @param cpf
+   *          build fault
+   * @param utf
+   *          junit fault
+   * @param ini
+   *          not build
    */
-  public void updateCommitRecordState(String hw, int success, int csf, int cpf, int ctf, int nb,
+  public void updateCommitRecordState(String hw, int success, int csf, int cpf, int utf, int ini,
       int ccs) {
     String sql = "UPDATE " + "Commit_Record_State  SET success = ? ,checkStyleError = ? "
         + ", compileFailure = ? , testFailure = ? , notBuild = ? , commitCounts = ?  "
@@ -73,8 +85,8 @@ public class CommitRecordStateDbManager {
       preStmt.setInt(1, success);
       preStmt.setInt(2, csf);
       preStmt.setInt(3, cpf);
-      preStmt.setInt(4, ctf);
-      preStmt.setInt(5, nb);
+      preStmt.setInt(4, utf);
+      preStmt.setInt(5, ini);
       preStmt.setInt(6, ccs);
       preStmt.setString(7, hw);
       preStmt.executeUpdate();
@@ -108,7 +120,8 @@ public class CommitRecordStateDbManager {
   /**
    * check if hw exists in Commit_Record_State DB table
    * 
-   * @param hw hw name
+   * @param hw
+   *          hw name
    * 
    * @return check result (boolean)
    */
@@ -151,5 +164,23 @@ public class CommitRecordStateDbManager {
       e.printStackTrace();
     }
     return array;
+  }
+
+  /**
+   * delete built record state of specific hw
+   *
+   * @param hw
+   *          hw
+   */
+  public void deleteRecordState(String hw) {
+    String sql = "DELETE FROM Commit_Record_State WHERE hw=?";
+
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+      preStmt.setString(1, hw);
+      preStmt.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
   }
 }

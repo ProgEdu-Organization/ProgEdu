@@ -9,15 +9,25 @@ public class AssignmentTypeFactory {
    *          assignmentType
    */
   public static AssignmentTypeSelector getAssignmentType(String assignmentType) {
-
-    if (assignmentType.equals("Javac")) {
-      return new JavacAssignment();
-    } else if (assignmentType.equals("Maven")) {
-      return new MavenAssignment();
-    } else if (assignmentType.equals("Web")) {
-      return new WebAssignment();
-    } else {
-      return null;
+    AssignmentTypeEnum assignmentTypeEnum = 
+        AssignmentTypeEnum.getStatusProjectTypeEnum(assignmentType);
+    
+    switch (assignmentTypeEnum) {
+      case JAVAC: {
+        return new JavacAssignment();
+      }
+      case MAVEN: {
+        return new MavenAssignment();
+      }
+      case WEB: {
+        return new WebAssignment();
+      }
+      case APP: {
+        return null;
+      }
+      default:
+        return null;
     }
+   
   }
 }

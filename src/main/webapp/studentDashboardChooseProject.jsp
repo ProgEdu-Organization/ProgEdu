@@ -16,6 +16,10 @@
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="fcu.selab.progedu.conn.*" %>
 <%@ page import="fcu.selab.progedu.status.*" %>
+<%@ page import="fcu.selab.progedu.service.AssignmentTypeFactory" %>
+<%@ page import="fcu.selab.progedu.service.AssignmentTypeSelector" %>
+<%@ include file="language.jsp"%>
+<%@ include file="studentHeader.jsp"%>
 
 <%
 	String private_token = null;
@@ -47,8 +51,6 @@
 	}
 	
 %>
-
-<%@ include file="language.jsp"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 	<head>
@@ -186,6 +188,10 @@
 			  margin: 10px; 
 			  background: #fff3cd;
 			}
+			#reference{
+				text-align: left;
+				display: none;
+			}
 		</style>
 		<script type="text/javascript">
 				function handleClick(cb, divId){
@@ -202,9 +208,7 @@
 	<link rel="bookmark" href="img/favicon.ico"/>
 	<title>ProgEdu</title>
 	</head>
-	<body>
-		<%@ include file="studentHeader.jsp"%>
-	
+	<body onload="init()">
 		<%
 			//To display the under html code (about some if-else)
 			StudentDash stuDash = new StudentDash(private_token);
@@ -277,6 +281,8 @@
 				List<String> jobCommitCounts = stuDash.getMainTableJobCommitCount(stuProjects);
 				ProjectDbManager pDb = ProjectDbManager.getInstance();
 				Project project = pDb.getProjectByName(projectName);
+				
+				
 			%>
 			<div style="margin: 10px 10px 10px 10px;">
 				<h2 style="white-space: nowrap"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp; <%=projectName%></h2>
@@ -410,19 +416,26 @@
 			
 				StudentDashChoosePro studentDashChoosePro = new StudentDashChoosePro();
 				String color = studentDashChoosePro.getLastColor(choosedUser.getUsername(),projectName);
-				Status status = StatusFactory.getStatus(color);
+				String  projectType = project.getType();
+				
+				AssignmentTypeSelector assignmentTypeSelector = 
+			        AssignmentTypeFactory.getAssignmentType(projectType);
+				Status status = assignmentTypeSelector.getStatus(color);
+				
 				String detailConsoleText = jenkins.getConsoleText(lastBuildUrl);
 				String console = status.extractFailureMsg(detailConsoleText);
 			%>
-			<h4><a id="iFrameTitle" href="<%=jenkinsBuildNumUrl%>">Feedback Information (#<%=num %>)</a></h4>
+			<div>
+				<h4><a id="iFrameTitle" href="<%=jenkinsBuildNumUrl%>">Feedback Information (#<%=num %>)</a></h4>
+				<h6 id="reference"><a href="https://blog.mosil.biz/2014/05/java-style-guide/" target="_blank">java-style-guide</a></h6>
+			<div>
 			<div id="container">
 				<pre style="overflow: auto;"><%=console%></pre>
 			</div>
 			<!-- iFrame -->
 		</div>
 		<!-- -----main----- -->
-	</body>
-	<script type="text/javascript">
+		<script type="text/javascript">
 		function copyToClipboard(elem) {
 			  // create hidden text element, if it doesn't already exist
 		    var targetId = "_hiddenCopyText_";
@@ -487,6 +500,35 @@
 			$('#iFrameTitle').html("Feedback Information (#" + tr.id + ")");
 			$('#projectTbody tr').removeClass("tableActive");
 			$('#'+tr.id).addClass("tableActive");
+			showJavaStyle(tr);
 		}
+		//show javaStyle Reference
+		function showJavaStyle(tr){
+			var errorStatus = ['CSF'];
+			var projectType = "<%=projectType%>";
+			if(projectType == "Maven"){
+				var $className = $(tr).children('td').find('p').attr('class');
+				$className = $className.replace('circle ','');
+				for(var s in errorStatus){
+					if(errorStatus[s] == $className){
+						$('#reference').show();
+						break;
+					}else{
+						$('#reference').hide();
+					}
+				}
+			}
+			
+		}
+		function init() {
+			setTimeout(function(){
+				var errorStatus = ['CSF'];
+				var num = <%=num%>;
+				var tr = $("tr[id='"+ num + "']");
+				showJavaStyle(tr);
+			},1000);
+		};
+	
 	</script>
+	</body>
 </html>

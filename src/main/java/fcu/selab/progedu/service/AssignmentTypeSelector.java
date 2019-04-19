@@ -3,6 +3,7 @@ package fcu.selab.progedu.service;
 import java.io.File;
 import java.io.IOException;
 
+import fcu.selab.progedu.status.Status;
 import fcu.selab.progedu.utils.ZipHandler;
 
 public interface AssignmentTypeSelector {
@@ -23,5 +24,7 @@ public interface AssignmentTypeSelector {
 
   public void modifyXmlFile(String filePath, String updateDbUrl, String userName, String proName,
       String tomcatUrl, StringBuilder sb);
+  
+  public Status getStatus(String statusType);
 
 }
