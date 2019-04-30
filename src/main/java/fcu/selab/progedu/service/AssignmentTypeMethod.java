@@ -18,6 +18,8 @@ import fcu.selab.progedu.jenkins.JenkinsApi;
 import fcu.selab.progedu.status.Status;
 import fcu.selab.progedu.status.StatusFactory;
 import fcu.selab.progedu.utils.ZipHandler;
+import net.lingala.zip4j.core.ZipFile;
+import net.lingala.zip4j.exception.ZipException;
 
 public abstract class AssignmentTypeMethod implements AssignmentTypeSelector {
 
@@ -28,7 +30,7 @@ public abstract class AssignmentTypeMethod implements AssignmentTypeSelector {
   public AssignmentTypeMethod(StatusFactory statusFactory) {
     this.statusFactory = statusFactory;
   }
-  
+
   public abstract String getSampleZip();
 
   /**
@@ -43,7 +45,6 @@ public abstract class AssignmentTypeMethod implements AssignmentTypeSelector {
 
   public void unzip(String zipFilePath, String zipFolderName, String projectName,
       ZipHandler unzipHandler) throws IOException {
-
     zipHandler = unzipHandler;
     final String tempDir = System.getProperty("java.io.tmpdir");
     final String uploadDir = tempDir + "/uploads/";
@@ -77,41 +78,53 @@ public abstract class AssignmentTypeMethod implements AssignmentTypeSelector {
       System.out.println(testDirectory);
     }
 
-    ZipInputStream zipIn = new ZipInputStream(new FileInputStream(zipFilePath));
-    ZipEntry entry = zipIn.getNextEntry();
-    // iterates over entries in the zip file
-    while (entry != null) {
-      String filePath = destDirectory + File.separator + entry.getName();
-      File newFile = new File(filePath);
-
-      // create all non exists folders
-      // else you will hit FileNotFoundException for compressed folder
-      new File(newFile.getParent()).mkdirs();
-
-      if (filePath.substring(filePath.length() - 4).equals("src/") && parDirLength == 0) {
-        parentDir = zipHandler.getParentDir(filePath);
-        parDirLength = parentDir.length() + 1;
-      }
-      String entryNewName = filePath.substring(parDirLength);
-
-      if (!entry.isDirectory()) {
-        // if the entry is a file, extracts it
-        zipHandler.extractFile(zipIn, filePath);
-
-        // if filePath equals pom.xml, modify the project name
-        if (filePath.substring(filePath.length() - 7, filePath.length()).equals("pom.xml")) {
-          zipHandler.modifyPomXml(filePath, projectName);
-        }
-        searchFile(entryNewName);
-      } else {
-        // if the entry is a directory, make the directory
-        File dir = new File(filePath);
-        dir.mkdir();
-      }
-      zipIn.closeEntry();
-      entry = zipIn.getNextEntry();
+    String targetDirectory = testDir + projectName + "-COMPLETE";
+    File targetDir = new File(targetDirectory);
+    if (!targetDir.exists()) {
+      targetDir.mkdir();
+    } else {
+      System.out.println(targetDir);
     }
 
+    try (ZipInputStream zipIn = new ZipInputStream(new FileInputStream(zipFilePath))) {
+      ZipFile zipFile = new ZipFile(zipFilePath);
+      zipFile.extractAll(targetDirectory);
+      ZipEntry entry = zipIn.getNextEntry();
+      while (entry != null) {
+        String filePath = destDirectory + File.separator + entry.getName();
+        File newFile = new File(filePath);
+
+        // create all non exists folders
+        // else you will hit FileNotFoundException for compressed folder
+        new File(newFile.getParent()).mkdirs();
+
+        if (filePath.substring(filePath.length() - 4).equals("src/") && parDirLength == 0) {
+          parentDir = zipHandler.getParentDir(filePath);
+          parDirLength = parentDir.length() + 1;
+        }
+        String entryNewName = filePath.substring(parDirLength);
+
+        if (!entry.isDirectory()) {
+          // if the entry is a file, extracts it
+          zipHandler.extractFile(zipIn, filePath);
+
+          // if filePath equals pom.xml, modify the project name
+          if (filePath.substring(filePath.length() - 7, filePath.length()).equals("pom.xml")) {
+            zipHandler.modifyPomXml(filePath, projectName);
+          }
+          searchFile(entryNewName);
+        } else {
+          // if the entry is a directory, make the directory
+          File dir = new File(filePath);
+          dir.mkdir();
+        }
+        zipIn.closeEntry();
+        entry = zipIn.getNextEntry();
+      }
+    } catch (ZipException e) {
+      e.printStackTrace();
+    }
+    // iterates over entries in the zip file
     copyTestFile(destDir, destDirectory, testDirectory);
 
     File testFile = new File(testDirectory);
@@ -123,7 +136,6 @@ public abstract class AssignmentTypeMethod implements AssignmentTypeSelector {
     } else {
       System.out.println("test file not exists");
     }
-    zipIn.close();
   }
 
   /**
@@ -234,9 +246,10 @@ public abstract class AssignmentTypeMethod implements AssignmentTypeSelector {
 
     return filePath;
   }
-  
+
   /**
-   * @param statusType status.
+   * @param statusType
+   *          status.
    */
   public Status getStatus(String statusType) {
     return statusFactory.getStatus(statusType);

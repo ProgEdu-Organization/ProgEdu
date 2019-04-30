@@ -35,10 +35,8 @@ public class StudentDashChoosePro {
   /**
    * Get the choosed project
    * 
-   * @param stuProjects
-   *          all student projects
-   * @param projectId
-   *          the choosed project id
+   * @param stuProjects all student projects
+   * @param projectId   the choosed project id
    * @return gitlab project
    */
   public GitlabProject getChoosedProject(List<GitlabProject> stuProjects, int projectId) {
@@ -54,8 +52,7 @@ public class StudentDashChoosePro {
   /**
    * Get the choosed project url
    * 
-   * @param project
-   *          the choosed project
+   * @param project the choosed project
    * @return url
    */
   public String getChoosedProjectUrl(GitlabProject project) {
@@ -72,10 +69,8 @@ public class StudentDashChoosePro {
   /**
    * Get the job build numbers
    * 
-   * @param username
-   *          user name
-   * @param projectName
-   *          project name
+   * @param username    user name
+   * @param projectName project name
    * @return list of build numbers
    */
   public List<Integer> getBuildNumbers(String username, String projectName) {
@@ -135,10 +130,8 @@ public class StudentDashChoosePro {
   /**
    * count for SCM build
    * 
-   * @param username
-   *          student name
-   * @param projectName
-   *          project name
+   * @param username    student name
+   * @param projectName project name
    * @return count
    */
   public List<Integer> getScmBuildCounts(String username, String projectName) {
@@ -179,10 +172,8 @@ public class StudentDashChoosePro {
   /**
    * Get the last build number
    * 
-   * @param username
-   *          user name
-   * @param projectName
-   *          project name
+   * @param username    user name
+   * @param projectName project name
    * @return number
    */
   public String getLastBuildNum(String username, String projectName) {
@@ -195,16 +186,11 @@ public class StudentDashChoosePro {
   /**
    * Get commit color
    * 
-   * @param num
-   *          commit number
-   * @param userName
-   *          username
-   * @param projectName
-   *          project name
-   * @param apiJson
-   *          apiJson
-   * @param proType
-   *          proType
+   * @param num         commit number
+   * @param userName    username
+   * @param projectName project name
+   * @param apiJson     apiJson
+   * @param proType     proType
    * @return color
    */
   public String getCommitStatus(int num, String userName, String projectName, String apiJson,
@@ -224,14 +210,16 @@ public class StudentDashChoosePro {
    */
   public String getCommitMessage(int num, String userName, String projectName) {
     String console = jenkins.getCompleteConsoleText(userName, projectName, num);
-    return jenkins.getConsoleTextCommitMessage(console);
+    String modifiedCommit = jenkins.getConsoleTextCommitMessage(console);
+    // Removing "<" and ">" to prevent js function.
+    modifiedCommit = modifiedCommit.replaceAll("<", "").replaceAll(">", "");
+    return modifiedCommit;
   }
 
   /**
    * get job build time
    * 
-   * @param apiJson
-   *          build api json
+   * @param apiJson build api json
    * @return date
    */
   public String getCommitTime(String apiJson) {
@@ -246,12 +234,9 @@ public class StudentDashChoosePro {
   /**
    * get job build api json
    * 
-   * @param num
-   *          build num
-   * @param username
-   *          student name
-   * @param projectName
-   *          project name
+   * @param num         build num
+   * @param username    student name
+   * @param projectName project name
    * @return json string
    */
   public String getBuildApiJson(int num, String username, String projectName) {
@@ -271,8 +256,7 @@ public class StudentDashChoosePro {
   /**
    * Get commit date
    * 
-   * @param date
-   *          commit date
+   * @param date commit date
    * @return string date
    */
   public String getCommitDate(Date date) {

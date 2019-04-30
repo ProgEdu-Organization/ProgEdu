@@ -11,13 +11,12 @@ public class MavenCheckstyleFailure implements Status {
   @Override
   public String extractFailureMsg(String consoleText) {
     String checkstyleInfo;
-    String checkstyleStart = "[INFO] Starting audit...";
+    String checkstyleStart = "Starting audit...";
     String checkstyleEnd = "Audit done.";
-
-    checkstyleInfo = consoleText.substring(consoleText.indexOf(checkstyleStart),
-        consoleText.indexOf(checkstyleEnd)) + checkstyleEnd;
+    checkstyleInfo = consoleText.substring(
+        consoleText.indexOf(checkstyleStart) + checkstyleStart.length(),
+        consoleText.indexOf(checkstyleEnd));
 
     return checkstyleInfo.trim();
   }
-
 }

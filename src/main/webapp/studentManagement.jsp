@@ -103,9 +103,9 @@
 					alert("uploaded!");
 					top.location.href = "studentManagement.jsp";
 				}, 
-				error : function(a, b, c) {
-				    console.log(a.status, b, c)
-					alert("failed!");
+				error : function(response) {
+				    console.log(response.responseText)
+					alert(response.responseText);
                     location.reload();
 				}
 			});
@@ -129,10 +129,10 @@
                     alert("uploaded!");
                     top.location.href = "studentManagement.jsp";
                 },
-                error : function(a, b, c) {
-                    console.log(a.status, b, c)
-                    alert("failed!");
-                    // location.reload();
+                error : function(response) {
+                	console.log(response.responseText)
+					alert(response.responseText);
+                    location.reload();
                 }
             });
             return false;
@@ -196,6 +196,12 @@
 									<label class="col-sm-2 col-form-label">Student's Id</label>
 									<div class="col-sm-3">
 										<input type="text" class="form-control" name="studentId">
+									</div>
+								</div>
+								<div class="form-group row" style="text-align: right">
+									<label class="col-sm-2 col-form-label">Student's Password</label>
+									<div class="col-sm-3">
+										<input type="text" class="form-control" name="password">
 									</div>
 								</div>
 								<div class="form-group row" style="text-align: right">

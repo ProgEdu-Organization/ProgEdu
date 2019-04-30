@@ -30,16 +30,16 @@ public class GroupDbManager {
    * add group member into db
    * 
    * @param groupName group name
-   * @param userName  member name
+   * @param username  username
    * @param isLeader  whether current member is leader or not
    */
-  public void addGroup(String groupName, String userName, boolean isLeader) {
+  public void addGroup(String groupName, String username, boolean isLeader) {
     String sql = "INSERT INTO Team(name, sId, isLeader) " + "VALUES(?, ?, ?)";
 
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
       int id = -1;
-      id = udb.getUserId(userName);
+      id = udb.getUserIdByUsername(username);
       preStmt.setString(1, groupName);
       preStmt.setInt(2, id);
       preStmt.setBoolean(3, isLeader);

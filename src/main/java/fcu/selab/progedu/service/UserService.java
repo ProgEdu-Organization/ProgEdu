@@ -1,9 +1,6 @@
 package fcu.selab.progedu.service;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -14,11 +11,12 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
 
 import org.gitlab.api.models.GitlabUser;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
+
+import com.csvreader.CsvReader;
 
 import fcu.selab.progedu.config.CourseConfig;
 import fcu.selab.progedu.config.GitlabConfig;
@@ -28,7 +26,6 @@ import fcu.selab.progedu.data.Project;
 import fcu.selab.progedu.data.User;
 import fcu.selab.progedu.db.ProjectDbManager;
 import fcu.selab.progedu.db.UserDbManager;
-import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.jenkins.JenkinsApi;
 
 @Path("user/")
@@ -55,56 +52,82 @@ public class UserService {
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   public Response upload(@FormDataParam("file") InputStream uploadedInputStream,
       @FormDataParam("file") FormDataContentDisposition fileDetail) {
-    boolean isSave = true;
+    Response response = null;
+    List<User> userList = new ArrayList<>();
 
     try {
-      String tempDir = System.getProperty("java.io.tmpdir");
-      String uploadDir = tempDir + "/uploads/";
-
-      File fileUploadDir = new File(uploadDir);
-      if (!fileUploadDir.exists()) {
-        fileUploadDir.mkdirs();
-      }
-      String fileName = fileDetail.getFileName();
-      String uploadedFileLocation = uploadDir + fileName;
-      System.out.println("uploadDir : " + uploadDir);
-      System.out.println("fileName : " + fileName);
-      System.out.println("uploadedFileLocation : " + uploadedFileLocation);
-
-      List<String> studentList = new ArrayList<>();
-
-      try (FileOutputStream out = new FileOutputStream(new File(uploadedFileLocation))) {
-        int read = 0;
-        byte[] bytes = new byte[1024];
-        while ((read = uploadedInputStream.read(bytes)) != -1) {
-          out.write(bytes, 0, read);
-        }
-
-        // parse file
-        File file = new File(uploadedFileLocation);
-        try (InputStreamReader fr = new InputStreamReader(new FileInputStream(file), "BIG5");
-            BufferedReader br = new BufferedReader(fr)) {
-          String line = "";
-
-          while ((line = br.readLine()) != null) {
-            StringBuilder stringBuilder = new StringBuilder();
-            String[] row = line.split(",");
-            stringBuilder.append(row[0]);
-            for (int i = 1; i < row.length; i++) {
-              stringBuilder.append("," + row[i]);
-            }
-            studentList.add(stringBuilder.toString());
-          }
-          register(studentList);
+      CsvReader csvReader = new CsvReader(new InputStreamReader(uploadedInputStream, "UTF-8"));
+      csvReader.readHeaders();
+      while (csvReader.readRecord()) {
+        User user = new User(csvReader.get("StudentId"), csvReader.get("Name"),
+            csvReader.get("Email"), csvReader.get("Password"));
+        userList.add(user);
+        response = checkErrorType(user);
+        if (response != null) {
+          break;
         }
       }
-    } catch (Exception e) {
-      isSave = false;
+
+      if (response == null) {
+        response = checkForDuplicates(userList);
+        if (response == null) {
+          register(userList);
+          response = Response.ok().build();
+        }
+
+      }
+      csvReader.close();
+    } catch (IOException e) {
+      response = Response.serverError().entity("failed !").build();
       e.printStackTrace();
     }
-    Response response = Response.ok().build();
-    if (!isSave) {
-      response = Response.serverError().status(Status.INTERNAL_SERVER_ERROR).build();
+
+    return response;
+  }
+
+  /**
+   * check for duplicates.
+   * 
+   * @param userList user list
+   * @return response
+   */
+  public Response checkForDuplicates(List<User> userList) {
+    Response response = null;
+    for (int index = 0; index < userList.size() - 1; index++) {
+      for (int index2 = index + 1; index2 < userList.size(); index2++) {
+        if (userList.get(index).getUserName().equals(userList.get(index2).getUserName())) {
+          response = Response.serverError().entity(
+              "username : " + userList.get(index).getUserName() + " is duplicated in student list.")
+              .build();
+          break;
+        } else if (userList.get(index).getEmail().equals(userList.get(index2).getEmail())) {
+          response = Response.serverError()
+              .entity(
+                  "Email : " + userList.get(index).getEmail() + " is duplicated in student list.")
+              .build();
+          break;
+        }
+      }
+    }
+    return response;
+  }
+
+  /**
+   * check error type.
+   * 
+   * @param user user's information
+   * @return response
+   */
+  public Response checkErrorType(User user) {
+    Response response = null;
+    if (user.getPassword().length() < 8) {
+      response = Response.serverError().entity("Password must be at least 8 characters.").build();
+    } else if (dbManager.checkUsername(user.getUserName())) {
+      response = Response.serverError()
+          .entity("username : " + user.getUserName() + " already exists.").build();
+    } else if (dbManager.checkEmail(user.getEmail())) {
+      response = Response.serverError().entity("Email : " + user.getEmail() + " already exists.")
+          .build();
     }
     return response;
   }
@@ -112,77 +135,51 @@ public class UserService {
   /**
    * Translate uploaded file content to string and parse to register
    * 
-   * @param data file content to string
+   * @param userList file content to string
    */
-  public void register(List<String> data) {
-    List<User> lsStudent = new ArrayList<>();
-    for (String lsData : data) {
-      String[] row = lsData.split(",");
-      String password;
-      password = row[0];
-
-      String userName;
-      userName = row[0];
-
-      String fullName;
-      fullName = row[1];
-
-      String email = "";
-
-      if (row[0].equalsIgnoreCase("studentid")) {
-        continue;
-      }
-
-      if (row.length >= 3) {
-        email = row[2];
-      } else {
-        try {
-          email = row[0] + course.getSchoolEmail();
-        } catch (LoadConfigFailureException e) {
-          e.printStackTrace();
-        }
-      }
-
-      User student = new User();
-      student.setUserName(userName);
-      student.setPassword(password);
-      student.setEmail(email);
-      student.setName(fullName);
-      lsStudent.add(student);
-      boolean check = userConn.createUser(email, password, userName, fullName);
-
-      if (check) {
-        System.out.println("register " + row[1] + " success!");
-      }
+  public void register(List<User> userList) {
+    for (User user : userList) {
+      userConn.createUser(user.getEmail(), user.getPassword(), user.getUserName(), user.getName());
     }
-    printStudent(lsStudent);
+    printStudent(userList);
   }
 
   /**
    *
-   * @param name  name
-   * @param id    id
-   * @param email email
+   * @param name     name
+   * @param id       id
+   * @param email    email
+   * @param password password
    * @return response
    */
   @POST
   @Path("new")
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   public Response createAStudentAccount(@FormDataParam("studentName") String name,
-      @FormDataParam("studentId") String id, @FormDataParam("studentEmail") String email) {
+      @FormDataParam("studentId") String id, @FormDataParam("studentEmail") String email,
+      @FormDataParam("password") String password) {
+    Response response = null;
     boolean isSave = false;
     try {
-      isSave = userConn.createUser(email, id, id, name);
-      User user = dbManager.getUser(id);
-      boolean isSuccess = importPreviousProject(user);
-      isSave = isSave && isSuccess;
+      response = checkErrorType(new User(id, name, email, password));
+      if (response == null) {
+        isSave = userConn.createUser(email, password, id, name);
+        User user = dbManager.getUser(id);
+        boolean isSuccess = importPreviousProject(user);
+        isSave = isSave && isSuccess;
+      }
+
     } catch (Exception e) {
       e.printStackTrace();
     }
-    Response response = Response.ok().build();
-    if (!isSave) {
-      response = Response.serverError().status(Status.INTERNAL_SERVER_ERROR).build();
+    if (response == null) {
+      if (isSave) {
+        response = Response.ok().build();
+      } else {
+        response = Response.serverError().entity("failed !").build();
+      }
     }
+
     return response;
   }
 
@@ -303,21 +300,14 @@ public class UserService {
   public Response changePassword(@FormDataParam("oldPwd") String oldPwd,
       @FormDataParam("newPwd") String newPwd, @FormDataParam("checkPwd") String checkPwd,
       @FormDataParam("userId") Integer userId) {
-
-    System.out.println("oldPwd : " + oldPwd);
-    System.out.println("newPwd : " + newPwd);
-    System.out.println("checkPwd : " + checkPwd);
-    System.out.println("userId : " + userId);
-
     String userName = userConn.getUserById(userId).getUsername();
-    System.out.println(userName);
-    boolean check = dbManager.checkPassword(userName, newPwd);
+    boolean check = dbManager.checkPassword(userName, oldPwd);
     if (check) {
-      System.out.println("false");
-      return Response.serverError().status(Status.INTERNAL_SERVER_ERROR).build();
-    } else {
       dbManager.modifiedUserPassword(userName, newPwd);
       userConn.updateUserPassword(userId, newPwd);
+    } else {
+      return Response.serverError().entity("The current password is wrong").build();
+
     }
 
     return Response.ok().build();

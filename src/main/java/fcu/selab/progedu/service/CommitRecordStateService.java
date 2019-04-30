@@ -1,5 +1,6 @@
 package fcu.selab.progedu.service;
 
+import java.sql.Connection;
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +15,8 @@ import org.json.JSONObject;
 
 import fcu.selab.progedu.db.CommitRecordDbManager;
 import fcu.selab.progedu.db.CommitRecordStateDbManager;
+import fcu.selab.progedu.db.IDatabase;
+import fcu.selab.progedu.db.MySqlDatabase;
 import fcu.selab.progedu.db.ProjectDbManager;
 import fcu.selab.progedu.status.StatusEnum;
 
@@ -86,6 +89,18 @@ public class CommitRecordStateService {
 
     }
 
+  }
+
+  /**
+   * delete build record state of hw
+   * 
+   * @param hw
+   *          hw
+   */
+  public void deleteRecordState(String hw) {
+    IDatabase database = new MySqlDatabase();
+    Connection connection = database.getConnection();
+    commitRecordStateDb.deleteRecordState(hw);
   }
 
 }
