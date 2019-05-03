@@ -35,13 +35,16 @@ public abstract class AssignmentTypeMethod implements AssignmentTypeSelector {
 
   /**
    * 
-   * @param zipFilePath   zipFilePath
-   * @param zipFolderName zipFolderName
-   * @param projectName   projectName
+   * @param zipFilePath
+   *          zipFilePath
+   * @param zipFolderName
+   *          zipFolderName
+   * @param projectName
+   *          projectName
    */
 
-  public void unzip(String zipFilePath, String zipFolderName, String projectName, ZipHandler unzipHandler)
-      throws IOException {
+  public void unzip(String zipFilePath, String zipFolderName, String projectName,
+      ZipHandler unzipHandler) throws IOException {
     zipHandler = unzipHandler;
     final String tempDir = System.getProperty("java.io.tmpdir");
     final String uploadDir = tempDir + "/uploads/";
@@ -132,8 +135,8 @@ public abstract class AssignmentTypeMethod implements AssignmentTypeSelector {
     if (testFile.exists()) {
       // zipHandler.zipTestFolder(testDirectory);
 
-      zipHandler.setUrlForJenkinsDownloadTestFile(
-          zipHandler.serverIp + "/ProgEdu/webapi/jenkins/getTestFile?filePath=" + testsDir + ".zip");
+      zipHandler.setUrlForJenkinsDownloadTestFile(zipHandler.serverIp
+          + "/ProgEdu/webapi/jenkins/getTestFile?filePath=" + testsDir + ".zip");
     } else {
       System.out.println("test file not exists");
     }
@@ -141,11 +144,15 @@ public abstract class AssignmentTypeMethod implements AssignmentTypeSelector {
 
   /**
    * 
-   * @param name                name
-   * @param jenkinsRootUsername jenkinsRootUsername
-   * @param jenkinsRootPassword jenkinsRootPassword
+   * @param name
+   *          name
+   * @param jenkinsRootUsername
+   *          jenkinsRootUsername
+   * @param jenkinsRootPassword
+   *          jenkinsRootPassword
    */
-  public void createJenkinsJob(String name, String jenkinsRootUsername, String jenkinsRootPassword) throws Exception {
+  public void createJenkinsJob(String name, String jenkinsRootUsername, String jenkinsRootPassword)
+      throws Exception {
     Conn conn = Conn.getInstance();
     jenkinsApi = new JenkinsApi();
     JenkinsApi jenkins = JenkinsApi.getInstance();
@@ -166,12 +173,17 @@ public abstract class AssignmentTypeMethod implements AssignmentTypeSelector {
 
   /**
    * 
-   * @param userName     userName
-   * @param proName      proName
-   * @param jenkinsCrumb jenkinsCrumb
-   * @param sb           sb
+   * @param userName
+   *          userName
+   * @param proName
+   *          proName
+   * @param jenkinsCrumb
+   *          jenkinsCrumb
+   * @param sb
+   *          sb
    */
-  public void createAllJenkinsJob(String userName, String proName, String jenkinsCrumb, StringBuilder sb) {
+  public void createAllJenkinsJob(String userName, String proName, String jenkinsCrumb,
+      StringBuilder sb) {
     // ---Create Jenkins Job---
     GitlabConfig gitlabConfig = GitlabConfig.getInstance();
     String proUrl = null;
@@ -187,11 +199,15 @@ public abstract class AssignmentTypeMethod implements AssignmentTypeSelector {
 
   /**
    * 
-   * @param proName      proName
-   * @param jenkinsCrumb jenkinsCrumb
-   * @param sb           sb
+   * @param proName
+   *          proName
+   * @param jenkinsCrumb
+   *          jenkinsCrumb
+   * @param sb
+   *          sb
    */
-  public void createRootJob(String proName, String jenkinsCrumb, StringBuilder sb) throws Exception {
+  public void createRootJob(String proName, String jenkinsCrumb, StringBuilder sb)
+      throws Exception {
     // ---Create Jenkins Job---
     GitlabConfig gitlabConfig = GitlabConfig.getInstance();
     String proUrl = gitlabConfig.getGitlabHostUrl() + "/root/" + proName + ".git";
@@ -204,10 +220,14 @@ public abstract class AssignmentTypeMethod implements AssignmentTypeSelector {
 
   /**
    * 
-   * @param userName userName
-   * @param proName  proName
-   * @param proUrl   proUrl
-   * @param sb       sb
+   * @param userName
+   *          userName
+   * @param proName
+   *          proName
+   * @param proUrl
+   *          proUrl
+   * @param sb
+   *          sb
    */
   public String modifyXml(String userName, String proName, String proUrl, StringBuilder sb) {
     String filePath = null;
@@ -217,7 +237,8 @@ public abstract class AssignmentTypeMethod implements AssignmentTypeSelector {
     try {
       String tomcatUrl;
       CourseConfig courseData = CourseConfig.getInstance();
-      tomcatUrl = courseData.getTomcatServerIp() + "/ProgEdu/webapi/project/checksum?proName=" + proName;
+      tomcatUrl = courseData.getTomcatServerIp() + "/ProgEdu/webapi/project/checksum?proName="
+          + proName;
       String updateDbUrl = courseData.getTomcatServerIp() + "/ProgEdu/webapi/commits/update";
       // proUrl project name toLowerCase
       proUrl = proUrl.toLowerCase();
@@ -231,7 +252,8 @@ public abstract class AssignmentTypeMethod implements AssignmentTypeSelector {
   }
 
   /**
-   * @param statusType status.
+   * @param statusType
+   *          status.
    */
   public Status getStatus(String statusType) {
     return statusFactory.getStatus(statusType);
