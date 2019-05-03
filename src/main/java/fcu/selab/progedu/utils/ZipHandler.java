@@ -61,12 +61,9 @@ public class ZipHandler {
   /**
    * Extracts a zip entry (file entry)
    * 
-   * @param zipIn
-   *          The zip inputstream
-   * @param filePath
-   *          The file path
-   * @throws IOException
-   *           on fileoutputstream call error
+   * @param zipIn    The zip inputstream
+   * @param filePath The file path
+   * @throws IOException on fileoutputstream call error
    */
   public void extractFile(ZipInputStream zipIn, String filePath) throws IOException {
     try (BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(filePath));) {
@@ -90,8 +87,7 @@ public class ZipHandler {
 
   /**
    * 
-   * @param filePath
-   *          a
+   * @param filePath a
    * @return aa
    */
   public String getParentDir(String filePath) {
@@ -104,10 +100,8 @@ public class ZipHandler {
   /**
    * modifyPomXml
    * 
-   * @param filePath
-   *          The file path
-   * @throws projectName
-   *           projectName
+   * @param filePath The file path
+   * @throws projectName projectName
    */
   public void modifyPomXml(String filePath, String projectName) {
     try {
@@ -136,9 +130,9 @@ public class ZipHandler {
     }
   }
 
-  public void zipTestFolder(String testFilePath) {
-    File testFile = new File(testFilePath);
-    zipDirectory(testFile, testFilePath + ".zip");
+  public void zipFolder(String filePath) {
+    File file = new File(filePath);
+    zipDirectory(file, filePath + ".zip");
   }
 
   private void zipDirectory(File dir, String zipDirName) {
@@ -153,8 +147,7 @@ public class ZipHandler {
         System.out.println("Zipping " + filePath);
         // for ZipEntry we need to keep only relative file path, so we used
         // substring on absolute path
-        ZipEntry ze = new ZipEntry(
-            filePath.substring(dir.getAbsolutePath().length() + 1, filePath.length()));
+        ZipEntry ze = new ZipEntry(filePath.substring(dir.getAbsolutePath().length() + 1, filePath.length()));
         zos.putNextEntry(ze);
         // read the file and write to ZipOutputStream
         try (FileInputStream fis = new FileInputStream(filePath);) {
