@@ -78,7 +78,7 @@ public abstract class AssignmentTypeMethod implements AssignmentTypeSelector {
       System.out.println(testDirectory);
     }
 
-    String targetDirectory = testDir + projectName + "-COMPLETE";
+    String targetDirectory = testDir + projectName;
     File targetDir = new File(targetDirectory);
     if (!targetDir.exists()) {
       targetDir.mkdir();
@@ -89,6 +89,10 @@ public abstract class AssignmentTypeMethod implements AssignmentTypeSelector {
     try (ZipInputStream zipIn = new ZipInputStream(new FileInputStream(zipFilePath))) {
       ZipFile zipFile = new ZipFile(zipFilePath);
       zipFile.extractAll(targetDirectory);
+      zipHandler.modifyPomXml(targetDirectory + "/pom.xml", projectName);
+      // Zip HW in temp/tests
+      zipHandler.zipFolder(targetDirectory);
+
       ZipEntry entry = zipIn.getNextEntry();
       while (entry != null) {
         String filePath = destDirectory + File.separator + entry.getName();
@@ -129,7 +133,7 @@ public abstract class AssignmentTypeMethod implements AssignmentTypeSelector {
 
     File testFile = new File(testDirectory);
     if (testFile.exists()) {
-      zipHandler.zipTestFolder(testDirectory);
+      // zipHandler.zipTestFolder(testDirectory);
 
       zipHandler.setUrlForJenkinsDownloadTestFile(zipHandler.serverIp
           + "/ProgEdu/webapi/jenkins/getTestFile?filePath=" + testsDir + ".zip");

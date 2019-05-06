@@ -136,9 +136,9 @@ public class ZipHandler {
     }
   }
 
-  public void zipTestFolder(String testFilePath) {
-    File testFile = new File(testFilePath);
-    zipDirectory(testFile, testFilePath + ".zip");
+  public void zipFolder(String filePath) {
+    File file = new File(filePath);
+    zipDirectory(file, filePath + ".zip");
   }
 
   private void zipDirectory(File dir, String zipDirName) {
