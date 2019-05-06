@@ -212,7 +212,7 @@ public class StudentDashChoosePro {
     String console = jenkins.getCompleteConsoleText(userName, projectName, num);
     String modifiedCommit = jenkins.getConsoleTextCommitMessage(console);
     // Removing "<" and ">" to prevent js function.
-    modifiedCommit = modifiedCommit.replaceAll("<", "").replaceAll(">", "");
+    modifiedCommit = modifiedCommit.replaceAll("<", "&lt;").replaceAll(">", "&gt;");
     return modifiedCommit;
   }
 
