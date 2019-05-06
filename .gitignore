@@ -2,6 +2,7 @@
 .checkstyle
 .classpath
 .project
+*.properties
 .settings/
 .idea/
 .vscode/
