@@ -2,8 +2,8 @@
 .checkstyle
 .classpath
 .project
-*.properties
+#*.properties
 .settings/
 .idea/
-.vscode/
+#.vscode/
 progedu.iml
