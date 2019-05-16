@@ -278,7 +278,7 @@
 											td_color.className=color;
 											td_date.textContent = date;
 											td_message.innerHTML = message;
-										}, 
+										},
 										error : function(responseText) {
 											console.log("False!");
 										}
@@ -307,7 +307,6 @@
         </div>
         <!-- ---------------------------- Student Project ------------------------------- -->
         	<hr>
-		
        		<!-- iFrame -->
 			<%
 				StudentDashChoosePro studentDashChoosePro = new StudentDashChoosePro();

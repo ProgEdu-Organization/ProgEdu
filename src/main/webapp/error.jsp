@@ -14,10 +14,6 @@
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 <title>Error Pages</title>
 <style>
-body {
-	
-}
-
 .box {
 	position: absolute;
 	left: 50%;
@@ -50,13 +46,16 @@ body {
 					</tr>
 					<th>
 				</div>
-				<button type="button" class="btn btn-primary">返回登入頁面</button>
+				<div style="display:inline-block;">
+					<button id="goBack" type="button" class="btn btn-primary" style="width:49%">返回上一頁</button>
+					<button id="logout" type="button" class="btn btn-primary" style="width:49%">登入</button>
+				</div>
 			</div>
 			<p id="time"></p>
 		</div>
 	</div>
 	<script>
-		var time = 8;
+		var time = 7;
 		var timeout;
 
 		function timedCount() {
@@ -65,9 +64,17 @@ body {
 			timeout = setTimeout("timedCount()", 1000);
 			if (time == -1) {
 				clearTimeout(timeout);
-				location.href="memberLogout.jsp";
+				window.location.replace("memberLogout.jsp")
 			}
 		}
+		
+		$("#goBack").click(function(){
+			history.back();
+		});
+		
+		$("#logout").click(function(){
+			window.location.replace("memberLogout.jsp") ;
+		});
 	</script>
 </body>
 </html>

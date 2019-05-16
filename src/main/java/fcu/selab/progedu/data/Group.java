@@ -5,6 +5,15 @@ import java.util.List;
 
 public class Group {
   private String groupName;
+  private int groupId;
+  
+  public int getGroupId() {
+    return groupId;
+  }
+
+  public void setGroupId(int groupId) {
+    this.groupId = groupId;
+  }
 
   private String masterId;
 
@@ -33,6 +42,8 @@ public class Group {
   public void setContributor(List<String> contributorId) {
     this.contributorId = contributorId;
   }
+  
+  
 
   /**
    * add contirbutor to list
