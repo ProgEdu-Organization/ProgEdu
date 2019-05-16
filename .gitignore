@@ -1,8 +1,8 @@
 /target/
 .checkstyle
-*.properties
 .classpath
 .project
+*.properties
 .settings/
 .idea/
 .vscode/

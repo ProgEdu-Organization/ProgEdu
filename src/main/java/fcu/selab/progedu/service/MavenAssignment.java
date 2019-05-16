@@ -20,11 +20,11 @@ import org.xml.sax.SAXException;
 import fcu.selab.progedu.status.MavenStatusFactory;
 
 public class MavenAssignment extends AssignmentTypeMethod {
-  
+
   public MavenAssignment() {
     super(new MavenStatusFactory());
   }
-  
+
   public String getSampleZip() {
     String folderName = "MavenQuickStart.zip";
     return folderName;
@@ -75,9 +75,9 @@ public class MavenAssignment extends AssignmentTypeMethod {
           if (entry.contains("src/test")) {
 
             File dataFile = new File(strFolder + "/src/test");
-            File targetFile = new File(testFilePath + "/src/test");
+            // File targetFile = new File(testFilePath + "/src/test");
             try {
-              FileUtils.copyDirectory(dataFile, targetFile);
+              // FileUtils.copyDirectory(dataFile, targetFile);
               FileUtils.deleteDirectory(dataFile);
             } catch (IOException e) {
               e.printStackTrace();
