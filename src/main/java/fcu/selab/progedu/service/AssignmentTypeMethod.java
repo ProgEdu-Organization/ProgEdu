@@ -239,11 +239,12 @@ public abstract class AssignmentTypeMethod implements AssignmentTypeSelector {
       CourseConfig courseData = CourseConfig.getInstance();
       tomcatUrl = courseData.getTomcatServerIp() + "/ProgEdu/webapi/project/checksum?proName="
           + proName;
-      String updateDbUrl = courseData.getTomcatServerIp() + "/ProgEdu/webapi/commits/update";
+      String progApiUrl = courseData.getTomcatServerIp() + "/ProgEdu/webapi";
+
       // proUrl project name toLowerCase
       proUrl = proUrl.toLowerCase();
       JenkinsApi.modifyXmlFileUrl(filePath, proUrl);
-      modifyXmlFile(filePath, updateDbUrl, userName, proName, tomcatUrl, sb);
+      modifyXmlFile(filePath, progApiUrl, userName, proName, tomcatUrl, sb);
     } catch (LoadConfigFailureException e) {
       e.printStackTrace();
     }
