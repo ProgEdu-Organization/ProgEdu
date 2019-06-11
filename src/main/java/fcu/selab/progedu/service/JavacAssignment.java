@@ -20,11 +20,11 @@ import org.xml.sax.SAXException;
 import fcu.selab.progedu.status.JavacStatusFactory;
 
 public class JavacAssignment extends AssignmentTypeMethod {
-  
+
   public JavacAssignment() {
     super(new JavacStatusFactory());
   }
-  
+
   public String getSampleZip() {
     String folderName = "JavacQuickStart.zip";
     return folderName;
@@ -99,8 +99,8 @@ public class JavacAssignment extends AssignmentTypeMethod {
    * 
    * @param filePath
    *          filePath
-   * @param updateDbUrl
-   *          updateDbUrl
+   * @param progApiUrl
+   *          progApiUrl
    * @throws userName
    *           userName
    * @throws proName
@@ -110,7 +110,7 @@ public class JavacAssignment extends AssignmentTypeMethod {
    * @throws sb
    *           sb
    */
-  public void modifyXmlFile(String filePath, String updateDbUrl, String userName, String proName,
+  public void modifyXmlFile(String filePath, String progApiUrl, String userName, String proName,
       String tomcatUrl, StringBuilder sb) {
     try {
       String filepath = filePath;
@@ -121,6 +121,7 @@ public class JavacAssignment extends AssignmentTypeMethod {
       Node ndUrl = doc.getElementsByTagName("command").item(0);
       ndUrl.setTextContent(sb.toString());
 
+      String updateDbUrl = progApiUrl + "/commits/update";
       Node progeduDbUrl = doc.getElementsByTagName("progeduDbUrl").item(0);
       progeduDbUrl.setTextContent(updateDbUrl);
 
