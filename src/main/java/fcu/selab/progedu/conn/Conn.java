@@ -154,6 +154,25 @@ public class Conn {
   }
 
   /**
+   * get project all commit information
+   * 
+   * @param groupName groupName
+   * @return commits list
+   */
+  public List<GitlabCommit> getProjectCommits(String groupName) {
+    List<GitlabCommit> commits = new ArrayList<>();
+    GitlabGroup group = getGitlabGroup(groupName);
+    // get the first project of group
+    GitlabProject project = getGroupProject(group).get(0);
+    try {
+      commits = gitlab.getAllCommits(project.getId());
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return commits;
+  }
+
+  /**
    * Get all user's list of projects
    * 
    * @throws IOException on gitlab api call error
@@ -552,4 +571,24 @@ public class Conn {
       e.printStackTrace();
     }
   }
+
+  /**
+   * get commits from gitlab project.
+   * 
+   * @param name project's name
+   */
+  public List<String> getAllCommitters(String name) {
+    List<String> committers = new ArrayList<>();
+    try {
+      List<GitlabCommit> commits = gitlab
+          .getAllCommits(gitlab.getGroupProjects(gitlab.getGroup(name)).get(0).getId());
+      for (GitlabCommit commit : commits) {
+        committers.add(commit.getAuthorName());
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return committers;
+  }
+
 }

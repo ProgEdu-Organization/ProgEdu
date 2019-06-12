@@ -24,7 +24,7 @@ public interface AssignmentTypeSelector {
 
   public void modifyXmlFile(String filePath, String updateDbUrl, String userName, String proName,
       String tomcatUrl, StringBuilder sb);
-  
+
   public Status getStatus(String statusType);
 
 }

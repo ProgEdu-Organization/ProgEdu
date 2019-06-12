@@ -139,9 +139,15 @@ public class GroupService {
    * 
    * @param groups group data
    */
-  public void newGroup(List<Group> groups) {
+  private void newGroup(List<Group> groups) {
+
     for (Group group : groups) {
+      GroupProject groupProject = GroupProjectFactory
+          .getGroupProjectType(GroupProjectType.MAVEN.getTypeName());
       createGroup(group);
+      groupProject.createGitlabProject(group);
+      groupProject.createJenkinsJob(group);
+
     }
   }
 
@@ -171,23 +177,19 @@ public class GroupService {
    * @param group Group in database
    */
   public void createGroup(Group group) {
-    int groupId = -1;
-    int masterId = -1;
-    int developerId = -1;
 
-    groupId = newGroupId(newGroup(group.getGroupName()));
+    int groupId = newGroupId(newGroup(group.getGroupName()));
 
-    masterId = findUserByUsername(group.getMaster());
+    int masterId = findUserByUsername(group.getMaster());
     conn.addMember(groupId, masterId, 40); // add member on GitLab
     gdb.addGroup(group.getGroupName(), group.getMaster(), true); // insert into db
 
     for (String developName : group.getContributor()) {
-      developerId = findUserByUsername(developName);
+      int developerId = findUserByUsername(developName);
       conn.addMember(groupId, developerId, 30); // add member on GitLab
       gdb.addGroup(group.getGroupName(), developName, false); // insert into db
     }
 
-    conn.createGroupProject(group.getGroupName());
   }
 
   /**
@@ -222,7 +224,6 @@ public class GroupService {
         return user.getId();
       }
     }
-
     return -1;
   }
 
@@ -315,4 +316,9 @@ public class GroupService {
     }
     return response;
   }
+
+  public void newProject() {
+
+  }
+
 }
