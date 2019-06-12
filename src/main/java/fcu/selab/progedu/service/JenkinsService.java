@@ -299,9 +299,9 @@ public class JenkinsService {
    * @return console
    */
   @POST
-
   @Path("getFeedbackInfoForGroup")
-  public String getFeedbackInfoForGroup(String url, String projectType) {
+  public String getFeedbackInfoForGroup(String url) {
+    String projectType = "Maven";
     AssigmentStatusData assigmentStatusData = new AssigmentStatusData(url);
 
     StudentDashChoosePro stuDashChoPro = new StudentDashChoosePro();

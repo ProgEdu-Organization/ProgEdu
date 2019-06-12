@@ -371,7 +371,6 @@ html, body {
 		<script type="text/javascript">
 			function changeIframe(tr){
 				var url = '<%=jenkinsBuildNumUrl%>' + '/' + tr.id + '/consoleText';
-				var projectType = 'Maven';
 				$.ajax({
 					url: 'webapi/jenkins/getFeedbackInfoForGroup',
 					type: 'POST',
