@@ -233,7 +233,6 @@ public abstract class AssignmentTypeMethod implements AssignmentTypeSelector {
     String filePath = null;
     String configType = getJenkinsConfig();
     filePath = this.getClass().getResource("/jenkins/" + configType).getPath();
-
     try {
       String tomcatUrl;
       CourseConfig courseData = CourseConfig.getInstance();

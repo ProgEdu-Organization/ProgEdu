@@ -22,9 +22,9 @@ public interface AssignmentTypeSelector {
 
   public String getJenkinsConfig();
 
-  public void modifyXmlFile(String filePath, String updateDbUrl, String userName, String proName,
+  public void modifyXmlFile(String filePath, String progApiUrl, String userName, String proName,
       String tomcatUrl, StringBuilder sb);
-  
+
   public Status getStatus(String statusType);
 
 }

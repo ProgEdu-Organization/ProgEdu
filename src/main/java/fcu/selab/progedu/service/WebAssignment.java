@@ -110,7 +110,6 @@ public class WebAssignment extends AssignmentTypeMethod {
   public void modifyXmlFile(String filePath, String progApiUrl, String userName, String proName,
       String tomcatUrl, StringBuilder sb) {
     try {
-
       String filepath = filePath;
       DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
       DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
@@ -128,7 +127,6 @@ public class WebAssignment extends AssignmentTypeMethod {
 
       JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
       String seleniumUrl = jenkinsData.getSeleniumHostUrl() + "/wd/hub";
-
       Node ndSeleniumUrl = doc.getElementsByTagName("seleniumUrl").item(0);
       ndSeleniumUrl.setTextContent(seleniumUrl);
 
@@ -143,12 +141,11 @@ public class WebAssignment extends AssignmentTypeMethod {
       ndProName.setTextContent(proName);
 
       String progeduApiUrl = progApiUrl + "/commits/screenshot/updateURL";
-      Node ndProgeduApiUrl = doc.getElementsByTagName("ProgeduAPIUrl").item(0);
+      Node ndProgeduApiUrl = doc.getElementsByTagName("progeduAPIUrl").item(0);
       ndProgeduApiUrl.setTextContent(progeduApiUrl);
 
-      Node jenkinsJobName = doc.getElementsByTagName("JenkinsJobName").item(0);
+      Node jenkinsJobName = doc.getElementsByTagName("jenkinsJobName").item(0);
       jenkinsJobName.setTextContent(strJobName);
-
       // write the content into xml file
       TransformerFactory transformerFactory = TransformerFactory.newInstance();
       Transformer transformer = transformerFactory.newTransformer();
