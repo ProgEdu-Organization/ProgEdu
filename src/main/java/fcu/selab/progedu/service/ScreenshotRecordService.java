@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.Base64;
 import java.util.List;
 
@@ -112,26 +113,30 @@ public class ScreenshotRecordService {
    * 
    * @param proName
    *          project name
-   * @param url
-   *          screenshot png url
+   * @param urls
+   *          screenshot png urls
+   * @throws SQLException
+   *           SQLException
    */
   @POST
   @Path("updateURL")
   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
   public Response updateScreenshotPng(@FormParam("proName") String proName,
-      @FormParam("url") List<String> url) {
+      @FormParam("url") List<String> urls) throws SQLException {
     String[] userJob = proName.split("_");
+    String userName = userJob[0];
+    String jobName = userJob[1];
     JSONObject ob = new JSONObject();
     if (!userJob[0].equals("root")) {
       int lastCommitNum = getJenkinsNextBuildNumber(proName);
-      int id = userDb.getUser(userJob[0]).getId();
-      System.out.println("url " + url);
-      db.insertJenkinsCommitCount(id, userJob[1], lastCommitNum, url);
+      int id = userDb.getUser(userName).getId();
+      System.out.println("url " + urls);
+      db.insertJenkinsCommitCount(id, jobName, lastCommitNum, urls);
 
-      ob.put("userName", userJob[0]);
-      ob.put("proName", userJob[1]);
+      ob.put("userName", userName);
+      ob.put("proName", jobName);
       ob.put("commitCount", lastCommitNum);
-      ob.put("url", url);
+      ob.put("url", urls);
     }
 
     return Response.ok().entity(ob.toString()).build();
