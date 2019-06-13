@@ -55,13 +55,11 @@ public class ScreenshotRecordService {
   @GET
   @Path("nextCommitNumber/")
   @Produces(MediaType.TEXT_PLAIN)
-  public int getJenkinsNextBuildNumber(@QueryParam("proName") String proName,
-      @QueryParam("userName") String userName) {
+  public int getJenkinsNextBuildNumber(@QueryParam("jobName") String jobName) {
     int nextBuildNumber = 0;
     String username = "";
     String password = "";
     String jobUrl = "";
-    String jobName = userName + "_" + proName;
     HttpURLConnection conn = null;
     try {
       username = jenkinsData.getJenkinsRootUsername();
@@ -112,25 +110,26 @@ public class ScreenshotRecordService {
   /**
    * update stu project commit record.
    * 
-   * @param userName
-   *          stu id
    * @param proName
    *          project name
+   * @param url
+   *          screenshot png url
    */
   @POST
   @Path("updateURL")
   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-  public Response updateScreenshotPng(@FormParam("user") String userName,
-      @FormParam("proName") String proName, @FormParam("url") List<String> url) {
+  public Response updateScreenshotPng(@FormParam("proName") String proName,
+      @FormParam("url") List<String> url) {
+    String[] userJob = proName.split("_");
     JSONObject ob = new JSONObject();
-    if (!userName.equals("root")) {
-      int lastCommitNum = getJenkinsNextBuildNumber(proName, userName);
-      int id = userDb.getUser(userName).getId();
+    if (!userJob[0].equals("root")) {
+      int lastCommitNum = getJenkinsNextBuildNumber(proName);
+      int id = userDb.getUser(userJob[0]).getId();
       System.out.println("url " + url);
-      db.insertJenkinsCommitCount(id, proName, lastCommitNum, url);
+      db.insertJenkinsCommitCount(id, userJob[1], lastCommitNum, url);
 
-      ob.put("userName", userName);
-      ob.put("proName", proName);
+      ob.put("userName", userJob[0]);
+      ob.put("proName", userJob[1]);
       ob.put("commitCount", lastCommitNum);
       ob.put("url", url);
     }
