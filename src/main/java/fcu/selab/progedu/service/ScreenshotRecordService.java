@@ -17,6 +17,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import org.json.JSONObject;
 
@@ -131,15 +132,20 @@ public class ScreenshotRecordService {
       int lastCommitNum = getJenkinsNextBuildNumber(proName);
       int id = userDb.getUser(userName).getId();
       System.out.println("url " + urls);
-      db.insertJenkinsCommitCount(id, jobName, lastCommitNum, urls);
 
-      ob.put("userName", userName);
-      ob.put("proName", jobName);
-      ob.put("commitCount", lastCommitNum);
-      ob.put("url", urls);
+      try {
+        db.insertJenkinsCommitCount(id, jobName, lastCommitNum, urls);
+        ob.put("userName", userName);
+        ob.put("proName", jobName);
+        ob.put("commitCount", lastCommitNum);
+        ob.put("url", urls);
+        return Response.ok().entity(ob.toString()).build();
+      } catch (Exception e) {
+        System.out.print("update URL to DB error: ");
+        e.printStackTrace();
+      }
     }
-
-    return Response.ok().entity(ob.toString()).build();
+    return Response.serverError().status(Status.INTERNAL_SERVER_ERROR).build();
   }
 
 }
