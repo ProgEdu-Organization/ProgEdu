@@ -140,7 +140,7 @@ public class WebAssignment extends AssignmentTypeMethod {
       Node ndProName = doc.getElementsByTagName("proName").item(0);
       ndProName.setTextContent(proName);
 
-      String progeduApiUrl = progApiUrl + "/commits/screenshot/updateURL";
+      String progeduApiUrl = progApiUrl;
       Node ndProgeduApiUrl = doc.getElementsByTagName("progeduAPIUrl").item(0);
       ndProgeduApiUrl.setTextContent(progeduApiUrl);
 

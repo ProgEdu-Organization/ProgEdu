@@ -127,6 +127,7 @@ public class ScreenshotRecordService {
     String[] userJob = proName.split("_");
     String userName = userJob[0];
     String jobName = userJob[1];
+    System.out.println("userName: " + userName + "jobName: " + jobName);
     JSONObject ob = new JSONObject();
     if (!userJob[0].equals("root")) {
       int lastCommitNum = getJenkinsNextBuildNumber(proName);
