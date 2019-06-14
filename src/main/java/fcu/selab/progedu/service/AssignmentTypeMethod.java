@@ -89,9 +89,9 @@ public abstract class AssignmentTypeMethod implements AssignmentTypeSelector {
     try (ZipInputStream zipIn = new ZipInputStream(new FileInputStream(zipFilePath))) {
       ZipFile zipFile = new ZipFile(zipFilePath);
       zipFile.extractAll(targetDirectory);
-      zipHandler.modifyPomXml(targetDirectory + "/pom.xml", projectName);
-      // Zip HW in temp/tests
-      zipHandler.zipFolder(targetDirectory);
+      // zipHandler.modifyPomXml(targetDirectory + "/pom.xml", projectName);
+      // // Zip HW in temp/tests
+      // zipHandler.zipTestFolder(targetDirectory);
 
       ZipEntry entry = zipIn.getNextEntry();
       while (entry != null) {
@@ -133,7 +133,7 @@ public abstract class AssignmentTypeMethod implements AssignmentTypeSelector {
 
     File testFile = new File(testDirectory);
     if (testFile.exists()) {
-      // zipHandler.zipTestFolder(testDirectory);
+      zipHandler.zipTestFolder(testDirectory);
 
       zipHandler.setUrlForJenkinsDownloadTestFile(zipHandler.serverIp
           + "/ProgEdu/webapi/jenkins/getTestFile?filePath=" + testsDir + ".zip");
@@ -233,17 +233,17 @@ public abstract class AssignmentTypeMethod implements AssignmentTypeSelector {
     String filePath = null;
     String configType = getJenkinsConfig();
     filePath = this.getClass().getResource("/jenkins/" + configType).getPath();
-
     try {
       String tomcatUrl;
       CourseConfig courseData = CourseConfig.getInstance();
       tomcatUrl = courseData.getTomcatServerIp() + "/ProgEdu/webapi/project/checksum?proName="
           + proName;
-      String updateDbUrl = courseData.getTomcatServerIp() + "/ProgEdu/webapi/commits/update";
+      String progApiUrl = courseData.getTomcatServerIp() + "/ProgEdu/webapi";
+
       // proUrl project name toLowerCase
       proUrl = proUrl.toLowerCase();
       JenkinsApi.modifyXmlFileUrl(filePath, proUrl);
-      modifyXmlFile(filePath, updateDbUrl, userName, proName, tomcatUrl, sb);
+      modifyXmlFile(filePath, progApiUrl, userName, proName, tomcatUrl, sb);
     } catch (LoadConfigFailureException e) {
       e.printStackTrace();
     }

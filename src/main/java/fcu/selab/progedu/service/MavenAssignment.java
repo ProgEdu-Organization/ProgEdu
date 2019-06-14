@@ -98,8 +98,8 @@ public class MavenAssignment extends AssignmentTypeMethod {
    * 
    * @param filePath
    *          filePath
-   * @param updateDbUrl
-   *          updateDbUrl
+   * @param progApiUrl
+   *          progApiUrl
    * @throws userName
    *           userName
    * @throws proName
@@ -109,7 +109,7 @@ public class MavenAssignment extends AssignmentTypeMethod {
    * @throws sb
    *           sb
    */
-  public void modifyXmlFile(String filePath, String updateDbUrl, String userName, String proName,
+  public void modifyXmlFile(String filePath, String progApiUrl, String userName, String proName,
       String tomcatUrl, StringBuilder sb) {
     try {
       String filepath = filePath;
@@ -124,6 +124,7 @@ public class MavenAssignment extends AssignmentTypeMethod {
       Node testFileName = doc.getElementsByTagName("testFileName").item(0);
       testFileName.setTextContent(proName);
 
+      String updateDbUrl = progApiUrl + "/commits/update";
       Node proDetailUrl = doc.getElementsByTagName("proDetailUrl").item(0);
       proDetailUrl.setTextContent(tomcatUrl);
 
