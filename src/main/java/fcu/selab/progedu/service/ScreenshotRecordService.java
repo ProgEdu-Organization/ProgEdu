@@ -123,7 +123,7 @@ public class ScreenshotRecordService {
   @Path("updateURL")
   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
   public Response updateScreenshotPng(@FormParam("proName") String proName,
-      @FormParam("url") List<String> urls) throws SQLException {
+      @FormParam("url") List<String> urls) {
     String[] userJob = proName.split("_");
     String userName = userJob[0];
     String jobName = userJob[1];
