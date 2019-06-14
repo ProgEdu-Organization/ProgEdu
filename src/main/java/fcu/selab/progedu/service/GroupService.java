@@ -143,10 +143,10 @@ public class GroupService {
 
     for (Group group : groups) {
       GroupProject groupProject = GroupProjectFactory
-          .getGroupProjectType(GroupProjectType.MAVEN.getTypeName());
+          .getGroupProjectType(AssignmentTypeEnum.MAVEN.getTypeName());
       createGroup(group);
-      groupProject.createGitlabProject(group);
-      groupProject.createJenkinsJob(group);
+      groupProject.createGitlabProject(group.getGroupName());// project name
+      groupProject.createJenkinsJob(group.getGroupName());// project name
 
     }
   }

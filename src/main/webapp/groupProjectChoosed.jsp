@@ -18,7 +18,7 @@
 <%@ page import="fcu.selab.progedu.conn.*"%>
 <%@ page import="fcu.selab.progedu.status.*"%>
 <%@ page import="fcu.selab.progedu.service.IGroupProject"%>
-<%@ page import="fcu.selab.progedu.service.GroupProjectType"%>
+<%@ page import="fcu.selab.progedu.service.AssignmentTypeEnum"%>
 <%@ page import="fcu.selab.progedu.service.GroupProjectFactory"%>
 <%@ page import="fcu.selab.progedu.service.AssignmentTypeFactory"%>
 <%@ page import="fcu.selab.progedu.service.AssignmentTypeSelector"%>
@@ -347,15 +347,18 @@ html, body {
 		String jenkinsBuildNumUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName;
 		String lastBuildUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/" + lastBuildMessageNum + "/consoleText";
 		String url = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/";
-	
+		String projectType = AssignmentTypeEnum.MAVEN.getTypeName();
 		StudentDashChoosePro studentDashChoosePro = new StudentDashChoosePro();
-		String statusType = "INI";
-		String projectType = GroupProjectType.MAVEN.getTypeName();
-		IGroupProject groupProject = 
-		    GroupProjectFactory.getGroupProjectType(projectType);
-		Status status = groupProject.getStatus(statusType);
 		
 		String detailConsoleText = jenkins.getConsoleText(lastBuildUrl);
+		String buildApiJson = stuDashChoPro.getBuildApiJson(lastBuildMessageNum,groupName, projectName);
+		String statusType = stuDashChoPro.getCommitStatus(lastBuildMessageNum,groupName, projectName, buildApiJson,projectType);
+		//String statusType = "INI";
+		
+		IGroupProject groupProject = GroupProjectFactory.getGroupProjectType(projectType);
+		Status status = groupProject.getStatus(statusType);
+		
+		
 		String console = status.extractFailureMsg(detailConsoleText);
 		%>
 		<h4>

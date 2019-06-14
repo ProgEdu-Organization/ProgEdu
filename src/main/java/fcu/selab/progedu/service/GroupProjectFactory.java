@@ -4,12 +4,13 @@ public class GroupProjectFactory {
   /**
    * get the type of project
    * 
-   * @param projectType assignmentType
+   * @param projectType assignment type
    */
   public static GroupProject getGroupProjectType(String projectType) {
-    GroupProjectType groupProjectType = GroupProjectType.getGroupProjectType(projectType);
+    AssignmentTypeEnum type = AssignmentTypeEnum
+        .getStatusProjectTypeEnum(projectType);
 
-    switch (groupProjectType) {
+    switch (type) {
       case JAVAC: {
         return null;
       }

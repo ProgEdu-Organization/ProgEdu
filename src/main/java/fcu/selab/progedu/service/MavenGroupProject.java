@@ -16,13 +16,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
-import fcu.selab.progedu.status.MavenStatusFactory;
-
 public class MavenGroupProject extends GroupProject {
-
-  public MavenGroupProject() {
-    super(new MavenStatusFactory());
-  }
 
   @Override
   public String getJenkinsConfig() {
@@ -30,17 +24,21 @@ public class MavenGroupProject extends GroupProject {
   }
 
   @Override
+  public AssignmentTypeEnum getProjectType() {
+    return AssignmentTypeEnum.MAVEN;
+  }
+
+  @Override
   /**
-   * modifyXmlFile
+   * modify Jenkins job configuration base on sample file
    * 
    * @param filePath    filePath
    * @param updateDbUrl updateDbUrl
-   * @throws userName  userName
-   * @throws proName   proName
-   * @throws tomcatUrl tomcatUrl
-   * @throws sb        sb
+   * @param userName    userName
+   * @param proName     proName
+   * @param tomcatUrl   tomcatUrl
    */
-  public void modifyJenkinsJobConfiguration(String filePath, String updateDbUrl, String userName,
+  public void createJenkinsJobConfiguration(String filePath, String updateDbUrl, String userName,
       String proName, String tomcatUrl) {
     try {
       String filepath = filePath;
