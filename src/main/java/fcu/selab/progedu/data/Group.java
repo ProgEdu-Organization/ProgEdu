@@ -5,8 +5,11 @@ import java.util.List;
 
 public class Group {
   private String groupName;
+  private String projectName;
   private int groupId;
-  
+  private String leaderUid;
+  private List<String> contributorId;
+
   public int getGroupId() {
     return groupId;
   }
@@ -14,10 +17,6 @@ public class Group {
   public void setGroupId(int groupId) {
     this.groupId = groupId;
   }
-
-  private String masterId;
-
-  private List<String> contributorId;
 
   public String getGroupName() {
     return groupName;
@@ -28,11 +27,11 @@ public class Group {
   }
 
   public String getMaster() {
-    return masterId;
+    return leaderUid;
   }
 
   public void setMaster(String master) {
-    this.masterId = master;
+    this.leaderUid = master;
   }
 
   public List<String> getContributor() {
@@ -42,8 +41,6 @@ public class Group {
   public void setContributor(List<String> contributorId) {
     this.contributorId = contributorId;
   }
-  
-  
 
   /**
    * add contirbutor to list

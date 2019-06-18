@@ -35,12 +35,9 @@ public abstract class AssignmentTypeMethod implements AssignmentTypeSelector {
 
   /**
    * 
-   * @param zipFilePath
-   *          zipFilePath
-   * @param zipFolderName
-   *          zipFolderName
-   * @param projectName
-   *          projectName
+   * @param zipFilePath   zipFilePath
+   * @param zipFolderName zipFolderName
+   * @param projectName   projectName
    */
 
   public void unzip(String zipFilePath, String zipFolderName, String projectName,
@@ -144,12 +141,9 @@ public abstract class AssignmentTypeMethod implements AssignmentTypeSelector {
 
   /**
    * 
-   * @param name
-   *          name
-   * @param jenkinsRootUsername
-   *          jenkinsRootUsername
-   * @param jenkinsRootPassword
-   *          jenkinsRootPassword
+   * @param name                name
+   * @param jenkinsRootUsername jenkinsRootUsername
+   * @param jenkinsRootPassword jenkinsRootPassword
    */
   public void createJenkinsJob(String name, String jenkinsRootUsername, String jenkinsRootPassword)
       throws Exception {
@@ -173,14 +167,10 @@ public abstract class AssignmentTypeMethod implements AssignmentTypeSelector {
 
   /**
    * 
-   * @param userName
-   *          userName
-   * @param proName
-   *          proName
-   * @param jenkinsCrumb
-   *          jenkinsCrumb
-   * @param sb
-   *          sb
+   * @param userName     userName
+   * @param proName      proName
+   * @param jenkinsCrumb jenkinsCrumb
+   * @param sb           sb
    */
   public void createAllJenkinsJob(String userName, String proName, String jenkinsCrumb,
       StringBuilder sb) {
@@ -199,12 +189,9 @@ public abstract class AssignmentTypeMethod implements AssignmentTypeSelector {
 
   /**
    * 
-   * @param proName
-   *          proName
-   * @param jenkinsCrumb
-   *          jenkinsCrumb
-   * @param sb
-   *          sb
+   * @param proName      proName
+   * @param jenkinsCrumb jenkinsCrumb
+   * @param sb           sb
    */
   public void createRootJob(String proName, String jenkinsCrumb, StringBuilder sb)
       throws Exception {
@@ -220,14 +207,10 @@ public abstract class AssignmentTypeMethod implements AssignmentTypeSelector {
 
   /**
    * 
-   * @param userName
-   *          userName
-   * @param proName
-   *          proName
-   * @param proUrl
-   *          proUrl
-   * @param sb
-   *          sb
+   * @param userName userName
+   * @param proName  proName
+   * @param proUrl   proUrl
+   * @param sb       sb
    */
   public String modifyXml(String userName, String proName, String proUrl, StringBuilder sb) {
     String filePath = null;
@@ -252,8 +235,7 @@ public abstract class AssignmentTypeMethod implements AssignmentTypeSelector {
   }
 
   /**
-   * @param statusType
-   *          status.
+   * @param statusType status.
    */
   public Status getStatus(String statusType) {
     return statusFactory.getStatus(statusType);

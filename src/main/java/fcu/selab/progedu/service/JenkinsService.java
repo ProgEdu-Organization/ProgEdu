@@ -18,10 +18,12 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
+import org.gitlab.api.models.GitlabCommit;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import fcu.selab.progedu.config.JenkinsConfig;
+import fcu.selab.progedu.conn.Conn;
 import fcu.selab.progedu.conn.StudentDashChoosePro;
 import fcu.selab.progedu.data.Project;
 import fcu.selab.progedu.db.CommitRecordDbManager;
@@ -31,7 +33,6 @@ import fcu.selab.progedu.jenkins.AssigmentStatusData;
 import fcu.selab.progedu.jenkins.JenkinsApi;
 import fcu.selab.progedu.jenkins.JobStatus;
 import fcu.selab.progedu.status.Status;
-import fcu.selab.progedu.status.StatusFactory;
 
 @Path("jenkins/")
 public class JenkinsService {
@@ -173,6 +174,39 @@ public class JenkinsService {
   }
 
   /**
+   * get student build detail info
+   * 
+   * @param num         build num
+   * @param groupName   student id
+   * @param projectName project name
+   * @return build detail
+   */
+  @GET
+  @Path("groupProjectBuildDetail")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response getGroupProjectBuildDetail(@QueryParam("num") int num,
+      @QueryParam("groupName") String groupName, @QueryParam("projectName") String projectName) {
+    String proType = "Maven";
+    Conn conn = Conn.getInstance();
+    StudentDashChoosePro stuDashChoPro = new StudentDashChoosePro();
+    String buildApiJson = stuDashChoPro.getBuildApiJson(num, groupName, projectName);
+    final String strDate = stuDashChoPro.getCommitTime(buildApiJson);
+    String status = stuDashChoPro.getCommitStatus(num, groupName, projectName, buildApiJson,
+        proType);
+
+    List<GitlabCommit> commits = conn.getProjectCommits(groupName);
+    String committer = commits.get(commits.size() - num).getAuthorName();
+    String commitMessage = commits.get(commits.size() - num).getMessage();
+    JSONObject ob = new JSONObject();
+    ob.put("num", num);
+    ob.put("status", "circle " + status);
+    ob.put("date", strDate);
+    ob.put("committer", committer);
+    ob.put("message", commitMessage);
+    return Response.ok().entity(ob.toString()).build();
+  }
+
+  /**
    * get build error type
    * 
    * @param jenkinsData connect to jenkins
@@ -248,11 +282,39 @@ public class JenkinsService {
 
     String colorStatus = dbManager.getCommitRecordStatus(assigmentStatusData.getProjectName(),
         assigmentStatusData.getUsername(), assigmentStatusData.getNumber());
-    
-    AssignmentTypeSelector assignmentTypeSelector = 
-        AssignmentTypeFactory.getAssignmentType(project.getType());
+
+    AssignmentTypeSelector assignmentTypeSelector = AssignmentTypeFactory
+        .getAssignmentType(project.getType());
     Status status = assignmentTypeSelector.getStatus(colorStatus);
-    
+
+    String detailConsoleText = jenkins.getConsoleText(url);
+    String console = status.extractFailureMsg(detailConsoleText);
+
+    return console;
+  }
+
+  /**
+   * 
+   * @param url full console url
+   * @return console
+   */
+  @POST
+  @Path("getFeedbackInfoForGroup")
+  public String getFeedbackInfoForGroup(String url) {
+    String projectType = "Maven";
+    AssigmentStatusData assigmentStatusData = new AssigmentStatusData(url);
+
+    StudentDashChoosePro stuDashChoPro = new StudentDashChoosePro();
+    String buildApiJson = stuDashChoPro.getBuildApiJson(assigmentStatusData.getNumber(),
+        assigmentStatusData.getUsername(), assigmentStatusData.getProjectName());
+    String statusType = stuDashChoPro.getCommitStatus(assigmentStatusData.getNumber(),
+        assigmentStatusData.getUsername(), assigmentStatusData.getProjectName(), buildApiJson,
+        projectType);
+
+    AssignmentTypeSelector assignmentTypeSelector = AssignmentTypeFactory
+        .getAssignmentType(projectType);
+    Status status = assignmentTypeSelector.getStatus(statusType);
+
     String detailConsoleText = jenkins.getConsoleText(url);
     String console = status.extractFailureMsg(detailConsoleText);
 

@@ -650,8 +650,7 @@ public class JenkinsApi {
    *           on gitlab getuser call error
    */
   public void buildJob(String userName, String proName, String jenkinsCrumb) {
-    String jobName = null;
-    jobName = userName + "_" + proName;
+    String jobName = userName + "_" + proName;
     postBuildJob(jobName, jenkinsCrumb);
   }
 
