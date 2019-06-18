@@ -17,6 +17,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
+import fcu.selab.progedu.config.JenkinsConfig;
+import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.status.WebStatusFactory;
 
 public class WebAssignment extends AssignmentTypeMethod {
@@ -94,7 +96,7 @@ public class WebAssignment extends AssignmentTypeMethod {
    * @param tomcatUrl   tomcatUrl
    * @param sb          sb
    */
-  public void modifyXmlFile(String filePath, String updateDbUrl, String userName, String proName,
+  public void modifyXmlFile(String filePath, String progApiUrl, String userName, String proName,
       String tomcatUrl, StringBuilder sb) {
     try {
       String filepath = filePath;
@@ -112,6 +114,12 @@ public class WebAssignment extends AssignmentTypeMethod {
       Node proDetailUrl = doc.getElementsByTagName("proDetailUrl").item(0);
       proDetailUrl.setTextContent(tomcatUrl);
 
+      JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
+      String seleniumUrl = jenkinsData.getSeleniumHostUrl() + "/wd/hub";
+      Node ndSeleniumUrl = doc.getElementsByTagName("seleniumUrl").item(0);
+      ndSeleniumUrl.setTextContent(seleniumUrl);
+
+      String updateDbUrl = progApiUrl + "/commits/update";
       Node progeduDbUrl = doc.getElementsByTagName("progeduDbUrl").item(0);
       progeduDbUrl.setTextContent(updateDbUrl);
 
@@ -121,13 +129,20 @@ public class WebAssignment extends AssignmentTypeMethod {
       Node ndProName = doc.getElementsByTagName("proName").item(0);
       ndProName.setTextContent(proName);
 
+      String progeduApiUrl = progApiUrl;
+      Node ndProgeduApiUrl = doc.getElementsByTagName("progeduAPIUrl").item(0);
+      ndProgeduApiUrl.setTextContent(progeduApiUrl);
+
+      Node jenkinsJobName = doc.getElementsByTagName("jenkinsJobName").item(0);
+      jenkinsJobName.setTextContent(strJobName);
       // write the content into xml file
       TransformerFactory transformerFactory = TransformerFactory.newInstance();
       Transformer transformer = transformerFactory.newTransformer();
       DOMSource source = new DOMSource(doc);
       StreamResult result = new StreamResult(new File(filepath));
       transformer.transform(source, result);
-    } catch (ParserConfigurationException | TransformerException | SAXException | IOException e) {
+    } catch (ParserConfigurationException | TransformerException | SAXException | IOException
+        | LoadConfigFailureException e) {
       e.printStackTrace();
     }
 

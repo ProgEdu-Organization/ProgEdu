@@ -99,7 +99,7 @@ public class JavacAssignment extends AssignmentTypeMethod {
    * @throws tomcatUrl tomcatUrl
    * @throws sb        sb
    */
-  public void modifyXmlFile(String filePath, String updateDbUrl, String userName, String proName,
+  public void modifyXmlFile(String filePath, String progApiUrl, String userName, String proName,
       String tomcatUrl, StringBuilder sb) {
     try {
       String filepath = filePath;
@@ -110,6 +110,7 @@ public class JavacAssignment extends AssignmentTypeMethod {
       Node ndUrl = doc.getElementsByTagName("command").item(0);
       ndUrl.setTextContent(sb.toString());
 
+      String updateDbUrl = progApiUrl + "/commits/update";
       Node progeduDbUrl = doc.getElementsByTagName("progeduDbUrl").item(0);
       progeduDbUrl.setTextContent(updateDbUrl);
 

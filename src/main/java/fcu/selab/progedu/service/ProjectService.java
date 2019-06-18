@@ -182,8 +182,8 @@ public class ProjectService {
     String removeFileCommand = "rm -rf uploads/";
     linuxApi.execLinuxCommandInFile(removeFileCommand, TEMP_DIR);
 
-    String removeTestDirectoryCommand = "rm -rf tests/" + name;
-    linuxApi.execLinuxCommandInFile(removeTestDirectoryCommand, TEMP_DIR);
+    // String removeTestDirectoryCommand = "rm -rf tests/" + name;
+    // linuxApi.execLinuxCommandInFile(removeTestDirectoryCommand, TEMP_DIR);
 
     // 9. Add project to database
     Date date = new Date();
@@ -418,14 +418,14 @@ public class ProjectService {
   public Response deleteProject(@FormDataParam("del_Hw_Name") String name) {
     Linux linuxApi = new Linux();
     // delete tomcat test file
-    // String removeTestDirectoryCommand = "rm -rf tests/" + name;
-    // linuxApi.execLinuxCommandInFile(removeTestDirectoryCommand, TEMP_DIR);
+    String removeTestDirectoryCommand = "rm -rf tests/" + name;
+    linuxApi.execLinuxCommandInFile(removeTestDirectoryCommand, TEMP_DIR);
 
     String removeZipTestFileCommand = "rm tests/" + name + ".zip";
     linuxApi.execLinuxCommandInFile(removeZipTestFileCommand, TEMP_DIR);
 
-    // String removeFileCommand = "rm -rf tests/" + name + "-COMPLETE";
-    // linuxApi.execLinuxCommandInFile(removeFileCommand, TEMP_DIR);
+    String removeFileCommand = "rm -rf tests/" + name + "-COMPLETE";
+    linuxApi.execLinuxCommandInFile(removeFileCommand, TEMP_DIR);
     // delete db
     dbManager.deleteProject(name);
     commitRecordService.deleteRecord(name);

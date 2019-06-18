@@ -12,7 +12,7 @@
     <configVersion>2</configVersion>
     <userRemoteConfigs>
       <hudson.plugins.git.UserRemoteConfig>
-        <url>http://140.134.26.71:20008/root/web-hw4.git</url>
+        <url>http://140.134.26.71:20008/m0707350/web-hw1.git</url>
         <credentialsId>gitlab_root</credentialsId>
       </hudson.plugins.git.UserRemoteConfig>
     </userRemoteConfigs>
@@ -50,7 +50,7 @@
       <excludeBranchesSpec></excludeBranchesSpec>
       <sourceBranchRegex></sourceBranchRegex>
       <targetBranchRegex></targetBranchRegex>
-      <secretToken>{AQAAABAAAAAgvKvsLTn070k2c+VwHsXs5d2MYAzeGzXzROR+JPIInEF3RNjbBFPbdWNgFLAyA8eQ}</secretToken>
+      <secretToken>{AQAAABAAAABQzjpAifo/2NwzoixwBIMkzYUoRqYWGWaZ9TQ5JMOKeHwwavg32nSnEE+Z0OJFuL7iQLC00NepI0rk5nuXlT4LapvznlA5j56zyHmu5dIPxlR3T2/MMfTfD8l0X+FTK6kM}</secretToken>
       <pendingBuildName></pendingBuildName>
       <cancelPendingBuildsOnUpdate>false</cancelPendingBuildsOnUpdate>
     </com.dabsquared.gitlabjenkins.GitLabPushTrigger>
@@ -66,7 +66,7 @@
         <timeoutMinutes>15</timeoutMinutes>
       </strategy>
       <buildStep class="org.jenkinsci.plugins.AssessmentBuilder" plugin="jenkins-progedu@1.0-SNAPSHOT">
-        <jobName>root_WEB-HW1</jobName>
+        <jobName>M0707350_WEB-HW1</jobName>
         <testFileName>WEB-HW1</testFileName>
         <proDetailUrl>http://140.134.26.71:10008/ProgEdu/webapi/project/checksum?proName=WEB-HW1</proDetailUrl>
         <testFileUrl>http://140.134.26.71:10008/ProgEdu/webapi/jenkins/getTestFile?filePath=/usr/local/tomcat/temp/tests/WEB-HW1.zip</testFileUrl>
@@ -90,46 +90,28 @@ npm run checkstyle</command>
         <hudson.plugins.build__timeout.operations.FailOperation/>
       </operationList>
     </hudson.plugins.build__timeout.BuildStepWithTimeout>
+    <io.jenkins.plugins.screenshot.ScreenShotBuilder plugin="sceenshot@1.0-SNAPSHOT">
+      <seleniumUrl></seleniumUrl>
+    </io.jenkins.plugins.screenshot.ScreenShotBuilder>
   </builders>
   <publishers>
-    <hudson.plugins.checkstyle.CheckStylePublisher plugin="checkstyle@4.0.0">
-      <healthy></healthy>
-      <unHealthy></unHealthy>
-      <thresholdLimit>low</thresholdLimit>
-      <pluginName>[CHECKSTYLE] </pluginName>
-      <defaultEncoding></defaultEncoding>
-      <canRunOnFailed>true</canRunOnFailed>
-      <usePreviousBuildAsReference>false</usePreviousBuildAsReference>
-      <useStableBuildAsReference>false</useStableBuildAsReference>
-      <useDeltaValues>false</useDeltaValues>
-      <thresholds plugin="analysis-core@1.95">
-        <unstableTotalAll></unstableTotalAll>
-        <unstableTotalHigh></unstableTotalHigh>
-        <unstableTotalNormal></unstableTotalNormal>
-        <unstableTotalLow></unstableTotalLow>
-        <unstableNewAll></unstableNewAll>
-        <unstableNewHigh></unstableNewHigh>
-        <unstableNewNormal></unstableNewNormal>
-        <unstableNewLow></unstableNewLow>
-        <failedTotalAll></failedTotalAll>
-        <failedTotalHigh></failedTotalHigh>
-        <failedTotalNormal></failedTotalNormal>
-        <failedTotalLow></failedTotalLow>
-        <failedNewAll></failedNewAll>
-        <failedNewHigh></failedNewHigh>
-        <failedNewNormal></failedNewNormal>
-        <failedNewLow></failedNewLow>
-      </thresholds>
-      <shouldDetectModules>false</shouldDetectModules>
-      <dontComputeNew>true</dontComputeNew>
-      <doNotResolveRelativePaths>false</doNotResolveRelativePaths>
-      <pattern>eslintReport.xml,htmlhintReport.xml</pattern>
-    </hudson.plugins.checkstyle.CheckStylePublisher>
+    <hudson.tasks.ArtifactArchiver>
+      <artifacts>src/test/screenshot/*.png</artifacts>
+      <allowEmptyArchive>false</allowEmptyArchive>
+      <onlyIfSuccessful>false</onlyIfSuccessful>
+      <fingerprint>false</fingerprint>
+      <defaultExcludes>true</defaultExcludes>
+      <caseSensitive>true</caseSensitive>
+    </hudson.tasks.ArtifactArchiver>
     <org.jenkinsci.plugins.UpdatingDbPublisher plugin="jenkins-progedu@1.0-SNAPSHOT">
       <progeduDbUrl>http://140.134.26.71:10008/ProgEdu/webapi/commits/update</progeduDbUrl>
-      <user>root</user>
-      <proName>WEB-HW4</proName>
+      <user>M0707350</user>
+      <proName>WEB-HW1</proName>
     </org.jenkinsci.plugins.UpdatingDbPublisher>
+    <io.jenkins.plugins.screenshot.UpdateToDbPublisher plugin="sceenshot@1.0-SNAPSHOT">
+      <progeduAPIUrl></progeduAPIUrl>
+      <jenkinsJobName></jenkinsJobName>
+    </io.jenkins.plugins.screenshot.UpdateToDbPublisher>
     <hudson.plugins.ws__cleanup.WsCleanup plugin="ws-cleanup@0.37">
       <patterns class="empty-list"/>
       <deleteDirs>false</deleteDirs>
@@ -146,7 +128,7 @@ npm run checkstyle</command>
     </hudson.plugins.ws__cleanup.WsCleanup>
   </publishers>
   <buildWrappers>
-    <jenkins.plugins.nodejs.NodeJSBuildWrapper plugin="nodejs@1.2.8">
+    <jenkins.plugins.nodejs.NodeJSBuildWrapper plugin="nodejs@1.2.9">
       <nodeJSInstallationName>Global</nodeJSInstallationName>
     </jenkins.plugins.nodejs.NodeJSBuildWrapper>
   </buildWrappers>
