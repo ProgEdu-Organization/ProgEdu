@@ -2,8 +2,9 @@
 .checkstyle
 .classpath
 .project
-*.properties
 .settings/
 .idea/
 .vscode/
 progedu.iml
+
+/src/main/resources/config/*.properties

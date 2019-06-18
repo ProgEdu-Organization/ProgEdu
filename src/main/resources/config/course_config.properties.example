@@ -1,0 +1,15 @@
+#The curse name, it will show on the homepage of the website.
+COURSE_FULL_NAME = 
+#eg. 107-2 \u7269\u4EF6\u5C0E\u5411\u8A2D\u8A08
+
+#Abbreviation of the course name
+COURSE_NAME = 
+#eg. OOP
+
+#The domain of your school email
+COURSE_SCHOOL_EMAIL = 
+#eg. @fcu.edu.tw
+
+#Tomcat server's IP
+COURSE_TOMCAT_SERVER_IP = http://[TOMCAT_SERVER_IP]
+#eg. http://127.0.0.1:1111
