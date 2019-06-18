@@ -317,8 +317,4 @@ public class GroupService {
     return response;
   }
 
-  public void newProject() {
-
-  }
-
 }
