@@ -89,12 +89,12 @@ public class WebAssignment extends AssignmentTypeMethod {
   /**
    * modifyXmlFile
    * 
-   * @param filePath    filePath
-   * @param updateDbUrl updateDbUrl
-   * @param userName    userName
-   * @param proName     proName
-   * @param tomcatUrl   tomcatUrl
-   * @param sb          sb
+   * @param filePath   filePath
+   * @param progApiUrl progApiUrl
+   * @param userName   userName
+   * @param proName    proName
+   * @param tomcatUrl  tomcatUrl
+   * @param sb         sb
    */
   public void modifyXmlFile(String filePath, String progApiUrl, String userName, String proName,
       String tomcatUrl, StringBuilder sb) {
