@@ -1,0 +1,10 @@
+#The admin of DB
+DB_USER = 
+#eg. admin
+
+#The password of DB
+DB_PASSWORD = 
+
+#Fill in the IP of your DB in JDBC Connection String
+DB_CONNECTION = jdbc:mysql://[YOUR_DB_IP]/ProgEdu?relaxAutoCommit=true&useSSL=false&useUnicode=true&characterEncoding=utf-8
+#eg. jdbc:mysql://127.0.0.1:2222/ProgEdu?relaxAutoCommit=true&useSSL=false&useUnicode=true&characterEncoding=utf-8
