@@ -6,6 +6,7 @@ import { ButtonsModule } from 'ngx-bootstrap/buttons';
 import { CommonModule } from '@angular/common';
 import { DashboardComponent } from './dashboard.component';
 import { DashboardRoutingModule } from './dashboard-routing.module';
+import { FilterPipe } from '../../pipe/filter.pipe'
 
 @NgModule({
   imports: [
@@ -16,6 +17,6 @@ import { DashboardRoutingModule } from './dashboard-routing.module';
     BsDropdownModule,
     ButtonsModule.forRoot()
   ],
-  declarations: [DashboardComponent]
+  declarations: [DashboardComponent, FilterPipe]
 })
 export class DashboardModule { }
