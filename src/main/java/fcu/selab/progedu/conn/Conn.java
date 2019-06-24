@@ -360,14 +360,11 @@ public class Conn {
    * 
    * @throws IOException on gitlab api call error
    */
-  public boolean createPrivateProject(int userId, String proName, String proUrl) {
-    try {
-      GitlabProject project = gitlab.createUserProject(userId, proName, null, null, null, null,
-          null, null, null, null, null, proUrl);
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    return true;
+  public GitlabProject createPrivateProject(int userId, String proName, String proUrl)
+      throws IOException {
+    GitlabProject project = gitlab.createUserProject(userId, proName, null, null, null, null, null,
+        null, null, null, null, proUrl);
+    return project;
   }
 
   /**
