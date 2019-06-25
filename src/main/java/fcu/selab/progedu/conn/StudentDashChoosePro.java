@@ -226,7 +226,7 @@ public class StudentDashChoosePro {
     JSONObject json = new JSONObject(apiJson);
     long timestamp = json.getLong("timestamp");
     Date date = new Date(timestamp);
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     sdf.setTimeZone(TimeZone.getTimeZone("Asia/Taipei"));
     return sdf.format(date);
   }
