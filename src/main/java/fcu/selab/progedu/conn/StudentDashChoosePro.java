@@ -158,7 +158,7 @@ public class StudentDashChoosePro {
       JSONArray actions = json.getJSONArray("actions");
       JSONArray causes = actions.getJSONObject(0).getJSONArray("causes");
       String shortDescription = causes.getJSONObject(0).optString("shortDescription");
-      if (shortDescription.contains("SCM")) {
+      if (shortDescription.contains("GitLab push")) {
         counts.add(i);
       } else {
         if (i == 1) { // teacher commit
