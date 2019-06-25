@@ -2,7 +2,9 @@ package fcu.selab.progedu.db;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ScreenshotRecordDbManager {
@@ -43,5 +45,31 @@ public class ScreenshotRecordDbManager {
       preStmt.setString(4, url);
       preStmt.executeUpdate();
     }
+  }
+  
+  /**
+   * get Screenshots(
+   *
+   * @param stuId
+   *          student id
+   * @param hw
+   *          hw name
+   *          
+   * @throws SQLException
+   *           SQLException
+   */
+  public List<String> getScreenshots(int stuId, String hw)
+      throws SQLException {
+    String sql = "SELECT  pngUrl FROM Screenshot_Record WHERE stuId='" + stuId + " ' AND hw='" 
+        + hw + "';";
+    Connection conn = database.getConnection();
+    PreparedStatement preStmt = conn.prepareStatement(sql);
+    List<String> pngUrls = new ArrayList<>();
+    try (ResultSet rs = preStmt.executeQuery()) {
+      while (rs.next()) {
+        pngUrls.add(rs.getString("pngUrl"));
+      }
+    }
+    return pngUrls;
   }
 }

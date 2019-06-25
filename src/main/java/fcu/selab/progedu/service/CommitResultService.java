@@ -139,7 +139,7 @@ public class CommitResultService {
       JSONObject ob = db.getCommitResultByStudent(user.getId());
       array.put(ob);
     }
-    result.put("result", array);
+    result.put("result", array);  
 
     return Response.ok().entity(result.toString()).build();
   }
