@@ -22,6 +22,10 @@ public class Project {
 
   private String testZipUrl = "";
 
+  private String releaseTime = "";
+
+  private boolean display = true;
+
   public String getCreateTime() {
     return createTime;
   }
@@ -100,5 +104,21 @@ public class Project {
 
   public void setTestZipUrl(String testZipUrl) {
     this.testZipUrl = testZipUrl;
+  }
+
+  public String getReleaseTime() {
+    return releaseTime;
+  }
+
+  public void setReleaseTime(String releaseTime) {
+    this.releaseTime = releaseTime;
+  }
+
+  public boolean isDisplay() {
+    return display;
+  }
+
+  public void setDisplay(boolean display) {
+    this.display = display;
   }
 }

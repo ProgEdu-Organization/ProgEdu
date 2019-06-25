@@ -33,7 +33,8 @@ public class ProjectDbManager {
    */
   public void addProject(Project project) {
     String sql = "INSERT INTO Assignment(name, createTime, deadline, description, hasTemplate"
-        + ", type, zipChecksum, zipUrl)  VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
+        + ", type, zipChecksum, zipUrl, releaseTime, display)  VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?,"
+        + "?)";
 
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
@@ -45,6 +46,8 @@ public class ProjectDbManager {
       preStmt.setString(6, project.getType());
       preStmt.setString(7, project.getTestZipChecksum());
       preStmt.setString(8, project.getTestZipUrl());
+      preStmt.setString(9, project.getReleaseTime());
+      preStmt.setBoolean(10, project.isDisplay());
       preStmt.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();
@@ -73,6 +76,8 @@ public class ProjectDbManager {
           String type = rs.getString("type");
           String checksum = rs.getString("zipChecksum");
           String zipUrl = rs.getString("zipUrl");
+          String releaseTime = rs.getString("releaseTime");
+          boolean display = rs.getBoolean("display");
 
           project.setName(name);
           project.setCreateTime(createTime);
@@ -82,6 +87,8 @@ public class ProjectDbManager {
           project.setDeadline(deadline);
           project.setTestZipChecksum(checksum);
           project.setTestZipUrl(zipUrl);
+          project.setReleaseTime(releaseTime);
+          project.setDisplay(display);
         }
       }
     } catch (SQLException e) {
@@ -111,6 +118,8 @@ public class ProjectDbManager {
         String zipUrl = rs.getString("zipUrl");
         String createTime = rs.getString("createTime");
         String deadline = rs.getString("deadline");
+        String releaseTime = rs.getString("releaseTime");
+        boolean display = rs.getBoolean("display");
 
         Project project = new Project();
         project.setName(name);
@@ -121,6 +130,8 @@ public class ProjectDbManager {
         project.setTestZipUrl(zipUrl);
         project.setCreateTime(createTime);
         project.setDeadline(deadline);
+        project.setReleaseTime(releaseTime);
+        project.setDisplay(display);
 
         lsProjects.add(project);
       }
@@ -175,13 +186,15 @@ public class ProjectDbManager {
    * @param readMe   new readMe
    * @param name     project name
    */
-  public void editProject(String deadline, String readMe, String name) {
-    String sql = "UPDATE Assignment SET deadline=?, description=? WHERE name=?";
+  public void editProject(String deadline, String readMe, String releaseTime, String name) {
+    String sql = "UPDATE Assignment SET deadline=?, description=?, releaseTime=? WHERE name=?";
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
       preStmt.setString(1, deadline);
       preStmt.setString(2, readMe);
-      preStmt.setString(3, name);
+      preStmt.setString(3, releaseTime);
+      preStmt.setString(4, name);
+
       preStmt.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();
