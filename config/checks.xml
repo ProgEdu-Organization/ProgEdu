@@ -11,6 +11,8 @@
 <module name="Checker">
   <property name="severity" value="error"/>
   <property name="charset" value="UTF-8"/>
+  <property name="localeLanguage" value="en"/>
+  
   <module name="TreeWalker">
     <module name="OuterTypeFilename"/>
     <module name="IllegalTokenText">
