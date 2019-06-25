@@ -10,12 +10,9 @@ import { catchError, retry, tap } from 'rxjs/operators';
 export class HttpService {
   constructor(private http: HttpClient) { }
 
-  getData(URL: string): Observable<any> {
-    return this.http.get(URL)
-      .pipe(
-        retry(3), // retry a failed request up to 3 times
-        catchError(this.handleError) // then handle the error
-      )
+  getData(URL: string): Promise<any> {
+    let data = this.http.get(URL).toPromise();
+    return data;
   }
 
   private handleError(error: HttpErrorResponse) {

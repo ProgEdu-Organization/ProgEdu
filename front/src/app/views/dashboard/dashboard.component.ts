@@ -19,24 +19,13 @@ export class DashboardComponent implements OnInit {
     //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
     //Add 'implements OnInit' to the class.
     await this.getAllStudentData();
-    this.getTableHead();
   }
-  getAllStudentData() {
-    const navURL = "http://140.134.26.77:8081/ProgEdu/webapi/commits/all";
+  async getAllStudentData() {
+    const navURL = "http://140.134.26.77:8080/ProgEdu/webapi/commits/all";
     //clear student array
 
-    this.httpService.getData(navURL).subscribe(
-      (response: any) => {
-        this.studentDatas = response.result;
-        console.log(this.studentDatas[2]);
-        this.tableHead = this.studentDatas[0].commits;
-        console.log(this.tableHead);
-      },
-    );
-  }
-
-  getTableHead() {
-    //this.tableHead = this.studentDatas[0].commits;
-    console.log(this.studentDatas);
+    let response = await this.httpService.getData(navURL);
+    this.studentDatas = response.result;
+    this.tableHead = this.studentDatas[0].commits;
   }
 }

@@ -2,6 +2,7 @@ import { Component, OnDestroy, Inject } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { navItems } from './_nav';
 import { HttpService } from '../../services/http.service'
+import { using } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard',
@@ -27,30 +28,31 @@ export class DefaultLayoutComponent implements OnDestroy {
       attributeFilter: ['class']
     });
   }
-  async ngOnInit() {
+  ngOnInit() {
     //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
     //Add 'implements OnInit' to the class.
-    await this.updateNavData();
+    this.updateNavData();
   }
 
-  updateNavData() {
-    const navURL = "http://140.134.26.77:8081/ProgEdu/webapi/commits/all";
+  async updateNavData() {
+    const navURL = "http://140.134.26.77:8080/ProgEdu/webapi/commits/all";
     //clear student array
     this.navItems[1].children.length = 0;
-    this.httpService.getData(navURL).subscribe(
-      (response: any) => {
-        this.navData = response.result;
-        for (let i of this.navData) {
-          let data = {
-            name: i.userName,
-            url: '/base/cards',
-            icon: 'icon-puzzle'
-          }
-          this.navItems[1].children.push(data);
-        }
-        this.navDataisload = true;
-      },
-    );
+
+    let response = await this.httpService.getData(navURL);
+    this.navData = await response.result.sort(function (a, b) {
+      return a.name > b.name ? 1 : - 1;
+    });
+    // add the data to the navItem
+    for (let i of this.navData) {
+      let data = {
+        name: i.userName,
+        url: '/base/cards',
+        icon: 'icon-puzzle'
+      }
+      this.navItems[1].children.push(data);
+    }
+    this.navDataisload = true;
   }
 
   ngOnDestroy(): void {
