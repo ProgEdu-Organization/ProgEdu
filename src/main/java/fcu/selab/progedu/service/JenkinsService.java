@@ -133,7 +133,7 @@ public class JenkinsService {
       JSONArray actions = json.getJSONArray("actions");
       JSONArray causes = actions.getJSONObject(0).getJSONArray("causes");
       String shortDescription = causes.getJSONObject(0).optString("shortDescription");
-      if (shortDescription.contains("SCM")) {
+      if (shortDescription.contains("GitLab push")) {
         commitCount++;
       } else {
         if (i == 1) { // teacher commit
