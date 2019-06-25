@@ -411,12 +411,13 @@ img {
 			<div class="card"
 				style="margin-left: 100px; width: fit-content; float: left;">
 				<h4 id="Student Projects" class="card-header">
-					<i class="fa fa-table" aria-hidden="true"></i>&nbsp; Screenshot
+					<div>
+					<i class="fa fa-table" aria-hidden="true"></i> Screenshot
+					<div id='screenshotName' style="text-align: right;float: right;">No the Screenshot</div>
+					</div>
 				</h4>
 				<div class="card-block"">
-
 					<div class="slideshow-container">
-						<p>test</p>
 						<%
 						  	ScreenshotRecordDbManager sd = ScreenshotRecordDbManager.getInstance();
 							//why the userId need to -1, because this userId is the gitlabId
@@ -446,7 +447,6 @@ img {
 			%>
 				for(var url in pngUrls){
 					var pngUrl = "<%=jenkinsData.getJenkinsHostUrl()%>" + pngUrls[url];
-					console.log(pngUrl);
 					$screenshotSlides = $("<div class='screenshotSlides'>"
 							+"<a href='"+ pngUrl + "'>"
 								+"<img src='"+  pngUrl +"' style='height: 480px' /"
@@ -454,7 +454,7 @@ img {
 
 					$('.slideshow-container').append($screenshotSlides)
 				}
-				
+
 				var slideIndex = [1];
 				var slideId = ["screenshotSlides"]
 				showSlides(1, 0);
@@ -471,7 +471,15 @@ img {
 				  for (i = 0; i < x.length; i++) {
 				     x[i].style.display = "none";  
 				  }
-				  x[slideIndex[no]-1].style.display = "block";  
+				  x[slideIndex[no]-1].style.display = "block";
+				  //find the the screenshot location
+				  $screenshotSlides = $(".screenshotSlides").filter(function () {
+					    return $(this).css("display") == "block";
+					});
+				  var nowScreenshotUrl = $screenshotSlides.children("a").attr('href');
+				  var Urlsplit = nowScreenshotUrl.split('/');
+				  var screenshotName = Urlsplit[Urlsplit.length - 1];
+				  $('#screenshotName').html(screenshotName);
 				}
 			</script>
 		</div>
