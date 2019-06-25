@@ -17,12 +17,13 @@ import fcu.selab.progedu.data.User;
 
 public class UserDbManager {
   private static final String QUERY = "SELECT * FROM User WHERE id = ?";
-  private static final String USER_NAME = "userName";
-  private static final String PASSWORD = "password";
   private static final String GIT_LAB_ID = "gitLabId";
-  private static final String EMAIL = "email";
-  private static final String PRIVATE_TOKEN = "privateToken";
+  private static final String STUDENT_ID = "studentID";
   private static final String NAME = "name";
+  private static final String PASSWORD = "password";
+  private static final String EMAIL = "email";
+  private static final String GIT_LAB_TOKEN = "gitLabToken";
+  private static final String DISPLAY = "display";
 
   private static UserDbManager dbManager = new UserDbManager();
 
@@ -39,7 +40,8 @@ public class UserDbManager {
   /**
    * Add gitlab user to database
    * 
-   * @param user The gitlab user
+   * @param user
+   *          The gitlab user
    */
   public void addUser(GitlabUser user) {
     String sql = "INSERT INTO " + "User(gitLabId, userName, name, password, email, privateToken)  "
@@ -64,9 +66,11 @@ public class UserDbManager {
   /**
    * encrypt the user password
    * 
-   * @param password The user's password
+   * @param password
+   *          The user's password
    * @return MD5 string
-   * @throws NoSuchAlgorithmException on security api call error
+   * @throws NoSuchAlgorithmException
+   *           on security api call error
    */
   public String passwordMD5(String password) {
     String hashtext = "";
@@ -93,7 +97,8 @@ public class UserDbManager {
   /**
    * get user password
    * 
-   * @param userName user stu id
+   * @param userName
+   *          user stu id
    * @return password
    */
   public String getPassword(String userName) {
@@ -117,8 +122,10 @@ public class UserDbManager {
   /**
    * update user db password
    * 
-   * @param userName user stu id
-   * @param password user new password
+   * @param userName
+   *          user stu id
+   * @param password
+   *          user new password
    */
   public void modifiedUserPassword(String userName, String password) {
     String query = "UPDATE User SET password=? WHERE userName = ?";
@@ -137,8 +144,10 @@ public class UserDbManager {
   /**
    * check old password
    * 
-   * @param userName user stu id
-   * @param password user old password
+   * @param userName
+   *          user stu id
+   * @param password
+   *          user old password
    * @return T or F
    */
   public boolean checkPassword(String userName, String password) {
@@ -153,7 +162,8 @@ public class UserDbManager {
   /**
    * Get user from database
    * 
-   * @param userName The gitlab user name
+   * @param userName
+   *          The gitlab user name
    * @return user
    */
   public User getUser(String userName) {
@@ -191,7 +201,8 @@ public class UserDbManager {
   /**
    * Get user from database
    *
-   * @param id The gitlab user id
+   * @param id
+   *          The gitlab user id
    * @return user
    */
   public User getUser(int id) {
@@ -227,7 +238,8 @@ public class UserDbManager {
   /**
    * Get user from database
    *
-   * @param userId The db user id
+   * @param userId
+   *          The db user id
    * @return user
    */
   public String getName(int userId) {
@@ -250,7 +262,8 @@ public class UserDbManager {
   /**
    * Get user from database
    *
-   * @param userId The db user id
+   * @param userId
+   *          The db user id
    * @return user
    */
   public String getUserName(int userId) {
@@ -273,7 +286,8 @@ public class UserDbManager {
   /**
    * user name to find userId in db
    * 
-   * @param name user's name
+   * @param name
+   *          user's name
    * @return id
    */
   public int getUserId(String name) {
@@ -297,7 +311,8 @@ public class UserDbManager {
   /**
    * user name to find userId in db
    * 
-   * @param username user's name
+   * @param username
+   *          user's name
    * @return id
    */
   public int getUserIdByUsername(String username) {
@@ -359,7 +374,8 @@ public class UserDbManager {
   /**
    * check username
    * 
-   * @param username username
+   * @param username
+   *          username
    * @return isExist
    */
   public boolean checkUsername(String username) {
@@ -384,7 +400,8 @@ public class UserDbManager {
   /**
    * check e-mail
    * 
-   * @param email e-mail
+   * @param email
+   *          e-mail
    * @return isExist
    */
   public boolean checkEmail(String email) {
