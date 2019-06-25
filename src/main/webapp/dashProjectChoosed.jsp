@@ -240,7 +240,7 @@ img {
 				GitlabUser choosedUser = conn.getUserById(userId);
 				List<GitlabProject> projects = conn.getProject(choosedUser);
 				Collections.reverse(projects);
-				
+
 				//URL get userId is gitlabId, we need the real userId
 	%>
 	<%@ include file="header.jsp"%>
@@ -408,26 +408,27 @@ img {
 				</div>
 			</div>
 			<!-----------------------------------------  Screenshot  ----------------------------------------->
-			<div class="card"
+			<div class="card" id="Screenshots-area"
 				style="margin-left: 100px; width: fit-content; float: left;">
-				<h4 id="Student Projects" class="card-header">
+				<h4 id="Screenshots" class="card-header">
 					<div>
-					<i class="fa fa-table" aria-hidden="true"></i> Screenshot
-					<div id='screenshotName' style="text-align: right;float: right;">No the Screenshot</div>
+						<i class="fa fa-table" aria-hidden="true"></i> Screenshot
+						<div id='screenshotName' style="text-align: right; float: right;">No
+							the Screenshot</div>
 					</div>
 				</h4>
 				<div class="card-block"">
 					<div class="slideshow-container">
 						<%
-						  	ScreenshotRecordDbManager sd = ScreenshotRecordDbManager.getInstance();
-							//why the userId need to -1, because this userId is the gitlabId
-							List<String> pngUrls =null;
-							for(User u:users){
-							  if(u.getGitLabId() == userId){
-							    pngUrls = sd.getScreenshots(u.getId(), projectName);
-							    break;
-							  }
-							}
+						  ScreenshotRecordDbManager sd = ScreenshotRecordDbManager.getInstance();
+									//why the userId need to -1, because this userId is the gitlabId
+									List<String> pngUrls = null;
+									for (User u : users) {
+										if (u.getGitLabId() == userId) {
+											pngUrls = sd.getScreenshots(u.getId(), projectName);
+											break;
+										}
+									}
 						%>
 
 						<a class="prev" onclick="plusSlides(-1, 0)">&#10094;</a> <a
@@ -439,12 +440,15 @@ img {
 			var pngUrls = new Array();
 			
 			<%
-			for(int count=0; count < pngUrls.size();count++){
-			%>
+			boolean showScreenshot = project.getType().equals("Web");
+			System.out.println(project.getType());
+			if (showScreenshot) {
+				for (int count = 0; count < pngUrls.size(); count++) {%>
 			pngUrls[<%=count%>] = "<%=pngUrls.get(count)%>";
-			<%
-			};
-			%>
+			<%} ;
+			} ;%>
+			var showScreenshot = <%=showScreenshot%>;
+			if(showScreenshot){
 				for(var url in pngUrls){
 					var pngUrl = "<%=jenkinsData.getJenkinsHostUrl()%>" + pngUrls[url];
 					$screenshotSlides = $("<div class='screenshotSlides'>"
@@ -454,10 +458,14 @@ img {
 
 					$('.slideshow-container').append($screenshotSlides)
 				}
-
 				var slideIndex = [1];
 				var slideId = ["screenshotSlides"]
 				showSlides(1, 0);
+			}else{
+				$("#Screenshots-area").css('display',"none");
+			}
+
+				
 				
 				function plusSlides(n, no) {
 				  showSlides(slideIndex[no] += n, no);
