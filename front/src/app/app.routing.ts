@@ -44,7 +44,11 @@ export const routes: Routes = [
     children: [
       {
         path: 'dashboard',
-        loadChildren: () => import('./views/dashboard/dashboard.module').then(m => m.DashboardModule)
+        loadChildren: () => import('./views/teacher/teacher.module').then(m => m.TeacherModule)
+      },
+      {
+        path: 'studashboard',
+        loadChildren: () => import('./views/student/student.module').then(m => m.StudentModule)
       }
     ]
   },

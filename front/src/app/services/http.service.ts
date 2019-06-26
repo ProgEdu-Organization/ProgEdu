@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { HttpResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, retry, tap } from 'rxjs/operators';
@@ -11,8 +11,19 @@ export class HttpService {
   constructor(private http: HttpClient) { }
 
   getData(URL: string): Promise<any> {
-    let data = this.http.get(URL).toPromise();
-    return data;
+    let result = this.http.get<any>(URL).toPromise();
+    return result;
+  }
+
+  postData(URL: string, data: any): Promise<any> {
+    let headers = new HttpHeaders({
+      'Content-Type': 'text/json'
+    });
+    let options = {
+      headers
+    };
+    let result = this.http.post<any>(URL, data).toPromise();
+    return result;
   }
 
   private handleError(error: HttpErrorResponse) {

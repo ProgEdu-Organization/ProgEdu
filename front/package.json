@@ -3,7 +3,6 @@
   "version": "2.0.0",
   "description": "Update the ProgEdu and Using CoreUI Free Angular 2+ Admin Template",
   "homepage": "https://coreui.io/angular",
-  "copyright": "Copyright 2019 creativeLabs Łukasz Holeczek",
   "license": "MIT",
   "scripts": {
     "ng": "ng",

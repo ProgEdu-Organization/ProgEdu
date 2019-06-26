@@ -1,7 +1,6 @@
 import { Component, OnInit, NgModule } from '@angular/core';
-import { HttpService } from '../../services/http.service'
-import { allStudentDatas } from '../../containers/default-layout/_nav'
-import { FilterPipe } from '../../pipe/filter.pipe'
+import { HttpService } from '../../../services/http.service'
+import { allStudentDatas } from '../../../containers/default-layout/_nav'
 
 @Component({
   templateUrl: 'dashboard.component.html'
@@ -13,7 +12,6 @@ export class DashboardComponent implements OnInit {
   public tableHead: Array<any> = new Array<any>();
   public tableData: Array<any> = new Array<any>();
   private studentDatas: JSON;
-
   constructor(private httpService: HttpService) { }
   async ngOnInit() {
     //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
