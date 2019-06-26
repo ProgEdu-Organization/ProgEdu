@@ -1,0 +1,40 @@
+<h1 style="text-align: center">Assignment List</h1>
+<div class="animated fadeIn">
+  <div class="card">
+    <div class="card-header">
+      <i class="cui-pencil icons"></i>
+      <div class="card-header-actions"><button class="btn btn-primary" type="button">Add more</button></div>
+    </div>
+    <div class="card-body">
+      <table class='table table-striped' style="text-align:center;">
+        <thead>
+          <tr>
+            <th class='text-left'>Name</th>
+            <th>Create time
+            </th>
+            <th>Deadline </th>
+            <th>Edit</th>
+            <th>Delete</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let project of projects">
+            <td>{{project.name}}</td>
+            <td>{{project.createTime | date:'medium'}}
+            </td>
+            <td>{{project.deadline | date:'medium'}}
+            </td>
+            <td><button id="{{project.name}}" class="btn btn-info" (click)="sendEditId(this)"><i
+                  class="cui-pencil icons"></i></button>
+            </td>
+            <td>
+              <button id="{{project.name}}" class="btn btn-danger" (click)="sendDeleteId(this)"><i
+                  class="cui-delete icons"></i></button>
+
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
