@@ -8,7 +8,15 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { TeacherRoutingModule } from './teacher-routing.module';
 import { FilterPipe } from '../../pipe/filter.pipe';
 import { DashProjectChoosedComponent } from './dash-project-choosed/dash-project-choosed.component';
-import { AssignmentManagementComponent } from './assignment-management/assignment-management.component'
+import { AssignmentManagementComponent } from './assignment-management/assignment-management.component';
+
+import { AlertModule } from 'ngx-bootstrap/alert';
+import { CreateAssignmentComponent } from './create-assignment/create-assignment.component';
+
+//  Modal Component
+import { ModalModule } from 'ngx-bootstrap/modal';
+// Tabs Component
+import { TabsModule } from 'ngx-bootstrap/tabs';
 
 @NgModule({
   imports: [
@@ -17,8 +25,16 @@ import { AssignmentManagementComponent } from './assignment-management/assignmen
     ChartsModule,
     BsDropdownModule,
     TeacherRoutingModule,
-    ButtonsModule.forRoot()
+    ButtonsModule.forRoot(),
+    AlertModule.forRoot(),
+    ModalModule.forRoot(),
+    TabsModule.forRoot()
   ],
-  declarations: [DashboardComponent, FilterPipe, DashProjectChoosedComponent, AssignmentManagementComponent]
+  declarations: [
+    DashboardComponent,
+    FilterPipe,
+    DashProjectChoosedComponent,
+    AssignmentManagementComponent,
+    CreateAssignmentComponent,]
 })
 export class TeacherModule { }

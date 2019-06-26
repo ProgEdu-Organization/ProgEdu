@@ -1,13 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { HttpService } from '../../../services/http.service'
+import { ModalDirective } from 'ngx-bootstrap/modal';
+import { Router } from '@angular/router';
+
 @Component({
   selector: 'app-assignment-management',
   templateUrl: './assignment-management.component.html',
   styleUrls: ['./assignment-management.component.scss']
 })
 export class AssignmentManagementComponent implements OnInit {
+  @ViewChild('dangerModal', { static: false }) public dangerModal: ModalDirective;
   projects: Array<any>;
-  constructor(private http: HttpService) { }
+  deleteProjectName: string;
+  constructor(private http: HttpService, private router: Router) { }
 
   ngOnInit() {
     this.getAllProjects();
@@ -19,8 +24,20 @@ export class AssignmentManagementComponent implements OnInit {
     console.log(this.projects);
   }
 
-  sendEditId(data) {
+  changeToCreatePage() {
+    this.router.navigate(['./dashboard/assignmentManagement/create']);
+  }
+
+  changeToEditPage() {
+    this.router.navigate(['./dashboard/assignmentManagement/edit']);
+  }
+
+  setdeleteProjectName(data) {
+    this.deleteProjectName = data;
     console.log(data);
   }
 
+  deleteProject() {
+    console.log(this.deleteProjectName);
+  }
 }

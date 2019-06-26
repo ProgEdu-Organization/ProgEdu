@@ -1,0 +1,95 @@
+<h1 style="text-align: center">Create Assignment</h1>
+<div class="animated fadeIn">
+  <div class="card">
+    <div class="card-header">
+      <i class="cui-pencil icons"></i>
+      <div class="card-header-actions"><button class="btn btn-primary" type="button"
+          (click)="changeToAssignmentPage();">Assignment List</button></div>
+    </div>
+    <div class="card-body">
+      <form action="" method="post" class="form-horizontal">
+        <div class="form-group row">
+          <label class="col-md-3 col-form-label" for="name">Name</label>
+          <div class="col-md-9">
+            <input type="text" class="form-control" id="name" placeholder="Enter your name">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-md-3 col-form-label" for="date-input">Deadline</label>
+          <div class="col-md-9">
+            <input class="form-control is-valid" id="date-input" type="date" name="date-input" placeholder="date">
+            <span class="help-block">Please enter a valid date</span>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-md-3 col-form-label" for="textarea-input"> Assignment Description</label>
+          <div class="col-md-9">
+            <textarea id="textarea-input" name="textarea-input" rows="9" class="form-control"
+              placeholder="Content.."></textarea>
+          </div>
+        </div>
+        <!--tabs-->
+        <!-- Nav tabs -->
+        <tabset>
+          <!---- Java ---->
+          <tab heading="Java">
+            <div class="form-group row">
+              <label class="col-md-3 col-form-label" for="inline-radios">Inline Radios</label>
+              <div class="col-md-9 col-form-label">
+                <div class="form-check form-check-inline mr-1" id="inline-radios">
+                  <input class="form-check-input" type="radio" name="inline-radios" id="inlineRadio1" value="option1">
+                  <label class="form-check-label" for="inlineRadio1">Java</label>
+                </div>
+                <div class="form-check form-check-inline mr-1">
+                  <input class="form-check-input" type="radio" name="inline-radios" id="inlineRadio2" value="option2">
+                  <label class="form-check-label" for="inlineRadio2">Maven</label>
+                </div>
+                <label class="col-md-3 col-form-label"></label>
+                <div class="btn-group" dropdown [isOpen]="status.isOpen" (isOpenChange)="change($event)"
+                  placement="top">
+                  <button dropdownToggle type="button" class="btn btn-primary dropdown-toggle">
+                    Button dropdown <span class="caret"></span>
+                  </button>
+                  <ul *dropdownMenu class="dropdown-menu" role="menu">
+                    <li role="menuitem"><a class="dropdown-item" href="#">Action</a></li>
+                    <li role="menuitem"><a class="dropdown-item" href="#">Another action</a>
+                    </li>
+                    <li role="menuitem"><a class="dropdown-item" href="#">Something else
+                        here</a></li>
+
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-md-3 col-form-label" for="file-input">Upload your Assignment example (accept zip)
+              </label>
+              <div class="col-md-9">
+                <input type="file" id="file-input" name="file-input">
+              </div>
+            </div>
+          </tab>
+          <!---- Android ---->
+          <tab heading="Android">
+            <div class="form-group row">
+              <label class="col-md-3 col-form-label" for="file-input">Android File</label>
+              <div class="col-md-9">
+                <input type="file" id="file-input" name="file-input">
+              </div>
+            </div>
+          </tab>
+          <!---- Web ---->
+          <tab heading="Web">
+            <div class="form-group row">
+              <label class="col-md-3 col-form-label" for="file-input">Web File</label>
+              <div class="col-md-9">
+                <input type="file" id="file-input" name="file-input">
+              </div>
+            </div>
+          </tab>
+        </tabset>
+        <!--/.col-->
+      </form>
+    </div>
+  </div>
+</div>

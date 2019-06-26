@@ -4,6 +4,8 @@ import { Routes, RouterModule } from '@angular/router';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { DashProjectChoosedComponent } from './dash-project-choosed/dash-project-choosed.component'
 import { AssignmentManagementComponent } from './assignment-management/assignment-management.component'
+import { CreateAssignmentComponent } from './create-assignment/create-assignment.component'
+
 const routes: Routes = [
   {
     path: '',
@@ -21,20 +23,26 @@ const routes: Routes = [
   },
   {
     path: 'assignmentManagement',
-    component: AssignmentManagementComponent,
     data: {
-      title: 'Assignment Management'
+      title: 'Assignment'
     },
     children: [
       {
-        path: 'create',
-        component: DashProjectChoosedComponent,
+        path: '', component: AssignmentManagementComponent,
         data: {
-          title: 'Create Project'
-        }
-      }
+          title: 'Assignment Management'
+        },
+      },
+      {
+        path: 'create',
+        component: CreateAssignmentComponent,
+        data: {
+          title: 'Create Assignment'
+        },
+      },
     ]
   }
+
 ];
 
 @NgModule({
