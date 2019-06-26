@@ -23,6 +23,9 @@ import fcu.selab.progedu.status.WebStatusFactory;
 
 public class WebAssignment extends AssignmentTypeMethod {
 
+  public void modifyPomFile() {
+  };
+
   public WebAssignment() {
     super(new WebStatusFactory());
   }
@@ -54,8 +57,8 @@ public class WebAssignment extends AssignmentTypeMethod {
   /**
    * copyTestFile
    * 
-   * @param folder       folder
-   * @param strFolder    strFolder
+   * @param folder folder
+   * @param strFolder strFolder
    * @param testFilePath testFilePath
    */
   public void copyTestFile(File folder, String strFolder, String testFilePath) {
@@ -89,12 +92,12 @@ public class WebAssignment extends AssignmentTypeMethod {
   /**
    * modifyXmlFile
    * 
-   * @param filePath   filePath
+   * @param filePath filePath
    * @param progApiUrl progApiUrl
-   * @param userName   userName
-   * @param proName    proName
-   * @param tomcatUrl  tomcatUrl
-   * @param sb         sb
+   * @param userName userName
+   * @param proName proName
+   * @param tomcatUrl tomcatUrl
+   * @param sb sb
    */
   public void modifyXmlFile(String filePath, String progApiUrl, String userName, String proName,
       String tomcatUrl, StringBuilder sb) {

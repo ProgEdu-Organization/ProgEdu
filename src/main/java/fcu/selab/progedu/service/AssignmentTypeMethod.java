@@ -35,9 +35,9 @@ public abstract class AssignmentTypeMethod implements AssignmentTypeSelector {
 
   /**
    * 
-   * @param zipFilePath   zipFilePath
+   * @param zipFilePath zipFilePath
    * @param zipFolderName zipFolderName
-   * @param projectName   projectName
+   * @param projectName projectName
    */
 
   public void unzip(String zipFilePath, String zipFolderName, String projectName,
@@ -51,29 +51,33 @@ public abstract class AssignmentTypeMethod implements AssignmentTypeSelector {
     // -4 because .zip
     zipFolderName = zipFolderName.substring(0, zipFolderName.length() - 4);
 
+    // create temp/uploads
     File fileUploadDir = new File(uploadDir);
     if (!fileUploadDir.exists()) {
       fileUploadDir.mkdir();
     }
 
+    // create temp/uploads/HW
     String destDirectory = uploadDir + projectName;
     File destDir = new File(destDirectory);
     if (!destDir.exists()) {
       destDir.mkdir();
     }
 
-    File fileTestDir = new File(testDir);
-    if (!fileTestDir.exists()) {
-      fileTestDir.mkdir();
-    }
+    // // create temp/tests
+    // File fileTestDir = new File(testDir);
+    // if (!fileTestDir.exists()) {
+    // fileTestDir.mkdir();
+    // }
 
-    String testDirectory = testDir + projectName;
-    File testsDir = new File(testDirectory);
-    if (!testsDir.exists()) {
-      testsDir.mkdir();
-    } else {
-      System.out.println(testDirectory);
-    }
+    // // create temp/tests/HW
+    // String testDirectory = testDir + projectName;
+    // File testsDir = new File(testDirectory);
+    // if (!testsDir.exists()) {
+    // testsDir.mkdir();
+    // } else {
+    // System.out.println(testDirectory);
+    // }
 
     String targetDirectory = testDir + projectName;
     File targetDir = new File(targetDirectory);
@@ -141,7 +145,7 @@ public abstract class AssignmentTypeMethod implements AssignmentTypeSelector {
 
   /**
    * 
-   * @param name                name
+   * @param name name
    * @param jenkinsRootUsername jenkinsRootUsername
    * @param jenkinsRootPassword jenkinsRootPassword
    */
@@ -167,10 +171,10 @@ public abstract class AssignmentTypeMethod implements AssignmentTypeSelector {
 
   /**
    * 
-   * @param userName     userName
-   * @param proName      proName
+   * @param userName userName
+   * @param proName proName
    * @param jenkinsCrumb jenkinsCrumb
-   * @param sb           sb
+   * @param sb sb
    */
   public void createAllJenkinsJob(String userName, String proName, String jenkinsCrumb,
       StringBuilder sb) {
@@ -189,9 +193,9 @@ public abstract class AssignmentTypeMethod implements AssignmentTypeSelector {
 
   /**
    * 
-   * @param proName      proName
+   * @param proName proName
    * @param jenkinsCrumb jenkinsCrumb
-   * @param sb           sb
+   * @param sb sb
    */
   public void createRootJob(String proName, String jenkinsCrumb, StringBuilder sb)
       throws Exception {
@@ -208,9 +212,9 @@ public abstract class AssignmentTypeMethod implements AssignmentTypeSelector {
   /**
    * 
    * @param userName userName
-   * @param proName  proName
-   * @param proUrl   proUrl
-   * @param sb       sb
+   * @param proName proName
+   * @param proUrl proUrl
+   * @param sb sb
    */
   public String modifyXml(String userName, String proName, String proUrl, StringBuilder sb) {
     String filePath = null;

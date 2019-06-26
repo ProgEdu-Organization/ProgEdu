@@ -27,4 +27,5 @@ public interface AssignmentTypeSelector {
 
   public Status getStatus(String statusType);
 
+  public void modifyPomFile();
 }
