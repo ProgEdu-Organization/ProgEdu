@@ -102,13 +102,19 @@ public class ProjectService {
 
   /**
    * 
-   * @param name                abc
-   * @param readMe              abc
-   * @param assignmentType      abc
-   * @param uploadedInputStream abc
-   * @param fileDetail          abc
+   * @param name
+   *          abc
+   * @param readMe
+   *          abc
+   * @param assignmentType
+   *          abc
+   * @param uploadedInputStream
+   *          abc
+   * @param fileDetail
+   *          abc
    * @return abc
-   * @throws Exception abc
+   * @throws Exception
+   *           abc
    */
   @POST
   @Path("create")
@@ -243,7 +249,8 @@ public class ProjectService {
 
   /**
    * 
-   * @param groupName group name
+   * @param groupName
+   *          group name
    * @return url gitlab project url
    */
   public String getGroupProjectUrl(String groupName) {
@@ -278,8 +285,10 @@ public class ProjectService {
   /**
    * Utility method to save InputStream data to target location/file
    * 
-   * @param inStream - InputStream to be saved
-   * @param target   - full path to destination file
+   * @param inStream
+   *          - InputStream to be saved
+   * @param target
+   *          - full path to destination file
    */
   private void saveToFile(InputStream inStream, String target) throws IOException {
     int read = 0;
@@ -296,9 +305,10 @@ public class ProjectService {
   /**
    * Creates a folder to desired location if it not already exists
    * 
-   * @param dirName - full path to the folder
-   * @throws SecurityException - in case you don't have permission to create the
-   *                           folder
+   * @param dirName
+   *          - full path to the folder
+   * @throws SecurityException
+   *           - in case you don't have permission to create the folder
    */
   private void createFolderIfNotExists(String dirName) {
     File theDir = new File(dirName);
@@ -364,8 +374,10 @@ public class ProjectService {
   /**
    * create readme file
    * 
-   * @param readMe      content
-   * @param projectName project name
+   * @param readMe
+   *          content
+   * @param projectName
+   *          project name
    */
   public void createReadmeFile(String readMe, String projectName) {
     String projectDir = uploadDir + projectName;
@@ -383,16 +395,20 @@ public class ProjectService {
   /**
    * Add a project to database
    * 
-   * @param name        Project name
-   * @param deadline    Project deadline
-   * @param readMe      Project readme
-   * @param fileType    File type
-   * @param hasTemplate Has template
+   * @param name
+   *          Project name
+   * @param deadline
+   *          Project deadline
+   * @param readMe
+   *          Project readme
+   * @param fileType
+   *          File type
+   * @param hasTemplate
+   *          Has template
    */
   public void addProject(String name, String createTime, String deadline, String readMe,
       String fileType, boolean hasTemplate, String testZipChecksum, String testZipUrl) {
     Project project = new Project();
-
     project.setName(name);
     project.setCreateTime(createTime);
     project.setDeadline(deadline);
@@ -408,7 +424,8 @@ public class ProjectService {
   /**
    * delete projects
    * 
-   * @param name project name
+   * @param name
+   *          project name
    * @return response
    */
   @POST
@@ -462,7 +479,8 @@ public class ProjectService {
   /**
    * edit projects
    * 
-   * @param name project name
+   * @param name
+   *          project name
    * @return response
    */
   @POST
@@ -498,7 +516,8 @@ public class ProjectService {
   /**
    * get project checksum
    * 
-   * @param projectName project name
+   * @param projectName
+   *          project name
    * @return checksum
    */
   @GET
@@ -534,8 +553,10 @@ public class ProjectService {
   /**
    * Edit test case upload test case to test folder
    * 
-   * @param fileName            file name
-   * @param uploadedInputStream file
+   * @param fileName
+   *          file name
+   * @param uploadedInputStream
+   *          file
    */
   private String storeFileToTestsFolder(String fileName, InputStream uploadedInputStream) {
     try {
