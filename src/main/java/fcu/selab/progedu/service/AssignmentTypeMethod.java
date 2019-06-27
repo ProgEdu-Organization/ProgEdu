@@ -160,7 +160,7 @@ public abstract class AssignmentTypeMethod implements AssignmentTypeSelector {
    * @param userName     userName
    * @param proName      proName
    * @param jenkinsCrumb jenkinsCrumb
-   * @param sb sb
+   * @param sb           sb
    */
   public void createAllJenkinsJob(String userName, String proName, String jenkinsCrumb,
       StringBuilder sb) {
@@ -181,7 +181,7 @@ public abstract class AssignmentTypeMethod implements AssignmentTypeSelector {
    * 
    * @param proName      proName
    * @param jenkinsCrumb jenkinsCrumb
-   * @param sb sb
+   * @param sb           sb
    */
   public void createRootJob(String proName, String jenkinsCrumb, StringBuilder sb)
       throws Exception {
