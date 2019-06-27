@@ -54,8 +54,7 @@ public class JavacAssignment extends AssignmentTypeMethod {
     }
   }
 
-  public void modifyPomFile() {
-  };
+  public void modifyPomFile(){}
 
   /**
    * copyTestFile

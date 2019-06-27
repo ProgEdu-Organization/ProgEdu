@@ -23,8 +23,7 @@ import fcu.selab.progedu.status.WebStatusFactory;
 
 public class WebAssignment extends AssignmentTypeMethod {
 
-  public void modifyPomFile() {
-  };
+  public void modifyPomFile() {}
 
   public WebAssignment() {
     super(new WebStatusFactory());
