@@ -20,7 +20,7 @@ public class User implements Serializable {
 
   private String gitLabToken;
 
-  private int display;
+  private boolean display;
 
   public User() {
 
@@ -40,7 +40,7 @@ public class User implements Serializable {
    * @param display
    *          student's display
    */
-  public User(String studentId, String name, String email, String password, int display) {
+  public User(String studentId, String name, String email, String password, boolean display) {
     this.studentId = studentId;
     this.name = name;
     this.email = email;
@@ -104,11 +104,11 @@ public class User implements Serializable {
     this.gitLabToken = gitLabToken;
   }
 
-  public int getDisplay() {
+  public boolean getDisplay() {
     return display;
   }
 
-  public void setDisplay(int display) {
+  public void setDisplay(boolean display) {
     this.display = display;
   }
 

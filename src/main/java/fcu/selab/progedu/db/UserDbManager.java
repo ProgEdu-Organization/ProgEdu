@@ -58,7 +58,7 @@ public class UserDbManager {
       preStmt.setString(4, password);
       preStmt.setString(5, user.getEmail());
       preStmt.setString(6, user.getPrivateToken());
-      preStmt.setInt(7, 1);
+      preStmt.setBoolean(7, true);
       preStmt.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();
@@ -342,16 +342,16 @@ public class UserDbManager {
    *          The gitlab user id
    * @return user
    */
-  public int getUserDisplay(String studentId) {
+  public boolean getUserDisplay(String studentId) {
     String query = "SELECT * FROM User WHERE studentId = ?";
-    int display = -1;
+    boolean display = true;
 
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(query)) {
       preStmt.setString(1, studentId);
       try (ResultSet rs = preStmt.executeQuery();) {
         while (rs.next()) {
-          display = rs.getInt("display");
+          display = rs.getBoolean("display");
         }
       }
     } catch (SQLException e) {

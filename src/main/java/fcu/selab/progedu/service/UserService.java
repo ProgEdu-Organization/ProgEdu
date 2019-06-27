@@ -62,11 +62,8 @@ public class UserService {
       csvReader.readHeaders();
       while (csvReader.readRecord()) {
         User user = new User(csvReader.get("StudentId"), csvReader.get("Name"),
-            csvReader.get("Email"), csvReader.get("Password"),
-            Integer.parseInt(csvReader.get("display")));
-        if (user.getDisplay() == 1) {
-          userList.add(user);
-        }
+            csvReader.get("Email"), csvReader.get("Password"), true);
+        userList.add(user);
         response = checkErrorType(user);
         if (response != null) {
           break;
@@ -172,7 +169,7 @@ public class UserService {
     Response response = null;
     boolean isSave = false;
     try {
-      response = checkErrorType(new User(id, name, email, password, 1));
+      response = checkErrorType(new User(id, name, email, password, true));
       if (response == null) {
         isSave = userConn.createUser(email, password, id, name);
         User user = dbManager.getUser(id);
@@ -280,7 +277,7 @@ public class UserService {
     String password = "";
     String email = "";
     String name = "";
-    int display = 0;
+    boolean display = true;
     for (User user : student) {
       userName = user.getStudentId();
       password = user.getPassword();
