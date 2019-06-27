@@ -1,12 +1,9 @@
 package fcu.selab.progedu.service;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 import org.gitlab.api.models.GitlabUser;
 
@@ -35,9 +32,9 @@ public abstract class AssignmentTypeMethod implements AssignmentTypeSelector {
 
   /**
    * 
-   * @param zipFilePath zipFilePath
+   * @param zipFilePath   zipFilePath
    * @param zipFolderName zipFolderName
-   * @param projectName projectName
+   * @param projectName   projectName
    */
 
   public void unzip(String zipFilePath, String zipFolderName, String projectName,
@@ -51,14 +48,20 @@ public abstract class AssignmentTypeMethod implements AssignmentTypeSelector {
     // -4 because .zip
     zipFolderName = zipFolderName.substring(0, zipFolderName.length() - 4);
 
-    // create temp/uploads/HW
+    // unzip file to temp/uploads
     String destDirectory = uploadDir + projectName;
     File destDir = new File(destDirectory);
     if (!destDir.exists()) {
       destDir.mkdir();
     }
+    try {
+      ZipFile zipFileToUploads = new ZipFile(zipFilePath);
+      zipFileToUploads.extractAll(destDirectory);
+    } catch (ZipException e) {
+      e.printStackTrace();
+    }
 
-    // create temp/tests/HW
+    // unzip file to temp/tests
     String testDirectory = testDir + projectName;
     File testsDir = new File(testDirectory);
     if (!testsDir.exists()) {
@@ -66,12 +69,10 @@ public abstract class AssignmentTypeMethod implements AssignmentTypeSelector {
     } else {
       System.out.println(testDirectory);
     }
-
-    try (ZipInputStream zipIn = new ZipInputStream(new FileInputStream(zipFilePath))) {
-      ZipFile zipFile = new ZipFile(zipFilePath);
-      zipFile.extractAll(destDirectory);
-      zipFile.extractAll(testDirectory);
-      zipHandler.modifyPomXml(testDirectory + "/pom.xml", projectName);
+    try {
+      ZipFile zipFileToTests = new ZipFile(zipFilePath);
+      // zipFile.extractAll(destDirectory);
+      zipFileToTests.extractAll(testDirectory);
       // Zip HW in temp/tests
       // zipHandler.zipTestFolder(testDirectory);
 
@@ -113,9 +114,10 @@ public abstract class AssignmentTypeMethod implements AssignmentTypeSelector {
       e.printStackTrace();
     }
 
-    // iterates over entries in the zip file
-    // copyTestFile(destDir, destDirectory, testDirectory);
+    //extract main method and other process
+    extractFile(testDirectory, destDirectory, projectName);
 
+    //zip assignment in temp/tests
     File testFile = new File(testDirectory);
     if (testFile.exists()) {
       zipHandler.zipTestFolder(testDirectory);
@@ -129,7 +131,7 @@ public abstract class AssignmentTypeMethod implements AssignmentTypeSelector {
 
   /**
    * 
-   * @param name name
+   * @param name                name
    * @param jenkinsRootUsername jenkinsRootUsername
    * @param jenkinsRootPassword jenkinsRootPassword
    */
@@ -155,8 +157,8 @@ public abstract class AssignmentTypeMethod implements AssignmentTypeSelector {
 
   /**
    * 
-   * @param userName userName
-   * @param proName proName
+   * @param userName     userName
+   * @param proName      proName
    * @param jenkinsCrumb jenkinsCrumb
    * @param sb sb
    */
@@ -177,7 +179,7 @@ public abstract class AssignmentTypeMethod implements AssignmentTypeSelector {
 
   /**
    * 
-   * @param proName proName
+   * @param proName      proName
    * @param jenkinsCrumb jenkinsCrumb
    * @param sb sb
    */
@@ -196,9 +198,9 @@ public abstract class AssignmentTypeMethod implements AssignmentTypeSelector {
   /**
    * 
    * @param userName userName
-   * @param proName proName
-   * @param proUrl proUrl
-   * @param sb sb
+   * @param proName  proName
+   * @param proUrl   proUrl
+   * @param sb       sb
    */
   public String modifyXml(String userName, String proName, String proUrl, StringBuilder sb) {
     String filePath = null;

@@ -54,34 +54,26 @@ public class MavenAssignment extends AssignmentTypeMethod {
   }
 
   /**
-   * copyTestFile
+   * extract main method and modify pom.xml
    * 
-   * @param folder folder
-   * @param strFolder strFolder
-   * @param testFilePath testFilePath
+   * @param testDirectory testDirectory
+   * @param projectName   projectName
    */
-  public void copyTestFile(File folder, String strFolder, String testFilePath) {
-    for (final File fileEntry : folder.listFiles()) {
-      if (fileEntry.isDirectory()) {
-        copyTestFile(fileEntry, strFolder, testFilePath);
-      } else {
-        if (fileEntry.getAbsolutePath().contains("src")) {
-          String entry = fileEntry.getAbsolutePath();
-          if (entry.contains("src/test")) {
+  public void extractFile(String testDirectory, String destDirectory, String projectName) {
 
-            File dataFile = new File(strFolder + "/src/test");
-            // File targetFile = new File(testFilePath + "/src/test");
-            try {
-              // FileUtils.copyDirectory(dataFile, targetFile);
-              FileUtils.deleteDirectory(dataFile);
-            } catch (IOException e) {
-              e.printStackTrace();
-            }
-          }
-        }
-
-      }
+    try {
+      FileUtils.deleteDirectory(new File(testDirectory + "/src/main"));
+    } catch (IOException e) {
+      e.printStackTrace();
     }
+
+    try {
+      FileUtils.deleteDirectory(new File(destDirectory + "/src/test"));
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    zipHandler.modifyPomXml(testDirectory + "/pom.xml", projectName);
   }
 
   public String getJenkinsConfig() {
@@ -91,12 +83,12 @@ public class MavenAssignment extends AssignmentTypeMethod {
   /**
    * modifyXmlFile
    * 
-   * @param filePath filePath
+   * @param filePath   filePath
    * @param progApiUrl progApiUrl
-   * @param userName userName
-   * @param proName proName
-   * @param tomcatUrl tomcatUrl
-   * @param sb sb
+   * @param userName   userName
+   * @param proName    proName
+   * @param tomcatUrl  tomcatUrl
+   * @param sb         sb
    */
   public void modifyXmlFile(String filePath, String progApiUrl, String userName, String proName,
       String tomcatUrl, StringBuilder sb) {
@@ -136,9 +128,5 @@ public class MavenAssignment extends AssignmentTypeMethod {
       e.printStackTrace();
     }
 
-  }
-
-  public void modifyPomFile() {
-    // zipHandler.modifyPomXml(filePath, projectName);
   }
 }

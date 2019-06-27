@@ -15,8 +15,6 @@ public interface AssignmentTypeSelector {
 
   public void searchFile(String entryNewName);
 
-  public void copyTestFile(File folder, String strFolder, String testFilePath);
-
   public void createJenkinsJob(String name, String jenkinsRootUsername, String jenkinsRootPassword)
       throws Exception;
 
@@ -27,5 +25,5 @@ public interface AssignmentTypeSelector {
 
   public Status getStatus(String statusType);
 
-  public void modifyPomFile();
+  public void extractFile(String testDirectory, String destDirectory, String projectName);
 }
