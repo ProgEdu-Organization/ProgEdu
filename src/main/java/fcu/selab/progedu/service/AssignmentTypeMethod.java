@@ -69,43 +69,46 @@ public abstract class AssignmentTypeMethod implements AssignmentTypeSelector {
 
     try (ZipInputStream zipIn = new ZipInputStream(new FileInputStream(zipFilePath))) {
       ZipFile zipFile = new ZipFile(zipFilePath);
+      zipFile.extractAll(destDirectory);
       zipFile.extractAll(testDirectory);
-      // zipHandler.modifyPomXml(testDirectory + "/pom.xml", projectName);
+      zipHandler.modifyPomXml(testDirectory + "/pom.xml", projectName);
       // Zip HW in temp/tests
       // zipHandler.zipTestFolder(testDirectory);
 
-      ZipEntry entry = zipIn.getNextEntry();
-      while (entry != null) {
-        String filePath = destDirectory + File.separator + entry.getName();
-        File newFile = new File(filePath);
+      // ZipEntry entry = zipIn.getNextEntry();
+      // while (entry != null) {
+      // String filePath = destDirectory + File.separator + entry.getName();
+      // File newFile = new File(filePath);
 
-        // create all non exists folders
-        // else you will hit FileNotFoundException for compressed folder
-        new File(newFile.getParent()).mkdirs();
+      // // create all non exists folders
+      // // else you will hit FileNotFoundException for compressed folder
+      // new File(newFile.getParent()).mkdirs();
 
-        if (filePath.substring(filePath.length() - 4).equals("src/") && parDirLength == 0) {
-          parentDir = zipHandler.getParentDir(filePath);
-          parDirLength = parentDir.length() + 1;
-        }
-        String entryNewName = filePath.substring(parDirLength);
+      // if (filePath.substring(filePath.length() - 4).equals("src/") &&
+      // parDirLength == 0) {
+      // parentDir = zipHandler.getParentDir(filePath);
+      // parDirLength = parentDir.length() + 1;
+      // }
+      // String entryNewName = filePath.substring(parDirLength);
 
-        if (!entry.isDirectory()) {
-          // if the entry is a file, extracts it
-          zipHandler.extractFile(zipIn, filePath);
+      // if (!entry.isDirectory()) {
+      // // if the entry is a file, extracts it
+      // zipHandler.extractFile(zipIn, filePath);
 
-          // if filePath equals pom.xml, modify the project name
-          if (filePath.substring(filePath.length() - 7, filePath.length()).equals("pom.xml")) {
-            zipHandler.modifyPomXml(filePath, projectName);
-          }
-          searchFile(entryNewName);
-        } else {
-          // if the entry is a directory, make the directory
-          File dir = new File(filePath);
-          dir.mkdir();
-        }
-        zipIn.closeEntry();
-        entry = zipIn.getNextEntry();
-      }
+      // // if filePath equals pom.xml, modify the project name
+      // // if (filePath.substring(filePath.length() - 7,
+      // // filePath.length()).equals("pom.xml")) {
+      // // zipHandler.modifyPomXml(filePath, projectName);
+      // // }
+      // // searchFile(entryNewName);
+      // } else {
+      // // if the entry is a directory, make the directory
+      // File dir = new File(filePath);
+      // dir.mkdir();
+      // }
+      // zipIn.closeEntry();
+      // entry = zipIn.getNextEntry();
+      // }
     } catch (ZipException e) {
       e.printStackTrace();
     }
