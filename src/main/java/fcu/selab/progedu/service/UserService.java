@@ -220,7 +220,7 @@ public class UserService {
    * @param fileType job type
    * @return check
    */
-  public boolean createPreviuosJob(String username, String proName, String fileType) {
+  public boolean createPreviuosJob(String username, String proName, int fileType) {
     boolean check = false;
     String jenkinsRootUsername = null;
     String jenkinsRootPassword = null;

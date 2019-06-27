@@ -12,7 +12,7 @@ public class Project {
 
   private boolean hasTemplate = false;
 
-  private String type = "";
+  private int type = 0;
 
   private String gitLabUrl = "";
 
@@ -66,12 +66,12 @@ public class Project {
     this.hasTemplate = hasTemplate;
   }
 
-  public String getType() {
+  public int getType() {
     return type;
   }
 
-  public void setType(String type) {
-    this.type = type;
+  public int setType(int type) {
+    return this.type = type;
   }
 
   public String getGitLabUrl() {

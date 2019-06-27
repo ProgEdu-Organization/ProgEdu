@@ -33,7 +33,7 @@ public class ProjectDbManager {
    */
   public void addProject(Project project) {
     String sql = "INSERT INTO Assignment(name, createTime, deadline, description, hasTemplate"
-        + ", type, zipChecksum, zipUrl, releaseTime, display)  VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?,"
+        + ", typeId, zipChecksum, zipUrl, releaseTime, display)  VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?,"
         + "?)";
 
     try (Connection conn = database.getConnection();
@@ -43,7 +43,7 @@ public class ProjectDbManager {
       preStmt.setString(3, project.getDeadline());
       preStmt.setString(4, project.getDescription());
       preStmt.setBoolean(5, project.isHasTemplate());
-      preStmt.setString(6, project.getType());
+      preStmt.setInt(6, project.getType());
       preStmt.setString(7, project.getTestZipChecksum());
       preStmt.setString(8, project.getTestZipUrl());
       preStmt.setString(9, project.getReleaseTime());
@@ -73,7 +73,7 @@ public class ProjectDbManager {
           String deadline = rs.getString("deadline").replace("T", " ");
           String description = rs.getString("description");
           boolean hasTemplate = rs.getBoolean("hasTemplate");
-          String type = rs.getString("type");
+          int type = rs.getInt("type");
           String checksum = rs.getString("zipChecksum");
           String zipUrl = rs.getString("zipUrl");
           String releaseTime = rs.getString("releaseTime");
@@ -113,7 +113,7 @@ public class ProjectDbManager {
         String name = rs.getString("name");
         String description = rs.getString("description");
         boolean hasTemplate = rs.getBoolean("hasTemplate");
-        String type = rs.getString("type");
+        int type = rs.getInt("type");
         String checksum = rs.getString("zipChecksum");
         String zipUrl = rs.getString("zipUrl");
         String createTime = rs.getString("createTime");
@@ -220,25 +220,71 @@ public class ProjectDbManager {
   }
 
   /**
-   * get assignment type
+   * get assignment type by name
    * 
    * @param name assignment name
    * @return type assignment type
    */
-  public String getAssignmentType(String name) {
-    String type = null;
-    String sql = "SELECT * FROM Assignment WHERE name=?";
+  public int getAssignmentType(String name) {
+    int typeId = 0;
+    String sql = "SELECT typeId FROM Assignment WHERE name=?";
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
       preStmt.setString(1, name);
       try (ResultSet rs = preStmt.executeQuery()) {
         while (rs.next()) {
-          type = rs.getString("type");
+          typeId = rs.getInt("type");
         }
       }
     } catch (SQLException e) {
       e.printStackTrace();
     }
-    return type;
+    return typeId;
+  }
+
+  /**
+   * get assignment type Id
+   * 
+   * @param name Assignment_Type name
+   * @return type assignment type
+   */
+  public int getAssignmentTypeId(String name) {
+    int id = 0;
+    String sql = "SELECT id FROM Assignment_Type WHERE name=?";
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+      preStmt.setString(1, name);
+      try (ResultSet rs = preStmt.executeQuery()) {
+        while (rs.next()) {
+          id = rs.getInt("id");
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return id;
+  }
+
+  /**
+   * get assignment type name
+   * 
+   * @param id Assignment_Type id
+   * @return name assignment name
+   */
+  public String getAssignmentTypeName(int id) {
+    String typename = null;
+    String sql = "SELECT name FROM Assignment_Type WHERE id=?";
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+      preStmt.setInt(1, id);
+      try (ResultSet rs = preStmt.executeQuery()) {
+        while (rs.next()) {
+          typename = rs.getString("name");
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return typename;
   }
 }

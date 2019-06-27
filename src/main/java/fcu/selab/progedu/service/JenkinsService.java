@@ -162,7 +162,7 @@ public class JenkinsService {
     String buildApiJson = stuDashChoPro.getBuildApiJson(num, userName, proName);
     final String strDate = stuDashChoPro.getCommitTime(buildApiJson);
     String commitMessage = stuDashChoPro.getCommitMessage(num, userName, proName);
-    String proType = projectDb.getAssignmentType(proName);
+    int proType = projectDb.getAssignmentType(proName);
     String status = stuDashChoPro.getCommitStatus(num, userName, proName, buildApiJson, proType);
     String color = "circle " + status;
     JSONObject ob = new JSONObject();
@@ -186,7 +186,7 @@ public class JenkinsService {
   @Produces(MediaType.APPLICATION_JSON)
   public Response getGroupProjectBuildDetail(@QueryParam("num") int num,
       @QueryParam("groupName") String groupName, @QueryParam("projectName") String projectName) {
-    String proType = "Maven";
+    int proType = 0; // Maven
     Conn conn = Conn.getInstance();
     StudentDashChoosePro stuDashChoPro = new StudentDashChoosePro();
     String buildApiJson = stuDashChoPro.getBuildApiJson(num, groupName, projectName);
@@ -283,8 +283,9 @@ public class JenkinsService {
     String colorStatus = dbManager.getCommitRecordStatus(assigmentStatusData.getProjectName(),
         assigmentStatusData.getUsername(), assigmentStatusData.getNumber());
 
+    String assignmentType = dbProjectManaget.getAssignmentTypeName(project.getType());
     AssignmentTypeSelector assignmentTypeSelector = AssignmentTypeFactory
-        .getAssignmentType(project.getType());
+        .getAssignmentType(assignmentType);
     Status status = assignmentTypeSelector.getStatus(colorStatus);
 
     String detailConsoleText = jenkins.getConsoleText(url);
@@ -301,18 +302,21 @@ public class JenkinsService {
   @POST
   @Path("getFeedbackInfoForGroup")
   public String getFeedbackInfoForGroup(String url) {
-    String projectType = "Maven";
     AssigmentStatusData assigmentStatusData = new AssigmentStatusData(url);
+    ProjectDbManager projectDb = ProjectDbManager.getInstance();
+
+    int projectTypeId = 0; // Maven
+    String projectTypename = projectDb.getAssignmentTypeName(projectTypeId);// Change Id to name
 
     StudentDashChoosePro stuDashChoPro = new StudentDashChoosePro();
     String buildApiJson = stuDashChoPro.getBuildApiJson(assigmentStatusData.getNumber(),
         assigmentStatusData.getUsername(), assigmentStatusData.getProjectName());
     String statusType = stuDashChoPro.getCommitStatus(assigmentStatusData.getNumber(),
         assigmentStatusData.getUsername(), assigmentStatusData.getProjectName(), buildApiJson,
-        projectType);
+        projectTypeId);
 
     AssignmentTypeSelector assignmentTypeSelector = AssignmentTypeFactory
-        .getAssignmentType(projectType);
+        .getAssignmentType(projectTypename);
     Status status = assignmentTypeSelector.getStatus(statusType);
 
     String detailConsoleText = jenkins.getConsoleText(url);
