@@ -61,12 +61,9 @@ public class ZipHandler {
   /**
    * Extracts a zip entry (file entry)
    * 
-   * @param zipIn
-   *          The zip inputstream
-   * @param filePath
-   *          The file path
-   * @throws IOException
-   *           on fileoutputstream call error
+   * @param zipIn The zip inputstream
+   * @param filePath The file path
+   * @throws IOException on fileoutputstream call error
    */
   public void extractFile(ZipInputStream zipIn, String filePath) throws IOException {
     try (BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(filePath));) {
@@ -90,8 +87,7 @@ public class ZipHandler {
 
   /**
    * 
-   * @param filePath
-   *          a
+   * @param filePath a
    * @return aa
    */
   public String getParentDir(String filePath) {
@@ -104,10 +100,8 @@ public class ZipHandler {
   /**
    * modifyPomXml
    * 
-   * @param filePath
-   *          The file path
-   * @throws projectName
-   *           projectName
+   * @param filePath The file path
+   * @throws projectName projectName
    */
   public void modifyPomXml(String filePath, String projectName) {
     try {

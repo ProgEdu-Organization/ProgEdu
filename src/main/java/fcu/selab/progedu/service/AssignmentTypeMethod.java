@@ -35,12 +35,9 @@ public abstract class AssignmentTypeMethod implements AssignmentTypeSelector {
 
   /**
    * 
-   * @param zipFilePath
-   *          zipFilePath
-   * @param zipFolderName
-   *          zipFolderName
-   * @param projectName
-   *          projectName
+   * @param zipFilePath zipFilePath
+   * @param zipFolderName zipFolderName
+   * @param projectName projectName
    */
 
   public void unzip(String zipFilePath, String zipFolderName, String projectName,
@@ -70,66 +67,48 @@ public abstract class AssignmentTypeMethod implements AssignmentTypeSelector {
       System.out.println(testDirectory);
     }
 
-    // String targetDirectory = testDir + projectName;
-    // File targetDir = new File(targetDirectory);
-    // if (!targetDir.exists()) {
-    // targetDir.mkdir();
-    // } else {
-    // System.out.println(targetDir);
-    // }
-
     try (ZipInputStream zipIn = new ZipInputStream(new FileInputStream(zipFilePath))) {
       ZipFile zipFile = new ZipFile(zipFilePath);
       zipFile.extractAll(testDirectory);
+      // zipHandler.modifyPomXml(testDirectory + "/pom.xml", projectName);
+      // Zip HW in temp/tests
+      // zipHandler.zipTestFolder(testDirectory);
+
+      ZipEntry entry = zipIn.getNextEntry();
+      while (entry != null) {
+        String filePath = destDirectory + File.separator + entry.getName();
+        File newFile = new File(filePath);
+
+        // create all non exists folders
+        // else you will hit FileNotFoundException for compressed folder
+        new File(newFile.getParent()).mkdirs();
+
+        if (filePath.substring(filePath.length() - 4).equals("src/") && parDirLength == 0) {
+          parentDir = zipHandler.getParentDir(filePath);
+          parDirLength = parentDir.length() + 1;
+        }
+        String entryNewName = filePath.substring(parDirLength);
+
+        if (!entry.isDirectory()) {
+          // if the entry is a file, extracts it
+          zipHandler.extractFile(zipIn, filePath);
+
+          // if filePath equals pom.xml, modify the project name
+          if (filePath.substring(filePath.length() - 7, filePath.length()).equals("pom.xml")) {
+            zipHandler.modifyPomXml(filePath, projectName);
+          }
+          searchFile(entryNewName);
+        } else {
+          // if the entry is a directory, make the directory
+          File dir = new File(filePath);
+          dir.mkdir();
+        }
+        zipIn.closeEntry();
+        entry = zipIn.getNextEntry();
+      }
     } catch (ZipException e) {
       e.printStackTrace();
     }
-
-    // try (ZipInputStream zipIn = new ZipInputStream(new
-    // FileInputStream(zipFilePath))) {
-    // // ZipFile zipFile = new ZipFile(zipFilePath);
-    // // zipFile.extractAll(targetDirectory);
-    // // zipHandler.modifyPomXml(targetDirectory + "/pom.xml", projectName);
-    // // // Zip HW in temp/tests
-    // // zipHandler.zipTestFolder(targetDirectory);
-
-    // ZipEntry entry = zipIn.getNextEntry();
-    // while (entry != null) {
-    // String filePath = destDirectory + File.separator + entry.getName();
-    // File newFile = new File(filePath);
-
-    // // create all non exists folders
-    // // else you will hit FileNotFoundException for compressed folder
-    // new File(newFile.getParent()).mkdirs();
-
-    // if (filePath.substring(filePath.length() - 4).equals("src/") &&
-    // parDirLength == 0) {
-    // parentDir = zipHandler.getParentDir(filePath);
-    // parDirLength = parentDir.length() + 1;
-    // }
-    // String entryNewName = filePath.substring(parDirLength);
-
-    // if (!entry.isDirectory()) {
-    // // if the entry is a file, extracts it
-    // zipHandler.extractFile(zipIn, filePath);
-
-    // // if filePath equals pom.xml, modify the project name
-    // if (filePath.substring(filePath.length() - 7,
-    // filePath.length()).equals("pom.xml")) {
-    // zipHandler.modifyPomXml(filePath, projectName);
-    // }
-    // searchFile(entryNewName);
-    // } else {
-    // // if the entry is a directory, make the directory
-    // File dir = new File(filePath);
-    // dir.mkdir();
-    // }
-    // zipIn.closeEntry();
-    // entry = zipIn.getNextEntry();
-    // }
-    // } catch (ZipException e) {
-    // e.printStackTrace();
-    // }
 
     // iterates over entries in the zip file
     // copyTestFile(destDir, destDirectory, testDirectory);
@@ -147,12 +126,9 @@ public abstract class AssignmentTypeMethod implements AssignmentTypeSelector {
 
   /**
    * 
-   * @param name
-   *          name
-   * @param jenkinsRootUsername
-   *          jenkinsRootUsername
-   * @param jenkinsRootPassword
-   *          jenkinsRootPassword
+   * @param name name
+   * @param jenkinsRootUsername jenkinsRootUsername
+   * @param jenkinsRootPassword jenkinsRootPassword
    */
   public void createJenkinsJob(String name, String jenkinsRootUsername, String jenkinsRootPassword)
       throws Exception {
@@ -176,14 +152,10 @@ public abstract class AssignmentTypeMethod implements AssignmentTypeSelector {
 
   /**
    * 
-   * @param userName
-   *          userName
-   * @param proName
-   *          proName
-   * @param jenkinsCrumb
-   *          jenkinsCrumb
-   * @param sb
-   *          sb
+   * @param userName userName
+   * @param proName proName
+   * @param jenkinsCrumb jenkinsCrumb
+   * @param sb sb
    */
   public void createAllJenkinsJob(String userName, String proName, String jenkinsCrumb,
       StringBuilder sb) {
@@ -202,12 +174,9 @@ public abstract class AssignmentTypeMethod implements AssignmentTypeSelector {
 
   /**
    * 
-   * @param proName
-   *          proName
-   * @param jenkinsCrumb
-   *          jenkinsCrumb
-   * @param sb
-   *          sb
+   * @param proName proName
+   * @param jenkinsCrumb jenkinsCrumb
+   * @param sb sb
    */
   public void createRootJob(String proName, String jenkinsCrumb, StringBuilder sb)
       throws Exception {
@@ -223,14 +192,10 @@ public abstract class AssignmentTypeMethod implements AssignmentTypeSelector {
 
   /**
    * 
-   * @param userName
-   *          userName
-   * @param proName
-   *          proName
-   * @param proUrl
-   *          proUrl
-   * @param sb
-   *          sb
+   * @param userName userName
+   * @param proName proName
+   * @param proUrl proUrl
+   * @param sb sb
    */
   public String modifyXml(String userName, String proName, String proUrl, StringBuilder sb) {
     String filePath = null;
@@ -255,8 +220,7 @@ public abstract class AssignmentTypeMethod implements AssignmentTypeSelector {
   }
 
   /**
-   * @param statusType
-   *          status.
+   * @param statusType status.
    */
   public Status getStatus(String statusType) {
     return statusFactory.getStatus(statusType);

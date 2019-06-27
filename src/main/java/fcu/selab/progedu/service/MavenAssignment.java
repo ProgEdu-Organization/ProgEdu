@@ -139,5 +139,6 @@ public class MavenAssignment extends AssignmentTypeMethod {
   }
 
   public void modifyPomFile() {
+    // zipHandler.modifyPomXml(filePath, projectName);
   }
 }

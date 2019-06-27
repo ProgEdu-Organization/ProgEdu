@@ -15,7 +15,7 @@ public interface AssignmentTypeSelector {
 
   public void searchFile(String entryNewName);
 
-//   public void copyTestFile(File folder, String strFolder, String testFilePath);
+  public void copyTestFile(File folder, String strFolder, String testFilePath);
 
   public void createJenkinsJob(String name, String jenkinsRootUsername, String jenkinsRootPassword)
       throws Exception;
