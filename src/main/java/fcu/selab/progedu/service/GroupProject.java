@@ -96,7 +96,7 @@ public abstract class GroupProject implements IGroupProject {
    */
   private void initialize(String groupName) {
     Linux linuxApi = new Linux();
-    ProjectService ps = new ProjectService();
+    AssignmentService ps = new AssignmentService();
     String tempDir = System.getProperty("java.io.tmpdir");
     String cloneFilePath = tempDir + "/uploads/" + groupName;
     String cloneCommand = "git clone " + ps.getGroupProjectUrl(groupName) + " " + cloneFilePath;

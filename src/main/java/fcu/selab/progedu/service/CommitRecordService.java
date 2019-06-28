@@ -16,12 +16,12 @@ import org.json.JSONObject;
 import fcu.selab.progedu.db.CommitRecordDbManager;
 import fcu.selab.progedu.db.IDatabase;
 import fcu.selab.progedu.db.MySqlDatabase;
-import fcu.selab.progedu.db.ProjectDbManager;
+import fcu.selab.progedu.db.AssignmentDbManager;
 
 @Path("commits/record/")
 public class CommitRecordService {
   CommitRecordDbManager commitRecordDb = CommitRecordDbManager.getInstance();
-  ProjectDbManager pdb = ProjectDbManager.getInstance();
+  AssignmentDbManager pdb = AssignmentDbManager.getInstance();
 
   /**
    * get counts by different color

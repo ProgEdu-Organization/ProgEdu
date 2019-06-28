@@ -17,14 +17,14 @@ import fcu.selab.progedu.db.CommitRecordDbManager;
 import fcu.selab.progedu.db.CommitRecordStateDbManager;
 import fcu.selab.progedu.db.IDatabase;
 import fcu.selab.progedu.db.MySqlDatabase;
-import fcu.selab.progedu.db.ProjectDbManager;
+import fcu.selab.progedu.db.AssignmentDbManager;
 import fcu.selab.progedu.status.StatusEnum;
 
 @Path("commits/")
 public class CommitRecordStateService {
   CommitRecordStateDbManager commitRecordStateDb = CommitRecordStateDbManager.getInstance();
   CommitRecordDbManager commitRecordDb = CommitRecordDbManager.getInstance();
-  ProjectDbManager projectDb = ProjectDbManager.getInstance();
+  AssignmentDbManager projectDb = AssignmentDbManager.getInstance();
 
   /**
    * get counts by different state

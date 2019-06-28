@@ -3,19 +3,20 @@
 <%@ page
 	import="fcu.selab.progedu.conn.Language"%>
 <%@ page
-	import="fcu.selab.progedu.db.UserDbManager, fcu.selab.progedu.db.ProjectDbManager"%>
+	import="fcu.selab.progedu.db.UserDbManager,fcu.selab.progedu.db.AssignmentDbManager"%>
 <%@ page
-	import="fcu.selab.progedu.data.User, fcu.selab.progedu.data.Project"%>
-<%@ page import="java.util.*"%>
+	import="fcu.selab.progedu.data.User,fcu.selab.progedu.data.Project
+<%@ page import="javjava.util.*
 <%@ page
-	import="org.json.JSONArray, org.json.JSONException, org.json.JSONObject"%>
+	import="orgorg.json.JSONArraygorg.json.JSONExceptiongorg.json.JSONObject
 
 <%
-	if (session.getAttribute("username") == null || session.getAttribute("username").toString().equals("")) {
+ 
+  if (session.getAttribute("username") == null || session.getAttribute("username").toString().equals("")) {
 		response.sendRedirect("index.jsp");
 	}
 	session.putValue("page", "dashboard");
-%>
+
 
 <%@ include file="language.jsp"%>
 
@@ -124,18 +125,17 @@
 </head>
 <body>
 	<%
-		UserDbManager db = UserDbManager.getInstance();
-		ProjectDbManager Pdb = ProjectDbManager.getInstance();
+	  UserDbManager db = UserDbManager.getInstance();
+				AssignmentDbManager Pdb = AssignmentDbManager.getInstance();
 
-		// db users
-		List<User> users = db.listAllUsers();
+				// db users
+				List<User> users = db.listAllUsers();
 
-		// db projects
-		List<Project> dbProjects = Pdb.listAllProjects();
-		List<String> pNames = Pdb.listAllProjectNames();
-
+				// db projects
+				List<Assignment> dbProjects = Pdb.listAllProjects();
+				List<String> pNames = Pdb.listAllProjectNames();
+		lude file="header.jsp"
 	%>
-	<%@ include file="header.jsp"%>
 	<!-- -----sidebar----- -->
 	<div class="sidebar" style="width:200px">
 		<ul class="nav flex-column" style="padding-top: 20px;">

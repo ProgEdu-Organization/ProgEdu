@@ -22,9 +22,9 @@ import fcu.selab.progedu.config.CourseConfig;
 import fcu.selab.progedu.config.GitlabConfig;
 import fcu.selab.progedu.config.JenkinsConfig;
 import fcu.selab.progedu.conn.Conn;
-import fcu.selab.progedu.data.Project;
+import fcu.selab.progedu.data.Assignment;
 import fcu.selab.progedu.data.User;
-import fcu.selab.progedu.db.ProjectDbManager;
+import fcu.selab.progedu.db.AssignmentDbManager;
 import fcu.selab.progedu.db.UserDbManager;
 import fcu.selab.progedu.jenkins.JenkinsApi;
 
@@ -35,7 +35,7 @@ public class UserService {
 
   CourseConfig course = CourseConfig.getInstance();
   private UserDbManager dbManager = UserDbManager.getInstance();
-  private ProjectDbManager projectDbManager = ProjectDbManager.getInstance();
+  private AssignmentDbManager projectDbManager = AssignmentDbManager.getInstance();
   private GitlabConfig gitlabData = GitlabConfig.getInstance();
   private JenkinsApi jenkins = JenkinsApi.getInstance();
   private JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
@@ -191,15 +191,15 @@ public class UserService {
    */
   public boolean importPreviousProject(User user) {
     boolean check = false;
-    List<Project> projects = projectDbManager.listAllProjects();
+    List<Assignment> projects = projectDbManager.listAllProjects();
     String url = "";
     String gitlabUrl = "";
     String userName = user.getUserName();
     try {
       gitlabUrl = gitlabData.getGitlabRootUrl();
-      for (Project project : projects) {
+      for (Assignment project : projects) {
         String projectName = project.getName();
-        Project project1 = projectDbManager.getProjectByName(projectName);
+        Assignment project1 = projectDbManager.getProjectByName(projectName);
         url = gitlabUrl + "/root/" + projectName;
         userConn.createPrivateProject(user.getGitLabId(), project.getName(), url);
         boolean isSuccess = createPreviuosJob(userName, projectName, project1.getType());
@@ -220,7 +220,7 @@ public class UserService {
    * @param fileType job type
    * @return check
    */
-  public boolean createPreviuosJob(String username, String proName, String fileType) {
+  public boolean createPreviuosJob(String username, String proName, int fileType) {
     boolean check = false;
     String jenkinsRootUsername = null;
     String jenkinsRootPassword = null;

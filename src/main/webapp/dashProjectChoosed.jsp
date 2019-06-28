@@ -3,12 +3,12 @@
 <%@ page import="fcu.selab.progedu.jenkins.JenkinsApi" %>
 <%@ page import="fcu.selab.progedu.config.GitlabConfig" %>
 <%@ page import="fcu.selab.progedu.config.JenkinsConfig" %>
-<%@ page import="fcu.selab.progedu.db.UserDbManager, fcu.selab.progedu.db.ProjectDbManager" %>
-<%@ page import="fcu.selab.progedu.data.User, fcu.selab.progedu.data.Project" %>
+<%@ page import="fcu.selab.progedu.db.UserDbManager,fcu.selab.progedu.db.AssignmentDbManager" %>
+<%@ page import="fcu.selab.progedu.data.User,fcu.selab.progedu.data.Assignment" %>
 <%@ page import="org.gitlab.api.models.*" %>
 <%@ page import="java.util.*" %>
 <%@ page import="fcu.selab.progedu.jenkins.JobStatus" %>
-<%@ page import="org.json.JSONArray, org.json.JSONException, org.json.JSONObject" %>
+<%@ page import="org.json.JSONArray,org.json.JSONException,org.json.JSONObject" %>
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="fcu.selab.progedu.conn.*" %>
 <%@ page import="fcu.selab.progedu.status.*" %>
@@ -16,7 +16,7 @@
 <%@ page import="fcu.selab.progedu.service.AssignmentTypeSelector" %>
 
 <%
-	if(session.getAttribute("username") == null || session.getAttribute("username").toString().equals("")){
+  if(session.getAttribute("username") == null || session.getAttribute("username").toString().equals("")){
 		response.sendRedirect("index.jsp");
 	}
 	session.putValue("page", "dashboard");
@@ -147,73 +147,73 @@
 <body>
 	
 	<%
-		Conn conn = Conn.getInstance();
-	
-		UserDbManager db = UserDbManager.getInstance();
-		ProjectDbManager Pdb = ProjectDbManager.getInstance();
-		StudentDashChoosePro stuDashChoPro = new StudentDashChoosePro();
-		
-		List<User> users = db.listAllUsers();
-		List<Project> dbProjects = Pdb.listAllProjects();
-		
-		// gitlab jenkins course��Data
-		GitlabConfig gitData = GitlabConfig.getInstance();
-		JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
-		
-		JenkinsApi jenkins = JenkinsApi.getInstance();
-		
-		GitlabUser choosedUser = conn.getUserById(userId);
-		List<GitlabProject> projects = conn.getProject(choosedUser);
-		Collections.reverse(projects);
-	%>
+		  Conn conn = Conn.getInstance();
+					
+						UserDbManager db = UserDbManager.getInstance();
+						AssignmentDbManager Pdb = AssignmentDbManager.getInstance();
+						StudentDashChoosePro stuDashChoPro = new StudentDashChoosePro();
+						
+						List<User> users = db.listAllUsers();
+						List<Assignment> dbProjects = Pdb.listAllProjects();
+						
+						// gitlab jenkins course��Data
+						GitlabConfig gitData = GitlabConfig.getInstance();
+						JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
+						
+						JenkinsApi jenkins = JenkinsApi.getInstance();
+						
+						GitlabUser choosedUser = conn.getUserById(userId);
+						List<GitlabProject> projects = conn.getProject(choosedUser);
+						Collections.reverse(projects);
+		%>
 	<%@ include file="header.jsp" %>
 		<!-- -----sidebar----- -->
 		<div class="sidebar" style="width:200px">
 			<ul class="nav flex-column" style="padding-top: 20px;">
           			<li class="nav-item">
-       				<font size="4"><a href="javascript:;" data-toggle="collapse" data-target="#overview" class="nav-link"><i class="fa fa-bars" aria-hidden="true"></i>&nbsp; <%=choosedUser.getUsername() %> <i class="fa fa-chevron-down" aria-hidden="true"></i></a></font>
+       				<font size="4"><a href="javascript:;" data-toggle="collapse" data-target="#overview" class="nav-link"><i class="fa fa-bars" aria-hidden="true"></i>&nbsp; <%=choosedUser.getUsername()%> <i class="fa fa-chevron-down" aria-hidden="true"></i></a></font>
           				<ul id="overview" class="collapse" style="list-style: none;">
          			          <%
-	 			           	for(GitlabProject project : projects){
-	    			        	  for(Project dbProject : dbProjects){
-	            	   			  if(project.getName().equals(dbProject.getName())){
-	            	      			String href = "dashProjectChoosed.jsp?userId=" + choosedUser.getId() + "&proName=" + project.getName();
-	            	      %>
-	            	      				<li class="nav-item"><font size="3"><a class="nav-link" href=<%=href %>><i class="fa fa-angle-right" aria-hidden="true"></i>&nbsp; <%=project.getName() %></a></font></li>
+         			            for(GitlabProject project : projects){
+         			               			          	    			        	  for(Assignment dbProject : dbProjects){
+         			               			          	            	   			  if(project.getName().equals(dbProject.getName())){
+         			               			          	            	      			String href = "dashProjectChoosed.jsp?userId=" + choosedUser.getId() + "&proName=" + project.getName();
+         			          %>
+	            	      				<li class="nav-item"><font size="3"><a class="nav-link" href=<%=href%>><i class="fa fa-angle-right" aria-hidden="true"></i>&nbsp; <%=project.getName()%></a></font></li>
 	            	      <%
-	            	    			}
-	            	  			}
-	            			}
-	            		%>
+	            	        }
+	            	      	            	      	            	  			}
+	            	      	            	      	            			}
+	            	      %>
            			</ul>
        			</li>
           			<li class="nav-item">
               			<font size="4"><a href="javascript:;" data-toggle="collapse" data-target="#student" class="nav-link"><i class="fa fa-bars" aria-hidden="true"></i>&nbsp; <fmt:message key="dashboard_a_student"/> <i class="fa fa-chevron-down" aria-hidden="true"></i></a></font>
               			<ul id="student" class="collapse show" style="list-style: none;">
                   			<%
-            				for(User user : users){
-            					String style = "";
-	            	  			String userName = user.getUserName();
-	            	  			String href = "\"dashStuChoosed.jsp?studentId=" + user.getGitLabId() + "\"";
-	            	  			if(choosedUser.getUsername().equals(user.getUserName())) {
-	            	 				style = "color: burlywood;";
-	            	 			}
-            	  		%>
-            	  			<li class="nav-item"><font size="3"><a style="<%=style%>" class="nav-link" href=<%=href %>><i class="fa fa-angle-right" aria-hidden="true"></i>&nbsp; <%=userName %></a></font></li>
+                  			  for(User user : users){
+                  			              			        					String style = "";
+                  			              				            	  			String userName = user.getUserName();
+                  			              				            	  			String href = "\"dashStuChoosed.jsp?studentId=" + user.getGitLabId() + "\"";
+                  			              				            	  			if(choosedUser.getUsername().equals(user.getUserName())) {
+                  			              				            	 				style = "color: burlywood;";
+                  			              				            	 			}
+                  			%>
+            	  			<li class="nav-item"><font size="3"><a style="<%=style%>" class="nav-link" href=<%=href%>><i class="fa fa-angle-right" aria-hidden="true"></i>&nbsp; <%=userName%></a></font></li>
             	 		 <%
-            				}
-            			%>
+            	 		   }
+            	 		 %>
               			</ul>
           			</li>
         			</ul>
 		<!-- -----sidebar----- -->
 	</div>
 	<div class="container-fluid" id="main">
-       	<h1 style="margin-bottom: 20px;"> <%=choosedUser.getUsername() %>_ <%=projectName %> </h1>
+       	<h1 style="margin-bottom: 20px;"> <%=choosedUser.getUsername()%>_ <%=projectName%> </h1>
         <!-- ---------------------------- Project ------------------------------- -->
 		<%
-			ProjectDbManager pDb = ProjectDbManager.getInstance();
-			Project project = pDb.getProjectByName(projectName);
+		  AssignmentDbManager pDb = AssignmentDbManager.getInstance();
+							Assignment project = pDb.getProjectByName(projectName);
 		%>
 		<div style="margin: 10px 10px 10px 10px;">
 			<h2 style="white-space: nowrap"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp; <%=projectName%></h2>

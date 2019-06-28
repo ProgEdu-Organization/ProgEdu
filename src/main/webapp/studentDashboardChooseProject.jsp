@@ -8,21 +8,21 @@
 <%@ page import="org.gitlab.api.models.*"%>
 <%@ page import="java.util.*"%>
 <%@ page import="org.json.JSONArray, org.json.JSONException, org.json.JSONObject" %>
-<%@ page import="fcu.selab.progedu.db.UserDbManager, fcu.selab.progedu.db.ProjectDbManager" %>
-<%@ page import="fcu.selab.progedu.data.User, fcu.selab.progedu.data.Project" %>
-<%@ page import="fcu.selab.progedu.jenkins.JobStatus, java.text.SimpleDateFormat" %>
-<%@ page import="fcu.selab.progedu.conn.StudentDash" %>
-<%@ page import="fcu.selab.progedu.conn.StudentDashChoosePro" %>
-<%@ page import="java.text.SimpleDateFormat" %>
-<%@ page import="fcu.selab.progedu.conn.*" %>
-<%@ page import="fcu.selab.progedu.status.*" %>
-<%@ page import="fcu.selab.progedu.service.AssignmentTypeFactory" %>
-<%@ page import="fcu.selab.progedu.service.AssignmentTypeSelector" %>
+<%@ page import="fcu.selab.progedu.db.UserDbManager,fcu.selab.progedu.db.AssignmentDbManager" %>
+<%@ page import="fcu.selab.progedu.data.User,fcu.selab.progedu.data.Project>
+<%@ page import="fcufcu.selab.progedu.jenkins.JobStatusvjava.text.SimpleDateFormat>
+<%@ page import="fcufcu.selab.progedu.conn.StudentDash>
+<%@ page import="fcufcu.selab.progedu.conn.StudentDashChoosePro>
+<%@ page import="javjava.text.SimpleDateFormat>
+<%@ page import="fcufcu.selab.progedu.conn.*>
+<%@ page import="fcufcu.selab.progedu.status.*>
+<%@ page import="fcufcu.selab.progedu.service.AssignmentTypeFactory>
+<%@ page import="fcufcu.selab.progedu.service.AssignmentTypeSelector>
 <%@ include file="language.jsp"%>
 <%@ include file="studentHeader.jsp"%>
 
 <%
-	String private_token = null;
+  String private_token = null;
 	if(null != session.getAttribute("private_token") && !"".equals(session.getAttribute("private_token")) ){
 	  private_token = session.getAttribute("private_token").toString();
 	}else{
@@ -49,8 +49,7 @@
 	}else {
 		response.sendRedirect("index.jsp");
 	}
-	
-%>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 	<head>
@@ -210,49 +209,46 @@
 	</head>
 	<body onload="init()">
 		<%
-			//To display the under html code (about some if-else)
-			StudentDash stuDash = new StudentDash(private_token);
-			StudentDashChoosePro stuDashChoPro = new StudentDashChoosePro();
-			
-			// Get the user's Gitlab project
-			List<GitlabProject> stuProjects = stuDash.getStuProject();
-		
-			String strProjectId = request.getParameter("projectId");
-			
-			int projectId = -1;
-			if(null == strProjectId || "".equals(strProjectId)){
-				  
-			}else {
-				projectId = Integer.parseInt(strProjectId);
-			}
-			
-			GitlabProject choosedProject = stuDashChoPro.getChoosedProject(stuProjects, projectId);
-			
-			JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
-			Conn conn = Conn.getInstance();
-			
-			StudentConn sConn = new StudentConn(private_token);
-			GitlabUser user = sConn.getUser();
-			List<GitlabProject> projects = sConn.getProject();
-			Collections.reverse(projects);
-			
-			UserDbManager db = UserDbManager.getInstance();
-			ProjectDbManager Pdb = ProjectDbManager.getInstance();
-			List<User> users = db.listAllUsers();
-			List<Project> dbProjects = Pdb.listAllProjects();
-			
-			// gitlab jenkins course��Data
-			GitlabConfig gitData = GitlabConfig.getInstance();
-			
-			JenkinsApi jenkins = JenkinsApi.getInstance();
-			
-			GitlabUser choosedUser = conn.getUserById(userId);
-			Collections.reverse(projects);
-		%>
-		
-		<!-- -----sidebar----- -->
-		<div id="sidebar">
-			<ul class="nav flex-column" style="padding-top: 20px;">
+	
+		  //To display the under html code (about some if-else)
+					StudentDash stuDash = new StudentDash(private_token);
+					StudentDashChoosePro stuDashChoPro = new StudentDashChoosePro();
+					
+					// Get the user's Gitlab project
+					List<GitlabProject> stuProjects = stuDash.getStuProject();
+				
+					String strProjectId = request.getParameter("projectId");
+					
+					int projectId = -1;
+					if(null == strProjectId || "".equals(strProjectId)){
+						  
+					}else {
+						projectId = Integer.parseInt(strProjectId);
+					}
+					
+					GitlabProject choosedProject = stuDashChoPro.getChoosedProject(stuProjects, projectId);
+					
+					JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
+					Conn conn = Conn.getInstance();
+					
+					StudentConn sConn = new StudentConn(private_token);
+					GitlabUser user = sConn.getUser();
+					List<GitlabProject> projects = sConn.getProject();
+					Collections.reverse(projects);
+					
+					UserDbManager db = UserDbManager.getInstance();
+					AssignmentDbManager Pdb = AssignmentDbManager.getInstance();
+					List<User> users = db.listAllUsers();
+					List<Assignment> dbProjects = Pdb.listAllProjects();
+					
+					// gitlab jenkins course��Data
+					GitlabConfig gitData = GitlabConfig.getInstance();
+					
+					JenkinsApi jenkins = JenkinsApi.getInstance();
+					
+					GitlabUser choosedUser = conn.getUserById(userId);
+					Collections.reverse(projects);
+		ex-column" style="padding-top: 20px;">
 			  <li class="nav-item" style="margin: 10px 0px 0px 15px; color: burlywood;">
 			    <font size="4"><a href="studentDashboard.jsp" id="overview"><i class="fa fa-bar-chart" aria-hidden="true"></i>&nbsp; <fmt:message key="stuDashboard_li_overview"/></a></font>
 			  </li>
@@ -260,32 +256,31 @@
 			    <font size="4"><a><i class="fa fa-minus-square-o" aria-hidden="true"> &nbsp;<fmt:message key="stuDashboard_li_assignments"/></i></a></font>
 			  </li>
 			  <%
-				  	for(GitlabProject stuProject : stuProjects){
-				  	  String href = "\"studentDashboardChooseProject.jsp?projectId=" + stuProject.getId() + "\"";
-				  	  %>
-				  	  	<li class="nav-item" style="margin:0px 0px 0px 30px">
-						  <font size="3"><a class="nav-link" href=<%=href %>><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp; <%=stuProject.getName() %></a></font>
+			    for(GitlabProject stuProject : stuProjects){
+			  				  	  String href
+			    for(GitlabProject stuProject : stuProjects){
+			  				  	  String href = "\"studentDashboardChooseProject.jsp?projectId=" + stuProject.getId() + "\"";
+			  ze="3"><a class="nav-link" href=<%=href
+%>><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp; <%=stuProject.ghrefme()%></a></font>
 						</li>
 				  	  <%
-				  	}
-			  %>
-			</ul>
-		</div>
-		<!-- -----sidebar----- -->
-		<!-- -----main----- -->
-		<div class="container-fluid" id="main">
-			<%
-				String projectName = choosedProject.getName();
-				String projectUrl = stuDashChoPro.getChoosedProjectUrl(choosedProject);
-				List<String> jobColors = stuDash.getMainTableJobColor(stuProjects);
-				List<String> jobCommitCounts = stuDash.getMainTableJobCommitCount(stuProjects);
-				ProjectDbManager pDb = ProjectDbManager.getInstance();
-				Project project = pDb.getProjectByName(projectName);
-				
-				
-			%>
-			<div style="margin: 10px 10px 10px 10px;">
-				<h2 style="white-space: nowrap"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp; <%=projectName%></h2>
+				  	    }
+				  	  				  	  %stuProject.getName()>
+				  	  		<!-- -----sidebar----- -->
+				  	  		<!--
+				  	  				  	    }
+				  	  				  	  iv class="container-fluid" id="main">
+				  	  			<%
+				  	  			  String projectName = choosedProject.getName();
+				  	  							String projectUrl = stu
+				  	  			  String projectName = choosedProject.getName();
+				  	  							String projectUrl = stuDashChoPro.getChoosedProjectUrl(choosedProject);
+				  	  							List<String> jobColors = stuDash.getMainTableJobColor(stuProjects);
+				  	  							List<String> jobCommitCounts = stuDash.getMainTableJobCommitCount(stuProjects);
+				  	  							AssignmentDbManager pDb = AssignmentDbManager.getInstance();
+				  	  							Assignment project = pDb.getProjectByName(projectName);
+				  	  			pencil-square-o" aria-hidden="true"></i>&nbsp; <%=projectName
+				  	  %></h2>
 				<br>
 				<h5 style="font-weight: 700"><fmt:message key="stuDashChooseProject_p_gitRepo"/></h5>
 				<div id="inline" style="white-space: nowrap; margin-left: 0px;">

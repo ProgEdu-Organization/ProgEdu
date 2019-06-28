@@ -44,15 +44,15 @@ import fcu.selab.progedu.config.CourseConfig;
 import fcu.selab.progedu.config.GitlabConfig;
 import fcu.selab.progedu.config.JenkinsConfig;
 import fcu.selab.progedu.conn.Conn;
-import fcu.selab.progedu.data.Project;
-import fcu.selab.progedu.db.ProjectDbManager;
+import fcu.selab.progedu.data.Assignment;
+import fcu.selab.progedu.db.AssignmentDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.jenkins.JenkinsApi;
 import fcu.selab.progedu.utils.Linux;
 import fcu.selab.progedu.utils.ZipHandler;
 
 @Path("project/")
-public class ProjectService {
+public class AssignmentService {
 
   private Conn conn = Conn.getInstance();
   private GitlabUser root = conn.getRoot();
@@ -68,7 +68,7 @@ public class ProjectService {
   private String mailUsername;
   private String mailPassword;
 
-  private ProjectDbManager dbManager = ProjectDbManager.getInstance();
+  private AssignmentDbManager dbManager = AssignmentDbManager.getInstance();
   private CommitRecordService commitRecordService = new CommitRecordService();
   private CommitResultService commitResultService = new CommitResultService();
   private CommitRecordStateService commitRecordStateService = new CommitRecordStateService();
@@ -87,7 +87,7 @@ public class ProjectService {
   /**
    * Constuctor
    */
-  public ProjectService() {
+  public AssignmentService() {
     try {
       zipHandler = new ZipHandler();
       jenkinsRootUsername = jenkinsData.getJenkinsRootUsername();
@@ -107,6 +107,7 @@ public class ProjectService {
    * @param assignmentType      abc
    * @param uploadedInputStream abc
    * @param fileDetail          abc
+   * @param releaseTime         abc
    * @return abc
    * @throws Exception abc
    */
@@ -116,6 +117,7 @@ public class ProjectService {
   @Produces(MediaType.APPLICATION_JSON)
   public Response newProject(@FormDataParam("Hw_Name") String name,
       @FormDataParam("Hw_Deadline") String deadline, @FormDataParam("Hw_README") String readMe,
+      @FormDataParam("Hw_ReleaseTime") String releaseTime,
       @FormDataParam("fileRadio") String assignmentType,
       @FormDataParam("file") InputStream uploadedInputStream,
       @FormDataParam("file") FormDataContentDisposition fileDetail) throws Exception {
@@ -124,6 +126,7 @@ public class ProjectService {
     String folderName = null;
     String filePath = null;
     boolean hasTemplate = false;
+    boolean display = true;
 
     assignmentTypeSelector = AssignmentTypeFactory.getAssignmentType(assignmentType);
 
@@ -185,13 +188,21 @@ public class ProjectService {
     // String removeTestDirectoryCommand = "rm -rf tests/" + name;
     // linuxApi.execLinuxCommandInFile(removeTestDirectoryCommand, TEMP_DIR);
 
-    // 9. Add project to database
+    // 9. Set display value to "false" if releaseTime is not empty
+    // **
+    if (releaseTime != null) {
+      display = false;
+    }
+    // **
+
+    // 10. Add project to database
     Date date = new Date();
     SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     sdFormat.setTimeZone(TimeZone.getTimeZone("Asia/Taipei"));
     String dateTime = sdFormat.format(date);
+
     addProject(name, dateTime, deadline, readMe, assignmentType, hasTemplate, testZipChecksum,
-        testZipUrl);
+        testZipUrl, releaseTime, display);
 
     List<GitlabUser> users = conn.getUsers();
     Collections.reverse(users);
@@ -200,7 +211,7 @@ public class ProjectService {
         continue;
       }
 
-      // 10. Create student project, and import project
+      // 11. Create student project, and import project
       conn.createPrivateProject(user.getId(), name, rootProjectUrl);
     }
 
@@ -390,18 +401,24 @@ public class ProjectService {
    * @param hasTemplate Has template
    */
   public void addProject(String name, String createTime, String deadline, String readMe,
-      String fileType, boolean hasTemplate, String testZipChecksum, String testZipUrl) {
-    Project project = new Project();
+      String fileType, boolean hasTemplate, String testZipChecksum, String testZipUrl,
+      String releaseTime, boolean display) {
+    Assignment project = new Assignment();
+
+    int fileTypeId = dbManager.getAssignmentTypeId(fileType);
 
     project.setName(name);
     project.setCreateTime(createTime);
     project.setDeadline(deadline);
     project.setDescription(readMe);
-    project.setType(fileType);
+    project.setType(fileTypeId);
     project.setHasTemplate(hasTemplate);
     project.setTestZipChecksum(testZipChecksum);
     project.setTestZipUrl(testZipUrl);
+    project.setReleaseTime(releaseTime);
+    project.setDisplay(display);
 
+    // fileType must change to AssignmentTypeId to store in database
     dbManager.addProject(project);
   }
 
@@ -471,10 +488,11 @@ public class ProjectService {
   @Produces(MediaType.APPLICATION_JSON)
   public Response editProject(@FormDataParam("Edit_Hw_Name") String name,
       @FormDataParam("Hw_Deadline") String deadline, @FormDataParam("Hw_README") String readMe,
+      @FormDataParam("Hw_ReleaseTime") String releaseTime,
       @FormDataParam("Hw_TestCase") InputStream uploadedInputStream,
       @FormDataParam("Hw_TestCase") FormDataContentDisposition fileDetail) {
 
-    dbManager.editProject(deadline, readMe, name);
+    dbManager.editProject(deadline, readMe, releaseTime, name);
 
     if (!fileDetail.getFileName().isEmpty()) {
       // update test case
@@ -505,7 +523,7 @@ public class ProjectService {
   @Path("checksum")
   @Produces(MediaType.APPLICATION_JSON)
   public Response getProject(@QueryParam("proName") String projectName) {
-    Project project = new Project();
+    Assignment project = new Assignment();
     project = dbManager.getProjectByName(projectName);
     return Response.ok().entity(project).build();
   }
