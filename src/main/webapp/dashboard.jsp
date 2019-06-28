@@ -4,16 +4,16 @@
 <%@ page import="fcu.selab.progedu.jenkins.JenkinsApi, fcu.selab.progedu.conn.Language" %>
 <%@ page import="fcu.selab.progedu.config.GitlabConfig" %>
 <%@ page import="fcu.selab.progedu.config.JenkinsConfig" %>
-<%@ page import="fcu.selab.progedu.db.UserDbManager, fcu.selab.progedu.db.ProjectDbManager" %>
-<%@ page import="fcu.selab.progedu.data.User, fcu.selab.progedu.data.Project" %>
+<%@ page import="fcu.selab.progedu.db.UserDbManager,fcu.selab.progedu.db.AssignmentDbManager" %>
+<%@ page import="fcu.selab.progedu.data.User,fcu.selab.progedu.data.Project" %>
 <%@ page import="org.gitlab.api.models.*" %>
-<%@ page import="java.util.*, fcu.selab.progedu.conn.Dash" %>
+<%@ page import="java.util.*,fcu.selab.progedu.conn.Dash" %>
 <%@ page import="fcu.selab.progedu.jenkins.JobStatus" %>
-<%@ page import="org.json.JSONArray, org.json.JSONException, org.json.JSONObject" %>
+<%@ page import="org.json.JSONArray,org.json.JSONException,org.json.JSONObject" %>
 
 <%
-    if(session.getAttribute("username") == null || session.getAttribute("username").toString().equals("")){
-        response.sendRedirect("index.jsp");
+  if(session.getAttribute("username") == null || session.getAttribute("username").toString().equals("")){
+    response.sendRedirect("index.jsp");
     }
     session.putValue("page", "dashboard");
 %>
@@ -172,12 +172,12 @@
 </head>
 <body>
 <%
-    Conn conn = Conn.getInstance();
+  Conn conn = Conn.getInstance();
 
     HttpConnect httpConn = HttpConnect.getInstance();
 
     UserDbManager db = UserDbManager.getInstance();
-    ProjectDbManager Pdb = ProjectDbManager.getInstance();
+    AssignmentDbManager Pdb = AssignmentDbManager.getInstance();
 
     // db users
     List<User> users = db.listAllUsers();

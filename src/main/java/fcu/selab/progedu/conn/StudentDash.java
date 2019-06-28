@@ -11,7 +11,7 @@ import org.json.JSONObject;
 
 import fcu.selab.progedu.config.JenkinsConfig;
 import fcu.selab.progedu.data.Project;
-import fcu.selab.progedu.db.ProjectDbManager;
+import fcu.selab.progedu.db.AssignmentDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.jenkins.JenkinsApi;
 import fcu.selab.progedu.jenkins.JobStatus;
@@ -22,7 +22,7 @@ public class StudentDash {
   String privateToken = null;
   StudentConn stuConn;
   GitlabUser user;
-  ProjectDbManager pdb = ProjectDbManager.getInstance();
+  AssignmentDbManager pdb = AssignmentDbManager.getInstance();
   List<Project> dbProjects = pdb.listAllProjects();
   List<GitlabProject> gitProjects;
   JenkinsConfig jenkinsData = JenkinsConfig.getInstance();

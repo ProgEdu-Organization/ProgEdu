@@ -5,15 +5,15 @@
 <%@ page import="fcu.selab.progedu.config.CourseConfig" %>
 <%@ page import="fcu.selab.progedu.config.GitlabConfig" %>
 <%@ page import="fcu.selab.progedu.config.JenkinsConfig" %>
-<%@ page import="fcu.selab.progedu.db.UserDbManager, fcu.selab.progedu.db.ProjectDbManager" %>
-<%@ page import="fcu.selab.progedu.data.User, fcu.selab.progedu.data.Project" %>   
+<%@ page import="fcu.selab.progedu.db.UserDbManager,fcu.selab.progedu.db.AssignmentDbManager" %>
+<%@ page import="fcu.selab.progedu.data.User,fcu.selab.progedu.data.Project" %>   
 <%@ page import="org.gitlab.api.GitlabAPI" %>
 <%@ page import="org.gitlab.api.models.*" %>
-<%@ page import="java.util.*, fcu.selab.progedu.conn.Dash" %>
+<%@ page import="java.util.*,fcu.selab.progedu.conn.Dash" %>
 <%@ page import="fcu.selab.progedu.jenkins.JobStatus" %>
 
 <%
-	if(session.getAttribute("username") == null || session.getAttribute("username").toString().equals("")){
+  if(session.getAttribute("username") == null || session.getAttribute("username").toString().equals("")){
 		response.sendRedirect("index.jsp");
 	}
 	session.putValue("page", "dashStuChoosed");
@@ -22,7 +22,7 @@
 <%@ include file="language.jsp" %>
 
 <%
-	String studentId = request.getParameter("studentId");
+  String studentId = request.getParameter("studentId");
 	if(null == studentId){
 	  response.sendRedirect("index.jsp");
 	}
@@ -136,33 +136,33 @@
 <body>
 	
 	<%
-		Conn conn = Conn.getInstance();
-	
-		UserDbManager db = UserDbManager.getInstance();
-		ProjectDbManager Pdb = ProjectDbManager.getInstance();
-		
-		// Get all db users
-		List<User> users = db.listAllUsers();
-		
-		// Get all db projects
-		List<Project> dbProjects = Pdb.listAllProjects();
-		
-		// gitlab jenkins course data
-		GitlabConfig gitData = GitlabConfig.getInstance();
-		JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
-		CourseConfig courseData = CourseConfig.getInstance();
-		
-		JenkinsApi jenkins = JenkinsApi.getInstance();
-		
-		// Get the choosed user
-		User choosedUser = new User();
-     	for(User user : users){
-     		if(studentId.equals(String.valueOf(user.getGitLabId()))){
-     			choosedUser = user;
-     		    break;
-     		}
-     	}
-	%>
+		  Conn conn = Conn.getInstance();
+			
+				UserDbManager db = UserDbManager.getInstance();
+				AssignmentDbManager Pdb = AssignmentDbManager.getInstance();
+				
+				// Get all db users
+				List<User> users = db.listAllUsers();
+				
+				// Get all db projects
+				List<Project> dbProjects = Pdb.listAllProjects();
+				
+				// gitlab jenkins course data
+				GitlabConfig gitData = GitlabConfig.getInstance();
+				JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
+				CourseConfig courseData = CourseConfig.getInstance();
+				
+				JenkinsApi jenkins = JenkinsApi.getInstance();
+				
+				// Get the choosed user
+				User choosedUser = new User();
+		     	for(User user : users){
+		     		if(studentId.equals(String.valueOf(user.getGitLabId()))){
+		     			choosedUser = user;
+		     		    break;
+		     		}
+		     	}
+		%>
 	<%@ include file="header.jsp" %>
 			<!-- -----sidebar----- -->
 			<div class="sidebar" style="width:200px">

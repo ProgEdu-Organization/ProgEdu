@@ -17,7 +17,7 @@ import fcu.selab.progedu.conn.StudentDashChoosePro;
 import fcu.selab.progedu.data.Project;
 import fcu.selab.progedu.data.User;
 import fcu.selab.progedu.db.CommitRecordDbManager;
-import fcu.selab.progedu.db.ProjectDbManager;
+import fcu.selab.progedu.db.AssignmentDbManager;
 import fcu.selab.progedu.db.UserDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 /*

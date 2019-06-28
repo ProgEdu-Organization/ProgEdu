@@ -27,7 +27,7 @@ import fcu.selab.progedu.conn.Conn;
 import fcu.selab.progedu.conn.StudentDashChoosePro;
 import fcu.selab.progedu.data.Project;
 import fcu.selab.progedu.db.CommitRecordDbManager;
-import fcu.selab.progedu.db.ProjectDbManager;
+import fcu.selab.progedu.db.AssignmentDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.jenkins.AssigmentStatusData;
 import fcu.selab.progedu.jenkins.JenkinsApi;
@@ -157,7 +157,7 @@ public class JenkinsService {
   @Produces(MediaType.APPLICATION_JSON)
   public Response getBuildDetail(@QueryParam("num") int num,
       @QueryParam("userName") String userName, @QueryParam("proName") String proName) {
-    ProjectDbManager projectDb = ProjectDbManager.getInstance();
+    AssignmentDbManager projectDb = AssignmentDbManager.getInstance();
     StudentDashChoosePro stuDashChoPro = new StudentDashChoosePro();
     String buildApiJson = stuDashChoPro.getBuildApiJson(num, userName, proName);
     final String strDate = stuDashChoPro.getCommitTime(buildApiJson);
@@ -275,7 +275,7 @@ public class JenkinsService {
   @Path("getFeedbackInfo")
   public String getFeedbackInfo(String url) {
     CommitRecordDbManager dbManager = new CommitRecordDbManager();
-    ProjectDbManager dbProjectManaget = ProjectDbManager.getInstance();
+    AssignmentDbManager dbProjectManaget = AssignmentDbManager.getInstance();
     AssigmentStatusData assigmentStatusData = new AssigmentStatusData(url);
 
     Project project = dbProjectManaget.getProjectByName(assigmentStatusData.getProjectName());
@@ -303,7 +303,7 @@ public class JenkinsService {
   @Path("getFeedbackInfoForGroup")
   public String getFeedbackInfoForGroup(String url) {
     AssigmentStatusData assigmentStatusData = new AssigmentStatusData(url);
-    ProjectDbManager projectDb = ProjectDbManager.getInstance();
+    AssignmentDbManager projectDb = AssignmentDbManager.getInstance();
 
     int projectTypeId = 0; // Maven
     String projectTypename = projectDb.getAssignmentTypeName(projectTypeId);// Change Id to name

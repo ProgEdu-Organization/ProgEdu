@@ -10,7 +10,7 @@ import java.util.List;
 public class CommitRecordStateDbManager {
 
   private static CommitRecordStateDbManager dbManager = new CommitRecordStateDbManager();
-  private static ProjectDbManager projectDb = ProjectDbManager.getInstance();
+  private static AssignmentDbManager projectDb = AssignmentDbManager.getInstance();
 
   public static CommitRecordStateDbManager getInstance() {
     return dbManager;

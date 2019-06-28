@@ -4,16 +4,16 @@
 <%@ page import="fcu.selab.progedu.config.GitlabConfig"%>
 <%@ page import="fcu.selab.progedu.config.JenkinsConfig"%>
 <%@ page
-	import="fcu.selab.progedu.db.UserDbManager, fcu.selab.progedu.db.ProjectDbManager"%>
+	import="fcu.selab.progedu.db.UserDbManager,fcu.selab.progedu.db.AssignmentDbManager"%>
 <%@ page
-	import="fcu.selab.progedu.data.User, fcu.selab.progedu.data.Project"%>
+	import="fcu.selab.progedu.data.User,fcu.selab.progedu.data.Project"%>
 <%@ page
-	import="fcu.selab.progedu.data.User, fcu.selab.progedu.data.Group"%>
+	import="fcu.selab.progedu.data.User,fcu.selab.progedu.data.Group"%>
 <%@ page import="org.gitlab.api.models.*"%>
 <%@ page import="java.util.*"%>
 <%@ page import="fcu.selab.progedu.jenkins.JobStatus"%>
 <%@ page
-	import="org.json.JSONArray, org.json.JSONException, org.json.JSONObject"%>
+	import="org.json.JSONArray,org.json.JSONException,org.json.JSONObject"%>
 <%@ page import="java.text.SimpleDateFormat"%>
 <%@ page import="fcu.selab.progedu.conn.*"%>
 <%@ page import="fcu.selab.progedu.status.*"%>
@@ -25,7 +25,7 @@
 
 <%
   if (session.getAttribute("username") == null
-      || session.getAttribute("username").toString().equals("")) {
+  || session.getAttribute("username").toString().equals("")) {
     response.sendRedirect("index.jsp");
   }
   session.putValue("page", "dashboard");
@@ -171,18 +171,18 @@ html, body {
 	<%
 	  Conn conn = Conn.getInstance();
 
-	  UserDbManager db = UserDbManager.getInstance();
-	  ProjectDbManager Pdb = ProjectDbManager.getInstance();
-	  StudentDashChoosePro stuDashChoPro = new StudentDashChoosePro();
+		  UserDbManager db = UserDbManager.getInstance();
+		  AssignmentDbManager Pdb = AssignmentDbManager.getInstance();
+		  StudentDashChoosePro stuDashChoPro = new StudentDashChoosePro();
 
-	  List<User> users = db.listAllUsers();
-	  List<Project> dbProjects = Pdb.listAllProjects();
+		  List<User> users = db.listAllUsers();
+		  List<Project> dbProjects = Pdb.listAllProjects();
 
-	  // gitlab jenkins course��Data
-	  GitlabConfig gitData = GitlabConfig.getInstance();
-	  JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
+		  // gitlab jenkins course��Data
+		  GitlabConfig gitData = GitlabConfig.getInstance();
+		  JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
 
-	  JenkinsApi jenkins = JenkinsApi.getInstance();
+		  JenkinsApi jenkins = JenkinsApi.getInstance();
 	%>
 	<%@ include file="header.jsp"%>
 	<!-- -----sidebar----- -->

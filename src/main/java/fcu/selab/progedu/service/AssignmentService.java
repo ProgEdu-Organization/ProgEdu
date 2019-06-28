@@ -45,14 +45,14 @@ import fcu.selab.progedu.config.GitlabConfig;
 import fcu.selab.progedu.config.JenkinsConfig;
 import fcu.selab.progedu.conn.Conn;
 import fcu.selab.progedu.data.Project;
-import fcu.selab.progedu.db.ProjectDbManager;
+import fcu.selab.progedu.db.AssignmentDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.jenkins.JenkinsApi;
 import fcu.selab.progedu.utils.Linux;
 import fcu.selab.progedu.utils.ZipHandler;
 
 @Path("project/")
-public class ProjectService {
+public class AssignmentService {
 
   private Conn conn = Conn.getInstance();
   private GitlabUser root = conn.getRoot();
@@ -68,7 +68,7 @@ public class ProjectService {
   private String mailUsername;
   private String mailPassword;
 
-  private ProjectDbManager dbManager = ProjectDbManager.getInstance();
+  private AssignmentDbManager dbManager = AssignmentDbManager.getInstance();
   private CommitRecordService commitRecordService = new CommitRecordService();
   private CommitResultService commitResultService = new CommitResultService();
   private CommitRecordStateService commitRecordStateService = new CommitRecordStateService();
@@ -87,7 +87,7 @@ public class ProjectService {
   /**
    * Constuctor
    */
-  public ProjectService() {
+  public AssignmentService() {
     try {
       zipHandler = new ZipHandler();
       jenkinsRootUsername = jenkinsData.getJenkinsRootUsername();

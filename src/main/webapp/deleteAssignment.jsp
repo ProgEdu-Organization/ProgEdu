@@ -1,9 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=BIG5"
     pageEncoding="utf-8"%>
-<%@ page import="fcu.selab.progedu.db.ProjectDbManager, java.util.*, fcu.selab.progedu.data.Project" %>
+<%@ page import="fcu.selab.progedu.db.AssignmentDbManager,java.util.*,fcu.selab.progedu.data.Project" %>
 <%@ page import="java.text.SimpleDateFormat" %>
 <%
-	if(session.getAttribute("username") == null || session.getAttribute("username").toString().equals("")){
+  if(session.getAttribute("username") == null || session.getAttribute("username").toString().equals("")){
 		response.sendRedirect("index.jsp");
 	}
 	session.putValue("page", "dashboard");
@@ -206,9 +206,9 @@
 	</script>
 	
 	<%
-		ProjectDbManager db = ProjectDbManager.getInstance();
-		List<Project> projects = db.listAllProjects();
-	%>
+		  AssignmentDbManager db = AssignmentDbManager.getInstance();
+				List<Project> projects = db.listAllProjects();
+		%>
 	
 	<div id="loadingBackground" style="display: none">
 		<div id="loader"></div>

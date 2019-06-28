@@ -10,17 +10,17 @@ import java.util.List;
 
 import fcu.selab.progedu.data.Project;
 
-public class ProjectDbManager {
+public class AssignmentDbManager {
 
-  private static ProjectDbManager dbManager = new ProjectDbManager();
+  private static AssignmentDbManager dbManager = new AssignmentDbManager();
 
-  public static ProjectDbManager getInstance() {
+  public static AssignmentDbManager getInstance() {
     return dbManager;
   }
 
   private IDatabase database = new MySqlDatabase();
 
-  private ProjectDbManager() {
+  private AssignmentDbManager() {
 
   }
 
@@ -227,13 +227,13 @@ public class ProjectDbManager {
    */
   public int getAssignmentType(String name) {
     int typeId = 0;
-    String sql = "SELECT typeId FROM Assignment WHERE name=?";
+    String sql = "SELECT * FROM Assignment WHERE name=?";
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
       preStmt.setString(1, name);
       try (ResultSet rs = preStmt.executeQuery()) {
         while (rs.next()) {
-          typeId = rs.getInt("type");
+          typeId = rs.getInt("typeId");
         }
       }
     } catch (SQLException e) {
@@ -250,7 +250,7 @@ public class ProjectDbManager {
    */
   public int getAssignmentTypeId(String name) {
     int id = 0;
-    String sql = "SELECT id FROM Assignment_Type WHERE name=?";
+    String sql = "SELECT * FROM Assignment_Type WHERE name=?";
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
       preStmt.setString(1, name);
@@ -273,7 +273,7 @@ public class ProjectDbManager {
    */
   public String getAssignmentTypeName(int id) {
     String typename = null;
-    String sql = "SELECT name FROM Assignment_Type WHERE id=?";
+    String sql = "SELECT * FROM Assignment_Type WHERE id=?";
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
       preStmt.setInt(1, id);

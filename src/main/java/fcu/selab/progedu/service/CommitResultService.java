@@ -26,7 +26,7 @@ import fcu.selab.progedu.db.CommitRecordStateDbManager;
 import fcu.selab.progedu.db.CommitResultDbManager;
 import fcu.selab.progedu.db.IDatabase;
 import fcu.selab.progedu.db.MySqlDatabase;
-import fcu.selab.progedu.db.ProjectDbManager;
+import fcu.selab.progedu.db.AssignmentDbManager;
 import fcu.selab.progedu.db.UserDbManager;
 import fcu.selab.progedu.status.StatusEnum;
 
@@ -36,7 +36,7 @@ public class CommitResultService {
   CommitRecordDbManager commitRecordDb = CommitRecordDbManager.getInstance();
   CommitRecordStateDbManager crsdb = CommitRecordStateDbManager.getInstance();
   UserDbManager userDb = UserDbManager.getInstance();
-  ProjectDbManager projectDb = ProjectDbManager.getInstance();
+  AssignmentDbManager projectDb = AssignmentDbManager.getInstance();
 
   /**
    * get counts by different color.
