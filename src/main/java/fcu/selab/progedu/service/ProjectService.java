@@ -203,7 +203,7 @@ public class ProjectService {
 
       // 10. Create student project, and import project
       GitlabProject project = conn.createPrivateProject(user.getId(), name, rootProjectUrl);
-      httpConnect.setGitlabWebhook(project);
+      httpConnect.setGitlabWebhook(project.getOwner().getUsername(), project);
 
     }
 

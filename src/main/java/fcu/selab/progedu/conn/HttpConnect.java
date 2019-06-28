@@ -159,39 +159,16 @@ public class HttpConnect {
   /**
    * set gitlab webhook that trigger jenkins job to build
    * 
-   * @param project gitlab project
+   * @param username group name
+   * @param project  gitlab project
    */
-  public void setGitlabWebhook(GitlabProject project)
+  public void setGitlabWebhook(String username, GitlabProject project)
       throws IOException, LoadConfigFailureException {
     // for example,
     // http://localhost:80/api/v4/projects/3149/hooks?url=http://localhost:8888/project/webhook
     String gitlabWebhookApi = gitlab.getGitlabHostUrl() + "/api/v4/projects/" + project.getId()
         + "/hooks";
-    String jenkinsJobUrl = jenkins.getJenkinsHostUrl() + "/project/"
-        + project.getOwner().getUsername() + "_" + project.getName();
-    HttpPost post = new HttpPost(gitlabWebhookApi);
-    post.addHeader("PRIVATE-TOKEN", gitlab.getGitlabApiToken());
-    // Request parameters
-    List<NameValuePair> params = new ArrayList<>();
-    params.add(new BasicNameValuePair("url", jenkinsJobUrl));
-    post.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
-
-    HttpClients.createDefault().execute(post);
-  }
-
-  /**
-   * set gitlab webhook that trigger jenkins job to build
-   * 
-   * @param groupName group name
-   * @param project   gitlab project
-   */
-  public void setGitlabWebhook(String groupName, GitlabProject project)
-      throws IOException, LoadConfigFailureException {
-    // for example,
-    // http://localhost:80/api/v4/projects/3149/hooks?url=http://localhost:8888/project/webhook
-    String gitlabWebhookApi = gitlab.getGitlabHostUrl() + "/api/v4/projects/" + project.getId()
-        + "/hooks";
-    String jenkinsJobUrl = jenkins.getJenkinsHostUrl() + "/project/" + groupName + "_"
+    String jenkinsJobUrl = jenkins.getJenkinsHostUrl() + "/project/" + username + "_"
         + project.getName();
     HttpPost post = new HttpPost(gitlabWebhookApi);
     post.addHeader("PRIVATE-TOKEN", gitlab.getGitlabApiToken());

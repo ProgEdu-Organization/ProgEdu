@@ -205,7 +205,8 @@ public class UserService {
         url = gitlabUrl + "/root/" + projectName;
         GitlabProject gitlabProject = userConn.createPrivateProject(user.getGitLabId(),
             project.getName(), url);
-        HttpConnect.getInstance().setGitlabWebhook(gitlabProject);
+        HttpConnect.getInstance().setGitlabWebhook(gitlabProject.getOwner().getName(),
+            gitlabProject);
         boolean isSuccess = createPreviuosJob(userName, projectName, project1.getType());
         check = check && isSuccess;
       }
