@@ -1,13 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { HttpService } from '../../../services/http.service'
+import { CarouselConfig } from 'ngx-bootstrap/carousel';
 /*
 example: http://localhost:4200/#/dashboard/dashprojectchoosed?userId=3&proName=WEB-HW5
 */
 @Component({
   selector: 'app-dash-project-choosed',
   templateUrl: './dash-project-choosed.component.html',
-  styleUrls: ['./dash-project-choosed.component.scss']
+  styleUrls: ['./dash-project-choosed.component.scss'],
+  providers: [
+    { provide: CarouselConfig, useValue: { interval: 1500, noPause: false } },
+  ]
 })
 export class DashProjectChoosedComponent implements OnInit {
   gitlabId: string;
@@ -32,8 +36,8 @@ export class DashProjectChoosedComponent implements OnInit {
   async getFeedback() {
 
     let url = "http://140.134.26.71:58321/job/D0350510_WEB-HW5/1/console";
-    let response = await this.http.postData('http://140.134.26.77:8080/ProgEdu/webapi/jenkins/getFeedbackInfo', url);
-    console.log('post', response);
+    //let response = await this.http.postData('http://140.134.26.77:8080/ProgEdu/webapi/jenkins/getFeedbackInfo', url);
+    //console.log('post', response);
   }
 
 }

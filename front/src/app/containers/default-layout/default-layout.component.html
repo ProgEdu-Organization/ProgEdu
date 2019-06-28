@@ -6,9 +6,21 @@
     <li class="nav-item px-3">
       <a class="nav-link" href="#">Dashboard</a>
     </li>
-    <li class="nav-item px-3">
-      <a class="nav-link" routerLink="/dashboard/assignmentManagement" routerLinkActive="active">Assignment</a>
-    </li>
+    <div class="btn-group" dropdown [isOpen]="status.isOpen" (isOpenChange)="change($event)" placement="top">
+      <li class="nav-item px-3">
+        <a dropdownToggle class="nav-link dropdown-toggle" href (click)="false"> Management</a>
+      </li>
+      <ul *dropdownMenu class=" dropdown-menu" role="menu">
+        <li role="menuitem"><a class="dropdown-item" href="#/dashboard/assignmentManagement">Assignment Management</a>
+        </li>
+        <li role="menuitem"><a class="dropdown-item" href="#/dashboard/studentManagement">Student
+            Management</a> </li>
+        <li role="menuitem"><a class="dropdown-item" href="#/dashboard/groupManagement">Group Management</a></li>
+      </ul>
+      <li class="nav-item px-3">
+        <a class="nav-link" href="#">Group</a>
+      </li>
+    </div>
   </ul>
   <ul class="nav navbar-nav ml-auto">
     <li class="nav-item d-md-down-none">

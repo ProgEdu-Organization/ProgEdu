@@ -17,6 +17,10 @@ import { CreateAssignmentComponent } from './create-assignment/create-assignment
 import { ModalModule } from 'ngx-bootstrap/modal';
 // Tabs Component
 import { TabsModule } from 'ngx-bootstrap/tabs';
+import { StudentManagementComponent } from './student-management/student-management.component';
+import { GroupManagementComponent } from './group-management/group-management.component';
+// Carousel Component
+import { CarouselModule } from 'ngx-bootstrap/carousel';
 
 @NgModule({
   imports: [
@@ -28,13 +32,16 @@ import { TabsModule } from 'ngx-bootstrap/tabs';
     ButtonsModule.forRoot(),
     AlertModule.forRoot(),
     ModalModule.forRoot(),
-    TabsModule.forRoot()
+    TabsModule.forRoot(),
+    CarouselModule.forRoot()
   ],
   declarations: [
     DashboardComponent,
     FilterPipe,
     DashProjectChoosedComponent,
     AssignmentManagementComponent,
-    CreateAssignmentComponent,]
+    CreateAssignmentComponent,
+    StudentManagementComponent,
+    GroupManagementComponent,]
 })
 export class TeacherModule { }

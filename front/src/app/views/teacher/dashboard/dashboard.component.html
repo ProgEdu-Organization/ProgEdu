@@ -44,8 +44,8 @@
 
           <th *ngFor='let commit of student.commits'>
             <p id="{{student.userName}}_{{commit.hw}}" class="circle {{commit.status}}">
-              <a id="{{student.userName}}_{{commit.hw}}_{{commit.commit}}" target="_blank"
-                href="#">{{commit.commit}}</a>
+              <a id="{{student.userName}}_{{commit.hw}}_{{commit.commit}}"
+                href="#/dashboard/dashprojectChoosed?userId=3&proName=WEB-HW5">{{commit.commit}}</a>
             </p>
           </th>
         </tr>

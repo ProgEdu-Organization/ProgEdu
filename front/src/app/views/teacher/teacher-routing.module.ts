@@ -5,6 +5,8 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { DashProjectChoosedComponent } from './dash-project-choosed/dash-project-choosed.component'
 import { AssignmentManagementComponent } from './assignment-management/assignment-management.component'
 import { CreateAssignmentComponent } from './create-assignment/create-assignment.component'
+import { StudentManagementComponent } from './student-management/student-management.component';
+import { GroupManagementComponent } from './group-management/group-management.component';
 
 const routes: Routes = [
   {
@@ -41,7 +43,21 @@ const routes: Routes = [
         },
       },
     ]
-  }
+  },
+  {
+    path: 'studentManagement',
+    component: StudentManagementComponent,
+    data: {
+      title: 'Student Management'
+    }
+  },
+  {
+    path: 'groupManagement',
+    component: GroupManagementComponent,
+    data: {
+      title: 'Group Management'
+    }
+  },
 
 ];
 

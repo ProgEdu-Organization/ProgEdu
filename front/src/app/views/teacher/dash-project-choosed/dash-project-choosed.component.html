@@ -57,12 +57,18 @@
           </table>
         </div>
         <div class="col-lg-6">
-          <div class="card-body" id="Screenshots-area">
-            <img src="http://140.134.26.71:58321/job/D0350510_WEB-HW7/1/artifact/src/test/screenshot/sec.png"
-              style='height: 480px' />
-          </div>
-          <a class="prev" onclick="plusSlides(-1, 0)">&#10094;</a> <a class="next"
-            onclick="plusSlides(1, 0)">&#10095;</a>
+          <carousel [interval]="false">
+            <slide>
+              <img src="https://lorempixel.com/900/500/nature/1" alt="First slide" style="display: block; width: 100%;">
+            </slide>
+            <slide>
+              <img src="https://lorempixel.com/900/500/nature/2" alt="Second slide"
+                style="display: block; width: 100%;">
+            </slide>
+            <slide>
+              <img src="https://lorempixel.com/900/500/nature/3" alt="Third slide" style="display: block; width: 100%;">
+            </slide>
+          </carousel>
         </div>
       </div>
     </div>
