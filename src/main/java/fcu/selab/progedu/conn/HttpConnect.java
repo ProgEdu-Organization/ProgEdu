@@ -163,17 +163,43 @@ public class HttpConnect {
    */
   public void setGitlabWebhook(GitlabProject project)
       throws IOException, LoadConfigFailureException {
-    String url = gitlab.getGitlabHostUrl() + "/api/v4/projects/" + project.getId() + "/hooks";
+    // for example,
+    // http://localhost:80/api/v4/projects/3149/hooks?url=http://localhost:8888/project/webhook
+    String gitlabWebhookApi = gitlab.getGitlabHostUrl() + "/api/v4/projects/" + project.getId()
+        + "/hooks";
     String jenkinsJobUrl = jenkins.getJenkinsHostUrl() + "/project/"
         + project.getOwner().getUsername() + "_" + project.getName();
-    HttpPost post = new HttpPost(url);
+    HttpPost post = new HttpPost(gitlabWebhookApi);
     post.addHeader("PRIVATE-TOKEN", gitlab.getGitlabApiToken());
-    // Request parameters and other properties.
+    // Request parameters
     List<NameValuePair> params = new ArrayList<>();
     params.add(new BasicNameValuePair("url", jenkinsJobUrl));
     post.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 
-    // Execute and get the response.
+    HttpClients.createDefault().execute(post);
+  }
+
+  /**
+   * set gitlab webhook that trigger jenkins job to build
+   * 
+   * @param groupName group name
+   * @param project   gitlab project
+   */
+  public void setGitlabWebhook(String groupName, GitlabProject project)
+      throws IOException, LoadConfigFailureException {
+    // for example,
+    // http://localhost:80/api/v4/projects/3149/hooks?url=http://localhost:8888/project/webhook
+    String gitlabWebhookApi = gitlab.getGitlabHostUrl() + "/api/v4/projects/" + project.getId()
+        + "/hooks";
+    String jenkinsJobUrl = jenkins.getJenkinsHostUrl() + "/project/" + groupName + "_"
+        + project.getName();
+    HttpPost post = new HttpPost(gitlabWebhookApi);
+    post.addHeader("PRIVATE-TOKEN", gitlab.getGitlabApiToken());
+    // Request parameters
+    List<NameValuePair> params = new ArrayList<>();
+    params.add(new BasicNameValuePair("url", jenkinsJobUrl));
+    post.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
+
     HttpClients.createDefault().execute(post);
   }
 }

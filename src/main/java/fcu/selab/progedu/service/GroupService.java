@@ -32,6 +32,7 @@ import fcu.selab.progedu.conn.Conn;
 import fcu.selab.progedu.data.Group;
 import fcu.selab.progedu.data.Student;
 import fcu.selab.progedu.db.GroupDbManager;
+import fcu.selab.progedu.exception.LoadConfigFailureException;
 
 @Path("group/")
 public class GroupService {
@@ -68,15 +69,17 @@ public class GroupService {
         student.setStudentId(csvReader.get("Student_Id"));
         student.setName(csvReader.get("name"));
         studentList.add(student);
+
       }
       csvReader.close();
-    } catch (IOException e) {
+
+      studentList = sort(studentList);
+      List<Group> groups = group(studentList);
+      newGroup(groups);
+    } catch (LoadConfigFailureException | IOException e) {
       isSuccess = false;
       e.printStackTrace();
     }
-    studentList = sort(studentList);
-    List<Group> groups = group(studentList);
-    newGroup(groups);
 
     if (isSuccess) {
       response = Response.ok().build();
@@ -107,7 +110,7 @@ public class GroupService {
       }
 
       if (studentList.get(index).getTeamLeader()) {
-        group.setMaster(studentList.get(index).getStudentId());
+        group.setLeaderUsername(studentList.get(index).getStudentId());
       } else {
         group.addContributor(studentList.get(index).getStudentId());
       }
@@ -134,19 +137,16 @@ public class GroupService {
     return studentList;
   }
 
-  /**
-   * parse csv file to create a group
-   * 
-   * @param groups group data
-   */
-  private void newGroup(List<Group> groups) {
+  private void newGroup(List<Group> groups) throws IOException, LoadConfigFailureException {
 
     for (Group group : groups) {
       GroupProject groupProject = GroupProjectFactory
           .getGroupProjectType(AssignmentTypeEnum.MAVEN.getTypeName());
       createGroup(group);
-      groupProject.createGitlabProject(group.getGroupName());// project name
-      groupProject.createJenkinsJob(group.getGroupName());// project name
+      // second parameter is project name
+      groupProject.createGitlabProject(group, group.getGroupName());
+      // second parameter is project name
+      groupProject.createJenkinsJob(group.getGroupName(), group.getGroupName());
 
     }
   }
@@ -154,20 +154,20 @@ public class GroupService {
   /**
    * Use GitLab API to create GitlabGroup
    * 
-   * @param name The group's name
+   * @param groupName The group's name
    * @return GitLabGroup
    */
-  public GitlabGroup newGroup(String name) {
-    return conn.createGroup(name);
+  public GitlabGroup newGroup(String groupName) {
+    return conn.createGroup(groupName);
   }
 
   /**
-   * Get new GitLab group id
+   * Get GitLab group id
    * 
    * @param group group on GitLab
    * @return id of GitLab group
    */
-  public int newGroupId(GitlabGroup group) {
+  public int getGroupId(GitlabGroup group) {
     return group.getId();
   }
 
@@ -176,20 +176,19 @@ public class GroupService {
    * 
    * @param group Group in database
    */
-  public void createGroup(Group group) {
-
-    int groupId = newGroupId(newGroup(group.getGroupName()));
-
-    int masterId = findUserByUsername(group.getMaster());
-    conn.addMember(groupId, masterId, 40); // add member on GitLab
-    gdb.addGroup(group.getGroupName(), group.getMaster(), true); // insert into db
+  public GitlabGroup createGroup(Group group) {
+    int leaderId = getUserIdByUsername(group.getLeaderUsername());
+    GitlabGroup gitlabGroup = newGroup(group.getGroupName());
+    int groupId = getGroupId(gitlabGroup);
+    conn.addMember(groupId, leaderId, 40);
+    gdb.addGroup(group.getGroupName(), group.getLeaderUsername(), true); // insert into db
 
     for (String developName : group.getContributor()) {
-      int developerId = findUserByUsername(developName);
+      int developerId = getUserIdByUsername(developName);
       conn.addMember(groupId, developerId, 30); // add member on GitLab
       gdb.addGroup(group.getGroupName(), developName, false); // insert into db
     }
-
+    return gitlabGroup;
   }
 
   /**
@@ -211,12 +210,12 @@ public class GroupService {
   }
 
   /**
-   * Find user by username
+   * Get user id by username
    * 
    * @param username username
    * @return user id
    */
-  public int findUserByUsername(String username) {
+  public int getUserIdByUsername(String username) {
     List<GitlabUser> users;
     users = conn.getUsers();
     for (GitlabUser user : users) {
@@ -225,6 +224,23 @@ public class GroupService {
       }
     }
     return -1;
+  }
+
+  /**
+   * Get user by username
+   * 
+   * @param username username
+   * @return user id
+   */
+  public GitlabUser getUserByUsername(String username) {
+    List<GitlabUser> users;
+    users = conn.getUsers();
+    for (GitlabUser user : users) {
+      if (user.getUsername().equals(username)) {
+        return user;
+      }
+    }
+    return null;
   }
 
   /**

@@ -26,12 +26,12 @@ public class Group {
     this.groupName = groupName;
   }
 
-  public String getMaster() {
+  public String getLeaderUsername() {
     return leaderUid;
   }
 
-  public void setMaster(String master) {
-    this.leaderUid = master;
+  public void setLeaderUsername(String leaderUid) {
+    this.leaderUid = leaderUid;
   }
 
   public List<String> getContributor() {

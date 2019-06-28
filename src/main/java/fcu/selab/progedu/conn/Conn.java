@@ -16,9 +16,11 @@ import org.gitlab.api.models.GitlabSession;
 import org.gitlab.api.models.GitlabUser;
 
 import fcu.selab.progedu.config.GitlabConfig;
+import fcu.selab.progedu.data.Group;
 import fcu.selab.progedu.data.User;
 import fcu.selab.progedu.db.UserDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
+import fcu.selab.progedu.service.GroupService;
 
 public class Conn {
   private static Conn instance = new Conn();
@@ -394,38 +396,52 @@ public class Conn {
     return isSuccess;
   }
 
+//  /**
+//   * Creates a Group
+//   *
+//   * @param groupName The name of the group. The name will also be used as the
+//   *                  path of the group.
+//   * @param owner     the owner of the group.
+//   * @return The GitLab Group
+//   */
+//  public GitlabGroup createGroup(String groupName, GitlabUser owner) {
+//    try {
+//      return gitlab.createGroupViaSudo(groupName, groupName, owner);
+//    } catch (IOException e) {
+//      System.out.println(e);
+//    }
+//    return null;
+//  }
+
   /**
    * Creates a Group
    *
-   * @param name The name of the group. The name will also be used as the path of
-   *             the group.
+   * @param groupName The name of the group. The name will also be used as the
+   *                  path of the group.
    * @return The GitLab Group
-   * @throws IOException on gitlab api call error
    */
-  public GitlabGroup createGroup(String name) {
+  public GitlabGroup createGroup(String groupName) {
     try {
-      return gitlab.createGroup(name);
+      return gitlab.createGroup(groupName);
     } catch (IOException e) {
       System.out.println(e);
     }
-    return new GitlabGroup();
+    return null;
   }
 
   /**
    * transfer project into group
    * 
-   * @param groupName groupName
+   * @param group       group
+   * @param projectName project name
+   * @throws IOException IOException
    */
-  public void createGroupProject(String groupName) {
-    createRootProject(groupName);
-    List<GitlabProject> projects = getProject(getRoot());
-    int projectId = 0;
-    for (GitlabProject project : projects) {
-      if (groupName.equals(project.getName())) {
-        projectId = project.getId();
-        httpConn.transferProjectToGroup(getGitlabGroup(groupName).getId(), projectId);
-      }
-    }
+  public GitlabProject createGroupProject(Group group, String projectName) throws IOException {
+    GroupService gs = new GroupService();
+    int masterId = gs.getUserIdByUsername(group.getLeaderUsername());
+    GitlabProject project = createPrivateProject(masterId, projectName, null);
+    httpConn.transferProjectToGroup(getGitlabGroup(group.getGroupName()).getId(), project.getId());
+    return project;
   }
 
   /**

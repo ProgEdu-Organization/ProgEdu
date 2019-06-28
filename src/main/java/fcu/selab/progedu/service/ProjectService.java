@@ -249,12 +249,12 @@ public class ProjectService {
    * @param groupName group name
    * @return url gitlab project url
    */
-  public String getGroupProjectUrl(String groupName) {
+  public String getGroupProjectUrl(String groupName, String projectName) {
     String url = null;
     String gitlabUrl = null;
     try {
       gitlabUrl = gitlabData.getGitlabRootUrl();
-      url = gitlabUrl + "/" + groupName + "/" + groupName;
+      url = gitlabUrl + "/" + groupName + "/" + projectName;
     } catch (LoadConfigFailureException e) {
       e.printStackTrace();
     }
