@@ -25,7 +25,7 @@ import org.json.JSONObject;
 import fcu.selab.progedu.config.JenkinsConfig;
 import fcu.selab.progedu.conn.Conn;
 import fcu.selab.progedu.conn.StudentDashChoosePro;
-import fcu.selab.progedu.data.Project;
+import fcu.selab.progedu.data.Assignment;
 import fcu.selab.progedu.db.CommitRecordDbManager;
 import fcu.selab.progedu.db.AssignmentDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
@@ -278,7 +278,7 @@ public class JenkinsService {
     AssignmentDbManager dbProjectManaget = AssignmentDbManager.getInstance();
     AssigmentStatusData assigmentStatusData = new AssigmentStatusData(url);
 
-    Project project = dbProjectManaget.getProjectByName(assigmentStatusData.getProjectName());
+    Assignment project = dbProjectManaget.getProjectByName(assigmentStatusData.getProjectName());
 
     String colorStatus = dbManager.getCommitRecordStatus(assigmentStatusData.getProjectName(),
         assigmentStatusData.getUsername(), assigmentStatusData.getNumber());

@@ -6,7 +6,7 @@
 <%@ page
 	import="fcu.selab.progedu.db.UserDbManager,fcu.selab.progedu.db.AssignmentDbManager"%>
 <%@ page
-	import="fcu.selab.progedu.data.User,fcu.selab.progedu.data.Project"%>
+	import="fcu.selab.progedu.data.User,fcu.selab.progedu.data.Assignment"%>
 <%@ page
 	import="fcu.selab.progedu.data.User,fcu.selab.progedu.data.Group"%>
 <%@ page import="org.gitlab.api.models.*"%>
@@ -171,18 +171,18 @@ html, body {
 	<%
 	  Conn conn = Conn.getInstance();
 
-		  UserDbManager db = UserDbManager.getInstance();
-		  AssignmentDbManager Pdb = AssignmentDbManager.getInstance();
-		  StudentDashChoosePro stuDashChoPro = new StudentDashChoosePro();
+			  UserDbManager db = UserDbManager.getInstance();
+			  AssignmentDbManager Pdb = AssignmentDbManager.getInstance();
+			  StudentDashChoosePro stuDashChoPro = new StudentDashChoosePro();
 
-		  List<User> users = db.listAllUsers();
-		  List<Project> dbProjects = Pdb.listAllProjects();
+			  List<User> users = db.listAllUsers();
+			  List<Assignment> dbProjects = Pdb.listAllProjects();
 
-		  // gitlab jenkins course��Data
-		  GitlabConfig gitData = GitlabConfig.getInstance();
-		  JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
+			  // gitlab jenkins course��Data
+			  GitlabConfig gitData = GitlabConfig.getInstance();
+			  JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
 
-		  JenkinsApi jenkins = JenkinsApi.getInstance();
+			  JenkinsApi jenkins = JenkinsApi.getInstance();
 	%>
 	<%@ include file="header.jsp"%>
 	<!-- -----sidebar----- -->

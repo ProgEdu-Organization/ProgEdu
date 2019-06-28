@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=BIG5"
     pageEncoding="utf-8"%>
-<%@ page import="fcu.selab.progedu.db.AssignmentDbManager,java.util.*,fcu.selab.progedu.data.Project" %>
+<%@ page import="fcu.selab.progedu.db.AssignmentDbManager,java.util.*,fcu.selab.progedu.data.Assignment" %>
 <%@ page import="java.text.SimpleDateFormat,fcu.selab.progedu.service.AssignmentService" %>
 <%
   if(session.getAttribute("username") == null || session.getAttribute("username").toString().equals("")){
@@ -284,7 +284,7 @@
 	
 	<%
 		  AssignmentDbManager db = AssignmentDbManager.getInstance();
-				List<Project> projects = db.listAllProjects();
+						List<Assignment> projects = db.listAllProjects();
 		%>
 	<div id="loadingBackground" style="display: none">
 		<div id="loader"></div>
@@ -311,16 +311,15 @@
   						<th class="text-center"><fmt:message key="teacherManageHW_hw_delete"/></th>
   					</tr>
   					<%
-  					
-					for(Project project : projects) {
-					  String name = project.getName();
-					  String deadline = project.getDeadline().replace("T", " ");
-					  String createTime = project.getCreateTime();
-					  String readMe = project.getDescription();
-					  if(null == createTime) {
-					    createTime = "";
-					  }
-					%>
+  					  for(Assignment project : projects) {
+  										  String name = project.getName();
+  										  String deadline = project.getDeadline().replace("T", " ");
+  										  String createTime = project.getCreateTime();
+  										  String readMe = project.getDescription();
+  										  if(null == createTime) {
+  										    createTime = "";
+  										  }
+  					%>
   					<tr>
   						<td id=<%=name + "_name"%>><%=name %></td>
   						<td id=<%=name + "_createTime"%>><%=createTime %></td>

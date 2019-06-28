@@ -22,7 +22,6 @@
 <%@ include file="studentHeader.jsp"%>
 
 <%
- 
   String private_token = null;
 	if(null != session.getAttribute("private_token") && !"".equals(session.getAttribute("private_token")) ){
 	  private_token = session.getAttribute("private_token").toString();
@@ -240,7 +239,7 @@
 					UserDbManager db = UserDbManager.getInstance();
 					AssignmentDbManager Pdb = AssignmentDbManager.getInstance();
 					List<User> users = db.listAllUsers();
-					List<Project> dbProjects = Pdb.listAllProjects();
+					List<Assignment> dbProjects = Pdb.listAllProjects();
 					
 					// gitlab jenkins course��Data
 					GitlabConfig gitData = GitlabConfig.getInstance();
@@ -261,25 +260,27 @@
 			  				  	  String href
 			    for(GitlabProject stuProject : stuProjects){
 			  				  	  String href = "\"studentDashboardChooseProject.jsp?projectId=" + stuProject.getId() + "\"";
-			  ze="3"><a class="nav-link" href=<%=href%>><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp; <%=stuProject.ghrefme()%></a></font>
+			  ze="3"><a class="nav-link" href=<%=href
+%>><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp; <%=stuProject.ghrefme()%></a></font>
 						</li>
 				  	  <%
 				  	    }
-				  	  %stuProject.getName()>
-		<!-- -----sidebar----- -->
-		<!--
-				  	    }
-				  	  iv class="container-fluid" id="main">
-			<%
-			  String projectName = choosedProject.getName();
-							String projectUrl = stu
-			  String projectName = choosedProject.getName();
-							String projectUrl = stuDashChoPro.getChoosedProjectUrl(choosedProject);
-							List<String> jobColors = stuDash.getMainTableJobColor(stuProjects);
-							List<String> jobCommitCounts = stuDash.getMainTableJobCommitCount(stuProjects);
-							AssignmentDbManager pDb = AssignmentDbManager.getInstance();
-							Project project = pDb.getProjectByName(projectName);
-			pencil-square-o" aria-hidden="true"></i>&nbsp; <%=projectName%></h2>
+				  	  				  	  %stuProject.getName()>
+				  	  		<!-- -----sidebar----- -->
+				  	  		<!--
+				  	  				  	    }
+				  	  				  	  iv class="container-fluid" id="main">
+				  	  			<%
+				  	  			  String projectName = choosedProject.getName();
+				  	  							String projectUrl = stu
+				  	  			  String projectName = choosedProject.getName();
+				  	  							String projectUrl = stuDashChoPro.getChoosedProjectUrl(choosedProject);
+				  	  							List<String> jobColors = stuDash.getMainTableJobColor(stuProjects);
+				  	  							List<String> jobCommitCounts = stuDash.getMainTableJobCommitCount(stuProjects);
+				  	  							AssignmentDbManager pDb = AssignmentDbManager.getInstance();
+				  	  							Assignment project = pDb.getProjectByName(projectName);
+				  	  			pencil-square-o" aria-hidden="true"></i>&nbsp; <%=projectName
+				  	  %></h2>
 				<br>
 				<h5 style="font-weight: 700"><fmt:message key="stuDashChooseProject_p_gitRepo"/></h5>
 				<div id="inline" style="white-space: nowrap; margin-left: 0px;">

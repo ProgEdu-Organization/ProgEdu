@@ -8,7 +8,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import fcu.selab.progedu.data.Project;
+import fcu.selab.progedu.data.Assignment;
 
 public class AssignmentDbManager {
 
@@ -31,7 +31,7 @@ public class AssignmentDbManager {
    * 
    * @param project Project
    */
-  public void addProject(Project project) {
+  public void addProject(Assignment project) {
     String sql = "INSERT INTO Assignment(name, createTime, deadline, description, hasTemplate"
         + ", typeId, zipChecksum, zipUrl, releaseTime, display)  VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?,"
         + "?)";
@@ -60,8 +60,8 @@ public class AssignmentDbManager {
    * @param name project name
    * @return project
    */
-  public Project getProjectByName(String name) {
-    Project project = new Project();
+  public Assignment getProjectByName(String name) {
+    Assignment project = new Assignment();
     String sql = "SELECT * FROM Assignment WHERE name = ?";
 
     try (Connection conn = database.getConnection();
@@ -102,8 +102,8 @@ public class AssignmentDbManager {
    * 
    * @return List of projects
    */
-  public List<Project> listAllProjects() {
-    List<Project> lsProjects = new ArrayList<>();
+  public List<Assignment> listAllProjects() {
+    List<Assignment> lsProjects = new ArrayList<>();
     String sql = "SELECT * FROM Assignment";
 
     try (Connection conn = database.getConnection();
@@ -121,7 +121,7 @@ public class AssignmentDbManager {
         String releaseTime = rs.getString("releaseTime");
         boolean display = rs.getBoolean("display");
 
-        Project project = new Project();
+        Assignment project = new Assignment();
         project.setName(name);
         project.setDescription(description);
         project.setHasTemplate(hasTemplate);

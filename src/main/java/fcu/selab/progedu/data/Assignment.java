@@ -1,6 +1,6 @@
 package fcu.selab.progedu.data;
 
-public class Project {
+public class Assignment {
 
   private String createTime = "";
 

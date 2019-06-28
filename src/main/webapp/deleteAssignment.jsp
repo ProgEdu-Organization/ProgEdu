@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=BIG5"
     pageEncoding="utf-8"%>
-<%@ page import="fcu.selab.progedu.db.AssignmentDbManager,java.util.*,fcu.selab.progedu.data.Project" %>
+<%@ page import="fcu.selab.progedu.db.AssignmentDbManager,java.util.*,fcu.selab.progedu.data.Assignment" %>
 <%@ page import="java.text.SimpleDateFormat" %>
 <%
   if(session.getAttribute("username") == null || session.getAttribute("username").toString().equals("")){
@@ -207,7 +207,7 @@
 	
 	<%
 		  AssignmentDbManager db = AssignmentDbManager.getInstance();
-				List<Project> projects = db.listAllProjects();
+						List<Assignment> projects = db.listAllProjects();
 		%>
 	
 	<div id="loadingBackground" style="display: none">
@@ -235,12 +235,11 @@
   						<th class="text-center">刪除</th>
   					</tr>
   					<%
-  					
-					for(Project project : projects) {
-						String name = project.getName().replace("T", " ");
-						String deadline = project.getDeadline().replace("T", " ");
-						String createTime = project.getCreateTime().replace("T", " ");
-					%>
+  					  for(Assignment project : projects) {
+  											String name = project.getName().replace("T", " ");
+  											String deadline = project.getDeadline().replace("T", " ");
+  											String createTime = project.getCreateTime().replace("T", " ");
+  					%>
   					<tr>
   						<td><%=name %></td>
   						<td><%=createTime %></td>

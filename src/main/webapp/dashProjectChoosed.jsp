@@ -4,7 +4,7 @@
 <%@ page import="fcu.selab.progedu.config.GitlabConfig" %>
 <%@ page import="fcu.selab.progedu.config.JenkinsConfig" %>
 <%@ page import="fcu.selab.progedu.db.UserDbManager,fcu.selab.progedu.db.AssignmentDbManager" %>
-<%@ page import="fcu.selab.progedu.data.User,fcu.selab.progedu.data.Project" %>
+<%@ page import="fcu.selab.progedu.data.User,fcu.selab.progedu.data.Assignment" %>
 <%@ page import="org.gitlab.api.models.*" %>
 <%@ page import="java.util.*" %>
 <%@ page import="fcu.selab.progedu.jenkins.JobStatus" %>
@@ -148,23 +148,23 @@
 	
 	<%
 		  Conn conn = Conn.getInstance();
-			
-				UserDbManager db = UserDbManager.getInstance();
-				AssignmentDbManager Pdb = AssignmentDbManager.getInstance();
-				StudentDashChoosePro stuDashChoPro = new StudentDashChoosePro();
-				
-				List<User> users = db.listAllUsers();
-				List<Project> dbProjects = Pdb.listAllProjects();
-				
-				// gitlab jenkins course��Data
-				GitlabConfig gitData = GitlabConfig.getInstance();
-				JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
-				
-				JenkinsApi jenkins = JenkinsApi.getInstance();
-				
-				GitlabUser choosedUser = conn.getUserById(userId);
-				List<GitlabProject> projects = conn.getProject(choosedUser);
-				Collections.reverse(projects);
+					
+						UserDbManager db = UserDbManager.getInstance();
+						AssignmentDbManager Pdb = AssignmentDbManager.getInstance();
+						StudentDashChoosePro stuDashChoPro = new StudentDashChoosePro();
+						
+						List<User> users = db.listAllUsers();
+						List<Assignment> dbProjects = Pdb.listAllProjects();
+						
+						// gitlab jenkins course��Data
+						GitlabConfig gitData = GitlabConfig.getInstance();
+						JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
+						
+						JenkinsApi jenkins = JenkinsApi.getInstance();
+						
+						GitlabUser choosedUser = conn.getUserById(userId);
+						List<GitlabProject> projects = conn.getProject(choosedUser);
+						Collections.reverse(projects);
 		%>
 	<%@ include file="header.jsp" %>
 		<!-- -----sidebar----- -->
@@ -175,15 +175,15 @@
           				<ul id="overview" class="collapse" style="list-style: none;">
          			          <%
          			            for(GitlabProject project : projects){
-         			          	    			        	  for(Project dbProject : dbProjects){
-         			          	            	   			  if(project.getName().equals(dbProject.getName())){
-         			          	            	      			String href = "dashProjectChoosed.jsp?userId=" + choosedUser.getId() + "&proName=" + project.getName();
+         			               			          	    			        	  for(Assignment dbProject : dbProjects){
+         			               			          	            	   			  if(project.getName().equals(dbProject.getName())){
+         			               			          	            	      			String href = "dashProjectChoosed.jsp?userId=" + choosedUser.getId() + "&proName=" + project.getName();
          			          %>
 	            	      				<li class="nav-item"><font size="3"><a class="nav-link" href=<%=href%>><i class="fa fa-angle-right" aria-hidden="true"></i>&nbsp; <%=project.getName()%></a></font></li>
 	            	      <%
 	            	        }
-	            	      	            	  			}
-	            	      	            			}
+	            	      	            	      	            	  			}
+	            	      	            	      	            			}
 	            	      %>
            			</ul>
        			</li>
@@ -192,12 +192,12 @@
               			<ul id="student" class="collapse show" style="list-style: none;">
                   			<%
                   			  for(User user : users){
-                  			        					String style = "";
-                  				            	  			String userName = user.getUserName();
-                  				            	  			String href = "\"dashStuChoosed.jsp?studentId=" + user.getGitLabId() + "\"";
-                  				            	  			if(choosedUser.getUsername().equals(user.getUserName())) {
-                  				            	 				style = "color: burlywood;";
-                  				            	 			}
+                  			              			        					String style = "";
+                  			              				            	  			String userName = user.getUserName();
+                  			              				            	  			String href = "\"dashStuChoosed.jsp?studentId=" + user.getGitLabId() + "\"";
+                  			              				            	  			if(choosedUser.getUsername().equals(user.getUserName())) {
+                  			              				            	 				style = "color: burlywood;";
+                  			              				            	 			}
                   			%>
             	  			<li class="nav-item"><font size="3"><a style="<%=style%>" class="nav-link" href=<%=href%>><i class="fa fa-angle-right" aria-hidden="true"></i>&nbsp; <%=userName%></a></font></li>
             	 		 <%
@@ -213,7 +213,7 @@
         <!-- ---------------------------- Project ------------------------------- -->
 		<%
 		  AssignmentDbManager pDb = AssignmentDbManager.getInstance();
-					Project project = pDb.getProjectByName(projectName);
+							Assignment project = pDb.getProjectByName(projectName);
 		%>
 		<div style="margin: 10px 10px 10px 10px;">
 			<h2 style="white-space: nowrap"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp; <%=projectName%></h2>

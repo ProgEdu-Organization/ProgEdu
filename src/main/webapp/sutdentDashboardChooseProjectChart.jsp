@@ -9,7 +9,7 @@
 <%@ page import="java.util.*"%>
 <%@ page import="org.json.JSONArray, org.json.JSONException, org.json.JSONObject" %>
 <%@ page import="fcu.selab.progedu.db.UserDbManager,fcu.selab.progedu.db.AssignmentDbManager" %>
-<%@ page import="fcu.selab.progedu.data.User,fcu.selab.progedu.data.Project" %>
+<%@ page import="fcu.selab.progedu.data.User,fcu.selab.progedu.data.Assignment" %>
 <%@ page import="fcu.selab.progedu.jenkins.JobStatus,java.text.SimpleDateFormat" %>
 
 <%
@@ -64,21 +64,21 @@
 			</div>
 			<%
 			  String projectName = "";
-					String projectUrl = "";
-					if(projectId != -1){
-						GitlabProject project = sConn.getProjectById(projectId);
-						projectName = project.getName();
-						projectUrl = project.getHttpUrl();
-					}
-					GitlabProject choosedProject = new GitlabProject();
-					for(GitlabProject project : projects){
-					  if(projectName.equals(project.getName())){
-					    choosedProject = project;
-					  }
-					}
-					int commit_count = conn.getAllCommitsCounts(choosedProject.getId());
-					commits = conn.getAllCommits(choosedProject.getId());
-					Collections.reverse(commits);
+								String projectUrl = "";
+								if(projectId != -1){
+									GitlabProject project = sConn.getProjectById(projectId);
+									projectName = project.getName();
+									projectUrl = project.getHttpUrl();
+								}
+								GitlabProject choosedProject = new GitlabProject();
+								for(GitlabProject project : projects){
+								  if(projectName.equals(project.getName())){
+								    choosedProject = project;
+								  }
+								}
+								int commit_count = conn.getAllCommitsCounts(choosedProject.getId());
+								commits = conn.getAllCommits(choosedProject.getId());
+								Collections.reverse(commits);
 			%>
 </body>
 <!-- set Highchart colors -->
@@ -93,7 +93,7 @@ Highcharts.setOptions({
 AssignmentDbManager pDb = AssignmentDbManager.getInstance();
 List<User> users = db.listAllUsers();
 List<GitlabProject> gitProjects = conn.getAllProjects();
-List<Project> dbProjects = pDb.listAllProjects();
+List<Assignment> dbProjects = pDb.listAllProjects();
 
 List<JSONObject> jsons = new ArrayList<JSONObject>();
 String jobName = null;

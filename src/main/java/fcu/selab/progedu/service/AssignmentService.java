@@ -44,7 +44,7 @@ import fcu.selab.progedu.config.CourseConfig;
 import fcu.selab.progedu.config.GitlabConfig;
 import fcu.selab.progedu.config.JenkinsConfig;
 import fcu.selab.progedu.conn.Conn;
-import fcu.selab.progedu.data.Project;
+import fcu.selab.progedu.data.Assignment;
 import fcu.selab.progedu.db.AssignmentDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.jenkins.JenkinsApi;
@@ -403,7 +403,7 @@ public class AssignmentService {
   public void addProject(String name, String createTime, String deadline, String readMe,
       String fileType, boolean hasTemplate, String testZipChecksum, String testZipUrl,
       String releaseTime, boolean display) {
-    Project project = new Project();
+    Assignment project = new Assignment();
 
     int fileTypeId = dbManager.getAssignmentTypeId(fileType);
 
@@ -523,7 +523,7 @@ public class AssignmentService {
   @Path("checksum")
   @Produces(MediaType.APPLICATION_JSON)
   public Response getProject(@QueryParam("proName") String projectName) {
-    Project project = new Project();
+    Assignment project = new Assignment();
     project = dbManager.getProjectByName(projectName);
     return Response.ok().entity(project).build();
   }

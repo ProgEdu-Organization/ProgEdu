@@ -125,17 +125,17 @@
 </head>
 <body>
 	<%
-	
 	  UserDbManager db = UserDbManager.getInstance();
-			AssignmentDbManager Pdb = AssignmentDbManager.getInstance();
+				AssignmentDbManager Pdb = AssignmentDbManager.getInstance();
 
-			// db users
-			List<User> users = db.listAllUsers();
+				// db users
+				List<User> users = db.listAllUsers();
 
-			// db projects
-			List<Project> dbProjects = Pdb.listAllProjects();
-			List<String> pNames = Pdb.listAllProjectNames();
-	lude file="header.jsp"%>
+				// db projects
+				List<Assignment> dbProjects = Pdb.listAllProjects();
+				List<String> pNames = Pdb.listAllProjectNames();
+		lude file="header.jsp"
+	%>
 	<!-- -----sidebar----- -->
 	<div class="sidebar" style="width:200px">
 		<ul class="nav flex-column" style="padding-top: 20px;">
