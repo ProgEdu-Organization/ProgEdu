@@ -199,6 +199,7 @@ public class CommitResultDbManager {
           result.setHw(hw);
           result.setStatus(status);
           result.setCommit(commit);
+          System.out.println(result.toString());
         }
       }
     } catch (SQLException e) {
@@ -225,6 +226,7 @@ public class CommitResultDbManager {
     name = user.getUserName();
     gitlabId = user.getGitLabId();
     ob.put("userName", name);
+    ob.put("id", id);
     ob.put("gitlabId", gitlabId);
     ob.put("name", user.getName());
 

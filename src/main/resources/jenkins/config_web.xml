@@ -4,15 +4,15 @@
   <description></description>
   <keepDependencies>false</keepDependencies>
   <properties>
-    <com.dabsquared.gitlabjenkins.connection.GitLabConnectionProperty plugin="gitlab-plugin@1.5.11">
+    <com.dabsquared.gitlabjenkins.connection.GitLabConnectionProperty plugin="gitlab-plugin@1.5.12">
       <gitLabConnection>gitlab</gitLabConnection>
     </com.dabsquared.gitlabjenkins.connection.GitLabConnectionProperty>
   </properties>
-  <scm class="hudson.plugins.git.GitSCM" plugin="git@3.9.3">
+  <scm class="hudson.plugins.git.GitSCM" plugin="git@3.10.0">
     <configVersion>2</configVersion>
     <userRemoteConfigs>
       <hudson.plugins.git.UserRemoteConfig>
-        <url>http://140.134.26.71:20008/m0707350/web-hw1.git</url>
+        <url>http://140.134.26.71:20008/m0707350/web-testss.git</url>
         <credentialsId>gitlab_root</credentialsId>
       </hudson.plugins.git.UserRemoteConfig>
     </userRemoteConfigs>
@@ -31,7 +31,7 @@
   <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
   <authToken>02031fefb728e700973b6f3e5023a64c</authToken>
   <triggers>
-    <com.dabsquared.gitlabjenkins.GitLabPushTrigger plugin="gitlab-plugin@1.5.11">
+    <com.dabsquared.gitlabjenkins.GitLabPushTrigger plugin="gitlab-plugin@1.5.12">
       <spec></spec>
       <triggerOnPush>true</triggerOnPush>
       <triggerOnMergeRequest>true</triggerOnMergeRequest>
@@ -50,7 +50,7 @@
       <excludeBranchesSpec></excludeBranchesSpec>
       <sourceBranchRegex></sourceBranchRegex>
       <targetBranchRegex></targetBranchRegex>
-      <secretToken>{AQAAABAAAABQzjpAifo/2NwzoixwBIMkzYUoRqYWGWaZ9TQ5JMOKeHwwavg32nSnEE+Z0OJFuL7iQLC00NepI0rk5nuXlT4LapvznlA5j56zyHmu5dIPxlR3T2/MMfTfD8l0X+FTK6kM}</secretToken>
+      <secretToken>{AQAAABAAAACQPpCAaq2WNuWmQoHVw+QzceMIzw7YovDkBo+f/B2G9m0VuJGkcRHSgKMiQALWdqq9StXTm7nfTPruPxJiYSg/8iYTM92/LOSjuhfie8bcVJ2V4LGtNalx3gtth7GKqFYbqDwE3diCOiuYxwjmq1PRXxeiJb5JCj9eCfTrvXtB9mQmcYunxFrwyU7YH7RRjcUCFzPiGWGSY6/NTqawSk9Jpw==}</secretToken>
       <pendingBuildName></pendingBuildName>
       <cancelPendingBuildsOnUpdate>false</cancelPendingBuildsOnUpdate>
     </com.dabsquared.gitlabjenkins.GitLabPushTrigger>
@@ -66,11 +66,11 @@
         <timeoutMinutes>15</timeoutMinutes>
       </strategy>
       <buildStep class="org.jenkinsci.plugins.AssessmentBuilder" plugin="jenkins-progedu@1.0-SNAPSHOT">
-        <jobName>M0707350_WEB-HW1</jobName>
-        <testFileName>WEB-HW1</testFileName>
-        <proDetailUrl>http://140.134.26.71:10008/ProgEdu/webapi/project/checksum?proName=WEB-HW1</proDetailUrl>
-        <testFileUrl>http://140.134.26.71:10008/ProgEdu/webapi/jenkins/getTestFile?filePath=/usr/local/tomcat/temp/tests/WEB-HW1.zip</testFileUrl>
-        <testFileChecksum>2354726748</testFileChecksum>
+        <jobName>M0707350_web-testSS</jobName>
+        <testFileName>web-testSS</testFileName>
+        <proDetailUrl>http://140.134.26.71:10008/ProgEdu/webapi/project/checksum?proName=web-testSS</proDetailUrl>
+        <testFileUrl>http://140.134.26.71:10008/ProgEdu/webapi/jenkins/getTestFile?filePath=/usr/local/tomcat/temp/tests/web-testSS.zip</testFileUrl>
+        <testFileChecksum>4265731083</testFileChecksum>
         <testFilePath></testFilePath>
       </buildStep>
       <operationList>
@@ -91,27 +91,27 @@ npm run checkstyle</command>
       </operationList>
     </hudson.plugins.build__timeout.BuildStepWithTimeout>
     <io.jenkins.plugins.screenshot.ScreenShotBuilder plugin="sceenshot@1.0-SNAPSHOT">
-      <seleniumUrl></seleniumUrl>
+      <seleniumUrl>http://140.134.26.71:3444/wd/hub</seleniumUrl>
     </io.jenkins.plugins.screenshot.ScreenShotBuilder>
   </builders>
   <publishers>
     <hudson.tasks.ArtifactArchiver>
-      <artifacts>src/test/screenshot/*.png</artifacts>
+      <artifacts>test/screenshot/*.png</artifacts>
       <allowEmptyArchive>false</allowEmptyArchive>
       <onlyIfSuccessful>false</onlyIfSuccessful>
       <fingerprint>false</fingerprint>
       <defaultExcludes>true</defaultExcludes>
       <caseSensitive>true</caseSensitive>
     </hudson.tasks.ArtifactArchiver>
+    <io.jenkins.plugins.progupdatetodb.UpdateToDbPublisher plugin="progedDB@1.0-SNAPSHOT">
+      <progeduAPIUrl></progeduAPIUrl>
+      <jenkinsJobName></jenkinsJobName>
+    </io.jenkins.plugins.progupdatetodb.UpdateToDbPublisher>
     <org.jenkinsci.plugins.UpdatingDbPublisher plugin="jenkins-progedu@1.0-SNAPSHOT">
       <progeduDbUrl>http://140.134.26.71:10008/ProgEdu/webapi/commits/update</progeduDbUrl>
       <user>M0707350</user>
-      <proName>WEB-HW1</proName>
+      <proName>web-testSS</proName>
     </org.jenkinsci.plugins.UpdatingDbPublisher>
-    <io.jenkins.plugins.screenshot.UpdateToDbPublisher plugin="sceenshot@1.0-SNAPSHOT">
-      <progeduAPIUrl></progeduAPIUrl>
-      <jenkinsJobName></jenkinsJobName>
-    </io.jenkins.plugins.screenshot.UpdateToDbPublisher>
     <hudson.plugins.ws__cleanup.WsCleanup plugin="ws-cleanup@0.37">
       <patterns class="empty-list"/>
       <deleteDirs>false</deleteDirs>
@@ -128,8 +128,9 @@ npm run checkstyle</command>
     </hudson.plugins.ws__cleanup.WsCleanup>
   </publishers>
   <buildWrappers>
-    <jenkins.plugins.nodejs.NodeJSBuildWrapper plugin="nodejs@1.2.9">
+    <jenkins.plugins.nodejs.NodeJSBuildWrapper plugin="nodejs@1.3.3">
       <nodeJSInstallationName>Global</nodeJSInstallationName>
+      <cacheLocationStrategy class="jenkins.plugins.nodejs.cache.DefaultCacheLocationLocator"/>
     </jenkins.plugins.nodejs.NodeJSBuildWrapper>
   </buildWrappers>
 </project>
