@@ -1,7 +1,10 @@
 package fcu.selab.progedu.service;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -60,7 +63,33 @@ public class JavacAssignment extends AssignmentTypeMethod {
    * @param testDirectory testDirectory
    * @param projectName   projectName
    */
-  public void extractFile(String testDirectory, String destDirectory, String projectName) {
+  public void extractFile(String zipFilePath, String testDirectory, String destDirectory,
+      String projectName) {
+    int parDirLength = 0;
+    String parentDir = null;
+
+    try (ZipInputStream zipIn = new ZipInputStream(new FileInputStream(zipFilePath))) {
+
+      ZipEntry entry = zipIn.getNextEntry();
+      while (entry != null) {
+        String filePath = destDirectory + File.separator + entry.getName();
+        ;
+
+        if (filePath.substring(filePath.length() - 4).equals("src/") && parDirLength == 0) {
+          parentDir = zipHandler.getParentDir(filePath);
+          parDirLength = parentDir.length() + 1;
+        }
+        String entryNewName = filePath.substring(parDirLength);
+
+        if (!entry.isDirectory()) {
+          searchFile(entryNewName);
+        }
+        zipIn.closeEntry();
+        entry = zipIn.getNextEntry();
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 
   public String getJenkinsConfig() {

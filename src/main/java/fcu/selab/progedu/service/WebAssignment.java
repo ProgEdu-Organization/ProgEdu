@@ -37,18 +37,6 @@ public class WebAssignment extends AssignmentTypeMethod {
    * @param entryNewName entryNewName
    */
   public void searchFile(String entryNewName) {
-    StringBuilder sb = new StringBuilder();
-    String last = "";
-    if (entryNewName.endsWith(".js") || entryNewName.endsWith(".eslintrc.js")) {
-      last = entryNewName.substring(entryNewName.length() - 3, entryNewName.length());
-    }
-    String fileName = null;
-    for (int i = 0; i < entryNewName.length() - 3; i++) {
-      if (entryNewName.substring(i, i + 3).equals("src")) {
-        fileName = entryNewName.substring(i);
-        System.out.println("Search web file fileName : " + fileName);
-      }
-    }
   }
 
   /**
@@ -57,14 +45,15 @@ public class WebAssignment extends AssignmentTypeMethod {
    * @param testDirectory testDirectory
    * @param projectName   projectName
    */
-  public void extractFile(String testDirectory, String destDirectory, String projectName) {
+  public void extractFile(String zipFilePath, String testDirectory, String destDirectory,
+      String projectName) {
 
     try {
       FileUtils.deleteDirectory(new File(testDirectory + "/src/web"));
     } catch (IOException e) {
       e.printStackTrace();
     }
-   
+
     try {
       FileUtils.deleteDirectory(new File(destDirectory + "/src/test"));
     } catch (IOException e) {

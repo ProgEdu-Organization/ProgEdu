@@ -1,6 +1,5 @@
 package fcu.selab.progedu.service;
 
-import java.io.File;
 import java.io.IOException;
 
 import fcu.selab.progedu.status.Status;
@@ -25,5 +24,6 @@ public interface AssignmentTypeSelector {
 
   public Status getStatus(String statusType);
 
-  public void extractFile(String testDirectory, String destDirectory, String projectName);
+  public void extractFile(String zipFilePath, String testDirectory, String destDirectory,
+      String projectName);
 }
