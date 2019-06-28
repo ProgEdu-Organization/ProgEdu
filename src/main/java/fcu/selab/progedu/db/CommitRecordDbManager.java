@@ -118,7 +118,7 @@ public class CommitRecordDbManager {
   public String getCommitRecordStatus(String projName, String username, int num) {
     String status = "";
     String query = "SELECT status FROM Commit_Record where hw = ? and stuId = ? limit ?,1";
-    int stuId = userDbManager.getUserIdByUsername(username);
+    int stuId = userDbManager.getUserByStudentId(username);
 
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(query)) {

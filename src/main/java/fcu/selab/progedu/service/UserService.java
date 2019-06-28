@@ -43,8 +43,10 @@ public class UserService {
   /**
    * Upload a csv file for student batch registration
    * 
-   * @param uploadedInputStream file of student list
-   * @param fileDetail          file information
+   * @param uploadedInputStream
+   *          file of student list
+   * @param fileDetail
+   *          file information
    * @return Response
    */
   @POST
@@ -60,7 +62,7 @@ public class UserService {
       csvReader.readHeaders();
       while (csvReader.readRecord()) {
         User user = new User(csvReader.get("StudentId"), csvReader.get("Name"),
-            csvReader.get("Email"), csvReader.get("Password"));
+            csvReader.get("Email"), csvReader.get("Password"), true);
         userList.add(user);
         response = checkErrorType(user);
         if (response != null) {
@@ -88,17 +90,17 @@ public class UserService {
   /**
    * check for duplicates.
    * 
-   * @param userList user list
+   * @param userList
+   *          user list
    * @return response
    */
   public Response checkForDuplicates(List<User> userList) {
     Response response = null;
     for (int index = 0; index < userList.size() - 1; index++) {
       for (int index2 = index + 1; index2 < userList.size(); index2++) {
-        if (userList.get(index).getUserName().equals(userList.get(index2).getUserName())) {
-          response = Response.serverError().entity(
-              "username : " + userList.get(index).getUserName() + " is duplicated in student list.")
-              .build();
+        if (userList.get(index).getStudentId().equals(userList.get(index2).getStudentId())) {
+          response = Response.serverError().entity("username : "
+              + userList.get(index).getStudentId() + " is duplicated in student list.").build();
           break;
         } else if (userList.get(index).getEmail().equals(userList.get(index2).getEmail())) {
           response = Response.serverError()
@@ -115,16 +117,17 @@ public class UserService {
   /**
    * check error type.
    * 
-   * @param user user's information
+   * @param user
+   *          user's information
    * @return response
    */
   public Response checkErrorType(User user) {
     Response response = null;
     if (user.getPassword().length() < 8) {
       response = Response.serverError().entity("Password must be at least 8 characters.").build();
-    } else if (dbManager.checkUsername(user.getUserName())) {
+    } else if (dbManager.checkStudentId(user.getStudentId())) {
       response = Response.serverError()
-          .entity("username : " + user.getUserName() + " already exists.").build();
+          .entity("username : " + user.getStudentId() + " already exists.").build();
     } else if (dbManager.checkEmail(user.getEmail())) {
       response = Response.serverError().entity("Email : " + user.getEmail() + " already exists.")
           .build();
@@ -135,21 +138,26 @@ public class UserService {
   /**
    * Translate uploaded file content to string and parse to register
    * 
-   * @param userList file content to string
+   * @param userList
+   *          file content to string
    */
   public void register(List<User> userList) {
     for (User user : userList) {
-      userConn.createUser(user.getEmail(), user.getPassword(), user.getUserName(), user.getName());
+      userConn.createUser(user.getEmail(), user.getPassword(), user.getStudentId(), user.getName());
     }
     printStudent(userList);
   }
 
   /**
    *
-   * @param name     name
-   * @param id       id
-   * @param email    email
-   * @param password password
+   * @param name
+   *          name
+   * @param id
+   *          id
+   * @param email
+   *          email
+   * @param password
+   *          password
    * @return response
    */
   @POST
@@ -161,7 +169,7 @@ public class UserService {
     Response response = null;
     boolean isSave = false;
     try {
-      response = checkErrorType(new User(id, name, email, password));
+      response = checkErrorType(new User(id, name, email, password, true));
       if (response == null) {
         isSave = userConn.createUser(email, password, id, name);
         User user = dbManager.getUser(id);
@@ -186,7 +194,8 @@ public class UserService {
   /**
    * create previous project for new student.
    * 
-   * @param user student
+   * @param user
+   *          student
    * @return check
    */
   public boolean importPreviousProject(User user) {
@@ -194,7 +203,7 @@ public class UserService {
     List<Assignment> projects = projectDbManager.listAllProjects();
     String url = "";
     String gitlabUrl = "";
-    String userName = user.getUserName();
+    String userName = user.getStudentId();
     try {
       gitlabUrl = gitlabData.getGitlabRootUrl();
       for (Assignment project : projects) {
@@ -215,9 +224,12 @@ public class UserService {
   /**
    * create previous job for new student.
    * 
-   * @param username student name
-   * @param proName  project name
-   * @param fileType job type
+   * @param username
+   *          student name
+   * @param proName
+   *          project name
+   * @param fileType
+   *          job type
    * @return check
    */
   public boolean createPreviuosJob(String username, String proName, int fileType) {
@@ -257,21 +269,24 @@ public class UserService {
   /**
    * Print user information
    * 
-   * @param student user
+   * @param student
+   *          user
    */
   public void printStudent(List<User> student) {
     String userName = "";
     String password = "";
     String email = "";
     String name = "";
+    boolean display = true;
     for (User user : student) {
-      userName = user.getUserName();
+      userName = user.getStudentId();
       password = user.getPassword();
       email = user.getEmail();
       name = user.getName();
+      display = user.getDisplay();
 
       System.out.println("userName: " + userName + ", password: " + password + ", email: " + email
-          + ", name: " + name);
+          + ", name: " + name + ", display: " + display);
     }
   }
 
@@ -289,9 +304,12 @@ public class UserService {
   /**
    * Change user password
    * 
-   * @param oldPwd   old password
-   * @param newPwd   new password
-   * @param checkPwd check new password
+   * @param oldPwd
+   *          old password
+   * @param newPwd
+   *          new password
+   * @param checkPwd
+   *          check new password
    * @return true false
    */
   @POST
