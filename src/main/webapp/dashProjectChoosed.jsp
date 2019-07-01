@@ -485,12 +485,13 @@ img {
 					    return $(this).css("display") == "block";
 					});
 				  var nowScreenshotUrl = $screenshotSlides.children("a").attr('href');
-				  var Urlsplit = nowScreenshotUrl.split('/');
-				  var screenshotName = Urlsplit[Urlsplit.length - 1];
+				  var urlSplit = nowScreenshotUrl.split('/');
+				  var screenshotName = urlSplit[urlSplit.length - 1].split('.')[0]+'.html';
 				  $('#screenshotName').html(screenshotName);
 				}
 			</script>
 		</div>
+		<!-----------------------------------------  Screenshot  ----------------------------------------->
 		<!-- ---------------------------- Student Project ------------------------------- -->
 		<div style="clear: left;">
 			<hr>
@@ -575,7 +576,7 @@ img {
 <script type="text/javascript">
 		function changeIframe(tr){
 			var url = '<%=jenkinsBuildNumUrl%>
-	' + '/' + tr.id + '/consoleText';
+			' + '/' + tr.id + '/consoleText';
 		$.ajax({
 			url : 'webapi/jenkins/getFeedbackInfo',
 			type : 'POST',
