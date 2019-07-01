@@ -134,7 +134,7 @@
 				// db projects
 				List<Assignment> dbProjects = Pdb.listAllProjects();
 				List<String> pNames = Pdb.listAllProjectNames();
-		lude file="header.jsp"
+		lude file="header.jsp";
 	%>
 	<!-- -----sidebar----- -->
 	<div class="sidebar" style="width:200px">
