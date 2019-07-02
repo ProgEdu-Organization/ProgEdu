@@ -58,27 +58,24 @@ public class ZipHandler {
    */
   private static final int BUFFER_SIZE = 4096;
 
-  /**
-   * Extracts a zip entry (file entry)
-   * 
-   * @param zipIn
-   *          The zip inputstream
-   * @param filePath
-   *          The file path
-   * @throws IOException
-   *           on fileoutputstream call error
-   */
-  public void extractFile(ZipInputStream zipIn, String filePath) throws IOException {
-    try (BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(filePath));) {
-      byte[] bytesIn = new byte[BUFFER_SIZE];
-      int read = 0;
-      while ((read = zipIn.read(bytesIn)) != -1) {
-        bos.write(bytesIn, 0, read);
-      }
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-  }
+  // /**
+  //  * Extracts a zip entry (file entry)
+  //  * 
+  //  * @param zipIn The zip inputstream
+  //  * @param filePath The file path
+  //  * @throws IOException on fileoutputstream call error
+  //  */
+  // public void extractFile(ZipInputStream zipIn, String filePath) throws IOException {
+  //   try (BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(filePath));) {
+  //     byte[] bytesIn = new byte[BUFFER_SIZE];
+  //     int read = 0;
+  //     while ((read = zipIn.read(bytesIn)) != -1) {
+  //       bos.write(bytesIn, 0, read);
+  //     }
+  //   } catch (Exception e) {
+  //     e.printStackTrace();
+  //   }
+  // }
 
   public void setStringBuilder(StringBuilder sb) {
     this.sb = sb;
@@ -90,8 +87,7 @@ public class ZipHandler {
 
   /**
    * 
-   * @param filePath
-   *          a
+   * @param filePath a
    * @return aa
    */
   public String getParentDir(String filePath) {
@@ -104,10 +100,8 @@ public class ZipHandler {
   /**
    * modifyPomXml
    * 
-   * @param filePath
-   *          The file path
-   * @throws projectName
-   *           projectName
+   * @param filePath The file path
+   * @throws projectName projectName
    */
   public void modifyPomXml(String filePath, String projectName) {
     try {
@@ -135,11 +129,6 @@ public class ZipHandler {
       e.printStackTrace();
     }
   }
-
-  // public void zipFolder(String filePath) {
-  // File file = new File(filePath);
-  // zipDirectory(file, filePath + ".zip");
-  // }
 
   public void zipTestFolder(String testFilePath) {
     File testFile = new File(testFilePath);
