@@ -91,7 +91,7 @@ npm run checkstyle</command>
   </builders>
   <publishers>
     <hudson.tasks.ArtifactArchiver>
-      <artifacts>test/screenshot/*.png</artifacts>
+      <artifacts>target/screenshot/*.png</artifacts>
       <allowEmptyArchive>false</allowEmptyArchive>
       <onlyIfSuccessful>false</onlyIfSuccessful>
       <fingerprint>false</fingerprint>
