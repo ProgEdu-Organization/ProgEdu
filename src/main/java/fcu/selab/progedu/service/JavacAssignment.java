@@ -1,7 +1,10 @@
 package fcu.selab.progedu.service;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -55,33 +58,37 @@ public class JavacAssignment extends AssignmentTypeMethod {
   }
 
   /**
-   * copyTestFile
+   * extract main method and modify pom.xml
    * 
-   * @param folder       folder
-   * @param strFolder    strFolder
-   * @param testFilePath testFilePath
+   * @param testDirectory testDirectory
+   * @param projectName   projectName
    */
-  public void copyTestFile(File folder, String strFolder, String testFilePath) {
-    for (final File fileEntry : folder.listFiles()) {
-      if (fileEntry.isDirectory()) {
-        copyTestFile(fileEntry, strFolder, testFilePath);
-      } else {
-        if (fileEntry.getAbsolutePath().contains("src")) {
-          String entry = fileEntry.getAbsolutePath();
-          if (entry.contains("src/test")) {
+  public void extractFile(String zipFilePath, String testDirectory, String destDirectory,
+      String projectName) {
+    int parDirLength = 0;
+    String parentDir = null;
 
-            File dataFile = new File(strFolder + "/src/test");
-            File targetFile = new File(testFilePath + "/src/test");
-            try {
-              FileUtils.copyDirectory(dataFile, targetFile);
-              FileUtils.deleteDirectory(dataFile);
-            } catch (IOException e) {
-              e.printStackTrace();
-            }
-          }
+    try (ZipInputStream zipIn = new ZipInputStream(new FileInputStream(zipFilePath))) {
+
+      ZipEntry entry = zipIn.getNextEntry();
+      while (entry != null) {
+        String filePath = destDirectory + File.separator + entry.getName();
+        ;
+
+        if (filePath.substring(filePath.length() - 4).equals("src/") && parDirLength == 0) {
+          parentDir = zipHandler.getParentDir(filePath);
+          parDirLength = parentDir.length() + 1;
         }
+        String entryNewName = filePath.substring(parDirLength);
 
+        if (!entry.isDirectory()) {
+          searchFile(entryNewName);
+        }
+        zipIn.closeEntry();
+        entry = zipIn.getNextEntry();
       }
+    } catch (Exception e) {
+      e.printStackTrace();
     }
   }
 

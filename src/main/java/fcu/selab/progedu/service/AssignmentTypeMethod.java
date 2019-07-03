@@ -1,12 +1,9 @@
 package fcu.selab.progedu.service;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 import org.gitlab.api.models.GitlabUser;
 
@@ -51,22 +48,20 @@ public abstract class AssignmentTypeMethod implements AssignmentTypeSelector {
     // -4 because .zip
     zipFolderName = zipFolderName.substring(0, zipFolderName.length() - 4);
 
-    File fileUploadDir = new File(uploadDir);
-    if (!fileUploadDir.exists()) {
-      fileUploadDir.mkdir();
-    }
-
+    // unzip file to temp/uploads
     String destDirectory = uploadDir + projectName;
     File destDir = new File(destDirectory);
     if (!destDir.exists()) {
       destDir.mkdir();
     }
-
-    File fileTestDir = new File(testDir);
-    if (!fileTestDir.exists()) {
-      fileTestDir.mkdir();
+    try {
+      ZipFile zipFileToUploads = new ZipFile(zipFilePath);
+      zipFileToUploads.extractAll(destDirectory);
+    } catch (ZipException e) {
+      e.printStackTrace();
     }
 
+    // unzip file to temp/tests
     String testDirectory = testDir + projectName;
     File testsDir = new File(testDirectory);
     if (!testsDir.exists()) {
@@ -74,60 +69,17 @@ public abstract class AssignmentTypeMethod implements AssignmentTypeSelector {
     } else {
       System.out.println(testDirectory);
     }
-
-    String targetDirectory = testDir + projectName;
-    File targetDir = new File(targetDirectory);
-    if (!targetDir.exists()) {
-      targetDir.mkdir();
-    } else {
-      System.out.println(targetDir);
-    }
-
-    try (ZipInputStream zipIn = new ZipInputStream(new FileInputStream(zipFilePath))) {
-      ZipFile zipFile = new ZipFile(zipFilePath);
-      zipFile.extractAll(targetDirectory);
-      // zipHandler.modifyPomXml(targetDirectory + "/pom.xml", projectName);
-      // // Zip HW in temp/tests
-      // zipHandler.zipTestFolder(targetDirectory);
-
-      ZipEntry entry = zipIn.getNextEntry();
-      while (entry != null) {
-        String filePath = destDirectory + File.separator + entry.getName();
-        File newFile = new File(filePath);
-
-        // create all non exists folders
-        // else you will hit FileNotFoundException for compressed folder
-        new File(newFile.getParent()).mkdirs();
-
-        if (filePath.substring(filePath.length() - 4).equals("src/") && parDirLength == 0) {
-          parentDir = zipHandler.getParentDir(filePath);
-          parDirLength = parentDir.length() + 1;
-        }
-        String entryNewName = filePath.substring(parDirLength);
-
-        if (!entry.isDirectory()) {
-          // if the entry is a file, extracts it
-          zipHandler.extractFile(zipIn, filePath);
-
-          // if filePath equals pom.xml, modify the project name
-          if (filePath.substring(filePath.length() - 7, filePath.length()).equals("pom.xml")) {
-            zipHandler.modifyPomXml(filePath, projectName);
-          }
-          searchFile(entryNewName);
-        } else {
-          // if the entry is a directory, make the directory
-          File dir = new File(filePath);
-          dir.mkdir();
-        }
-        zipIn.closeEntry();
-        entry = zipIn.getNextEntry();
-      }
+    try {
+      ZipFile zipFileToTests = new ZipFile(zipFilePath);
+      zipFileToTests.extractAll(testDirectory);
     } catch (ZipException e) {
       e.printStackTrace();
     }
-    // iterates over entries in the zip file
-    copyTestFile(destDir, destDirectory, testDirectory);
 
+    // extract main method and other process
+    extractFile(zipFilePath, testDirectory, destDirectory, projectName);
+
+    // zip assignment in temp/tests
     File testFile = new File(testDirectory);
     if (testFile.exists()) {
       zipHandler.zipTestFolder(testDirectory);

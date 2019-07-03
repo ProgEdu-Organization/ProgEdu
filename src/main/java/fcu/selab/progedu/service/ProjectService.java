@@ -151,7 +151,8 @@ public class ProjectService {
       }
     }
 
-    // 4. Unzip the file to the root project
+    // 4. Unzip the uploaded file to tests folder and uploads folder on tomcat,
+    // extract main method from tests folder, then zip as root project
     try {
       assignmentTypeSelector.unzip(filePath, folderName, name, zipHandler);
       setTestFileInfo();
