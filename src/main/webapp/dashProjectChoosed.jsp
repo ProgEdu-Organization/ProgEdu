@@ -176,22 +176,22 @@ html, body, .row, #navHeight {
 	<%
 	  Conn conn = Conn.getInstance();
 
-				UserDbManager db = UserDbManager.getInstance();
-				AssignmentDbManager Pdb = AssignmentDbManager.getInstance();
-				StudentDashChoosePro stuDashChoPro = new StudentDashChoosePro();
+						UserDbManager db = UserDbManager.getInstance();
+						AssignmentDbManager Pdb = AssignmentDbManager.getInstance();
+						StudentDashChoosePro stuDashChoPro = new StudentDashChoosePro();
 
-				List<User> users = db.listAllUsers();
-				List<Assignment> dbProjects = Pdb.listAllProjects();
+						List<User> users = db.listAllUsers();
+						List<Assignment> dbProjects = Pdb.listAllAssignments();
 
-				// gitlab jenkins course��Data
-				GitlabConfig gitData = GitlabConfig.getInstance();
-				JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
+						// gitlab jenkins course��Data
+						GitlabConfig gitData = GitlabConfig.getInstance();
+						JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
 
-				JenkinsApi jenkins = JenkinsApi.getInstance();
+						JenkinsApi jenkins = JenkinsApi.getInstance();
 
-				GitlabUser choosedUser = conn.getUserById(userId);
-				List<GitlabProject> projects = conn.getProject(choosedUser);
-				Collections.reverse(projects);
+						GitlabUser choosedUser = conn.getUserById(userId);
+						List<GitlabProject> projects = conn.getAssignment(choosedUser);
+						Collections.reverse(projects);
 	%>
 	<%@ include file="header.jsp"%>
 	<!-- -----sidebar----- -->
@@ -252,7 +252,7 @@ html, body, .row, #navHeight {
 		<!-- ---------------------------- Project ------------------------------- -->
 		<%
 		  AssignmentDbManager pDb = AssignmentDbManager.getInstance();
-					Assignment project = pDb.getProjectByName(projectName);
+							Assignment project = pDb.getAssignmentByName(projectName);
 		%>
 		<div style="margin: 10px 10px 10px 10px;">
 			<h2 style="white-space: nowrap">

@@ -126,13 +126,13 @@
 </head>
 <body>
 	<%
-		UserDbManager db = UserDbManager.getInstance();
-	    AssignmentDbManager Pdb = AssignmentDbManager.getInstance();
-		// db users
-		List<User> users = db.listAllUsers();
-		// db projects
-		List<Assignment> dbProjects = Pdb.listAllProjects();
-		List<String> pNames = Pdb.listAllProjectNames();
+	  UserDbManager db = UserDbManager.getInstance();
+			    AssignmentDbManager Pdb = AssignmentDbManager.getInstance();
+				// db users
+				List<User> users = db.listAllUsers();
+				// db projects
+				List<Assignment> dbProjects = Pdb.listAllAssignments();
+				List<String> pNames = Pdb.listAllAssignmentNames();
 	%>
 	<%@ include file="header.jsp"%>
 	<!-- -----sidebar----- -->

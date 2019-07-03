@@ -137,31 +137,31 @@
 	
 	<%
 		  Conn conn = Conn.getInstance();
-					
-						UserDbManager db = UserDbManager.getInstance();
-						AssignmentDbManager Pdb = AssignmentDbManager.getInstance();
-						
-						// Get all db users
-						List<User> users = db.listAllUsers();
-						
-						// Get all db projects
-						List<Assignment> dbProjects = Pdb.listAllProjects();
-						
-						// gitlab jenkins course data
-						GitlabConfig gitData = GitlabConfig.getInstance();
-						JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
-						CourseConfig courseData = CourseConfig.getInstance();
-						
-						JenkinsApi jenkins = JenkinsApi.getInstance();
-						
-						// Get the choosed user
-						User choosedUser = new User();
-				     	for(User user : users){
-				     		if(studentId.equals(String.valueOf(user.getGitLabId()))){
-				     			choosedUser = user;
-				     		    break;
-				     		}
-				     	}
+							
+								UserDbManager db = UserDbManager.getInstance();
+								AssignmentDbManager Pdb = AssignmentDbManager.getInstance();
+								
+								// Get all db users
+								List<User> users = db.listAllUsers();
+								
+								// Get all db projects
+								List<Assignment> dbProjects = Pdb.listAllAssignments();
+								
+								// gitlab jenkins course data
+								GitlabConfig gitData = GitlabConfig.getInstance();
+								JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
+								CourseConfig courseData = CourseConfig.getInstance();
+								
+								JenkinsApi jenkins = JenkinsApi.getInstance();
+								
+								// Get the choosed user
+								User choosedUser = new User();
+						     	for(User user : users){
+						     		if(studentId.equals(String.valueOf(user.getGitLabId()))){
+						     			choosedUser = user;
+						     		    break;
+						     		}
+						     	}
 		%>
 	<%@ include file="header.jsp" %>
 			<!-- -----sidebar----- -->

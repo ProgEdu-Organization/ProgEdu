@@ -93,7 +93,7 @@ Highcharts.setOptions({
 AssignmentDbManager pDb = AssignmentDbManager.getInstance();
 List<User> users = db.listAllUsers();
 List<GitlabProject> gitProjects = conn.getAllProjects();
-List<Assignment> dbProjects = pDb.listAllProjects();
+List<Assignment> dbProjects = pDb.listAllAssignments();
 
 List<JSONObject> jsons = new ArrayList<JSONObject>();
 String jobName = null;

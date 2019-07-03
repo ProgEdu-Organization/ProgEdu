@@ -200,7 +200,7 @@ public class UserService {
    */
   public boolean importPreviousProject(User user) {
     boolean check = false;
-    List<Assignment> projects = projectDbManager.listAllProjects();
+    List<Assignment> projects = projectDbManager.listAllAssignments();
     String url = "";
     String gitlabUrl = "";
     String userName = user.getStudentId();
@@ -208,9 +208,9 @@ public class UserService {
       gitlabUrl = gitlabData.getGitlabRootUrl();
       for (Assignment project : projects) {
         String projectName = project.getName();
-        Assignment project1 = projectDbManager.getProjectByName(projectName);
+        Assignment project1 = projectDbManager.getAssignmentByName(projectName);
         url = gitlabUrl + "/root/" + projectName;
-        userConn.createPrivateProject(user.getGitLabId(), project.getName(), url);
+        userConn.createPrivateAssignment(user.getGitLabId(), project.getName(), url);
         boolean isSuccess = createPreviuosJob(userName, projectName, project1.getType());
         check = check && isSuccess;
       }

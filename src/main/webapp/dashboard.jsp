@@ -186,7 +186,7 @@
     List<GitlabProject> gitProjects = new ArrayList<GitlabProject>();
 
     // db projects
-    List<Assignment> dbProjects = Pdb.listAllProjects();
+    List<Assignment> dbProjects = Pdb.listAllAssignments();
 
     // gitlab jenkins courseData
     GitlabConfig gitData = GitlabConfig.getInstance();

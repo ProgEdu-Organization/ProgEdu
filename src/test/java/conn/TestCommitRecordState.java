@@ -17,7 +17,7 @@ public class TestCommitRecordState {
 
   public static void main(String[] args) {
     List<String> lsNames = new ArrayList<>();
-    lsNames = projectDb.listAllProjectNames();
+    lsNames = projectDb.listAllAssignmentNames();
 
     for (String name : lsNames) {
 
