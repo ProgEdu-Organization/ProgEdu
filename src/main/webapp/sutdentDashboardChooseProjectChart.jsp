@@ -100,7 +100,7 @@ String jobName = null;
 String jobUrl = null;
 
 for(User eachuser : users){
-	String userName = eachuser.getUserName();
+	String userName = eachuser.getStufentId();
 	Collections.reverse(gitProjects);
 	//for(Project dbProject : dbProjects){
 		JobStatus jobStatus = new JobStatus();
@@ -115,7 +115,7 @@ for(User eachuser : users){
 							
 				commit_count = conn.getAllCommitsCounts(gitProject.getId());
 				//---Jenkins---
-				jobName = eachuser.getUserName() + "_" + gitProject.getName();
+				jobName = eachuser.getStufentId() + "_" + gitProject.getName();
 				jobStatus.setName(jobName);
 				jobUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/api/json";
 				jobStatus.setUrl(jobUrl);

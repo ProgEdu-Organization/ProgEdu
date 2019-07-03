@@ -227,12 +227,12 @@ html, body, .row, #navHeight {
 				<ul id="student" class="collapse show" style="list-style: none;">
 					<%
 					  for (User user : users) {
-									String style = "";
-									String studentId = user.getStudentId();
-									String href = "\"dashStuChoosed.jsp?studentId=" + user.getGitLabId() + "\"";
-									if (choosedUser.getUsername().equals(user.getStudentId())) {
-										style = "color: burlywood;";
-									}
+																													String style = "";
+																													String studentId = user.getStufentId();
+																													String href = "\"dashStuChoosed.jsp?studentId=" + user.getGitLabId() + "\"";
+																													if (choosedUser.getUsername().equals(user.getStufentId())) {
+																														style = "color: burlywood;";
+																													}
 					%>
 					<li class="nav-item"><font size="3"><a
 							style="<%=style%>" class="nav-link" href=<%=href%>><i

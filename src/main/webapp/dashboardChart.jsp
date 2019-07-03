@@ -171,10 +171,10 @@
 				</font>
 				<ul id="student" class="collapse" style="list-style: none;">
 					<%
-						for (User user : users) {
-							String studentId = user.getStudentId();
-							String name = user.getName();
-							String href = "\"dashStuChoosed.jsp?studentId=" + user.getGitLabId() + "\"";
+					  for (User user : users) {
+																											String studentId = user.getStufentId();
+																											String name = user.getName();
+																											String href = "\"dashStuChoosed.jsp?studentId=" + user.getGitLabId() + "\"";
 					%>
 					<li class="nav-item">
 						<font size="3">

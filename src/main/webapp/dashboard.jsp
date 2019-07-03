@@ -218,9 +218,9 @@
             <ul id="student" class="collapse" style="list-style: none;">
                 <%
                   for(User user : users){
-                                    String userName = user.getStudentId();
-                                    String name = user.getName();
-                                    String href = "\"dashStuChoosed.jsp?studentId=" + user.getGitLabId() + "\"";
+                                                                                    String userName = user.getStufentId();
+                                                                                    String name = user.getName();
+                                                                                    String href = "\"dashStuChoosed.jsp?studentId=" + user.getGitLabId() + "\"";
                 %>
                 <li class="nav-item"><font size="3"><a class="nav-link" href=<%=href%>><i class="fa fa-angle-right" aria-hidden="true"></i>&nbsp; <%=userName%>&nbsp; <%=name%></a></font></li>
                 <%
