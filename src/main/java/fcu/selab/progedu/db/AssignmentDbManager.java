@@ -272,19 +272,19 @@ public class AssignmentDbManager {
    * @return name assignment name
    */
   public String getAssignmentTypeName(int id) {
-    String typename = null;
+    String typeName = null;
     String sql = "SELECT * FROM Assignment_Type WHERE id=?";
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
       preStmt.setInt(1, id);
       try (ResultSet rs = preStmt.executeQuery()) {
         while (rs.next()) {
-          typename = rs.getString("name");
+          typeName = rs.getString("name");
         }
       }
     } catch (SQLException e) {
       e.printStackTrace();
     }
-    return typename;
+    return typeName;
   }
 }

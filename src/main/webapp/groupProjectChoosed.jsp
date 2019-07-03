@@ -347,15 +347,18 @@ html, body {
 		String jenkinsBuildNumUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName;
 		String lastBuildUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/" + lastBuildMessageNum + "/consoleText";
 		String url = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/";
-		String projectType = AssignmentTypeEnum.MAVEN.getTypeName();
+		String projectTypeName = AssignmentTypeEnum.MAVEN.getTypeName();
+		int projectTypeId = Pdb.getAssignmentTypeId(AssignmentTypeEnum.MAVEN.getTypeName());
+		
 		StudentDashChoosePro studentDashChoosePro = new StudentDashChoosePro();
 		
 		String detailConsoleText = jenkins.getConsoleText(lastBuildUrl);
 		String buildApiJson = stuDashChoPro.getBuildApiJson(lastBuildMessageNum,groupName, projectName);
-		String statusType = stuDashChoPro.getCommitStatus(lastBuildMessageNum,groupName, projectName, buildApiJson,projectType);
+		
+		String statusType = stuDashChoPro.getCommitStatus(lastBuildMessageNum,groupName, projectName, buildApiJson,projectTypeId);
 		//String statusType = "INI";
 		
-		IGroupProject groupProject = GroupProjectFactory.getGroupProjectType(projectType);
+		IGroupProject groupProject = GroupProjectFactory.getGroupProjectType(projectTypeName);
 		Status status = groupProject.getStatus(statusType);
 		
 		
