@@ -32,12 +32,11 @@ public class JenkinsConfig {
    * Get jenkins host url
    * 
    * @return url
-   * @throws LoadConfigFailureException
-   *           on properties call error
+   * @throws LoadConfigFailureException on properties call error
    */
   public String getJenkinsHostUrl() throws LoadConfigFailureException {
     if (props != null) {
-      return props.getProperty("JENKINS_HOST_URL");
+      return props.getProperty("JENKINS_HOST_URL").trim();
     }
     throw new LoadConfigFailureException(EXCEPTION + PROPERTY_FILE);
   }
@@ -46,12 +45,11 @@ public class JenkinsConfig {
    * Get Selenium host url
    * 
    * @return url
-   * @throws LoadConfigFailureException
-   *           on properties call error
+   * @throws LoadConfigFailureException on properties call error
    */
   public String getSeleniumHostUrl() throws LoadConfigFailureException {
     if (props != null) {
-      return props.getProperty("SELENIUM_HOST_URL");
+      return props.getProperty("SELENIUM_HOST_URL").trim();
     }
     throw new LoadConfigFailureException(EXCEPTION + PROPERTY_FILE);
   }
@@ -60,12 +58,11 @@ public class JenkinsConfig {
    * Get jenkins root username
    * 
    * @return username
-   * @throws LoadConfigFailureException
-   *           on properties call error
+   * @throws LoadConfigFailureException on properties call error
    */
   public String getJenkinsRootUsername() throws LoadConfigFailureException {
     if (props != null) {
-      return props.getProperty("JENKINS_ROOT_USERNAME");
+      return props.getProperty("JENKINS_ROOT_USERNAME").trim();
     }
     throw new LoadConfigFailureException(EXCEPTION + PROPERTY_FILE);
   }
@@ -74,12 +71,11 @@ public class JenkinsConfig {
    * Get jenkins root password
    * 
    * @return password
-   * @throws LoadConfigFailureException
-   *           on properties call error
+   * @throws LoadConfigFailureException on properties call error
    */
   public String getJenkinsRootPassword() throws LoadConfigFailureException {
     if (props != null) {
-      return props.getProperty("JENKINS_ROOT_PASSWORD");
+      return props.getProperty("JENKINS_ROOT_PASSWORD").trim();
     }
     throw new LoadConfigFailureException(EXCEPTION + PROPERTY_FILE);
   }
@@ -88,12 +84,11 @@ public class JenkinsConfig {
    * Get jenkins api token
    * 
    * @return token
-   * @throws LoadConfigFailureException
-   *           on properties call error
+   * @throws LoadConfigFailureException on properties call error
    */
   public String getJenkinsApiToken() throws LoadConfigFailureException {
     if (props != null) {
-      return props.getProperty("JENKINS_API_TOKEN");
+      return props.getProperty("JENKINS_API_TOKEN").trim();
     }
     throw new LoadConfigFailureException(EXCEPTION + PROPERTY_FILE);
   }
@@ -102,12 +97,11 @@ public class JenkinsConfig {
    * Get jenkins root url
    * 
    * @return url
-   * @throws LoadConfigFailureException
-   *           on properties call error
+   * @throws LoadConfigFailureException on properties call error
    */
   public String getJenkinsRootUrl() throws LoadConfigFailureException {
     if (props != null) {
-      return props.getProperty("JENKINS_ROOT_URL");
+      return props.getProperty("JENKINS_ROOT_URL").trim();
     }
     throw new LoadConfigFailureException(EXCEPTION + PROPERTY_FILE);
   }
@@ -116,12 +110,11 @@ public class JenkinsConfig {
    * Get mail username
    * 
    * @return url
-   * @throws LoadConfigFailureException
-   *           on properties call error
+   * @throws LoadConfigFailureException on properties call error
    */
   public String getMailUser() throws LoadConfigFailureException {
     if (props != null) {
-      return props.getProperty("MAIL_USERNAME");
+      return props.getProperty("MAIL_USERNAME").trim();
     }
     throw new LoadConfigFailureException(
         "Unable to get config of JENKINS connection string from file;" + PROPERTY_FILE);
@@ -131,12 +124,11 @@ public class JenkinsConfig {
    * Get mail password
    * 
    * @return url
-   * @throws LoadConfigFailureException
-   *           on properties call error
+   * @throws LoadConfigFailureException on properties call error
    */
   public String getMailPassword() throws LoadConfigFailureException {
     if (props != null) {
-      return props.getProperty("MAIL_PASSWORD");
+      return props.getProperty("MAIL_PASSWORD").trim();
     }
     throw new LoadConfigFailureException(
         "Unable to get config of JENKINS connection string from file;" + PROPERTY_FILE);

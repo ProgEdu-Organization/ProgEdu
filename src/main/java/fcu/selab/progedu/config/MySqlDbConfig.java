@@ -37,7 +37,7 @@ public class MySqlDbConfig {
    */
   public String getDbConnectionString() throws LoadConfigFailureException {
     if (props != null) {
-      return props.getProperty("DB_CONNECTION");
+      return props.getProperty("DB_CONNECTION").trim();
     }
     throw new LoadConfigFailureException(
         "Unable to get config of MYSQL connection string from file;" + PROPERTY_FILE);
@@ -51,7 +51,7 @@ public class MySqlDbConfig {
    */
   public String getDbUser() throws LoadConfigFailureException {
     if (props != null) {
-      return props.getProperty("DB_USER");
+      return props.getProperty("DB_USER").trim();
     }
     throw new LoadConfigFailureException(
         "Unable to get config of MYSQL user from file;" + PROPERTY_FILE);
@@ -65,7 +65,7 @@ public class MySqlDbConfig {
    */
   public String getDbPassword() throws LoadConfigFailureException {
     if (props != null) {
-      return props.getProperty("DB_PASSWORD");
+      return props.getProperty("DB_PASSWORD").trim();
     }
     throw new LoadConfigFailureException(
         "Unable to get config of MYSQL password from file;" + PROPERTY_FILE);
