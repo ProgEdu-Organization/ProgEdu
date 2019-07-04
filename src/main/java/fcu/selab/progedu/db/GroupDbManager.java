@@ -72,7 +72,7 @@ public class GroupDbManager {
 
           if (isLeader) {
             int leaderId = rs.getInt("sId");
-            group.setMaster(udb.getName(leaderId));
+            group.setLeaderUsername(udb.getName(leaderId));
           } else {
             int memberId = rs.getInt("sId");
             members.add(udb.getName(memberId));
@@ -87,7 +87,7 @@ public class GroupDbManager {
           boolean isLeader = rs.getBoolean("isLeader");
           if (isLeader) {
             int leaderId = rs.getInt("sId");
-            group.setMaster(udb.getName(leaderId));
+            group.setLeaderUsername(udb.getName(leaderId));
           } else {
             int memberId = rs.getInt("sId");
             members.add(udb.getName(memberId));

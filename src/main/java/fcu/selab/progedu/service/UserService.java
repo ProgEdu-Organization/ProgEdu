@@ -12,6 +12,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.gitlab.api.models.GitlabProject;
 import org.gitlab.api.models.GitlabUser;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
@@ -22,6 +23,7 @@ import fcu.selab.progedu.config.CourseConfig;
 import fcu.selab.progedu.config.GitlabConfig;
 import fcu.selab.progedu.config.JenkinsConfig;
 import fcu.selab.progedu.conn.Conn;
+import fcu.selab.progedu.conn.HttpConnect;
 import fcu.selab.progedu.data.Project;
 import fcu.selab.progedu.data.User;
 import fcu.selab.progedu.db.ProjectDbManager;
@@ -201,7 +203,10 @@ public class UserService {
         String projectName = project.getName();
         Project project1 = projectDbManager.getProjectByName(projectName);
         url = gitlabUrl + "/root/" + projectName;
-        userConn.createPrivateProject(user.getGitLabId(), project.getName(), url);
+        GitlabProject gitlabProject = userConn.createPrivateProject(user.getGitLabId(),
+            project.getName(), url);
+        HttpConnect.getInstance().setGitlabWebhook(gitlabProject.getOwner().getName(),
+            gitlabProject);
         boolean isSuccess = createPreviuosJob(userName, projectName, project1.getType());
         check = check && isSuccess;
       }

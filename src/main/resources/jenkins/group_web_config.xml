@@ -49,7 +49,7 @@
       <excludeBranchesSpec></excludeBranchesSpec>
       <sourceBranchRegex></sourceBranchRegex>
       <targetBranchRegex></targetBranchRegex>
-      <secretToken>{AQAAABAAAAAQ8fA7dh258k2m24KwVGUIjC2VyCLyypOYVTQqv6d4T+Y=}</secretToken>
+      <secretToken>{AQAAABAAAAAQ2ONC1uTElZSMbmku89b2IhjBFGCpYnERowfrcUKenDE=}</secretToken>
       <pendingBuildName></pendingBuildName>
       <cancelPendingBuildsOnUpdate>false</cancelPendingBuildsOnUpdate>
     </com.dabsquared.gitlabjenkins.GitLabPushTrigger>
@@ -59,22 +59,6 @@
     <io.jenkins.plugins.screenshot.ScreenShotBuilder plugin="sceenshot@1.0-SNAPSHOT">
       <seleniumUrl>http://140.134.26.71:3444/wd/hub</seleniumUrl>
     </io.jenkins.plugins.screenshot.ScreenShotBuilder>
-    <hudson.plugins.build__timeout.BuildStepWithTimeout plugin="build-timeout@1.19">
-      <strategy class="hudson.plugins.build_timeout.impl.AbsoluteTimeOutStrategy">
-        <timeoutMinutes>15</timeoutMinutes>
-      </strategy>
-      <buildStep class="org.jenkinsci.plugins.AssessmentBuilder" plugin="jenkins-progedu@1.0-SNAPSHOT">
-        <jobName>M1234567_WEB-HW999</jobName>
-        <testFileName>WEB-HW999</testFileName>
-        <proDetailUrl>http://140.134.26.71:10008/ProgEdu/webapi/project/checksum?proName=WEB-HW999</proDetailUrl>
-        <testFileUrl>http://140.134.26.71:10008/ProgEdu/webapi/jenkins/getTestFile?filePath=/usr/local/tomcat/temp/tests/WEB-HW1.zip</testFileUrl>
-        <testFileChecksum>2354726748</testFileChecksum>
-        <testFilePath></testFilePath>
-      </buildStep>
-      <operationList>
-        <hudson.plugins.build__timeout.operations.FailOperation/>
-      </operationList>
-    </hudson.plugins.build__timeout.BuildStepWithTimeout>
     <hudson.plugins.build__timeout.BuildStepWithTimeout plugin="build-timeout@1.19">
       <strategy class="hudson.plugins.build_timeout.impl.AbsoluteTimeOutStrategy">
         <timeoutMinutes>15</timeoutMinutes>
