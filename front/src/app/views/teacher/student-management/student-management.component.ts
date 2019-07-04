@@ -15,7 +15,7 @@ export class StudentManagementComponent implements OnInit {
     await this.getAllUserData();
   }
   async getAllUserData() {
-    const navURL = "http://localhost:8080/ProgEdu/webapi/user/getUsers";
+    const navURL = "http://140.134.26.77:8080/ProgEdu/webapi/user/getUsers";
     //clear student array
 
     let responese = await this.httpService.getData(navURL);

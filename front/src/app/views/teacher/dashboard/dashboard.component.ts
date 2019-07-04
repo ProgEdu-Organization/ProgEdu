@@ -14,14 +14,13 @@ export class DashboardComponent implements OnInit {
   private studentDatas: JSON;
   constructor(private httpService: HttpService) { }
   async ngOnInit() {
-    //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
-    //Add 'implements OnInit' to the class.
+    // Called after the constructor, initializing input properties, and the first call to ngOnChanges.
+    // Add 'implements OnInit' to the class.
     await this.getAllStudentData();
   }
   async getAllStudentData() {
     const navURL = "http://140.134.26.77:8080/ProgEdu/webapi/commits/all";
-    //clear student array
-
+    // clear student array
     let response = await this.httpService.getData(navURL);
     this.studentDatas = response.result;
     this.tableHead = this.studentDatas[0].commits;

@@ -42,6 +42,6 @@ import { CarouselModule } from 'ngx-bootstrap/carousel';
     AssignmentManagementComponent,
     CreateAssignmentComponent,
     StudentManagementComponent,
-    GroupManagementComponent,]
+    GroupManagementComponent]
 })
 export class TeacherModule { }

@@ -6,11 +6,12 @@ import { DefaultLayoutComponent } from './containers';
 import { P404Component } from './views/error/404.component';
 import { P500Component } from './views/error/500.component';
 import { LoginComponent } from './views/login/login.component';
+import { CanActiveService } from './services/can-active.service'
 
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'dashboard',
+    redirectTo: 'login',
     pathMatch: 'full',
   },
   {
@@ -36,17 +37,19 @@ export const routes: Routes = [
   },
   {
     path: '',
-    component: DefaultLayoutComponent,
     data: {
       title: 'Home'
     },
+    canActivate: [CanActiveService],
     children: [
       {
         path: 'dashboard',
+        component: DefaultLayoutComponent,
         loadChildren: () => import('./views/teacher/teacher.module').then(m => m.TeacherModule)
       },
       {
         path: 'studashboard',
+        component: DefaultLayoutComponent,
         loadChildren: () => import('./views/student/student.module').then(m => m.StudentModule)
       }
     ]

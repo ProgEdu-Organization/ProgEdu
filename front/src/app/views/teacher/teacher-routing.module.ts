@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { DashProjectChoosedComponent } from './dash-project-choosed/dash-project-choosed.component'
 import { AssignmentManagementComponent } from './assignment-management/assignment-management.component'
