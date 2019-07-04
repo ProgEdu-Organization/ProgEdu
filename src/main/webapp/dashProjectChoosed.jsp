@@ -302,6 +302,7 @@ img {
 		</h1>
 		<!-- ---------------------------- Project ------------------------------- -->
 		<%
+		
 		  ProjectDbManager pDb = ProjectDbManager.getInstance();
 					Project project = pDb.getProjectByName(projectName);
 		%>
