@@ -202,7 +202,7 @@ html, body {
 					  groups[0].addContributor("佳和");
 					  groups[0].addContributor("一拳");
 					  groups[0].setGroupId(1);
-					  groups[0].setMaster("佳和");
+					  groups[0].setLeaderUsername("佳和");
 					  groups[1].setGroupName("小黑組");
 
 					  Group group = null;
