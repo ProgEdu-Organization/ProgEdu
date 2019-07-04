@@ -302,6 +302,7 @@ img {
 		</h1>
 		<!-- ---------------------------- Project ------------------------------- -->
 		<%
+		
 		  ProjectDbManager pDb = ProjectDbManager.getInstance();
 					Project project = pDb.getProjectByName(projectName);
 		%>
@@ -575,8 +576,7 @@ img {
 	</script>
 <script type="text/javascript">
 		function changeIframe(tr){
-			var url = '<%=jenkinsBuildNumUrl%>
-			' + '/' + tr.id + '/consoleText';
+			var url = '<%=jenkinsBuildNumUrl%>' + '/' + tr.id + '/consoleText';
 		$.ajax({
 			url : 'webapi/jenkins/getFeedbackInfo',
 			type : 'POST',
