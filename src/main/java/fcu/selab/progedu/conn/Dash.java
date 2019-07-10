@@ -34,7 +34,7 @@ public class Dash {
   public String getMainTableColor(GitlabProject gitProject) {
 
     // ---Jenkins---
-    String jobName = user.getStudentId() + "_" + gitProject.getName();
+    String jobName = user.getStufentId() + "_" + gitProject.getName();
     jobStatus.setName(jobName);
     String jobUrl = "";
     try {
@@ -84,7 +84,7 @@ public class Dash {
    */
   public int getProjectCommitCount(GitlabProject gitProject) {
     // ---Jenkins---
-    String jobName = user.getStudentId() + "_" + gitProject.getName();
+    String jobName = user.getStufentId() + "_" + gitProject.getName();
     jobStatus.setName(jobName);
     String jobUrl = "";
     List<Integer> numbers = new ArrayList<>();

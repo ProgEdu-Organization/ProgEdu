@@ -50,7 +50,7 @@ public class CommitResultService {
   public Response getCounts(@QueryParam("color") String type) {
     JSONObject commitCounts = db.getCounts(type);
     List<Integer> counts = new ArrayList<>();
-    List<String> pnames = projectDb.listAllProjectNames();
+    List<String> pnames = projectDb.listAllAssignmentNames();
     String status = "";
     for (String pname : pnames) {
       int count = commitCounts.optInt(pname);
@@ -218,7 +218,7 @@ public class CommitResultService {
   public void updateCommitRecordState() {
 
     List<String> lsNames = new ArrayList<>();
-    lsNames = projectDb.listAllProjectNames();
+    lsNames = projectDb.listAllAssignmentNames();
 
     for (String name : lsNames) {
 

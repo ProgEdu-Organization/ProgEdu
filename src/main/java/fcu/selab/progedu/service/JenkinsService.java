@@ -278,7 +278,7 @@ public class JenkinsService {
     AssignmentDbManager dbProjectManaget = AssignmentDbManager.getInstance();
     AssigmentStatusData assigmentStatusData = new AssigmentStatusData(url);
 
-    Assignment project = dbProjectManaget.getProjectByName(assigmentStatusData.getProjectName());
+    Assignment project = dbProjectManaget.getAssignmentByName(assigmentStatusData.getProjectName());
 
     String colorStatus = dbManager.getCommitRecordStatus(assigmentStatusData.getProjectName(),
         assigmentStatusData.getUsername(), assigmentStatusData.getNumber());

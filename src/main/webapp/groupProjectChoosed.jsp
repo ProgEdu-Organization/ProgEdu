@@ -171,18 +171,18 @@ html, body {
 	<%
 	  Conn conn = Conn.getInstance();
 
-			  UserDbManager db = UserDbManager.getInstance();
-			  AssignmentDbManager Pdb = AssignmentDbManager.getInstance();
-			  StudentDashChoosePro stuDashChoPro = new StudentDashChoosePro();
+				  UserDbManager db = UserDbManager.getInstance();
+				  AssignmentDbManager Pdb = AssignmentDbManager.getInstance();
+				  StudentDashChoosePro stuDashChoPro = new StudentDashChoosePro();
 
-			  List<User> users = db.listAllUsers();
-			  List<Assignment> dbProjects = Pdb.listAllProjects();
+				  List<User> users = db.listAllUsers();
+				  List<Assignment> dbProjects = Pdb.listAllAssignments();
 
-			  // gitlab jenkins course��Data
-			  GitlabConfig gitData = GitlabConfig.getInstance();
-			  JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
+				  // gitlab jenkins course��Data
+				  GitlabConfig gitData = GitlabConfig.getInstance();
+				  JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
 
-			  JenkinsApi jenkins = JenkinsApi.getInstance();
+				  JenkinsApi jenkins = JenkinsApi.getInstance();
 	%>
 	<%@ include file="header.jsp"%>
 	<!-- -----sidebar----- -->
@@ -347,15 +347,18 @@ html, body {
 		String jenkinsBuildNumUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName;
 		String lastBuildUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/" + lastBuildMessageNum + "/consoleText";
 		String url = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/";
-		String projectType = AssignmentTypeEnum.MAVEN.getTypeName();
+		String projectTypeName = AssignmentTypeEnum.MAVEN.getTypeName();
+		int projectTypeId = Pdb.getAssignmentTypeId(AssignmentTypeEnum.MAVEN.getTypeName());
+		
 		StudentDashChoosePro studentDashChoosePro = new StudentDashChoosePro();
 		
 		String detailConsoleText = jenkins.getConsoleText(lastBuildUrl);
 		String buildApiJson = stuDashChoPro.getBuildApiJson(lastBuildMessageNum,groupName, projectName);
-		String statusType = stuDashChoPro.getCommitStatus(lastBuildMessageNum,groupName, projectName, buildApiJson,projectType);
+		
+		String statusType = stuDashChoPro.getCommitStatus(lastBuildMessageNum,groupName, projectName, buildApiJson,projectTypeId);
 		//String statusType = "INI";
 		
-		IGroupProject groupProject = GroupProjectFactory.getGroupProjectType(projectType);
+		IGroupProject groupProject = GroupProjectFactory.getGroupProjectType(projectTypeName);
 		Status status = groupProject.getStatus(statusType);
 		
 		

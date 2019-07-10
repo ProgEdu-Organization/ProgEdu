@@ -52,7 +52,7 @@ public class CommitRecordService {
   public Response getCountGroupByHwAndTime(@QueryParam("hw") String hw) {
     JSONObject ob = new JSONObject();
     JSONArray records = commitRecordDb.getCountGroupByHwAndTime(hw);
-    String deadline = pdb.getProjectByName(hw).getDeadline();
+    String deadline = pdb.getAssignmentByName(hw).getDeadline();
     ob.put("records", records);
     ob.put("title", hw);
     ob.put("deadline", deadline);

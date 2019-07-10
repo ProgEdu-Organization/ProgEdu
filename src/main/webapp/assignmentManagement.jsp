@@ -284,7 +284,7 @@
 	
 	<%
 		  AssignmentDbManager db = AssignmentDbManager.getInstance();
-						List<Assignment> projects = db.listAllProjects();
+								List<Assignment> projects = db.listAllAssignments();
 		%>
 	<div id="loadingBackground" style="display: none">
 		<div id="loader"></div>

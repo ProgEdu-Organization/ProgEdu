@@ -98,9 +98,9 @@ public class UserService {
     Response response = null;
     for (int index = 0; index < userList.size() - 1; index++) {
       for (int index2 = index + 1; index2 < userList.size(); index2++) {
-        if (userList.get(index).getStudentId().equals(userList.get(index2).getStudentId())) {
+        if (userList.get(index).getStufentId().equals(userList.get(index2).getStufentId())) {
           response = Response.serverError().entity("username : "
-              + userList.get(index).getStudentId() + " is duplicated in student list.").build();
+              + userList.get(index).getStufentId() + " is duplicated in student list.").build();
           break;
         } else if (userList.get(index).getEmail().equals(userList.get(index2).getEmail())) {
           response = Response.serverError()
@@ -125,9 +125,9 @@ public class UserService {
     Response response = null;
     if (user.getPassword().length() < 8) {
       response = Response.serverError().entity("Password must be at least 8 characters.").build();
-    } else if (dbManager.checkStudentId(user.getStudentId())) {
+    } else if (dbManager.checkStudentId(user.getStufentId())) {
       response = Response.serverError()
-          .entity("username : " + user.getStudentId() + " already exists.").build();
+          .entity("username : " + user.getStufentId() + " already exists.").build();
     } else if (dbManager.checkEmail(user.getEmail())) {
       response = Response.serverError().entity("Email : " + user.getEmail() + " already exists.")
           .build();
@@ -143,7 +143,7 @@ public class UserService {
    */
   public void register(List<User> userList) {
     for (User user : userList) {
-      userConn.createUser(user.getEmail(), user.getPassword(), user.getStudentId(), user.getName());
+      userConn.createUser(user.getEmail(), user.getPassword(), user.getStufentId(), user.getName());
     }
     printStudent(userList);
   }
@@ -200,17 +200,17 @@ public class UserService {
    */
   public boolean importPreviousProject(User user) {
     boolean check = false;
-    List<Assignment> projects = projectDbManager.listAllProjects();
+    List<Assignment> projects = projectDbManager.listAllAssignments();
     String url = "";
     String gitlabUrl = "";
-    String userName = user.getStudentId();
+    String userName = user.getStufentId();
     try {
       gitlabUrl = gitlabData.getGitlabRootUrl();
       for (Assignment project : projects) {
         String projectName = project.getName();
-        Assignment project1 = projectDbManager.getProjectByName(projectName);
+        Assignment project1 = projectDbManager.getAssignmentByName(projectName);
         url = gitlabUrl + "/root/" + projectName;
-        userConn.createPrivateProject(user.getGitLabId(), project.getName(), url);
+        userConn.createPrivateAssignment(user.getGitLabId(), project.getName(), url);
         boolean isSuccess = createPreviuosJob(userName, projectName, project1.getType());
         check = check && isSuccess;
       }
@@ -279,7 +279,7 @@ public class UserService {
     String name = "";
     boolean display = true;
     for (User user : student) {
-      userName = user.getStudentId();
+      userName = user.getStufentId();
       password = user.getPassword();
       email = user.getEmail();
       name = user.getName();

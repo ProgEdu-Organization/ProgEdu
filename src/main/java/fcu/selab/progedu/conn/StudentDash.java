@@ -23,7 +23,7 @@ public class StudentDash {
   StudentConn stuConn;
   GitlabUser user;
   AssignmentDbManager pdb = AssignmentDbManager.getInstance();
-  List<Assignment> dbProjects = pdb.listAllProjects();
+  List<Assignment> dbProjects = pdb.listAllAssignments();
   List<GitlabProject> gitProjects;
   JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
   JenkinsApi jenkins = JenkinsApi.getInstance();

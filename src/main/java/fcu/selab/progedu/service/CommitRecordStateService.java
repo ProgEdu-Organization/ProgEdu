@@ -50,7 +50,7 @@ public class CommitRecordStateService {
    */
   public void updateCommitRecordState() {
 
-    List<String> lsNames = projectDb.listAllProjectNames();
+    List<String> lsNames = projectDb.listAllAssignmentNames();
 
     for (String name : lsNames) {
 

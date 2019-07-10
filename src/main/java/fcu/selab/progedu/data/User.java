@@ -29,16 +29,11 @@ public class User implements Serializable {
   /**
    * User constructor
    * 
-   * @param studentId
-   *          studentId
-   * @param name
-   *          student's full name
-   * @param email
-   *          student's email
-   * @param password
-   *          student's password
-   * @param display
-   *          student's display
+   * @param studentId studentId
+   * @param name      student's full name
+   * @param email     student's email
+   * @param password  student's password
+   * @param display   student's display
    */
   public User(String studentId, String name, String email, String password, boolean display) {
     this.studentId = studentId;
@@ -64,7 +59,7 @@ public class User implements Serializable {
     this.gitLabId = gitLabId;
   }
 
-  public String getStudentId() {
+  public String getStufentId() {
     return studentId;
   }
 

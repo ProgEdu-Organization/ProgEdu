@@ -222,7 +222,7 @@ public class CommitResultDbManager {
     int gitlabId = -1;
 
     User user = udb.getUser(id);
-    name = user.getStudentId();
+    name = user.getStufentId();
     gitlabId = user.getGitLabId();
     ob.put("userName", name);
     ob.put("gitlabId", gitlabId);
@@ -273,7 +273,7 @@ public class CommitResultDbManager {
 
           User user = udb.getUser(id);
 
-          ob.put("user", user.getStudentId());
+          ob.put("user", user.getStufentId());
           ob.put(STATUS, status);
           ob.put(COMMIT, commit + 1);
           array.put(ob);

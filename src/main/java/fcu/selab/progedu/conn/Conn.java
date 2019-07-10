@@ -134,7 +134,7 @@ public class Conn {
    * @throws IOException
    *           on gitlab api call error
    */
-  public List<GitlabProject> getProject(GitlabUser user) {
+  public List<GitlabProject> getAssignment(GitlabUser user) {
     List<GitlabProject> projects = new ArrayList<>();
     try {
       projects = gitlab.getProjectsViaSudo(user);
@@ -384,7 +384,7 @@ public class Conn {
    * @throws IOException
    *           on gitlab api call error
    */
-  public boolean createPrivateProject(int userId, String proName, String proUrl) {
+  public boolean createPrivateAssignment(int userId, String proName, String proUrl) {
     try {
       GitlabProject project = gitlab.createUserProject(userId, proName, null, null, null, null,
           null, null, null, null, null, proUrl);
@@ -453,8 +453,8 @@ public class Conn {
    *          groupName
    */
   public void createGroupProject(String groupName) {
-    createRootProject(groupName);
-    List<GitlabProject> projects = getProject(getRoot());
+    createRootAssignment(groupName);
+    List<GitlabProject> projects = getAssignment(getRoot());
     int projectId = 0;
     for (GitlabProject project : projects) {
       if (groupName.equals(project.getName())) {
@@ -504,7 +504,7 @@ public class Conn {
    * @throws IOException
    *           on gitlab api call error
    */
-  public boolean createRootProject(String proName) {
+  public boolean createRootAssignment(String proName) {
     boolean isSuccess = false;
     try {
       gitlab.createUserProject(1, proName);
@@ -587,7 +587,7 @@ public class Conn {
   /**
    * delete all gitlab projects
    */
-  public void deleteProjects(String name) {
+  public void deleteAssignments(String name) {
     List<GitlabProject> projects = getAllProjects();
     for (GitlabProject project : projects) {
       try {
