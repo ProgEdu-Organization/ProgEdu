@@ -19,7 +19,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import fcu.selab.progedu.conn.StudentDashChoosePro;
-import fcu.selab.progedu.data.CommitResult;
+import fcu.selab.progedu.data.CommitRecord;
 import fcu.selab.progedu.data.User;
 import fcu.selab.progedu.db.CommitRecordDbManager;
 import fcu.selab.progedu.db.CommitRecordStateDbManager;
@@ -114,10 +114,10 @@ public class CommitResultService {
       @QueryParam("userName") String userName) {
     int id = userDb.getUser(userName).getId();
 
-    CommitResult commitResult = db.getCommitResultByStudentAndHw(id, proName);
+    CommitRecord commitResult = db.getCommitResultByStudentAndHw(id, proName);
     String circleColor = "circle " + commitResult.getStatus();
     String result = userName + "_" + proName + "," + circleColor + ","
-        + (commitResult.getCommit() + 1);
+        + (commitResult.getCommitNumber() + 1);
 
     return Response.ok().entity(result).build();
   }

@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import fcu.selab.progedu.data.CommitResult;
+import fcu.selab.progedu.data.CommitRecord;
 import fcu.selab.progedu.data.User;
 
 public class CommitResultDbManager {
@@ -181,9 +181,9 @@ public class CommitResultDbManager {
    *          hw
    * @return commit result
    */
-  public CommitResult getCommitResultByStudentAndHw(int id, String hw) {
+  public CommitRecord getCommitResultByStudentAndHw(int id, String hw) {
     String query = "SELECT * FROM Commit_Result WHERE stuId=? AND hw=?";
-    CommitResult result = new CommitResult();
+    CommitRecord result = new CommitRecord();
 
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(query)) {
@@ -195,10 +195,10 @@ public class CommitResultDbManager {
           String status = rs.getString(STATUS);
           int commit = rs.getInt(COMMIT);
 
-          result.setStuId(id);
-          result.setHw(hw);
+          result.id(id);
+          result.setAuId(hw);
           result.setStatus(status);
-          result.setCommit(commit);
+          result.setCommitNumber(commit);
         }
       }
     } catch (SQLException e) {
