@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { HttpService } from '../../../services/http.service'
+import { HttpService } from '../../../services/http.service';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { Router } from '@angular/router';
 
@@ -19,11 +19,10 @@ export class AssignmentManagementComponent implements OnInit {
   }
 
   async getAllProjects() {
-    let response = await this.http.getData('http://140.134.26.77:8080/ProgEdu/webapi/project/getAllProjects');
+    const response = await this.http.getData('http://140.134.26.77:8080/ProgEdu/webapi/project/getAllProjects');
     this.projects = response.results;
     console.log(this.projects);
   }
-
   changeToCreatePage() {
     this.router.navigate(['./dashboard/assignmentManagement/create']);
   }

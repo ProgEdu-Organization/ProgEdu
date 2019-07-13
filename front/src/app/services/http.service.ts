@@ -1,8 +1,6 @@
-import { Injectable } from '@angular/core';
+import { Injectable } from '@angular//core';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { HttpResponse } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
-import { catchError, retry, tap } from 'rxjs/operators';
+import { throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -11,18 +9,20 @@ export class HttpService {
   constructor(private http: HttpClient) { }
 
   getData(URL: string): Promise<any> {
-    let result = this.http.get<any>(URL).toPromise();
+    const result = this.http.get<any>(URL).toPromise()
+      .catch(this.handleError);
     return result;
   }
 
   postData(URL: string, data: any): Promise<any> {
-    let headers = new HttpHeaders({
-      'Content-Type': 'text/json'
+    const options = ({
+      headers: new HttpHeaders({
+        'Content-Type': 'application/x-www-form-urlencoded',
+      })
     });
-    let options = {
-      headers
-    };
-    let result = this.http.post<any>(URL, data).toPromise();
+
+    const result = this.http.post<any>(URL, data, options).toPromise()
+      .catch(this.handleError);
     return result;
   }
 
@@ -40,5 +40,5 @@ export class HttpService {
     // return an observable with a user-facing error message
     return throwError(
       'Something bad happened; please try again later.');
-  };
+  }
 }

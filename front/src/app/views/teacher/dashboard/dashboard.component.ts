@@ -21,7 +21,7 @@ export class DashboardComponent implements OnInit {
   async getAllStudentData() {
     const navURL = "http://140.134.26.77:8080/ProgEdu/webapi/commits/all";
     // clear student array
-    let response = await this.httpService.getData(navURL);
+    const response = await this.httpService.getData(navURL);
     this.studentDatas = response.result;
     this.tableHead = this.studentDatas[0].commits;
   }

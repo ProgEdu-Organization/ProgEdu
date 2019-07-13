@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HttpService } from '../../../services/http.service'
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { Router } from '@angular/router';
@@ -8,7 +8,7 @@ import { Router } from '@angular/router';
   templateUrl: './create-assignment.component.html',
   styleUrls: ['./create-assignment.component.scss']
 })
-export class CreateAssignmentComponent implements OnInit {
+export class CreateAssignmentComponent implements OnInit, OnDestroy {
 
   constructor(private http: HttpService, private router: Router) { }
 

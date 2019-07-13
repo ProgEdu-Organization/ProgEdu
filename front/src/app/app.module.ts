@@ -38,6 +38,11 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { ChartsModule } from 'ng2-charts';
 import { HttpClientModule } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
+import { AppConfig } from './app.config';
+//  Modal Component
+import { ModalModule } from 'ngx-bootstrap/modal';
 @NgModule({
   imports: [
     BrowserModule,
@@ -52,8 +57,12 @@ import { HttpClientModule } from '@angular/common/http';
     PerfectScrollbarModule,
     BsDropdownModule.forRoot(),
     TabsModule.forRoot(),
+    ModalModule.forRoot(),
     ChartsModule,
     HttpClientModule,
+    FormsModule,
+    ReactiveFormsModule,
+
   ],
   declarations: [
     AppComponent,
@@ -65,7 +74,7 @@ import { HttpClientModule } from '@angular/common/http';
   providers: [{
     provide: LocationStrategy,
     useClass: HashLocationStrategy
-  }],
+  }, AppConfig],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

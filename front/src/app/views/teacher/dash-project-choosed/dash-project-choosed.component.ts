@@ -28,16 +28,14 @@ export class DashProjectChoosedComponent implements OnInit {
   }
 
   async getCommitData() {
-    let response = await this.http.getData('http://140.134.26.77:8080/ProgEdu/webapi/jenkins/buildDetail?num=1&proName=WEB-HW5&userName=D0350510');
+    const response = await this.http
+      .getData('http://140.134.26.77:8080/ProgEdu/webapi/jenkins/buildDetail?num=1&proName=WEB-HW5&userName=D0350510');
     this.commitData.push(response);
     console.log(response);
   }
 
   async getFeedback() {
-
-    let url = "http://140.134.26.71:58321/job/D0350510_WEB-HW5/1/console";
-    //let response = await this.http.postData('http://140.134.26.77:8080/ProgEdu/webapi/jenkins/getFeedbackInfo', url);
-    //console.log('post', response);
+    const url = 'http://140.134.26.71:58321/job/D0350510_WEB-HW5/1/console';
   }
 
 }

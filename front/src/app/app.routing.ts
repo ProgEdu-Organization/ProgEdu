@@ -6,7 +6,11 @@ import { DefaultLayoutComponent } from './containers';
 import { P404Component } from './views/error/404.component';
 import { P500Component } from './views/error/500.component';
 import { LoginComponent } from './views/login/login.component';
-import { CanActiveService } from './services/can-active.service'
+
+// import canActive
+import { CanActiveTeacherService } from './services/can-active-teacher.service';
+import { CanActiveStudentService } from './services/can-active-student.service';
+
 
 export const routes: Routes = [
   {
@@ -40,16 +44,17 @@ export const routes: Routes = [
     data: {
       title: 'Home'
     },
-    canActivate: [CanActiveService],
     children: [
       {
         path: 'dashboard',
         component: DefaultLayoutComponent,
+        canActivate: [CanActiveTeacherService],
         loadChildren: () => import('./views/teacher/teacher.module').then(m => m.TeacherModule)
       },
       {
         path: 'studashboard',
         component: DefaultLayoutComponent,
+        canActivate: [CanActiveStudentService],
         loadChildren: () => import('./views/student/student.module').then(m => m.StudentModule)
       }
     ]
@@ -59,11 +64,7 @@ export const routes: Routes = [
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
+  providers: [CanActiveTeacherService, CanActiveStudentService]
 })
-export class AppRoutingModule {
-
-  ngOnInit() {
-    console.log(routes);
-  }
-}
+export class AppRoutingModule { }
