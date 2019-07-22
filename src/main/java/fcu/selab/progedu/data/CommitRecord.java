@@ -4,8 +4,6 @@ public class CommitRecord {
 
   private int id;
 
-  private int auId;
-
   private int status;
 
   private int commitNumber;
@@ -14,16 +12,8 @@ public class CommitRecord {
     return id;
   }
 
-  public void id(int id) {
+  public void setId(int id) {
     this.id = id;
-  }
-
-  public int getAuId() {
-    return auId;
-  }
-
-  public void setAuId(int auId) {
-    this.auId = auId;
   }
 
   public int getStatus() {

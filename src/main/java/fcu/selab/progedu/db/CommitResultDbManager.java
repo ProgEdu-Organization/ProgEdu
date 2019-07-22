@@ -195,7 +195,7 @@ public class CommitResultDbManager {
           String status = rs.getString(STATUS);
           int commit = rs.getInt(COMMIT);
 
-          result.id(id);
+          result.setId(id);
           result.setAuId(hw);
           result.setStatus(status);
           result.setCommitNumber(commit);
