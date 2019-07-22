@@ -13,10 +13,10 @@ import javax.ws.rs.core.Response;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import fcu.selab.progedu.db.AssignmentDbManager;
 import fcu.selab.progedu.db.CommitRecordDbManager;
 import fcu.selab.progedu.db.IDatabase;
 import fcu.selab.progedu.db.MySqlDatabase;
-import fcu.selab.progedu.db.AssignmentDbManager;
 
 @Path("commits/record/")
 public class CommitRecordService {

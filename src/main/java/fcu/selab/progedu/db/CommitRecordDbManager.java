@@ -30,14 +30,10 @@ public class CommitRecordDbManager {
   /**
    * insert student commit records into db
    *
-   * @param stuId
-   *          studrnt id
-   * @param hw
-   *          hw number
-   * @param status
-   *          build result
-   * @param time
-   *          commit time
+   * @param stuId  studrnt id
+   * @param hw     hw number
+   * @param status build result
+   * @param time   commit time
    * @return check
    */
   public boolean insertCommitRecord(int stuId, String hw, String status, String date, String time) {
@@ -86,20 +82,20 @@ public class CommitRecordDbManager {
   /**
    * get each hw's CommitRecordStateCounts
    * 
-   * @param hw
-   *          hw number
+   * @param auId Commit_Record auId
    * @return map
    */
-  public Map<String, Integer> getCommitRecordStateCounts(String hw) {
-    String query = "SELECT hw,status,count(status) FROM Commit_Record where hw = ? group by status";
+  public Map<String, Integer> getCommitRecordStateCounts(int auId) {
+    String query = "SELECT auid,status,count(status) FROM Commit_Record where auId = ? "
+        + "group by status";
     Map<String, Integer> map = new HashMap<>();
 
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(query)) {
-      preStmt.setString(1, hw);
+      preStmt.setInt(1, auId);
       try (ResultSet rs = preStmt.executeQuery();) {
         while (rs.next()) {
-          map.put(rs.getString("status"), rs.getInt(COUNT_STATUS));
+          map.put(dbManager.getCommitStatusName(rs.getInt("status")), rs.getInt(COUNT_STATUS));
         }
       }
     } catch (SQLException e) {
@@ -111,20 +107,18 @@ public class CommitRecordDbManager {
   /**
    * get each hw's CommitRecordStateCounts
    * 
-   * @param projName
-   *          username num
+   * @param auId Commit_Record auId
+   * @param num  num
    * @return status
    */
-  public String getCommitRecordStatus(String projName, String username, int num) {
+  public String getCommitRecordStatus(int auId, int num) {
     String status = "";
-    String query = "SELECT status FROM Commit_Record where hw = ? and stuId = ? limit ?,1";
-    int stuId = userDbManager.getUserByStudentId(username);
+    String query = "SELECT status FROM Commit_Record where auId = ? and limit ?,1";
 
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(query)) {
-      preStmt.setString(1, projName);
-      preStmt.setInt(2, stuId);
-      preStmt.setInt(3, num - 1);
+      preStmt.setInt(1, auId);
+      preStmt.setInt(2, num - 1);
 
       try (ResultSet rs = preStmt.executeQuery();) {
         if (rs.next()) {
@@ -141,14 +135,10 @@ public class CommitRecordDbManager {
   /**
    * check if record is in db
    *
-   * @param stuId
-   *          student id
-   * @param hw
-   *          he number
-   * @param date
-   *          date
-   * @param time
-   *          commit time
+   * @param stuId student id
+   * @param hw    he number
+   * @param date  date
+   * @param time  commit time
    * @return boolean
    */
   public boolean checkRecord(int stuId, String hw, String date, String time) {
@@ -176,16 +166,11 @@ public class CommitRecordDbManager {
   /**
    * update record status
    * 
-   * @param stuId
-   *          student
-   * @param hw
-   *          hw
-   * @param status
-   *          status
-   * @param date
-   *          date
-   * @param time
-   *          time
+   * @param stuId  student
+   * @param hw     hw
+   * @param status status
+   * @param date   date
+   * @param time   time
    */
   public void updateRecordStatus(int stuId, String hw, String status, String date, String time) {
     String sql = "UPDATE Commit_Record SET status=? where stuId=? and hw=? and date=? and time=?";
@@ -207,8 +192,7 @@ public class CommitRecordDbManager {
   /**
    * get Count Group By Hw And Time
    * 
-   * @param hw
-   *          hw number
+   * @param hw hw number
    * @return records
    */
   public JSONArray getCountGroupByHwAndTime(String hw) {
@@ -254,8 +238,7 @@ public class CommitRecordDbManager {
   /**
    * delete built record of specific hw
    *
-   * @param hw
-   *          hw
+   * @param hw hw
    */
   public void deleteRecord(String hw) {
     String sql = "DELETE FROM Commit_Record WHERE hw=?";
@@ -268,4 +251,51 @@ public class CommitRecordDbManager {
       e.printStackTrace();
     }
   }
+
+  /**
+   * get Commit_Status id
+   * 
+   * @param statusName Commit_Status statusName
+   * @return id status id
+   */
+  public int getCommitStatusId(String statusName) {
+    int id = 0;
+    String sql = "SELECT * FROM Commit_Status WHERE status=?";
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+      preStmt.setString(1, statusName);
+      try (ResultSet rs = preStmt.executeQuery()) {
+        while (rs.next()) {
+          id = rs.getInt("id");
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return id;
+  }
+
+  /**
+   * get Commit_Status name
+   * 
+   * @param id Commit_Status id
+   * @return name Commit_Status name
+   */
+  public String getCommitStatusName(int id) {
+    String statusName = null;
+    String sql = "SELECT * FROM Commit_Status WHERE id=?";
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+      preStmt.setInt(1, id);
+      try (ResultSet rs = preStmt.executeQuery()) {
+        while (rs.next()) {
+          statusName = rs.getString("status");
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return statusName;
+  }
+
 }

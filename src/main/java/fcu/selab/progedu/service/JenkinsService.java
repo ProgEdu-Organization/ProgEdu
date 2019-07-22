@@ -26,8 +26,9 @@ import fcu.selab.progedu.config.JenkinsConfig;
 import fcu.selab.progedu.conn.Conn;
 import fcu.selab.progedu.conn.StudentDashChoosePro;
 import fcu.selab.progedu.data.Assignment;
-import fcu.selab.progedu.db.CommitRecordDbManager;
+import fcu.selab.progedu.data.CommitRecord;
 import fcu.selab.progedu.db.AssignmentDbManager;
+import fcu.selab.progedu.db.CommitRecordDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.jenkins.AssigmentStatusData;
 import fcu.selab.progedu.jenkins.JenkinsApi;
@@ -274,16 +275,18 @@ public class JenkinsService {
 
   @Path("getFeedbackInfo")
   public String getFeedbackInfo(String url) {
+    CommitRecord commitRecord = new CommitRecord();
     CommitRecordDbManager dbManager = new CommitRecordDbManager();
-    AssignmentDbManager dbProjectManaget = AssignmentDbManager.getInstance();
+    AssignmentDbManager dbAssignmentManaget = AssignmentDbManager.getInstance();
     AssigmentStatusData assigmentStatusData = new AssigmentStatusData(url);
 
-    Assignment project = dbProjectManaget.getAssignmentByName(assigmentStatusData.getProjectName());
+    Assignment assignment = dbAssignmentManaget
+        .getAssignmentByName(assigmentStatusData.getProjectName());
 
-    String colorStatus = dbManager.getCommitRecordStatus(assigmentStatusData.getProjectName(),
-        assigmentStatusData.getUsername(), assigmentStatusData.getNumber());
+    String colorStatus = dbManager.getCommitRecordStatus(commitRecord.getAuId(),
+        assigmentStatusData.getNumber());
 
-    String assignmentType = dbProjectManaget.getAssignmentTypeName(project.getType());
+    String assignmentType = dbAssignmentManaget.getAssignmentTypeName(assignment.getType());
     AssignmentTypeSelector assignmentTypeSelector = AssignmentTypeFactory
         .getAssignmentType(assignmentType);
     Status status = assignmentTypeSelector.getStatus(colorStatus);
