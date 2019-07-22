@@ -2,6 +2,8 @@ package fcu.selab.progedu.data;
 
 public class Assignment {
 
+  private int id = 0;
+
   private String createTime = "";
 
   private String name = "";
@@ -25,6 +27,14 @@ public class Assignment {
   private String releaseTime = "";
 
   private boolean display = true;
+
+  public int getId() {
+    return id;
+  }
+
+  public void setId(int id) {
+    this.id = id;
+  }
 
   public String getCreateTime() {
     return createTime;
