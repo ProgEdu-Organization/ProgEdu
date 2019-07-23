@@ -4,7 +4,7 @@
   [sidebarToggler]="'lg'" [asideMenuToggler]="''">
   <ul class="nav navbar-nav d-md-down-none">
     <div class="btn-group" dropdown [isOpen]="status.isOpen" (isOpenChange)="change($event)" placement="top">
-      <li class="nav-item px-3" *ngIf="isTeacher">
+      <li class="nav-item px-3" *ngIf="isAdmin">
         <a dropdownToggle class="nav-link dropdown-toggle" href (click)="false"> Management</a>
       </li>
       <ul *dropdownMenu class=" dropdown-menu" role="menu">
@@ -32,7 +32,7 @@
   </ul>
 </app-header>
 <div class="app-body">
-  <app-sidebar [fixed]="true" [display]="'lg'" *ngIf="isTeacher && navDataisload">
+  <app-sidebar [fixed]="true" [display]="'lg'" *ngIf="isAdmin && navDataisload">
     <app-sidebar-nav [navItems]="navItems" [perfectScrollbar] [disabled]="sidebarMinimized"></app-sidebar-nav>
     <app-sidebar-minimizer></app-sidebar-minimizer>
   </app-sidebar>

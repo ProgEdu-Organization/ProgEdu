@@ -17,7 +17,7 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
   public element: HTMLElement;
   public navDataisload: boolean = false;
   public user: User;
-  public isTeacher: boolean = false;
+  public isAdmin: boolean = false;
 
   status: { isOpen: boolean } = { isOpen: false };
   disabled: boolean = false;
@@ -27,10 +27,10 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
   constructor(@Inject(DOCUMENT) _document?: any,
     private defaultLayoutService?: DefaultLayoutService, private jwtService?: JwtService) {
     this.user = new User(jwtService);
-    if (this.user.getUserRole() === 'teacher') {
-      this.isTeacher = true;
+    if (this.user.getIsAdmin()) {
+      this.isAdmin = true;
     }
-    console.log('isTeacher: ' + this.isTeacher);
+    console.log('isTeacher: ' + this.isAdmin);
 
     this.changes = new MutationObserver((mutations) => {
       this.sidebarMinimized = _document.body.classList.contains('sidebar-minimized');

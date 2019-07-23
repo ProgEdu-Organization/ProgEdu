@@ -30,13 +30,14 @@ export class LoginComponent {
 
   async login() {
     this._loginAuthService.Login(this.getUsername(), this.getPassword()).subscribe((response) => {
+      console.log(response);
       if (!response.isLogin) {
         this.dangerModal.show();
       } else {
         this.jwtService.setToken(response.token);
-        if (response.user === 'teacher') {
+        if (response.user === 'admin') {
           this.router.navigate(['dashboard']);
-        } else if (response.user === 'student') {
+        } else if (response.user === 'user') {
           this.router.navigate(['studashboard']);
         }
       }
@@ -47,7 +48,7 @@ export class LoginComponent {
       const decodedToken = this.jwtService.getDecodedToken();
       console.log(JSON.stringify(decodedToken));
       if (!this.jwtService.isTokenExpired()) {
-        if (decodedToken.sub === 'teacher') {
+        if (decodedToken.sub === 'admin') {
           this.router.navigate(['dashboard']);
         } else {
           this.router.navigate(['studashboard']);
