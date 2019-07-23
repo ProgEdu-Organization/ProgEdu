@@ -1,9 +1,9 @@
 import { Component, OnDestroy, Inject, OnInit } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { navItems } from './_nav';
-import { HttpService } from '../../services/http.service';
 import { JwtService } from '../../services/jwt.service';
 import { User } from '../../models/user';
+import { DefaultLayoutService } from './default-layout.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -25,7 +25,7 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
   autoClose: boolean = false;
 
   constructor(@Inject(DOCUMENT) _document?: any,
-    private httpService?: HttpService, private jwtService?: JwtService) {
+    private defaultLayoutService?: DefaultLayoutService, private jwtService?: JwtService) {
     this.user = new User(jwtService);
     if (this.user.getUserRole() === 'teacher') {
       this.isTeacher = true;
@@ -49,24 +49,25 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
   }
 
   async updateNavData() {
-    const navURL = 'http://140.134.26.77:8080/ProgEdu/webapi/commits/all';
     // clear student array
     this.navItems[1].children.length = 0;
 
-    const response = await this.httpService.getData(navURL);
-    this.navData = await response.result.sort(function (a, b) {
-      return a.name > b.name ? 1 : - 1;
+    this.defaultLayoutService.getNavData().subscribe(response => {
+      console.log('test' + JSON.stringify(response));
+      this.navData = response.result.sort(function (a, b) {
+        return a.name > b.name ? 1 : - 1;
+      });
+      // add the data to the navItem
+      for (const i of this.navData) {
+        const data = {
+          name: i.userName,
+          url: '/base/cards',
+          icon: 'icon-puzzle'
+        };
+        this.navItems[1].children.push(data);
+      }
+      this.navDataisload = true;
     });
-    // add the data to the navItem
-    for (const i of this.navData) {
-      const data = {
-        name: i.userName,
-        url: '/base/cards',
-        icon: 'icon-puzzle'
-      };
-      this.navItems[1].children.push(data);
-    }
-    this.navDataisload = true;
   }
 
   logout() {

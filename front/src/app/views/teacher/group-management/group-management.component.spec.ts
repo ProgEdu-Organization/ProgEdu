@@ -1,5 +1,4 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { GroupManagementComponent } from './group-management.component';
 
 describe('GroupManagementComponent', () => {
@@ -8,9 +7,9 @@ describe('GroupManagementComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ GroupManagementComponent ]
+      declarations: [GroupManagementComponent]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

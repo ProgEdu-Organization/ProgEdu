@@ -1,14 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { HttpService } from '../../../services/http.service'
 import { CarouselConfig } from 'ngx-bootstrap/carousel';
+import { DashProjectChoosedService } from './dash-project-choosed.service';
 /*
 example: http://localhost:4200/#/dashboard/dashprojectchoosed?userId=3&proName=WEB-HW5
 */
 @Component({
   selector: 'app-dash-project-choosed',
   templateUrl: './dash-project-choosed.component.html',
-  styleUrls: ['./dash-project-choosed.component.scss'],
   providers: [
     { provide: CarouselConfig, useValue: { interval: 1500, noPause: false } },
   ]
@@ -17,8 +16,7 @@ export class DashProjectChoosedComponent implements OnInit {
   gitlabId: string;
   proName: string;
   commitData: Array<JSON> = [];
-  constructor(private route: ActivatedRoute,
-    private http: HttpService) { }
+  constructor(private route: ActivatedRoute, private dashProjectService: DashProjectChoosedService) { }
 
   ngOnInit() {
     this.gitlabId = this.route.snapshot.queryParamMap.get('gitlabId');
@@ -28,10 +26,10 @@ export class DashProjectChoosedComponent implements OnInit {
   }
 
   async getCommitData() {
-    const response = await this.http
-      .getData('http://140.134.26.77:8080/ProgEdu/webapi/jenkins/buildDetail?num=1&proName=WEB-HW5&userName=D0350510');
-    this.commitData.push(response);
-    console.log(response);
+    this.dashProjectService.getCommitData().subscribe(response => {
+      this.commitData.push(response);
+      console.log(response);
+    });
   }
 
   async getFeedback() {

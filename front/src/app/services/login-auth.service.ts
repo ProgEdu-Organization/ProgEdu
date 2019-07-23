@@ -1,42 +1,44 @@
 import { Injectable, RootRenderer, SystemJsNgModuleLoader } from '@angular/core';
-import { HttpService } from './http.service';
 import { HttpParams } from '@angular/common/http';
 import { JwtService } from './jwt.service';
+import { environment } from '../../environments/environment';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
+const options = ({
+  headers: new HttpHeaders({
+    'Content-Type': 'application/x-www-form-urlencoded',
+  })
+});
 @Injectable({
   providedIn: 'root'
 })
 export class LoginAuthService {
 
-  SERVER_URL: string = 'http://140.134.26.77:8080/ProgEdu/LoginAuth';
-  TOKEN_API_URL: string = 'http://140.134.26.77:8080/ProgEdu/webapi/auth/login';
-  constructor(private http: HttpService, private jwtService: JwtService) { }
+  LOGIN_URL: string = environment.SERVER_URL + '/ProgEdu/LoginAuth';
+  AUTH_URL: string = environment.SERVER_URL + '/ProgEdu/webapi/auth/login';
+  constructor(private http: HttpClient, private jwtService: JwtService) { }
   // 是否登录
-  public async Login(username, password) {
+  public Login(username, password): Observable<any> {
     let params = new HttpParams();
     params = params.append('username', username);
     params = params.append('password', password);
-    return await this.http.postData(this.SERVER_URL, params);
+    console.log(this.LOGIN_URL);
+    return this.http.post<any>(this.LOGIN_URL, params, options);
   }
 
-
-
-  public async isLoginByTeacher() {
+  public isLoginByTeacher(): Observable<any> {
     const token = this.jwtService.getToken();
     let params = new HttpParams();
     params = params.append('token', token);
-    return await this.http.postData(this.TOKEN_API_URL, params);
+    return this.http.post(this.AUTH_URL, params, options);
   }
 
-  public async  isLoginByStudent() {
+  public isLoginByStudent(): Observable<any> {
     const token = this.jwtService.getToken();
     let params = new HttpParams();
     params = params.append('token', token);
-    return await this.http.postData(this.TOKEN_API_URL, params);
-  }
-
-  private isTokenExpired(token: string): boolean {
-    return this.jwtService.isTokenExpired();
+    return this.http.post(this.AUTH_URL, params, options);
   }
 
   public logout() {

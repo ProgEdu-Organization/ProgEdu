@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, SystemJsNgModuleLoader } from '@angular/core';
 import { Router } from '@angular/router';
 import { LoginAuthService } from '../../services/login-auth.service';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
@@ -29,24 +29,25 @@ export class LoginComponent {
   public getPassword() { return this.loginForm.value.password; }
 
   async login() {
-    const response = await this._loginAuthService.Login(this.getUsername(), this.getPassword());
-    console.log(response);
-    if (!response.isLogin) {
-      this.dangerModal.show();
-    } else {
-      this.jwtService.setToken(response.token);
-      if (response.user === 'teacher') {
-        this.router.navigate(['dashboard']);
-      } else if (response.user === 'student') {
-        this.router.navigate(['studashboard']);
+    this._loginAuthService.Login(this.getUsername(), this.getPassword()).subscribe((response) => {
+      if (!response.isLogin) {
+        this.dangerModal.show();
+      } else {
+        this.jwtService.setToken(response.token);
+        if (response.user === 'teacher') {
+          this.router.navigate(['dashboard']);
+        } else if (response.user === 'student') {
+          this.router.navigate(['studashboard']);
+        }
       }
-    }
+    });
   }
   async autoLogin() {
     if (this.jwtService.getToken() != null) {
       const decodedToken = this.jwtService.getDecodedToken();
+      console.log(JSON.stringify(decodedToken));
       if (!this.jwtService.isTokenExpired()) {
-        if (decodedToken.sub === 'root') {
+        if (decodedToken.sub === 'teacher') {
           this.router.navigate(['dashboard']);
         } else {
           this.router.navigate(['studashboard']);

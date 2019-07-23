@@ -2,26 +2,26 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { HttpService } from '../../../services/http.service';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { Router } from '@angular/router';
+import { AssignmentManagementService } from './assignment-management.service';
 
 @Component({
   selector: 'app-assignment-management',
-  templateUrl: './assignment-management.component.html',
-  styleUrls: ['./assignment-management.component.scss']
+  templateUrl: './assignment-management.component.html'
 })
 export class AssignmentManagementComponent implements OnInit {
   @ViewChild('dangerModal', { static: false }) public dangerModal: ModalDirective;
   projects: Array<any>;
   deleteProjectName: string;
-  constructor(private http: HttpService, private router: Router) { }
+  constructor(private assignmentService: AssignmentManagementService, private router: Router) { }
 
   ngOnInit() {
     this.getAllProjects();
   }
 
-  async getAllProjects() {
-    const response = await this.http.getData('http://140.134.26.77:8080/ProgEdu/webapi/project/getAllProjects');
-    this.projects = response.results;
-    console.log(this.projects);
+  getAllProjects() {
+    this.assignmentService.getAllProjects().subscribe(response => {
+      this.projects = response.results;
+    });
   }
   changeToCreatePage() {
     this.router.navigate(['./dashboard/assignmentManagement/create']);
