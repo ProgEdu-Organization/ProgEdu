@@ -1,25 +1,24 @@
-import { Injectable, SystemJsNgModuleLoader } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Router, CanActivate } from '@angular/router';
 import { LoginAuthService } from './login-auth.service';
 import { HttpService } from './http.service';
-import { HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { JwtService } from './jwt.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CanActiveTeacherService implements CanActivate {
   constructor(public router: Router, private loginAuth: LoginAuthService,
-    private http: HttpService) { }
+    private http: HttpService, private jwtService: JwtService) { }
 
   canActivate(): Promise<boolean> | boolean {
     return new Promise((resolve) => {
       this.loginAuth.isLoginByTeacher().then((response) => {
-        console.log('TEST' + response.isLogin);
-        if (response.isLogin === true) {
+        if (response.isLogin && response.admin) {
+          console.log('canActive teacher');
           resolve(true);
         } else {
-          localStorage.removeItem('token');
+          this.jwtService.removeToken();
           console.log('not authenticated');
           this.router.navigate(['login']);
           resolve(false);

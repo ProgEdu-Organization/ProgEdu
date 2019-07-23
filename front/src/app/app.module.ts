@@ -43,6 +43,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { AppConfig } from './app.config';
 //  Modal Component
 import { ModalModule } from 'ngx-bootstrap/modal';
+import { JwtModule } from '@auth0/angular-jwt';
 @NgModule({
   imports: [
     BrowserModule,
@@ -61,8 +62,7 @@ import { ModalModule } from 'ngx-bootstrap/modal';
     ChartsModule,
     HttpClientModule,
     FormsModule,
-    ReactiveFormsModule,
-
+    ReactiveFormsModule
   ],
   declarations: [
     AppComponent,
