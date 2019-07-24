@@ -324,7 +324,6 @@ public class UserService {
       userConn.updateUserPassword(userId, newPwd);
     } else {
       return Response.serverError().entity("The current password is wrong").build();
-
     }
 
     return Response.ok().build();

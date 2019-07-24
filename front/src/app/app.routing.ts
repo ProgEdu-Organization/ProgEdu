@@ -41,19 +41,18 @@ export const routes: Routes = [
   },
   {
     path: '',
+    component: DefaultLayoutComponent,
     data: {
       title: 'Home'
     },
     children: [
       {
         path: 'dashboard',
-        component: DefaultLayoutComponent,
         canActivate: [CanActiveTeacherService],
         loadChildren: () => import('./views/teacher/teacher.module').then(m => m.TeacherModule)
       },
       {
         path: 'studashboard',
-        component: DefaultLayoutComponent,
         canActivate: [CanActiveStudentService],
         loadChildren: () => import('./views/student/student.module').then(m => m.StudentModule)
       }

@@ -10,6 +10,7 @@ import { JwtService } from '../../services/jwt.service';
 })
 export class LoginComponent {
 
+  private errors;
   public loginForm: FormGroup;
   @ViewChild('dangerModal', { static: false }) public dangerModal: ModalDirective;
 
@@ -29,26 +30,31 @@ export class LoginComponent {
   public getPassword() { return this.loginForm.value.password; }
 
   async login() {
-    this._loginAuthService.Login(this.getUsername(), this.getPassword()).subscribe((response) => {
-      console.log(response);
-      if (!response.isLogin) {
-        this.dangerModal.show();
-      } else {
-        this.jwtService.setToken(response.token);
-        if (response.user === 'admin') {
-          this.router.navigate(['dashboard']);
-        } else if (response.user === 'user') {
-          this.router.navigate(['studashboard']);
+    this._loginAuthService.Login(this.getUsername(), this.getPassword()).subscribe(
+      (response) => {
+        console.log(response);
+        if (!response.isLogin) {
+          this.dangerModal.show();
+        } else {
+          this.jwtService.setToken(response.token);
+          if (response.user === 'admin') {
+            this.router.navigate(['dashboard']);
+          } else if (response.user === 'user') {
+            this.router.navigate(['studashboard']);
+          }
         }
+      },
+      (error) => {
+        this.router.navigate(['500']);
       }
-    });
+    );
   }
   async autoLogin() {
     if (this.jwtService.getToken() != null) {
       const decodedToken = this.jwtService.getDecodedToken();
       console.log(JSON.stringify(decodedToken));
       if (!this.jwtService.isTokenExpired()) {
-        if (decodedToken.sub === 'admin') {
+        if (decodedToken.sub === 'teacher') {
           this.router.navigate(['dashboard']);
         } else {
           this.router.navigate(['studashboard']);
