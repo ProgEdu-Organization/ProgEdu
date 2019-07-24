@@ -43,7 +43,6 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { AppConfig } from './app.config';
 //  Modal Component
 import { ModalModule } from 'ngx-bootstrap/modal';
-import { JwtModule } from '@auth0/angular-jwt';
 @NgModule({
   imports: [
     BrowserModule,
@@ -69,7 +68,7 @@ import { JwtModule } from '@auth0/angular-jwt';
     ...APP_CONTAINERS,
     P404Component,
     P500Component,
-    LoginComponent
+    LoginComponent,
   ],
   providers: [{
     provide: LocationStrategy,

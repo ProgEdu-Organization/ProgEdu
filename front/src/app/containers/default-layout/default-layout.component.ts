@@ -4,6 +4,8 @@ import { navItems } from './_nav';
 import { JwtService } from '../../services/jwt.service';
 import { User } from '../../models/user';
 import { DefaultLayoutService } from './default-layout.service';
+import { Router } from '@angular/router';
+import * as $ from 'jquery';
 
 @Component({
   selector: 'app-dashboard',
@@ -19,19 +21,15 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
   public user: User;
   public isAdmin: boolean = false;
 
+  dashboard: string;
   status: { isOpen: boolean } = { isOpen: false };
   disabled: boolean = false;
   isDropup: boolean = true;
   autoClose: boolean = false;
 
-  constructor(@Inject(DOCUMENT) _document?: any,
-    private defaultLayoutService?: DefaultLayoutService, private jwtService?: JwtService) {
-    this.user = new User(jwtService);
-    if (this.user.getIsAdmin()) {
-      this.isAdmin = true;
-    }
+  constructor(@Inject(DOCUMENT) _document?: any, private defaultLayoutService?: DefaultLayoutService,
+    private jwtService?: JwtService, private router?: Router) {
     console.log('isTeacher: ' + this.isAdmin);
-
     this.changes = new MutationObserver((mutations) => {
       this.sidebarMinimized = _document.body.classList.contains('sidebar-minimized');
     });
@@ -45,7 +43,17 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
   ngOnInit() {
     // Called after the constructor, initializing input properties, and the first call to ngOnChanges.
     // Add 'implements OnInit' to the class.
+    this.user = new User(this.jwtService);
+    if (this.user.getIsAdmin()) {
+      this.dashboard = '/dashboard';
+      this.isAdmin = true;
+    } else {
+      this.dashboard = '/studashboard';
+      this.isAdmin = false;
+    }
+
     this.updateNavData();
+    // console.log($('a[.navbar]').attr('href', 'studashboard'))
   }
 
   async updateNavData() {
@@ -68,6 +76,10 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
       }
       this.navDataisload = true;
     });
+  }
+
+  changeToDashboard() {
+    this.router.navigate([this.dashboard]);
   }
 
   logout() {

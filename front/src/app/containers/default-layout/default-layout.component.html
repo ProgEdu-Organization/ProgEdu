@@ -1,9 +1,12 @@
-<app-header [navbarBrandRouterLink]="['/dashboard']" [fixed]="true"
+<app-header [navbarBrandRouterLink]="[dashboard]" [fixed]="true"
   [navbarBrandFull]="{src: 'assets/logo.svg', width: 89, height: 40, alt: 'ProgEdu'}"
   [navbarBrandMinimized]="{src: 'assets/img/brand/sygnet.svg', width: 30, height: 30, alt: 'ProgEdu'}"
   [sidebarToggler]="'lg'" [asideMenuToggler]="''">
   <ul class="nav navbar-nav d-md-down-none">
     <div class="btn-group" dropdown [isOpen]="status.isOpen" (isOpenChange)="change($event)" placement="top">
+      <li class="nav-item px-3">
+        <a class="nav-link" href="javascript:void(0);" (click)='changeToDashboard()'>Dashboard</a>
+      </li>
       <li class="nav-item px-3" *ngIf="isAdmin">
         <a dropdownToggle class="nav-link dropdown-toggle" href (click)="false"> Management</a>
       </li>
@@ -26,6 +29,7 @@
         <img src="assets/img/avatars/login.jpg" class="img-avatar" alt="admin@bootstrapmaster.com" />
       </a>
       <div class="dropdown-menu dropdown-menu-right" *dropdownMenu aria-labelledby="simple-dropdown">
+        <a class="dropdown-item" href (click)="logout()"><i class="fa fa-lock"></i> Modify Password</a>
         <a class="dropdown-item" href (click)="logout()"><i class="fa fa-lock"></i> Logout</a>
       </div>
     </li>
@@ -39,19 +43,10 @@
 
   <!-- Main content -->
   <main class="main">
-    <!-- Breadcrumb -->
-    <!-- breaking change 'cui-breadcrumb' -->
-    <cui-breadcrumb>
-      <!-- Breadcrumb Menu-->
-      <li class="breadcrumb-menu d-md-down-none">
-        <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-          <a class="btn" [routerLink]="['/dashboard']"><i class="icon-graph"></i> &nbsp;Dashboard</a>
-        </div>
-      </li>
-    </cui-breadcrumb>
+
     <div class="container-fluid">
       <router-outlet></router-outlet>
-    </div><!-- /.container-fluid -->
+    </div>
   </main>
 
 </div>

@@ -5,6 +5,7 @@ import { StudentRoutingModule } from './student-routing.module';
 import { StudashboardComponent } from './studashboard/studashboard.component';
 import { FormsModule } from '@angular/forms';
 import { ChartsModule } from 'ng2-charts';
+import { ProjectChoosedComponent } from './project-choosed/project-choosed.component';
 
 @NgModule({
   imports: [
@@ -13,6 +14,6 @@ import { ChartsModule } from 'ng2-charts';
     ChartsModule,
     StudentRoutingModule
   ],
-  declarations: [StudashboardComponent],
+  declarations: [StudashboardComponent, ProjectChoosedComponent],
 })
 export class StudentModule { }

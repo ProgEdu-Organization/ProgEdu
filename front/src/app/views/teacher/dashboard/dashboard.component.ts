@@ -1,5 +1,5 @@
 import { Component, OnInit, NgModule } from '@angular/core';
-import { allStudentDatas } from '../../../containers/default-layout/_nav'
+import { allStudentDatas } from '../../../containers/default-layout/_nav';
 import { DashboardService } from './dashboard.service';
 
 @Component({
