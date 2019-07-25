@@ -24,8 +24,6 @@ public class AssignmentDbManager {
 
   }
 
-  UserDbManager udb = UserDbManager.getInstance();
-
   /**
    * Add assignment to database
    * 
@@ -242,49 +240,4 @@ public class AssignmentDbManager {
     return typeId;
   }
 
-  /**
-   * get assignment type Id
-   * 
-   * @param name Assignment_Type name
-   * @return type assignment type
-   */
-  public int getAssignmentTypeId(String name) {
-    int id = 0;
-    String sql = "SELECT * FROM Assignment_Type WHERE name=?";
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
-      preStmt.setString(1, name);
-      try (ResultSet rs = preStmt.executeQuery()) {
-        while (rs.next()) {
-          id = rs.getInt("id");
-        }
-      }
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
-    return id;
-  }
-
-  /**
-   * get assignment type name
-   * 
-   * @param id Assignment_Type id
-   * @return name assignment name
-   */
-  public String getAssignmentTypeName(int id) {
-    String typeName = null;
-    String sql = "SELECT * FROM Assignment_Type WHERE id=?";
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
-      preStmt.setInt(1, id);
-      try (ResultSet rs = preStmt.executeQuery()) {
-        while (rs.next()) {
-          typeName = rs.getString("name");
-        }
-      }
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
-    return typeName;
-  }
 }
