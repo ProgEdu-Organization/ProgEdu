@@ -31,7 +31,7 @@ public class AssignmentDbManager {
    */
   public void addAssignment(Assignment assignment) {
     String sql = "INSERT INTO Assignment(name, createTime, deadline, description, hasTemplate"
-        + ", typeId, zipChecksum, zipUrl, releaseTime, display)  VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?,"
+        + ", type, zipChecksum, zipUrl, releaseTime, display)  VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?,"
         + "?)";
 
     try (Connection conn = database.getConnection();
@@ -231,7 +231,7 @@ public class AssignmentDbManager {
       preStmt.setString(1, name);
       try (ResultSet rs = preStmt.executeQuery()) {
         while (rs.next()) {
-          typeId = rs.getInt("typeId");
+          typeId = rs.getInt("type");
         }
       }
     } catch (SQLException e) {
