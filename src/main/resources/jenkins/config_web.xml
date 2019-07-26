@@ -80,7 +80,7 @@
         <timeoutMinutes>15</timeoutMinutes>
       </strategy>
       <buildStep class="hudson.tasks.Shell">
-        <command>npm install --save selenium-webdriver
+        <command>npm i
 npm run test
 npm run htmlhint
 npm run stylelint
@@ -93,8 +93,8 @@ npm run eslint</command>
   </builders>
   <publishers>
     <hudson.tasks.ArtifactArchiver>
-      <artifacts>target/screenshot/*.png</artifacts>
-      <allowEmptyArchive>false</allowEmptyArchive>
+      <artifacts>target/screenshot/*.png,node_modules/</artifacts>
+      <allowEmptyArchive>true</allowEmptyArchive>
       <onlyIfSuccessful>false</onlyIfSuccessful>
       <fingerprint>false</fingerprint>
       <defaultExcludes>true</defaultExcludes>
