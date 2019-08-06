@@ -9,7 +9,7 @@ public class User implements Serializable {
 
   private int gitLabId;
 
-  private String studentId; // ??�緯??��?��?��?�蕭(??�稷??��?�蕭)
+  private String username; // ??�緯??��?��?��?�蕭(??�稷??��?�蕭)
                             // ??��?��?�蕭
 
   private String name; // ??��?�蕭??��?�蕭??��?�蕭??��(??��?�蕭??��?�蕭)
@@ -29,14 +29,14 @@ public class User implements Serializable {
   /**
    * User constructor
    * 
-   * @param studentId studentId
+   * @param username studentId
    * @param name      student's full name
    * @param email     student's email
    * @param password  student's password
    * @param display   student's display
    */
-  public User(String studentId, String name, String email, String password, boolean display) {
-    this.studentId = studentId;
+  public User(String username, String name, String email, String password, boolean display) {
+    this.username = username;
     this.name = name;
     this.email = email;
     this.password = password;
@@ -59,12 +59,12 @@ public class User implements Serializable {
     this.gitLabId = gitLabId;
   }
 
-  public String getStufentId() {
-    return studentId;
+  public String getUsername() {
+    return username;
   }
 
-  public void setStudentId(String studentId) {
-    this.studentId = studentId;
+  public void setUsername(String username) {
+    this.username = username;
   }
 
   public String getName() {
