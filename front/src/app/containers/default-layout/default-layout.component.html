@@ -36,37 +36,26 @@
   </ul>
 </app-header>
 <div class="app-body">
-  <<<<<<< HEAD <app-sidebar [fixed]="true" [display]="'lg'" *ngIf="isAdmin && navDataisload">
+  <app-sidebar [fixed]="true" [display]="'lg'" *ngIf="isAdmin && navDataisload">
     <app-sidebar-nav [navItems]="navItems" [perfectScrollbar] [disabled]="sidebarMinimized"></app-sidebar-nav>
     <app-sidebar-minimizer></app-sidebar-minimizer>
-    </app-sidebar>
+  </app-sidebar>
 
-    <!-- Main content -->
-    <main class="main">
-      =======
-      <app-sidebar [fixed]="true" [display]="'lg'" *ngIf="navDataisload">
-        <app-sidebar-nav [navItems]="navItems" [perfectScrollbar] [disabled]="sidebarMinimized"></app-sidebar-nav>
-        <app-sidebar-minimizer></app-sidebar-minimizer>
-      </app-sidebar>
-      <!-- Main content -->
-      <main class="main">
-        <!-- Breadcrumb -->
-        <!-- breaking change 'cui-breadcrumb' -->
-        >>>>>>> a2084aeb09d90af01058beb38a71388d5cc6d61a
-        <cui-breadcrumb>
-          <!-- Breadcrumb Menu-->
-          <li class="breadcrumb-menu d-md-down-none">
-            <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-              <a class="btn" href="#"><i class="icon-speech"></i></a>
-              <a class="btn" [routerLink]="['/dashboard']"><i class="icon-graph"></i> &nbsp;Dashboard</a>
-              <a class="btn" href="#"><i class="icon-settings"></i> &nbsp;Settings</a>
-            </div>
-          </li>
-        </cui-breadcrumb>
-        <div class="container-fluid">
-          <router-outlet></router-outlet>
-          <<<<<<< HEAD </div>=======</div> <!-- /.container-fluid -->
-            >>>>>>> a2084aeb09d90af01058beb38a71388d5cc6d61a
-      </main>
+  <!-- Main content -->
+  <main class="main">
+    <cui-breadcrumb>
+      <!-- Breadcrumb Menu-->
+      <li class="breadcrumb-menu d-md-down-none">
+        <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+          <a class="btn" href="#"><i class="icon-speech"></i></a>
+          <a class="btn" [routerLink]="['/dashboard']"><i class="icon-graph"></i> &nbsp;Dashboard</a>
+          <a class="btn" href="#"><i class="icon-settings"></i> &nbsp;Settings</a>
+        </div>
+      </li>
+    </cui-breadcrumb>
+    <div class="container-fluid">
+      <router-outlet></router-outlet>
+    </div> <!-- /.container-fluid -->
+  </main>
 
 </div>

@@ -30,12 +30,8 @@
               "includePaths": ["./node_modules"]
             },
             "scripts": [
-<<<<<<< HEAD
               "node_modules/chart.js/dist/Chart.min.js",
               "node_modules/jquery/dist/jquery.min.js"
-=======
-              "node_modules/chart.js/dist/Chart.min.js"
->>>>>>> a2084aeb09d90af01058beb38a71388d5cc6d61a
             ]
           },
           "configurations": {
@@ -49,19 +45,10 @@
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
-<<<<<<< HEAD
               "fileReplacements": [{
                 "replace": "src/environments/environment.ts",
                 "with": "src/environments/environment.prod.ts"
               }]
-=======
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.prod.ts"
-                }
-              ]
->>>>>>> a2084aeb09d90af01058beb38a71388d5cc6d61a
             }
           }
         },

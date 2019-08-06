@@ -33,16 +33,12 @@
 		<servlet-name>AfterEnter</servlet-name>
 		<servlet-class>fcu.selab.progedu.conn.AfterEnter</servlet-class>
 	</servlet>
-<<<<<<< HEAD
 	
-=======
->>>>>>> a2084aeb09d90af01058beb38a71388d5cc6d61a
 	<servlet-mapping>
 		<servlet-name>AfterEnter</servlet-name>
 		<url-pattern>/AfterEnter</url-pattern>
 	</servlet-mapping>
 	<servlet>
-<<<<<<< HEAD
 		<description>Test</description>
 		<display-name>LoginAuth</display-name>
 		<servlet-name>LoginAuth</servlet-name>
@@ -54,8 +50,6 @@
 	</servlet-mapping>
 	
 	<servlet>
-=======
->>>>>>> a2084aeb09d90af01058beb38a71388d5cc6d61a
 		<description></description>
 		<display-name>ChooseLanguage</display-name>
 		<servlet-name>ChooseLanguage</servlet-name>
@@ -96,11 +90,7 @@
 	    </init-param>
 	    <init-param>
 	        <param-name>cors.supportedHeaders</param-name>
-<<<<<<< HEAD
 	        <param-value>Accept, Origin, X-Requested-With, Content-Type, Last-Modified</param-value>
-=======
-	        <param-value>accept, authorization, origin</param-value>
->>>>>>> a2084aeb09d90af01058beb38a71388d5cc6d61a
 	    </init-param>
 	    <init-param>
 	        <param-name>cors.supportedMethods</param-name>
