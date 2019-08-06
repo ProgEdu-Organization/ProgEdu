@@ -40,7 +40,7 @@ public class GroupService {
   Conn conn = Conn.getInstance();
   UserService userService = new UserService();
   GroupDbManager gdb = GroupDbManager.getInstance();
-  ProjectService projectService = new ProjectService();
+  AssignmentService projectService = new AssignmentService();
 
   /**
    * upload a csvfile to create group

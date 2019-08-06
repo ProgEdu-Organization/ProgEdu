@@ -45,15 +45,15 @@ import fcu.selab.progedu.config.GitlabConfig;
 import fcu.selab.progedu.config.JenkinsConfig;
 import fcu.selab.progedu.conn.Conn;
 import fcu.selab.progedu.conn.HttpConnect;
-import fcu.selab.progedu.data.Project;
-import fcu.selab.progedu.db.ProjectDbManager;
+import fcu.selab.progedu.data.Assignment;
+import fcu.selab.progedu.db.AssignmentDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.jenkins.JenkinsApi;
 import fcu.selab.progedu.utils.Linux;
 import fcu.selab.progedu.utils.ZipHandler;
 
-@Path("project/")
-public class ProjectService {
+@Path("assignment/")
+public class AssignmentService {
   private HttpConnect httpConnect = HttpConnect.getInstance();
   private Conn conn = Conn.getInstance();
   private GitlabUser root = conn.getRoot();
@@ -69,7 +69,7 @@ public class ProjectService {
   private String mailUsername;
   private String mailPassword;
 
-  private ProjectDbManager dbManager = ProjectDbManager.getInstance();
+  private AssignmentDbManager dbManager = AssignmentDbManager.getInstance();
   private CommitRecordService commitRecordService = new CommitRecordService();
   private CommitResultService commitResultService = new CommitResultService();
   private CommitRecordStateService commitRecordStateService = new CommitRecordStateService();
@@ -88,7 +88,7 @@ public class ProjectService {
   /**
    * Constuctor
    */
-  public ProjectService() {
+  public AssignmentService() {
     try {
       zipHandler = new ZipHandler();
       jenkinsRootUsername = jenkinsData.getJenkinsRootUsername();
@@ -108,6 +108,7 @@ public class ProjectService {
    * @param assignmentType      abc
    * @param uploadedInputStream abc
    * @param fileDetail          abc
+   * @param releaseTime         abc
    * @return abc
    * @throws Exception abc
    */
@@ -115,8 +116,9 @@ public class ProjectService {
   @Path("create")
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   @Produces(MediaType.APPLICATION_JSON)
-  public Response newProject(@FormDataParam("Hw_Name") String name,
+  public Response newAssignment(@FormDataParam("Hw_Name") String name,
       @FormDataParam("Hw_Deadline") String deadline, @FormDataParam("Hw_README") String readMe,
+      @FormDataParam("Hw_ReleaseTime") String releaseTime,
       @FormDataParam("fileRadio") String assignmentType,
       @FormDataParam("file") InputStream uploadedInputStream,
       @FormDataParam("file") FormDataContentDisposition fileDetail) throws Exception {
@@ -125,14 +127,15 @@ public class ProjectService {
     String folderName = null;
     String filePath = null;
     boolean hasTemplate = false;
+    boolean display = true;
 
     assignmentTypeSelector = AssignmentTypeFactory.getAssignmentType(assignmentType);
 
-    // 1. Create root project and get project id and url
-    createRootProject(name);
-    rootProjectUrl = getThisProjectUrl(name);
+    // 1. Create root assignment and get assignment id and url
+    createRootAssignment(name);
+    rootProjectUrl = getThisAssignmentUrl(name);
 
-    // 2. Clone the project to C:\\Users\\users\\AppData\\Temp\\uploads
+    // 2. Clone the assignment to C:\\Users\\users\\AppData\\Temp\\uploads
     String cloneFilePath = uploadDir + name;
     String cloneCommand = "git clone " + rootProjectUrl + " " + cloneFilePath;
     linuxApi.execLinuxCommand(cloneCommand);
@@ -151,8 +154,7 @@ public class ProjectService {
       }
     }
 
-    // 4. Unzip the uploaded file to tests folder and uploads folder on tomcat,
-    // extract main method from tests folder, then zip as root project
+    // 4. Unzip the file to the root assignment
     try {
       assignmentTypeSelector.unzip(filePath, folderName, name, zipHandler);
       setTestFileInfo();
@@ -180,20 +182,28 @@ public class ProjectService {
     String pushCommand = "git push";
     linuxApi.execLinuxCommandInFile(pushCommand, cloneFilePath);
 
-    // remove project file in linux
+    // remove assignment file in linux
     String removeFileCommand = "rm -rf uploads/";
     linuxApi.execLinuxCommandInFile(removeFileCommand, TEMP_DIR);
 
     // String removeTestDirectoryCommand = "rm -rf tests/" + name;
     // linuxApi.execLinuxCommandInFile(removeTestDirectoryCommand, TEMP_DIR);
 
-    // 9. Add project to database
+    // 9. Set display value to "false" if releaseTime is not empty
+    // **
+    if (releaseTime != null) {
+      display = false;
+    }
+    // **
+
+    // 10. Add assignment to database
     Date date = new Date();
     SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     sdFormat.setTimeZone(TimeZone.getTimeZone("Asia/Taipei"));
     String dateTime = sdFormat.format(date);
-    addProject(name, dateTime, deadline, readMe, assignmentType, hasTemplate, testZipChecksum,
-        testZipUrl);
+
+    addAssignment(name, dateTime, deadline, readMe, assignmentType, hasTemplate, testZipChecksum,
+        testZipUrl, releaseTime, display);
 
     List<GitlabUser> users = conn.getUsers();
     Collections.reverse(users);
@@ -202,7 +212,7 @@ public class ProjectService {
         continue;
       }
 
-      // 10. Create student project, and import project
+      // 11. Create student project, and import project
       GitlabProject project = conn.createPrivateProject(user.getId(), name, rootProjectUrl);
       httpConnect.setGitlabWebhook(project.getOwner().getUsername(), project);
 
@@ -219,15 +229,15 @@ public class ProjectService {
     return response;
   }
 
-  private void createRootProject(String name) {
-    conn.createRootProject(name);
+  private void createRootAssignment(String name) {
+    conn.createRootAssignment(name);
   }
 
-  public List<String> getAllProjectNames() {
-    return dbManager.listAllProjectNames();
+  public List<String> getAllAssignmentNames() {
+    return dbManager.listAllAssignmentNames();
   }
 
-  private String getThisProjectUrl(String name) {
+  private String getThisAssignmentUrl(String name) {
     String url = null;
     String gitlabUrl = null;
     try {
@@ -235,7 +245,7 @@ public class ProjectService {
     } catch (LoadConfigFailureException e) {
       e.printStackTrace();
     }
-    List<GitlabProject> rootProjects = conn.getProject(root);
+    List<GitlabProject> rootProjects = conn.getAssignment(root);
     for (GitlabProject project : rootProjects) {
       String proName = project.getName();
       if (proName.equals(name)) {
@@ -368,16 +378,16 @@ public class ProjectService {
   /**
    * create readme file
    * 
-   * @param readMe      content
-   * @param projectName project name
+   * @param readMe         content
+   * @param assignmentName assignment name
    */
-  public void createReadmeFile(String readMe, String projectName) {
-    String projectDir = uploadDir + projectName;
+  public void createReadmeFile(String readMe, String assignmentName) {
+    String assignmentDir = uploadDir + assignmentName;
 
     System.out.println("readMe : " + readMe);
 
     try (Writer writer = new BufferedWriter(
-        new OutputStreamWriter(new FileOutputStream(projectDir + "/README.md"), "utf-8"));) {
+        new OutputStreamWriter(new FileOutputStream(assignmentDir + "/README.md"), "utf-8"));) {
       writer.write(readMe);
     } catch (IOException ex) {
       // report
@@ -385,41 +395,47 @@ public class ProjectService {
   }
 
   /**
-   * Add a project to database
+   * Add a assignment to database
    * 
-   * @param name        Project name
-   * @param deadline    Project deadline
-   * @param readMe      Project readme
+   * @param name        Assignment name
+   * @param deadline    Assignment deadline
+   * @param readMe      Assignment readme
    * @param fileType    File type
    * @param hasTemplate Has template
    */
-  public void addProject(String name, String createTime, String deadline, String readMe,
-      String fileType, boolean hasTemplate, String testZipChecksum, String testZipUrl) {
-    Project project = new Project();
+  public void addAssignment(String name, String createTime, String deadline, String readMe,
+      String fileType, boolean hasTemplate, String testZipChecksum, String testZipUrl,
+      String releaseTime, boolean display) {
+    Assignment assignment = new Assignment();
 
-    project.setName(name);
-    project.setCreateTime(createTime);
-    project.setDeadline(deadline);
-    project.setDescription(readMe);
-    project.setType(fileType);
-    project.setHasTemplate(hasTemplate);
-    project.setTestZipChecksum(testZipChecksum);
-    project.setTestZipUrl(testZipUrl);
+    int fileTypeId = dbManager.getAssignmentTypeId(fileType);
 
-    dbManager.addProject(project);
+    assignment.setName(name);
+    assignment.setCreateTime(createTime);
+    assignment.setDeadline(deadline);
+    assignment.setDescription(readMe);
+    assignment.setType(fileTypeId);
+    assignment.setHasTemplate(hasTemplate);
+    assignment.setTestZipChecksum(testZipChecksum);
+    assignment.setTestZipUrl(testZipUrl);
+    assignment.setReleaseTime(releaseTime);
+    assignment.setDisplay(display);
+
+    // fileType must change to AssignmentTypeId to store in database
+    dbManager.addAssignment(assignment);
   }
 
   /**
-   * delete projects
+   * delete assignments
    * 
-   * @param name project name
+   * @param name assignment name
    * @return response
    */
   @POST
   @Path("delete")
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   @Produces(MediaType.APPLICATION_JSON)
-  public Response deleteProject(@FormDataParam("del_Hw_Name") String name) {
+  public Response deleteAssignment(@FormDataParam("del_Hw_Name") String name) {
     Linux linuxApi = new Linux();
     // delete tomcat test file
     String removeTestDirectoryCommand = "rm -rf tests/" + name;
@@ -431,13 +447,13 @@ public class ProjectService {
     String removeFileCommand = "rm -rf tests/" + name + "-COMPLETE";
     linuxApi.execLinuxCommandInFile(removeFileCommand, TEMP_DIR);
     // delete db
-    dbManager.deleteProject(name);
+    dbManager.deleteAssignment(name);
     commitRecordService.deleteRecord(name);
     commitResultService.deleteResult(name);
     commitRecordStateService.deleteRecordState(name);
 
     // delete gitlab
-    conn.deleteProjects(name);
+    conn.deleteAssignments(name);
     String jenkinsUserName = "";
     String jenkinsPass = "";
     try {
@@ -464,21 +480,22 @@ public class ProjectService {
   }
 
   /**
-   * edit projects
+   * edit assignments
    * 
-   * @param name project name
+   * @param name assignment name
    * @return response
    */
   @POST
   @Path("edit")
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   @Produces(MediaType.APPLICATION_JSON)
-  public Response editProject(@FormDataParam("Edit_Hw_Name") String name,
+  public Response editAssignment(@FormDataParam("Edit_Hw_Name") String name,
       @FormDataParam("Hw_Deadline") String deadline, @FormDataParam("Hw_README") String readMe,
+      @FormDataParam("Hw_ReleaseTime") String releaseTime,
       @FormDataParam("Hw_TestCase") InputStream uploadedInputStream,
       @FormDataParam("Hw_TestCase") FormDataContentDisposition fileDetail) {
 
-    dbManager.editProject(deadline, readMe, name);
+    dbManager.editAssignment(deadline, readMe, releaseTime, name);
 
     if (!fileDetail.getFileName().isEmpty()) {
       // update test case
@@ -488,7 +505,7 @@ public class ProjectService {
       String checksum = getChecksum(filePath);
       System.out.println("checksum : " + checksum);
 
-      dbManager.updateProjectChecksum(name, checksum);
+      dbManager.updateAssignmentChecksum(name, checksum);
     }
 
     Response response = Response.ok().build();
@@ -500,17 +517,17 @@ public class ProjectService {
   }
 
   /**
-   * get project checksum
+   * get assignment checksum
    * 
-   * @param projectName project name
+   * @param assignmentName assignment name
    * @return checksum
    */
   @GET
   @Path("checksum")
   @Produces(MediaType.APPLICATION_JSON)
-  public Response getProject(@QueryParam("proName") String projectName) {
-    Project project = new Project();
-    project = dbManager.getProjectByName(projectName);
+  public Response getAssignment(@QueryParam("proName") String assignmentName) {
+    Assignment project = new Assignment();
+    project = dbManager.getAssignmentByName(assignmentName);
     return Response.ok().entity(project).build();
   }
 

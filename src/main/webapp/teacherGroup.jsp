@@ -3,8 +3,8 @@
 <%@ page import="fcu.selab.progedu.jenkins.JenkinsApi, fcu.selab.progedu.conn.Language" %>
 <%@ page import="fcu.selab.progedu.config.GitlabConfig" %>
 <%@ page import="fcu.selab.progedu.config.JenkinsConfig" %>
-<%@ page import="fcu.selab.progedu.db.UserDbManager, fcu.selab.progedu.db.ProjectDbManager" %>
-<%@ page import="fcu.selab.progedu.data.User, fcu.selab.progedu.data.Project" %>   
+<%@ page import="fcu.selab.progedu.db.UserDbManager,fcu.selab.progedu.db.AssignmentDbManager" %>
+<%@ page import="fcu.selab.progedu.data.User,fcu.selab.progedu.data.Assignment" %>   
 <%@ page import="org.gitlab.api.GitlabAPI" %>
 <%@ page import="org.gitlab.api.models.*" %>
 <%@ page import="java.util.*, java.io.BufferedReader, java.io.InputStreamReader, java.io.IOException" %>

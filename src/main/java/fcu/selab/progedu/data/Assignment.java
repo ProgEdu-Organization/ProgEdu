@@ -1,6 +1,8 @@
 package fcu.selab.progedu.data;
 
-public class Project {
+public class Assignment {
+
+  private int id = 0;
 
   private String createTime = "";
 
@@ -12,7 +14,7 @@ public class Project {
 
   private boolean hasTemplate = false;
 
-  private String type = "";
+  private int type = 0;
 
   private String gitLabUrl = "";
 
@@ -21,6 +23,18 @@ public class Project {
   private String testZipChecksum = "";
 
   private String testZipUrl = "";
+
+  private String releaseTime = "";
+
+  private boolean display = true;
+
+  public int getId() {
+    return id;
+  }
+
+  public void setId(int id) {
+    this.id = id;
+  }
 
   public String getCreateTime() {
     return createTime;
@@ -62,12 +76,12 @@ public class Project {
     this.hasTemplate = hasTemplate;
   }
 
-  public String getType() {
+  public int getType() {
     return type;
   }
 
-  public void setType(String type) {
-    this.type = type;
+  public int setType(int type) {
+    return this.type = type;
   }
 
   public String getGitLabUrl() {
@@ -100,5 +114,21 @@ public class Project {
 
   public void setTestZipUrl(String testZipUrl) {
     this.testZipUrl = testZipUrl;
+  }
+
+  public String getReleaseTime() {
+    return releaseTime;
+  }
+
+  public void setReleaseTime(String releaseTime) {
+    this.releaseTime = releaseTime;
+  }
+
+  public boolean isDisplay() {
+    return display;
+  }
+
+  public void setDisplay(boolean display) {
+    this.display = display;
   }
 }

@@ -13,15 +13,15 @@ import javax.ws.rs.core.Response;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import fcu.selab.progedu.db.AssignmentDbManager;
 import fcu.selab.progedu.db.CommitRecordDbManager;
 import fcu.selab.progedu.db.IDatabase;
 import fcu.selab.progedu.db.MySqlDatabase;
-import fcu.selab.progedu.db.ProjectDbManager;
 
 @Path("commits/record/")
 public class CommitRecordService {
   CommitRecordDbManager commitRecordDb = CommitRecordDbManager.getInstance();
-  ProjectDbManager pdb = ProjectDbManager.getInstance();
+  AssignmentDbManager pdb = AssignmentDbManager.getInstance();
 
   /**
    * get counts by different color
@@ -52,7 +52,7 @@ public class CommitRecordService {
   public Response getCountGroupByHwAndTime(@QueryParam("hw") String hw) {
     JSONObject ob = new JSONObject();
     JSONArray records = commitRecordDb.getCountGroupByHwAndTime(hw);
-    String deadline = pdb.getProjectByName(hw).getDeadline();
+    String deadline = pdb.getAssignmentByName(hw).getDeadline();
     ob.put("records", records);
     ob.put("title", hw);
     ob.put("deadline", deadline);

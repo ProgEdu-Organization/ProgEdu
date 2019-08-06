@@ -15,7 +15,7 @@ public class TestUpdateCommitResult {
 
     int i = 1;
     for (User user : users) {
-      String userName = user.getUserName();
+      String userName = user.getUsername();
       System.out.println(i + ", " + userName);
       service.updateCommitResult(userName, "OOP-HW4");
       i++;

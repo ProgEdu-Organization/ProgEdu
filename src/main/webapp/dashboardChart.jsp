@@ -3,18 +3,20 @@
 <%@ page
 	import="fcu.selab.progedu.conn.Language"%>
 <%@ page
-	import="fcu.selab.progedu.db.UserDbManager, fcu.selab.progedu.db.ProjectDbManager"%>
+	import="fcu.selab.progedu.db.UserDbManager, fcu.selab.progedu.db.AssignmentDbManager"%>
 <%@ page
-	import="fcu.selab.progedu.data.User, fcu.selab.progedu.data.Project"%>
+	import="fcu.selab.progedu.data.User, fcu.selab.progedu.data.Assignment"%>
 <%@ page import="java.util.*"%>
 <%@ page
 	import="org.json.JSONArray, org.json.JSONException, org.json.JSONObject"%>
 
 <%
-	if (session.getAttribute("username") == null || session.getAttribute("username").toString().equals("")) {
+ 
+  if (session.getAttribute("username") == null || session.getAttribute("username").toString().equals("")) {
 		response.sendRedirect("index.jsp");
 	}
 	session.putValue("page", "dashboard");
+
 %>
 
 <%@ include file="language.jsp"%>
@@ -124,16 +126,13 @@
 </head>
 <body>
 	<%
-		UserDbManager db = UserDbManager.getInstance();
-		ProjectDbManager Pdb = ProjectDbManager.getInstance();
-
-		// db users
-		List<User> users = db.listAllUsers();
-
-		// db projects
-		List<Project> dbProjects = Pdb.listAllProjects();
-		List<String> pNames = Pdb.listAllProjectNames();
-
+	  UserDbManager db = UserDbManager.getInstance();
+			    AssignmentDbManager Pdb = AssignmentDbManager.getInstance();
+				// db users
+				List<User> users = db.listAllUsers();
+				// db projects
+				List<Assignment> dbProjects = Pdb.listAllAssignments();
+				List<String> pNames = Pdb.listAllAssignmentNames();
 	%>
 	<%@ include file="header.jsp"%>
 	<!-- -----sidebar----- -->
@@ -172,15 +171,15 @@
 				</font>
 				<ul id="student" class="collapse" style="list-style: none;">
 					<%
-						for (User user : users) {
-							String userName = user.getUserName();
-							String name = user.getName();
-							String href = "\"dashStuChoosed.jsp?studentId=" + user.getGitLabId() + "\"";
+					  for (User user : users) {
+																											String studentId = user.getStufentId();
+																											String name = user.getName();
+																											String href = "\"dashStuChoosed.jsp?studentId=" + user.getGitLabId() + "\"";
 					%>
 					<li class="nav-item">
 						<font size="3">
 							<a class="nav-link" href=<%=href%>>
-								<i class="fa fa-angle-right" aria-hidden="true"></i>&nbsp; <%=userName%>&nbsp; <%=name%>
+								<i class="fa fa-angle-right" aria-hidden="true"></i>&nbsp; <%=studentId%>&nbsp; <%=name%>
 							</a>
 						</font>
 					</li>

@@ -101,7 +101,7 @@ public class StudentDashChoosePro {
   }
 
   private String checkStatus(String result, String userName, String projectName, int num,
-      String proType) {
+      int proType) {
     String status;
 
     if (jenkins.checkIsInitialization(num)) {
@@ -194,7 +194,7 @@ public class StudentDashChoosePro {
    * @return color
    */
   public String getCommitStatus(int num, String userName, String projectName, String apiJson,
-      String proType) {
+      int proType) {
     String result = jenkins.getJobBuildResult(apiJson);
     return checkStatus(result, userName, projectName, num, proType);
 

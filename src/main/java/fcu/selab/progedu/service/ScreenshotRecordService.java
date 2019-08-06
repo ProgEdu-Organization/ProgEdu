@@ -23,7 +23,7 @@ import org.json.JSONObject;
 
 import fcu.selab.progedu.config.JenkinsConfig;
 import fcu.selab.progedu.db.CommitRecordDbManager;
-import fcu.selab.progedu.db.ProjectDbManager;
+import fcu.selab.progedu.db.AssignmentDbManager;
 import fcu.selab.progedu.db.ScreenshotRecordDbManager;
 import fcu.selab.progedu.db.UserDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
@@ -42,7 +42,7 @@ public class ScreenshotRecordService {
   CommitRecordDbManager commitRecordDb = CommitRecordDbManager.getInstance();
   ScreenshotRecordDbManager db = ScreenshotRecordDbManager.getInstance();
   UserDbManager userDb = UserDbManager.getInstance();
-  ProjectDbManager projectDb = ProjectDbManager.getInstance();
+  AssignmentDbManager projectDb = AssignmentDbManager.getInstance();
 
   public ScreenshotRecordService() {
     jenkinsData = JenkinsConfig.getInstance();

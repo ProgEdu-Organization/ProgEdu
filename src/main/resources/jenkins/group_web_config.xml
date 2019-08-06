@@ -76,8 +76,8 @@ npm run eslint</command>
   </builders>
   <publishers>
     <hudson.tasks.ArtifactArchiver>
-      <artifacts>target/screenshot/*.png</artifacts>
-      <allowEmptyArchive>false</allowEmptyArchive>
+      <artifacts>target/screenshot/*.png,node_modules/</artifacts>
+      <allowEmptyArchive>true</allowEmptyArchive>
       <onlyIfSuccessful>false</onlyIfSuccessful>
       <fingerprint>false</fingerprint>
       <defaultExcludes>true</defaultExcludes>

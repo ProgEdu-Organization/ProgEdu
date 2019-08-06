@@ -10,8 +10,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import fcu.selab.progedu.config.JenkinsConfig;
-import fcu.selab.progedu.data.Project;
-import fcu.selab.progedu.db.ProjectDbManager;
+import fcu.selab.progedu.data.Assignment;
+import fcu.selab.progedu.db.AssignmentDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.jenkins.JenkinsApi;
 import fcu.selab.progedu.jenkins.JobStatus;
@@ -22,8 +22,8 @@ public class StudentDash {
   String privateToken = null;
   StudentConn stuConn;
   GitlabUser user;
-  ProjectDbManager pdb = ProjectDbManager.getInstance();
-  List<Project> dbProjects = pdb.listAllProjects();
+  AssignmentDbManager pdb = AssignmentDbManager.getInstance();
+  List<Assignment> dbProjects = pdb.listAllAssignments();
   List<GitlabProject> gitProjects;
   JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
   JenkinsApi jenkins = JenkinsApi.getInstance();
@@ -49,7 +49,7 @@ public class StudentDash {
   public List<GitlabProject> getStuProject() {
     List<GitlabProject> projects = new ArrayList<>();
 
-    for (Project dbProject : dbProjects) {
+    for (Assignment dbProject : dbProjects) {
       for (GitlabProject project : gitProjects) {
         if (dbProject.getName().equals(project.getName())) {
           projects.add(project);

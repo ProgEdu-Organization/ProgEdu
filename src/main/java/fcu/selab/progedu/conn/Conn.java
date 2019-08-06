@@ -71,10 +71,13 @@ public class Conn {
   /**
    * Get user session by username and password
    * 
-   * @param userName Gitlab username
-   * @param password Gitlab password
+   * @param userName
+   *          Gitlab username
+   * @param password
+   *          Gitlab password
    * @return User's Session
-   * @throws IOException on gitlab api call error
+   * @throws IOException
+   *           on gitlab api call error
    */
   public GitlabSession getSession(String userName, String password) {
     GitlabSession userSession = null;
@@ -93,7 +96,8 @@ public class Conn {
   /**
    * Get a new GitlabApi by user token
    * 
-   * @param token A token from user
+   * @param token
+   *          A token from user
    * @return a new GitlabApi
    */
   public GitlabAPI getUserApi(String token) {
@@ -105,9 +109,11 @@ public class Conn {
   /**
    * Get a list of project by user
    * 
-   * @param user A user from database
+   * @param user
+   *          A user from database
    * @return The project list of user
-   * @throws IOException on gitlab api call error
+   * @throws IOException
+   *           on gitlab api call error
    */
   public List<GitlabProject> getProject(User user) {
     GitlabUser gitlabUser = new GitlabUser();
@@ -124,11 +130,13 @@ public class Conn {
   /**
    * Get a list of project by GitlabUser
    * 
-   * @param user of gitlab
+   * @param user
+   *          of gitlab
    * @return The project list of user
-   * @throws IOException on gitlab api call error
+   * @throws IOException
+   *           on gitlab api call error
    */
-  public List<GitlabProject> getProject(GitlabUser user) {
+  public List<GitlabProject> getAssignment(GitlabUser user) {
     List<GitlabProject> projects = new ArrayList<>();
     try {
       projects = gitlab.getProjectsViaSudo(user);
@@ -142,7 +150,8 @@ public class Conn {
   /**
    * get project all commit information
    * 
-   * @param projectId project id
+   * @param projectId
+   *          project id
    * @return commits list
    */
   public List<GitlabCommit> getProjectCommits(int projectId) {
@@ -158,7 +167,8 @@ public class Conn {
   /**
    * get project all commit information
    * 
-   * @param groupName groupName
+   * @param groupName
+   *          groupName
    * @return commits list
    */
   public List<GitlabCommit> getProjectCommits(String groupName) {
@@ -177,7 +187,8 @@ public class Conn {
   /**
    * Get all user's list of projects
    * 
-   * @throws IOException on gitlab api call error
+   * @throws IOException
+   *           on gitlab api call error
    */
   public List<GitlabProject> getAllProjects() {
     List<GitlabProject> projects = new ArrayList<>();
@@ -192,7 +203,8 @@ public class Conn {
   /**
    * Get a gitlab user
    * 
-   * @throws IOException on gitlab api call error
+   * @throws IOException
+   *           on gitlab api call error
    */
   public GitlabUser getUser() {
     GitlabUser gitlabUser = new GitlabUser();
@@ -207,7 +219,8 @@ public class Conn {
   /**
    * Get a gitlab user by user id
    * 
-   * @param userId user id
+   * @param userId
+   *          user id
    * @return gitlab user
    */
   public GitlabUser getUserById(int userId) {
@@ -224,7 +237,8 @@ public class Conn {
    * Get all user from Gitlab
    * 
    * @return a list of users
-   * @throws IOException on gitlab api call error
+   * @throws IOException
+   *           on gitlab api call error
    */
   public List<GitlabUser> getUsers() {
     List<GitlabUser> users = new ArrayList<>();
@@ -239,7 +253,8 @@ public class Conn {
   /**
    * get Gitlab user id via sudo
    * 
-   * @param userName user name
+   * @param userName
+   *          user name
    * @return Gitlab user
    */
   public GitlabUser getUserViaSudo(String userName) {
@@ -255,7 +270,8 @@ public class Conn {
   /**
    * Get a private token by GitlabUser
    * 
-   * @param user A Gitlab user
+   * @param user
+   *          A Gitlab user
    * @return a private token of user
    */
   public String getPrivateToken(GitlabUser user) {
@@ -272,7 +288,8 @@ public class Conn {
    * Get GitlabUser of Root
    * 
    * @return GitlabUser of Root
-   * @throws IOException on gitlab api call error
+   * @throws IOException
+   *           on gitlab api call error
    */
   public GitlabUser getRoot() {
     GitlabUser root = new GitlabUser();
@@ -288,7 +305,8 @@ public class Conn {
    * Get all groups of Gitlab
    * 
    * @return a list of groups from Gitlab
-   * @throws IOException on gitlab api call error
+   * @throws IOException
+   *           on gitlab api call error
    */
   public List<GitlabGroup> getGroups() {
     List<GitlabGroup> groups = new ArrayList<>();
@@ -303,9 +321,11 @@ public class Conn {
   /**
    * Get a list of project from group
    * 
-   * @param group A group form Gitlab
+   * @param group
+   *          A group form Gitlab
    * @return a list of project from group
-   * @throws IOException on gitlab api call error
+   * @throws IOException
+   *           on gitlab api call error
    */
   public List<GitlabProject> getGroupProject(GitlabGroup group) {
     List<GitlabProject> projects = new ArrayList<>();
@@ -320,9 +340,11 @@ public class Conn {
   /**
    * Get a list of group's member
    * 
-   * @param group a group from Gitlab
+   * @param group
+   *          a group from Gitlab
    * @return a list of group's member
-   * @throws IOException on gitlab api call error
+   * @throws IOException
+   *           on gitlab api call error
    */
   public List<GitlabGroupMember> getGroupMembers(GitlabGroup group) {
     List<GitlabGroupMember> groupMembers = new ArrayList<>();
@@ -337,7 +359,8 @@ public class Conn {
   /**
    * get Gitlab group id with group name
    * 
-   * @param groupName group name
+   * @param groupName
+   *          group name
    * @return group id
    */
   public GitlabGroup getGitlabGroup(String groupName) {
@@ -360,7 +383,8 @@ public class Conn {
    * mergeRequestsEnabled, Boolean wikiEnabled, Boolean snippetsEnabled, Boolean
    * publik, Integer visibilityLevel, String importUrl)
    * 
-   * @throws IOException on gitlab api call error
+   * @throws IOException
+   *           on gitlab api call error
    */
   public GitlabProject createPrivateProject(int userId, String proName, String proUrl)
       throws IOException {
@@ -372,13 +396,19 @@ public class Conn {
   /**
    * Create a new User
    * 
-   * @param email    User email
-   * @param password User password
-   * @param userName User name
-   * @param fullName Full name
+   * @param email
+   *          User email
+   * @param password
+   *          User password
+   * @param userName
+   *          User name
+   * @param fullName
+   *          Full name
    * @return true or false
-   * @throws LoadConfigFailureException on a instance call error
-   * @throws IOException                on gitlab api call error
+   * @throws LoadConfigFailureException
+   *           on a instance call error
+   * @throws IOException
+   *           on gitlab api call error
    */
   public boolean createUser(String email, String password, String userName, String fullName) {
     boolean isSuccess = true;
@@ -416,9 +446,12 @@ public class Conn {
   /**
    * Creates a Group
    *
-   * @param groupName The name of the group. The name will also be used as the
-   *                  path of the group.
+   * @param name
+   *          The name of the group. The name will also be used as the path of
+   *          the group.
    * @return The GitLab Group
+   * @throws IOException
+   *           on gitlab api call error
    */
   public GitlabGroup createGroup(String groupName) {
     try {
@@ -447,11 +480,15 @@ public class Conn {
   /**
    * Add a member to group
    * 
-   * @param groupId Group id
-   * @param userId  User id
-   * @param level   User level in group
+   * @param groupId
+   *          Group id
+   * @param userId
+   *          User id
+   * @param level
+   *          User level in group
    * @return true or false
-   * @throws IOException on gitlab api call error
+   * @throws IOException
+   *           on gitlab api call error
    */
   public boolean addMember(int groupId, int userId, int level) {
     GitlabAccessLevel accessLevel = null;
@@ -474,11 +511,13 @@ public class Conn {
   /**
    * Create a root project
    * 
-   * @param proName Project name
+   * @param proName
+   *          Project name
    * @return true or false
-   * @throws IOException on gitlab api call error
+   * @throws IOException
+   *           on gitlab api call error
    */
-  public boolean createRootProject(String proName) {
+  public boolean createRootAssignment(String proName) {
     boolean isSuccess = false;
     try {
       gitlab.createUserProject(1, proName);
@@ -492,9 +531,11 @@ public class Conn {
   /**
    * Get commit counts from project
    * 
-   * @param projectId Project id
+   * @param projectId
+   *          Project id
    * @return a count of commit
-   * @throws IOException on gitlab api call error
+   * @throws IOException
+   *           on gitlab api call error
    */
   public int getAllCommitsCounts(int projectId) {
     int count = 0;
@@ -515,7 +556,8 @@ public class Conn {
   /**
    * Get project commit
    * 
-   * @param projectId project id
+   * @param projectId
+   *          project id
    * @return list of commit
    */
   public List<GitlabCommit> getAllCommits(int projectId) {
@@ -531,7 +573,8 @@ public class Conn {
   /**
    * Replace the project url
    * 
-   * @param oldUrl The old url of project
+   * @param oldUrl
+   *          The old url of project
    * @return the new url
    */
   public String getReplaceUrl(String oldUrl) {
@@ -543,7 +586,8 @@ public class Conn {
   /**
    * Delete the target user
    * 
-   * @param userId user id
+   * @param userId
+   *          user id
    */
   public void deleteUser(int userId) {
     try {
@@ -556,7 +600,7 @@ public class Conn {
   /**
    * delete all gitlab projects
    */
-  public void deleteProjects(String name) {
+  public void deleteAssignments(String name) {
     List<GitlabProject> projects = getAllProjects();
     for (GitlabProject project : projects) {
       try {
@@ -572,7 +616,8 @@ public class Conn {
   /**
    * Update user password
    * 
-   * @param password user new password
+   * @param password
+   *          user new password
    */
   public void updateUserPassword(int userId, String password) {
     GitlabUser stuUser = new GitlabUser();
@@ -588,7 +633,8 @@ public class Conn {
   /**
    * get commits from gitlab project.
    * 
-   * @param name project's name
+   * @param name
+   *          project's name
    */
   public List<String> getAllCommitters(String name) {
     List<String> committers = new ArrayList<>();
