@@ -13,6 +13,10 @@ import org.json.JSONObject;
 
 import fcu.selab.progedu.db.AssignmentDbManager;
 import fcu.selab.progedu.db.CommitRecordDbManager;
+<<<<<<< HEAD
+=======
+import fcu.selab.progedu.db.CommitRecordStateDbManager;
+>>>>>>> #45CommitStatus
 
 @Path("commits/")
 public class CommitRecordStateService {
