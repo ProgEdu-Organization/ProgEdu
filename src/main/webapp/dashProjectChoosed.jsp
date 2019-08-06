@@ -165,6 +165,53 @@ html, body, .row, #navHeight {
 	margin: 10px;
 	background: #fff3cd;
 }
+
+* {
+	box-sizing: border-box
+}
+
+.screenshotSlides {
+	display: none
+}
+
+img {
+	vertical-align: middle;
+}
+
+/* Slideshow container */
+.slideshow-container {
+	max-width: 1000px;
+	position: relative;
+	margin: auto;
+}
+
+/* Next & previous buttons */
+.prev, .next {
+	cursor: pointer;
+	position: absolute;
+	top: 50%;
+	width: auto;
+	padding: 16px;
+	margin-top: -22px;
+	color: white;
+	font-weight: bold;
+	font-size: 18px;
+	transition: 0.6s ease;
+	border-radius: 0 3px 3px 0;
+	user-select: none;
+}
+
+/* Position the "next button" to the right */
+.next {
+	right: 0;
+	border-radius: 3px 0 0 3px;
+}
+
+/* On hover, add a grey background color */
+.prev:hover, .next:hover {
+	background-color: #f1f1f1;
+	color: black;
+}
 </style>
 
 <link rel="shortcut icon" href="img/favicon.ico" />
@@ -176,6 +223,7 @@ html, body, .row, #navHeight {
 	<%
 	  Conn conn = Conn.getInstance();
 
+<<<<<<< HEAD
 						UserDbManager db = UserDbManager.getInstance();
 						AssignmentDbManager Pdb = AssignmentDbManager.getInstance();
 						StudentDashChoosePro stuDashChoPro = new StudentDashChoosePro();
@@ -192,6 +240,26 @@ html, body, .row, #navHeight {
 						GitlabUser choosedUser = conn.getUserById(userId);
 						List<GitlabProject> projects = conn.getAssignment(choosedUser);
 						Collections.reverse(projects);
+=======
+				UserDbManager db = UserDbManager.getInstance();
+				ProjectDbManager Pdb = ProjectDbManager.getInstance();
+				StudentDashChoosePro stuDashChoPro = new StudentDashChoosePro();
+
+				List<User> users = db.listAllUsers();
+				List<Project> dbProjects = Pdb.listAllProjects();
+
+				// gitlab jenkins course��Data
+				GitlabConfig gitData = GitlabConfig.getInstance();
+				JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
+
+				JenkinsApi jenkins = JenkinsApi.getInstance();
+
+				GitlabUser choosedUser = conn.getUserById(userId);
+				List<GitlabProject> projects = conn.getProject(choosedUser);
+				Collections.reverse(projects);
+
+				//URL get userId is gitlabId, we need the real userId
+>>>>>>> Github/master
 	%>
 	<%@ include file="header.jsp"%>
 	<!-- -----sidebar----- -->
@@ -205,7 +273,11 @@ html, body, .row, #navHeight {
 				<ul id="overview" class="collapse" style="list-style: none;">
 					<%
 					  for (GitlabProject project : projects) {
+<<<<<<< HEAD
 									for (Assignment dbProject : dbProjects) {
+=======
+									for (Project dbProject : dbProjects) {
+>>>>>>> Github/master
 										if (project.getName().equals(dbProject.getName())) {
 											String href = "dashProjectChoosed.jsp?userId=" + choosedUser.getId() + "&proName="
 													+ project.getName();
@@ -227,6 +299,7 @@ html, body, .row, #navHeight {
 				<ul id="student" class="collapse show" style="list-style: none;">
 					<%
 					  for (User user : users) {
+<<<<<<< HEAD
 																													String style = "";
 																													String studentId = user.getStufentId();
 																													String href = "\"dashStuChoosed.jsp?studentId=" + user.getGitLabId() + "\"";
@@ -237,6 +310,18 @@ html, body, .row, #navHeight {
 					<li class="nav-item"><font size="3"><a
 							style="<%=style%>" class="nav-link" href=<%=href%>><i
 								class="fa fa-angle-right" aria-hidden="true"></i>&nbsp; <%=studentId%></a></font></li>
+=======
+									String style = "";
+									String userName = user.getUserName();
+									String href = "\"dashStuChoosed.jsp?studentId=" + choosedUser.getId() + "\"";
+									if (choosedUser.getUsername().equals(user.getUserName())) {
+										style = "color: burlywood;";
+									}
+					%>
+					<li class="nav-item"><font size="3"><a
+							style="<%=style%>" class="nav-link" href=<%=href%>><i
+								class="fa fa-angle-right" aria-hidden="true"></i>&nbsp; <%=userName%></a></font></li>
+>>>>>>> Github/master
 					<%
 					  }
 					%>
@@ -244,6 +329,7 @@ html, body, .row, #navHeight {
 		</ul>
 		<!-- -----sidebar----- -->
 	</div>
+	<!-- ------------------------ main -------------------------------------- -->
 	<div class="container-fluid" id="main">
 		<h1 style="margin-bottom: 20px;">
 			<%=choosedUser.getUsername()%>_
@@ -251,8 +337,14 @@ html, body, .row, #navHeight {
 		</h1>
 		<!-- ---------------------------- Project ------------------------------- -->
 		<%
+<<<<<<< HEAD
 		  AssignmentDbManager pDb = AssignmentDbManager.getInstance();
 							Assignment project = pDb.getAssignmentByName(projectName);
+=======
+		
+		  ProjectDbManager pDb = ProjectDbManager.getInstance();
+					Project project = pDb.getProjectByName(projectName);
+>>>>>>> Github/master
 		%>
 		<div style="margin: 10px 10px 10px 10px;">
 			<h2 style="white-space: nowrap">
@@ -270,6 +362,7 @@ html, body, .row, #navHeight {
 			<p><%=project.getDeadline()%></p>
 			<hr>
 		</div>
+<<<<<<< HEAD
 		<div class="card" style="padding: 0; width: fit-content">
 			<h4 id="Student Projects" class="card-header">
 				<i class="fa fa-table" aria-hidden="true"></i>&nbsp; Records
@@ -295,6 +388,35 @@ html, body, .row, #navHeight {
 									for (Integer num : buildNum) {
 						%>
 						<script type="text/javascript">
+=======
+		<div>
+			<div class="card"
+				style="padding: 0; width: fit-content; float: left;">
+				<h4 id="Student Projects" class="card-header">
+					<i class="fa fa-table" aria-hidden="true"></i>&nbsp; Records
+				</h4>
+				<div class="card-block"">
+					<%@ include file="projectLight.jsp"%>
+					<table class="table table-hover"
+						style="margin-top: 20px; width: 100%; margin-bottom: 0px;">
+						<thead>
+							<tr>
+								<th width="10%" class="text-center">Commit</th>
+								<th width="10%">Light</th>
+								<th width="15%">Date</th>
+								<th>Commit Message</th>
+							</tr>
+						</thead>
+						<tbody id="projectTbody">
+							<%
+							  List<Integer> buildNum = stuDashChoPro.getScmBuildCounts(choosedUser.getUsername(), projectName);
+										int commit_count = buildNum.size();
+										int i = 1;
+										int lastBuildMessageNum = 0;
+										for (Integer num : buildNum) {
+							%>
+							<script type="text/javascript">
+>>>>>>> Github/master
 									var userName = <%="'" + choosedUser.getUsername() + "'"%>
 									var proName = <%="'" + projectName + "'"%>
 									var date, color, message, num
@@ -332,6 +454,7 @@ html, body, .row, #navHeight {
 										}
 									});
 								</script>
+<<<<<<< HEAD
 						<%
 						  String tableActive = "";
 										if (num == commit_count) {
@@ -382,6 +505,144 @@ html, body, .row, #navHeight {
 		<!-- iFrame -->
 	</div>
 	<!-- ------------------------ main -------------------------------------- -->
+=======
+							<%
+							  String tableActive = "";
+											if (num == commit_count) {
+												tableActive = "tableActive";
+											}
+							%>
+							<tr id="<%=num%>" onClick="changeIframe(this)"
+								class="<%=tableActive%>">
+								<th width="10%" class="text-center"><%=i%></th>
+								<td width="10%"><p id=<%="color" + num%>></p></td>
+								<td width="15%" id=<%="date" + num%>></td>
+								<td id=<%="message" + num%>></td>
+							</tr>
+							<%
+							  i++;
+											lastBuildMessageNum = num;
+										}
+							%>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<!-----------------------------------------  Screenshot  ----------------------------------------->
+			<div class="card" id="Screenshots-area"
+				style="margin-left: 100px; width: fit-content; float: left;">
+				<h4 id="Screenshots" class="card-header">
+					<div>
+						<i class="fa fa-table" aria-hidden="true"></i> Screenshot
+						<div id='screenshotName' style="text-align: right; float: right;">No
+							the Screenshot</div>
+					</div>
+				</h4>
+				<div class="card-block"">
+					<div class="slideshow-container">
+						<%
+						  ScreenshotRecordDbManager sd = ScreenshotRecordDbManager.getInstance();
+									//why the userId need to -1, because this userId is the gitlabId
+									List<String> pngUrls = null;
+									for (User u : users) {
+										if (u.getGitLabId() == userId) {
+											pngUrls = sd.getScreenshots(u.getId(), projectName);
+											break;
+										}
+									}
+						%>
+
+						<a class="prev" onclick="plusSlides(-1, 0)">&#10094;</a> <a
+							class="next" onclick="plusSlides(1, 0)">&#10095;</a>
+					</div>
+				</div>
+			</div>
+			<script>
+			var pngUrls = new Array();
+			
+			<%
+			boolean showScreenshot = project.getType().equals("Web");
+			System.out.println(project.getType());
+			if (showScreenshot) {
+				for (int count = 0; count < pngUrls.size(); count++) {%>
+			pngUrls[<%=count%>] = "<%=pngUrls.get(count)%>";
+			<%} ;
+			} ;%>
+			var showScreenshot = <%=showScreenshot%>;
+			if(showScreenshot){
+				for(var url in pngUrls){
+					var pngUrl = "<%=jenkinsData.getJenkinsHostUrl()%>" + pngUrls[url];
+					$screenshotSlides = $("<div class='screenshotSlides'>"
+							+"<a href='"+ pngUrl + "'>"
+								+"<img src='"+  pngUrl +"' style='height: 480px' /"
+								+"</a></div>");
+
+					$('.slideshow-container').append($screenshotSlides)
+				}
+				var slideIndex = [1];
+				var slideId = ["screenshotSlides"]
+				showSlides(1, 0);
+			}else{
+				$("#Screenshots-area").css('display',"none");
+			}
+
+				
+				
+				function plusSlides(n, no) {
+				  showSlides(slideIndex[no] += n, no);
+				}
+				
+				function showSlides(n, no) {
+				  var i;
+				  var x = document.getElementsByClassName(slideId[no]);
+				  if (n > x.length) {slideIndex[no] = 1}    
+				  if (n < 1) {slideIndex[no] = x.length}
+				  for (i = 0; i < x.length; i++) {
+				     x[i].style.display = "none";  
+				  }
+				  x[slideIndex[no]-1].style.display = "block";
+				  //find the the screenshot location
+				  $screenshotSlides = $(".screenshotSlides").filter(function () {
+					    return $(this).css("display") == "block";
+					});
+				  var nowScreenshotUrl = $screenshotSlides.children("a").attr('href');
+				  var urlSplit = nowScreenshotUrl.split('/');
+				  var screenshotName = urlSplit[urlSplit.length - 1].split('.')[0]+'.html';
+				  $('#screenshotName').html(screenshotName);
+				}
+			</script>
+		</div>
+		<!-----------------------------------------  Screenshot  ----------------------------------------->
+		<!-- ---------------------------- Student Project ------------------------------- -->
+		<div style="clear: left;">
+			<hr>
+			<!-- iFrame -->
+			<%
+			  StudentDashChoosePro studentDashChoosePro = new StudentDashChoosePro();
+						String color = studentDashChoosePro.getLastColor(choosedUser.getUsername(), projectName);
+						AssignmentTypeSelector assignmentTypeSelector = AssignmentTypeFactory.getAssignmentType(project.getType());
+
+						Status status = assignmentTypeSelector.getStatus(color);
+						int num = lastBuildMessageNum;
+						String jobName = choosedUser.getUsername() + "_" + projectName;
+						String jenkinsBuildNumUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName;
+						String lastBuildUrl = jenkinsBuildNumUrl + "/" + num + "/consoleText";
+						String detailConsoleText = jenkins.getConsoleText(lastBuildUrl);
+						String console = status.extractFailureMsg(detailConsoleText);
+			%>
+			<h4>
+				<a id="iFrameTitle" href="<%=jenkinsBuildNumUrl%>">Feedback
+					Information (#<%=num%>)
+				</a>
+			</h4>
+			<div id="container">
+				<pre style="overflow: auto;"><%=console%></pre>
+			</div>
+			<!-- iFrame -->
+		</div>
+	</div>
+
+>>>>>>> Github/master
 </body>
 <script type="text/javascript">
 		function copyToClipboard(elem) {
@@ -436,8 +697,12 @@ html, body, .row, #navHeight {
 	</script>
 <script type="text/javascript">
 		function changeIframe(tr){
+<<<<<<< HEAD
 			var url = '<%=jenkinsBuildNumUrl%>
 	' + '/' + tr.id + '/consoleText';
+=======
+			var url = '<%=jenkinsBuildNumUrl%>' + '/' + tr.id + '/consoleText';
+>>>>>>> Github/master
 		$.ajax({
 			url : 'webapi/jenkins/getFeedbackInfo',
 			type : 'POST',

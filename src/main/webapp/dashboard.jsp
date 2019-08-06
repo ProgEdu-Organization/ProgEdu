@@ -313,7 +313,7 @@
                         
                         if(thName == hwName) {
                             pName = hwName;
-                            id="dashboard";
+                            //id="dashboard";
                             break;
                         }
                         else {

@@ -1,9 +1,15 @@
 package fcu.selab.progedu.service;
 
+import java.io.IOException;
+
+import org.gitlab.api.models.GitlabProject;
+
 import fcu.selab.progedu.config.CourseConfig;
 import fcu.selab.progedu.config.GitlabConfig;
 import fcu.selab.progedu.config.JenkinsConfig;
 import fcu.selab.progedu.conn.Conn;
+import fcu.selab.progedu.conn.HttpConnect;
+import fcu.selab.progedu.data.Group;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.jenkins.JenkinsApi;
 import fcu.selab.progedu.status.Status;
@@ -43,18 +49,18 @@ public abstract class GroupProject implements IGroupProject {
    * @param projectName group
    */
   @Override
-  public void createJenkinsJob(String projectName) {
+  public void createJenkinsJob(String groupName, String projectName) {
     JenkinsApi jenkins = JenkinsApi.getInstance();
     GitlabConfig gitlabConfig = GitlabConfig.getInstance();
     JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
     try {
-      String proUrl = gitlabConfig.getGitlabHostUrl() + "/" + projectName + "/" + projectName
+      String proUrl = gitlabConfig.getGitlabHostUrl() + "/" + groupName + "/" + projectName
           + ".git";
       String jenkinsCrumb = jenkins.getCrumb(jenkinsData.getJenkinsRootUsername(),
           jenkinsData.getJenkinsRootPassword());
-      String filePath = modifyJenkinsJobConfiguration(projectName, projectName, proUrl);
-      JenkinsApi.postCreateJob(projectName, projectName, proUrl, jenkinsCrumb, filePath);
-      jenkins.buildJob(projectName, projectName, jenkinsCrumb);
+      String filePath = modifyJenkinsJobConfiguration(groupName, projectName, proUrl);
+      JenkinsApi.postCreateJob(groupName, projectName, proUrl, jenkinsCrumb, filePath);
+      jenkins.buildJob(groupName, projectName, jenkinsCrumb);
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -83,23 +89,21 @@ public abstract class GroupProject implements IGroupProject {
   }
 
   @Override
-  public void createGitlabProject(String projectName) {
+  public void createGitlabProject(Group group, String projectName)
+      throws IOException, LoadConfigFailureException {
     Conn conn = Conn.getInstance();
-    conn.createGroupProject(projectName);
-    initialize(projectName);
+    GitlabProject gitlabProject = conn.createGroupProject(group, projectName);
+    initialize(group.getGroupName(), gitlabProject);
   }
 
-  /**
-   * Initialize
-   * 
-   * @param groupName group name
-   */
-  private void initialize(String groupName) {
+  private void initialize(String groupName, GitlabProject gitlabProject)
+      throws IOException, LoadConfigFailureException {
     Linux linuxApi = new Linux();
     AssignmentService ps = new AssignmentService();
     String tempDir = System.getProperty("java.io.tmpdir");
     String cloneFilePath = tempDir + "/uploads/" + groupName;
-    String cloneCommand = "git clone " + ps.getGroupProjectUrl(groupName) + " " + cloneFilePath;
+    String cloneCommand = "git clone " + ps.getGroupProjectUrl(groupName, gitlabProject.getName())
+        + " " + cloneFilePath;
     linuxApi.execLinuxCommand(cloneCommand);
     ps.createReadmeFile("", groupName);
 
@@ -115,7 +119,7 @@ public abstract class GroupProject implements IGroupProject {
     String pushCommand = "git push";
     linuxApi.execLinuxCommandInFile(pushCommand, cloneFilePath);
 
-    return;
+    HttpConnect.getInstance().setGitlabWebhook(groupName, gitlabProject);
   }
 
   /**

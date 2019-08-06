@@ -12,11 +12,13 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
+import org.gitlab.api.models.GitlabProject;
 
 import fcu.selab.progedu.config.GitlabConfig;
-import fcu.selab.progedu.db.UserDbManager;
+import fcu.selab.progedu.config.JenkinsConfig;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 
 public class HttpConnect {
@@ -26,16 +28,12 @@ public class HttpConnect {
   private String branchName = "master";
   private String encoding = "test";
   private String commitMessage = "README";
+  private GitlabConfig gitlab = GitlabConfig.getInstance();
+  private JenkinsConfig jenkins = JenkinsConfig.getInstance();
 
   public static HttpConnect getInstance() {
     return httpConn;
   }
-
-  GitlabConfig gitData = GitlabConfig.getInstance();
-
-  UserDbManager userDb = UserDbManager.getInstance();
-
-  GitlabConfig gitlab = GitlabConfig.getInstance();
 
   /**
    * Httppost Readme to gitlab when creating project
@@ -156,5 +154,29 @@ public class HttpConnect {
     } catch (IOException | LoadConfigFailureException e) {
       e.printStackTrace();
     }
+  }
+
+  /**
+   * set gitlab webhook that trigger jenkins job to build
+   * 
+   * @param username group name
+   * @param project  gitlab project
+   */
+  public void setGitlabWebhook(String username, GitlabProject project)
+      throws IOException, LoadConfigFailureException {
+    // for example,
+    // http://localhost:80/api/v4/projects/3149/hooks?url=http://localhost:8888/project/webhook
+    String gitlabWebhookApi = gitlab.getGitlabHostUrl() + "/api/v4/projects/" + project.getId()
+        + "/hooks";
+    String jenkinsJobUrl = jenkins.getJenkinsHostUrl() + "/project/" + username + "_"
+        + project.getName();
+    HttpPost post = new HttpPost(gitlabWebhookApi);
+    post.addHeader("PRIVATE-TOKEN", gitlab.getGitlabApiToken());
+    // Request parameters
+    List<NameValuePair> params = new ArrayList<>();
+    params.add(new BasicNameValuePair("url", jenkinsJobUrl));
+    post.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
+
+    HttpClients.createDefault().execute(post);
   }
 }

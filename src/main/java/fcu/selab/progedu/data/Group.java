@@ -7,7 +7,7 @@ public class Group {
   private String groupName;
   private String projectName;
   private int groupId;
-  private String leaderUid;
+  private String leaderUsername;
   private List<String> contributorId;
 
   public int getGroupId() {
@@ -26,12 +26,12 @@ public class Group {
     this.groupName = groupName;
   }
 
-  public String getMaster() {
-    return leaderUid;
+  public String getLeaderUsername() {
+    return leaderUsername;
   }
 
-  public void setMaster(String master) {
-    this.leaderUid = master;
+  public void setLeaderUsername(String leaderUid) {
+    this.leaderUsername = leaderUid;
   }
 
   public List<String> getContributor() {

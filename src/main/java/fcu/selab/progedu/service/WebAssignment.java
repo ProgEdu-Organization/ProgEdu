@@ -37,48 +37,27 @@ public class WebAssignment extends AssignmentTypeMethod {
    * @param entryNewName entryNewName
    */
   public void searchFile(String entryNewName) {
-    StringBuilder sb = new StringBuilder();
-    String last = "";
-    if (entryNewName.endsWith(".js") || entryNewName.endsWith(".eslintrc.js")) {
-      last = entryNewName.substring(entryNewName.length() - 3, entryNewName.length());
-    }
-    String fileName = null;
-    for (int i = 0; i < entryNewName.length() - 3; i++) {
-      if (entryNewName.substring(i, i + 3).equals("src")) {
-        fileName = entryNewName.substring(i);
-        System.out.println("Search web file fileName : " + fileName);
-      }
-    }
   }
 
   /**
-   * copyTestFile
+   * extract main method and modify pom.xml
    * 
-   * @param folder       folder
-   * @param strFolder    strFolder
-   * @param testFilePath testFilePath
+   * @param testDirectory testDirectory
+   * @param projectName   projectName
    */
-  public void copyTestFile(File folder, String strFolder, String testFilePath) {
-    for (final File fileEntry : folder.listFiles()) {
-      if (fileEntry.isDirectory()) {
-        copyTestFile(fileEntry, strFolder, testFilePath);
-      } else {
-        // web project
-        if (fileEntry.getAbsolutePath().contains("src")) {
-          String entry = fileEntry.getAbsolutePath();
-          if (entry.contains("src/test")) {
+  public void extractFile(String zipFilePath, String testDirectory, String destDirectory,
+      String projectName) {
 
-            File dataFile = new File(strFolder + "/src/test");
-            File targetFile = new File(testFilePath + "/src/test");
-            try {
-              FileUtils.copyDirectory(dataFile, targetFile);
-              FileUtils.deleteDirectory(dataFile);
-            } catch (IOException e) {
-              e.printStackTrace();
-            }
-          }
-        }
-      }
+    try {
+      FileUtils.deleteDirectory(new File(testDirectory + "/src/web"));
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    try {
+      FileUtils.deleteDirectory(new File(destDirectory + "/src/test"));
+    } catch (IOException e) {
+      e.printStackTrace();
     }
   }
 

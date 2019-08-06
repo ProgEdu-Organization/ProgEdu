@@ -4,15 +4,15 @@
   <description></description>
   <keepDependencies>false</keepDependencies>
   <properties>
-    <com.dabsquared.gitlabjenkins.connection.GitLabConnectionProperty plugin="gitlab-plugin@1.5.10">
+    <com.dabsquared.gitlabjenkins.connection.GitLabConnectionProperty plugin="gitlab-plugin@1.5.12">
       <gitLabConnection>gitlab</gitLabConnection>
     </com.dabsquared.gitlabjenkins.connection.GitLabConnectionProperty>
   </properties>
-  <scm class="hudson.plugins.git.GitSCM" plugin="git@3.9.1">
+  <scm class="hudson.plugins.git.GitSCM" plugin="git@3.10.0">
     <configVersion>2</configVersion>
     <userRemoteConfigs>
       <hudson.plugins.git.UserRemoteConfig>
-        <url>http://140.134.26.78:80/d0121564/oop-hw12.git</url>
+        <url>http://140.134.26.71:20008/m1234567/web-hw999.git</url>
         <credentialsId>gitlab_root</credentialsId>
       </hudson.plugins.git.UserRemoteConfig>
     </userRemoteConfigs>
@@ -30,7 +30,7 @@
   <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
   <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
   <triggers>
-    <com.dabsquared.gitlabjenkins.GitLabPushTrigger plugin="gitlab-plugin@1.5.10">
+    <com.dabsquared.gitlabjenkins.GitLabPushTrigger plugin="gitlab-plugin@1.5.12">
       <spec></spec>
       <triggerOnPush>true</triggerOnPush>
       <triggerOnMergeRequest>true</triggerOnMergeRequest>
@@ -55,33 +55,19 @@
   </triggers>
   <concurrentBuild>false</concurrentBuild>
   <builders>
+    <io.jenkins.plugins.screenshot.ScreenShotBuilder plugin="sceenshot@1.0-SNAPSHOT">
+      <seleniumUrl>http://140.134.26.71:3444/wd/hub</seleniumUrl>
+    </io.jenkins.plugins.screenshot.ScreenShotBuilder>
     <hudson.plugins.build__timeout.BuildStepWithTimeout plugin="build-timeout@1.19">
       <strategy class="hudson.plugins.build_timeout.impl.AbsoluteTimeOutStrategy">
         <timeoutMinutes>15</timeoutMinutes>
       </strategy>
-      <buildStep class="org.jenkinsci.plugins.AssessmentBuilder" plugin="jenkins-progedu@1.0-SNAPSHOT">
-        <jobName>D0121564_OOP-HW12</jobName>
-        <testFileName>OOP-HW12</testFileName>
-        <proDetailUrl>http://140.134.26.78:8818/ProgEdu/webapi/project/checksum?proName=OOP-HW12</proDetailUrl>
-        <testFileUrl>http://140.134.26.78:8818/ProgEdu/webapi/jenkins/getTestFile?filePath=/usr/local/tomcat/temp/tests/OOP-HW12.zip</testFileUrl>
-        <testFileChecksum>4017372255</testFileChecksum>
-        <testFilePath></testFilePath>
-      </buildStep>
-      <operationList>
-        <hudson.plugins.build__timeout.operations.FailOperation/>
-      </operationList>
-    </hudson.plugins.build__timeout.BuildStepWithTimeout>
-    <hudson.plugins.build__timeout.BuildStepWithTimeout plugin="build-timeout@1.19">
-      <strategy class="hudson.plugins.build_timeout.impl.AbsoluteTimeOutStrategy">
-        <timeoutMinutes>15</timeoutMinutes>
-      </strategy>
-      <buildStep class="hudson.tasks.Maven">
-        <targets>package</targets>
-        <mavenName>Global</mavenName>
-        <usePrivateRepository>false</usePrivateRepository>
-        <settings class="jenkins.mvn.DefaultSettingsProvider"/>
-        <globalSettings class="jenkins.mvn.DefaultGlobalSettingsProvider"/>
-        <injectBuildVariables>false</injectBuildVariables>
+      <buildStep class="hudson.tasks.Shell">
+        <command>npm install --save selenium-webdriver
+npm run test
+npm run htmlhint
+npm run stylelint
+npm run eslint</command>
       </buildStep>
       <operationList>
         <hudson.plugins.build__timeout.operations.FailOperation/>
@@ -89,12 +75,24 @@
     </hudson.plugins.build__timeout.BuildStepWithTimeout>
   </builders>
   <publishers>
+    <hudson.tasks.ArtifactArchiver>
+      <artifacts>target/screenshot/*.png,node_modules/</artifacts>
+      <allowEmptyArchive>true</allowEmptyArchive>
+      <onlyIfSuccessful>false</onlyIfSuccessful>
+      <fingerprint>false</fingerprint>
+      <defaultExcludes>true</defaultExcludes>
+      <caseSensitive>true</caseSensitive>
+    </hudson.tasks.ArtifactArchiver>
+    <io.jenkins.plugins.progupdatetodb.UpdateToDbPublisher plugin="progedDB@1.0-SNAPSHOT">
+      <progeduAPIUrl></progeduAPIUrl>
+      <jenkinsJobName></jenkinsJobName>
+    </io.jenkins.plugins.progupdatetodb.UpdateToDbPublisher>
     <org.jenkinsci.plugins.UpdatingDbPublisher plugin="jenkins-progedu@1.0-SNAPSHOT">
-      <progeduDbUrl>http://140.134.26.78:8818/ProgEdu/webapi/commits/update</progeduDbUrl>
-      <user>D0121564</user>
-      <proName>OOP-HW12</proName>
+      <progeduDbUrl>http://140.134.26.71:10008/ProgEdu/webapi/commits/update</progeduDbUrl>
+      <user>M1234567</user>
+      <proName>WEB-HW999</proName>
     </org.jenkinsci.plugins.UpdatingDbPublisher>
-    <hudson.plugins.ws__cleanup.WsCleanup plugin="ws-cleanup@0.36">
+    <hudson.plugins.ws__cleanup.WsCleanup plugin="ws-cleanup@0.37">
       <patterns class="empty-list"/>
       <deleteDirs>false</deleteDirs>
       <skipWhenFailed>false</skipWhenFailed>
@@ -109,5 +107,10 @@
       <disableDeferredWipeout>false</disableDeferredWipeout>
     </hudson.plugins.ws__cleanup.WsCleanup>
   </publishers>
-  <buildWrappers/>
+  <buildWrappers>
+    <jenkins.plugins.nodejs.NodeJSBuildWrapper plugin="nodejs@1.3.3">
+      <nodeJSInstallationName>Global</nodeJSInstallationName>
+      <cacheLocationStrategy class="jenkins.plugins.nodejs.cache.DefaultCacheLocationLocator"/>
+    </jenkins.plugins.nodejs.NodeJSBuildWrapper>
+  </buildWrappers>
 </project>

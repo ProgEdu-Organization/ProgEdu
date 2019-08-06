@@ -35,53 +35,30 @@ public class MavenAssignment extends AssignmentTypeMethod {
    * @param entryNewName entryNewName
    */
   public void searchFile(String entryNewName) {
-    StringBuilder sb = new StringBuilder();
-    String last = "";
-    if (entryNewName.endsWith(".java")) {
-      last = entryNewName.substring(entryNewName.length() - 5, entryNewName.length());
-    }
-    String fileName = null;
-    for (int i = 0; i < entryNewName.length() - 3; i++) {
-      if (entryNewName.substring(i, i + 3).equals("src")) {
-        fileName = entryNewName.substring(i);
-        System.out.println("Search java file fileName : " + fileName);
-        if (last.equals(".java")) {
-          sb.append("javac " + fileName + "\n");
-          zipHandler.setStringBuilder(sb);
-        }
-      }
-    }
   }
 
   /**
-   * copyTestFile
+   * extract main method and modify pom.xml
    * 
-   * @param folder       folder
-   * @param strFolder    strFolder
-   * @param testFilePath testFilePath
+   * @param testDirectory testDirectory
+   * @param projectName   projectName
    */
-  public void copyTestFile(File folder, String strFolder, String testFilePath) {
-    for (final File fileEntry : folder.listFiles()) {
-      if (fileEntry.isDirectory()) {
-        copyTestFile(fileEntry, strFolder, testFilePath);
-      } else {
-        if (fileEntry.getAbsolutePath().contains("src")) {
-          String entry = fileEntry.getAbsolutePath();
-          if (entry.contains("src/test")) {
+  public void extractFile(String zipFilePath, String testDirectory, String destDirectory,
+      String projectName) {
 
-            File dataFile = new File(strFolder + "/src/test");
-            // File targetFile = new File(testFilePath + "/src/test");
-            try {
-              // FileUtils.copyDirectory(dataFile, targetFile);
-              FileUtils.deleteDirectory(dataFile);
-            } catch (IOException e) {
-              e.printStackTrace();
-            }
-          }
-        }
-
-      }
+    try {
+      FileUtils.deleteDirectory(new File(testDirectory + "/src/main"));
+    } catch (IOException e) {
+      e.printStackTrace();
     }
+
+    try {
+      FileUtils.deleteDirectory(new File(destDirectory + "/src/test"));
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    zipHandler.modifyPomXml(testDirectory + "/pom.xml", projectName);
   }
 
   public String getJenkinsConfig() {

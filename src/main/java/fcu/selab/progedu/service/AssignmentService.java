@@ -44,6 +44,7 @@ import fcu.selab.progedu.config.CourseConfig;
 import fcu.selab.progedu.config.GitlabConfig;
 import fcu.selab.progedu.config.JenkinsConfig;
 import fcu.selab.progedu.conn.Conn;
+import fcu.selab.progedu.conn.HttpConnect;
 import fcu.selab.progedu.data.Assignment;
 import fcu.selab.progedu.db.AssignmentDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
@@ -53,7 +54,7 @@ import fcu.selab.progedu.utils.ZipHandler;
 
 @Path("assignment/")
 public class AssignmentService {
-
+  private HttpConnect httpConnect = HttpConnect.getInstance();
   private Conn conn = Conn.getInstance();
   private GitlabUser root = conn.getRoot();
   private ZipHandler zipHandler;
@@ -211,8 +212,10 @@ public class AssignmentService {
         continue;
       }
 
-      // 11. Create student assignment, and import assignment
-      conn.createPrivateAssignment(user.getId(), name, rootProjectUrl);
+      // 11. Create student project, and import project
+      GitlabProject project = conn.createPrivateProject(user.getId(), name, rootProjectUrl);
+      httpConnect.setGitlabWebhook(project.getOwner().getUsername(), project);
+
     }
 
     // 12. Create each Jenkins Jobs
@@ -257,12 +260,12 @@ public class AssignmentService {
    * @param groupName group name
    * @return url gitlab project url
    */
-  public String getGroupProjectUrl(String groupName) {
+  public String getGroupProjectUrl(String groupName, String projectName) {
     String url = null;
     String gitlabUrl = null;
     try {
       gitlabUrl = gitlabData.getGitlabRootUrl();
-      url = gitlabUrl + "/" + groupName + "/" + groupName;
+      url = gitlabUrl + "/" + groupName + "/" + projectName;
     } catch (LoadConfigFailureException e) {
       e.printStackTrace();
     }

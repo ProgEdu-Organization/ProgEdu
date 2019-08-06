@@ -107,7 +107,7 @@ public class Dash {
       JSONArray actions = json.getJSONArray("actions");
       JSONArray causes = actions.getJSONObject(0).getJSONArray("causes");
       String shortDescription = causes.getJSONObject(0).optString("shortDescription");
-      if ("Started by an SCM change".equals(shortDescription)) {
+      if ("Started by GitLab push".equals(shortDescription)) {
         commitCount++;
       } else {
         if (i == 1) { // teacher commit

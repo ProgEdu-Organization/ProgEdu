@@ -69,7 +69,7 @@
 		}
 		
 		$("#goBack").click(function(){
-			history.back();
+			window.history.go(-1)
 		});
 		
 		$("#logout").click(function(){
