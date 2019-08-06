@@ -7,17 +7,17 @@ import java.util.Map;
 
 import fcu.selab.progedu.db.CommitRecordDbManager;
 import fcu.selab.progedu.db.CommitRecordStateDbManager;
-import fcu.selab.progedu.db.AssignmentDbManager;
+import fcu.selab.progedu.db.ProjectDbManager;
 
 public class TestCommitRecordState {
 
   static CommitRecordDbManager commitRecordDb = CommitRecordDbManager.getInstance();
   static CommitRecordStateDbManager commitRecordStateDb = CommitRecordStateDbManager.getInstance();
-  static AssignmentDbManager projectDb = AssignmentDbManager.getInstance();
+  static ProjectDbManager projectDb = ProjectDbManager.getInstance();
 
   public static void main(String[] args) {
     List<String> lsNames = new ArrayList<>();
-    lsNames = projectDb.listAllAssignmentNames();
+    lsNames = projectDb.listAllProjectNames();
 
     for (String name : lsNames) {
 

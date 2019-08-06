@@ -19,14 +19,14 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import fcu.selab.progedu.conn.StudentDashChoosePro;
-import fcu.selab.progedu.data.CommitRecord;
+import fcu.selab.progedu.data.CommitResult;
 import fcu.selab.progedu.data.User;
 import fcu.selab.progedu.db.CommitRecordDbManager;
 import fcu.selab.progedu.db.CommitRecordStateDbManager;
 import fcu.selab.progedu.db.CommitResultDbManager;
 import fcu.selab.progedu.db.IDatabase;
 import fcu.selab.progedu.db.MySqlDatabase;
-import fcu.selab.progedu.db.AssignmentDbManager;
+import fcu.selab.progedu.db.ProjectDbManager;
 import fcu.selab.progedu.db.UserDbManager;
 import fcu.selab.progedu.status.StatusEnum;
 
@@ -36,7 +36,7 @@ public class CommitResultService {
   CommitRecordDbManager commitRecordDb = CommitRecordDbManager.getInstance();
   CommitRecordStateDbManager crsdb = CommitRecordStateDbManager.getInstance();
   UserDbManager userDb = UserDbManager.getInstance();
-  AssignmentDbManager projectDb = AssignmentDbManager.getInstance();
+  ProjectDbManager projectDb = ProjectDbManager.getInstance();
 
   /**
    * get counts by different color.
@@ -50,7 +50,7 @@ public class CommitResultService {
   public Response getCounts(@QueryParam("color") String type) {
     JSONObject commitCounts = db.getCounts(type);
     List<Integer> counts = new ArrayList<>();
-    List<String> pnames = projectDb.listAllAssignmentNames();
+    List<String> pnames = projectDb.listAllProjectNames();
     String status = "";
     for (String pname : pnames) {
       int count = commitCounts.optInt(pname);
@@ -114,10 +114,10 @@ public class CommitResultService {
       @QueryParam("userName") String userName) {
     int id = userDb.getUser(userName).getId();
 
-    CommitRecord commitResult = db.getCommitResultByStudentAndHw(id, proName);
+    CommitResult commitResult = db.getCommitResultByStudentAndHw(id, proName);
     String circleColor = "circle " + commitResult.getStatus();
     String result = userName + "_" + proName + "," + circleColor + ","
-        + (commitResult.getCommitNumber() + 1);
+        + (commitResult.getCommit() + 1);
 
     return Response.ok().entity(result).build();
   }
@@ -175,7 +175,7 @@ public class CommitResultService {
 
       int lastCommitNum = jenkinsService.getProjectCommitCount(proName, userName);
       int commitCount = lastCommitNum - 1;
-      int proType = projectDb.getAssignmentType(proName);
+      String proType = projectDb.getAssignmentType(proName);
       String buildApiJson = stuDashChoPro.getBuildApiJson(lastCommitNum, userName, proName);
       String strDate = stuDashChoPro.getCommitTime(buildApiJson);
       String[] dates = strDate.split(" ");
@@ -218,7 +218,7 @@ public class CommitResultService {
   public void updateCommitRecordState() {
 
     List<String> lsNames = new ArrayList<>();
-    lsNames = projectDb.listAllAssignmentNames();
+    lsNames = projectDb.listAllProjectNames();
 
     for (String name : lsNames) {
 

@@ -8,12 +8,12 @@
 <%@ page import="org.gitlab.api.models.*"%>
 <%@ page import="java.util.*"%>
 <%@ page import="org.json.JSONArray, org.json.JSONException, org.json.JSONObject" %>
-<%@ page import="fcu.selab.progedu.db.UserDbManager,fcu.selab.progedu.db.AssignmentDbManager" %>
-<%@ page import="fcu.selab.progedu.data.User,fcu.selab.progedu.data.Assignment" %>
-<%@ page import="fcu.selab.progedu.jenkins.JobStatus,java.text.SimpleDateFormat" %>
+<%@ page import="fcu.selab.progedu.db.UserDbManager, fcu.selab.progedu.db.ProjectDbManager" %>
+<%@ page import="fcu.selab.progedu.data.User, fcu.selab.progedu.data.Project" %>
+<%@ page import="fcu.selab.progedu.jenkins.JobStatus, java.text.SimpleDateFormat" %>
 
 <%
-  String private_token = null;
+	String private_token = null;
 	if(null != session.getAttribute("private_token") && !"".equals(session.getAttribute("private_token")) ){
 	  private_token = session.getAttribute("private_token").toString();
 	}else{
@@ -32,7 +32,7 @@
 </head>
 <body>
 <%
-  String projectIdSession = request.getParameter("projectId");
+		String projectIdSession = request.getParameter("projectId");
 		int projectId = -1;
 		if(null == projectIdSession || "".equals(projectIdSession)){
 			  
@@ -52,7 +52,7 @@
 		List<GitlabCommit> commits;
 
 		int pro_total_commits = 0;
-%>
+	%>
 <div class="card" style="margin-top: 30px">
 		        <h4 id="Student Projects" class="card-header">
 		        	<i class="fa fa-table" aria-hidden="true"></i>&nbsp; 
@@ -63,23 +63,23 @@
 				</div>
 			</div>
 			<%
-			  String projectName = "";
-								String projectUrl = "";
-								if(projectId != -1){
-									GitlabProject project = sConn.getProjectById(projectId);
-									projectName = project.getName();
-									projectUrl = project.getHttpUrl();
-								}
-								GitlabProject choosedProject = new GitlabProject();
-								for(GitlabProject project : projects){
-								  if(projectName.equals(project.getName())){
-								    choosedProject = project;
-								  }
-								}
-								int commit_count = conn.getAllCommitsCounts(choosedProject.getId());
-								commits = conn.getAllCommits(choosedProject.getId());
-								Collections.reverse(commits);
-			%>
+		String projectName = "";
+		String projectUrl = "";
+		if(projectId != -1){
+			GitlabProject project = sConn.getProjectById(projectId);
+			projectName = project.getName();
+			projectUrl = project.getHttpUrl();
+		}
+		GitlabProject choosedProject = new GitlabProject();
+		for(GitlabProject project : projects){
+		  if(projectName.equals(project.getName())){
+		    choosedProject = project;
+		  }
+		}
+		int commit_count = conn.getAllCommitsCounts(choosedProject.getId());
+		commits = conn.getAllCommits(choosedProject.getId());
+		Collections.reverse(commits);
+		%>
 </body>
 <!-- set Highchart colors -->
 <script>
@@ -89,18 +89,19 @@ Highcharts.setOptions({
 </script>
 <!-- chart1 -->
 <script>
-<%UserDbManager db = UserDbManager.getInstance();
-AssignmentDbManager pDb = AssignmentDbManager.getInstance();
+<%
+UserDbManager db = UserDbManager.getInstance();
+ProjectDbManager pDb = ProjectDbManager.getInstance();
 List<User> users = db.listAllUsers();
 List<GitlabProject> gitProjects = conn.getAllProjects();
-List<Assignment> dbProjects = pDb.listAllAssignments();
+List<Project> dbProjects = pDb.listAllProjects();
 
 List<JSONObject> jsons = new ArrayList<JSONObject>();
 String jobName = null;
 String jobUrl = null;
 
 for(User eachuser : users){
-	String userName = eachuser.getStufentId();
+	String userName = eachuser.getUserName();
 	Collections.reverse(gitProjects);
 	//for(Project dbProject : dbProjects){
 		JobStatus jobStatus = new JobStatus();
@@ -115,7 +116,7 @@ for(User eachuser : users){
 							
 				commit_count = conn.getAllCommitsCounts(gitProject.getId());
 				//---Jenkins---
-				jobName = eachuser.getStufentId() + "_" + gitProject.getName();
+				jobName = eachuser.getUserName() + "_" + gitProject.getName();
 				jobStatus.setName(jobName);
 				jobUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/api/json";
 				jobStatus.setUrl(jobUrl);
@@ -186,7 +187,8 @@ for(int allNotCommit : allNotCommits) {
 }
 s += notCommitTotal;
 s += "}]}]";
-out.println(s);%>
+out.println(s);
+%>
 Highcharts.chart('chart1Demo', {
     chart: {
         plotBackgroundColor: null,

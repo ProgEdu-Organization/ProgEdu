@@ -148,7 +148,7 @@
 									<%
 										for(User user : users){
 									%>
-											<option id="member" value="<%=user.getStufentId()%>"><%=user.getStufentId()%>-<%=user.getName() %></option>
+											<option id="member" value="<%=user.getUserName()%>"><%=user.getUserName() %>-<%=user.getName() %></option>
 									<%
 										}
 									%>
