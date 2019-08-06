@@ -99,7 +99,7 @@ public abstract class GroupProject implements IGroupProject {
   private void initialize(String groupName, GitlabProject gitlabProject)
       throws IOException, LoadConfigFailureException {
     Linux linuxApi = new Linux();
-    AssignmentService ps = new AssignmentService();
+    ProjectService ps = new ProjectService();
     String tempDir = System.getProperty("java.io.tmpdir");
     String cloneFilePath = tempDir + "/uploads/" + groupName;
     String cloneCommand = "git clone " + ps.getGroupProjectUrl(groupName, gitlabProject.getName())

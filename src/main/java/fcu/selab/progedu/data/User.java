@@ -9,8 +9,7 @@ public class User implements Serializable {
 
   private int gitLabId;
 
-  private String username; // ??�緯??��?��?��?�蕭(??�稷??��?�蕭)
-                            // ??��?��?�蕭
+  private String userName; // ??�緯??��?��?��?�蕭(??�稷??��?�蕭) ??��?��?�蕭
 
   private String name; // ??��?�蕭??��?�蕭??��?�蕭??��(??��?�蕭??��?�蕭)
 
@@ -18,9 +17,7 @@ public class User implements Serializable {
 
   private String password; // ??��?��?�蕭
 
-  private String gitLabToken;
-
-  private boolean display;
+  private String privateToken;
 
   public User() {
 
@@ -29,18 +26,16 @@ public class User implements Serializable {
   /**
    * User constructor
    * 
-   * @param username studentId
-   * @param name      student's full name
-   * @param email     student's email
-   * @param password  student's password
-   * @param display   student's display
+   * @param userName studentId
+   * @param name     student's full name
+   * @param email    student's email
+   * @param password student's password
    */
-  public User(String username, String name, String email, String password, boolean display) {
-    this.username = username;
+  public User(String userName, String name, String email, String password) {
+    this.userName = userName;
     this.name = name;
     this.email = email;
     this.password = password;
-    this.display = display;
   }
 
   public int getId() {
@@ -59,12 +54,12 @@ public class User implements Serializable {
     this.gitLabId = gitLabId;
   }
 
-  public String getUsername() {
-    return username;
+  public String getUserName() {
+    return userName;
   }
 
-  public void setUsername(String username) {
-    this.username = username;
+  public void setUserName(String userName) {
+    this.userName = userName;
   }
 
   public String getName() {
@@ -91,20 +86,12 @@ public class User implements Serializable {
     this.password = password;
   }
 
-  public String getGitLabToken() {
-    return gitLabToken;
+  public String getPrivateToken() {
+    return privateToken;
   }
 
-  public void setGitLabToken(String gitLabToken) {
-    this.gitLabToken = gitLabToken;
-  }
-
-  public boolean getDisplay() {
-    return display;
-  }
-
-  public void setDisplay(boolean display) {
-    this.display = display;
+  public void setPrivateToken(String privateToken) {
+    this.privateToken = privateToken;
   }
 
 }

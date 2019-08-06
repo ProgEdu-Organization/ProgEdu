@@ -4,16 +4,16 @@
 <%@ page import="fcu.selab.progedu.config.GitlabConfig"%>
 <%@ page import="fcu.selab.progedu.config.JenkinsConfig"%>
 <%@ page
-	import="fcu.selab.progedu.db.UserDbManager,fcu.selab.progedu.db.AssignmentDbManager"%>
+	import="fcu.selab.progedu.db.UserDbManager, fcu.selab.progedu.db.ProjectDbManager"%>
 <%@ page
-	import="fcu.selab.progedu.data.User,fcu.selab.progedu.data.Assignment"%>
+	import="fcu.selab.progedu.data.User, fcu.selab.progedu.data.Project"%>
 <%@ page
-	import="fcu.selab.progedu.data.User,fcu.selab.progedu.data.Group"%>
+	import="fcu.selab.progedu.data.User, fcu.selab.progedu.data.Group"%>
 <%@ page import="org.gitlab.api.models.*"%>
 <%@ page import="java.util.*"%>
 <%@ page import="fcu.selab.progedu.jenkins.JobStatus"%>
 <%@ page
-	import="org.json.JSONArray,org.json.JSONException,org.json.JSONObject"%>
+	import="org.json.JSONArray, org.json.JSONException, org.json.JSONObject"%>
 <%@ page import="java.text.SimpleDateFormat"%>
 <%@ page import="fcu.selab.progedu.conn.*"%>
 <%@ page import="fcu.selab.progedu.status.*"%>
@@ -25,7 +25,7 @@
 
 <%
   if (session.getAttribute("username") == null
-  || session.getAttribute("username").toString().equals("")) {
+      || session.getAttribute("username").toString().equals("")) {
     response.sendRedirect("index.jsp");
   }
   session.putValue("page", "dashboard");
@@ -171,18 +171,18 @@ html, body {
 	<%
 	  Conn conn = Conn.getInstance();
 
-				  UserDbManager db = UserDbManager.getInstance();
-				  AssignmentDbManager Pdb = AssignmentDbManager.getInstance();
-				  StudentDashChoosePro stuDashChoPro = new StudentDashChoosePro();
+	  UserDbManager db = UserDbManager.getInstance();
+	  ProjectDbManager Pdb = ProjectDbManager.getInstance();
+	  StudentDashChoosePro stuDashChoPro = new StudentDashChoosePro();
 
-				  List<User> users = db.listAllUsers();
-				  List<Assignment> dbProjects = Pdb.listAllAssignments();
+	  List<User> users = db.listAllUsers();
+	  List<Project> dbProjects = Pdb.listAllProjects();
 
-				  // gitlab jenkins course��Data
-				  GitlabConfig gitData = GitlabConfig.getInstance();
-				  JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
+	  // gitlab jenkins course��Data
+	  GitlabConfig gitData = GitlabConfig.getInstance();
+	  JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
 
-				  JenkinsApi jenkins = JenkinsApi.getInstance();
+	  JenkinsApi jenkins = JenkinsApi.getInstance();
 	%>
 	<%@ include file="header.jsp"%>
 	<!-- -----sidebar----- -->
@@ -347,18 +347,15 @@ html, body {
 		String jenkinsBuildNumUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName;
 		String lastBuildUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/" + lastBuildMessageNum + "/consoleText";
 		String url = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/";
-		String projectTypeName = AssignmentTypeEnum.MAVEN.getTypeName();
-		int projectTypeId = Pdb.getAssignmentTypeId(AssignmentTypeEnum.MAVEN.getTypeName());
-		
+		String projectType = AssignmentTypeEnum.MAVEN.getTypeName();
 		StudentDashChoosePro studentDashChoosePro = new StudentDashChoosePro();
 		
 		String detailConsoleText = jenkins.getConsoleText(lastBuildUrl);
 		String buildApiJson = stuDashChoPro.getBuildApiJson(lastBuildMessageNum,groupName, projectName);
-		
-		String statusType = stuDashChoPro.getCommitStatus(lastBuildMessageNum,groupName, projectName, buildApiJson,projectTypeId);
+		String statusType = stuDashChoPro.getCommitStatus(lastBuildMessageNum,groupName, projectName, buildApiJson,projectType);
 		//String statusType = "INI";
 		
-		IGroupProject groupProject = GroupProjectFactory.getGroupProjectType(projectTypeName);
+		IGroupProject groupProject = GroupProjectFactory.getGroupProjectType(projectType);
 		Status status = groupProject.getStatus(statusType);
 		
 		

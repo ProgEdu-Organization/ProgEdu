@@ -1,0 +1,23 @@
+#Gitlab root account
+GITLAB_ROOT_USERNAME = 
+#eg. root
+
+#Gitlab password
+GITLAB_ROOT_PASSWORD = 
+#eg. 1234
+
+#Modify the container ID
+GITLAB_CONTAINER = http://[CONTAINER_ID] 
+#eg. http://abcd1234
+
+#Gitlab host url
+GITLAB_HOST_URL = http://[GITLAB_HOST_URL]
+#eg. http://127.0.0.1:3333
+
+#Your Gitlab api token
+GITLAB_API_TOKEN = 
+#eg. efgh5678
+
+#Modify the Gitlab root username, password and host url
+GITLAB_ROOT_URL = http://[ROOT_USERNAME]:[PASSWORD]@[GITLAB_HOST_URL]
+#eg. http://root:1234@127.0.0.1:3333

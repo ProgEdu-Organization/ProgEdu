@@ -1,14 +1,14 @@
 <%@ page language="java" contentType="text/html; charset=BIG5"
     pageEncoding="utf-8"%>
-<%@ page import="fcu.selab.progedu.db.AssignmentDbManager,java.util.*,fcu.selab.progedu.data.Assignment" %>
-<%@ page import="java.text.SimpleDateFormat,fcu.selab.progedu.service.AssignmentService" %>
+<%@ page import="fcu.selab.progedu.db.ProjectDbManager, java.util.*, fcu.selab.progedu.data.Project" %>
+<%@ page import="java.text.SimpleDateFormat, fcu.selab.progedu.service.ProjectService" %>
 <%
-  if(session.getAttribute("username") == null || session.getAttribute("username").toString().equals("")){
+	if(session.getAttribute("username") == null || session.getAttribute("username").toString().equals("")){
 		response.sendRedirect("index.jsp");
 	}
 	session.putValue("page", "assignmentManagement");
 
-	AssignmentService projectService = new AssignmentService();
+	ProjectService projectService = new ProjectService();
 	String courseName = projectService.getCourseName();
 %>
 
@@ -283,9 +283,9 @@
 	</script>
 	
 	<%
-		  AssignmentDbManager db = AssignmentDbManager.getInstance();
-								List<Assignment> projects = db.listAllAssignments();
-		%>
+		ProjectDbManager db = ProjectDbManager.getInstance();
+		List<Project> projects = db.listAllProjects();
+	%>
 	<div id="loadingBackground" style="display: none">
 		<div id="loader"></div>
 	</div>
@@ -311,15 +311,16 @@
   						<th class="text-center"><fmt:message key="teacherManageHW_hw_delete"/></th>
   					</tr>
   					<%
-  					  for(Assignment project : projects) {
-  										  String name = project.getName();
-  										  String deadline = project.getDeadline().replace("T", " ");
-  										  String createTime = project.getCreateTime();
-  										  String readMe = project.getDescription();
-  										  if(null == createTime) {
-  										    createTime = "";
-  										  }
-  					%>
+  					
+					for(Project project : projects) {
+					  String name = project.getName();
+					  String deadline = project.getDeadline().replace("T", " ");
+					  String createTime = project.getCreateTime();
+					  String readMe = project.getDescription();
+					  if(null == createTime) {
+					    createTime = "";
+					  }
+					%>
   					<tr>
   						<td id=<%=name + "_name"%>><%=name %></td>
   						<td id=<%=name + "_createTime"%>><%=createTime %></td>

@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 package fcu.selab.progedu.service;
 
 import java.io.BufferedReader;
@@ -27,10 +25,9 @@ import org.json.JSONObject;
 import fcu.selab.progedu.config.JenkinsConfig;
 import fcu.selab.progedu.conn.Conn;
 import fcu.selab.progedu.conn.StudentDashChoosePro;
-import fcu.selab.progedu.data.Assignment;
-import fcu.selab.progedu.data.CommitRecord;
-import fcu.selab.progedu.db.AssignmentDbManager;
+import fcu.selab.progedu.data.Project;
 import fcu.selab.progedu.db.CommitRecordDbManager;
+import fcu.selab.progedu.db.ProjectDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.jenkins.AssigmentStatusData;
 import fcu.selab.progedu.jenkins.JenkinsApi;
@@ -136,7 +133,7 @@ public class JenkinsService {
       JSONArray actions = json.getJSONArray("actions");
       JSONArray causes = actions.getJSONObject(0).getJSONArray("causes");
       String shortDescription = causes.getJSONObject(0).optString("shortDescription");
-      if (shortDescription.contains("SCM")) {
+      if (shortDescription.contains("GitLab push")) {
         commitCount++;
       } else {
         if (i == 1) { // teacher commit
@@ -160,12 +157,12 @@ public class JenkinsService {
   @Produces(MediaType.APPLICATION_JSON)
   public Response getBuildDetail(@QueryParam("num") int num,
       @QueryParam("userName") String userName, @QueryParam("proName") String proName) {
-    AssignmentDbManager projectDb = AssignmentDbManager.getInstance();
+    ProjectDbManager projectDb = ProjectDbManager.getInstance();
     StudentDashChoosePro stuDashChoPro = new StudentDashChoosePro();
     String buildApiJson = stuDashChoPro.getBuildApiJson(num, userName, proName);
     final String strDate = stuDashChoPro.getCommitTime(buildApiJson);
     String commitMessage = stuDashChoPro.getCommitMessage(num, userName, proName);
-    int proType = projectDb.getAssignmentType(proName);
+    String proType = projectDb.getAssignmentType(proName);
     String status = stuDashChoPro.getCommitStatus(num, userName, proName, buildApiJson, proType);
     String color = "circle " + status;
     JSONObject ob = new JSONObject();
@@ -189,7 +186,7 @@ public class JenkinsService {
   @Produces(MediaType.APPLICATION_JSON)
   public Response getGroupProjectBuildDetail(@QueryParam("num") int num,
       @QueryParam("groupName") String groupName, @QueryParam("projectName") String projectName) {
-    int proType = 0; // Maven
+    String proType = "Maven";
     Conn conn = Conn.getInstance();
     StudentDashChoosePro stuDashChoPro = new StudentDashChoosePro();
     String buildApiJson = stuDashChoPro.getBuildApiJson(num, groupName, projectName);
@@ -277,20 +274,17 @@ public class JenkinsService {
 
   @Path("getFeedbackInfo")
   public String getFeedbackInfo(String url) {
-    CommitRecord commitRecord = new CommitRecord();
     CommitRecordDbManager dbManager = new CommitRecordDbManager();
-    AssignmentDbManager dbAssignmentManaget = AssignmentDbManager.getInstance();
+    ProjectDbManager dbProjectManaget = ProjectDbManager.getInstance();
     AssigmentStatusData assigmentStatusData = new AssigmentStatusData(url);
 
-    Assignment assignment = dbAssignmentManaget
-        .getAssignmentByName(assigmentStatusData.getProjectName());
+    Project project = dbProjectManaget.getProjectByName(assigmentStatusData.getProjectName());
 
-    String colorStatus = dbManager.getCommitRecordStatus(commitRecord.getAuId(),
-        assigmentStatusData.getNumber());
+    String colorStatus = dbManager.getCommitRecordStatus(assigmentStatusData.getProjectName(),
+        assigmentStatusData.getUsername(), assigmentStatusData.getNumber());
 
-    String assignmentType = dbAssignmentManaget.getAssignmentTypeName(assignment.getType());
     AssignmentTypeSelector assignmentTypeSelector = AssignmentTypeFactory
-        .getAssignmentType(assignmentType);
+        .getAssignmentType(project.getType());
     Status status = assignmentTypeSelector.getStatus(colorStatus);
 
     String detailConsoleText = jenkins.getConsoleText(url);
@@ -307,21 +301,18 @@ public class JenkinsService {
   @POST
   @Path("getFeedbackInfoForGroup")
   public String getFeedbackInfoForGroup(String url) {
+    String projectType = "Maven";
     AssigmentStatusData assigmentStatusData = new AssigmentStatusData(url);
-    AssignmentDbManager projectDb = AssignmentDbManager.getInstance();
-
-    int projectTypeId = 0; // Maven
-    String projectTypename = projectDb.getAssignmentTypeName(projectTypeId);// Change Id to name
 
     StudentDashChoosePro stuDashChoPro = new StudentDashChoosePro();
     String buildApiJson = stuDashChoPro.getBuildApiJson(assigmentStatusData.getNumber(),
         assigmentStatusData.getUsername(), assigmentStatusData.getProjectName());
     String statusType = stuDashChoPro.getCommitStatus(assigmentStatusData.getNumber(),
         assigmentStatusData.getUsername(), assigmentStatusData.getProjectName(), buildApiJson,
-        projectTypeId);
+        projectType);
 
     AssignmentTypeSelector assignmentTypeSelector = AssignmentTypeFactory
-        .getAssignmentType(projectTypename);
+        .getAssignmentType(projectType);
     Status status = assignmentTypeSelector.getStatus(statusType);
 
     String detailConsoleText = jenkins.getConsoleText(url);
@@ -330,4 +321,3 @@ public class JenkinsService {
     return console;
   }
 }
->>>>>>> #45CommitStatus

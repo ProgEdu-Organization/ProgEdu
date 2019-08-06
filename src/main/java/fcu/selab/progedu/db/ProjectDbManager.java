@@ -8,44 +8,43 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import fcu.selab.progedu.data.Assignment;
+import fcu.selab.progedu.data.Project;
 
-public class AssignmentDbManager {
+public class ProjectDbManager {
 
-  private static AssignmentDbManager dbManager = new AssignmentDbManager();
+  private static ProjectDbManager dbManager = new ProjectDbManager();
 
-  public static AssignmentDbManager getInstance() {
+  public static ProjectDbManager getInstance() {
     return dbManager;
   }
 
   private IDatabase database = new MySqlDatabase();
 
-  private AssignmentDbManager() {
+  private ProjectDbManager() {
 
   }
 
+  UserDbManager udb = UserDbManager.getInstance();
+
   /**
-   * Add assignment to database
+   * Add project to database
    * 
-   * @param assignment Project
+   * @param project Project
    */
-  public void addAssignment(Assignment assignment) {
+  public void addProject(Project project) {
     String sql = "INSERT INTO Assignment(name, createTime, deadline, description, hasTemplate"
-        + ", type, zipChecksum, zipUrl, releaseTime, display)  VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?,"
-        + "?)";
+        + ", type, zipChecksum, zipUrl)  VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
 
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
-      preStmt.setString(1, assignment.getName());
-      preStmt.setString(2, assignment.getCreateTime());
-      preStmt.setString(3, assignment.getDeadline());
-      preStmt.setString(4, assignment.getDescription());
-      preStmt.setBoolean(5, assignment.isHasTemplate());
-      preStmt.setInt(6, assignment.getType());
-      preStmt.setString(7, assignment.getTestZipChecksum());
-      preStmt.setString(8, assignment.getTestZipUrl());
-      preStmt.setString(9, assignment.getReleaseTime());
-      preStmt.setBoolean(10, assignment.isDisplay());
+      preStmt.setString(1, project.getName());
+      preStmt.setString(2, project.getCreateTime());
+      preStmt.setString(3, project.getDeadline());
+      preStmt.setString(4, project.getDescription());
+      preStmt.setBoolean(5, project.isHasTemplate());
+      preStmt.setString(6, project.getType());
+      preStmt.setString(7, project.getTestZipChecksum());
+      preStmt.setString(8, project.getTestZipUrl());
       preStmt.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();
@@ -53,13 +52,13 @@ public class AssignmentDbManager {
   }
 
   /**
-   * get assignment info by assignment name
+   * get project info by project name
    * 
-   * @param name assignment name
-   * @return assignment
+   * @param name project name
+   * @return project
    */
-  public Assignment getAssignmentByName(String name) {
-    Assignment assignment = new Assignment();
+  public Project getProjectByName(String name) {
+    Project project = new Project();
     String sql = "SELECT * FROM Assignment WHERE name = ?";
 
     try (Connection conn = database.getConnection();
@@ -71,37 +70,33 @@ public class AssignmentDbManager {
           String deadline = rs.getString("deadline").replace("T", " ");
           String description = rs.getString("description");
           boolean hasTemplate = rs.getBoolean("hasTemplate");
-          int type = rs.getInt("type");
+          String type = rs.getString("type");
           String checksum = rs.getString("zipChecksum");
           String zipUrl = rs.getString("zipUrl");
-          String releaseTime = rs.getString("releaseTime");
-          boolean display = rs.getBoolean("display");
 
-          assignment.setName(name);
-          assignment.setCreateTime(createTime);
-          assignment.setDescription(description);
-          assignment.setHasTemplate(hasTemplate);
-          assignment.setType(type);
-          assignment.setDeadline(deadline);
-          assignment.setTestZipChecksum(checksum);
-          assignment.setTestZipUrl(zipUrl);
-          assignment.setReleaseTime(releaseTime);
-          assignment.setDisplay(display);
+          project.setName(name);
+          project.setCreateTime(createTime);
+          project.setDescription(description);
+          project.setHasTemplate(hasTemplate);
+          project.setType(type);
+          project.setDeadline(deadline);
+          project.setTestZipChecksum(checksum);
+          project.setTestZipUrl(zipUrl);
         }
       }
     } catch (SQLException e) {
       e.printStackTrace();
     }
-    return assignment;
+    return project;
   }
 
   /**
-   * List all the assignments
+   * List all the projects
    * 
-   * @return List of assignments
+   * @return List of projects
    */
-  public List<Assignment> listAllAssignments() {
-    List<Assignment> lsAssignments = new ArrayList<>();
+  public List<Project> listAllProjects() {
+    List<Project> lsProjects = new ArrayList<>();
     String sql = "SELECT * FROM Assignment";
 
     try (Connection conn = database.getConnection();
@@ -111,41 +106,37 @@ public class AssignmentDbManager {
         String name = rs.getString("name");
         String description = rs.getString("description");
         boolean hasTemplate = rs.getBoolean("hasTemplate");
-        int type = rs.getInt("type");
+        String type = rs.getString("type");
         String checksum = rs.getString("zipChecksum");
         String zipUrl = rs.getString("zipUrl");
         String createTime = rs.getString("createTime");
         String deadline = rs.getString("deadline");
-        String releaseTime = rs.getString("releaseTime");
-        boolean display = rs.getBoolean("display");
 
-        Assignment assignment = new Assignment();
-        assignment.setName(name);
-        assignment.setDescription(description);
-        assignment.setHasTemplate(hasTemplate);
-        assignment.setType(type);
-        assignment.setTestZipChecksum(checksum);
-        assignment.setTestZipUrl(zipUrl);
-        assignment.setCreateTime(createTime);
-        assignment.setDeadline(deadline);
-        assignment.setReleaseTime(releaseTime);
-        assignment.setDisplay(display);
+        Project project = new Project();
+        project.setName(name);
+        project.setDescription(description);
+        project.setHasTemplate(hasTemplate);
+        project.setType(type);
+        project.setTestZipChecksum(checksum);
+        project.setTestZipUrl(zipUrl);
+        project.setCreateTime(createTime);
+        project.setDeadline(deadline);
 
-        lsAssignments.add(assignment);
+        lsProjects.add(project);
       }
 
     } catch (SQLException e) {
       e.printStackTrace();
     }
-    return lsAssignments;
+    return lsProjects;
   }
 
   /**
-   * list all assignment names;
+   * list all project names;
    * 
    * @return all names
    */
-  public List<String> listAllAssignmentNames() {
+  public List<String> listAllProjectNames() {
     List<String> lsNames = new ArrayList<>();
     String sql = "SELECT * FROM Assignment";
 
@@ -163,11 +154,11 @@ public class AssignmentDbManager {
   }
 
   /**
-   * Delete assignment from database
+   * Delete project from database
    * 
-   * @param name assignment name
+   * @param name project name
    */
-  public void deleteAssignment(String name) {
+  public void deleteProject(String name) {
     String sql = "DELETE FROM Assignment WHERE name='" + name + "'";
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
@@ -178,21 +169,19 @@ public class AssignmentDbManager {
   }
 
   /**
-   * Edit assignment from database
+   * Edit project from database
    * 
    * @param deadline new deadline
    * @param readMe   new readMe
-   * @param name     assignment name
+   * @param name     project name
    */
-  public void editAssignment(String deadline, String readMe, String releaseTime, String name) {
-    String sql = "UPDATE Assignment SET deadline=?, description=?, releaseTime=? WHERE name=?";
+  public void editProject(String deadline, String readMe, String name) {
+    String sql = "UPDATE Assignment SET deadline=?, description=? WHERE name=?";
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
       preStmt.setString(1, deadline);
       preStmt.setString(2, readMe);
-      preStmt.setString(3, releaseTime);
-      preStmt.setString(4, name);
-
+      preStmt.setString(3, name);
       preStmt.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();
@@ -200,12 +189,12 @@ public class AssignmentDbManager {
   }
 
   /**
-   * Edit assignment checksum
+   * Edit project checksum
    * 
-   * @param name     assignment name
+   * @param name     project name
    * @param checksum new checksum
    */
-  public void updateAssignmentChecksum(String name, String checksum) {
+  public void updateProjectChecksum(String name, String checksum) {
     String sql = "UPDATE Assignment SET zipChecksum=? WHERE name=?";
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
@@ -218,26 +207,25 @@ public class AssignmentDbManager {
   }
 
   /**
-   * get assignment type by name
+   * get assignment type
    * 
    * @param name assignment name
    * @return type assignment type
    */
-  public int getAssignmentType(String name) {
-    int typeId = 0;
+  public String getAssignmentType(String name) {
+    String type = null;
     String sql = "SELECT * FROM Assignment WHERE name=?";
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
       preStmt.setString(1, name);
       try (ResultSet rs = preStmt.executeQuery()) {
         while (rs.next()) {
-          typeId = rs.getInt("type");
+          type = rs.getString("type");
         }
       }
     } catch (SQLException e) {
       e.printStackTrace();
     }
-    return typeId;
+    return type;
   }
-
 }
