@@ -1,0 +1,82 @@
+<div class="animated fadeIn">
+  <!-- Nav tabs -->
+  <div class="row">
+    <div class="col-md-4">
+      <tabset>
+        <tab id="add-one-student">
+          <ng-template tabHeading><i class="icon-calculator"></i> Add One Student</ng-template>
+
+          <div class="form-group col-sm-6">
+            <label for="id">ID</label>
+            <input type="text" class="form-control" id="id" placeholder="Enter your id">
+          </div>
+          <div class="form-group col-sm-6">
+            <label for="name">Name</label>
+            <input type="text" class="form-control" id="name" placeholder="Enter your name">
+          </div>
+          <div class="form-group col-sm-6">
+            <label for="name">Password</label>
+            <input type="text" class="form-control" id="name" placeholder="Enter your password">
+          </div>
+          <div class="form-group col-sm-6">
+            <label for="email">Email</label> <input type="text" class="form-control" id="email"
+              placeholder="Enter your email">
+          </div>
+          <button class="btn btn-primary" type="button" (click)="changeToCreatePage();">Add
+            more</button>
+          <div class="form-group" style="text-align: right;">
+          </div>
+        </tab>
+        <tab id="add-muti-student">
+          <ng-template tabHeading><i class="icon-basket-loaded"></i> Add Muti Student</ng-template>
+          <div class="form-group row">
+            <label class="col-md-3 col-form-label" for="file-input">Sdutent file Example
+            </label>
+            <div class="col-md-9">
+              <a href="{{SERVER_URL}}/ProgEdu/StudentTemplate.csv" download>
+                <button class="btn btn-primary" type="button">download</button>
+              </a>
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <label class="col-md-3 col-form-label" for="file-input">Upload your Assignment example (accept zip)
+            </label>
+            <div class="col-md-9">
+              <input type="file" id="file-input" name="file-input">
+            </div>
+          </div>
+          <div class="form-group" style="text-align: center;">
+            <button class="btn btn-primary" type="button">Upload</button>
+          </div>
+        </tab>
+      </tabset>
+    </div>
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-body">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let user of users">
+                <td>{{user.userName}}</td>
+                <td>{{user.name}}</td>
+                <td>{{user.email}}</td>
+                <td>
+                  <span class="badge badge-success">Active</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

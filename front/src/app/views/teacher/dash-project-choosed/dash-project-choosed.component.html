@@ -1,0 +1,82 @@
+<div class="animated fadeIn">
+  <div class="card">
+    <div class="card-header">
+      <i class="cui-pencil icons"></i>
+      <label>{{proName}}</label>
+    </div>
+    <div class="card-body">
+      <span class="h5">Assignment Description</span>
+      <p style="border-bottom: 1rem;margin: 10px;">Documentation and examples for Bootstrap typography, including global
+        settings,
+        headings, body text,
+        lists, and
+        more.</p>
+      <span class="h5">Deadline</span>
+      <p style="margin: 10px;">2019-08-14 15:15</p>
+    </div>
+    <div id="inline">
+      <p class="ovol NB">
+        Not Build
+      </p>
+      <p class="ovol CPF">
+        Compile Failure
+      </p>
+      <p class="ovol CSF">
+        Checkstyle Failure
+      </p>
+      <!-- <p class="ovol plagirism" style="padding: 5px 10px;"><fmt:message key="dashboard_p_plagiarism"/></p> -->
+      <p class="ovol CJF">
+        Unit Test Failure
+      </p>
+      <p class="ovol S">
+        Build Success
+      </p>
+    </div>
+    <div class="card-body">
+      <div class='row '>
+        <div class="col-lg-6">
+          <table class='table table-striped' style="text-align:center;">
+            <thead>
+              <tr>
+                <td>Commit </td>
+                <td>Light </td>
+                <td>Date</td>
+                <td>Commit Message</td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let commit of commitData">
+                <td>{{commit.num}} </td>
+                <td>
+                  <p class="circle {{commit.color}}"></p>
+                </td>
+                <td>{{commit.date}}</td>
+                <td>{{commit.message}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="col-lg-6">
+          <carousel [interval]="false" style="background:black">
+            <slide style="background:black">
+              <a href="http://140.134.26.71:58321/job/D0350510_WEB-HW7/1/artifact/src/test/screenshot/sec.png">
+                <img src="http://140.134.26.71:58321/job/D0350510_WEB-HW7/1/artifact/src/test/screenshot/sec.png"
+                  alt="First slide" style="display: block; width: 100%;">
+              </a>
+            </slide>
+            <slide>
+              <img src="http://140.134.26.71:58321/job/D0350510_WEB-HW7/1/artifact/src/test/screenshot/index.png"
+                alt="Second slide" style="display: block; width: 100%;">
+            </slide>
+          </carousel>
+        </div>
+      </div>
+    </div>
+    <div class="card-footer">
+      <span class="h4"><a href="#">Feedback Information (#1)</a></span>
+      <div id="container">
+        <pre style="overflow: auto;">Instructor Commit</pre>
+      </div>
+    </div>
+  </div>
+</div>

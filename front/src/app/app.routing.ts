@@ -3,15 +3,19 @@ import { Routes, RouterModule } from '@angular/router';
 
 // Import Containers
 import { DefaultLayoutComponent } from './containers';
-
 import { P404Component } from './views/error/404.component';
 import { P500Component } from './views/error/500.component';
 import { LoginComponent } from './views/login/login.component';
 
+// import canActive
+import { CanActiveTeacherService } from './services/can-active-teacher.service';
+import { CanActiveStudentService } from './services/can-active-student.service';
+
+
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'dashboard',
+    redirectTo: 'login',
     pathMatch: 'full',
   },
   {
@@ -44,7 +48,13 @@ export const routes: Routes = [
     children: [
       {
         path: 'dashboard',
-        loadChildren: () => import('./views/dashboard/dashboard.module').then(m => m.DashboardModule)
+        canActivate: [CanActiveTeacherService],
+        loadChildren: () => import('./views/teacher/teacher.module').then(m => m.TeacherModule)
+      },
+      {
+        path: 'studashboard',
+        canActivate: [CanActiveStudentService],
+        loadChildren: () => import('./views/student/student.module').then(m => m.StudentModule)
       }
     ]
   },
@@ -53,6 +63,7 @@ export const routes: Routes = [
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
+  providers: [CanActiveTeacherService, CanActiveStudentService]
 })
 export class AppRoutingModule { }
