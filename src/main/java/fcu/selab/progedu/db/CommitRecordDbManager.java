@@ -20,7 +20,7 @@ public class CommitRecordDbManager {
 
   /**
    * insert student commit records into db
-   *
+   * 
    * @param id           studrnt id
    * @param auId         auId
    * @param commitNumber commitNumber
@@ -225,7 +225,8 @@ public class CommitRecordDbManager {
 //  }
 
   /**
-   * get commitcount by auId
+   * get commit count by auId
+   * 
    * 
    * @param id auId
    * @return aId assignment Id
@@ -264,4 +265,49 @@ public class CommitRecordDbManager {
     }
   }
 
+  /**
+   * get Commit_Status id
+   * 
+   * @param statusName Commit_Status statusName
+   * @return id status id
+   */
+  public int getCommitStatusId(String statusName) {
+    int id = 0;
+    String sql = "SELECT * FROM Commit_Status WHERE status=?";
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+      preStmt.setString(1, statusName);
+      try (ResultSet rs = preStmt.executeQuery()) {
+        while (rs.next()) {
+          id = rs.getInt("id");
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return id;
+  }
+
+  /**
+   * get Commit_Status name
+   * 
+   * @param id Commit_Status id
+   * @return name Commit_Status name
+   */
+  public String getCommitStatusName(int id) {
+    String statusName = null;
+    String sql = "SELECT * FROM Commit_Status WHERE id=?";
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+      preStmt.setInt(1, id);
+      try (ResultSet rs = preStmt.executeQuery()) {
+        while (rs.next()) {
+          statusName = rs.getString("status");
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return statusName;
+  }
 }
