@@ -8,7 +8,7 @@ public class CommitRecord {
 
   private int commitNumber;
 
-  public int getStuId() {
+  public int getId() {
     return id;
   }
 
