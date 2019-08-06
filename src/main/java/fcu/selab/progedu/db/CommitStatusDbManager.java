@@ -5,31 +5,26 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class AssignmentTypeDbManager {
+public class CommitStatusDbManager {
+  private static CommitStatusDbManager dbManager = new CommitStatusDbManager();
 
-  private static AssignmentTypeDbManager dbManager = new AssignmentTypeDbManager();
-
-  public static AssignmentTypeDbManager getInstance() {
+  public static CommitStatusDbManager getInstance() {
     return dbManager;
   }
 
   private IDatabase database = new MySqlDatabase();
 
-  private AssignmentTypeDbManager() {
-
-  }
-
   /**
-   * add assignmentType into database
+   * add CommitStatus into database
    * 
-   * @param type Assignment_Type name
+   * @param status Commit_Status status
    */
-  public void addAssignmentType(String type) {
-    String sql = "INSERT INTO Assignment_Type(name)  VALUES( ?)";
+  public void addAssignmentType(String status) {
+    String sql = "INSERT INTO Commit_Status(status)  VALUES( ?)";
 
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
-      preStmt.setString(1, type);
+      preStmt.setString(1, status);
       preStmt.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();
@@ -37,16 +32,16 @@ public class AssignmentTypeDbManager {
   }
 
   /**
-   * delete assignmentType from database
+   * delete CommitStatus from database
    * 
-   * @param type Assignment_Type name
+   * @param status Commit_Status status
    */
-  public void deleteAssignmentType(String type) {
-    String sql = "DELETE FROM Assignment_Type WHERE name ='" + type + "'";
+  public void deleteAssignmentType(String status) {
+    String sql = "DELETE FROM Commit_Status WHERE status ='" + status + "'";
 
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
-      preStmt.setString(1, type);
+      preStmt.setString(1, status);
       preStmt.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();
@@ -54,17 +49,17 @@ public class AssignmentTypeDbManager {
   }
 
   /**
-   * get assignment type Id by name
+   * get CommitStatus id by status
    * 
-   * @param name Assignment_Type name
-   * @return type assignment type
+   * @param status Commit_Status statusName
+   * @return id status id
    */
-  public int getAssignmentTypeId(String name) {
+  public int getCommitStatusId(String status) {
     int id = 0;
-    String sql = "SELECT * FROM Assignment_Type WHERE name=?";
+    String sql = "SELECT * FROM Commit_Status WHERE status=?";
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
-      preStmt.setString(1, name);
+      preStmt.setString(1, status);
       try (ResultSet rs = preStmt.executeQuery()) {
         while (rs.next()) {
           id = rs.getInt("id");
@@ -77,26 +72,26 @@ public class AssignmentTypeDbManager {
   }
 
   /**
-   * get assignment type name by Id
+   * get CommitStatus status by id
    * 
-   * @param id Assignment_Type id
-   * @return name assignment name
+   * @param id Commit_Status id
+   * @return status Commit_Status name
    */
-  public String getAssignmentTypeName(int id) {
-    String typeName = null;
-    String sql = "SELECT * FROM Assignment_Type WHERE id=?";
+  public String getCommitStatusName(int id) {
+    String status = null;
+    String sql = "SELECT * FROM Commit_Status WHERE id=?";
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
       preStmt.setInt(1, id);
       try (ResultSet rs = preStmt.executeQuery()) {
         while (rs.next()) {
-          typeName = rs.getString("name");
+          status = rs.getString("status");
         }
       }
     } catch (SQLException e) {
       e.printStackTrace();
     }
-    return typeName;
+    return status;
   }
 
 }
