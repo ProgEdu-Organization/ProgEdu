@@ -426,22 +426,22 @@ public class Conn {
     return isSuccess;
   }
 
-//  /**
-//   * Creates a Group
-//   *
-//   * @param groupName The name of the group. The name will also be used as the
-//   *                  path of the group.
-//   * @param owner     the owner of the group.
-//   * @return The GitLab Group
-//   */
-//  public GitlabGroup createGroup(String groupName, GitlabUser owner) {
-//    try {
-//      return gitlab.createGroupViaSudo(groupName, groupName, owner);
-//    } catch (IOException e) {
-//      System.out.println(e);
-//    }
-//    return null;
-//  }
+  // /**
+  // * Creates a Group
+  // *
+  // * @param groupName The name of the group. The name will also be used as the
+  // * path of the group.
+  // * @param owner the owner of the group.
+  // * @return The GitLab Group
+  // */
+  // public GitlabGroup createGroup(String groupName, GitlabUser owner) {
+  // try {
+  // return gitlab.createGroupViaSudo(groupName, groupName, owner);
+  // } catch (IOException e) {
+  // System.out.println(e);
+  // }
+  // return null;
+  // }
 
   /**
    * Creates a Group
@@ -465,9 +465,12 @@ public class Conn {
   /**
    * transfer project into group
    * 
-   * @param group       group
-   * @param projectName project name
-   * @throws IOException IOException
+   * @param group
+   *          group
+   * @param projectName
+   *          project name
+   * @throws IOException
+   *           IOException
    */
   public GitlabProject createGroupProject(Group group, String projectName) throws IOException {
     GroupService gs = new GroupService();

@@ -1,0 +1,58 @@
+<h1 style="text-align: center">Overview</h1>
+<div class='card'>
+  <div class='card-header'>
+    <i class='fa fa-align-justify'></i>
+    <label>Search:</label>
+    <div class="card-header-actions">
+      <div id="inline">
+        <p class="ovol NB">
+          Not Build
+        </p>
+        <p class="ovol CPF">
+          Compile Failure
+        </p>
+        <p class="ovol CSF">
+          Checkstyle Failure
+        </p>
+        <!-- <p class="ovol plagirism" style="padding: 5px 10px;"><fmt:message key="dashboard_p_plagiarism"/></p> -->
+        <p class="ovol CJF">
+          Unit Test Failure
+        </p>
+        <p class="ovol S">
+          Build Success
+        </p>
+      </div>
+    </div>
+  </div>
+  <div class='card-body'>
+    <table class='table table-striped' style="text-align:center;">
+      <table class='table table-striped' style="text-align:center;">
+        <thead>
+          <tr>
+            <th class='text-left'>學號</th>
+            <th *ngFor='let head of tableHead'>{{head.hw}}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor='let student of studentDatas'>
+            <div *ngIf='student.userName === user.getUserId()'>
+              <th class='text-left'>
+                {{student.userName | uppercase}}
+                <br>
+                {{student.name }}
+              </th>
+
+              <th *ngFor='let commit of student.commits'>
+                <p id="{{student.userName}}_{{commit.hw}}" class="circle {{commit.status}}">
+                  <a id="{{student.userName}}_{{commit.hw}}_{{commit.commit}}"
+                    href="#/dashboard/dashprojectChoosed?userId=3&proName=WEB-HW5">{{commit.commit}}</a>
+                </p>
+              </th>
+            </div>
+          </tr>
+        </tbody>
+      </table>
+    </table>
+  </div>
+</div>

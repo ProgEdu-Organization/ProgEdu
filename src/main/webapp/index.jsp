@@ -87,7 +87,7 @@ form[role=login]>div {
       <div class="col-md-4"></div>
       <div class="col-md-4">
         <section class="login-form">
-        <form method="post" method="post" action="AfterEnter" role="login">
+        <form method="post" action="AfterEnter" role="login">
           <h4 id="course-name"><%=CourseConfig.getInstance().getCourseFullName()%></h4>  
           <input type="hidden" name="grant_type" value="password">
           <input type="text" name="username" placeholder="user name" required autofocus class="form-control input-lg"/> 

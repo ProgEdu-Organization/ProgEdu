@@ -39,6 +39,7 @@ import org.gitlab.api.models.GitlabProject;
 import org.gitlab.api.models.GitlabUser;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
+import org.json.JSONObject;
 
 import fcu.selab.progedu.config.CourseConfig;
 import fcu.selab.progedu.config.GitlabConfig;
@@ -424,6 +425,22 @@ public class AssignmentService {
     // fileType must change to AssignmentTypeId to store in database
     dbManager.addAssignment(assignment);
   }
+  
+  /**
+  *return all project
+   * @return response
+  */
+  @GET
+  @Path("getAllProjects")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response getAllProject() {
+    List<Project> project = dbManager.listAllProjects();
+    JSONObject ob = new JSONObject();
+    ob.put("results",project);
+    return Response.ok().entity(ob.toString()).build();
+  }
+  
+  
 
   /**
    * delete assignments

@@ -2,17 +2,28 @@ package fcu.selab.progedu.config;
 
 import java.io.IOException;
 import java.io.InputStream;
+
+import java.security.Key;
 import java.util.Properties;
 
 import fcu.selab.progedu.exception.LoadConfigFailureException;
+import io.jsonwebtoken.security.Keys;
 
 public class CourseConfig {
   private static final String PROPERTY_FILE = "/config/course_config.properties";
-  private static CourseConfig instance = new CourseConfig();
+  private static CourseConfig instance ;
   private static final String EXCEPTION = "Unable to get config of COURSE"
       + " connection string from file;";
-
+  
+  /**
+   * 
+   * @return instance.
+   * @throws URISyntaxException .
+   */
   public static CourseConfig getInstance() {
+    if (instance == null) {
+      instance = new CourseConfig();
+    }
     return instance;
   }
 
@@ -23,6 +34,7 @@ public class CourseConfig {
     try {
       props = new Properties();
       props.load(is);
+      
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -78,6 +90,21 @@ public class CourseConfig {
   public String getTomcatServerIp() throws LoadConfigFailureException {
     if (props != null) {
       return props.getProperty("COURSE_TOMCAT_SERVER_IP").trim();
+    }
+    throw new LoadConfigFailureException(EXCEPTION + PROPERTY_FILE);
+  }
+  
+  /**
+   * Get Course Key
+   * 
+   * @return courseKey
+   * @throws LoadConfigFailureException when property file is not found, the
+   *                                    exception is thrown
+   */
+  public Key getCourseKey() throws LoadConfigFailureException {
+    if (props != null) {
+      String key = props.getProperty("COURSE_KEY");
+      return Keys.hmacShaKeyFor(key.getBytes());
     }
     throw new LoadConfigFailureException(EXCEPTION + PROPERTY_FILE);
   }
