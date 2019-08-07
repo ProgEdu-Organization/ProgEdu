@@ -40,6 +40,15 @@ export const navItems: NavData[] = [
     }
   },
   {
+    name: 'Chart',
+    url: '/dashboard/chart',
+    icon: 'icon-speedometer',
+    badge: {
+      variant: 'info',
+      text: 'NEW'
+    }
+  },
+  {
     name: 'Student',
     url: '/base',
     icon: 'align-center',

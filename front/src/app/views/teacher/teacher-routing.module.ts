@@ -6,7 +6,7 @@ import { AssignmentManagementComponent } from './assignment-management/assignmen
 import { CreateAssignmentComponent } from './create-assignment/create-assignment.component';
 import { StudentManagementComponent } from './student-management/student-management.component';
 import { GroupManagementComponent } from './group-management/group-management.component';
-
+import { ChartComponent } from './chart/chart.component';
 const routes: Routes = [
   {
     path: '',
@@ -57,7 +57,13 @@ const routes: Routes = [
       title: 'Group Management'
     }
   },
-
+  {
+    path: 'chart',
+    component: ChartComponent,
+    data: {
+      title: 'Chart'
+    }
+  }
 ];
 
 @NgModule({

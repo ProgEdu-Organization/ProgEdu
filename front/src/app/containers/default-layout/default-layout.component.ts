@@ -58,8 +58,7 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
 
   async updateNavData() {
     // clear student array
-    this.navItems[1].children.length = 0;
-
+    this.navItems[2].children.length = 0;
     this.defaultLayoutService.getNavData().subscribe(response => {
       console.log('test' + JSON.stringify(response));
       this.navData = response.result.sort(function (a, b) {
@@ -72,7 +71,7 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
           url: '/base/cards',
           icon: 'icon-puzzle'
         };
-        this.navItems[1].children.push(data);
+        this.navItems[2].children.push(data);
       }
       this.navDataisload = true;
     });

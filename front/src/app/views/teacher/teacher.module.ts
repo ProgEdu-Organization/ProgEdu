@@ -21,6 +21,7 @@ import { StudentManagementComponent } from './student-management/student-managem
 import { GroupManagementComponent } from './group-management/group-management.component';
 // Carousel Component
 import { CarouselModule } from 'ngx-bootstrap/carousel';
+import { ChartComponent } from './chart/chart.component';
 
 @NgModule({
   imports: [
@@ -42,6 +43,7 @@ import { CarouselModule } from 'ngx-bootstrap/carousel';
     AssignmentManagementComponent,
     CreateAssignmentComponent,
     StudentManagementComponent,
-    GroupManagementComponent]
+    GroupManagementComponent,
+    ChartComponent]
 })
 export class TeacherModule { }
