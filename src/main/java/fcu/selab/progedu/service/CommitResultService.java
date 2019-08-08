@@ -41,16 +41,20 @@ public class CommitResultService {
    * @return hw, color, commit
    */
   @GET
-  @Path("allStudents")
+  @Path("allUsers")
   @Produces(MediaType.TEXT_PLAIN)
-  public Response getCommitResult() {
+  public Response getAllUsersCommitRecord() {
     JSONArray array = new JSONArray();
     JSONObject result = new JSONObject();
     List<User> users = userDb.listAllUsers();
     for (User user : users) {
-
+      String username = user.getName();
+      Response userCommitRecord = getOneUserCommitRecord(username);
+      JSONObject ob = new JSONObject();
+      ob.put("user", user);
+      ob.put("commitRecord", userCommitRecord);
     }
-    result.put("result", array);
+    result.put("allUsersCommitRecord", array);
 
     return Response.ok().entity(result.toString()).build();
   }
@@ -61,12 +65,12 @@ public class CommitResultService {
    * @return homework, commit status, commit number
    */
   @GET
-  @Path("oneStudent")
+  @Path("oneUser")
   @Produces(MediaType.TEXT_PLAIN)
-  public Response getOneStudentCommitRecord(@FormParam("user") String username) {
+  public Response getOneUserCommitRecord(@FormParam("user") String username) {
     JSONArray array = new JSONArray();
     JSONObject result = new JSONObject();
-    int userId = userDb.getUserId(username);
+    int userId = userDb.getUserIdByUsername(username);
     List<Integer> aIds = auDb.getAIds(userId);
 
     for (int assignment : aIds) {
@@ -75,10 +79,9 @@ public class CommitResultService {
       JSONObject ob = new JSONObject();
       ob.put("assignmentName", assignmentName);
       ob.put("commitRecord", db.getCommitRecord(auIds));
-      array.put(assignmentName);
       array.put(ob);
     }
-    result.put("result", array);
+    result.put("oneUserCommitRecord", array);
     return Response.ok().entity(result.toString()).build();
   }
 
@@ -87,28 +90,20 @@ public class CommitResultService {
    * 
    * @param username
    *          student id
-   * @param proName
-   *          project name
+   * @param assignmentName
+   *          assignment name
    * @return build detail
    */
   @GET
-  @Path("record")
+  @Path("buildDetail")
   @Produces(MediaType.APPLICATION_JSON)
   public Response getCommitRecord(@QueryParam("username") String username,
-      @QueryParam("proName") String proName) {
-    AssignmentDbManager projectDb = AssignmentDbManager.getInstance();
-    StudentDashChoosePro stuDashChoPro = new StudentDashChoosePro();
-    String buildApiJson = stuDashChoPro.getBuildApiJson(num, username, proName);
-    final String strDate = stuDashChoPro.getCommitTime(buildApiJson);
-    String commitMessage = stuDashChoPro.getCommitMessage(num, username, proName);
-    int proType = projectDb.getAssignmentType(proName);
-    String status = stuDashChoPro.getCommitStatus(num, username, proName, buildApiJson, proType);
-    String color = "circle " + status;
-    JSONObject ob = new JSONObject();
-    ob.put("color", color);
-    ob.put("date", strDate);
+      @QueryParam("assignmentName") String assignmentName) {
+    int auId = auDb.getAUId(userDb.getUserIdByUsername(username),
+        assignmentDb.getAssignmentIdByName(assignmentName));
+    JSONObject buildDetail = db.getCommitRecord(auId);
     // ob.put("message", commitMessage);
-    return Response.ok().entity(ob.toString()).build();
+    return Response.ok().entity(buildDetail.toString()).build();
   }
 
   /**

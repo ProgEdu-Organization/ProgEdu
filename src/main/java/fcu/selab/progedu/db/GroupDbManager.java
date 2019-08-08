@@ -39,7 +39,7 @@ public class GroupDbManager {
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
       int id = -1;
-      id = udb.getUserByUsername(username);
+      id = udb.getUserIdByUsername(username);
       preStmt.setString(1, groupName);
       preStmt.setInt(2, id);
       preStmt.setBoolean(3, isLeader);

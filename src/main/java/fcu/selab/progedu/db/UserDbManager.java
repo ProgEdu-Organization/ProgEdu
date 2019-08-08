@@ -289,36 +289,11 @@ public class UserDbManager {
   /**
    * user name to find userId in db
    * 
-   * @param name
-   *          user's name
-   * @return id
-   */
-  public int getUserId(String name) {
-    String query = "SELECT * FROM User WHERE name = ?";
-    int id = -1;
-
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(query)) {
-      preStmt.setString(1, name);
-      try (ResultSet rs = preStmt.executeQuery();) {
-        while (rs.next()) {
-          id = rs.getInt("id");
-        }
-      }
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
-    return id;
-  }
-
-  /**
-   * user name to find userId in db
-   * 
    * @param username
    *          user's name
    * @return id
    */
-  public int getUserByUsername(String username) {
+  public int getUserIdByUsername(String username) {
     String query = "SELECT * FROM User WHERE username = ?";
     int id = -1;
 

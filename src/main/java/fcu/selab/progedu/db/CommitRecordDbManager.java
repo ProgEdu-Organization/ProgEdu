@@ -266,9 +266,11 @@ public class CommitRecordDbManager {
         while (rs.next()) {
           String status = rs.getString("status");
           int commitNumber = rs.getInt("commitNumber");
+          String commitTime = rs.getString("time");
           JSONObject eachHw = new JSONObject();
           eachHw.put("status", status);
           eachHw.put("commitNumber", commitNumber);
+          eachHw.put("commitTime", commitTime);
           array.put(eachHw);
         }
       }

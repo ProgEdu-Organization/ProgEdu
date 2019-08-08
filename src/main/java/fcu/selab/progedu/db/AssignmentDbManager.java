@@ -122,6 +122,31 @@ public class AssignmentDbManager {
   }
 
   /**
+   * assignment name to find assignmentId in db
+   * 
+   * @param assignmentName
+   *          assignment name
+   * @return id
+   */
+  public int getAssignmentIdByName(String assignmentName) {
+    String query = "SELECT * FROM Assignment WHERE name = ?";
+    int id = -1;
+
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(query)) {
+      preStmt.setString(1, assignmentName);
+      try (ResultSet rs = preStmt.executeQuery();) {
+        while (rs.next()) {
+          id = rs.getInt("id");
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return id;
+  }
+
+  /**
    * List all the assignments
    * 
    * @return List of assignments
