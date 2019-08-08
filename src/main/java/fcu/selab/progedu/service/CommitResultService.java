@@ -88,10 +88,8 @@ public class CommitResultService {
   /**
    * get student build detail info
    * 
-   * @param username
-   *          student id
-   * @param assignmentName
-   *          assignment name
+   * @param username       student id
+   * @param assignmentName assignment name
    * @return build detail
    */
   @GET
@@ -109,10 +107,8 @@ public class CommitResultService {
   /**
    * get commit result by stuId and hw.
    * 
-   * @param userName
-   *          student id
-   * @param proName
-   *          project name
+   * @param userName student id
+   * @param proName  project name
    * @return color
    */
   public String getCommitResult(String userName, String proName) {
@@ -123,38 +119,31 @@ public class CommitResultService {
   /**
    * update stu project commit record.
    * 
-   * @param userName
-   *          stu id
-   * @param proName
-   *          project name
+   * @param auId
+   * 
    */
   @POST
   @Path("update")
   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-  public Response updateCommitResult(@FormParam("user") String userName,
-      @FormParam("proName") String proName) {
+  public Response updateCommitResult(@FormParam("auId") int auId) {
     JSONObject ob = new JSONObject();
-    if (!userName.equals("root")) {
+    if (!auId.equals("root")) {
 
       JenkinsService jenkinsService = new JenkinsService();
       StudentDashChoosePro stuDashChoPro = new StudentDashChoosePro();
 
-      int lastCommitNum = jenkinsService.getProjectCommitCount(proName, userName);
-      int commitCount = lastCommitNum - 1;
-      int proType = assignmentDb.getAssignmentType(proName);
-      String buildApiJson = stuDashChoPro.getBuildApiJson(lastCommitNum, userName, proName);
-      String strDate = stuDashChoPro.getCommitTime(buildApiJson);
-      String[] dates = strDate.split(" ");
-      String status = stuDashChoPro.getCommitStatus(lastCommitNum, userName, proName, buildApiJson,
-          proType);
-      int id = userDb.getUser(userName).getId();
+      int commitNumber = db.getCommitCount(auId) + 1;
+      int status = db.getCommitStatusbyAuid(auId);
+      String time = db.getCommitTimebyAuid(auId);
+
+      int id = userDb.getUser(auId).getId();
 
       boolean check = db.checkJenkinsJobTimestamp(id, proName);
       if (check) {
-        db.updateJenkinsCommitCount(id, proName, commitCount, status);
+        db.updateJenkinsCommitCount(id, proName, commitNumber, status);
 
       } else {
-        db.insertJenkinsCommitCount(id, proName, commitCount, status);
+        db.insertJenkinsCommitCount(id, proName, commitNumber, status);
       }
       db.updateJenkinsJobTimestamp(id, proName, strDate);
 
@@ -167,11 +156,9 @@ public class CommitResultService {
 
       updateCommitRecordState();
 
-      ob.put("userName", userName);
-      ob.put("proName", proName);
-      ob.put("commitCount", commitCount);
-      ob.put("dates", dates[0]);
-      ob.put("dates1", dates[1]);
+      ob.put("auId", auId);
+      ob.put("commitNumber", commitNumber);
+      ob.put("time", time);
       ob.put("status", status);
     }
 
@@ -236,8 +223,7 @@ public class CommitResultService {
   /**
    * delete build result of hw.
    * 
-   * @param hw
-   *          hw
+   * @param hw hw
    */
   public void deleteResult(String hw) {
     IDatabase database = new MySqlDatabase();
