@@ -33,7 +33,7 @@ public class CommitRecordDbManager {
    * @return check
    */
   public boolean insertCommitRecord(int id, int auId, int commitNumber, int status, String time) {
-    String sql = "INSERT INTO Commit_Record" + "(id, auId, commitNumber, status, date, time) "
+    String sql = "INSERT INTO Commit_Record" + "(id, auId, commitNumber, status, time) "
         + "VALUES(?, ?, ?, ?, ?)";
     boolean check = false;
 
@@ -237,6 +237,7 @@ public class CommitRecordDbManager {
    * get commit record details from the homework of a student
    * 
    * 
+   * @param auIds auId
    * @param id auId
    * @param auIds
    *          auId
@@ -308,6 +309,52 @@ public class CommitRecordDbManager {
     } catch (SQLException e) {
       e.printStackTrace();
     }
+  }
+
+  /**
+   * get Commit_time id by auid
+   * 
+   * @param auid auId
+   * @return time time
+   */
+  public String getCommitTimebyAuid(int auid) {
+    String time = null;
+    String sql = "SELECT * FROM Commit_Record WHERE auId=?";
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+      preStmt.setInt(1, auid);
+      try (ResultSet rs = preStmt.executeQuery()) {
+        while (rs.next()) {
+          time = rs.getString("time");
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return time;
+  }
+
+  /**
+   * get Commit_Status id by auid
+   * 
+   * @param auid auId
+   * @return status status
+   */
+  public int getCommitStatusbyAuid(int auid) {
+    int status = 0;
+    String sql = "SELECT * FROM Commit_Record WHERE auId=?";
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+      preStmt.setInt(1, auid);
+      try (ResultSet rs = preStmt.executeQuery()) {
+        while (rs.next()) {
+          status = rs.getInt("auid");
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return status;
   }
 
   /**
