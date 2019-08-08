@@ -109,10 +109,8 @@ public class CommitResultService {
   /**
    * get commit result by stuId and hw.
    * 
-   * @param userName
-   *          student id
-   * @param proName
-   *          project name
+   * @param userName student id
+   * @param proName  project name
    * @return color
    */
   public String getCommitResult(String userName, String proName) {
@@ -123,10 +121,8 @@ public class CommitResultService {
   /**
    * update stu project commit record.
    * 
-   * @param userName
-   *          stu id
-   * @param proName
-   *          project name
+   * @param userName stu id
+   * @param proName  project name
    */
   @POST
   @Path("update")
@@ -236,8 +232,7 @@ public class CommitResultService {
   /**
    * delete build result of hw.
    * 
-   * @param hw
-   *          hw
+   * @param hw hw
    */
   public void deleteResult(String hw) {
     IDatabase database = new MySqlDatabase();
