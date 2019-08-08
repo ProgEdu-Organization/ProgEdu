@@ -104,34 +104,33 @@ public class CommitRecordDbManager {
   // return map;
   // }
 
-  // /**
-  // * get each hw's CommitRecordStateCounts
-  // *
-  // * @param auId Commit_Record auId
-  // * @param num num
-  // * @return status
-  // */
-  // public String getCommitRecordStatus(int auId, int num) {
-  // String status = "";
-  // String query = "SELECT status FROM Commit_Record where auId = ? and limit
-  // ?,1";
-  //
-  // try (Connection conn = database.getConnection();
-  // PreparedStatement preStmt = conn.prepareStatement(query)) {
-  // preStmt.setInt(1, auId);
-  // preStmt.setInt(2, num - 1);
-  //
-  // try (ResultSet rs = preStmt.executeQuery();) {
-  // if (rs.next()) {
-  // status = rs.getString(FIELD_NAME_STATUS);
-  // }
-  // }
-  // } catch (SQLException e) {
-  // e.printStackTrace();
-  // }
-  //
-  // return status;
-  // }
+  /**
+   * get each hw's CommitRecordStateCounts
+   *
+   * @param auId Commit_Record auId
+   * @param num  num
+   * @return status
+   */
+  public String getCommitRecordStatus(int auId, int num) {
+    String status = "";
+    String query = "SELECT status FROM Commit_Record where auId = ? and limit ?,1";
+
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(query)) {
+      preStmt.setInt(1, auId);
+      preStmt.setInt(2, num - 1);
+
+      try (ResultSet rs = preStmt.executeQuery();) {
+        if (rs.next()) {
+          status = rs.getString(FIELD_NAME_STATUS);
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+
+    return status;
+  }
 
   /**
    * check if record is in db
@@ -239,6 +238,9 @@ public class CommitRecordDbManager {
    * 
    * 
    * @param auIds auId
+   * @param id auId
+   * @param auIds
+   *          auId
    * @return commit record details
    */
   public JSONObject getCommitRecord(int auIds) {

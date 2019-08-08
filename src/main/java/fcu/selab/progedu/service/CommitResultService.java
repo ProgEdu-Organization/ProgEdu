@@ -121,6 +121,8 @@ public class CommitResultService {
    * 
    * @param auId
    * 
+   * @param userName stu id
+   * @param proName  project name
    */
   @POST
   @Path("update")

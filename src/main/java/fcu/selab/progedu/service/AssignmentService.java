@@ -34,7 +34,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.eclipse.persistence.sessions.Project;
 import org.gitlab.api.models.GitlabProject;
 import org.gitlab.api.models.GitlabUser;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
@@ -46,6 +45,7 @@ import fcu.selab.progedu.config.JenkinsConfig;
 import fcu.selab.progedu.conn.GitlabService;
 import fcu.selab.progedu.conn.HttpConnect;
 import fcu.selab.progedu.conn.TomcatService;
+import fcu.selab.progedu.data.Assignment;
 import fcu.selab.progedu.db.AssignmentDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.jenkins.JenkinsApi;
@@ -214,7 +214,7 @@ public class AssignmentService {
   }
 
   public List<String> getAllProjectNames() {
-    return dbManager.listAllProjectNames();
+    return dbManager.listAllAssignmentNames();
   }
 
   private String getRootProjectUrl(String name) {
@@ -337,19 +337,20 @@ public class AssignmentService {
    * @param hasTemplate Has template
    */
   public void addProject(String name, String createTime, String deadline, String readMe,
-      String fileType, boolean hasTemplate, String testZipChecksum, String testZipUrl) {
-    Project project = new Project();
+      int fileType, boolean hasTemplate, String testZipChecksum, String testZipUrl) {
+    Assignment assignment = new Assignment();
 
-    project.setName(name);
-    project.setCreateTime(createTime);
-    project.setDeadline(deadline);
-    project.setDescription(readMe);
-    project.setType(fileType);
-    project.setHasTemplate(hasTemplate);
-    project.setTestZipChecksum(testZipChecksum);
-    project.setTestZipUrl(testZipUrl);
+    assignment.setName(name);
+    assignment.setCreateTime(createTime);
+    assignment.setDeadline(deadline);
+    assignment.setDescription(readMe);
+    assignment.setType(fileType);
+    assignment.setHasTemplate(hasTemplate);
+    assignment.setTestZipChecksum(testZipChecksum);
+    assignment.setTestZipUrl(testZipUrl);
 
-    dbManager.addProject(project);
+    dbManager.addAssignment(assignment);
+    ;
   }
 
   /**
@@ -374,7 +375,7 @@ public class AssignmentService {
     String removeFileCommand = "rm -rf tests/" + name + "-COMPLETE";
     linuxApi.execLinuxCommandInFile(removeFileCommand, TEMP_DIR);
     // delete db
-    dbManager.deleteProject(name);
+    dbManager.deleteAssignment(name);
     commitRecordService.deleteRecord(name);
     commitResultService.deleteResult(name);
     commitRecordStateService.deleteRecordState(name);
@@ -419,9 +420,10 @@ public class AssignmentService {
   public Response editProject(@FormDataParam("Edit_Hw_Name") String name,
       @FormDataParam("Hw_Deadline") String deadline, @FormDataParam("Hw_README") String readMe,
       @FormDataParam("Hw_TestCase") InputStream uploadedInputStream,
+      @FormDataParam("Edit_ReleaseTime") String releaseTime,
       @FormDataParam("Hw_TestCase") FormDataContentDisposition fileDetail) {
 
-    dbManager.editProject(deadline, readMe, name);
+    dbManager.editAssignment(deadline, readMe, releaseTime, name);
 
     if (!fileDetail.getFileName().isEmpty()) {
       // update test case
@@ -431,7 +433,7 @@ public class AssignmentService {
       String checksum = getChecksum(filePath);
       System.out.println("checksum : " + checksum);
 
-      dbManager.updateProjectChecksum(name, checksum);
+      dbManager.updateAssignmentChecksum(name, checksum);
     }
 
     Response response = Response.ok().build();
@@ -452,9 +454,9 @@ public class AssignmentService {
   @Path("checksum")
   @Produces(MediaType.APPLICATION_JSON)
   public Response getProject(@QueryParam("proName") String projectName) {
-    Project project = new Project();
-    project = dbManager.getProjectByName(projectName);
-    return Response.ok().entity(project).build();
+    Assignment assignment = new Assignment();
+    assignment = dbManager.getAssignmentByName(projectName);
+    return Response.ok().entity(assignment).build();
   }
 
   public void setTestFileInfo() {
