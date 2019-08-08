@@ -23,8 +23,10 @@ public class AssignmentUserDbManager {
   /**
    * add AssignmentUser into database
    * 
-   * @param aid Assignment Id
-   * @param uid User Id
+   * @param aid
+   *          Assignment Id
+   * @param uid
+   *          User Id
    */
   public void addAssignmentUser(int aid, int uid) {
     String sql = "INSERT INTO Assignment_User(aId, uId)  VALUES( ?, ?)";
@@ -43,8 +45,10 @@ public class AssignmentUserDbManager {
   /**
    * delete AssignmentUser from database
    * 
-   * @param aid Assignment Id
-   * @param uid User Id
+   * @param aid
+   *          Assignment Id
+   * @param uid
+   *          User Id
    */
   public void deleteAssignmentUser(int aid, int uid) {
     String sql = "DELETE FROM Assignment_User WHERE aId ='" + aid + "' AND uId = '" + uid + "'";
@@ -60,8 +64,10 @@ public class AssignmentUserDbManager {
   /**
    * get auId by assignment Id and user Id
    * 
-   * @param aid Assignment Id
-   * @param uid User Id
+   * @param aid
+   *          Assignment Id
+   * @param uid
+   *          User Id
    * @return auId assignmentUser Id
    */
   public int getAUId(int aid, int uid) {
@@ -87,11 +93,12 @@ public class AssignmentUserDbManager {
    * 
    * @return aids assignment Id
    */
-  public List<Integer> getAids() {
+  public List<Integer> getAIds(int uId) {
     List<Integer> lsAids = new ArrayList<>();
-    String sql = "SELECT * FROM Assignment_User";
+    String sql = "SELECT * FROM Assignment_User WHERE uId = ?";
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
+      preStmt.setInt(1, uId);
       try (ResultSet rs = preStmt.executeQuery()) {
         while (rs.next()) {
           int aid = rs.getInt("aId");
@@ -109,11 +116,12 @@ public class AssignmentUserDbManager {
    *
    * @return aids assignment Id
    */
-  public List<Integer> getUids() {
+  public List<Integer> getUids(int aId) {
     List<Integer> lsUids = new ArrayList<>();
-    String sql = "SELECT * FROM Assignment_User";
+    String sql = "SELECT * FROM Assignment_User WHERE aId = ?";
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
+      preStmt.setInt(1, aId);
       try (ResultSet rs = preStmt.executeQuery()) {
         while (rs.next()) {
           int uid = rs.getInt("uId");
