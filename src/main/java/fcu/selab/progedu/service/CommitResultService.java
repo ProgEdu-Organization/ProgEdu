@@ -11,6 +11,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -40,20 +41,69 @@ public class CommitResultService {
    * @return hw, color, commit
    */
   @GET
-  @Path("all")
+  @Path("allUsers")
   @Produces(MediaType.TEXT_PLAIN)
-  public Response getCommitResult() {
+  public Response getAllUsersCommitRecord() {
     JSONArray array = new JSONArray();
     JSONObject result = new JSONObject();
     List<User> users = userDb.listAllUsers();
     for (User user : users) {
-      int auid = getAUId(user.getId(),);
-      JSONObject ob = db.getCommitRecord(user.getId());
-      array.put(ob);
+      String username = user.getName();
+      Response userCommitRecord = getOneUserCommitRecord(username);
+      JSONObject ob = new JSONObject();
+      ob.put("user", user);
+      ob.put("commitRecord", userCommitRecord);
     }
-    result.put("result", array);
+    result.put("allUsersCommitRecord", array);
 
     return Response.ok().entity(result.toString()).build();
+  }
+
+  /**
+   * get all commit record of one student.
+   *
+   * @return homework, commit status, commit number
+   */
+  @GET
+  @Path("oneUser")
+  @Produces(MediaType.TEXT_PLAIN)
+  public Response getOneUserCommitRecord(@FormParam("user") String username) {
+    JSONArray array = new JSONArray();
+    JSONObject result = new JSONObject();
+    int userId = userDb.getUserIdByUsername(username);
+    List<Integer> aIds = auDb.getAIds(userId);
+
+    for (int assignment : aIds) {
+      int auIds = auDb.getAUId(assignment, userId);
+      String assignmentName = assignmentDb.getAssignmentNameById(assignment);
+      JSONObject ob = new JSONObject();
+      ob.put("assignmentName", assignmentName);
+      ob.put("commitRecord", db.getCommitRecord(auIds));
+      array.put(ob);
+    }
+    result.put("oneUserCommitRecord", array);
+    return Response.ok().entity(result.toString()).build();
+  }
+
+  /**
+   * get student build detail info
+   * 
+   * @param username
+   *          student id
+   * @param assignmentName
+   *          assignment name
+   * @return build detail
+   */
+  @GET
+  @Path("buildDetail")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response getCommitRecord(@QueryParam("username") String username,
+      @QueryParam("assignmentName") String assignmentName) {
+    int auId = auDb.getAUId(userDb.getUserIdByUsername(username),
+        assignmentDb.getAssignmentIdByName(assignmentName));
+    JSONObject buildDetail = db.getCommitRecord(auId);
+    // ob.put("message", commitMessage);
+    return Response.ok().entity(buildDetail.toString()).build();
   }
 
   /**

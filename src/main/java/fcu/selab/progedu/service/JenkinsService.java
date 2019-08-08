@@ -58,8 +58,10 @@ public class JenkinsService {
   /**
    * get project built color
    * 
-   * @param proName  project name
-   * @param userName student name
+   * @param proName
+   *          project name
+   * @param userName
+   *          student name
    * @return color and commit count
    */
 
@@ -101,8 +103,10 @@ public class JenkinsService {
   /**
    * get project commit count
    * 
-   * @param proName  project name
-   * @param userName student name
+   * @param proName
+   *          project name
+   * @param userName
+   *          student name
    * @return count
    */
   @GET
@@ -148,38 +152,12 @@ public class JenkinsService {
   /**
    * get student build detail info
    * 
-   * @param num      build num
-   * @param userName student id
-   * @param proName  project name
-   * @return build detail
-   */
-  @GET
-  @Path("buildDetail")
-  @Produces(MediaType.APPLICATION_JSON)
-  public Response getBuildDetail(@QueryParam("num") int num,
-      @QueryParam("userName") String userName, @QueryParam("proName") String proName) {
-    AssignmentDbManager projectDb = AssignmentDbManager.getInstance();
-    StudentDashChoosePro stuDashChoPro = new StudentDashChoosePro();
-    String buildApiJson = stuDashChoPro.getBuildApiJson(num, userName, proName);
-    final String strDate = stuDashChoPro.getCommitTime(buildApiJson);
-    String commitMessage = stuDashChoPro.getCommitMessage(num, userName, proName);
-    int proType = projectDb.getAssignmentType(proName);
-    String status = stuDashChoPro.getCommitStatus(num, userName, proName, buildApiJson, proType);
-    String color = "circle " + status;
-    JSONObject ob = new JSONObject();
-    ob.put("num", num);
-    ob.put("color", color);
-    ob.put("date", strDate);
-    ob.put("message", commitMessage);
-    return Response.ok().entity(ob.toString()).build();
-  }
-
-  /**
-   * get student build detail info
-   * 
-   * @param num         build num
-   * @param groupName   student id
-   * @param projectName project name
+   * @param num
+   *          build num
+   * @param groupName
+   *          student id
+   * @param projectName
+   *          project name
    * @return build detail
    */
   @GET
@@ -210,10 +188,14 @@ public class JenkinsService {
   /**
    * get build error type
    * 
-   * @param jenkinsData connect to jenkins
-   * @param userName    student id
-   * @param proName     project name
-   * @param num         build num
+   * @param jenkinsData
+   *          connect to jenkins
+   * @param userName
+   *          student id
+   * @param proName
+   *          project name
+   * @param num
+   *          build num
    * @return type
    */
   public static String checkErrorStyle(JenkinsConfig jenkinsData, String userName, String proName,
@@ -252,7 +234,8 @@ public class JenkinsService {
   /**
    * get test folder
    * 
-   * @param filePath folder directory
+   * @param filePath
+   *          folder directory
    * @return zip file
    */
   @GET
@@ -268,7 +251,8 @@ public class JenkinsService {
 
   /**
    * 
-   * @param url full console url
+   * @param url
+   *          full console url
    * @return console
    */
   @POST
@@ -299,7 +283,8 @@ public class JenkinsService {
 
   /**
    * 
-   * @param url full console url
+   * @param url
+   *          full console url
    * @return console
    */
   @POST
@@ -309,7 +294,10 @@ public class JenkinsService {
     AssignmentDbManager projectDb = AssignmentDbManager.getInstance();
 
     int projectTypeId = 0; // Maven
-    String projectTypename = projectDb.getAssignmentTypeName(projectTypeId);// Change Id to name
+    String projectTypename = projectDb.getAssignmentTypeName(projectTypeId);// Change
+                                                                            // Id
+                                                                            // to
+                                                                            // name
 
     StudentDashChoosePro stuDashChoPro = new StudentDashChoosePro();
     String buildApiJson = stuDashChoPro.getBuildApiJson(assigmentStatusData.getNumber(),

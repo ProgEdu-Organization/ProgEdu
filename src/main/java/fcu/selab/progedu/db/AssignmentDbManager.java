@@ -27,7 +27,8 @@ public class AssignmentDbManager {
   /**
    * Add assignment to database
    * 
-   * @param assignment Project
+   * @param assignment
+   *          Project
    */
   public void addAssignment(Assignment assignment) {
     String sql = "INSERT INTO Assignment(name, createTime, deadline, description, hasTemplate"
@@ -55,7 +56,8 @@ public class AssignmentDbManager {
   /**
    * get assignment info by assignment name
    * 
-   * @param name assignment name
+   * @param name
+   *          assignment name
    * @return assignment
    */
   public Assignment getAssignmentByName(String name) {
@@ -93,6 +95,55 @@ public class AssignmentDbManager {
       e.printStackTrace();
     }
     return assignment;
+  }
+
+  /**
+   * get assignment name by assignment id
+   * 
+   * @param aId
+   *          assignment id
+   * @return assignment name
+   */
+  public String getAssignmentNameById(int aId) {
+    String sql = "SELECT * FROM Assignment WHERE aId = ?";
+    String assignmentName = "";
+    try (Connection conn = database.getConnection();
+        PreparedStatement stmt = conn.prepareStatement(sql)) {
+      stmt.setInt(1, aId);
+      try (ResultSet rs = stmt.executeQuery();) {
+        while (rs.next()) {
+          assignmentName = rs.getString("name");
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return assignmentName;
+  }
+
+  /**
+   * assignment name to find assignmentId in db
+   * 
+   * @param assignmentName
+   *          assignment name
+   * @return id
+   */
+  public int getAssignmentIdByName(String assignmentName) {
+    String query = "SELECT * FROM Assignment WHERE name = ?";
+    int id = -1;
+
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(query)) {
+      preStmt.setString(1, assignmentName);
+      try (ResultSet rs = preStmt.executeQuery();) {
+        while (rs.next()) {
+          id = rs.getInt("id");
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return id;
   }
 
   /**
@@ -165,7 +216,8 @@ public class AssignmentDbManager {
   /**
    * Delete assignment from database
    * 
-   * @param name assignment name
+   * @param name
+   *          assignment name
    */
   public void deleteAssignment(String name) {
     String sql = "DELETE FROM Assignment WHERE name='" + name + "'";
@@ -180,9 +232,12 @@ public class AssignmentDbManager {
   /**
    * Edit assignment from database
    * 
-   * @param deadline new deadline
-   * @param readMe   new readMe
-   * @param name     assignment name
+   * @param deadline
+   *          new deadline
+   * @param readMe
+   *          new readMe
+   * @param name
+   *          assignment name
    */
   public void editAssignment(String deadline, String readMe, String releaseTime, String name) {
     String sql = "UPDATE Assignment SET deadline=?, description=?, releaseTime=? WHERE name=?";
@@ -202,8 +257,10 @@ public class AssignmentDbManager {
   /**
    * Edit assignment checksum
    * 
-   * @param name     assignment name
-   * @param checksum new checksum
+   * @param name
+   *          assignment name
+   * @param checksum
+   *          new checksum
    */
   public void updateAssignmentChecksum(String name, String checksum) {
     String sql = "UPDATE Assignment SET zipChecksum=? WHERE name=?";
@@ -220,7 +277,8 @@ public class AssignmentDbManager {
   /**
    * get assignment type by name
    * 
-   * @param name assignment name
+   * @param name
+   *          assignment name
    * @return type assignment type
    */
   public int getAssignmentType(String name) {

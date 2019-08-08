@@ -5,11 +5,15 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 public class CommitRecordDbManager {
   UserDbManager userDbManager = UserDbManager.getInstance();
   private static final String COUNT_STATUS = "count(status)";
   private static final String FIELD_NAME_STATUS = "status";
   private static CommitRecordDbManager dbManager = new CommitRecordDbManager();
+  private UserDbManager udb = UserDbManager.getInstance();
   private static CommitStatusDbManager CSdbManager = new CommitStatusDbManager();
 
   public static CommitRecordDbManager getInstance() {
@@ -230,27 +234,39 @@ public class CommitRecordDbManager {
   // }
 
   /**
-   * get commit record details
+   * get commit record details from the homework of a student
    * 
    * 
    * @param id auId
+   * @param auIds
+   *          auId
    * @return commit record details
    */
-  public int getCommitRecord(int id) {
-    int count = 0;
+  public JSONObject getCommitRecord(int auIds) {
     String sql = "SELECT * FROM Commit_Record WHERE auId=?";
+    JSONObject ob = new JSONObject();
+    JSONArray array = new JSONArray();
+
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
-      preStmt.setInt(1, id);
+      preStmt.setInt(1, auIds);
       try (ResultSet rs = preStmt.executeQuery()) {
         while (rs.next()) {
-          count = rs.getInt("count(auId)");
+          String status = rs.getString("status");
+          int commitNumber = rs.getInt("commitNumber");
+          String commitTime = rs.getString("time");
+          JSONObject eachHw = new JSONObject();
+          eachHw.put("status", status);
+          eachHw.put("commitNumber", commitNumber);
+          eachHw.put("commitTime", commitTime);
+          array.put(eachHw);
         }
       }
+      ob.put("commits", array);
     } catch (SQLException e) {
       e.printStackTrace();
     }
-    return count;
+    return ob;
   }
 
   /**
