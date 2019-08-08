@@ -9,7 +9,7 @@ import org.gitlab.api.models.GitlabUser;
 
 import fcu.selab.progedu.config.CourseConfig;
 import fcu.selab.progedu.config.GitlabConfig;
-import fcu.selab.progedu.conn.Conn;
+import fcu.selab.progedu.conn.GitlabService;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.jenkins.JenkinsApi;
 import fcu.selab.progedu.status.Status;
@@ -99,7 +99,7 @@ public abstract class AssignmentTypeMethod implements AssignmentTypeSelector {
    */
   public void createJenkinsJob(String name, String jenkinsRootUsername, String jenkinsRootPassword)
       throws Exception {
-    Conn conn = Conn.getInstance();
+    GitlabService conn = GitlabService.getInstance();
     jenkinsApi = new JenkinsApi();
     JenkinsApi jenkins = JenkinsApi.getInstance();
     String jenkinsCrumb = jenkinsApi.getCrumb(jenkinsRootUsername, jenkinsRootPassword);

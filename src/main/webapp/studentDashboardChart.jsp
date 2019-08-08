@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=BIG5" pageEncoding="utf-8"%>
-<%@ page import="fcu.selab.progedu.conn.Conn, fcu.selab.progedu.conn.StudentConn, fcu.selab.progedu.conn.HttpConnect"%>
+<%@ page import="fcu.selab.progedu.conn.GitlabService, fcu.selab.progedu.conn.StudentConn, fcu.selab.progedu.conn.HttpConnect"%>
 <%@ page import="fcu.selab.progedu.config.GitlabConfig,fcu.selab.progedu.config.CourseConfig"%>
 <%@ page import="fcu.selab.progedu.config.JenkinsConfig" %>
 <%@ page import="java.util.ArrayList"%>

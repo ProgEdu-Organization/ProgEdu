@@ -18,7 +18,7 @@
 <%@ page import="fcu.selab.progedu.conn.*"%>
 <%@ page import="fcu.selab.progedu.status.*"%>
 <%@ page import="fcu.selab.progedu.service.IGroupProject"%>
-<%@ page import="fcu.selab.progedu.service.AssignmentTypeEnum"%>
+<%@ page import="fcu.selab.progedu.project.ProjectTypeEnum"%>
 <%@ page import="fcu.selab.progedu.service.GroupProjectFactory"%>
 <%@ page import="fcu.selab.progedu.service.AssignmentTypeFactory"%>
 <%@ page import="fcu.selab.progedu.service.AssignmentTypeSelector"%>
@@ -169,20 +169,20 @@ html, body {
 </head>
 <body>
 	<%
-	  Conn conn = Conn.getInstance();
+	  GitlabService conn = GitlabService.getInstance();
 
-				  UserDbManager db = UserDbManager.getInstance();
-				  AssignmentDbManager Pdb = AssignmentDbManager.getInstance();
-				  StudentDashChoosePro stuDashChoPro = new StudentDashChoosePro();
+						  UserDbManager db = UserDbManager.getInstance();
+						  AssignmentDbManager Pdb = AssignmentDbManager.getInstance();
+						  StudentDashChoosePro stuDashChoPro = new StudentDashChoosePro();
 
-				  List<User> users = db.listAllUsers();
-				  List<Assignment> dbProjects = Pdb.listAllAssignments();
+						  List<User> users = db.listAllUsers();
+						  List<Assignment> dbProjects = Pdb.listAllAssignments();
 
-				  // gitlab jenkins course��Data
-				  GitlabConfig gitData = GitlabConfig.getInstance();
-				  JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
+						  // gitlab jenkins course��Data
+						  GitlabConfig gitData = GitlabConfig.getInstance();
+						  JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
 
-				  JenkinsApi jenkins = JenkinsApi.getInstance();
+						  JenkinsApi jenkins = JenkinsApi.getInstance();
 	%>
 	<%@ include file="header.jsp"%>
 	<!-- -----sidebar----- -->
@@ -196,21 +196,21 @@ html, body {
 				<ul id="group" class="collapse show" style="list-style: none;">
 					<%
 					  /*初始化group*/
-					  Group[] groups = { new Group(), new Group() };
-					  groups[0].setGroupName("group1");
-					  groups[0].addContributor("小新");
-					  groups[0].addContributor("佳和");
-					  groups[0].addContributor("一拳");
-					  groups[0].setGroupId(1);
-					  groups[0].setLeaderUsername("佳和");
-					  groups[1].setGroupName("小黑組");
+										  Group[] groups = { new Group(), new Group() };
+										  groups[0].setGroupName("group1");
+										  groups[0].addContributor("小新");
+										  groups[0].addContributor("佳和");
+										  groups[0].addContributor("一拳");
+										  groups[0].setGroupId(1);
+										  groups[0].setLeaderUsername("佳和");
+										  groups[1].setGroupName("小黑組");
 
-					  Group group = null;
-					  for (Group g : groups) {
-					    String href = "\"dashStuChoosed.jsp?groupName=" + g.getGroupName() + "\"";
-					    if (g.getGroupId() == groupId) {
-					      group = g;
-					    }
+										  Group group = null;
+										  for (Group g : groups) {
+										    String href = "\"dashStuChoosed.jsp?groupName=" + g.getGroupName() + "\"";
+										    if (g.getGroupId() == groupId) {
+										      group = g;
+										    }
 					%>
 					<li class="nav-item"><font size="3"><a class="nav-link"
 							href=<%=href%>><i class="fa fa-angle-right"
@@ -229,7 +229,7 @@ html, body {
 		<!-- ---------------------------- Project ------------------------------- -->
 		<%
 		  //ProjectDbManager pDb = ProjectDbManager.getInstance();
-		  //Project project = pDb.getProjectByName(projectName);
+				  //Project project = pDb.getProjectByName(projectName);
 		%>
 		<div style="margin: 10px 10px 10px 10px;">
 			<h2 style="white-space: nowrap">
@@ -268,14 +268,14 @@ html, body {
 				
 				<tbody id="projectTbody">
 				<%
-					String groupName = group.getGroupName();
-					String projectName = groupName;
-					List<Integer> buildNum = stuDashChoPro.getScmBuildCounts(groupName, projectName);
-					int commit_count = buildNum.size();
-					int i=1;
-					int lastBuildMessageNum = 0;
-					for(Integer num : buildNum){
-					  	%>
+				  String groupName = group.getGroupName();
+									String projectName = groupName;
+									List<Integer> buildNum = stuDashChoPro.getScmBuildCounts(groupName, projectName);
+									int commit_count = buildNum.size();
+									int i=1;
+									int lastBuildMessageNum = 0;
+									for(Integer num : buildNum){
+				%>
 					  	<script type="text/javascript">
 							var groupName = <%="'" + groupName + "'"%>
 							var projectName = <%="'" + projectName + "'"%>
@@ -319,50 +319,50 @@ html, body {
 							});
 						</script>
 						<%
-							String tableActive = "";
-							if(num == commit_count){
-							  tableActive = "tableActive";
-							}
+						  String tableActive = "";
+													if(num == commit_count){
+													  tableActive = "tableActive";
+													}
 						%>
-					  	<tr id="<%=num %>" onClick="changeIframe(this)" class="<%=tableActive%>">
-					  		<td class="text-center"><%=i %></td>
-					  		<td width="5%" ><p id=<%="status" + num %>></p></td>
-					  		<td width="5%" id=<%="date" + num %>></td>
-					  		<td width="5%" id=<%="committer" + num %>></td>
-					  		<td width="15%" id=<%="message" + num %>></td>
+					  	<tr id="<%=num%>" onClick="changeIframe(this)" class="<%=tableActive%>">
+					  		<td class="text-center"><%=i%></td>
+					  		<td width="5%" ><p id=<%="status" + num%>></p></td>
+					  		<td width="5%" id=<%="date" + num%>></td>
+					  		<td width="5%" id=<%="committer" + num%>></td>
+					  		<td width="15%" id=<%="message" + num%>></td>
 					  	</tr>
 					  	
 					  	<%
-					  	i++;
-					  	lastBuildMessageNum = num;
-					}
-				%>
+					  						  	  i++;
+					  						  						  	lastBuildMessageNum = num;
+					  						  						}
+					  						  	%>
 				</tbody>
 			</table>
 		</div>
 		<!-- ---------------------------- Student Project ------------------------------- -->
 		<!-- iFrame -->
 		<%
-		String jobName = groupName + "_" + projectName;
-		String jenkinsBuildNumUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName;
-		String lastBuildUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/" + lastBuildMessageNum + "/consoleText";
-		String url = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/";
-		String projectTypeName = AssignmentTypeEnum.MAVEN.getTypeName();
-		int projectTypeId = Pdb.getAssignmentTypeId(AssignmentTypeEnum.MAVEN.getTypeName());
-		
-		StudentDashChoosePro studentDashChoosePro = new StudentDashChoosePro();
-		
-		String detailConsoleText = jenkins.getConsoleText(lastBuildUrl);
-		String buildApiJson = stuDashChoPro.getBuildApiJson(lastBuildMessageNum,groupName, projectName);
-		
-		String statusType = stuDashChoPro.getCommitStatus(lastBuildMessageNum,groupName, projectName, buildApiJson,projectTypeId);
-		//String statusType = "INI";
-		
-		IGroupProject groupProject = GroupProjectFactory.getGroupProjectType(projectTypeName);
-		Status status = groupProject.getStatus(statusType);
-		
-		
-		String console = status.extractFailureMsg(detailConsoleText);
+		  String jobName = groupName + "_" + projectName;
+				String jenkinsBuildNumUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName;
+				String lastBuildUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/" + lastBuildMessageNum + "/consoleText";
+				String url = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/";
+				String projectTypeName = ProjectTypeEnum.MAVEN.getTypeName();
+				int projectTypeId = Pdb.getAssignmentTypeId(ProjectTypeEnum.MAVEN.getTypeName());
+				
+				StudentDashChoosePro studentDashChoosePro = new StudentDashChoosePro();
+				
+				String detailConsoleText = jenkins.getConsoleText(lastBuildUrl);
+				String buildApiJson = stuDashChoPro.getBuildApiJson(lastBuildMessageNum,groupName, projectName);
+				
+				String statusType = stuDashChoPro.getCommitStatus(lastBuildMessageNum,groupName, projectName, buildApiJson,projectTypeId);
+				//String statusType = "INI";
+				
+				IGroupProject groupProject = GroupProjectFactory.getGroupProjectType(projectTypeName);
+				Status status = groupProject.getStatus(statusType);
+				
+				
+				String console = status.extractFailureMsg(detailConsoleText);
 		%>
 		<h4>
 			<a id="iFrameTitle" href="<%=jenkinsBuildNumUrl %>">Feedback Information (#<%=lastBuildMessageNum%>)

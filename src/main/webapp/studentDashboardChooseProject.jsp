@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=BIG5"
 	pageEncoding="utf-8"%>
 <%@ page
-	import="fcu.selab.progedu.conn.Conn, fcu.selab.progedu.conn.StudentConn, fcu.selab.progedu.conn.HttpConnect"%>
+	import="fcu.selab.progedu.conn.GitlabService,fcu.selab.progedu.conn.StudentConn,fcu.selab.progedu.conn.HttpConnect"%>
 <%@ page
 	import="fcu.selab.progedu.config.GitlabConfig,fcu.selab.progedu.config.CourseConfig"%>
 <%@ page
@@ -13,13 +13,13 @@
 <%@ page import="java.util.*"%>
 <<<<<<< HEAD
 <%@ page
-	import="org.json.JSONArray, org.json.JSONException, org.json.JSONObject"%>
+	import="org.json.JSONArray,org.json.JSONException,org.json.JSONObject"%>
 <%@ page
-	import="fcu.selab.progedu.db.UserDbManager, fcu.selab.progedu.db.AssignmentDbManager, fcu.selab.progedu.db.ScreenshotRecordDbManager"%>
+	import="fcu.selab.progedu.db.UserDbManager,fcu.selab.progedu.db.AssignmentDbManager,fcu.selab.progedu.db.ScreenshotRecordDbManager"%>
 <%@ page
-	import="fcu.selab.progedu.data.User, fcu.selab.progedu.data.Assignment"%>
+	import="fcu.selab.progedu.data.User,fcu.selab.progedu.data.Assignment"%>
 <%@ page
-	import="fcu.selab.progedu.jenkins.JobStatus, java.text.SimpleDateFormat"%>
+	import="fcu.selab.progedu.jenkins.JobStatus,java.text.SimpleDateFormat"%>
 <%@ page import="fcu.selab.progedu.conn.StudentDash"%>
 <%@ page import="fcu.selab.progedu.conn.StudentDashChoosePro"%>
 <%@ page import="java.text.SimpleDateFormat"%>
@@ -28,10 +28,10 @@
 <%@ page import="fcu.selab.progedu.service.AssignmentTypeFactory"%>
 <%@ page import="fcu.selab.progedu.service.AssignmentTypeSelector"%>
 =======
-<%@ page import="org.json.JSONArray, org.json.JSONException, org.json.JSONObject" %>
-<%@ page import="fcu.selab.progedu.db.UserDbManager, fcu.selab.progedu.db.ProjectDbManager, fcu.selab.progedu.db.ScreenshotRecordDbManager" %>
-<%@ page import="fcu.selab.progedu.data.User, fcu.selab.progedu.data.Project" %>
-<%@ page import="fcu.selab.progedu.jenkins.JobStatus, java.text.SimpleDateFormat" %>
+<%@ page import="org.json.JSONArray,org.json.JSONException,org.json.JSONObject" %>
+<%@ page import="fcu.selab.progedu.db.UserDbManager,fcu.selab.progedu.db.ProjectDbManager,fcu.selab.progedu.db.ScreenshotRecordDbManager" %>
+<%@ page import="fcu.selab.progedu.data.User,fcu.selab.progedu.data.Project" %>
+<%@ page import="fcu.selab.progedu.jenkins.JobStatus,java.text.SimpleDateFormat" %>
 <%@ page import="fcu.selab.progedu.conn.StudentDash" %>
 <%@ page import="fcu.selab.progedu.conn.StudentDashChoosePro" %>
 <%@ page import="java.text.SimpleDateFormat" %>
@@ -443,43 +443,43 @@ img {
 <body onload="init()">
 	<%
 	  //To display the under html code (about some if-else)
-				StudentDash stuDash = new StudentDash(private_token);
-				StudentDashChoosePro stuDashChoPro = new StudentDashChoosePro();
+					StudentDash stuDash = new StudentDash(private_token);
+					StudentDashChoosePro stuDashChoPro = new StudentDashChoosePro();
+					
+					// Get the user's Gitlab project
+					List<GitlabProject> stuProjects = stuDash.getStuProject();
 				
-				// Get the user's Gitlab project
-				List<GitlabProject> stuProjects = stuDash.getStuProject();
-			
-				String strProjectId = request.getParameter("projectId");
-				
-				int projectId = -1;
-				if(null == strProjectId || "".equals(strProjectId)){
-					  
-				}else {
-					projectId = Integer.parseInt(strProjectId);
-				}
-				
-				GitlabProject choosedProject = stuDashChoPro.getChoosedProject(stuProjects, projectId);
-				
-				JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
-				Conn conn = Conn.getInstance();
-				
-				StudentConn sConn = new StudentConn(private_token);
-				GitlabUser user = sConn.getUser();
-				List<GitlabProject> projects = sConn.getProject();
-				Collections.reverse(projects);
-				
-				UserDbManager db = UserDbManager.getInstance();
-				AssignmentDbManager Pdb = AssignmentDbManager.getInstance();
-				List<User> users = db.listAllUsers();
-				List<Assignment> dbProjects = Pdb.listAllAssignments();
-				
-				// gitlab jenkins course��Data
-				GitlabConfig gitData = GitlabConfig.getInstance();
-				
-				JenkinsApi jenkins = JenkinsApi.getInstance();
-				
-				GitlabUser choosedUser = conn.getUserById(userId);
-				Collections.reverse(projects);
+					String strProjectId = request.getParameter("projectId");
+					
+					int projectId = -1;
+					if(null == strProjectId || "".equals(strProjectId)){
+						  
+					}else {
+						projectId = Integer.parseInt(strProjectId);
+					}
+					
+					GitlabProject choosedProject = stuDashChoPro.getChoosedProject(stuProjects, projectId);
+					
+					JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
+					GitlabService conn = GitlabService.getInstance();
+					
+					StudentConn sConn = new StudentConn(private_token);
+					GitlabUser user = sConn.getUser();
+					List<GitlabProject> projects = sConn.getProject();
+					Collections.reverse(projects);
+					
+					UserDbManager db = UserDbManager.getInstance();
+					AssignmentDbManager Pdb = AssignmentDbManager.getInstance();
+					List<User> users = db.listAllUsers();
+					List<Assignment> dbProjects = Pdb.listAllAssignments();
+					
+					// gitlab jenkins course��Data
+					GitlabConfig gitData = GitlabConfig.getInstance();
+					
+					JenkinsApi jenkins = JenkinsApi.getInstance();
+					
+					GitlabUser choosedUser = conn.getUserById(userId);
+					Collections.reverse(projects);
 	%>
 	<!-- -----sidebar----- -->
 		<div id="sidebar">

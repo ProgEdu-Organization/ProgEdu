@@ -44,7 +44,7 @@ import org.xml.sax.SAXException;
 import fcu.selab.progedu.config.CourseConfig;
 import fcu.selab.progedu.config.GitlabConfig;
 import fcu.selab.progedu.config.JenkinsConfig;
-import fcu.selab.progedu.conn.Conn;
+import fcu.selab.progedu.conn.GitlabService;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 
 public class JenkinsApi {
@@ -58,7 +58,7 @@ public class JenkinsApi {
   private static final String JOB_NAME = "jobName";
   private static final String PRO_NAME = "proName";
 
-  private Conn conn = Conn.getInstance();
+  private GitlabService conn = GitlabService.getInstance();
 
   GitlabConfig gitData = GitlabConfig.getInstance();
   CourseConfig courseData = CourseConfig.getInstance();

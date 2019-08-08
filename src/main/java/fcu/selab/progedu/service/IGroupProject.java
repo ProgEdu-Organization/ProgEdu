@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import fcu.selab.progedu.data.Group;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
+import fcu.selab.progedu.project.ProjectTypeEnum;
 import fcu.selab.progedu.status.Status;
 
 public interface IGroupProject {
@@ -19,5 +20,5 @@ public interface IGroupProject {
 
   public Status getStatus(String statusType);
 
-  public AssignmentTypeEnum getProjectType();
+  public ProjectTypeEnum getProjectType();
 }

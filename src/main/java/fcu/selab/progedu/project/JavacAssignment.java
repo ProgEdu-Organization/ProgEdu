@@ -1,7 +1,10 @@
-package fcu.selab.progedu.service;
+package fcu.selab.progedu.project;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -17,16 +20,17 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
-import fcu.selab.progedu.status.MavenStatusFactory;
+import fcu.selab.progedu.service.AssignmentTypeMethod;
+import fcu.selab.progedu.status.JavacStatusFactory;
 
-public class MavenAssignment extends AssignmentTypeMethod {
+public class JavacAssignment extends AssignmentTypeMethod {
 
-  public MavenAssignment() {
-    super(new MavenStatusFactory());
+  public JavacAssignment() {
+    super(new JavacStatusFactory());
   }
 
   public String getSampleZip() {
-    return "MavenQuickStart.zip";
+    return "JavacQuickStart.zip";
   }
 
   /**
@@ -35,6 +39,23 @@ public class MavenAssignment extends AssignmentTypeMethod {
    * @param entryNewName entryNewName
    */
   public void searchFile(String entryNewName) {
+    StringBuilder sb = new StringBuilder();
+    String last = "";
+    if (entryNewName.endsWith(".java")) {
+      last = entryNewName.substring(entryNewName.length() - 5, entryNewName.length());
+    }
+    String fileName = null;
+    for (int i = 0; i < entryNewName.length() - 3; i++) {
+      if (entryNewName.substring(i, i + 3).equals("src")) {
+        fileName = entryNewName.substring(i);
+        System.out.println("Search java file fileName : " + fileName);
+        if (last.equals(".java")) {
+          sb.append("javac " + fileName + "\n");
+          sb.append("echo \"BUILD SUCCESS\"");
+          zipHandler.setStringBuilder(sb);
+        }
+      }
+    }
   }
 
   /**
@@ -45,24 +66,35 @@ public class MavenAssignment extends AssignmentTypeMethod {
    */
   public void extractFile(String zipFilePath, String testDirectory, String destDirectory,
       String projectName) {
+    int parDirLength = 0;
+    String parentDir = null;
 
-    try {
-      FileUtils.deleteDirectory(new File(testDirectory + "/src/main"));
-    } catch (IOException e) {
+    try (ZipInputStream zipIn = new ZipInputStream(new FileInputStream(zipFilePath))) {
+
+      ZipEntry entry = zipIn.getNextEntry();
+      while (entry != null) {
+        String filePath = destDirectory + File.separator + entry.getName();
+        ;
+
+        if (filePath.substring(filePath.length() - 4).equals("src/") && parDirLength == 0) {
+          parentDir = zipHandler.getParentDir(filePath);
+          parDirLength = parentDir.length() + 1;
+        }
+        String entryNewName = filePath.substring(parDirLength);
+
+        if (!entry.isDirectory()) {
+          searchFile(entryNewName);
+        }
+        zipIn.closeEntry();
+        entry = zipIn.getNextEntry();
+      }
+    } catch (Exception e) {
       e.printStackTrace();
     }
-
-    try {
-      FileUtils.deleteDirectory(new File(destDirectory + "/src/test"));
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-
-    zipHandler.modifyPomXml(testDirectory + "/pom.xml", projectName);
   }
 
   public String getJenkinsConfig() {
-    return "config_maven.xml";
+    return "config_javac.xml";
   }
 
   /**
@@ -83,17 +115,10 @@ public class MavenAssignment extends AssignmentTypeMethod {
       DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
       Document doc = docBuilder.parse(filepath);
 
-      String strJobName = userName + "_" + proName;
-      Node jobName = doc.getElementsByTagName("jobName").item(0);
-      jobName.setTextContent(strJobName);
-
-      Node testFileName = doc.getElementsByTagName("testFileName").item(0);
-      testFileName.setTextContent(proName);
+      Node ndUrl = doc.getElementsByTagName("command").item(0);
+      ndUrl.setTextContent(sb.toString());
 
       String updateDbUrl = progApiUrl + "/commits/update";
-      Node proDetailUrl = doc.getElementsByTagName("proDetailUrl").item(0);
-      proDetailUrl.setTextContent(tomcatUrl);
-
       Node progeduDbUrl = doc.getElementsByTagName("progeduDbUrl").item(0);
       progeduDbUrl.setTextContent(updateDbUrl);
 

@@ -28,16 +28,17 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 
 import com.csvreader.CsvReader;
 
-import fcu.selab.progedu.conn.Conn;
+import fcu.selab.progedu.conn.GitlabService;
 import fcu.selab.progedu.data.Group;
 import fcu.selab.progedu.data.Student;
 import fcu.selab.progedu.db.GroupDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
+import fcu.selab.progedu.project.ProjectTypeEnum;
 
 @Path("group/")
 public class GroupService {
 
-  Conn conn = Conn.getInstance();
+  GitlabService conn = GitlabService.getInstance();
   UserService userService = new UserService();
   GroupDbManager gdb = GroupDbManager.getInstance();
   AssignmentService projectService = new AssignmentService();
@@ -141,7 +142,7 @@ public class GroupService {
 
     for (Group group : groups) {
       GroupProject groupProject = GroupProjectFactory
-          .getGroupProjectType(AssignmentTypeEnum.MAVEN.getTypeName());
+          .getGroupProjectType(ProjectTypeEnum.MAVEN.getTypeName());
       createGroup(group);
       // second parameter is project name
       groupProject.createGitlabProject(group, group.getGroupName());

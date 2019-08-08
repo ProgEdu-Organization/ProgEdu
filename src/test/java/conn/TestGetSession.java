@@ -4,7 +4,7 @@ import org.gitlab.api.models.GitlabSession;
 import org.json.JSONObject;
 
 import fcu.selab.progedu.config.MySqlDbConfig;
-import fcu.selab.progedu.conn.Conn;
+import fcu.selab.progedu.conn.GitlabService;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 
 public class TestGetSession {
@@ -28,7 +28,7 @@ public class TestGetSession {
   }
 
   public void testSession() {
-    Conn conn = Conn.getInstance();
+    GitlabService conn = GitlabService.getInstance();
     String username = dbUser;
     String password = dbPassword;
 

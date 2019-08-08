@@ -1,4 +1,4 @@
-package fcu.selab.progedu.service;
+package fcu.selab.progedu.project;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,18 +17,17 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
-import fcu.selab.progedu.config.JenkinsConfig;
-import fcu.selab.progedu.exception.LoadConfigFailureException;
-import fcu.selab.progedu.status.WebStatusFactory;
+import fcu.selab.progedu.service.AssignmentTypeMethod;
+import fcu.selab.progedu.status.MavenStatusFactory;
 
-public class WebAssignment extends AssignmentTypeMethod {
+public class MavenAssignment extends AssignmentTypeMethod {
 
-  public WebAssignment() {
-    super(new WebStatusFactory());
+  public MavenAssignment() {
+    super(new MavenStatusFactory());
   }
 
   public String getSampleZip() {
-    return "WebQuickStart.zip";
+    return "MavenQuickStart.zip";
   }
 
   /**
@@ -49,7 +48,7 @@ public class WebAssignment extends AssignmentTypeMethod {
       String projectName) {
 
     try {
-      FileUtils.deleteDirectory(new File(testDirectory + "/src/web"));
+      FileUtils.deleteDirectory(new File(testDirectory + "/src/main"));
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -59,10 +58,12 @@ public class WebAssignment extends AssignmentTypeMethod {
     } catch (IOException e) {
       e.printStackTrace();
     }
+
+    zipHandler.modifyPomXml(testDirectory + "/pom.xml", projectName);
   }
 
   public String getJenkinsConfig() {
-    return "config_web.xml";
+    return "config_maven.xml";
   }
 
   /**
@@ -90,15 +91,10 @@ public class WebAssignment extends AssignmentTypeMethod {
       Node testFileName = doc.getElementsByTagName("testFileName").item(0);
       testFileName.setTextContent(proName);
 
+      String updateDbUrl = progApiUrl + "/commits/update";
       Node proDetailUrl = doc.getElementsByTagName("proDetailUrl").item(0);
       proDetailUrl.setTextContent(tomcatUrl);
 
-      JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
-      String seleniumUrl = jenkinsData.getSeleniumHostUrl() + "/wd/hub";
-      Node ndSeleniumUrl = doc.getElementsByTagName("seleniumUrl").item(0);
-      ndSeleniumUrl.setTextContent(seleniumUrl);
-
-      String updateDbUrl = progApiUrl + "/commits/update";
       Node progeduDbUrl = doc.getElementsByTagName("progeduDbUrl").item(0);
       progeduDbUrl.setTextContent(updateDbUrl);
 
@@ -108,20 +104,13 @@ public class WebAssignment extends AssignmentTypeMethod {
       Node ndProName = doc.getElementsByTagName("proName").item(0);
       ndProName.setTextContent(proName);
 
-      String progeduApiUrl = progApiUrl;
-      Node ndProgeduApiUrl = doc.getElementsByTagName("progeduAPIUrl").item(0);
-      ndProgeduApiUrl.setTextContent(progeduApiUrl);
-
-      Node jenkinsJobName = doc.getElementsByTagName("jenkinsJobName").item(0);
-      jenkinsJobName.setTextContent(strJobName);
       // write the content into xml file
       TransformerFactory transformerFactory = TransformerFactory.newInstance();
       Transformer transformer = transformerFactory.newTransformer();
       DOMSource source = new DOMSource(doc);
       StreamResult result = new StreamResult(new File(filepath));
       transformer.transform(source, result);
-    } catch (ParserConfigurationException | TransformerException | SAXException | IOException
-        | LoadConfigFailureException e) {
+    } catch (ParserConfigurationException | TransformerException | SAXException | IOException e) {
       e.printStackTrace();
     }
 

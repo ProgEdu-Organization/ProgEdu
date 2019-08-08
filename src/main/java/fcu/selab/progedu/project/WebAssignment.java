@@ -1,10 +1,7 @@
-package fcu.selab.progedu.service;
+package fcu.selab.progedu.project;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -20,16 +17,19 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
-import fcu.selab.progedu.status.JavacStatusFactory;
+import fcu.selab.progedu.config.JenkinsConfig;
+import fcu.selab.progedu.exception.LoadConfigFailureException;
+import fcu.selab.progedu.service.AssignmentTypeMethod;
+import fcu.selab.progedu.status.WebStatusFactory;
 
-public class JavacAssignment extends AssignmentTypeMethod {
+public class WebAssignment extends AssignmentTypeMethod {
 
-  public JavacAssignment() {
-    super(new JavacStatusFactory());
+  public WebAssignment() {
+    super(new WebStatusFactory());
   }
 
   public String getSampleZip() {
-    return "JavacQuickStart.zip";
+    return "WebQuickStart.zip";
   }
 
   /**
@@ -38,23 +38,6 @@ public class JavacAssignment extends AssignmentTypeMethod {
    * @param entryNewName entryNewName
    */
   public void searchFile(String entryNewName) {
-    StringBuilder sb = new StringBuilder();
-    String last = "";
-    if (entryNewName.endsWith(".java")) {
-      last = entryNewName.substring(entryNewName.length() - 5, entryNewName.length());
-    }
-    String fileName = null;
-    for (int i = 0; i < entryNewName.length() - 3; i++) {
-      if (entryNewName.substring(i, i + 3).equals("src")) {
-        fileName = entryNewName.substring(i);
-        System.out.println("Search java file fileName : " + fileName);
-        if (last.equals(".java")) {
-          sb.append("javac " + fileName + "\n");
-          sb.append("echo \"BUILD SUCCESS\"");
-          zipHandler.setStringBuilder(sb);
-        }
-      }
-    }
   }
 
   /**
@@ -65,35 +48,22 @@ public class JavacAssignment extends AssignmentTypeMethod {
    */
   public void extractFile(String zipFilePath, String testDirectory, String destDirectory,
       String projectName) {
-    int parDirLength = 0;
-    String parentDir = null;
 
-    try (ZipInputStream zipIn = new ZipInputStream(new FileInputStream(zipFilePath))) {
+    try {
+      FileUtils.deleteDirectory(new File(testDirectory + "/src/web"));
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
 
-      ZipEntry entry = zipIn.getNextEntry();
-      while (entry != null) {
-        String filePath = destDirectory + File.separator + entry.getName();
-        ;
-
-        if (filePath.substring(filePath.length() - 4).equals("src/") && parDirLength == 0) {
-          parentDir = zipHandler.getParentDir(filePath);
-          parDirLength = parentDir.length() + 1;
-        }
-        String entryNewName = filePath.substring(parDirLength);
-
-        if (!entry.isDirectory()) {
-          searchFile(entryNewName);
-        }
-        zipIn.closeEntry();
-        entry = zipIn.getNextEntry();
-      }
-    } catch (Exception e) {
+    try {
+      FileUtils.deleteDirectory(new File(destDirectory + "/src/test"));
+    } catch (IOException e) {
       e.printStackTrace();
     }
   }
 
   public String getJenkinsConfig() {
-    return "config_javac.xml";
+    return "config_web.xml";
   }
 
   /**
@@ -114,8 +84,20 @@ public class JavacAssignment extends AssignmentTypeMethod {
       DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
       Document doc = docBuilder.parse(filepath);
 
-      Node ndUrl = doc.getElementsByTagName("command").item(0);
-      ndUrl.setTextContent(sb.toString());
+      String strJobName = userName + "_" + proName;
+      Node jobName = doc.getElementsByTagName("jobName").item(0);
+      jobName.setTextContent(strJobName);
+
+      Node testFileName = doc.getElementsByTagName("testFileName").item(0);
+      testFileName.setTextContent(proName);
+
+      Node proDetailUrl = doc.getElementsByTagName("proDetailUrl").item(0);
+      proDetailUrl.setTextContent(tomcatUrl);
+
+      JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
+      String seleniumUrl = jenkinsData.getSeleniumHostUrl() + "/wd/hub";
+      Node ndSeleniumUrl = doc.getElementsByTagName("seleniumUrl").item(0);
+      ndSeleniumUrl.setTextContent(seleniumUrl);
 
       String updateDbUrl = progApiUrl + "/commits/update";
       Node progeduDbUrl = doc.getElementsByTagName("progeduDbUrl").item(0);
@@ -127,13 +109,20 @@ public class JavacAssignment extends AssignmentTypeMethod {
       Node ndProName = doc.getElementsByTagName("proName").item(0);
       ndProName.setTextContent(proName);
 
+      String progeduApiUrl = progApiUrl;
+      Node ndProgeduApiUrl = doc.getElementsByTagName("progeduAPIUrl").item(0);
+      ndProgeduApiUrl.setTextContent(progeduApiUrl);
+
+      Node jenkinsJobName = doc.getElementsByTagName("jenkinsJobName").item(0);
+      jenkinsJobName.setTextContent(strJobName);
       // write the content into xml file
       TransformerFactory transformerFactory = TransformerFactory.newInstance();
       Transformer transformer = transformerFactory.newTransformer();
       DOMSource source = new DOMSource(doc);
       StreamResult result = new StreamResult(new File(filepath));
       transformer.transform(source, result);
-    } catch (ParserConfigurationException | TransformerException | SAXException | IOException e) {
+    } catch (ParserConfigurationException | TransformerException | SAXException | IOException
+        | LoadConfigFailureException e) {
       e.printStackTrace();
     }
 

@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=BIG5" pageEncoding="utf-8"%>
-<%@ page import="fcu.selab.progedu.conn.Conn, fcu.selab.progedu.conn.StudentConn, fcu.selab.progedu.conn.HttpConnect"%>
+<%@ page import="fcu.selab.progedu.conn.GitlabService,fcu.selab.progedu.conn.StudentConn,fcu.selab.progedu.conn.HttpConnect"%>
 <%@ page import="fcu.selab.progedu.config.GitlabConfig,fcu.selab.progedu.config.CourseConfig"%>
 <%@ page import="fcu.selab.progedu.config.GitlabConfig,fcu.selab.progedu.config.JenkinsConfig"%>
 <%@ page import="fcu.selab.progedu.jenkins.JenkinsApi"%>
@@ -7,7 +7,7 @@
 <%@ page import="org.gitlab.api.GitlabAPI"%>
 <%@ page import="org.gitlab.api.models.*"%>
 <%@ page import="java.util.*"%>
-<%@ page import="org.json.JSONArray, org.json.JSONException, org.json.JSONObject" %>
+<%@ page import="org.json.JSONArray,org.json.JSONException,org.json.JSONObject" %>
 <%@ page import="fcu.selab.progedu.db.UserDbManager,fcu.selab.progedu.db.AssignmentDbManager" %>
 <%@ page import="fcu.selab.progedu.data.User,fcu.selab.progedu.data.Assignment" %>
 <%@ page import="fcu.selab.progedu.jenkins.JobStatus,java.text.SimpleDateFormat" %>
@@ -42,7 +42,7 @@
 		GitlabConfig gitData = GitlabConfig.getInstance();
 		CourseConfig courseData = CourseConfig.getInstance();
 		JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
-		Conn conn = Conn.getInstance();
+		GitlabService conn = GitlabService.getInstance();
 		JenkinsApi jenkins = JenkinsApi.getInstance();
 		
 		StudentConn sConn = new StudentConn(private_token);

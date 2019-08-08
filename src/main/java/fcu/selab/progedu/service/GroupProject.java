@@ -7,11 +7,12 @@ import org.gitlab.api.models.GitlabProject;
 import fcu.selab.progedu.config.CourseConfig;
 import fcu.selab.progedu.config.GitlabConfig;
 import fcu.selab.progedu.config.JenkinsConfig;
-import fcu.selab.progedu.conn.Conn;
+import fcu.selab.progedu.conn.GitlabService;
 import fcu.selab.progedu.conn.HttpConnect;
 import fcu.selab.progedu.data.Group;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.jenkins.JenkinsApi;
+import fcu.selab.progedu.project.ProjectTypeEnum;
 import fcu.selab.progedu.status.Status;
 import fcu.selab.progedu.status.StatusFactory;
 import fcu.selab.progedu.status.StatusFactorySelector;
@@ -22,7 +23,7 @@ public abstract class GroupProject implements IGroupProject {
   public GroupProject() {
   }
 
-  public abstract AssignmentTypeEnum getProjectType();
+  public abstract ProjectTypeEnum getProjectType();
 
   /**
    * get jenkins config template
@@ -91,7 +92,7 @@ public abstract class GroupProject implements IGroupProject {
   @Override
   public void createGitlabProject(Group group, String projectName)
       throws IOException, LoadConfigFailureException {
-    Conn conn = Conn.getInstance();
+    GitlabService conn = GitlabService.getInstance();
     GitlabProject gitlabProject = conn.createGroupProject(group, projectName);
     initialize(group.getGroupName(), gitlabProject);
   }

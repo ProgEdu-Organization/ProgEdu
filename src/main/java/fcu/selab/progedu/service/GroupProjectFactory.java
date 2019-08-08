@@ -1,5 +1,8 @@
 package fcu.selab.progedu.service;
 
+import fcu.selab.progedu.project.MavenGroupProject;
+import fcu.selab.progedu.project.ProjectTypeEnum;
+
 public class GroupProjectFactory {
   /**
    * get the type of project
@@ -7,7 +10,7 @@ public class GroupProjectFactory {
    * @param projectType assignment type
    */
   public static GroupProject getGroupProjectType(String projectType) {
-    AssignmentTypeEnum type = AssignmentTypeEnum
+    ProjectTypeEnum type = ProjectTypeEnum
         .getStatusProjectTypeEnum(projectType);
 
     switch (type) {

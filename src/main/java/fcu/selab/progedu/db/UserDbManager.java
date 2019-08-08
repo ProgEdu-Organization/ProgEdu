@@ -423,7 +423,7 @@ public class UserDbManager {
    *          studentId
    * @return isExist
    */
-  public boolean checkUserName(String username) {
+  public boolean checkUsername(String username) {
     boolean isExist = false;
     String query = "SELECT count(*) FROM User WHERE username = ?";
 

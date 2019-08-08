@@ -1,5 +1,10 @@
 package fcu.selab.progedu.service;
 
+import fcu.selab.progedu.project.JavacAssignment;
+import fcu.selab.progedu.project.MavenAssignment;
+import fcu.selab.progedu.project.ProjectTypeEnum;
+import fcu.selab.progedu.project.WebAssignment;
+
 public class AssignmentTypeFactory {
 
   /**
@@ -8,7 +13,7 @@ public class AssignmentTypeFactory {
    * @param assignmentType assignmentType
    */
   public static AssignmentTypeSelector getAssignmentType(String assignmentType) {
-    AssignmentTypeEnum assignmentTypeEnum = AssignmentTypeEnum
+    ProjectTypeEnum assignmentTypeEnum = ProjectTypeEnum
         .getStatusProjectTypeEnum(assignmentType);
 
     switch (assignmentTypeEnum) {

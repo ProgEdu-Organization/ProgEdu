@@ -1,4 +1,4 @@
-package fcu.selab.progedu.service;
+package fcu.selab.progedu.project;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,6 +16,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
+import fcu.selab.progedu.service.GroupProject;
+
 public class MavenGroupProject extends GroupProject {
 
   @Override
@@ -24,8 +26,8 @@ public class MavenGroupProject extends GroupProject {
   }
 
   @Override
-  public AssignmentTypeEnum getProjectType() {
-    return AssignmentTypeEnum.MAVEN;
+  public ProjectTypeEnum getProjectType() {
+    return ProjectTypeEnum.MAVEN;
   }
 
   @Override

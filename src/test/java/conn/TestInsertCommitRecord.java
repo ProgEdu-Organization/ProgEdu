@@ -12,7 +12,7 @@ import java.util.List;
 import org.gitlab.api.models.GitlabProject;
 
 import fcu.selab.progedu.config.JenkinsConfig;
-import fcu.selab.progedu.conn.Conn;
+import fcu.selab.progedu.conn.GitlabService;
 import fcu.selab.progedu.conn.StudentDashChoosePro;
 import fcu.selab.progedu.data.Assignment;
 import fcu.selab.progedu.data.User;

@@ -24,7 +24,7 @@ public class AfterEnter extends HttpServlet {
   private static final String USER_NAME = "username";
   private static final String PRIVATE_TOKEN = "private_token";
   GitlabConfig gitData = GitlabConfig.getInstance();
-  private Conn conn = Conn.getInstance();
+  private GitlabService conn = GitlabService.getInstance();
   boolean isEnter = true;
 
   /**

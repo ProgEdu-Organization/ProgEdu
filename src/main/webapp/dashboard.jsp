@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=BIG5"
          pageEncoding="utf-8"%>
-<%@ page import="fcu.selab.progedu.conn.Conn,fcu.selab.progedu.conn.HttpConnect" %>
-<%@ page import="fcu.selab.progedu.jenkins.JenkinsApi, fcu.selab.progedu.conn.Language" %>
+<%@ page import="fcu.selab.progedu.conn.GitlabService,fcu.selab.progedu.conn.HttpConnect" %>
+<%@ page import="fcu.selab.progedu.jenkins.JenkinsApi,fcu.selab.progedu.conn.Language" %>
 <%@ page import="fcu.selab.progedu.config.GitlabConfig" %>
 <%@ page import="fcu.selab.progedu.config.JenkinsConfig" %>
 <%@ page import="fcu.selab.progedu.db.UserDbManager,fcu.selab.progedu.db.AssignmentDbManager" %>
@@ -172,7 +172,7 @@
 </head>
 <body>
 <%
-  Conn conn = Conn.getInstance();
+  GitlabService conn = GitlabService.getInstance();
 
     HttpConnect httpConn = HttpConnect.getInstance();
 

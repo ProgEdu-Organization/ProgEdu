@@ -1,9 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=BIG5"
 	pageEncoding="utf-8"%>
 <%@ page
-	import="fcu.selab.progedu.conn.Conn,fcu.selab.progedu.conn.HttpConnect, fcu.selab.progedu.conn.StudentConn"%>
+	import="fcu.selab.progedu.conn.GitlabService,fcu.selab.progedu.conn.HttpConnect,fcu.selab.progedu.conn.StudentConn"%>
 <%@ page
-	import="fcu.selab.progedu.jenkins.JenkinsApi, fcu.selab.progedu.conn.Language"%>
+	import="fcu.selab.progedu.jenkins.JenkinsApi,fcu.selab.progedu.conn.Language"%>
 <%@ page import="fcu.selab.progedu.config.CourseConfig"%>
 <%@ page import="fcu.selab.progedu.config.GitlabConfig"%>
 <%@ page import="fcu.selab.progedu.config.JenkinsConfig"%>
@@ -164,33 +164,33 @@ html, body {
 <body>
 	
 	<%
-		Conn conn = Conn.getInstance();
-	
-		UserDbManager db = UserDbManager.getInstance();
-		AssignmentDbManager Pdb = AssignmentDbManager.getInstance();
-		
-		// Get all db users
-		List<User> users = db.listAllUsers();
-		
-		// Get all db projects
-		List<Assignment> dbProjects = Pdb.listAllAssignments();
-		
-		// gitlab jenkins course data
-		GitlabConfig gitData = GitlabConfig.getInstance();
-		JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
-		CourseConfig courseData = CourseConfig.getInstance();
-		
-		JenkinsApi jenkins = JenkinsApi.getInstance();
-		
-		// Get the choosed user
-		User choosedUser = new User();
-     	for(User user : users){
-     		if(studentId.equals(String.valueOf(user.getGitLabId()))){
-     			choosedUser = user;
-     		    break;
-     		}
-     	}
-	%>
+		  GitlabService conn = GitlabService.getInstance();
+			
+				UserDbManager db = UserDbManager.getInstance();
+				AssignmentDbManager Pdb = AssignmentDbManager.getInstance();
+				
+				// Get all db users
+				List<User> users = db.listAllUsers();
+				
+				// Get all db projects
+				List<Assignment> dbProjects = Pdb.listAllAssignments();
+				
+				// gitlab jenkins course data
+				GitlabConfig gitData = GitlabConfig.getInstance();
+				JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
+				CourseConfig courseData = CourseConfig.getInstance();
+				
+				JenkinsApi jenkins = JenkinsApi.getInstance();
+				
+				// Get the choosed user
+				User choosedUser = new User();
+		     	for(User user : users){
+		     		if(studentId.equals(String.valueOf(user.getGitLabId()))){
+		     			choosedUser = user;
+		     		    break;
+		     		}
+		     	}
+		%>
 	<%@ include file="header.jsp"%>
 	<!-- -----sidebar----- -->
 	<div class="sidebar" style="width: 200px">
