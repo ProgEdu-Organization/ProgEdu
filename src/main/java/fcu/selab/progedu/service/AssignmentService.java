@@ -71,7 +71,7 @@ public class AssignmentService {
 
   private AssignmentDbManager dbManager = AssignmentDbManager.getInstance();
   private CommitRecordService commitRecordService = new CommitRecordService();
-  private CommitResultService commitResultService = new CommitResultService();
+  private CommitRecordService commitResultService = new CommitRecordService();
   private CommitRecordStateService commitRecordStateService = new CommitRecordStateService();
 
   private static final String TEMP_DIR = System.getProperty("java.io.tmpdir");

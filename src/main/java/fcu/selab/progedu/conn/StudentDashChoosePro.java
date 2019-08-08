@@ -15,7 +15,7 @@ import fcu.selab.progedu.config.JenkinsConfig;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.jenkins.JenkinsApi;
 import fcu.selab.progedu.jenkins.JobStatus;
-import fcu.selab.progedu.service.CommitResultService;
+import fcu.selab.progedu.service.CommitRecordService;
 import fcu.selab.progedu.status.StatusEnum;
 
 public class StudentDashChoosePro {
@@ -24,7 +24,7 @@ public class StudentDashChoosePro {
   JenkinsConfig jenkinsData;
   JenkinsApi jenkins;
   JobStatus jobStatus = new JobStatus();
-  CommitResultService commitResultService = new CommitResultService();
+  CommitRecordService commitResultService = new CommitRecordService();
   GitlabConfig gitlabConfig = GitlabConfig.getInstance();
 
   public StudentDashChoosePro() {
