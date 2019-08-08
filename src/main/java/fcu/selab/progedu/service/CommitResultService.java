@@ -11,7 +11,6 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -19,108 +18,21 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import fcu.selab.progedu.conn.StudentDashChoosePro;
-import fcu.selab.progedu.data.CommitRecord;
 import fcu.selab.progedu.data.User;
+import fcu.selab.progedu.db.AssignmentDbManager;
+import fcu.selab.progedu.db.AssignmentUserDbManager;
 import fcu.selab.progedu.db.CommitRecordDbManager;
-import fcu.selab.progedu.db.CommitRecordStateDbManager;
-import fcu.selab.progedu.db.CommitResultDbManager;
 import fcu.selab.progedu.db.IDatabase;
 import fcu.selab.progedu.db.MySqlDatabase;
-import fcu.selab.progedu.db.AssignmentDbManager;
 import fcu.selab.progedu.db.UserDbManager;
 import fcu.selab.progedu.status.StatusEnum;
 
 @Path("commits/")
 public class CommitResultService {
-  CommitResultDbManager db = CommitResultDbManager.getInstance();
-  CommitRecordDbManager commitRecordDb = CommitRecordDbManager.getInstance();
-  CommitRecordStateDbManager crsdb = CommitRecordStateDbManager.getInstance();
+  CommitRecordDbManager db = CommitRecordDbManager.getInstance();
+  AssignmentUserDbManager auDb = AssignmentUserDbManager.getInstance();
   UserDbManager userDb = UserDbManager.getInstance();
-  AssignmentDbManager projectDb = AssignmentDbManager.getInstance();
-
-  /**
-   * get counts by different color.
-   * 
-   * @param type type
-   * @return counts
-   */
-  @GET
-  @Path("color")
-  @Produces(MediaType.APPLICATION_JSON)
-  public Response getCounts(@QueryParam("color") String type) {
-    JSONObject commitCounts = db.getCounts(type);
-    List<Integer> counts = new ArrayList<>();
-    List<String> pnames = projectDb.listAllAssignmentNames();
-    String status = "";
-    for (String pname : pnames) {
-      int count = commitCounts.optInt(pname);
-      counts.add(count);
-    }
-    StatusEnum statusEnum = StatusEnum.getStatusEnum(type);
-    switch (statusEnum) {
-      case BUILD_SUCCESS:
-        status = "success";
-        break;
-      case COMPILE_FAILURE:
-        status = "compile failure";
-        break;
-      case CHECKSTYLE_FAILURE:
-        status = "checkstyle failure";
-        break;
-      case UNIT_TEST_FAILURE:
-        status = "JUnit failure";
-        break;
-      case INITIALIZATION:
-        status = "not build";
-        break;
-      default:
-        break;
-    }
-
-    JSONObject ob = new JSONObject();
-    ob.put("data", counts);
-    ob.put("name", status);
-    return Response.ok().entity(ob.toString()).build();
-  }
-
-  /**
-   * get Commit Sum.
-   * 
-   * @return sum
-   */
-  @GET
-  @Path("count")
-  @Produces(MediaType.APPLICATION_JSON)
-  public Response getCommitSum() {
-    List<Integer> array = crsdb.getCommitSum();
-    JSONObject ob = new JSONObject();
-    ob.put("data", array);
-    ob.put("name", "commit counts");
-    ob.put("type", "column");
-    return Response.ok().entity(ob.toString()).build();
-  }
-
-  /**
-   * get commit result by stuId and hw.
-   * 
-   * @param proName  project name
-   * @param userName student id
-   * @return hw, color, commit
-   */
-  @GET
-  @Path("result")
-  @Produces(MediaType.TEXT_PLAIN)
-  public Response getCommitResultByStudentAndHw(@QueryParam("proName") String proName,
-      @QueryParam("userName") String userName) {
-    int id = userDb.getUser(userName).getId();
-
-    CommitRecord commitResult = db.getCommitResultByStudentAndHw(id, proName);
-    String circleColor = "circle " + commitResult.getStatus();
-    String result = userName + "_" + proName + "," + circleColor + ","
-        + (commitResult.getCommitNumber() + 1);
-
-    return Response.ok().entity(result).build();
-  }
+  AssignmentDbManager assignmentDb = AssignmentDbManager.getInstance();
 
   /**
    * get all commit result.
@@ -133,13 +45,13 @@ public class CommitResultService {
   public Response getCommitResult() {
     JSONArray array = new JSONArray();
     JSONObject result = new JSONObject();
-
     List<User> users = userDb.listAllUsers();
     for (User user : users) {
-      JSONObject ob = db.getCommitResultByStudent(user.getId());
+      int auid = getAUId(user.getId(),);
+      JSONObject ob = db.getCommitRecord(user.getId());
       array.put(ob);
     }
-    result.put("result", array);  
+    result.put("result", array);
 
     return Response.ok().entity(result.toString()).build();
   }
@@ -147,8 +59,10 @@ public class CommitResultService {
   /**
    * get commit result by stuId and hw.
    * 
-   * @param userName student id
-   * @param proName  project name
+   * @param userName
+   *          student id
+   * @param proName
+   *          project name
    * @return color
    */
   public String getCommitResult(String userName, String proName) {
@@ -159,8 +73,10 @@ public class CommitResultService {
   /**
    * update stu project commit record.
    * 
-   * @param userName stu id
-   * @param proName  project name
+   * @param userName
+   *          stu id
+   * @param proName
+   *          project name
    */
   @POST
   @Path("update")
@@ -175,7 +91,7 @@ public class CommitResultService {
 
       int lastCommitNum = jenkinsService.getProjectCommitCount(proName, userName);
       int commitCount = lastCommitNum - 1;
-      int proType = projectDb.getAssignmentType(proName);
+      int proType = assignmentDb.getAssignmentType(proName);
       String buildApiJson = stuDashChoPro.getBuildApiJson(lastCommitNum, userName, proName);
       String strDate = stuDashChoPro.getCommitTime(buildApiJson);
       String[] dates = strDate.split(" ");
@@ -218,7 +134,7 @@ public class CommitResultService {
   public void updateCommitRecordState() {
 
     List<String> lsNames = new ArrayList<>();
-    lsNames = projectDb.listAllAssignmentNames();
+    lsNames = assignmentDb.listAllAssignmentNames();
 
     for (String name : lsNames) {
 
@@ -270,7 +186,8 @@ public class CommitResultService {
   /**
    * delete build result of hw.
    * 
-   * @param hw hw
+   * @param hw
+   *          hw
    */
   public void deleteResult(String hw) {
     IDatabase database = new MySqlDatabase();

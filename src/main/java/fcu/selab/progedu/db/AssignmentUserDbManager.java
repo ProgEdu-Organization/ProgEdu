@@ -5,24 +5,26 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class AssignmentUser {
-  private static AssignmentUser dbManager = new AssignmentUser();
+public class AssignmentUserDbManager {
+  private static AssignmentUserDbManager dbManager = new AssignmentUserDbManager();
 
-  public static AssignmentUser getInstance() {
+  public static AssignmentUserDbManager getInstance() {
     return dbManager;
   }
 
   private IDatabase database = new MySqlDatabase();
 
-  private AssignmentUser() {
+  private AssignmentUserDbManager() {
 
   }
 
   /**
    * add AssignmentUser into database
    * 
-   * @param aid Assignment Id
-   * @param uid User Id
+   * @param aid
+   *          Assignment Id
+   * @param uid
+   *          User Id
    */
   public void addAssignmentUser(int aid, int uid) {
     String sql = "INSERT INTO Assignment_User(aId, uId)  VALUES( ?, ?)";
@@ -41,8 +43,10 @@ public class AssignmentUser {
   /**
    * delete AssignmentUser from database
    * 
-   * @param aid Assignment Id
-   * @param uid User Id
+   * @param aid
+   *          Assignment Id
+   * @param uid
+   *          User Id
    */
   public void deleteAssignmentUser(int aid, int uid) {
     String sql = "DELETE FROM Assignment_User WHERE aId ='" + aid + "' AND uId = '" + uid + "'";
@@ -56,9 +60,37 @@ public class AssignmentUser {
   }
 
   /**
+   * get auId by assignment Id and user Id
+   * 
+   * @param aid
+   *          Assignment Id
+   * @param uid
+   *          User Id
+   * @return auId assignmentUser Id
+   */
+  public int getAUId(int aid, int uid) {
+    int auid = 0;
+    String sql = "SELECT id FROM Assignment_User WHERE aId=? AND uId=?";
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+      preStmt.setInt(1, aid);
+      preStmt.setInt(2, uid);
+      try (ResultSet rs = preStmt.executeQuery()) {
+        while (rs.next()) {
+          auid = rs.getInt("id");
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return auid;
+  }
+
+  /**
    * get aId by AssignmentUser Id
    * 
-   * @param id AssignmentUser Id
+   * @param id
+   *          AssignmentUser Id
    * @return aId assignment Id
    */
   public int getAid(int id) {
@@ -81,7 +113,8 @@ public class AssignmentUser {
   /**
    * get aId by AssignmentUser Id
    * 
-   * @param id AssignmentUser Id
+   * @param id
+   *          AssignmentUser Id
    * @return aId assignment Id
    */
   public int getUid(int id) {
