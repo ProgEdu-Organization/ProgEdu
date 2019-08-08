@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 package fcu.selab.progedu.service;
 
 import java.io.BufferedReader;
@@ -330,4 +328,3 @@ public class JenkinsService {
     return console;
   }
 }
->>>>>>> #45CommitStatus

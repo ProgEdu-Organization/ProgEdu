@@ -240,4 +240,45 @@ public class AssignmentDbManager {
     return typeId;
   }
 
+  /**
+   * Get assignmentdisplay from database
+   *
+   * @param assignmentname The gitlab user id
+   * @return display
+   */
+  public boolean getAssignmentDisplay(String assignmentname) {
+    String query = "SELECT * FROM Assignment WHERE name = ?";
+    boolean display = true;
+
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(query)) {
+      preStmt.setString(1, assignmentname);
+      try (ResultSet rs = preStmt.executeQuery();) {
+        while (rs.next()) {
+          display = rs.getBoolean("display");
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return display;
+  }
+
+  /**
+   * Set user display in database
+   *
+   * @param assignmentname The gitlab user id
+   */
+  public void setAssignmentDisplay(String assignmentname) {
+    String query = "UPDATE Assignment SET display= ? WHERE name = ?";
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(query)) {
+      preStmt.setBoolean(1, false);
+      preStmt.setString(2, assignmentname);
+      preStmt.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
+
 }
