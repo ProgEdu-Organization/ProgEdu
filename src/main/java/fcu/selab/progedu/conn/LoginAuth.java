@@ -19,6 +19,7 @@ import org.json.JSONObject;
 
 import fcu.selab.progedu.config.CourseConfig;
 import fcu.selab.progedu.config.GitlabConfig;
+import fcu.selab.progedu.config.JwtConfig;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -31,6 +32,7 @@ import java.security.Key;
 import java.util.Date;
 import java.util.UUID;
 
+import javax.crypto.spec.SecretKeySpec;
 import javax.json.Json;
 import javax.json.stream.JsonParser;
 
@@ -46,8 +48,9 @@ public class LoginAuth extends HttpServlet {
   GitlabConfig gitData = GitlabConfig.getInstance();
   CourseConfig courseData = CourseConfig.getInstance();
   private Conn conn = Conn.getInstance();
+  JwtConfig jwt = JwtConfig.getInstance();
   boolean isEnter = true;
-  public static Key key = null;
+  
   
   /**
    * @throws LoadConfigFailureException .
@@ -55,10 +58,6 @@ public class LoginAuth extends HttpServlet {
    */
   public LoginAuth() throws LoadConfigFailureException {
     super();
-    if (key == null) {
-      key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-      System.out.println("key:" + key);
-    }
   }
 
   /**
@@ -79,22 +78,20 @@ public class LoginAuth extends HttpServlet {
     final HttpSession session = request.getSession();
     String username = request.getParameter("username");
     String password = request.getParameter("password");
-    String token = request.getParameter("password");
+    String token ;
     JSONObject ob = new JSONObject();
-    System.out.println("receive:" + username + ":" + password);
+    System.out.println("receive: " + username + ": " + password);
     /////////////////////////////////////////////////
-    System.out.println("key" + key);
 
-    ///////////////////////////////////////////////
     if (username.equals("root") && password.equals("zxcv1234")) {
       ob.put("isLogin", true);
       ob.put("user", "admin");
-      token = generateToken("teacher", "M0707350", true);
+      token = jwt.generateToken("teacher", "M0707350", true);
       ob.put("token", token);
     } else if (username.equals("root") && password.equals("zxcv12345")) {
       ob.put("isLogin", true);
       ob.put("user", "user");
-      token = generateToken("student","M0707350", false);
+      token = jwt.generateToken("student","M0707350", false);
       ob.put("token", token);
     } else {
       ob.put("isLogin", false);
@@ -107,24 +104,4 @@ public class LoginAuth extends HttpServlet {
     pw.flush();
     pw.close();
   }
-
-  /**
-   * 利用JWT生成token
-   *
-   * @return token
-   */
-  public String generateToken(String userRole, String userName, boolean isAdmin) {
-    String jws = Jwts.builder().setIssuer("progedu").setSubject(userRole).setAudience(userName)
-        .claim("admin", isAdmin)
-        .setExpiration(new Date((new Date()).getTime() + 60 * 60 * 1000))
-        .setId(UUID.randomUUID().toString()).signWith(key).compact(); // just an example id
-
-    return jws;
-  }
-
-  /**
-   * @return token
-   */
-  
-
 }

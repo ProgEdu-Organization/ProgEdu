@@ -20,6 +20,7 @@ import org.json.JSONObject;
 
 import com.csvreader.CsvReader;
 
+import fcu.selab.progedu.config.JwtConfig;
 import fcu.selab.progedu.conn.LoginAuth;
 import fcu.selab.progedu.data.User;
 import io.jsonwebtoken.Claims;
@@ -29,6 +30,8 @@ import io.jsonwebtoken.Jwts;
 
 @Path("auth/")
 public class AuthService {
+  JwtConfig jwt = JwtConfig.getInstance();
+  
   /**
    * @param token test
    * @return Response
@@ -36,35 +39,23 @@ public class AuthService {
   @POST
   @Path("login")
   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-  public Response updateCommitResult(@FormParam("token") String token) {
+  public Response checkAuth(@FormParam("token") String token) {
     System.out.println(token);
-    Claims body = (Claims) validateToken(token, LoginAuth.key).getBody();
     JSONObject ob = new JSONObject();
-    if ((boolean) body.get("admin")) {
-      ob.put("isLogin", true);
-      ob.put("admin", true);
+    if (!token.equals("null") && jwt.validateToken(token)) {
+      Claims body = (Claims) jwt.decodeToken(token).getBody();
+      System.out.print("body" + body);
+      if ((boolean) body.get("admin")) {
+        ob.put("isLogin", true);
+        ob.put("admin", true);
+      } else {
+        ob.put("isLogin", true);
+        ob.put("admin", false);
+      }
     } else {
-      ob.put("isLogin", true);
-      ob.put("admin", false);
+      ob = new JSONObject();
+      ob.put("isLogin", false);
     }
-    System.out.println("LoginAuth.key:" + LoginAuth.key);
-    
     return Response.ok().entity(ob.toString()).build();
-  }
-  
-  /**
-   * jwsToken a
-   *  key 
-   */
-  public Jws validateToken(String jwsToken, Key key) {
-    try {
-      Jws<Claims> claimsJws = Jwts.parser().setSigningKey(key).parseClaimsJws(jwsToken);
-      return claimsJws;
-    } catch (JwtException e) {
-
-      e.printStackTrace();
-    }
-    System.out.println("error");
-    return null;
   }
 }

@@ -29,15 +29,15 @@
       <table class='table table-striped' style="text-align:center;">
         <thead>
           <tr>
-            <th class='text-left'>學號</th>
-            <th *ngFor='let head of tableHead'>{{head.hw}}
-            </th>
+            <th width="10%" class='text-left'>學生</th>
+            <th width="10%" *ngFor='let head of tableHead'>{{head.hw}}</th>
+            <th class='text-left'></th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor='let student of studentDatas'>
             <div *ngIf='student.userName === user.getUserId()'>
-              <th class='text-left'>
+              <th class='text-left' width="10%">
                 {{student.userName | uppercase}}
                 <br>
                 {{student.name }}
@@ -49,6 +49,7 @@
                     href="#/dashboard/dashprojectChoosed?userId=3&proName=WEB-HW5">{{commit.commit}}</a>
                 </p>
               </th>
+              <th class='text-left'></th>
             </div>
           </tr>
         </tbody>

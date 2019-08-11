@@ -1,10 +1,11 @@
-import { Component, OnDestroy, Inject, OnInit } from '@angular/core';
+import { Component, OnDestroy, Inject, OnInit, ViewChild } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { navItems } from './_nav';
 import { JwtService } from '../../services/jwt.service';
 import { User } from '../../models/user';
 import { DefaultLayoutService } from './default-layout.service';
 import { Router } from '@angular/router';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 import * as $ from 'jquery';
 
 @Component({
@@ -26,6 +27,7 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
   disabled: boolean = false;
   isDropup: boolean = true;
   autoClose: boolean = false;
+  @ViewChild('dangerModal', { static: false }) public dangerModal: ModalDirective;
 
   constructor(@Inject(DOCUMENT) _document?: any, private defaultLayoutService?: DefaultLayoutService,
     private jwtService?: JwtService, private router?: Router) {
@@ -93,6 +95,10 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
   }
   isOpenChange(): void {
     console.log('Dropdown state is changed');
+  }
+
+  modifySecret() {
+    this.dangerModal.show();
   }
 
   toggleDropdown($event: MouseEvent): void {
