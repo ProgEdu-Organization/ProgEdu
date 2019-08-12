@@ -1,5 +1,7 @@
 package fcu.selab.progedu.service;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -61,30 +63,36 @@ public class CommitRecordService {
   @Path("oneUser")
   @Produces(MediaType.TEXT_PLAIN)
   public Response getOneUserCommitRecord(@FormParam("user") String username) {
-    JSONArray array = new JSONArray();
-    JSONObject result = new JSONObject();
     int userId = userDb.getUserIdByUsername(username);
-    List<Integer> aIds = auDb.getAIds(userId);
+    List<Integer> aids = auDb.getAIds(userId);
+    List<Integer> auIds = new ArrayList<>();
 
-    for (int assignment : aIds) {
-      int auIds = auDb.getAUId(assignment, userId);
-      String assignmentName = assignmentDb.getAssignmentNameById(assignment);
-      JSONObject ob = new JSONObject();
-      ob.put("assignmentName", assignmentName);
-      ob.put("commitRecord", db.getCommitRecord(auIds));
-      array.put(ob);
+    for (int assignment : aids) {
+      int auId = auDb.getAUId(assignment, userId);
+      auIds.add(auId);
     }
-    result.put("oneUserCommitRecord", array);
+
+    int latestAuId = Collections.max(auIds);
+    int latestAid = auDb.getAid(latestAuId);
+    String assignmentName = assignmentDb.getAssignmentNameById(latestAid);
+    JSONArray array = new JSONArray();
+    JSONObject ob = new JSONObject();
+
+    ob.put("assignmentName", assignmentName);
+    ob.put("commitRecord", db.getLastCommitRecord(latestAuId));
+
+    JSONObject result = new JSONObject();
+    result.put("oneUserCommitRecord", ob);
+
     return Response.ok().entity(result.toString()).build();
+
   }
 
   /**
    * get student build detail info
    * 
-   * @param username
-   *          student id
-   * @param assignmentName
-   *          assignment name
+   * @param username       student id
+   * @param assignmentName assignment name
    * @return build detail
    */
   @GET
@@ -102,8 +110,7 @@ public class CommitRecordService {
   /**
    * update user assignment commit record to DB.
    * 
-   * @param auId
-   *          assignmentUser id
+   * @param auId assignmentUser id
    */
   @POST
   @Path("update")

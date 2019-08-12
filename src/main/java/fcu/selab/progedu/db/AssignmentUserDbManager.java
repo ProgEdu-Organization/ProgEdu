@@ -23,10 +23,8 @@ public class AssignmentUserDbManager {
   /**
    * add AssignmentUser into database
    * 
-   * @param aid
-   *          Assignment Id
-   * @param uid
-   *          User Id
+   * @param aid Assignment Id
+   * @param uid User Id
    */
   public void addAssignmentUser(int aid, int uid) {
     String sql = "INSERT INTO Assignment_User(aId, uId)  VALUES( ?, ?)";
@@ -45,10 +43,8 @@ public class AssignmentUserDbManager {
   /**
    * delete AssignmentUser from database
    * 
-   * @param aid
-   *          Assignment Id
-   * @param uid
-   *          User Id
+   * @param aid Assignment Id
+   * @param uid User Id
    */
   public void deleteAssignmentUser(int aid, int uid) {
     String sql = "DELETE FROM Assignment_User WHERE aId ='" + aid + "' AND uId = '" + uid + "'";
@@ -64,10 +60,8 @@ public class AssignmentUserDbManager {
   /**
    * get auId by assignment Id and user Id
    * 
-   * @param aid
-   *          Assignment Id
-   * @param uid
-   *          User Id
+   * @param aid Assignment Id
+   * @param uid User Id
    * @return auId assignmentUser Id
    */
   public int getAUId(int aid, int uid) {
@@ -89,7 +83,7 @@ public class AssignmentUserDbManager {
   }
 
   /**
-   * get aId by AssignmentUser Id
+   * get aId by User Id
    * 
    * @return aids assignment Id
    */
@@ -112,7 +106,7 @@ public class AssignmentUserDbManager {
   }
 
   /**
-   * get aId by AssignmentUser Id
+   * get aId by Assignment Id
    *
    * @return aids assignment Id
    */
@@ -132,5 +126,28 @@ public class AssignmentUserDbManager {
       e.printStackTrace();
     }
     return lsUids;
+  }
+
+  /**
+   * get aId by auId
+   * 
+   * @param auid AssignmentUser Id
+   * @return aid assignment Id
+   */
+  public int getAid(int auid) {
+    int aid = 0;
+    String sql = "SELECT * FROM Assignment_User WHERE auId=? ";
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+      preStmt.setInt(1, auid);
+      try (ResultSet rs = preStmt.executeQuery()) {
+        while (rs.next()) {
+          aid = rs.getInt("auId");
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return aid;
   }
 }
