@@ -24,7 +24,7 @@ export class StudashboardComponent implements OnInit {
     this.studashboardService.getAllStudentData().subscribe(response => {
       console.log(response);
       this.user = new User(this.jwtService);
-      console.log("userID" + this.user.getUserId());
+      console.log('userID' + this.user.getUsername());
       this.studentDatas = response.result;
       this.tableHead = this.studentDatas[0].commits;
     });

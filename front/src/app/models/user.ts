@@ -11,12 +11,11 @@ export class User {
     console.log('isAdmin' + decodedToken.admin);
     this.userId = decodedToken.aud;
   }
-
   public getIsAdmin(): boolean {
     return this.isAdmin;
   }
 
-  public getUserId(): string {
+  public getUsername(): string {
     return this.userId;
   }
 

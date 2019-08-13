@@ -6,7 +6,9 @@ import { User } from '../../models/user';
 import { DefaultLayoutService } from './default-layout.service';
 import { Router } from '@angular/router';
 import { ModalDirective } from 'ngx-bootstrap/modal';
+import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import * as $ from 'jquery';
+import { ɵangular_packages_platform_browser_platform_browser_d } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-dashboard',
@@ -22,14 +24,17 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
   public user: User;
   public isAdmin: boolean = false;
 
+  public modifySecretForm: FormGroup;
+
   dashboard: string;
   status: { isOpen: boolean } = { isOpen: false };
   disabled: boolean = false;
   isDropup: boolean = true;
   autoClose: boolean = false;
-  @ViewChild('dangerModal', { static: false }) public dangerModal: ModalDirective;
+  @ViewChild('modifySecretModal', { static: false }) public modifySecretModal: ModalDirective;
 
   constructor(@Inject(DOCUMENT) _document?: any, private defaultLayoutService?: DefaultLayoutService,
+    private fb?: FormBuilder,
     private jwtService?: JwtService, private router?: Router) {
     console.log('isTeacher: ' + this.isAdmin);
     this.changes = new MutationObserver((mutations) => {
@@ -40,6 +45,7 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
       attributes: true,
       attributeFilter: ['class']
     });
+
   }
 
   ngOnInit() {
@@ -53,6 +59,13 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
       this.dashboard = '/studashboard';
       this.isAdmin = false;
     }
+    /* Modify Secret Area*/
+    this.modifySecretForm = this.fb.group({
+      username: [this.user.getUsername(), Validators.pattern('^[a-zA-Z0-9-_]{5,20}')],
+      password: ['', Validators.pattern('^[a-zA-Z0-9-_]{5,20}')],
+      confirmPassword: ['', Validators.pattern('^[a-zA-Z0-9-_]{5,20}')],
+      rememberMe: [true]
+    });
 
     this.updateNavData();
     // console.log($('a[.navbar]').attr('href', 'studashboard'))
@@ -87,18 +100,31 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
     this.jwtService.removeToken();
   }
 
-  onHidden(): void {
-    console.log('Dropdown is hidden');
-  }
-  onShown(): void {
-    console.log('Dropdown is shown');
-  }
-  isOpenChange(): void {
-    console.log('Dropdown state is changed');
+  confirmInputOnChange() {
+    const password = this.modifySecretForm.value.password;
+    const confirmPassword = this.modifySecretForm.value.confirmPassword;
+    console.log(password + '    ' + confirmPassword);
+
+    if (password.length >= 8) {
+      $('#password').addClass('is-valid').removeClass('is-invalid');
+      $('#password-invalid-feedbacks').hide();
+    } else {
+      $('#password').addClass('is-invalid').removeClass('is-valid');
+      $('#password-invalid-feedbacks').show();
+    }
+    if (confirmPassword !== '') {
+      if (password === confirmPassword) {
+        $('#confirmPassword').addClass('is-valid').removeClass('is-invalid');
+        $('#confirmPassword-invalid-feedbacks').hide();
+      } else {
+        $('#confirmPassword').addClass('is-invalid').removeClass('is-valid');
+        $('#confirmPassword-invalid-feedbacks').show();
+      }
+    }
   }
 
   modifySecret() {
-    this.dangerModal.show();
+    console.log('modifySecret');
   }
 
   toggleDropdown($event: MouseEvent): void {
@@ -109,7 +135,6 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
 
   change(value: boolean): void {
     this.status.isOpen = value;
-    console.log(window.location.href);
   }
 
 

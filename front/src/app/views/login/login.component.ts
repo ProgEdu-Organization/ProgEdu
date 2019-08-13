@@ -4,6 +4,7 @@ import { LoginAuthService } from '../../services/login-auth.service';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { JwtService } from '../../services/jwt.service';
+
 @Component({
   selector: 'app-dashboard',
   templateUrl: 'login.component.html'
@@ -37,9 +38,9 @@ export class LoginComponent {
           this.dangerModal.show();
         } else {
           this.jwtService.setToken(response.token);
-          if (response.user === 'admin') {
+          if (response.user === 'teacher') {
             this.router.navigate(['dashboard']);
-          } else if (response.user === 'user') {
+          } else if (response.user === 'student') {
             this.router.navigate(['studashboard']);
           }
         }

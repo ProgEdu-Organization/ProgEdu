@@ -2,7 +2,6 @@
 <div class='card'>
   <div class='card-header'>
     <i class='fa fa-align-justify'></i>
-    <label>Search:</label>
     <div class="card-header-actions">
       <div id="inline">
         <p class="ovol NB">
@@ -36,7 +35,7 @@
         </thead>
         <tbody>
           <tr *ngFor='let student of studentDatas'>
-            <div *ngIf='student.userName === user.getUserId()'>
+            <div *ngIf='student.userName === user.getUsername()'>
               <th class='text-left' width="10%">
                 {{student.userName | uppercase}}
                 <br>
@@ -46,7 +45,7 @@
               <th *ngFor='let commit of student.commits'>
                 <p id="{{student.userName}}_{{commit.hw}}" class="circle {{commit.status}}">
                   <a id="{{student.userName}}_{{commit.hw}}_{{commit.commit}}"
-                    href="#/dashboard/dashprojectChoosed?userId=3&proName=WEB-HW5">{{commit.commit}}</a>
+                    href="#/studashboard/studashProjectChoosed?userId=3&proName=WEB-HW5">{{commit.commit}}</a>
                 </p>
               </th>
               <th class='text-left'></th>

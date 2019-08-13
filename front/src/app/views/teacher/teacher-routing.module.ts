@@ -16,7 +16,7 @@ const routes: Routes = [
     }
   },
   {
-    path: 'dashprojectChoosed',
+    path: 'dashProjectChoosed',
     component: DashProjectChoosedComponent,
     data: {
       title: 'Project'

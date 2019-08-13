@@ -43,7 +43,10 @@ public class AuthService {
     System.out.println(token);
     JSONObject ob = new JSONObject();
     if (!token.equals("null") && jwt.validateToken(token)) {
-      Claims body = (Claims) jwt.decodeToken(token).getBody();
+      Claims body = jwt.decodeToken(token);
+      /*
+       * add the database auth
+       */
       System.out.print("body" + body);
       if ((boolean) body.get("admin")) {
         ob.put("isLogin", true);

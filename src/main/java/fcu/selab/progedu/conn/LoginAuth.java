@@ -85,12 +85,12 @@ public class LoginAuth extends HttpServlet {
 
     if (username.equals("root") && password.equals("zxcv1234")) {
       ob.put("isLogin", true);
-      ob.put("user", "admin");
+      ob.put("user", "teacher");
       token = jwt.generateToken("teacher", "M0707350", true);
       ob.put("token", token);
     } else if (username.equals("root") && password.equals("zxcv12345")) {
       ob.put("isLogin", true);
-      ob.put("user", "user");
+      ob.put("user", "student");
       token = jwt.generateToken("student","M0707350", false);
       ob.put("token", token);
     } else {

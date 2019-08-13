@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.UUID;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -54,7 +55,7 @@ public class JwtConfig {
       isValidate = true;
     } catch (JwtException e) {
       e.printStackTrace();
-    }
+    } 
     return isValidate;
   }
   
@@ -62,9 +63,9 @@ public class JwtConfig {
    * using the key to encode the jwt
    *  key
    */
-  public Jws decodeToken(String jwsToken) {
+  public Claims decodeToken(String jwsToken) {
     if (this.validateToken(jwsToken)) {
-      Jws<Claims> claimsJws = Jwts.parser().setSigningKey(key).parseClaimsJws(jwsToken);
+      Claims claimsJws = Jwts.parser().setSigningKey(key).parseClaimsJws(jwsToken).getBody();
       return claimsJws;
     }
     return null;
