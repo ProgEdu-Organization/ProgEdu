@@ -12,119 +12,197 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.apache.commons.io.FileUtils;
 import org.w3c.dom.Document;
-import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
+import fcu.selab.progedu.config.CourseConfig;
+import fcu.selab.progedu.config.GitlabConfig;
 import fcu.selab.progedu.config.JenkinsConfig;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
-import fcu.selab.progedu.service.AssignmentTypeMethod;
-import fcu.selab.progedu.status.WebStatusFactory;
+import fcu.selab.progedu.status.StatusEnum;
 
-public class WebAssignment extends AssignmentTypeMethod {
+public class WebAssignment extends AssignmentType {
 
-  public WebAssignment() {
-    super(new WebStatusFactory());
+  @Override
+  public ProjectTypeEnum getProjectType() {
+    return ProjectTypeEnum.WEB;
   }
 
-  public String getSampleZip() {
+  @Override
+  public String getSampleTemplate() {
     return "WebQuickStart.zip";
   }
 
-  /**
-   * searchFile
-   * 
-   * @param entryNewName entryNewName
-   */
-  public void searchFile(String entryNewName) {
-  }
-
-  /**
-   * extract main method and modify pom.xml
-   * 
-   * @param testDirectory testDirectory
-   * @param projectName   projectName
-   */
-  public void extractFile(String zipFilePath, String testDirectory, String destDirectory,
-      String projectName) {
-
-    try {
-      FileUtils.deleteDirectory(new File(testDirectory + "/src/web"));
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-
-    try {
-      FileUtils.deleteDirectory(new File(destDirectory + "/src/test"));
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-  }
-
-  public String getJenkinsConfig() {
+  @Override
+  public String getJenkinsJobConfigSample() {
     return "config_web.xml";
   }
 
-  /**
-   * modifyXmlFile
-   * 
-   * @param filePath   filePath
-   * @param progApiUrl progApiUrl
-   * @param userName   userName
-   * @param proName    proName
-   * @param tomcatUrl  tomcatUrl
-   * @param sb         sb
-   */
-  public void modifyXmlFile(String filePath, String progApiUrl, String userName, String proName,
-      String tomcatUrl, StringBuilder sb) {
+  @Override
+  public void createJenkinsJobConfig(String username, String projectName) {
     try {
-      String filepath = filePath;
-      DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-      DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-      Document doc = docBuilder.parse(filepath);
+      GitlabConfig gitlabConfig = GitlabConfig.getInstance();
+      String jenkinsJobConfigPath = this.getClass()
+          .getResource("/jenkins/" + getJenkinsJobConfigSample()).getPath();
 
-      String strJobName = userName + "_" + proName;
-      Node jobName = doc.getElementsByTagName("jobName").item(0);
-      jobName.setTextContent(strJobName);
-
-      Node testFileName = doc.getElementsByTagName("testFileName").item(0);
-      testFileName.setTextContent(proName);
-
-      Node proDetailUrl = doc.getElementsByTagName("proDetailUrl").item(0);
-      proDetailUrl.setTextContent(tomcatUrl);
-
+      CourseConfig courseConfig = CourseConfig.getInstance();
+      String progEduApiUrl = courseConfig.getTomcatServerIp() + "/ProgEdu/webapi";
+      String projectUrl = gitlabConfig.getGitlabHostUrl() + "/" + username + "/" + projectName
+          + ".git";
+      String updateDbUrl = progEduApiUrl + "/commits/update";
       JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
       String seleniumUrl = jenkinsData.getSeleniumHostUrl() + "/wd/hub";
-      Node ndSeleniumUrl = doc.getElementsByTagName("seleniumUrl").item(0);
-      ndSeleniumUrl.setTextContent(seleniumUrl);
+      String checksumUrl = progEduApiUrl + "project/checksum?proName=" + projectName;
 
-      String updateDbUrl = progApiUrl + "/commits/update";
-      Node progeduDbUrl = doc.getElementsByTagName("progeduDbUrl").item(0);
-      progeduDbUrl.setTextContent(updateDbUrl);
+      DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+      DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+      Document doc = docBuilder.parse(jenkinsJobConfigPath);
 
-      Node user = doc.getElementsByTagName("user").item(0);
-      user.setTextContent(userName);
+      String jobName = username + "_" + projectName;
+      doc.getElementsByTagName("url").item(0).setTextContent(projectUrl);
+      doc.getElementsByTagName("jobName").item(0).setTextContent(jobName);
+      doc.getElementsByTagName("testFileName").item(0).setTextContent(projectName);
+      doc.getElementsByTagName("proDetailUrl").item(0).setTextContent(checksumUrl);
+      doc.getElementsByTagName("seleniumUrl").item(0).setTextContent(seleniumUrl);
+      doc.getElementsByTagName("progeduDbUrl").item(0).setTextContent(updateDbUrl);
+      doc.getElementsByTagName("user").item(0).setTextContent(username);
+      doc.getElementsByTagName("proName").item(0).setTextContent(projectName);
+      doc.getElementsByTagName("progeduAPIUrl").item(0).setTextContent(progEduApiUrl);
+      doc.getElementsByTagName("jenkinsJobName").item(0).setTextContent(jobName);
 
-      Node ndProName = doc.getElementsByTagName("proName").item(0);
-      ndProName.setTextContent(proName);
-
-      String progeduApiUrl = progApiUrl;
-      Node ndProgeduApiUrl = doc.getElementsByTagName("progeduAPIUrl").item(0);
-      ndProgeduApiUrl.setTextContent(progeduApiUrl);
-
-      Node jenkinsJobName = doc.getElementsByTagName("jenkinsJobName").item(0);
-      jenkinsJobName.setTextContent(strJobName);
       // write the content into xml file
       TransformerFactory transformerFactory = TransformerFactory.newInstance();
       Transformer transformer = transformerFactory.newTransformer();
       DOMSource source = new DOMSource(doc);
-      StreamResult result = new StreamResult(new File(filepath));
+      StreamResult result = new StreamResult(new File(jenkinsJobConfigPath));
       transformer.transform(source, result);
-    } catch (ParserConfigurationException | TransformerException | SAXException | IOException
-        | LoadConfigFailureException e) {
+    } catch (LoadConfigFailureException | ParserConfigurationException | SAXException | IOException
+        | TransformerException e) {
       e.printStackTrace();
     }
 
   }
+
+  @Override
+  public StatusEnum checkStatusType(int num, String username, String assignmentName) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public void createTemplate() {
+    // TODO Auto-generated method stub
+
+  }
+
+  @Override
+  public void createTestCase() {
+    // TODO Auto-generated method stub
+
+  }
+
+//
+//  public WebAssignment() {
+//    super(new WebStatusFactory());
+//  }
+//
+//  public String getSampleZip() {
+//    return "WebQuickStart.zip";
+//  }
+//
+//  /**
+//   * searchFile
+//   * 
+//   * @param entryNewName entryNewName
+//   */
+//  public void searchFile(String entryNewName) {
+//  }
+//
+//  /**
+//   * extract main method and modify pom.xml
+//   * 
+//   * @param testDirectory testDirectory
+//   * @param projectName   projectName
+//   */
+//  public void extractFile(String zipFilePath, String testDirectory, String destDirectory,
+//      String projectName) {
+//
+//    try {
+//      FileUtils.deleteDirectory(new File(testDirectory + "/src/web"));
+//    } catch (IOException e) {
+//      e.printStackTrace();
+//    }
+//
+//    try {
+//      FileUtils.deleteDirectory(new File(destDirectory + "/src/test"));
+//    } catch (IOException e) {
+//      e.printStackTrace();
+//    }
+//  }
+//
+//  public String getJenkinsConfig() {
+//    return "config_web.xml";
+//  }
+//
+//  /**
+//   * modifyXmlFile
+//   * 
+//   * @param filePath   filePath
+//   * @param progApiUrl progApiUrl
+//   * @param userName   userName
+//   * @param proName    proName
+//   * @param tomcatUrl  tomcatUrl
+//   * @param sb         sb
+//   */
+//  public void modifyXmlFile(String filePath, String progApiUrl, String userName, String proName,
+//      String tomcatUrl, StringBuilder sb) {
+//    try {
+//      String filepath = filePath;
+//      DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+//      DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+//      Document doc = docBuilder.parse(filepath);
+//
+//      String strJobName = userName + "_" + proName;
+//      Node jobName = doc.getElementsByTagName("jobName").item(0);
+//      jobName.setTextContent(strJobName);
+//
+//      Node testFileName = doc.getElementsByTagName("testFileName").item(0);
+//      testFileName.setTextContent(proName);
+//
+//      Node proDetailUrl = doc.getElementsByTagName("proDetailUrl").item(0);
+//      proDetailUrl.setTextContent(tomcatUrl);
+//
+//      JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
+//      String seleniumUrl = jenkinsData.getSeleniumHostUrl() + "/wd/hub";
+//      Node ndSeleniumUrl = doc.getElementsByTagName("seleniumUrl").item(0);
+//      ndSeleniumUrl.setTextContent(seleniumUrl);
+//
+//      String updateDbUrl = progApiUrl + "/commits/update";
+//      Node progeduDbUrl = doc.getElementsByTagName("progeduDbUrl").item(0);
+//      progeduDbUrl.setTextContent(updateDbUrl);
+//
+//      Node user = doc.getElementsByTagName("user").item(0);
+//      user.setTextContent(userName);
+//
+//      Node ndProName = doc.getElementsByTagName("proName").item(0);
+//      ndProName.setTextContent(proName);
+//
+//      String progeduApiUrl = progApiUrl;
+//      Node ndProgeduApiUrl = doc.getElementsByTagName("progeduAPIUrl").item(0);
+//      ndProgeduApiUrl.setTextContent(progeduApiUrl);
+//
+//      Node jenkinsJobName = doc.getElementsByTagName("jenkinsJobName").item(0);
+//      jenkinsJobName.setTextContent(strJobName);
+//      // write the content into xml file
+//      TransformerFactory transformerFactory = TransformerFactory.newInstance();
+//      Transformer transformer = transformerFactory.newTransformer();
+//      DOMSource source = new DOMSource(doc);
+//      StreamResult result = new StreamResult(new File(filepath));
+//      transformer.transform(source, result);
+//    } catch (ParserConfigurationException | TransformerException | SAXException | IOException
+//        | LoadConfigFailureException e) {
+//      e.printStackTrace();
+//    }
+//
+//  }
 }

@@ -1,7 +1,4 @@
-package fcu.selab.progedu.service;
-
-import fcu.selab.progedu.project.MavenGroupProject;
-import fcu.selab.progedu.project.ProjectTypeEnum;
+package fcu.selab.progedu.project;
 
 public class GroupProjectFactory {
   /**

@@ -605,15 +605,23 @@ public class GitlabService {
 
   public String cloneProject(String username, String projectName) {
     String repoUrl = rootUrl + "/" + username + "/" + projectName + ".git";
-    String target = System.getProperty("java.io.tmpdir") + "uploads//" + username;
+    String target = System.getProperty("java.io.tmpdir") + "uploads/" + username;
     String cloneCommand = "git clone " + repoUrl + " " + target;
     Linux linux = new Linux();
     linux.execLinuxCommand(cloneCommand);
     return target;
   }
 
-  public void pushProject(String username, String projectName) {
-    String repoUrl = rootUrl + "/" + username + "/" + projectName + ".git";
+  public void pushProject(String cloneDirectoryPath) {
+    Linux linux = new Linux();
+    String addCommand = "git add .";
+    linux.execLinuxCommandInFile(addCommand, cloneDirectoryPath);
+
+    String commitCommand = "git commit -m \"Instructor&nbsp;Commit\"";
+    linux.execLinuxCommandInFile(commitCommand, cloneDirectoryPath);
+
+    String pushCommand = "git push";
+    linux.execLinuxCommandInFile(pushCommand, cloneDirectoryPath);
   }
 
 }

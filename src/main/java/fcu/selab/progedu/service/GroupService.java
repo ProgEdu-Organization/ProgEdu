@@ -33,6 +33,8 @@ import fcu.selab.progedu.data.Group;
 import fcu.selab.progedu.data.Student;
 import fcu.selab.progedu.db.GroupDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
+import fcu.selab.progedu.project.GroupProject;
+import fcu.selab.progedu.project.GroupProjectFactory;
 import fcu.selab.progedu.project.ProjectTypeEnum;
 
 @Path("group/")

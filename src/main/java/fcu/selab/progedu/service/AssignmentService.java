@@ -1,19 +1,11 @@
 package fcu.selab.progedu.service;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.text.SimpleDateFormat;
-import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Properties;
-import java.util.TimeZone;
 import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
 
@@ -49,6 +41,8 @@ import fcu.selab.progedu.conn.TomcatService;
 import fcu.selab.progedu.db.AssignmentDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.jenkins.JenkinsApi;
+import fcu.selab.progedu.project.AssignmentFactory;
+import fcu.selab.progedu.project.AssignmentType;
 import fcu.selab.progedu.utils.Linux;
 import fcu.selab.progedu.utils.ZipHandler;
 
@@ -70,20 +64,15 @@ public class AssignmentService {
   private String mailPassword;
 
   private AssignmentDbManager dbManager = AssignmentDbManager.getInstance();
-  private CommitRecordService commitRecordService = new CommitRecordService();
   private CommitResultService commitResultService = new CommitResultService();
-  private CommitRecordStateService commitRecordStateService = new CommitRecordStateService();
-
-  private static final String TEMP_DIR = System.getProperty("java.io.tmpdir");
-  private static String uploadDir = TEMP_DIR + "/uploads/";
-  private static String testDir = TEMP_DIR + "/tests/";
+  private final String tempDir = System.getProperty("java.io.tmpdir");
+  private final String uploadDir = tempDir + "/uploads/";
+  private final String testDir = tempDir + "/tests/";
 
   boolean isSave = true;
 
   private String testZipChecksum = "";
   private String testZipUrl = "";
-
-  AssignmentTypeSelector assignmentTypeSelector;
 
   /**
    * Constuctor
@@ -115,18 +104,17 @@ public class AssignmentService {
   @Path("create")
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   @Produces(MediaType.APPLICATION_JSON)
-  public Response newProject(@FormDataParam("Hw_Name") String name,
+  public Response createAssignment(@FormDataParam("Hw_Name") String name,
       @FormDataParam("Hw_Deadline") String deadline, @FormDataParam("Hw_README") String readMe,
       @FormDataParam("fileRadio") String assignmentType, @FormDataParam("file") InputStream file,
       @FormDataParam("file") FormDataContentDisposition fileDetail) throws Exception {
     TomcatService tomcatService = new TomcatService();
-    final Linux linuxApi = new Linux();
     String rootProjectUrl = null;
     String folderName = null;
     String filePath = null;
     boolean hasTemplate = false;
 
-    assignmentTypeSelector = AssignmentTypeFactory.getAssignmentType(assignmentType);
+    AssignmentType assignment = AssignmentFactory.getAssignmentType(assignmentType);
 
     // 1. Create root project and get project id and url
     createRootProject(name);
@@ -138,68 +126,62 @@ public class AssignmentService {
 
     // 3. Store Zip File to folder if file is not empty
     folderName = fileDetail.getFileName();
-    filePath = tomcatService.storeFile(file, folderName, uploadDir, assignmentTypeSelector);
+    filePath = tomcatService.storeFileToServer(file, folderName, uploadDir, assignment);
 
     // 4. Unzip the uploaded file to tests folder and uploads folder on tomcat,
     // extract main method from tests folder, then zip as root project
-    try {
-      assignmentTypeSelector.unzip(filePath, fileDetail.getFileName(), name, zipHandler);
-      setTestFileInfo();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    // Add .gitkeep if folder is empty.
-    findEmptyFolder(cloneDirectoryPath);
 
-    // 5. if README is not null
+    /*
+     * TO-DO : unzip, create template and test file
+     * 
+     */
+
+//    try {
+//      assignment.unzip(filePath, fileDetail.getFileName(), name, zipHandler);
+//      setTestFileInfo();
+//    } catch (IOException e) {
+//      e.printStackTrace();
+//    }
+    // 5. Add .gitkeep if folder is empty.
+    tomcatService.findEmptyFolder(cloneDirectoryPath);
+
+    // 6. if README is not null
     if (!readMe.equals("<br>") || !"".equals(readMe) || !readMe.isEmpty()) {
       // Add readme to folder
-      createReadmeFile(readMe, name);
+      tomcatService.createReadmeFile(readMe, cloneDirectoryPath);
     }
 
-    // 6. Cmd gitlab add
-    String addCommand = "git add .";
-    linuxApi.execLinuxCommandInFile(addCommand, cloneFilePath);
+    // 7. git push
+    gitlabService.pushProject(cloneDirectoryPath);
 
-    // 7. Cmd gitlab commit
-    String commitCommand = "git commit -m \"Instructor&nbsp;Commit\"";
-    linuxApi.execLinuxCommandInFile(commitCommand, cloneFilePath);
+    // 8. remove project file in linux
+    tomcatService.removeFile(uploadDir);
 
-    // 8. Cmd gitlab push
-    String pushCommand = "git push";
-    linuxApi.execLinuxCommandInFile(pushCommand, cloneFilePath);
+    // 9. String removeTestDirectoryCommand = "rm -rf tests/" + name;
+    tomcatService.removeFile(testDir + name);
 
-    // remove project file in linux
-    String removeFileCommand = "rm -rf uploads/";
-    linuxApi.execLinuxCommandInFile(removeFileCommand, TEMP_DIR);
+    // 10. import project infomation to database
+//    Date date = new Date();
+//    SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//    sdFormat.setTimeZone(TimeZone.getTimeZone("Asia/Taipei"));
+//    String dateTime = sdFormat.format(date);
+//    addProject(name, dateTime, deadline, readMe, assignmentType, hasTemplate, testZipChecksum,
+//        testZipUrl);
+//
+//    List<GitlabUser> users = gitlabService.getUsers();
+//    Collections.reverse(users);
+//    for (GitlabUser user : users) {
+//      if (user.getId() == 1) {
+//        continue;
+//      }
 
-    // String removeTestDirectoryCommand = "rm -rf tests/" + name;
-    // linuxApi.execLinuxCommandInFile(removeTestDirectoryCommand, TEMP_DIR);
-
-    // 9. Add project to database
-    Date date = new Date();
-    SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    sdFormat.setTimeZone(TimeZone.getTimeZone("Asia/Taipei"));
-    String dateTime = sdFormat.format(date);
-    addProject(name, dateTime, deadline, readMe, assignmentType, hasTemplate, testZipChecksum,
-        testZipUrl);
-
-    List<GitlabUser> users = gitlabService.getUsers();
-    Collections.reverse(users);
-    for (GitlabUser user : users) {
-      if (user.getId() == 1) {
-        continue;
-      }
-
-      // 10. Create student project, and import project
-      GitlabProject project = gitlabService.createPrivateProject(user.getId(), name,
-          rootProjectUrl);
-      httpConnect.setGitlabWebhook(project.getOwner().getUsername(), project);
-
-    }
+    // 11. Create student project, and import project
+//      GitlabProject project = gitlabService.createPrivateProject(user.getId(), name,
+//          rootProjectUrl);
+//      httpConnect.setGitlabWebhook(project.getOwner().getUsername(), project);
 
     // 12. Create each Jenkins Jobs
-    assignmentTypeSelector.createJenkinsJob(name, jenkinsRootUsername, jenkinsRootPassword);
+//    assignment.createJenkinsJob(username,name);
 
     Response response = Response.ok().build();
     if (!isSave) {
@@ -213,8 +195,8 @@ public class AssignmentService {
     gitlabService.createRootProject(name);
   }
 
-  public List<String> getAllProjectNames() {
-    return dbManager.listAllProjectNames();
+  public List<String> getAllAssignmentNames() {
+    return dbManager.listAllAssignmentNames();
   }
 
   private String getRootProjectUrl(String name) {
@@ -309,25 +291,6 @@ public class AssignmentService {
   // }
 
   /**
-   * create readme file
-   * 
-   * @param readMe      content
-   * @param projectName project name
-   */
-  public void createReadmeFile(String readMe, String projectName) {
-    String projectDir = uploadDir + projectName;
-
-    System.out.println("readMe : " + readMe);
-
-    try (Writer writer = new BufferedWriter(
-        new OutputStreamWriter(new FileOutputStream(projectDir + "/README.md"), "utf-8"));) {
-      writer.write(readMe);
-    } catch (IOException ex) {
-      // report
-    }
-  }
-
-  /**
    * Add a project to database
    * 
    * @param name        Project name
@@ -366,13 +329,13 @@ public class AssignmentService {
     Linux linuxApi = new Linux();
     // delete tomcat test file
     String removeTestDirectoryCommand = "rm -rf tests/" + name;
-    linuxApi.execLinuxCommandInFile(removeTestDirectoryCommand, TEMP_DIR);
+    linuxApi.execLinuxCommandInFile(removeTestDirectoryCommand, tempDir);
 
     String removeZipTestFileCommand = "rm tests/" + name + ".zip";
-    linuxApi.execLinuxCommandInFile(removeZipTestFileCommand, TEMP_DIR);
+    linuxApi.execLinuxCommandInFile(removeZipTestFileCommand, tempDir);
 
     String removeFileCommand = "rm -rf tests/" + name + "-COMPLETE";
-    linuxApi.execLinuxCommandInFile(removeFileCommand, TEMP_DIR);
+    linuxApi.execLinuxCommandInFile(removeFileCommand, tempDir);
     // delete db
     dbManager.deleteProject(name);
     commitRecordService.deleteRecord(name);
@@ -520,29 +483,4 @@ public class AssignmentService {
     return strChecksum;
   }
 
-  private void findEmptyFolder(String path) {
-    File dir = new File(path);
-    File[] files = dir.listFiles();
-
-    if (dir.exists() && dir.isDirectory()) {
-      if (files.length == 0) {
-        addGitkeep(path);
-      } else {
-        for (int i = 0; i < files.length; i++) {
-          findEmptyFolder(files[i].getPath());
-        }
-      }
-    }
-  }
-
-  private void addGitkeep(String path) {
-    File gitkeep = new File(path + "/.gitkeep");
-    if (!gitkeep.exists()) {
-      try {
-        gitkeep.createNewFile();
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-    }
-  }
 }

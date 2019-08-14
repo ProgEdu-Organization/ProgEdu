@@ -1,12 +1,16 @@
 package fcu.selab.progedu.conn;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 
-import fcu.selab.progedu.service.AssignmentTypeSelector;
+import fcu.selab.progedu.project.AssignmentType;
+import fcu.selab.progedu.utils.Linux;
 
 public class TomcatService {
   public String storeFileToUploadsFolder(InputStream file, String target) {
@@ -51,15 +55,15 @@ public class TomcatService {
     }
   }
 
-  public String storeFile(InputStream file, String folderName, String uploadDir,
-      AssignmentTypeSelector assignmentTypeSelector) {
+  public String storeFileToServer(InputStream file, String folderName, String uploadDir,
+      AssignmentType assignment) {
     String target;
     if (hasTemplate(folderName)) {
       target = uploadDir + folderName;
       // store to C://User/AppData/Temp/uploads/
       storeFileToUploadsFolder(file, target);
     } else {
-      target = this.getClass().getResource(assignmentTypeSelector.getSampleZip()).getFile();
+      target = this.getClass().getResource(assignment.getSampleTemplate()).getFile();
     }
     return target;
 
@@ -71,5 +75,53 @@ public class TomcatService {
       hasTemplate = true;
     }
     return hasTemplate;
+  }
+
+  public void findEmptyFolder(String path) {
+    File dir = new File(path);
+    File[] files = dir.listFiles();
+
+    if (dir.exists() && dir.isDirectory()) {
+      if (files.length == 0) {
+        addGitkeep(path);
+      } else {
+        for (int i = 0; i < files.length; i++) {
+          findEmptyFolder(files[i].getPath());
+        }
+      }
+    }
+  }
+
+  private void addGitkeep(String path) {
+    File gitkeep = new File(path + "/.gitkeep");
+    if (!gitkeep.exists()) {
+      try {
+        gitkeep.createNewFile();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+  }
+
+  public void removeFile(String path) {
+    Linux linux = new Linux();
+    String removeFileCommand = "rm -rf " + path;
+    linux.execLinuxCommand(removeFileCommand);
+  }
+
+  /**
+   * create readme file
+   * 
+   * @param readMe      content
+   * @param projectName project name
+   */
+  public void createReadmeFile(String readMe, String path) {
+    try (Writer writer = new BufferedWriter(
+        new OutputStreamWriter(new FileOutputStream(path + "/README.md"), "utf-8"));) {
+      writer.write(readMe);
+    } catch (IOException e) {
+      e.printStackTrace();
+      // report
+    }
   }
 }

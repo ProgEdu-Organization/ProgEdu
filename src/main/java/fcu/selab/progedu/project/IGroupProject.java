@@ -1,10 +1,9 @@
-package fcu.selab.progedu.service;
+package fcu.selab.progedu.project;
 
 import java.io.IOException;
 
 import fcu.selab.progedu.data.Group;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
-import fcu.selab.progedu.project.ProjectTypeEnum;
 import fcu.selab.progedu.status.Status;
 
 public interface IGroupProject {
