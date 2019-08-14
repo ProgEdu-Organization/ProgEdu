@@ -5,6 +5,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import java.util.zip.ZipException;
+import java.util.zip.ZipFile;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -55,6 +57,74 @@ public class JavacAssignment extends AssignmentTypeMethod {
         }
       }
     }
+  }
+
+  /**
+   * showAllSearchFile
+   * 
+   * @param zipFilePath zipFilePath
+   * @param projectName projectName
+   * @return allSearchFile
+   */
+  public String showAllSearchFile(String zipFilePath, String projectName) throws IOException {
+    final String tempDir = System.getProperty("java.io.tmpdir");
+    String allSearchFile = "";
+    String destDirectory = tempDir + "/uploads/" + projectName;
+    int parDirLength = 0;
+    String parentDir = null;
+
+    try (ZipInputStream zipIn = new ZipInputStream(new FileInputStream(zipFilePath))) {
+      ZipEntry entry = zipIn.getNextEntry();
+
+      while (entry != null) {
+        String filePath = destDirectory + File.separator + entry.getName();
+
+        if (filePath.substring(filePath.length() - 4).equals("src/") && parDirLength == 0) {
+          parentDir = zipHandler.getParentDir(filePath);
+          parDirLength = parentDir.length() + 1;
+        }
+        String entryNewName = filePath.substring(parDirLength);
+
+        if (!entry.isDirectory()) {
+          allSearchFile += searchStringFile(entryNewName);//
+        }
+        zipIn.closeEntry();
+        entry = zipIn.getNextEntry();
+      }
+    } catch (ZipException e) {
+      e.printStackTrace();
+    }
+    return allSearchFile;
+  }
+
+  /**
+   * searchFile
+   * 
+   * @param entryNewName entryNewName
+   */
+  public String searchStringFile(String entryNewName) {
+    StringBuilder sb = new StringBuilder();
+    String last = "";
+    String result = "";
+
+    if (entryNewName.endsWith(".java")) {
+      last = entryNewName.substring(entryNewName.length() - 5, entryNewName.length());
+    }
+    String fileName = null;
+    for (int i = 0; i < entryNewName.length() - 3; i++) {
+      if (entryNewName.substring(i, i + 3).equals("src")) {
+        fileName = entryNewName.substring(i);
+        System.out.println("Search java file fileName : " + fileName);
+        if (last.equals(".java")) {
+          // sb.append("javac " + fileName + "\n");
+          // sb.append("echo \"BUILD SUCCESS\"");
+          result += "javac " + fileName + "\n";
+          result += "echo \"BUILD SUCCESS\"";
+          zipHandler.setStringBuilder(sb);
+        }
+      }
+    }
+    return result;
   }
 
   /**

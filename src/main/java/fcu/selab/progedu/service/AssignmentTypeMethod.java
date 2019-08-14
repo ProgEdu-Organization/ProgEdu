@@ -43,8 +43,6 @@ public abstract class AssignmentTypeMethod implements AssignmentTypeSelector {
     final String tempDir = System.getProperty("java.io.tmpdir");
     final String uploadDir = tempDir + "/uploads/";
     final String testDir = tempDir + "/tests/";
-    String parentDir = null;
-    int parDirLength = 0;
     // -4 because .zip
     zipFolderName = zipFolderName.substring(0, zipFolderName.length() - 4);
 
