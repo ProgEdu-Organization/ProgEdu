@@ -102,13 +102,16 @@ public class CommitRecordService {
   /**
    * update user assignment commit record to DB.
    * 
-   * @param auId
-   *          assignmentUser id
+   * @param username
+   *          username
+   * @param assignmentName
+   *          assignment name
    */
   @POST
   @Path("update")
   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-  public Response updateCommitResult(@FormParam("auId") int auId) {
+  public Response updateCommitResult(@FormParam("user") String username,
+      @FormParam("proName") String assignmentName) {
     JSONObject ob = new JSONObject();
 
     int commitNumber = db.getCommitCount(auId) + 1;
