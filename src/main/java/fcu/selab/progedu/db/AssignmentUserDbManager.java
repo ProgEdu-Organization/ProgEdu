@@ -127,27 +127,4 @@ public class AssignmentUserDbManager {
     }
     return lsUids;
   }
-
-  /**
-   * get aId by auId
-   * 
-   * @param auid AssignmentUser Id
-   * @return aid assignment Id
-   */
-  public int getAid(int auid) {
-    int aid = 0;
-    String sql = "SELECT * FROM Assignment_User WHERE auId=? ";
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
-      preStmt.setInt(1, auid);
-      try (ResultSet rs = preStmt.executeQuery()) {
-        while (rs.next()) {
-          aid = rs.getInt("auId");
-        }
-      }
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
-    return aid;
-  }
 }
