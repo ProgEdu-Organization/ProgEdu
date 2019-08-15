@@ -12,8 +12,6 @@ public interface AssignmentTypeSelector {
   public void unzip(String zipFilePath, String zipFolderName, String projectName,
       ZipHandler zipHandler) throws IOException;
 
-  public void searchFile(String entryNewName);
-
   public void createJenkinsJob(String name, String jenkinsRootUsername, String jenkinsRootPassword)
       throws Exception;
 

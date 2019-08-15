@@ -1,12 +1,9 @@
 package fcu.selab.progedu.service;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-import java.util.zip.ZipException;
-import java.util.zip.ZipFile;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -17,7 +14,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.apache.commons.io.FileUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
@@ -39,127 +35,124 @@ public class JavacAssignment extends AssignmentTypeMethod {
    * 
    * @param entryNewName entryNewName
    */
-  public void searchFile(String entryNewName) {
-    StringBuilder sb = new StringBuilder();
-    String last = "";
-    if (entryNewName.endsWith(".java")) {
-      last = entryNewName.substring(entryNewName.length() - 5, entryNewName.length());
-    }
-    String fileName = null;
-    for (int i = 0; i < entryNewName.length() - 3; i++) {
-      if (entryNewName.substring(i, i + 3).equals("src")) {
-        fileName = entryNewName.substring(i);
-        System.out.println("Search java file fileName : " + fileName);
-        if (last.equals(".java")) {
-          sb.append("javac " + fileName + "\n");
-          sb.append("echo \"BUILD SUCCESS\"");
-          zipHandler.setStringBuilder(sb);
-        }
-      }
-    }
-  }
-
-  /**
-   * showAllSearchFile
-   * 
-   * @param zipFilePath zipFilePath
-   * @param projectName projectName
-   * @return allSearchFile
-   */
-  public String showAllSearchFile(String zipFilePath, String projectName) throws IOException {
-    final String tempDir = System.getProperty("java.io.tmpdir");
-    String allSearchFile = "";
-    String destDirectory = tempDir + "/uploads/" + projectName;
-    int parDirLength = 0;
-    String parentDir = null;
-
-    try (ZipInputStream zipIn = new ZipInputStream(new FileInputStream(zipFilePath))) {
-      ZipEntry entry = zipIn.getNextEntry();
-
-      while (entry != null) {
-        String filePath = destDirectory + File.separator + entry.getName();
-
-        if (filePath.substring(filePath.length() - 4).equals("src/") && parDirLength == 0) {
-          parentDir = zipHandler.getParentDir(filePath);
-          parDirLength = parentDir.length() + 1;
-        }
-        String entryNewName = filePath.substring(parDirLength);
-
-        if (!entry.isDirectory()) {
-          allSearchFile += searchStringFile(entryNewName);//
-        }
-        zipIn.closeEntry();
-        entry = zipIn.getNextEntry();
-      }
-    } catch (ZipException e) {
-      e.printStackTrace();
-    }
-    return allSearchFile;
-  }
-
-  /**
-   * searchFile
-   * 
-   * @param entryNewName entryNewName
-   */
-  public String searchStringFile(String entryNewName) {
-    StringBuilder sb = new StringBuilder();
-    String last = "";
-    String result = "";
-
-    if (entryNewName.endsWith(".java")) {
-      last = entryNewName.substring(entryNewName.length() - 5, entryNewName.length());
-    }
-    String fileName = null;
-    for (int i = 0; i < entryNewName.length() - 3; i++) {
-      if (entryNewName.substring(i, i + 3).equals("src")) {
-        fileName = entryNewName.substring(i);
-        System.out.println("Search java file fileName : " + fileName);
-        if (last.equals(".java")) {
-          // sb.append("javac " + fileName + "\n");
-          // sb.append("echo \"BUILD SUCCESS\"");
-          result += "javac " + fileName + "\n";
-          result += "echo \"BUILD SUCCESS\"";
-          zipHandler.setStringBuilder(sb);
-        }
-      }
-    }
-    return result;
-  }
+  // public void searchFile(String entryNewName) {
+  // StringBuilder sb = new StringBuilder();
+  // String last = "";
+  // if (entryNewName.endsWith(".java")) {
+  // last = entryNewName.substring(entryNewName.length() - 5,
+  // entryNewName.length());
+  // }
+  // String fileName = null;
+  // for (int i = 0; i < entryNewName.length() - 3; i++) {
+  // if (entryNewName.substring(i, i + 3).equals("src")) {
+  // fileName = entryNewName.substring(i);
+  // System.out.println("Search java file fileName : " + fileName);
+  // if (last.equals(".java")) {
+  // sb.append("javac " + fileName + "\n");
+  // sb.append("echo \"BUILD SUCCESS\"");
+  // zipHandler.setStringBuilder(sb);
+  // }
+  // }
+  // }
+  // }
 
   /**
    * extract main method and modify pom.xml
    * 
    * @param testDirectory testDirectory
-   * @param projectName   projectName
+   * @param projectName projectName
    */
   public void extractFile(String zipFilePath, String testDirectory, String destDirectory,
       String projectName) {
-    int parDirLength = 0;
-    String parentDir = null;
+    List<String> allJavaFile = new ArrayList<>();
+    StringBuilder sb = new StringBuilder();
 
-    try (ZipInputStream zipIn = new ZipInputStream(new FileInputStream(zipFilePath))) {
+    allJavaFile = searchJavaFile(testDirectory, projectName);
 
-      ZipEntry entry = zipIn.getNextEntry();
-      while (entry != null) {
-        String filePath = destDirectory + File.separator + entry.getName();
-        ;
-
-        if (filePath.substring(filePath.length() - 4).equals("src/") && parDirLength == 0) {
-          parentDir = zipHandler.getParentDir(filePath);
-          parDirLength = parentDir.length() + 1;
-        }
-        String entryNewName = filePath.substring(parDirLength);
-
-        if (!entry.isDirectory()) {
-          searchFile(entryNewName);
-        }
-        zipIn.closeEntry();
-        entry = zipIn.getNextEntry();
-      }
-    } catch (Exception e) {
-      e.printStackTrace();
+    for (int i = 0; i < allJavaFile.size(); i++) {
+      sb.append(allJavaFile.get(i));
     }
+
+    zipHandler.setStringBuilder(sb);
+
+    // int parDirLength = 0;
+    // String parentDir = null;
+
+    // try (ZipInputStream zipIn = new ZipInputStream(new
+    // FileInputStream(zipFilePath))) {
+
+    // ZipEntry entry = zipIn.getNextEntry();
+    // while (entry != null) {
+    // String filePath = destDirectory + File.separator + entry.getName();
+    // ;
+
+    // if (filePath.substring(filePath.length() - 4).equals("src/") &&
+    // parDirLength == 0) {
+    // parentDir = zipHandler.getParentDir(filePath);
+    // parDirLength = parentDir.length() + 1;
+    // }
+    // String entryNewName = filePath.substring(parDirLength);
+
+    // if (!entry.isDirectory()) {
+    // searchFile(entryNewName);
+    // }
+    // zipIn.closeEntry();
+    // entry = zipIn.getNextEntry();
+    // }
+    // } catch (Exception e) {
+    // e.printStackTrace();
+    // }
+  }
+
+  /**
+   * 
+   * @param projectPath projectPath
+   */
+  public List<String> searchJavaFile(String projectPath, String projectName) {
+    File testDir = new File(projectPath);
+    List<String> result = new ArrayList<>();
+    result = search(testDir, result, projectName);
+    result.add("echo \"BUILD SUCCESS\"");
+
+    return result;
+  }
+
+  /**
+   * 
+   * @param folder folder
+   * @param result result
+   */
+  private List<String> search(File folder, List<String> result, String projectName) {
+    String pattern = ".*\\.java";
+
+    for (final File f : folder.listFiles()) {
+
+      if (f.isDirectory()) {
+        search(f, result, projectName);
+      }
+
+      if (f.isFile()) {
+        if (f.getName().matches(pattern)) {
+          String filePath = f.getAbsolutePath()
+              .substring(f.getAbsolutePath().indexOf(projectName) + projectName.length() + 1);
+          String shell = addShell(filePath);
+          result.add(shell);
+        }
+      }
+    }
+
+    return result;
+  }
+
+  /**
+   * 
+   * @param fileName fileName
+   */
+  private String addShell(String fileName) {
+    String shell = "";
+    shell = "javac " + fileName + "\n";
+
+    return shell;
   }
 
   public String getJenkinsConfig() {
@@ -169,12 +162,12 @@ public class JavacAssignment extends AssignmentTypeMethod {
   /**
    * modifyXmlFile
    * 
-   * @param filePath   filePath
+   * @param filePath filePath
    * @param progApiUrl progApiUrl
-   * @param userName   userName
-   * @param proName    proName
-   * @param tomcatUrl  tomcatUrl
-   * @param sb         sb
+   * @param userName userName
+   * @param proName proName
+   * @param tomcatUrl tomcatUrl
+   * @param sb sb
    */
   public void modifyXmlFile(String filePath, String progApiUrl, String userName, String proName,
       String tomcatUrl, StringBuilder sb) {

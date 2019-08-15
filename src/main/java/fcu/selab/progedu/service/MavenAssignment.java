@@ -30,14 +30,6 @@ public class MavenAssignment extends AssignmentTypeMethod {
   }
 
   /**
-   * searchFile
-   * 
-   * @param entryNewName entryNewName
-   */
-  public void searchFile(String entryNewName) {
-  }
-
-  /**
    * extract main method and modify pom.xml
    * 
    * @param testDirectory testDirectory
