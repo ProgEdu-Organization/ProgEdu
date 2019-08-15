@@ -6,6 +6,7 @@ import java.util.List;
 public class Group {
   private String groupName;
   private String projectName;
+
   private int groupId;
   private String leaderUsername;
   private List<String> contributorId;
@@ -40,6 +41,14 @@ public class Group {
 
   public void setContributor(List<String> contributorId) {
     this.contributorId = contributorId;
+  }
+
+  public String getProjectName() {
+    return projectName;
+  }
+
+  public void setProjectName(String projectName) {
+    this.projectName = projectName;
   }
 
   /**

@@ -4,9 +4,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.gitlab.api.AuthMethod;
@@ -441,11 +445,11 @@ public class GitlabService {
    * @param projectName project name
    * @throws IOException IOException
    */
-  public GitlabProject createGroupProject(Group group, String projectName) throws IOException {
+  public GitlabProject createGroupProject(Group group) throws IOException {
     GroupService gs = new GroupService();
-    int masterId = gs.getUserIdByUsername(group.getLeaderUsername());
-    GitlabProject project = createPrivateProject(masterId, projectName, null);
-    httpConn.transferProjectToGroup(getGitlabGroup(group.getGroupName()).getId(), project.getId());
+    int LeaderId = gs.getUserIdByUsername(group.getLeaderUsername());
+    GitlabProject project = createPrivateProject(LeaderId, group.getProjectName(), null);
+    transferProjectToGroupProject(getGitlabGroup(group.getGroupName()).getId(), project.getId());
     return project;
   }
 
@@ -653,6 +657,32 @@ public class GitlabService {
     post.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 
     HttpClients.createDefault().execute(post);
+  }
+
+  /**
+   * transfer project from root to group
+   * 
+   * @param groupId   group id
+   * @param projectId project id
+   */
+  public void transferProjectToGroupProject(int groupId, int projectId) {
+    HttpClient client = new DefaultHttpClient();
+    String url = "";
+    try {
+      url = hostUrl + "/api/v3/groups/" + groupId + "/projects/" + projectId + "?private_token="
+          + apiToken;
+      HttpPost post = new HttpPost(url);
+
+      HttpResponse response = client.execute(post);
+      HttpEntity resEntity = response.getEntity();
+
+      if (resEntity != null) {
+        String result = resEntity.toString();
+        System.out.println("httppost build " + groupId + " , result : " + result);
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 
 }

@@ -6,9 +6,8 @@ public class GroupProjectFactory {
    * 
    * @param projectType assignment type
    */
-  public static GroupProject getGroupProjectType(String projectType) {
-    ProjectTypeEnum type = ProjectTypeEnum
-        .getProjectTypeEnum(projectType);
+  public static GroupProjectType getGroupProjectType(String projectType) {
+    ProjectTypeEnum type = ProjectTypeEnum.getProjectTypeEnum(projectType);
 
     switch (type) {
       case JAVAC: {
@@ -18,7 +17,7 @@ public class GroupProjectFactory {
         return new MavenGroupProject();
       }
       case WEB: {
-        return null;
+        return new WebGroupProject();
       }
       case APP: {
         return null;

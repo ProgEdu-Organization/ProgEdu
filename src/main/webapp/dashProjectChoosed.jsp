@@ -223,43 +223,43 @@ img {
 	<%
 	  GitlabService conn = GitlabService.getInstance();
 
-		<<<<<<< HEAD
-								UserDbManager db = UserDbManager.getInstance();
-								AssignmentDbManager Pdb = AssignmentDbManager.getInstance();
-								StudentDashChoosePro stuDashChoPro = new StudentDashChoosePro();
+			<<<<<<< HEAD
+									UserDbManager db = UserDbManager.getInstance();
+									AssignmentDbManager Pdb = AssignmentDbManager.getInstance();
+									StudentDashChoosePro stuDashChoPro = new StudentDashChoosePro();
 
-								List<User> users = db.listAllUsers();
-								List<Assignment> dbProjects = Pdb.listAllAssignments();
+									List<User> users = db.listAllUsers();
+									List<Assignment> dbProjects = Pdb.listAllAssignments();
 
-								// gitlab jenkins course��Data
-								GitlabConfig gitData = GitlabConfig.getInstance();
-								JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
+									// gitlab jenkins course��Data
+									GitlabConfig gitData = GitlabConfig.getInstance();
+									JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
 
-								JenkinsApi jenkins = JenkinsApi.getInstance();
+									JenkinsApi jenkins = JenkinsApi.getInstance();
 
-								GitlabUser choosedUser = conn.getUserById(userId);
-								List<GitlabProject> projects = conn.getAssignment(choosedUser);
-								Collections.reverse(projects);
-		=======
-						UserDbManager db = UserDbManager.getInstance();
-						ProjectDbManager Pdb = ProjectDbManager.getInstance();
-						StudentDashChoosePro stuDashChoPro = new StudentDashChoosePro();
+									GitlabUser choosedUser = conn.getUserById(userId);
+									List<GitlabProject> projects = conn.getAssignment(choosedUser);
+									Collections.reverse(projects);
+			=======
+							UserDbManager db = UserDbManager.getInstance();
+							ProjectDbManager Pdb = ProjectDbManager.getInstance();
+							StudentDashChoosePro stuDashChoPro = new StudentDashChoosePro();
 
-						List<User> users = db.listAllUsers();
-						List<Project> dbProjects = Pdb.listAllProjects();
+							List<User> users = db.listAllUsers();
+							List<Project> dbProjects = Pdb.listAllProjects();
 
-						// gitlab jenkins course��Data
-						GitlabConfig gitData = GitlabConfig.getInstance();
-						JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
+							// gitlab jenkins course��Data
+							GitlabConfig gitData = GitlabConfig.getInstance();
+							JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
 
-						JenkinsApi jenkins = JenkinsApi.getInstance();
+							JenkinsApi jenkins = JenkinsApi.getInstance();
 
-						GitlabUser choosedUser = conn.getUserById(userId);
-						List<GitlabProject> projects = conn.getProject(choosedUser);
-						Collections.reverse(projects);
+							GitlabUser choosedUser = gitlabService.getUserById(userId);
+							List<GitlabProject> projects = gitlabService.getProject(choosedUser);
+							Collections.reverse(projects);
 
-						//URL get userId is gitlabId, we need the real userId
-		>>>>>>> Github/master
+							//URL get userId is gitlabId, we need the real userId
+			>>>>>>> Github/master
 	%>
 	<%@ include file="header.jsp"%>
 	<!-- -----sidebar----- -->
