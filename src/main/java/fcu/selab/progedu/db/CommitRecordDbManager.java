@@ -55,6 +55,35 @@ public class CommitRecordDbManager {
    *
    * @param auId
    *          Commit_Record auId
+   * @param commitNumber
+   *          commit number
+   * @return status
+   */
+  public int getCommitRecordId(int auId, int commitNumber) {
+    String query = "SELECT id FROM Commit_Record where auId = ? and commitNumber = ?";
+    int id = 0;
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(query)) {
+      preStmt.setInt(1, auId);
+      preStmt.setInt(2, commitNumber);
+
+      try (ResultSet rs = preStmt.executeQuery();) {
+        if (rs.next()) {
+          id = rs.getInt("id");
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+
+    return id;
+  }
+
+  /**
+   * get each hw's CommitRecordStateCounts
+   *
+   * @param auId
+   *          Commit_Record auId
    * @param num
    *          num
    * @return status
@@ -144,10 +173,6 @@ public class CommitRecordDbManager {
    * get commit record details from the homework of a student
    * 
    * 
-   * @param auIds
-   *          auId
-   * @param id
-   *          auId
    * @param auIds
    *          auId
    * @return commit record details

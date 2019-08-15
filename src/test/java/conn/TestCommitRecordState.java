@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import fcu.selab.progedu.db.CommitRecordDbManager;
-import fcu.selab.progedu.db.CommitRecordStateDbManager;
 import fcu.selab.progedu.db.AssignmentDbManager;
 
 public class TestCommitRecordState {

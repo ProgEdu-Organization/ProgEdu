@@ -1,7 +1,4 @@
-package fcu.selab.progedu.service;
-
-import fcu.selab.progedu.project.MavenGroupProject;
-import fcu.selab.progedu.project.ProjectTypeEnum;
+package fcu.selab.progedu.project;
 
 public class GroupProjectFactory {
   /**
@@ -11,7 +8,7 @@ public class GroupProjectFactory {
    */
   public static GroupProject getGroupProjectType(String projectType) {
     ProjectTypeEnum type = ProjectTypeEnum
-        .getStatusProjectTypeEnum(projectType);
+        .getProjectTypeEnum(projectType);
 
     switch (type) {
       case JAVAC: {

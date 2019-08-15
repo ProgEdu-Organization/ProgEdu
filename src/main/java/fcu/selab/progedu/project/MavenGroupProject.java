@@ -16,8 +16,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
-import fcu.selab.progedu.service.GroupProject;
-
 public class MavenGroupProject extends GroupProject {
 
   @Override

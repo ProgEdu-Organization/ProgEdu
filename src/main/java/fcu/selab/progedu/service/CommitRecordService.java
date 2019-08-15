@@ -1,5 +1,7 @@
 package fcu.selab.progedu.service;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -28,6 +30,7 @@ public class CommitRecordService {
   UserDbManager userDb = UserDbManager.getInstance();
   AssignmentDbManager assignmentDb = AssignmentDbManager.getInstance();
 
+  
   /**
    * get all commit result.
    *
@@ -112,11 +115,15 @@ public class CommitRecordService {
   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
   public Response updateCommitResult(@FormParam("user") String username,
       @FormParam("proName") String assignmentName) {
+
     JSONObject ob = new JSONObject();
 
+    int auId = auDb.getAUId(assignmentDb.getAssignmentIdByName(assignmentName),
+        userDb.getUserIdByUsername(username));
     int commitNumber = db.getCommitCount(auId) + 1;
-    int status = db.getCommitStatusbyAUId(auId);
-    String time = db.getCommitTimebyAUId(auId);
+    int status = db.getCommitStatusbyAUId(auId); // �|������
+    String time = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss")
+        .format(Calendar.getInstance().getTime());
 
     db.insertCommitRecord(auId, commitNumber, status, time);
 
@@ -128,4 +135,13 @@ public class CommitRecordService {
     return Response.ok().entity(ob.toString()).build();
   }
 
+  public void deleteRecord(String assignmentName){
+    int aId = assignmentDb.getAssignmentIdByName(assignmentName);
+    List<Integer> uIds = auDb.getUids(aId);
+
+    for (int uId : uIds){
+      int auId = auDb.getAUId(aId, uId);
+      db.deleteRecord(auId);
+    }
+  }
 }

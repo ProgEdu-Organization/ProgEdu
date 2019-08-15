@@ -4,6 +4,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
 import org.gitlab.api.AuthMethod;
 import org.gitlab.api.GitlabAPI;
 import org.gitlab.api.TokenType;
@@ -16,6 +21,7 @@ import org.gitlab.api.models.GitlabSession;
 import org.gitlab.api.models.GitlabUser;
 
 import fcu.selab.progedu.config.GitlabConfig;
+import fcu.selab.progedu.config.JenkinsConfig;
 import fcu.selab.progedu.data.Group;
 import fcu.selab.progedu.data.User;
 import fcu.selab.progedu.db.UserDbManager;
@@ -605,15 +611,48 @@ public class GitlabService {
 
   public String cloneProject(String username, String projectName) {
     String repoUrl = rootUrl + "/" + username + "/" + projectName + ".git";
-    String target = System.getProperty("java.io.tmpdir") + "uploads//" + username;
+    String target = System.getProperty("java.io.tmpdir") + "uploads/" + username;
     String cloneCommand = "git clone " + repoUrl + " " + target;
     Linux linux = new Linux();
     linux.execLinuxCommand(cloneCommand);
     return target;
   }
 
-  public void pushProject(String username, String projectName) {
-    String repoUrl = rootUrl + "/" + username + "/" + projectName + ".git";
+  public void pushProject(String cloneDirectoryPath) {
+    Linux linux = new Linux();
+    String addCommand = "git add .";
+    linux.execLinuxCommandInFile(addCommand, cloneDirectoryPath);
+
+    String commitCommand = "git commit -m \"Instructor&nbsp;Commit\"";
+    linux.execLinuxCommandInFile(commitCommand, cloneDirectoryPath);
+
+    String pushCommand = "git push";
+    linux.execLinuxCommandInFile(pushCommand, cloneDirectoryPath);
+  }
+
+  /**
+   * set gitlab webhook that trigger jenkins job to build
+   * 
+   * @param username group name
+   * @param project  gitlab project
+   */
+  public void setGitlabWebhook(GitlabProject project)
+      throws IOException, LoadConfigFailureException {
+    String username = project.getOwner().getUsername();
+    JenkinsConfig jenkinsConfig = JenkinsConfig.getInstance();
+    // for example,
+    // http://localhost:80/api/v4/projects/3149/hooks?url=http://localhost:8888/project/webhook
+    String gitlabWebhookApi = hostUrl + "/api/v4/projects/" + project.getId() + "/hooks";
+    String jenkinsJobUrl = jenkinsConfig.getJenkinsHostUrl() + "/project/" + username + "_"
+        + project.getName();
+    HttpPost post = new HttpPost(gitlabWebhookApi);
+    post.addHeader("PRIVATE-TOKEN", apiToken);
+    // Request parameters
+    List<NameValuePair> params = new ArrayList<>();
+    params.add(new BasicNameValuePair("url", jenkinsJobUrl));
+    post.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
+
+    HttpClients.createDefault().execute(post);
   }
 
 }

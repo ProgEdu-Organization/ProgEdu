@@ -13,11 +13,11 @@ public interface ProjectType {
 
   public String getJenkinsJobConfigSample();
 
-  public void createJenkinsJobConfig();
+  public void createJenkinsJobConfig(String username, String projectName);
 
-  public StatusEnum checkStatusType();
+  public StatusEnum checkStatusType(int num, String username, String assignmentName);
 
-  public Status getStatus();
+  public Status getStatus(String statusType);
 
   public StatusFactory getStatusFactory();
 }

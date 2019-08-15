@@ -22,8 +22,9 @@ import javax.ws.rs.core.Response.Status;
 import org.json.JSONObject;
 
 import fcu.selab.progedu.config.JenkinsConfig;
-import fcu.selab.progedu.db.CommitRecordDbManager;
 import fcu.selab.progedu.db.AssignmentDbManager;
+import fcu.selab.progedu.db.AssignmentUserDbManager;
+import fcu.selab.progedu.db.CommitRecordDbManager;
 import fcu.selab.progedu.db.ScreenshotRecordDbManager;
 import fcu.selab.progedu.db.UserDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
@@ -42,7 +43,8 @@ public class ScreenshotRecordService {
   CommitRecordDbManager commitRecordDb = CommitRecordDbManager.getInstance();
   ScreenshotRecordDbManager db = ScreenshotRecordDbManager.getInstance();
   UserDbManager userDb = UserDbManager.getInstance();
-  AssignmentDbManager projectDb = AssignmentDbManager.getInstance();
+  AssignmentUserDbManager auDb = AssignmentUserDbManager.getInstance();
+  AssignmentDbManager assignmentDb = AssignmentDbManager.getInstance();
 
   public ScreenshotRecordService() {
     jenkinsData = JenkinsConfig.getInstance();
@@ -131,11 +133,16 @@ public class ScreenshotRecordService {
     JSONObject ob = new JSONObject();
     if (!userJob[0].equals("root")) {
       int lastCommitNum = getJenkinsNextBuildNumber(proName);
-      int id = userDb.getUser(userName).getId();
       System.out.println("url " + urls);
 
+      int crId = commitRecordDb
+          .getCommitRecordId(auDb.getAUId(assignmentDb.getAssignmentIdByName(jobName),
+              userDb.getUserIdByUsername(userName)), lastCommitNum);
+
       try {
-        db.insertJenkinsCommitCount(id, jobName, lastCommitNum, urls);
+        for (String url : urls) {
+          db.addScreenshotRecord(crId, url);
+        }
         ob.put("userName", userName);
         ob.put("proName", jobName);
         ob.put("commitCount", lastCommitNum);

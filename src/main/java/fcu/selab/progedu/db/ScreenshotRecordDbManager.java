@@ -7,8 +7,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import fcu.selab.progedu.data.ScreenshotRecord;
-
 public class ScreenshotRecordDbManager {
   private static ScreenshotRecordDbManager dbManager = new ScreenshotRecordDbManager();
   private IDatabase database = new MySqlDatabase();
@@ -20,15 +18,18 @@ public class ScreenshotRecordDbManager {
   /**
    * Add assignment to database
    * 
-   * @param screenshotRecord ScreenshotRecord
+   * @param crId
+   *          commitRecord id
+   * @param url
+   *          screenshot url
    */
-  public void addScreenshotRecord(ScreenshotRecord screenshotRecord) {
-    String sql = "INSERT INTO Screenshot_Record(crId, pmgUrl)  VALUES(?, ?)";
+  public void addScreenshotRecord(int crId, String url) {
+    String sql = "INSERT INTO Screenshot_Record(crId, pngUrl)  VALUES(?, ?)";
 
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
-      preStmt.setInt(1, screenshotRecord.getCrId());
-      preStmt.setString(2, screenshotRecord.getPngUrl());
+      preStmt.setInt(1, crId);
+      preStmt.setString(2, url);
       preStmt.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();
@@ -38,10 +39,13 @@ public class ScreenshotRecordDbManager {
   /**
    * get Screenshots(
    *
-   * @param stuId student id
-   * @param hw    hw name
+   * @param stuId
+   *          student id
+   * @param hw
+   *          hw name
    * 
-   * @throws SQLException SQLException
+   * @throws SQLException
+   *           SQLException
    */
   public List<String> getScreenshots(int stuId, String hw) throws SQLException {
     String sql = "SELECT  pngUrl FROM Screenshot_Record WHERE stuId='" + stuId + " ' AND hw='" + hw
@@ -60,7 +64,8 @@ public class ScreenshotRecordDbManager {
   /**
    * delete ScreenshotRecord from database
    * 
-   * @param crid commitRecord Id
+   * @param crid
+   *          commitRecord Id
    */
   public void deleteScreenshotRecord(int crid) {
     String sql = "DELETE FROM Screenshot_Record WHERE crid ='" + crid + "'";

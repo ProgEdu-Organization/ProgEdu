@@ -29,6 +29,11 @@ import fcu.selab.progedu.jenkins.JenkinsApi;
 
 @Path("user/")
 public class UserService {
+  private static UserService instance = new UserService();
+
+  public static UserService getInstance() {
+    return instance;
+  }
 
   GitlabService gitlabService = GitlabService.getInstance();
 
@@ -49,7 +54,7 @@ public class UserService {
   @POST
   @Path("upload")
   @Consumes(MediaType.MULTIPART_FORM_DATA)
-  public Response upload(@FormDataParam("file") InputStream uploadedInputStream,
+  public Response createAccounts(@FormDataParam("file") InputStream uploadedInputStream,
       @FormDataParam("file") FormDataContentDisposition fileDetail) {
     Response response = null;
     List<User> users = new ArrayList<>();
@@ -58,23 +63,14 @@ public class UserService {
       CsvReader csvReader = new CsvReader(new InputStreamReader(uploadedInputStream, "UTF-8"));
       csvReader.readHeaders();
       while (csvReader.readRecord()) {
-        User user = new User(csvReader.get("StudentId"), csvReader.get("Name"),
+        User newUser = new User(csvReader.get("StudentId"), csvReader.get("Name"),
             csvReader.get("Email"), csvReader.get("Password"), true);
-
-        if (isPasswordTooShort(user.getPassword())) {
-          errorMessage = user.getName() + " : Password must be at least 8 characters.";
-        } else if (isDuplicateUsername(user.getUsername())) {
-          errorMessage = "username : " + user.getUsername() + " already exists.";
-        } else if (isDuplicateEmail(user.getEmail())) {
-          errorMessage = "Email : " + user.getEmail() + " already exists.";
-        } else if (isDuplicateUsername(users, user.getUsername())) {
-          errorMessage = "username : " + user.getUsername() + " is duplicated in student list.";
-        } else if (isDuplicateEmail(users, user.getEmail())) {
-          errorMessage = "Email : " + user.getEmail() + " is duplicated in student list.";
+        errorMessage = getErrorMessage(users, newUser);
+        if (errorMessage.isEmpty()) {
+          users.add(newUser);
         } else {
-          users.add(user);
+          break;
         }
-
       }
       csvReader.close();
 
@@ -104,32 +100,25 @@ public class UserService {
   @POST
   @Path("new")
   @Consumes(MediaType.MULTIPART_FORM_DATA)
-  public Response createAStudentAccount(@FormDataParam("name") String name,
+  public Response createAccount(@FormDataParam("name") String name,
       @FormDataParam("username") String username, @FormDataParam("email") String email,
       @FormDataParam("password") String password) {
     Response response = null;
-    String errorMessage = "";
     User user = new User(username, name, email, password, true);
-    if (isPasswordTooShort(user.getPassword())) {
-      errorMessage = user.getName() + " : Password must be at least 8 characters.";
-    } else if (isDuplicateUsername(user.getUsername())) {
-      errorMessage = "username : " + user.getUsername() + " already exists.";
-    } else if (isDuplicateEmail(user.getEmail())) {
-      errorMessage = "Email : " + user.getEmail() + " already exists.";
-    } else {
+    String errorMessage = getErrorMessage(user);
+
+    if (errorMessage.isEmpty()) {
       try {
         register(user);
+        response = Response.ok().build();
       } catch (IOException e) {
-        errorMessage = "Failed !";
+        response = Response.serverError().entity("Failed !").build();
         e.printStackTrace();
       }
-    }
-
-    if (errorMessage == null || errorMessage.isEmpty()) {
-      response = Response.ok().build();
     } else {
       response = Response.serverError().entity(errorMessage).build();
     }
+
     return response;
   }
 
@@ -142,9 +131,9 @@ public class UserService {
    * @return true false
    */
   @POST
-  @Path("changePwd")
+  @Path("updatePassword")
   @Consumes(MediaType.MULTIPART_FORM_DATA)
-  public Response changePassword(@FormDataParam("id") Integer id,
+  public Response updatePassword(@FormDataParam("id") Integer id,
       @FormDataParam("currentPassword") String currentPassword,
       @FormDataParam("newPassword") String newPassword) {
     Response response = null;
@@ -241,21 +230,7 @@ public class UserService {
 //   * 
 //   * @param student user
 //   */
-//  public void printStudent(List<User> student) {
-//    String userName = "";
-//    String password = "";
-//    String email = "";
-//    String name = "";
-//    for (User user : student) {
-//      userName = user.getUsername();
-//      password = user.getPassword();
-//      email = user.getEmail();
-//      name = user.getName();
-//
-//      System.out.println("userName: " + userName + ", password: " + password + ", email: " + email
-//          + ", name: " + name);
-//    }
-//  }
+
 //
 
   /**
@@ -263,8 +238,8 @@ public class UserService {
    * 
    * @return all GitLab users
    */
-  public List<GitlabUser> getUsers() {
-    return gitlabService.getUsers();
+  public List<User> getUsers() {
+    return null;
   }
 
   /**
@@ -324,4 +299,29 @@ public class UserService {
     }
     return isDuplicateEmail;
   }
+
+  private String getErrorMessage(List<User> users, User user) {
+    String errorMessage = getErrorMessage(user);
+    if (errorMessage.isEmpty()) {
+      if (isDuplicateUsername(users, user.getUsername())) {
+        errorMessage = "username : " + user.getUsername() + " is duplicated in student list.";
+      } else if (isDuplicateEmail(users, user.getEmail())) {
+        errorMessage = "Email : " + user.getEmail() + " is duplicated in student list.";
+      }
+    }
+    return errorMessage;
+  }
+
+  private String getErrorMessage(User user) {
+    String errorMessage = "";
+    if (isPasswordTooShort(user.getPassword())) {
+      errorMessage = user.getName() + " : Password must be at least 8 characters.";
+    } else if (isDuplicateUsername(user.getUsername())) {
+      errorMessage = "username : " + user.getUsername() + " already exists.";
+    } else if (isDuplicateEmail(user.getEmail())) {
+      errorMessage = "Email : " + user.getEmail() + " already exists.";
+    }
+    return errorMessage;
+  }
+
 }

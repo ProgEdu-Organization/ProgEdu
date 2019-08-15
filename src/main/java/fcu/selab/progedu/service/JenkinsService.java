@@ -23,8 +23,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import fcu.selab.progedu.config.JenkinsConfig;
-import fcu.selab.progedu.conn.Conn;
-import fcu.selab.progedu.conn.StudentDashChoosePro;
 import fcu.selab.progedu.data.Assignment;
 import fcu.selab.progedu.data.CommitRecord;
 import fcu.selab.progedu.db.AssignmentDbManager;

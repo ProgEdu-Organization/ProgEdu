@@ -25,7 +25,7 @@
 <%@ page import="java.text.SimpleDateFormat"%>
 <%@ page import="fcu.selab.progedu.conn.*"%>
 <%@ page import="fcu.selab.progedu.status.*"%>
-<%@ page import="fcu.selab.progedu.service.AssignmentTypeFactory"%>
+<%@ page import="fcu.selab.progedu.project.AssignmentFactory"%>
 <%@ page import="fcu.selab.progedu.service.AssignmentTypeSelector"%>
 =======
 <%@ page import="org.json.JSONArray,org.json.JSONException,org.json.JSONObject" %>
@@ -37,7 +37,7 @@
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="fcu.selab.progedu.conn.*" %>
 <%@ page import="fcu.selab.progedu.status.*" %>
-<%@ page import="fcu.selab.progedu.service.AssignmentTypeFactory" %>
+<%@ page import="fcu.selab.progedu.project.AssignmentFactory" %>
 <%@ page import="fcu.selab.progedu.service.AssignmentTypeSelector" %>
 >>>>>>> Github/master
 <%@ include file="language.jsp"%>
@@ -443,43 +443,43 @@ img {
 <body onload="init()">
 	<%
 	  //To display the under html code (about some if-else)
-					StudentDash stuDash = new StudentDash(private_token);
-					StudentDashChoosePro stuDashChoPro = new StudentDashChoosePro();
+						StudentDash stuDash = new StudentDash(private_token);
+						StudentDashChoosePro stuDashChoPro = new StudentDashChoosePro();
+						
+						// Get the user's Gitlab project
+						List<GitlabProject> stuProjects = stuDash.getStuProject();
 					
-					// Get the user's Gitlab project
-					List<GitlabProject> stuProjects = stuDash.getStuProject();
-				
-					String strProjectId = request.getParameter("projectId");
-					
-					int projectId = -1;
-					if(null == strProjectId || "".equals(strProjectId)){
-						  
-					}else {
-						projectId = Integer.parseInt(strProjectId);
-					}
-					
-					GitlabProject choosedProject = stuDashChoPro.getChoosedProject(stuProjects, projectId);
-					
-					JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
-					GitlabService conn = GitlabService.getInstance();
-					
-					StudentConn sConn = new StudentConn(private_token);
-					GitlabUser user = sConn.getUser();
-					List<GitlabProject> projects = sConn.getProject();
-					Collections.reverse(projects);
-					
-					UserDbManager db = UserDbManager.getInstance();
-					AssignmentDbManager Pdb = AssignmentDbManager.getInstance();
-					List<User> users = db.listAllUsers();
-					List<Assignment> dbProjects = Pdb.listAllAssignments();
-					
-					// gitlab jenkins course��Data
-					GitlabConfig gitData = GitlabConfig.getInstance();
-					
-					JenkinsApi jenkins = JenkinsApi.getInstance();
-					
-					GitlabUser choosedUser = conn.getUserById(userId);
-					Collections.reverse(projects);
+						String strProjectId = request.getParameter("projectId");
+						
+						int projectId = -1;
+						if(null == strProjectId || "".equals(strProjectId)){
+							  
+						}else {
+							projectId = Integer.parseInt(strProjectId);
+						}
+						
+						GitlabProject choosedProject = stuDashChoPro.getChoosedProject(stuProjects, projectId);
+						
+						JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
+						GitlabService conn = GitlabService.getInstance();
+						
+						StudentConn sConn = new StudentConn(private_token);
+						GitlabUser user = sConn.getUser();
+						List<GitlabProject> projects = sConn.getProject();
+						Collections.reverse(projects);
+						
+						UserDbManager db = UserDbManager.getInstance();
+						AssignmentDbManager Pdb = AssignmentDbManager.getInstance();
+						List<User> users = db.listAllUsers();
+						List<Assignment> dbProjects = Pdb.listAllAssignments();
+						
+						// gitlab jenkins course��Data
+						GitlabConfig gitData = GitlabConfig.getInstance();
+						
+						JenkinsApi jenkins = JenkinsApi.getInstance();
+						
+						GitlabUser choosedUser = conn.getUserById(userId);
+						Collections.reverse(projects);
 	%>
 	<!-- -----sidebar----- -->
 		<div id="sidebar">
@@ -491,15 +491,15 @@ img {
 			    <font size="4"><a><i class="fa fa-minus-square-o" aria-hidden="true"> &nbsp;<fmt:message key="stuDashboard_li_assignments"/></i></a></font>
 			  </li>
 			  <%
-				  	for(GitlabProject stuProject : stuProjects){
-				  	  String href = "\"studentDashboardChooseProject.jsp?projectId=" + stuProject.getId() + "\"";
-				  	  %>
+			    for(GitlabProject stuProject : stuProjects){
+			  				  	  String href = "\"studentDashboardChooseProject.jsp?projectId=" + stuProject.getId() + "\"";
+			  %>
 				  	  	<li class="nav-item" style="margin:0px 0px 0px 30px">
-						  <font size="3"><a class="nav-link" href=<%=href %>><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp; <%=stuProject.getName() %></a></font>
+						  <font size="3"><a class="nav-link" href=<%=href%>><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp; <%=stuProject.getName()%></a></font>
 						</li>
 				  	  <%
-				  	}
-			  %>
+				  	    }
+				  	  %>
 			</ul>
 		</div>
 		<!-- -----sidebar----- -->
@@ -507,27 +507,27 @@ img {
 		<div class="container-fluid" id="main">
 			<%
 			  String projectName = choosedProject.getName();
-							String projectUrl = stuDashChoPro.getChoosedProjectUrl(choosedProject);
-							List<String> jobColors = stuDash.getMainTableJobColor(stuProjects);
-							List<String> jobCommitCounts = stuDash.getMainTableJobCommitCount(stuProjects);
-							AssignmentDbManager pDb = AssignmentDbManager.getInstance();
-							Assignment project = pDb.getAssignmentByName(projectName);
+										String projectUrl = stuDashChoPro.getChoosedProjectUrl(choosedProject);
+										List<String> jobColors = stuDash.getMainTableJobColor(stuProjects);
+										List<String> jobCommitCounts = stuDash.getMainTableJobCommitCount(stuProjects);
+										AssignmentDbManager pDb = AssignmentDbManager.getInstance();
+										Assignment project = pDb.getAssignmentByName(projectName);
 			%>
 			<div style="margin: 10px 10px 10px 10px;">
 				<h2 style="white-space: nowrap"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp; <%=projectName%></h2>
 				<br>
 				<h5 style="font-weight: 700"><fmt:message key="stuDashChooseProject_p_gitRepo"/></h5>
 				<div id="inline" style="white-space: nowrap; margin-left: 0px;">
-					<p id="copyTarget" style="padding-right: 10px;"><%=projectUrl %></p>
+					<p id="copyTarget" style="padding-right: 10px;"><%=projectUrl%></p>
 					<button id="copyButton" class="btn btn-dark" onclick = "copyToClipboard(document.getElementById('copyTarget'))"><i class="fa fa-clipboard" aria-hidden="true"></i></button>
 				</div>
 				<p><fmt:message key="stuDashChooseProject_p_cloneUrl"/></p>
 				<hr>
 				<h5 style="font-weight: 700"><fmt:message key="stuDashChooseProject_p_assignmentContent"/></h5>
-				<p><%=project.getDescription() %></p>
+				<p><%=project.getDescription()%></p>
 				<hr>
 				<h5 style="font-weight: 700"><fmt:message key="stuDashChooseProject_p_deadline"/></h5>
-				<p><%=project.getDeadline() %></p>
+				<p><%=project.getDeadline()%></p>
 			</div>
 <<<<<<< HEAD
 	<hr>
@@ -539,29 +539,29 @@ img {
 					<fmt:message key="stuDashChooseProject_h4_codeAnalysisResult" />
 				</h4>
 				<%
-=======
-			
-			<hr>
-			
-			<div class="container" style="margin: 25px 0px;">
-				<div class="row">
-					<div class="col-2">
-						<h4 style="text-align: center;"><fmt:message key="stuDashChooseProject_h4_codeAnalysisResult"/></h4>
-						<%
->>>>>>> Github/master
-							String lastBuildColor = stuDashChoPro.getLastColor(user.getUsername(), projectName);
-							lastBuildColor = "bigcircle2 " + lastBuildColor;
-							List<Integer> buildNum = stuDashChoPro.getScmBuildCounts(user.getUsername(), projectName);
-							int lastBuildNum = buildNum.size();
-							if(lastBuildNum==1){
-							  lastBuildColor = "bigcircle2 gray";
-							}
-						%>
+				  =======
+							
+							<hr>
+							
+							<div class="container" style="margin: 25px 0px;">
+								<div class="row">
+									<div class="col-2">
+										<h4 style="text-align: center;"><fmt:message key="stuDashChooseProject_h4_codeAnalysisResult"/></h4>
+										<%
+				>>>>>>> Github/master
+											String lastBuildColor = stuDashChoPro.getLastColor(user.getUsername(), projectName);
+											lastBuildColor = "bigcircle2 " + lastBuildColor;
+											List<Integer> buildNum = stuDashChoPro.getScmBuildCounts(user.getUsername(), projectName);
+											int lastBuildNum = buildNum.size();
+											if(lastBuildNum==1){
+											  lastBuildColor = "bigcircle2 gray";
+											}
+				%>
 				<div style="text-align: center">
 					<div style="padding: 5px;">
 						<h3 class="<%=lastBuildColor%>"
 							style="width: 90px; margin: 0 auto; padding: 20px; color: white;">
-							<a><%=lastBuildNum %></a>
+							<a><%=lastBuildNum%></a>
 						</h3>
 					</div>
 <<<<<<< HEAD
@@ -588,12 +588,13 @@ img {
 					</thead>
 					<tbody id="projectTbody">
 						<%
-=======
-					
-					<div class="col-8">
-						<h4><fmt:message key="stuDashChooseProject_h4_programHistory"/></h4>
-						<div style="margin: 15px 0px;">
-							<%@ include file="projectLight.jsp" %>
+						  =======
+											
+											<div class="col-8">
+												<h4><fmt:message key="stuDashChooseProject_h4_programHistory"/></h4>
+												<div style="margin: 15px 0px;">
+													<%@ include file="projectLight.jsp"
+						%>
 						</div>
 						
 						<table class="table table-hover" style="background-color: white" id="projectList">
@@ -607,12 +608,12 @@ img {
 							</thead>
 							<tbody id="projectTbody">
 							<%
->>>>>>> Github/master
-								int commit_count = buildNum.size();
-								int i=1;
-								int lastBuildMessageNum = 0;
-								for(Integer num : buildNum){
-								  	%>
+							  >>>>>>> Github/master
+															int commit_count = buildNum.size();
+															int i=1;
+															int lastBuildMessageNum = 0;
+															for(Integer num : buildNum){
+							%>
 						<script type="text/javascript">
 										var userName = <%="'" + user.getUsername() + "'"%>
 										var proName = <%="'" + projectName + "'"%>
@@ -650,23 +651,23 @@ img {
 										});
 									</script>
 						<%
-										String tableActive = "";
-										if(num == commit_count){
-										  tableActive = "tableActive";
-										}
-									%>
-						<tr id="<%=num %>" onClick="changeIframe(this)"
+						  String tableActive = "";
+																if(num == commit_count){
+																  tableActive = "tableActive";
+																}
+						%>
+						<tr id="<%=num%>" onClick="changeIframe(this)"
 							class="<%=tableActive%>">
-							<td><%=i %></td>
-							<td><p class="" id=<%="color" + num %>></p></td>
-							<td id=<%="date" + num %>>></td>
-							<td id=<%="message" + num %>></td>
+							<td><%=i%></td>
+							<td><p class="" id=<%="color" + num%>></p></td>
+							<td id=<%="date" + num%>>></td>
+							<td id=<%="message" + num%>></td>
 						</tr>
 						<%
-								  	i++;
-								  	lastBuildMessageNum = num;
-								}
-							%>
+						  i++;
+														  	lastBuildMessageNum = num;
+														}
+						%>
 <<<<<<< HEAD
 					</tbody>
 				</table>
@@ -689,14 +690,14 @@ img {
 					<div class="slideshow-container">
 						<%
 						  ScreenshotRecordDbManager sd = ScreenshotRecordDbManager.getInstance();
-									//why the userId need to -1, because this userId is the gitlabId
-									List<String> pngUrls = null;
-									for (User u : users) {
-										if (u.getGitLabId() == userId) {
-											pngUrls = sd.getScreenshots(u.getId(), projectName);
-											break;
-										}
-									}
+															//why the userId need to -1, because this userId is the gitlabId
+															List<String> pngUrls = null;
+															for (User u : users) {
+																if (u.getGitLabId() == userId) {
+																	pngUrls = sd.getScreenshots(u.getId(), projectName);
+																	break;
+																}
+															}
 						%>
 
 						<a class="prev" onclick="plusSlides(-1, 0)">&#10094;</a> <a
@@ -707,8 +708,7 @@ img {
 			<script>
 			var pngUrls = new Array();
 			
-			<%
-			boolean showScreenshot = project.getType().equals("Web");
+			<%boolean showScreenshot = project.getType().equals("Web");
 			System.out.println(project.getType());
 			if (showScreenshot) {
 				for (int count = 0; count < pngUrls.size(); count++) {%>
@@ -771,24 +771,24 @@ img {
 
 	<!-- iFrame -->
 	<%
-				int num = lastBuildMessageNum;
-				String jobName = user.getUsername() + "_" + projectName;
-				String jenkinsBuildNumUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName;
-				String lastBuildUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/" + num + "/consoleText";
-				String url = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/";
-			
-				StudentDashChoosePro studentDashChoosePro = new StudentDashChoosePro();
-				String color = studentDashChoosePro.getLastColor(choosedUser.getUsername(),projectName);
-				int assignmentType = project.getType();
-				String  assignmentTypeName = Pdb.getAssignmentTypeName(assignmentType);
+	  int num = lastBuildMessageNum;
+					String jobName = user.getUsername() + "_" + projectName;
+					String jenkinsBuildNumUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName;
+					String lastBuildUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/" + num + "/consoleText";
+					String url = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/";
 				
-				AssignmentTypeSelector assignmentTypeSelector = 
-			        AssignmentTypeFactory.getAssignmentType(assignmentTypeName);
-				Status status = assignmentTypeSelector.getStatus(color);
-				
-				String detailConsoleText = jenkins.getConsoleText(lastBuildUrl);
-				String console = status.extractFailureMsg(detailConsoleText);
-			%>
+					StudentDashChoosePro studentDashChoosePro = new StudentDashChoosePro();
+					String color = studentDashChoosePro.getLastColor(choosedUser.getUsername(),projectName);
+					int assignmentType = project.getType();
+					String  assignmentTypeName = Pdb.getAssignmentTypeName(assignmentType);
+					
+					AssignmentTypeSelector assignmentTypeSelector = 
+				        AssignmentFactory.getAssignmentType(assignmentTypeName);
+					Status status = assignmentTypeSelector.getStatus(color);
+					
+					String detailConsoleText = jenkins.getConsoleText(lastBuildUrl);
+					String console = status.extractFailureMsg(detailConsoleText);
+	%>
 <<<<<<< HEAD
 	<div>
 		<h4>

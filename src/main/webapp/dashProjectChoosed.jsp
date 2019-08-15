@@ -15,7 +15,7 @@
 <%@ page import="java.text.SimpleDateFormat"%>
 <%@ page import="fcu.selab.progedu.conn.*"%>
 <%@ page import="fcu.selab.progedu.status.*"%>
-<%@ page import="fcu.selab.progedu.service.AssignmentTypeFactory"%>
+<%@ page import="fcu.selab.progedu.project.AssignmentFactory"%>
 <%@ page import="fcu.selab.progedu.service.AssignmentTypeSelector"%>
 
 <%
@@ -223,43 +223,43 @@ img {
 	<%
 	  GitlabService conn = GitlabService.getInstance();
 
-	<<<<<<< HEAD
-							UserDbManager db = UserDbManager.getInstance();
-							AssignmentDbManager Pdb = AssignmentDbManager.getInstance();
-							StudentDashChoosePro stuDashChoPro = new StudentDashChoosePro();
+		<<<<<<< HEAD
+								UserDbManager db = UserDbManager.getInstance();
+								AssignmentDbManager Pdb = AssignmentDbManager.getInstance();
+								StudentDashChoosePro stuDashChoPro = new StudentDashChoosePro();
 
-							List<User> users = db.listAllUsers();
-							List<Assignment> dbProjects = Pdb.listAllAssignments();
+								List<User> users = db.listAllUsers();
+								List<Assignment> dbProjects = Pdb.listAllAssignments();
 
-							// gitlab jenkins course��Data
-							GitlabConfig gitData = GitlabConfig.getInstance();
-							JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
+								// gitlab jenkins course��Data
+								GitlabConfig gitData = GitlabConfig.getInstance();
+								JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
 
-							JenkinsApi jenkins = JenkinsApi.getInstance();
+								JenkinsApi jenkins = JenkinsApi.getInstance();
 
-							GitlabUser choosedUser = conn.getUserById(userId);
-							List<GitlabProject> projects = conn.getAssignment(choosedUser);
-							Collections.reverse(projects);
-	=======
-					UserDbManager db = UserDbManager.getInstance();
-					ProjectDbManager Pdb = ProjectDbManager.getInstance();
-					StudentDashChoosePro stuDashChoPro = new StudentDashChoosePro();
+								GitlabUser choosedUser = conn.getUserById(userId);
+								List<GitlabProject> projects = conn.getAssignment(choosedUser);
+								Collections.reverse(projects);
+		=======
+						UserDbManager db = UserDbManager.getInstance();
+						ProjectDbManager Pdb = ProjectDbManager.getInstance();
+						StudentDashChoosePro stuDashChoPro = new StudentDashChoosePro();
 
-					List<User> users = db.listAllUsers();
-					List<Project> dbProjects = Pdb.listAllProjects();
+						List<User> users = db.listAllUsers();
+						List<Project> dbProjects = Pdb.listAllProjects();
 
-					// gitlab jenkins course��Data
-					GitlabConfig gitData = GitlabConfig.getInstance();
-					JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
+						// gitlab jenkins course��Data
+						GitlabConfig gitData = GitlabConfig.getInstance();
+						JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
 
-					JenkinsApi jenkins = JenkinsApi.getInstance();
+						JenkinsApi jenkins = JenkinsApi.getInstance();
 
-					GitlabUser choosedUser = conn.getUserById(userId);
-					List<GitlabProject> projects = conn.getProject(choosedUser);
-					Collections.reverse(projects);
+						GitlabUser choosedUser = conn.getUserById(userId);
+						List<GitlabProject> projects = conn.getProject(choosedUser);
+						Collections.reverse(projects);
 
-					//URL get userId is gitlabId, we need the real userId
-	>>>>>>> Github/master
+						//URL get userId is gitlabId, we need the real userId
+		>>>>>>> Github/master
 	%>
 	<%@ include file="header.jsp"%>
 	<!-- -----sidebar----- -->
@@ -273,22 +273,22 @@ img {
 				<ul id="overview" class="collapse" style="list-style: none;">
 					<%
 					  for (GitlabProject project : projects) {
-<<<<<<< HEAD
-									for (Assignment dbProject : dbProjects) {
-=======
-									for (Project dbProject : dbProjects) {
->>>>>>> Github/master
-										if (project.getName().equals(dbProject.getName())) {
-											String href = "dashProjectChoosed.jsp?userId=" + choosedUser.getId() + "&proName="
-													+ project.getName();
+										<<<<<<< HEAD
+																			for (AssignmentType dbProject : dbProjects) {
+										=======
+																			for (Project dbProject : dbProjects) {
+										>>>>>>> Github/master
+																				if (project.getName().equals(dbProject.getName())) {
+																					String href = "dashProjectChoosed.jsp?userId=" + choosedUser.getId() + "&proName="
+																							+ project.getName();
 					%>
 					<li class="nav-item"><font size="3"><a class="nav-link"
 							href=<%=href%>><i class="fa fa-angle-right"
 								aria-hidden="true"></i>&nbsp; <%=project.getName()%></a></font></li>
 					<%
 					  }
-									}
-								}
+																			}
+																		}
 					%>
 				</ul></li>
 			<li class="nav-item"><font size="4"><a
@@ -299,13 +299,13 @@ img {
 				<ul id="student" class="collapse show" style="list-style: none;">
 					<%
 					  for (User user : users) {
-<<<<<<< HEAD
-																													String style = "";
-																													String studentId = user.getStufentId();
-																													String href = "\"dashStuChoosed.jsp?studentId=" + user.getGitLabId() + "\"";
-																													if (choosedUser.getUsername().equals(user.getStufentId())) {
-																														style = "color: burlywood;";
-																													}
+										<<<<<<< HEAD
+																																							String style = "";
+																																							String studentId = user.getStufentId();
+																																							String href = "\"dashStuChoosed.jsp?studentId=" + user.getGitLabId() + "\"";
+																																							if (choosedUser.getUsername().equals(user.getStufentId())) {
+																																								style = "color: burlywood;";
+																																							}
 					%>
 					<li class="nav-item"><font size="3"><a
 							style="<%=style%>" class="nav-link" href=<%=href%>><i
@@ -323,8 +323,8 @@ img {
 								class="fa fa-angle-right" aria-hidden="true"></i>&nbsp; <%=userName%></a></font></li>
 >>>>>>> Github/master
 					<%
-					  }
-					%>
+   }
+ %>
 				</ul></li>
 		</ul>
 		<!-- -----sidebar----- -->
@@ -337,14 +337,14 @@ img {
 		</h1>
 		<!-- ---------------------------- Project ------------------------------- -->
 		<%
-<<<<<<< HEAD
-		  AssignmentDbManager pDb = AssignmentDbManager.getInstance();
-							Assignment project = pDb.getAssignmentByName(projectName);
-=======
-		
-		  ProjectDbManager pDb = ProjectDbManager.getInstance();
-					Project project = pDb.getProjectByName(projectName);
->>>>>>> Github/master
+		  <<<<<<< HEAD
+						  AssignmentDbManager pDb = AssignmentDbManager.getInstance();
+											AssignmentType project = pDb.getAssignmentByName(projectName);
+				=======
+						
+						  ProjectDbManager pDb = ProjectDbManager.getInstance();
+									Project project = pDb.getProjectByName(projectName);
+				>>>>>>> Github/master
 		%>
 		<div style="margin: 10px 10px 10px 10px;">
 			<h2 style="white-space: nowrap">
@@ -382,10 +382,10 @@ img {
 					<tbody id="projectTbody">
 						<%
 						  List<Integer> buildNum = stuDashChoPro.getScmBuildCounts(choosedUser.getUsername(), projectName);
-									int commit_count = buildNum.size();
-									int i = 1;
-									int lastBuildMessageNum = 0;
-									for (Integer num : buildNum) {
+															int commit_count = buildNum.size();
+															int i = 1;
+															int lastBuildMessageNum = 0;
+															for (Integer num : buildNum) {
 						%>
 						<script type="text/javascript">
 =======
@@ -408,13 +408,11 @@ img {
 							</tr>
 						</thead>
 						<tbody id="projectTbody">
-							<%
-							  List<Integer> buildNum = stuDashChoPro.getScmBuildCounts(choosedUser.getUsername(), projectName);
+							<%List<Integer> buildNum = stuDashChoPro.getScmBuildCounts(choosedUser.getUsername(), projectName);
 										int commit_count = buildNum.size();
 										int i = 1;
 										int lastBuildMessageNum = 0;
-										for (Integer num : buildNum) {
-							%>
+										for (Integer num : buildNum) {%>
 							<script type="text/javascript">
 >>>>>>> Github/master
 									var userName = <%="'" + choosedUser.getUsername() + "'"%>
@@ -456,11 +454,11 @@ img {
 								</script>
 <<<<<<< HEAD
 						<%
-						  String tableActive = "";
-										if (num == commit_count) {
-											tableActive = "tableActive";
-										}
-						%>
+   String tableActive = "";
+ 										if (num == commit_count) {
+ 											tableActive = "tableActive";
+ 										}
+ %>
 						<tr id="<%=num%>" onClick="changeIframe(this)"
 							class="<%=tableActive%>">
 							<th width="10%" class="text-center"><%=i%></th>
@@ -470,8 +468,8 @@ img {
 						</tr>
 						<%
 						  i++;
-										lastBuildMessageNum = num;
-									}
+																lastBuildMessageNum = num;
+															}
 						%>
 					</tbody>
 				</table>
@@ -482,17 +480,17 @@ img {
 		<!-- iFrame -->
 		<%
 		  StudentDashChoosePro studentDashChoosePro = new StudentDashChoosePro();
-					String color = studentDashChoosePro.getLastColor(choosedUser.getUsername(), projectName);
-					String typeName = Pdb.getAssignmentTypeName(project.getType());
-					AssignmentTypeSelector assignmentTypeSelector = AssignmentTypeFactory.getAssignmentType(typeName);
+							String color = studentDashChoosePro.getLastColor(choosedUser.getUsername(), projectName);
+							String typeName = Pdb.getAssignmentTypeName(project.getType());
+							AssignmentTypeSelector assignmentTypeSelector = AssignmentFactory.getAssignmentType(typeName);
 
-					Status status = assignmentTypeSelector.getStatus(color);
-					int num = lastBuildMessageNum;
-					String jobName = choosedUser.getUsername() + "_" + projectName;
-					String jenkinsBuildNumUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName;
-					String lastBuildUrl = jenkinsBuildNumUrl + "/" + num + "/consoleText";
-					String detailConsoleText = jenkins.getConsoleText(lastBuildUrl);
-					String console = status.extractFailureMsg(detailConsoleText);
+							Status status = assignmentTypeSelector.getStatus(color);
+							int num = lastBuildMessageNum;
+							String jobName = choosedUser.getUsername() + "_" + projectName;
+							String jenkinsBuildNumUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName;
+							String lastBuildUrl = jenkinsBuildNumUrl + "/" + num + "/consoleText";
+							String detailConsoleText = jenkins.getConsoleText(lastBuildUrl);
+							String console = status.extractFailureMsg(detailConsoleText);
 		%>
 		<h4>
 			<a id="iFrameTitle" href="<%=jenkinsBuildNumUrl%>">Feedback
@@ -507,11 +505,11 @@ img {
 	<!-- ------------------------ main -------------------------------------- -->
 =======
 							<%
-							  String tableActive = "";
-											if (num == commit_count) {
-												tableActive = "tableActive";
-											}
-							%>
+	  String tableActive = "";
+												if (num == commit_count) {
+													tableActive = "tableActive";
+												}
+	%>
 							<tr id="<%=num%>" onClick="changeIframe(this)"
 								class="<%=tableActive%>">
 								<th width="10%" class="text-center"><%=i%></th>
@@ -521,8 +519,8 @@ img {
 							</tr>
 							<%
 							  i++;
-											lastBuildMessageNum = num;
-										}
+																		lastBuildMessageNum = num;
+																	}
 							%>
 						</tbody>
 					</table>
@@ -542,14 +540,14 @@ img {
 					<div class="slideshow-container">
 						<%
 						  ScreenshotRecordDbManager sd = ScreenshotRecordDbManager.getInstance();
-									//why the userId need to -1, because this userId is the gitlabId
-									List<String> pngUrls = null;
-									for (User u : users) {
-										if (u.getGitLabId() == userId) {
-											pngUrls = sd.getScreenshots(u.getId(), projectName);
-											break;
-										}
-									}
+															//why the userId need to -1, because this userId is the gitlabId
+															List<String> pngUrls = null;
+															for (User u : users) {
+																if (u.getGitLabId() == userId) {
+																	pngUrls = sd.getScreenshots(u.getId(), projectName);
+																	break;
+																}
+															}
 						%>
 
 						<a class="prev" onclick="plusSlides(-1, 0)">&#10094;</a> <a
@@ -560,8 +558,7 @@ img {
 			<script>
 			var pngUrls = new Array();
 			
-			<%
-			boolean showScreenshot = project.getType().equals("Web");
+			<%boolean showScreenshot = project.getType().equals("Web");
 			System.out.println(project.getType());
 			if (showScreenshot) {
 				for (int count = 0; count < pngUrls.size(); count++) {%>
@@ -619,16 +616,16 @@ img {
 			<!-- iFrame -->
 			<%
 			  StudentDashChoosePro studentDashChoosePro = new StudentDashChoosePro();
-						String color = studentDashChoosePro.getLastColor(choosedUser.getUsername(), projectName);
-						AssignmentTypeSelector assignmentTypeSelector = AssignmentTypeFactory.getAssignmentType(project.getType());
+									String color = studentDashChoosePro.getLastColor(choosedUser.getUsername(), projectName);
+									AssignmentTypeSelector assignmentTypeSelector = AssignmentFactory.getAssignmentType(project.getType());
 
-						Status status = assignmentTypeSelector.getStatus(color);
-						int num = lastBuildMessageNum;
-						String jobName = choosedUser.getUsername() + "_" + projectName;
-						String jenkinsBuildNumUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName;
-						String lastBuildUrl = jenkinsBuildNumUrl + "/" + num + "/consoleText";
-						String detailConsoleText = jenkins.getConsoleText(lastBuildUrl);
-						String console = status.extractFailureMsg(detailConsoleText);
+									Status status = assignmentTypeSelector.getStatus(color);
+									int num = lastBuildMessageNum;
+									String jobName = choosedUser.getUsername() + "_" + projectName;
+									String jenkinsBuildNumUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName;
+									String lastBuildUrl = jenkinsBuildNumUrl + "/" + num + "/consoleText";
+									String detailConsoleText = jenkins.getConsoleText(lastBuildUrl);
+									String console = status.extractFailureMsg(detailConsoleText);
 			%>
 			<h4>
 				<a id="iFrameTitle" href="<%=jenkinsBuildNumUrl%>">Feedback

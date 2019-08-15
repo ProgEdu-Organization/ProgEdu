@@ -17,10 +17,10 @@
 <%@ page import="java.text.SimpleDateFormat"%>
 <%@ page import="fcu.selab.progedu.conn.*"%>
 <%@ page import="fcu.selab.progedu.status.*"%>
-<%@ page import="fcu.selab.progedu.service.IGroupProject"%>
+<%@ page import="fcu.selab.progedu.project.IGroupProject"%>
 <%@ page import="fcu.selab.progedu.project.ProjectTypeEnum"%>
-<%@ page import="fcu.selab.progedu.service.GroupProjectFactory"%>
-<%@ page import="fcu.selab.progedu.service.AssignmentTypeFactory"%>
+<%@ page import="fcu.selab.progedu.project.GroupProjectFactory"%>
+<%@ page import="fcu.selab.progedu.project.AssignmentFactory"%>
 <%@ page import="fcu.selab.progedu.service.AssignmentTypeSelector"%>
 
 <%
