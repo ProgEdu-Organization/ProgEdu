@@ -25,14 +25,10 @@ public class CommitRecordDbManager {
   /**
    * insert student commit records into db
    * 
-   * @param auId
-   *          auId
-   * @param commitNumber
-   *          commitNumber
-   * @param status
-   *          status Id
-   * @param time
-   *          commit time
+   * @param auId         auId
+   * @param commitNumber commitNumber
+   * @param status       status Id
+   * @param time         commit time
    */
   public void insertCommitRecord(int auId, int commitNumber, int status, String time) {
     String sql = "INSERT INTO Commit_Record" + "(auId, commitNumber, status, time) "
@@ -112,12 +108,9 @@ public class CommitRecordDbManager {
   /**
    * check if record is in db
    *
-   * @param id
-   *          student id
-   * @param auId
-   *          auId
-   * @param time
-   *          commit time
+   * @param id   student id
+   * @param auId auId
+   * @param time commit time
    * @return boolean
    */
   public boolean checkRecord(int id, int auId, String time) {
@@ -144,14 +137,10 @@ public class CommitRecordDbManager {
   /**
    * update record status
    * 
-   * @param id
-   *          student
-   * @param auId
-   *          auId
-   * @param status
-   *          status
-   * @param time
-   *          time
+   * @param id     student
+   * @param auId   auId
+   * @param status status
+   * @param time   time
    */
   public void updateRecordStatus(int id, int auId, int status, String time) {
     String sql = "UPDATE Commit_Record SET status=? where id=? and auId=? and time=?";
@@ -205,11 +194,44 @@ public class CommitRecordDbManager {
   }
 
   /**
+   * get last commit record details from assigned homework of one student
+   * 
+   * 
+   * @param auId auId
+   * @return last commit record details
+   */
+  public JSONObject getLastCommitRecord(int auId) {
+    String sql = "SELECT * from Commit_Record a where (a.commitNumber = "
+        + "(SELECT max(commitNumber) FROM Commit_Record WHERE auId = ?));";
+    JSONObject ob = new JSONObject();
+    JSONArray array = new JSONArray();
+
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+      preStmt.setInt(1, auId);
+      try (ResultSet rs = preStmt.executeQuery()) {
+
+        String status = rs.getString("status");
+        int commitNumber = rs.getInt("commitNumber");
+        String commitTime = rs.getString("time");
+        JSONObject eachHw = new JSONObject();
+        eachHw.put("status", status);
+        eachHw.put("commitNumber", commitNumber);
+        eachHw.put("commitTime", commitTime);
+        array.put(eachHw);
+      }
+      ob.put("commits", array);
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return ob;
+  }
+
+  /**
    * get commit count by auId
    * 
    * 
-   * @param id
-   *          auId
+   * @param id auId
    * @return aId assignment Id
    */
   public int getCommitCount(int id) {
@@ -232,8 +254,7 @@ public class CommitRecordDbManager {
   /**
    * delete built record of specific auId
    *
-   * @param auId
-   *          auId
+   * @param auId auId
    */
   public void deleteRecord(int auId) {
     String sql = "DELETE FROM Commit_Record WHERE auId=?";
@@ -250,8 +271,7 @@ public class CommitRecordDbManager {
   /**
    * get Commit_time id by auid
    * 
-   * @param auid
-   *          auId
+   * @param auid auId
    * @return time time
    */
   public String getCommitTimebyAUId(int auid) {
@@ -274,8 +294,7 @@ public class CommitRecordDbManager {
   /**
    * get Commit_Status id by auid
    * 
-   * @param auid
-   *          auId
+   * @param auid auId
    * @return status status
    */
   public int getCommitStatusbyAUId(int auid) {
@@ -298,8 +317,7 @@ public class CommitRecordDbManager {
   /**
    * get Commit_Status id
    * 
-   * @param statusName
-   *          Commit_Status statusName
+   * @param statusName Commit_Status statusName
    * @return id status id
    */
   public int getCommitStatusId(String statusName) {
@@ -322,8 +340,7 @@ public class CommitRecordDbManager {
   /**
    * get Commit_Status name
    * 
-   * @param id
-   *          Commit_Status id
+   * @param id Commit_Status id
    * @return name Commit_Status name
    */
   public String getCommitStatusName(int id) {

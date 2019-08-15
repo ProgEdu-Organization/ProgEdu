@@ -74,7 +74,7 @@ public class CommitRecordService {
       String assignmentName = assignmentDb.getAssignmentNameById(assignment);
       JSONObject ob = new JSONObject();
       ob.put("assignmentName", assignmentName);
-      ob.put("commitRecord", db.getCommitRecord(auIds));
+      ob.put("commitRecord", db.getLastCommitRecord(auIds));
       array.put(ob);
     }
     result.put("oneUserCommitRecord", array);
@@ -84,10 +84,8 @@ public class CommitRecordService {
   /**
    * get student build detail info
    * 
-   * @param username
-   *          student id
-   * @param assignmentName
-   *          assignment name
+   * @param username       student id
+   * @param assignmentName assignment name
    * @return build detail
    */
   @GET
