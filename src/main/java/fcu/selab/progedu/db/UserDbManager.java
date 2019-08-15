@@ -154,6 +154,29 @@ public class UserDbManager {
   }
 
   /**
+   * user name to find userId in db
+   * 
+   * @return id
+   */
+  public int getUserIdByUsername(String username) {
+    String query = "SELECT * FROM User WHERE username = ?";
+    int id = -1;
+  
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(query)) {
+      preStmt.setString(1, username);
+      try (ResultSet rs = preStmt.executeQuery();) {
+        while (rs.next()) {
+          id = rs.getInt("id");
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return id;
+  }
+
+  /**
    * Get user from database
    * 
    * @param username The gitlab user name
