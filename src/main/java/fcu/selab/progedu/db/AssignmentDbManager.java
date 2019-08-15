@@ -27,8 +27,7 @@ public class AssignmentDbManager {
   /**
    * Add assignment to database
    * 
-   * @param assignment
-   *          Project
+   * @param assignment Project
    */
   public void addAssignment(Assignment assignment) {
     String sql = "INSERT INTO Assignment(name, createTime, deadline, description, hasTemplate"
@@ -56,8 +55,7 @@ public class AssignmentDbManager {
   /**
    * get assignment info by assignment name
    * 
-   * @param name
-   *          assignment name
+   * @param name assignment name
    * @return assignment
    */
   public Assignment getAssignmentByName(String name) {
@@ -100,8 +98,7 @@ public class AssignmentDbManager {
   /**
    * get assignment name by assignment id
    * 
-   * @param aId
-   *          assignment id
+   * @param aId assignment id
    * @return assignment name
    */
   public String getAssignmentNameById(int aId) {
@@ -124,8 +121,7 @@ public class AssignmentDbManager {
   /**
    * assignment name to find assignmentId in db
    * 
-   * @param assignmentName
-   *          assignment name
+   * @param assignmentName assignment name
    * @return id
    */
   public int getAssignmentIdByName(String assignmentName) {
@@ -144,51 +140,6 @@ public class AssignmentDbManager {
       e.printStackTrace();
     }
     return id;
-  }
-
-  /**
-   * List all the assignments
-   * 
-   * @return List of assignments
-   */
-  public List<Assignment> listAllAssignments() {
-    List<Assignment> lsAssignments = new ArrayList<>();
-    String sql = "SELECT * FROM Assignment";
-
-    try (Connection conn = database.getConnection();
-        Statement stmt = conn.createStatement();
-        ResultSet rs = stmt.executeQuery(sql)) {
-      while (rs.next()) {
-        String name = rs.getString("name");
-        String description = rs.getString("description");
-        boolean hasTemplate = rs.getBoolean("hasTemplate");
-        int type = rs.getInt("type");
-        String checksum = rs.getString("zipChecksum");
-        String zipUrl = rs.getString("zipUrl");
-        String createTime = rs.getString("createTime");
-        String deadline = rs.getString("deadline");
-        String releaseTime = rs.getString("releaseTime");
-        boolean display = rs.getBoolean("display");
-
-        Assignment assignment = new Assignment();
-        assignment.setName(name);
-        assignment.setDescription(description);
-        assignment.setHasTemplate(hasTemplate);
-        assignment.setType(type);
-        assignment.setTestZipChecksum(checksum);
-        assignment.setTestZipUrl(zipUrl);
-        assignment.setCreateTime(createTime);
-        assignment.setDeadline(deadline);
-        assignment.setReleaseTime(releaseTime);
-        assignment.setDisplay(display);
-
-        lsAssignments.add(assignment);
-      }
-
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
-    return lsAssignments;
   }
 
   /**
@@ -216,123 +167,12 @@ public class AssignmentDbManager {
   /**
    * Delete assignment from database
    * 
-   * @param name
-   *          assignment name
+   * @param name assignment name
    */
   public void deleteAssignment(String name) {
     String sql = "DELETE FROM Assignment WHERE name='" + name + "'";
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
-      preStmt.executeUpdate();
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
-  }
-
-  /**
-   * Edit assignment from database
-   * 
-   * @param deadline
-   *          new deadline
-   * @param readMe
-   *          new readMe
-   * @param name
-   *          assignment name
-   */
-  public void editAssignment(String deadline, String readMe, String releaseTime, String name) {
-    String sql = "UPDATE Assignment SET deadline=?, description=?, releaseTime=? WHERE name=?";
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
-      preStmt.setString(1, deadline);
-      preStmt.setString(2, readMe);
-      preStmt.setString(3, releaseTime);
-      preStmt.setString(4, name);
-
-      preStmt.executeUpdate();
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
-  }
-
-  /**
-   * Edit assignment checksum
-   * 
-   * @param name
-   *          assignment name
-   * @param checksum
-   *          new checksum
-   */
-  public void updateAssignmentChecksum(String name, String checksum) {
-    String sql = "UPDATE Assignment SET zipChecksum=? WHERE name=?";
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
-      preStmt.setString(1, checksum);
-      preStmt.setString(2, name);
-      preStmt.executeUpdate();
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
-  }
-
-  /**
-   * get assignment type by name
-   * 
-   * @param name
-   *          assignment name
-   * @return type assignment type
-   */
-  public int getAssignmentType(String name) {
-    int typeId = 0;
-    String sql = "SELECT * FROM Assignment WHERE name=?";
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
-      preStmt.setString(1, name);
-      try (ResultSet rs = preStmt.executeQuery()) {
-        while (rs.next()) {
-          typeId = rs.getInt("type");
-        }
-      }
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
-    return typeId;
-  }
-
-  /**
-   * Get assignmentdisplay from database
-   *
-   * @param assignmentname The gitlab user id
-   * @return display
-   */
-  public boolean getAssignmentDisplay(String assignmentname) {
-    String query = "SELECT * FROM Assignment WHERE name = ?";
-    boolean display = true;
-
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(query)) {
-      preStmt.setString(1, assignmentname);
-      try (ResultSet rs = preStmt.executeQuery();) {
-        while (rs.next()) {
-          display = rs.getBoolean("display");
-        }
-      }
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
-    return display;
-  }
-
-  /**
-   * Set user display in database
-   *
-   * @param assignmentname The gitlab user id
-   */
-  public void setAssignmentDisplay(String assignmentname) {
-    String query = "UPDATE Assignment SET display= ? WHERE name = ?";
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(query)) {
-      preStmt.setBoolean(1, false);
-      preStmt.setString(2, assignmentname);
       preStmt.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();

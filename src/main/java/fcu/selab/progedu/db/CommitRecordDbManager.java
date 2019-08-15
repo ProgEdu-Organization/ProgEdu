@@ -49,10 +49,8 @@ public class CommitRecordDbManager {
   /**
    * get each hw's CommitRecordStateCounts
    *
-   * @param auId
-   *          Commit_Record auId
-   * @param commitNumber
-   *          commit number
+   * @param auId         Commit_Record auId
+   * @param commitNumber commit number
    * @return status
    */
   public int getCommitRecordId(int auId, int commitNumber) {
@@ -78,10 +76,8 @@ public class CommitRecordDbManager {
   /**
    * get each hw's CommitRecordStateCounts
    *
-   * @param auId
-   *          Commit_Record auId
-   * @param num
-   *          num
+   * @param auId Commit_Record auId
+   * @param num  num
    * @return status
    */
   public String getCommitRecordStatus(int auId, int num) {
@@ -106,64 +102,10 @@ public class CommitRecordDbManager {
   }
 
   /**
-   * check if record is in db
-   *
-   * @param id   student id
-   * @param auId auId
-   * @param time commit time
-   * @return boolean
-   */
-  public boolean checkRecord(int id, int auId, String time) {
-    String query = "SELECT * FROM Commit_Record where id=? and auId=? and time=?";
-
-    boolean check = false;
-
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(query)) {
-      preStmt.setInt(1, id);
-      preStmt.setInt(2, auId);
-      preStmt.setString(3, time);
-      try (ResultSet rs = preStmt.executeQuery();) {
-        while (rs.next()) {
-          check = true;
-        }
-      }
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
-    return check;
-  }
-
-  /**
-   * update record status
-   * 
-   * @param id     student
-   * @param auId   auId
-   * @param status status
-   * @param time   time
-   */
-  public void updateRecordStatus(int id, int auId, int status, String time) {
-    String sql = "UPDATE Commit_Record SET status=? where id=? and auId=? and time=?";
-
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
-      preStmt.setInt(1, status);
-      preStmt.setInt(2, id);
-      preStmt.setInt(3, auId);
-      preStmt.setString(4, time);
-
-      preStmt.executeUpdate();
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
-  }
-
-  /**
    * get commit record details from the homework of a student
    * 
    * 
-   * @param auIds
-   *          auId
+   * @param auIds auId
    * @return commit record details
    */
   public JSONObject getCommitRecord(int auIds) {
@@ -269,29 +211,6 @@ public class CommitRecordDbManager {
   }
 
   /**
-   * get Commit_time id by auid
-   * 
-   * @param auid auId
-   * @return time time
-   */
-  public String getCommitTimebyAUId(int auid) {
-    String time = null;
-    String sql = "SELECT * FROM Commit_Record WHERE auId=?";
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
-      preStmt.setInt(1, auid);
-      try (ResultSet rs = preStmt.executeQuery()) {
-        while (rs.next()) {
-          time = rs.getString("time");
-        }
-      }
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
-    return time;
-  }
-
-  /**
    * get Commit_Status id by auid
    * 
    * @param auid auId
@@ -314,49 +233,4 @@ public class CommitRecordDbManager {
     return status;
   }
 
-  /**
-   * get Commit_Status id
-   * 
-   * @param statusName Commit_Status statusName
-   * @return id status id
-   */
-  public int getCommitStatusId(String statusName) {
-    int id = 0;
-    String sql = "SELECT * FROM Commit_Status WHERE status=?";
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
-      preStmt.setString(1, statusName);
-      try (ResultSet rs = preStmt.executeQuery()) {
-        while (rs.next()) {
-          id = rs.getInt("id");
-        }
-      }
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
-    return id;
-  }
-
-  /**
-   * get Commit_Status name
-   * 
-   * @param id Commit_Status id
-   * @return name Commit_Status name
-   */
-  public String getCommitStatusName(int id) {
-    String statusName = null;
-    String sql = "SELECT * FROM Commit_Status WHERE id=?";
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
-      preStmt.setInt(1, id);
-      try (ResultSet rs = preStmt.executeQuery()) {
-        while (rs.next()) {
-          statusName = rs.getString("status");
-        }
-      }
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
-    return statusName;
-  }
 }
