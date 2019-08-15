@@ -17,7 +17,9 @@ import org.xml.sax.SAXException;
 
 import fcu.selab.progedu.config.CourseConfig;
 import fcu.selab.progedu.config.GitlabConfig;
+import fcu.selab.progedu.conn.JenkinsService;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
+import fcu.selab.progedu.service.StatusService;
 import fcu.selab.progedu.status.StatusEnum;
 
 public class JavacAssignment extends AssignmentType {
@@ -76,8 +78,22 @@ public class JavacAssignment extends AssignmentType {
 
   @Override
   public StatusEnum checkStatusType(int num, String username, String assignmentName) {
+    StatusEnum status;
+    StatusService statusService = StatusService.getInstance();
+    if (statusService.isInitialization(num)) {
+      status = StatusEnum.INITIALIZATION;
+    } else {
+      JenkinsService jenkinsService = JenkinsService.getInstance();
+      String jobName = username + "_" + assignmentName;
+      String console = jenkinsService.getConsole(jobName, num);
 
-    return null;
+      if (statusService.isBuildSuccess(console)) {
+        status = StatusEnum.BUILD_SUCCESS;
+      } else {
+        status = StatusEnum.COMPILE_FAILURE;
+      }
+    }
+    return status;
   }
 
   @Override

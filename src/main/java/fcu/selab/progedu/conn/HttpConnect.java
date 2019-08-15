@@ -131,32 +131,6 @@ public class HttpConnect {
   }
 
   /**
-   * transfer project from root to group
-   * 
-   * @param groupId   group id
-   * @param projectId project id
-   */
-  public void transferProjectToGroup(int groupId, int projectId) {
-    HttpClient client = new DefaultHttpClient();
-    String url = "";
-    try {
-      url = gitlab.getGitlabHostUrl() + "/api/v3/groups/" + groupId + "/projects/" + projectId
-          + "?private_token=" + gitlab.getGitlabApiToken();
-      HttpPost post = new HttpPost(url);
-
-      HttpResponse response = client.execute(post);
-      HttpEntity resEntity = response.getEntity();
-
-      if (resEntity != null) {
-        String result = resEntity.toString();
-        System.out.println("httppost build " + groupId + " , result : " + result);
-      }
-    } catch (IOException | LoadConfigFailureException e) {
-      e.printStackTrace();
-    }
-  }
-
-  /**
    * set gitlab webhook that trigger jenkins job to build
    * 
    * @param username group name

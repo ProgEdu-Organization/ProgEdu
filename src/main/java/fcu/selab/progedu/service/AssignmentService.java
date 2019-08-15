@@ -3,11 +3,8 @@ package fcu.selab.progedu.service;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Properties;
-import java.util.TimeZone;
 import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
 
@@ -49,20 +46,20 @@ import fcu.selab.progedu.project.ProjectTypeEnum;
 import fcu.selab.progedu.utils.Linux;
 import fcu.selab.progedu.utils.ZipHandler;
 
-@Path("project/")
+@Path("assignment/")
 public class AssignmentService {
   private GitlabService gitlabService = GitlabService.getInstance();
   private GitlabUser root = gitlabService.getRoot();
   private ZipHandler zipHandler;
   private JenkinsApi jenkins = JenkinsApi.getInstance();
-
+  private TomcatService tomcatService = TomcatService.getInstance();
   private GitlabConfig gitlabData = GitlabConfig.getInstance();
   private JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
   private CourseConfig courseConfig = CourseConfig.getInstance();
   private UserService userService = UserService.getInstance();
   private String mailUsername;
   private String mailPassword;
-
+  private String gitlabRootUsername;
   private AssignmentDbManager dbManager = AssignmentDbManager.getInstance();
   private final String tempDir = System.getProperty("java.io.tmpdir");
   private final String uploadDir = tempDir + "/uploads/";
@@ -81,7 +78,7 @@ public class AssignmentService {
       zipHandler = new ZipHandler();
       mailUsername = jenkinsData.getMailUser();
       mailPassword = jenkinsData.getMailPassword();
-
+      gitlabRootUsername = gitlabData.getGitlabRootUsername();
     } catch (LoadConfigFailureException e) {
       e.printStackTrace();
     }
@@ -105,8 +102,8 @@ public class AssignmentService {
       @FormDataParam("releaseTime") String releaseTime, @FormDataParam("deadline") String deadline,
       @FormDataParam("readMe") String readMe, @FormDataParam("fileRadio") String assignmentType,
       @FormDataParam("file") InputStream file,
-      @FormDataParam("file") FormDataContentDisposition fileDetail) throws Exception {
-    TomcatService tomcatService = new TomcatService();
+      @FormDataParam("file") FormDataContentDisposition fileDetail) {
+
     String rootProjectUrl = null;
     String folderName = null;
     String filePath = null;
@@ -119,8 +116,7 @@ public class AssignmentService {
     rootProjectUrl = getRootProjectUrl(assignmentName);
 
     // 2. Clone the project to C:\\Users\\users\\AppData\\Temp\\uploads
-    String cloneDirectoryPath = gitlabService.cloneProject(gitlabData.getGitlabRootUsername(),
-        assignmentName);
+    String cloneDirectoryPath = gitlabService.cloneProject(gitlabRootUsername, assignmentName);
 
     // 3. Store Zip File to folder if file is not empty
     folderName = fileDetail.getFileName();
@@ -165,9 +161,15 @@ public class AssignmentService {
     List<User> users = userService.getUsers();
     for (User user : users) {
       // 11. Create student project, and import project
-      GitlabProject project = gitlabService.createPrivateProject(user.getGitLabId(), assignmentName,
-          rootProjectUrl);
-      gitlabService.setGitlabWebhook(project);
+      GitlabProject project;
+      try {
+        project = gitlabService.createPrivateProject(user.getGitLabId(), assignmentName,
+            rootProjectUrl);
+        gitlabService.setGitlabWebhook(project);
+      } catch (IOException | LoadConfigFailureException e) {
+        e.printStackTrace();
+      }
+
       // 12. Create each Jenkins Jobs
       assignment.createJenkinsJob(user.getUsername(), assignmentName);
     }
@@ -286,10 +288,9 @@ public class AssignmentService {
   public void addProject(String name, String releaseTime, String deadline, String readMe,
       ProjectTypeEnum projectType, boolean hasTemplate, String testZipChecksum, String testZipUrl) {
     Assignment assignment = new Assignment();
-//    Project assignment = new Project();
 
     assignment.setName(name);
-    assignment.setCreateTime(getCurrentTime());
+    assignment.setCreateTime(tomcatService.getCurrentTime());
     assignment.setReleaseTime(releaseTime);
     assignment.setDeadline(deadline);
     assignment.setDescription(readMe);
@@ -467,14 +468,6 @@ public class AssignmentService {
       e.printStackTrace();
     }
     return strChecksum;
-  }
-
-  private String getCurrentTime() {
-    Date date = new Date();
-    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    format.setTimeZone(TimeZone.getTimeZone("Asia/Taipei"));
-    return format.format(date);
-
   }
 
 }

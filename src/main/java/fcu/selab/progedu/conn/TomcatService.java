@@ -8,11 +8,21 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 
-import fcu.selab.progedu.project.AssignmentType;
+import fcu.selab.progedu.project.ProjectType;
 import fcu.selab.progedu.utils.Linux;
 
 public class TomcatService {
+
+  private static TomcatService instance = new TomcatService();
+
+  public static TomcatService getInstance() {
+    return instance;
+  }
+
   public String storeFileToUploadsFolder(InputStream file, String target) {
     try {
       createFolderIfNotExists(target);
@@ -56,14 +66,14 @@ public class TomcatService {
   }
 
   public String storeFileToServer(InputStream file, String folderName, String uploadDir,
-      AssignmentType assignment) {
+      ProjectType project) {
     String target;
     if (hasTemplate(folderName)) {
       target = uploadDir + folderName;
       // store to C://User/AppData/Temp/uploads/
       storeFileToUploadsFolder(file, target);
     } else {
-      target = this.getClass().getResource(assignment.getSampleTemplate()).getFile();
+      target = this.getClass().getResource(project.getSampleTemplate()).getFile();
     }
     return target;
 
@@ -123,5 +133,18 @@ public class TomcatService {
       e.printStackTrace();
       // report
     }
+  }
+
+  /**
+   * get server current time
+   * 
+   * @return current time
+   */
+  public String getCurrentTime() {
+    Date date = new Date();
+    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    format.setTimeZone(TimeZone.getTimeZone("Asia/Taipei"));
+    return format.format(date);
+
   }
 }

@@ -13,15 +13,14 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
-import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
-public class MavenGroupProject extends GroupProject {
+import fcu.selab.progedu.config.CourseConfig;
+import fcu.selab.progedu.config.GitlabConfig;
+import fcu.selab.progedu.exception.LoadConfigFailureException;
+import fcu.selab.progedu.status.StatusEnum;
 
-  @Override
-  public String getJenkinsConfig() {
-    return "group_maven_config.xml";
-  }
+public class MavenGroupProject extends GroupProjectType {
 
   @Override
   public ProjectTypeEnum getProjectType() {
@@ -29,42 +28,53 @@ public class MavenGroupProject extends GroupProject {
   }
 
   @Override
-  /**
-   * modify Jenkins job configuration base on sample file
-   * 
-   * @param filePath    filePath
-   * @param updateDbUrl updateDbUrl
-   * @param userName    userName
-   * @param proName     proName
-   * @param tomcatUrl   tomcatUrl
-   */
-  public void createJenkinsJobConfiguration(String filePath, String updateDbUrl, String userName,
-      String proName, String tomcatUrl) {
+  public String getSampleTemplate() {
+    return "MavenQuickStart.zip";
+  }
+
+  @Override
+  public String getJenkinsJobConfigSample() {
+    return "group_maven_config.xml";
+  }
+
+  @Override
+  public void createJenkinsJobConfig(String username, String projectName) {
     try {
-      String filepath = filePath;
+      GitlabConfig gitlabConfig = GitlabConfig.getInstance();
+      String jenkinsJobConfigPath = this.getClass()
+          .getResource("/jenkins/" + getJenkinsJobConfigSample()).getPath();
+
+      CourseConfig courseConfig = CourseConfig.getInstance();
+      String progEduApiUrl = courseConfig.getTomcatServerIp() + "/ProgEdu/webapi";
+      String projectUrl = gitlabConfig.getGitlabHostUrl() + "/" + username + "/" + projectName
+          + ".git";
+      String updateDbUrl = progEduApiUrl + "/commits/update";
       DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
       DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-      Document doc = docBuilder.parse(filepath);
+      Document doc = docBuilder.parse(jenkinsJobConfigPath);
 
-      Node progeduDbUrl = doc.getElementsByTagName("progeduDbUrl").item(0);
-      progeduDbUrl.setTextContent(updateDbUrl);
-
-      Node user = doc.getElementsByTagName("user").item(0);
-      user.setTextContent(userName);
-
-      Node ndProName = doc.getElementsByTagName("proName").item(0);
-      ndProName.setTextContent(proName);
+      doc.getElementsByTagName("url").item(0).setTextContent(projectUrl);
+      doc.getElementsByTagName("progeduDbUrl").item(0).setTextContent(updateDbUrl);
+      doc.getElementsByTagName("user").item(0).setTextContent(username);
+      doc.getElementsByTagName("proName").item(0).setTextContent(projectName);
 
       // write the content into xml file
       TransformerFactory transformerFactory = TransformerFactory.newInstance();
       Transformer transformer = transformerFactory.newTransformer();
       DOMSource source = new DOMSource(doc);
-      StreamResult result = new StreamResult(new File(filepath));
+      StreamResult result = new StreamResult(new File(jenkinsJobConfigPath));
       transformer.transform(source, result);
-    } catch (ParserConfigurationException | TransformerException | SAXException | IOException e) {
+    } catch (LoadConfigFailureException | ParserConfigurationException | SAXException | IOException
+        | TransformerException e) {
       e.printStackTrace();
     }
 
+  }
+
+  @Override
+  public StatusEnum checkStatusType(int num, String username, String assignmentName) {
+    MavenAssignment mavenAssignment = new MavenAssignment();
+    return mavenAssignment.checkStatusType(num, username, assignmentName);
   }
 
 }
