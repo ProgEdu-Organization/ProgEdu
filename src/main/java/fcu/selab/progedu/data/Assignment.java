@@ -1,5 +1,7 @@
 package fcu.selab.progedu.data;
 
+import fcu.selab.progedu.project.ProjectTypeEnum;
+
 public class Assignment {
 
   private int id = 0;
@@ -14,7 +16,7 @@ public class Assignment {
 
   private boolean hasTemplate = false;
 
-  private int type = 0;
+  private ProjectTypeEnum type;
 
   private String gitLabUrl = "";
 
@@ -76,11 +78,11 @@ public class Assignment {
     this.hasTemplate = hasTemplate;
   }
 
-  public int getType() {
+  public ProjectTypeEnum getType() {
     return type;
   }
 
-  public int setType(int type) {
+  public ProjectTypeEnum setType(ProjectTypeEnum type) {
     return this.type = type;
   }
 

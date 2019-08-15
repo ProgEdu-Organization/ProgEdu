@@ -29,6 +29,11 @@ import fcu.selab.progedu.jenkins.JenkinsApi;
 
 @Path("user/")
 public class UserService {
+  private static UserService instance = new UserService();
+
+  public static UserService getInstance() {
+    return instance;
+  }
 
   GitlabService gitlabService = GitlabService.getInstance();
 
@@ -233,8 +238,8 @@ public class UserService {
    * 
    * @return all GitLab users
    */
-  public List<GitlabUser> getUsers() {
-    return gitlabService.getUsers();
+  public List<User> getUsers() {
+    return null;
   }
 
   /**

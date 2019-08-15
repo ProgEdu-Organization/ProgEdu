@@ -8,7 +8,7 @@ public class AssignmentFactory {
    * @param projectType assignmentType
    */
   public static AssignmentType getAssignmentType(String projectType) {
-    ProjectTypeEnum projectTypeEnum = ProjectTypeEnum.getStatusProjectTypeEnum(projectType);
+    ProjectTypeEnum projectTypeEnum = ProjectTypeEnum.getProjectTypeEnum(projectType);
 
     switch (projectTypeEnum) {
       case JAVAC: {

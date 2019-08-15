@@ -8,7 +8,7 @@ public class GroupProjectFactory {
    */
   public static GroupProject getGroupProjectType(String projectType) {
     ProjectTypeEnum type = ProjectTypeEnum
-        .getStatusProjectTypeEnum(projectType);
+        .getProjectTypeEnum(projectType);
 
     switch (type) {
       case JAVAC: {

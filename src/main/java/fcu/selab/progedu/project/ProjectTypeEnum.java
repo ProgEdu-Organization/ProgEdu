@@ -5,10 +5,6 @@ public enum ProjectTypeEnum {
 
   private String type;
 
-  public String getType() {
-    return type;
-  }
-
   private ProjectTypeEnum(String projectType) {
     this.type = projectType;
   }
@@ -18,10 +14,10 @@ public enum ProjectTypeEnum {
    * @param type is proJectStatus String
    * @return status is getStatusProjecTypeEnum object
    */
-  public static ProjectTypeEnum getStatusProjectTypeEnum(String type) {
-    for (ProjectTypeEnum status : ProjectTypeEnum.values()) {
-      if (status.getTypeName().equals(type)) {
-        return status;
+  public static ProjectTypeEnum getProjectTypeEnum(String type) {
+    for (ProjectTypeEnum projectType : ProjectTypeEnum.values()) {
+      if (projectType.getTypeName().equals(type)) {
+        return projectType;
       }
     }
     return null;
