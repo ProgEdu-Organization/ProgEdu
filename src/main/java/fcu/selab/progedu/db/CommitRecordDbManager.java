@@ -217,7 +217,8 @@ public class CommitRecordDbManager {
    * @return last commit record details
    */
   public JSONObject getLastCommitRecord(int auId) {
-    String sql = "SELECT * from Commit_Record where auId=?));";
+    String sql = "SELECT * from Commit_Record a where (a.commitNumber = "
+        + "(SELECT max(commitNumber) FROM Commit_Record WHERE auId = ?));";
     JSONObject ob = new JSONObject();
     JSONArray array = new JSONArray();
 
