@@ -8,13 +8,15 @@ import java.sql.SQLException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import fcu.selab.progedu.status.StatusEnum;
+
 public class CommitRecordDbManager {
   UserDbManager userDbManager = UserDbManager.getInstance();
   private static final String COUNT_STATUS = "count(status)";
   private static final String FIELD_NAME_STATUS = "status";
   private static CommitRecordDbManager dbManager = new CommitRecordDbManager();
   private UserDbManager udb = UserDbManager.getInstance();
-  private static CommitStatusDbManager CSdbManager = new CommitStatusDbManager();
+  private static CommitStatusDbManager CSdb = CommitStatusDbManager.getInstance();
 
   public static CommitRecordDbManager getInstance() {
     return dbManager;
@@ -30,15 +32,16 @@ public class CommitRecordDbManager {
    * @param status       status Id
    * @param time         commit time
    */
-  public void insertCommitRecord(int auId, int commitNumber, int status, String time) {
+  public void insertCommitRecord(int auId, int commitNumber, StatusEnum status, String time) {
     String sql = "INSERT INTO Commit_Record" + "(auId, commitNumber, status, time) "
         + "VALUES(?, ?, ?, ?)";
+    int statusId = CSdb.getStatusIdByName(status.getTypeName());
 
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
       preStmt.setInt(1, auId);
       preStmt.setInt(2, commitNumber);
-      preStmt.setInt(3, status);
+      preStmt.setInt(3, statusId);
       preStmt.setString(4, time);
       preStmt.executeUpdate();
     } catch (SQLException e) {
@@ -118,11 +121,12 @@ public class CommitRecordDbManager {
       preStmt.setInt(1, auIds);
       try (ResultSet rs = preStmt.executeQuery()) {
         while (rs.next()) {
-          String status = rs.getString("status");
+          int statusId = rs.getInt("status");
+          StatusEnum statusEnum = CSdb.getStatusNameById(statusId);
           int commitNumber = rs.getInt("commitNumber");
           String commitTime = rs.getString("time");
           JSONObject eachHw = new JSONObject();
-          eachHw.put("status", status);
+          eachHw.put("status", statusEnum.getTypeName());
           eachHw.put("commitNumber", commitNumber);
           eachHw.put("commitTime", commitTime);
           array.put(eachHw);
@@ -153,11 +157,12 @@ public class CommitRecordDbManager {
       preStmt.setInt(1, auId);
       try (ResultSet rs = preStmt.executeQuery()) {
 
-        String status = rs.getString("status");
+        int statusId = rs.getInt("status");
+        StatusEnum statusEnum = CSdb.getStatusNameById(statusId);
         int commitNumber = rs.getInt("commitNumber");
         String commitTime = rs.getString("time");
         JSONObject eachHw = new JSONObject();
-        eachHw.put("status", status);
+        eachHw.put("status", statusEnum.getTypeName());
         eachHw.put("commitNumber", commitNumber);
         eachHw.put("commitTime", commitTime);
         array.put(eachHw);

@@ -21,7 +21,9 @@ import fcu.selab.progedu.data.User;
 import fcu.selab.progedu.db.AssignmentDbManager;
 import fcu.selab.progedu.db.AssignmentUserDbManager;
 import fcu.selab.progedu.db.CommitRecordDbManager;
+import fcu.selab.progedu.db.CommitStatusDbManager;
 import fcu.selab.progedu.db.UserDbManager;
+import fcu.selab.progedu.status.StatusEnum;
 
 @Path("commits/")
 public class CommitRecordService {
@@ -29,6 +31,7 @@ public class CommitRecordService {
   AssignmentUserDbManager auDb = AssignmentUserDbManager.getInstance();
   UserDbManager userDb = UserDbManager.getInstance();
   AssignmentDbManager assignmentDb = AssignmentDbManager.getInstance();
+  CommitStatusDbManager csdb = CommitStatusDbManager.getInstance();
 
   /**
    * get all commit result.
@@ -116,16 +119,17 @@ public class CommitRecordService {
     int auId = auDb.getAUId(assignmentDb.getAssignmentIdByName(assignmentName),
         userDb.getUserIdByUsername(username));
     int commitNumber = db.getCommitCount(auId) + 1;
-    int status = db.getCommitStatusbyAUId(auId); // �|������
+    int statusId = db.getCommitStatusbyAUId(auId); // �|������
+    StatusEnum statusEnum = csdb.getStatusNameById(statusId);
     String time = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss")
         .format(Calendar.getInstance().getTime());
 
-    db.insertCommitRecord(auId, commitNumber, status, time);
+    db.insertCommitRecord(auId, commitNumber, statusEnum, time);
 
     ob.put("auId", auId);
     ob.put("commitNumber", commitNumber);
     ob.put("time", time);
-    ob.put("status", status);
+    ob.put("status", statusEnum.getTypeName());
 
     return Response.ok().entity(ob.toString()).build();
   }

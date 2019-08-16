@@ -9,8 +9,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fcu.selab.progedu.data.Assignment;
+import fcu.selab.progedu.project.ProjectTypeEnum;
 
 public class AssignmentDbManager {
+  AssignmentTypeDbManager atDb = AssignmentTypeDbManager.getInstance();
 
   private static AssignmentDbManager dbManager = new AssignmentDbManager();
 
@@ -33,6 +35,7 @@ public class AssignmentDbManager {
     String sql = "INSERT INTO Assignment(name, createTime, deadline, description, hasTemplate"
         + ", type, zipChecksum, zipUrl, releaseTime, display)  VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?,"
         + "?)";
+    int typeId = atDb.getTypeIdByName(assignment.getType().getTypeName());
 
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
@@ -41,7 +44,7 @@ public class AssignmentDbManager {
       preStmt.setString(3, assignment.getDeadline());
       preStmt.setString(4, assignment.getDescription());
       preStmt.setBoolean(5, assignment.isHasTemplate());
-      preStmt.setInt(6, assignment.getType());
+      preStmt.setInt(6, typeId);
       preStmt.setString(7, assignment.getTestZipChecksum());
       preStmt.setString(8, assignment.getTestZipUrl());
       preStmt.setString(9, assignment.getReleaseTime());
@@ -71,7 +74,8 @@ public class AssignmentDbManager {
           String deadline = rs.getString("deadline").replace("T", " ");
           String description = rs.getString("description");
           boolean hasTemplate = rs.getBoolean("hasTemplate");
-          int type = rs.getInt("type");
+          int typeId = rs.getInt("type");
+          ProjectTypeEnum typeEnum = atDb.getTypeNameById(typeId);
           String checksum = rs.getString("zipChecksum");
           String zipUrl = rs.getString("zipUrl");
           String releaseTime = rs.getString("releaseTime");
@@ -81,7 +85,7 @@ public class AssignmentDbManager {
           assignment.setCreateTime(createTime);
           assignment.setDescription(description);
           assignment.setHasTemplate(hasTemplate);
-          assignment.setType(type);
+          assignment.setType(typeEnum);
           assignment.setDeadline(deadline);
           assignment.setTestZipChecksum(checksum);
           assignment.setTestZipUrl(zipUrl);

@@ -238,7 +238,7 @@ public class UserService {
    * 
    * @return all GitLab users
    */
-  public List<User> getStudentUsers() {
+  public List<User> getStudents() {
     List<User> studentUsers = new ArrayList<>();
     List<User> users = dbManager.listAllUsers();
 

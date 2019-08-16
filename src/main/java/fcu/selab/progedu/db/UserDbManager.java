@@ -14,6 +14,7 @@ import java.util.List;
 import org.gitlab.api.models.GitlabUser;
 
 import fcu.selab.progedu.data.User;
+import fcu.selab.progedu.service.RoleEnum;
 
 public class UserDbManager {
   private static final String QUERY = "SELECT * FROM User WHERE id = ?";
@@ -24,6 +25,7 @@ public class UserDbManager {
   private static final String EMAIL = "email";
   private static final String GIT_LAB_TOKEN = "gitLabToken";
   private static final String DISPLAY = "display";
+  private static final RoleEnum ROLE = "role";
 
   private static UserDbManager dbManager = new UserDbManager();
 
@@ -161,7 +163,7 @@ public class UserDbManager {
   public int getUserIdByUsername(String username) {
     String query = "SELECT * FROM User WHERE username = ?";
     int id = -1;
-  
+
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(query)) {
       preStmt.setString(1, username);

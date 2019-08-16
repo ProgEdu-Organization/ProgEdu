@@ -158,7 +158,7 @@ public class AssignmentService {
     addProject(assignmentName, releaseTime, deadline, readMe, projectTypeEnum, hasTemplate,
         testZipChecksum, testZipUrl);
 
-    List<User> users = userService.getUsers();
+    List<User> users = userService.getStudents();
     for (User user : users) {
       // 11. Create student project, and import project
       GitlabProject project;
@@ -341,7 +341,7 @@ public class AssignmentService {
     }
     String crumb = jenkins.getCrumb(jenkinsUserName, jenkinsPass);
 
-    List<User> users = userService.getUsers();
+    List<User> users = userService.getStudents();
     // delete Jenkins
     for (User user : users) {
       String jobName = user.getUsername() + "_" + name;
