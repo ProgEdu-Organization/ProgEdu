@@ -1,6 +1,5 @@
 package fcu.selab.progedu.utils;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -10,7 +9,6 @@ import java.util.List;
 import java.util.zip.CRC32;
 import java.util.zip.CheckedOutputStream;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -28,11 +26,9 @@ import org.xml.sax.SAXException;
 
 import fcu.selab.progedu.config.CourseConfig;
 import fcu.selab.progedu.config.GitlabConfig;
-import fcu.selab.progedu.conn.HttpConnect;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 
 public class ZipHandler {
-  HttpConnect httpConn = new HttpConnect();
   GitlabConfig gitData = GitlabConfig.getInstance();
   CourseConfig courseData = CourseConfig.getInstance();
 
@@ -59,22 +55,24 @@ public class ZipHandler {
   private static final int BUFFER_SIZE = 4096;
 
   // /**
-  //  * Extracts a zip entry (file entry)
-  //  * 
-  //  * @param zipIn The zip inputstream
-  //  * @param filePath The file path
-  //  * @throws IOException on fileoutputstream call error
-  //  */
-  // public void extractFile(ZipInputStream zipIn, String filePath) throws IOException {
-  //   try (BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(filePath));) {
-  //     byte[] bytesIn = new byte[BUFFER_SIZE];
-  //     int read = 0;
-  //     while ((read = zipIn.read(bytesIn)) != -1) {
-  //       bos.write(bytesIn, 0, read);
-  //     }
-  //   } catch (Exception e) {
-  //     e.printStackTrace();
-  //   }
+  // * Extracts a zip entry (file entry)
+  // *
+  // * @param zipIn The zip inputstream
+  // * @param filePath The file path
+  // * @throws IOException on fileoutputstream call error
+  // */
+  // public void extractFile(ZipInputStream zipIn, String filePath) throws
+  // IOException {
+  // try (BufferedOutputStream bos = new BufferedOutputStream(new
+  // FileOutputStream(filePath));) {
+  // byte[] bytesIn = new byte[BUFFER_SIZE];
+  // int read = 0;
+  // while ((read = zipIn.read(bytesIn)) != -1) {
+  // bos.write(bytesIn, 0, read);
+  // }
+  // } catch (Exception e) {
+  // e.printStackTrace();
+  // }
   // }
 
   public void setStringBuilder(StringBuilder sb) {

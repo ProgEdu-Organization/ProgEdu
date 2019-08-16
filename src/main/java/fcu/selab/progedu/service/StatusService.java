@@ -38,13 +38,13 @@ public class StatusService {
   /**
    * Check is checkstyle error
    * 
-   * @param consoleText jenkins job console text
+   * @param console jenkins job console text
    * @return boolean
    */
-  public boolean isMavenCheckstyleFailure(String consoleText) {
+  public boolean isMavenCheckstyleFailure(String console) {
     boolean isCheckstyleError = false;
     String checkstyleErrorMessage = "Failed during checkstyle execution";
-    isCheckstyleError = consoleText.contains(checkstyleErrorMessage);
+    isCheckstyleError = console.contains(checkstyleErrorMessage);
     return isCheckstyleError;
   }
 

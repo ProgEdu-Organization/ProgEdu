@@ -28,7 +28,6 @@ import fcu.selab.progedu.config.GitlabConfig;
 import fcu.selab.progedu.config.JenkinsConfig;
 import fcu.selab.progedu.data.Group;
 import fcu.selab.progedu.data.User;
-import fcu.selab.progedu.db.UserDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.service.GroupService;
 import fcu.selab.progedu.utils.Linux;
@@ -45,10 +44,6 @@ public class GitlabService {
   private AuthMethod authMethod = AuthMethod.URL_PARAMETER;
 
   private GitlabAPI gitlab;
-
-  private static UserDbManager dbManager = UserDbManager.getInstance();
-
-  HttpConnect httpConn = HttpConnect.getInstance();
 
   private GitlabService() {
     try {

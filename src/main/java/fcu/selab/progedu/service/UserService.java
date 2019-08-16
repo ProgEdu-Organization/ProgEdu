@@ -25,7 +25,6 @@ import fcu.selab.progedu.conn.GitlabService;
 import fcu.selab.progedu.data.User;
 import fcu.selab.progedu.db.AssignmentDbManager;
 import fcu.selab.progedu.db.UserDbManager;
-import fcu.selab.progedu.jenkins.JenkinsApi;
 
 @Path("user/")
 public class UserService {
@@ -41,7 +40,6 @@ public class UserService {
   private UserDbManager dbManager = UserDbManager.getInstance();
   private AssignmentDbManager projectDbManager = AssignmentDbManager.getInstance();
   private GitlabConfig gitlabData = GitlabConfig.getInstance();
-  private JenkinsApi jenkins = JenkinsApi.getInstance();
   private JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
 
   /**

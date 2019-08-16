@@ -28,6 +28,7 @@ import fcu.selab.progedu.data.Group;
 import fcu.selab.progedu.data.Student;
 import fcu.selab.progedu.db.GroupDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
+import fcu.selab.progedu.project.ProjectTypeEnum;
 
 @Path("group/")
 public class GroupService {
@@ -70,7 +71,7 @@ public class GroupService {
 
       studentList = sort(studentList);
       List<Group> groups = group(studentList);
-      newGroup(groups);
+      createGitlabGroupAndProject(groups);
     } catch (LoadConfigFailureException | IOException e) {
       isSuccess = false;
       e.printStackTrace();
@@ -132,12 +133,14 @@ public class GroupService {
     return studentList;
   }
 
-  private void newGroup(List<Group> groups) throws IOException, LoadConfigFailureException {
+  private void createGitlabGroupAndProject(List<Group> groups)
+      throws IOException, LoadConfigFailureException {
 
     for (Group group : groups) {
-      createGroup(group);
+      createGitlabGroup(group);
       GroupProjectService groupProjectService = GroupProjectService.getInstance();
-      groupProjectService.createGroupProject(group, null, null, "Maven", null, null);
+      groupProjectService.createGroupProject(group, null, null, ProjectTypeEnum.MAVEN.getTypeName(),
+          null, null);
 
     }
   }
@@ -148,7 +151,7 @@ public class GroupService {
    * @param groupName The group's name
    * @return GitLabGroup
    */
-  public GitlabGroup newGroup(String groupName) {
+  public GitlabGroup createGitlabGroup(String groupName) {
     return gitlabService.createGroup(groupName);
   }
 
@@ -167,9 +170,9 @@ public class GroupService {
    * 
    * @param group Group in database
    */
-  public GitlabGroup createGroup(Group group) {
+  public GitlabGroup createGitlabGroup(Group group) {
     int leaderId = getUserIdByUsername(group.getLeaderUsername());
-    GitlabGroup gitlabGroup = newGroup(group.getGroupName());
+    GitlabGroup gitlabGroup = createGitlabGroup(group.getGroupName());
     int groupId = getGroupId(gitlabGroup);
     gitlabService.addMember(groupId, leaderId, 40);
     gdb.addGroup(group.getGroupName(), group.getLeaderUsername(), true); // insert into db

@@ -1,12 +1,9 @@
 package fcu.selab.progedu.service;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Properties;
-import java.util.zip.CRC32;
-import java.util.zip.CheckedInputStream;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -34,12 +31,12 @@ import fcu.selab.progedu.config.CourseConfig;
 import fcu.selab.progedu.config.GitlabConfig;
 import fcu.selab.progedu.config.JenkinsConfig;
 import fcu.selab.progedu.conn.GitlabService;
+import fcu.selab.progedu.conn.JenkinsService;
 import fcu.selab.progedu.conn.TomcatService;
 import fcu.selab.progedu.data.Assignment;
 import fcu.selab.progedu.data.User;
 import fcu.selab.progedu.db.AssignmentDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
-import fcu.selab.progedu.jenkins.JenkinsApi;
 import fcu.selab.progedu.project.AssignmentFactory;
 import fcu.selab.progedu.project.AssignmentType;
 import fcu.selab.progedu.project.ProjectTypeEnum;
@@ -51,7 +48,7 @@ public class AssignmentService {
   private GitlabService gitlabService = GitlabService.getInstance();
   private GitlabUser root = gitlabService.getRoot();
   private ZipHandler zipHandler;
-  private JenkinsApi jenkins = JenkinsApi.getInstance();
+  private JenkinsService jenkins = JenkinsService.getInstance();
   private TomcatService tomcatService = TomcatService.getInstance();
   private GitlabConfig gitlabData = GitlabConfig.getInstance();
   private JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
@@ -161,10 +158,9 @@ public class AssignmentService {
     List<User> users = userService.getUsers();
     for (User user : users) {
       // 11. Create student project, and import project
-      GitlabProject project;
       try {
-        project = gitlabService.createPrivateProject(user.getGitLabId(), assignmentName,
-            rootProjectUrl);
+        GitlabProject project = gitlabService.createPrivateProject(user.getGitLabId(),
+            assignmentName, rootProjectUrl);
         gitlabService.setGitlabWebhook(project);
       } catch (IOException | LoadConfigFailureException e) {
         e.printStackTrace();
@@ -204,25 +200,6 @@ public class AssignmentService {
   }
 
   /**
-   * 
-   * @param groupName group name
-   * @return url gitlab project url
-   */
-  public String getGroupProjectUrl(String groupName, String projectName) {
-    String url = null;
-    String gitlabUrl = null;
-    try {
-      gitlabUrl = gitlabData.getGitlabRootUrl();
-      url = gitlabUrl + "/" + groupName + "/" + projectName;
-    } catch (LoadConfigFailureException e) {
-      e.printStackTrace();
-    }
-
-    return url;
-
-  }
-
-  /**
    * Send the notification email to student
    *
    */
@@ -256,25 +233,6 @@ public class AssignmentService {
       throw new RuntimeException(e);
     }
   }
-
-  // private void createJenkinsJob(String name) {
-  // String jenkinsCrumb = jenkins.getCrumb(jenkinsRootUsername,
-  // jenkinsRootPassword);
-  // StringBuilder sb = zipHandler.getStringBuilder();
-  // jenkins.createRootJob(name, jenkinsCrumb, fileType, sb);
-  // List<GitlabUser> users = conn.getUsers();
-  // Collections.reverse(users);
-  // for (GitlabUser user : users) {
-  // if (user.getId() == 1) {
-  // jenkins.buildJob(user.getUsername(), name, jenkinsCrumb);
-  // continue;
-  // }
-  // jenkins.createJenkinsJob(user.getUsername(), name, jenkinsCrumb, fileType,
-  // sb);
-  // jenkins.buildJob(user.getUsername(), name, jenkinsCrumb);
-  // }
-  //
-  // }
 
   /**
    * Add a project to database
@@ -427,47 +385,22 @@ public class AssignmentService {
 
     return name;
   }
-
-//  /**
-//   * Edit test case upload test case to test folder
-//   * 
-//   * @param fileName            file name
-//   * @param uploadedInputStream file
-//   */
-//  private String storeFileToTestsFolder(String fileName, InputStream uploadedInputStream) {
-//    try {
-//      createFolderIfNotExists(testDir);
-//    } catch (SecurityException se) {
-//      System.out.println(se.toString());
-//    }
-//    String uploadedFileLocation = testDir + fileName;
-//    File uploadedFile = new File(uploadedFileLocation);
-//    if (uploadedFile.exists()) {
-//      uploadedFile.delete();
-//    }
-//    try {
-//      saveToFile(uploadedInputStream, uploadedFileLocation);
+//
+//  private String getChecksum(String zipFilePath) {
+//    String strChecksum = "";
+//
+//    try (CheckedInputStream cis = new CheckedInputStream(new FileInputStream(zipFilePath),
+//        new CRC32());) {
+//      byte[] buf = new byte[1024];
+//      // noinspection StatementWithEmptyBody
+//      while (cis.read(buf) >= 0) {
+//      }
+//      System.out.println(cis.getChecksum().getValue());
+//      strChecksum = String.valueOf(cis.getChecksum().getValue());
 //    } catch (IOException e) {
-//      System.out.println(e.toString());
+//      e.printStackTrace();
 //    }
-//    return uploadedFileLocation;
+//    return strChecksum;
 //  }
-
-  private String getChecksum(String zipFilePath) {
-    String strChecksum = "";
-
-    try (CheckedInputStream cis = new CheckedInputStream(new FileInputStream(zipFilePath),
-        new CRC32());) {
-      byte[] buf = new byte[1024];
-      // noinspection StatementWithEmptyBody
-      while (cis.read(buf) >= 0) {
-      }
-      System.out.println(cis.getChecksum().getValue());
-      strChecksum = String.valueOf(cis.getChecksum().getValue());
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    return strChecksum;
-  }
 
 }
