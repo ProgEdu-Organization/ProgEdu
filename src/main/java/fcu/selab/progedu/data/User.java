@@ -2,6 +2,8 @@ package fcu.selab.progedu.data;
 
 import java.io.Serializable;
 
+import fcu.selab.progedu.service.RoleEnum;
+
 @SuppressWarnings("serial")
 public class User implements Serializable {
 
@@ -10,7 +12,7 @@ public class User implements Serializable {
   private int gitLabId;
 
   private String username; // ??�緯??��?��?��?�蕭(??�稷??��?�蕭)
-                            // ??��?��?�蕭
+                           // ??��?��?�蕭
 
   private String name; // ??��?�蕭??��?�蕭??��?�蕭??��(??��?�蕭??��?�蕭)
 
@@ -22,6 +24,8 @@ public class User implements Serializable {
 
   private boolean display;
 
+  private RoleEnum role;
+
   public User() {
 
   }
@@ -30,10 +34,10 @@ public class User implements Serializable {
    * User constructor
    * 
    * @param username studentId
-   * @param name      student's full name
-   * @param email     student's email
-   * @param password  student's password
-   * @param display   student's display
+   * @param name     student's full name
+   * @param email    student's email
+   * @param password student's password
+   * @param display  student's display
    */
   public User(String username, String name, String email, String password, boolean display) {
     this.username = username;
@@ -105,6 +109,14 @@ public class User implements Serializable {
 
   public void setDisplay(boolean display) {
     this.display = display;
+  }
+
+  public RoleEnum getRole() {
+    return role;
+  }
+
+  public void setRole(RoleEnum role) {
+    this.role = role;
   }
 
 }

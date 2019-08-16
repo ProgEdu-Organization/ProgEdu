@@ -234,12 +234,20 @@ public class UserService {
 //
 
   /**
-   * Get all user on GitLab
+   * Get all user which role is student
    * 
    * @return all GitLab users
    */
-  public List<User> getUsers() {
-    return null;
+  public List<User> getStudentUsers() {
+    List<User> studentUsers = new ArrayList<>();
+    List<User> users = dbManager.listAllUsers();
+
+    for (User user : users) {
+      if (user.getRole() == RoleEnum.STUDENT) {
+        studentUsers.add(user);
+      }
+    }
+    return studentUsers;
   }
 
   /**

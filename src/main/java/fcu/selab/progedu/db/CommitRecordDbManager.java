@@ -173,24 +173,25 @@ public class CommitRecordDbManager {
    * get commit count by auId
    * 
    * 
-   * @param id auId
+   * @param auid auId
    * @return aId assignment Id
    */
-  public int getCommitCount(int id) {
-    int count = 0;
-    String sql = "SELECT * FROM Commit_Record WHERE auId=?";
+  public int getCommitCount(int auid) {
+    int commitNumber = 0;
+    String sql = "SELECT * from Commit_Record a where (a.commitNumber = "
+        + "(SELECT max(commitNumber) FROM Commit_Record WHERE auId = ?));";
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
-      preStmt.setInt(1, id);
+      preStmt.setInt(1, auid);
       try (ResultSet rs = preStmt.executeQuery()) {
         while (rs.next()) {
-          count = rs.getInt("count(auId)");
+          commitNumber = rs.getInt("commitNumber");
         }
       }
     } catch (SQLException e) {
       e.printStackTrace();
     }
-    return count;
+    return commitNumber;
   }
 
   /**
