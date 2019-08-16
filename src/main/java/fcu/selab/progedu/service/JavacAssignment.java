@@ -1,9 +1,12 @@
 package fcu.selab.progedu.service;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -35,26 +38,25 @@ public class JavacAssignment extends AssignmentTypeMethod {
    * 
    * @param entryNewName entryNewName
    */
-  // public void searchFile(String entryNewName) {
-  // StringBuilder sb = new StringBuilder();
-  // String last = "";
-  // if (entryNewName.endsWith(".java")) {
-  // last = entryNewName.substring(entryNewName.length() - 5,
-  // entryNewName.length());
-  // }
-  // String fileName = null;
-  // for (int i = 0; i < entryNewName.length() - 3; i++) {
-  // if (entryNewName.substring(i, i + 3).equals("src")) {
-  // fileName = entryNewName.substring(i);
-  // System.out.println("Search java file fileName : " + fileName);
-  // if (last.equals(".java")) {
-  // sb.append("javac " + fileName + "\n");
-  // sb.append("echo \"BUILD SUCCESS\"");
-  // zipHandler.setStringBuilder(sb);
-  // }
-  // }
-  // }
-  // }
+  public void searchFile(String entryNewName) {
+    StringBuilder sb = new StringBuilder();
+    String last = "";
+    if (entryNewName.endsWith(".java")) {
+      last = entryNewName.substring(entryNewName.length() - 5, entryNewName.length());
+    }
+    String fileName = null;
+    for (int i = 0; i < entryNewName.length() - 3; i++) {
+      if (entryNewName.substring(i, i + 3).equals("src")) {
+        fileName = entryNewName.substring(i);
+        System.out.println("Search java file fileName : " + fileName);
+        if (last.equals(".java")) {
+          sb.append("javac " + fileName + "\n");
+          sb.append("echo \"BUILD SUCCESS\"");
+          zipHandler.setStringBuilder(sb);
+        }
+      }
+    }
+  }
 
   /**
    * extract main method and modify pom.xml
@@ -64,44 +66,42 @@ public class JavacAssignment extends AssignmentTypeMethod {
    */
   public void extractFile(String zipFilePath, String testDirectory, String destDirectory,
       String projectName) {
-    List<String> allJavaFile = new ArrayList<>();
-    StringBuilder sb = new StringBuilder();
+    // List<String> allJavaFile = new ArrayList<>();
+    // StringBuilder sb = new StringBuilder();
 
-    allJavaFile = searchJavaFile(testDirectory, projectName);
+    // allJavaFile = searchJavaFile(testDirectory, projectName);
 
-    for (int i = 0; i < allJavaFile.size(); i++) {
-      sb.append(allJavaFile.get(i));
+    // for (int i = 0; i < allJavaFile.size(); i++) {
+    // sb.append(allJavaFile.get(i));
+    // }
+
+    // zipHandler.setStringBuilder(sb);
+
+    int parDirLength = 0;
+    String parentDir = null;
+
+    try (ZipInputStream zipIn = new ZipInputStream(new FileInputStream(zipFilePath))) {
+
+      ZipEntry entry = zipIn.getNextEntry();
+      while (entry != null) {
+        String filePath = destDirectory + File.separator + entry.getName();
+        ;
+
+        if (filePath.substring(filePath.length() - 4).equals("src/") && parDirLength == 0) {
+          parentDir = zipHandler.getParentDir(filePath);
+          parDirLength = parentDir.length() + 1;
+        }
+        String entryNewName = filePath.substring(parDirLength);
+
+        if (!entry.isDirectory()) {
+          searchFile(entryNewName);
+        }
+        zipIn.closeEntry();
+        entry = zipIn.getNextEntry();
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
     }
-
-    zipHandler.setStringBuilder(sb);
-
-    // int parDirLength = 0;
-    // String parentDir = null;
-
-    // try (ZipInputStream zipIn = new ZipInputStream(new
-    // FileInputStream(zipFilePath))) {
-
-    // ZipEntry entry = zipIn.getNextEntry();
-    // while (entry != null) {
-    // String filePath = destDirectory + File.separator + entry.getName();
-    // ;
-
-    // if (filePath.substring(filePath.length() - 4).equals("src/") &&
-    // parDirLength == 0) {
-    // parentDir = zipHandler.getParentDir(filePath);
-    // parDirLength = parentDir.length() + 1;
-    // }
-    // String entryNewName = filePath.substring(parDirLength);
-
-    // if (!entry.isDirectory()) {
-    // searchFile(entryNewName);
-    // }
-    // zipIn.closeEntry();
-    // entry = zipIn.getNextEntry();
-    // }
-    // } catch (Exception e) {
-    // e.printStackTrace();
-    // }
   }
 
   /**
