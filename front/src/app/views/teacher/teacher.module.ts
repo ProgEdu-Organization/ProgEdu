@@ -6,7 +6,6 @@ import { ButtonsModule } from 'ngx-bootstrap/buttons';
 import { CommonModule } from '@angular/common';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { TeacherRoutingModule } from './teacher-routing.module';
-import { FilterPipe } from '../../pipe/filter.pipe';
 import { DashProjectChoosedComponent } from './dash-project-choosed/dash-project-choosed.component';
 import { AssignmentManagementComponent } from './assignment-management/assignment-management.component';
 
@@ -22,7 +21,7 @@ import { GroupManagementComponent } from './group-management/group-management.co
 // Carousel Component
 import { CarouselModule } from 'ngx-bootstrap/carousel';
 import { ChartComponent } from './chart/chart.component';
-
+import { FilterPipe } from '../../pipe/filter.pipe';
 @NgModule({
   imports: [
     FormsModule,
@@ -38,12 +37,12 @@ import { ChartComponent } from './chart/chart.component';
   ],
   declarations: [
     DashboardComponent,
-    FilterPipe,
     DashProjectChoosedComponent,
     AssignmentManagementComponent,
     CreateAssignmentComponent,
     StudentManagementComponent,
     GroupManagementComponent,
-    ChartComponent]
+    ChartComponent,
+    FilterPipe]
 })
 export class TeacherModule { }

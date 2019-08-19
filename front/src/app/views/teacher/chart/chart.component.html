@@ -37,9 +37,8 @@
             <div class="card-body">
               <div class="chart-wrapper">
                 <canvas baseChart class="chart" [datasets]="mixedChartData" [labels]="mixedChartLabels"
-                  [options]="mixedChartOptions" [colors]="mixedChartColours" [legend]="mixedChartLegend"
-                  [chartType]="mixedChartType" (chartHover)="chartHovered($event)"
-                  (chartClick)="chartClicked($event)"></canvas>
+                  [options]="mixedChartOptions" [legend]="mixedChartLegend" [chartType]="mixedChartType"
+                  (chartHover)="chartHovered($event)" (chartClick)="chartClicked($event)"></canvas>
               </div>
             </div>
           </div>
