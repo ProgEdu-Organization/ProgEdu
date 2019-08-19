@@ -11,8 +11,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.gitlab.api.models.GitlabUser;
-
 import fcu.selab.progedu.data.User;
 
 public class UserDbManager {
@@ -42,21 +40,21 @@ public class UserDbManager {
    * 
    * @param user The gitlab user
    */
-  public void addUser(GitlabUser user) {
+  public void addUser(User user) {
     String sql = "INSERT INTO "
         + "User(gitLabId, username, name, password, email, gitLabToken, display)  "
         + "VALUES(?, ?, ?, ?, ?, ?, ?)";
 
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
-      String password = passwordMD5(user.getUsername());
+      String password = passwordMD5(user.getPassword());
       password += user.getUsername();
-      preStmt.setInt(1, user.getId());
+      preStmt.setInt(1, user.getGitLabId());
       preStmt.setString(2, user.getUsername());
       preStmt.setString(3, user.getName());
       preStmt.setString(4, password);
       preStmt.setString(5, user.getEmail());
-      preStmt.setString(6, user.getPrivateToken());
+      preStmt.setString(6, user.getGitLabToken());
       preStmt.setBoolean(7, true);
       preStmt.executeUpdate();
     } catch (SQLException e) {

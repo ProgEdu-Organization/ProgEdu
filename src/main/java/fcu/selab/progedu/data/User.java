@@ -10,7 +10,7 @@ public class User implements Serializable {
   private int gitLabId;
 
   private String username; // ??�緯??��?��?��?�蕭(??�稷??��?�蕭)
-                            // ??��?��?�蕭
+                           // ??��?��?�蕭
 
   private String name; // ??��?�蕭??��?�蕭??��?�蕭??��(??��?�蕭??��?�蕭)
 
@@ -30,10 +30,10 @@ public class User implements Serializable {
    * User constructor
    * 
    * @param username studentId
-   * @param name      student's full name
-   * @param email     student's email
-   * @param password  student's password
-   * @param display   student's display
+   * @param name     student's full name
+   * @param email    student's email
+   * @param password student's password
+   * @param display  student's display
    */
   public User(String username, String name, String email, String password, boolean display) {
     this.username = username;
@@ -88,7 +88,11 @@ public class User implements Serializable {
   }
 
   public void setPassword(String password) {
-    this.password = password;
+    if (password == null || password.isEmpty()) {
+      this.password = this.username;
+    } else {
+      this.password = password;
+    }
   }
 
   public String getGitLabToken() {

@@ -61,8 +61,18 @@ public class UserService {
       CsvReader csvReader = new CsvReader(new InputStreamReader(uploadedInputStream, "UTF-8"));
       csvReader.readHeaders();
       while (csvReader.readRecord()) {
-        User newUser = new User(csvReader.get("StudentId"), csvReader.get("Name"),
-            csvReader.get("Email"), csvReader.get("Password"), true);
+        User newUser = new User();
+        String username = csvReader.get("Username");
+        String password = csvReader.get("Password");
+        String name = csvReader.get("Name");
+        String email = csvReader.get("Email");
+
+        newUser.setDisplay(true);
+        newUser.setUsername(username);
+        newUser.setPassword(password);
+        newUser.setName(name);
+        newUser.setEmail(email);
+
         errorMessage = getErrorMessage(users, newUser);
         if (errorMessage.isEmpty()) {
           users.add(newUser);
@@ -100,9 +110,10 @@ public class UserService {
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   public Response createAccount(@FormDataParam("name") String name,
       @FormDataParam("username") String username, @FormDataParam("email") String email,
-      @FormDataParam("password") String password) {
+      @FormDataParam("password") String password,
+      @FormDataParam("isDisplayed") boolean isDisplayed) {
     Response response = null;
-    User user = new User(username, name, email, password, true);
+    User user = new User(username, name, email, password, isDisplayed);
     String errorMessage = getErrorMessage(user);
 
     if (errorMessage.isEmpty()) {
@@ -149,88 +160,6 @@ public class UserService {
 
   }
 
-//  /**
-//   * create previous project for new student.
-//   * 
-//   * @param user student
-//   * @return check
-//   */
-//  public boolean importPreviousProject(User user) {
-//    boolean check = false;
-//    List<Project> projects = projectDbManager.listAllProjects();
-//    String url = "";
-//    String gitlabUrl = "";
-//    String userName = user.getUsername();
-//    try {
-//      gitlabUrl = gitlabData.getGitlabRootUrl();
-//      for (Project project : projects) {
-//        String projectName = project.getName();
-//        Project project1 = projectDbManager.getProjectByName(projectName);
-//        url = gitlabUrl + "/root/" + projectName;
-//        GitlabProject gitlabProject = gitlabService.createPrivateProject(user.getGitLabId(),
-//            project.getName(), url);
-//        HttpConnect.getInstance().setGitlabWebhook(gitlabProject.getOwner().getName(),
-//            gitlabProject);
-//        boolean isSuccess = createPreviuosJob(userName, projectName, project1.getType());
-//        check = check && isSuccess;
-//      }
-//      check = true;
-//    } catch (Exception e) {
-//      e.printStackTrace();
-//    }
-//    return check;
-//  }
-//
-//  /**
-//   * create previous job for new student.
-//   * 
-//   * @param username student name
-//   * @param proName  project name
-//   * @param fileType job type
-//   * @return check
-//   */
-//  public boolean createPreviuosJob(String username, String proName, String fileType) {
-//    boolean check = false;
-//    String jenkinsRootUsername = null;
-//    String jenkinsRootPassword = null;
-//    String tempDir = System.getProperty("java.io.tmpdir");
-//    try {
-//      proName = proName.toUpperCase();
-//
-//      String proUrl = gitlabData.getGitlabHostUrl() + "/" + username + "/" + proName + ".git";
-//      proUrl = proUrl.toLowerCase();
-//      String filePath = tempDir + "/configs/" + proName + ".xml";
-//      jenkins.modifyXmlFileUrl(filePath, proUrl);
-//      if ("Javac".equals(fileType)) {
-//        jenkins.modifyXmlFileCommand(filePath, username, proName);
-//      }
-//      if ("Maven".equals(fileType)) {
-//        jenkins.modifyXmlFileProgEdu(filePath, username, proName);
-//      }
-//      if ("Web".equals(fileType)) {
-//        jenkins.modifyWebXmlFile(filePath, username, proName);
-//      }
-//
-//      jenkinsRootUsername = jenkinsData.getJenkinsRootUsername();
-//      jenkinsRootPassword = jenkinsData.getJenkinsRootPassword();
-//      String jenkinsCrumb = jenkins.getCrumb(jenkinsRootUsername, jenkinsRootPassword);
-//      jenkins.postCreateJob(username, proName, proUrl, jenkinsCrumb, filePath);
-//      jenkins.buildJob(username, proName, jenkinsCrumb);
-//      check = true;
-//    } catch (Exception e) {
-//      e.printStackTrace();
-//    }
-//    return check;
-//  }
-//
-//  /**
-//   * Print user information
-//   * 
-//   * @param student user
-//   */
-
-//
-
   /**
    * Get all user on GitLab
    * 
@@ -249,7 +178,10 @@ public class UserService {
   private void register(User user) throws IOException {
     GitlabUser gitlabUser = gitlabService.createUser(user.getEmail(), user.getPassword(),
         user.getUsername(), user.getName());
-    dbManager.addUser(gitlabUser);
+    user.setGitLabToken(gitlabUser.getPrivateToken());
+    user.setGitLabId(gitlabUser.getId());
+
+    dbManager.addUser(user);
   }
 
   private boolean isPasswordTooShort(String password) {

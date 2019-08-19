@@ -170,7 +170,7 @@ public class GroupProjectService {
     groupProject.setCreateTime(tomcatService.getCurrentTime());
     groupProject.setDescription(readMe);
     groupProject.setType(projectType);
-    dbManager.addGroupProject(groupProject);
+//    dbManager.addGroupProject(groupProject);
   }
 
 }
