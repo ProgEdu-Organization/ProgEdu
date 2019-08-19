@@ -5,6 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import fcu.selab.progedu.project.ProjectTypeEnum;
+
 public class AssignmentTypeDbManager {
 
   private static AssignmentTypeDbManager dbManager = new AssignmentTypeDbManager();
@@ -20,75 +22,43 @@ public class AssignmentTypeDbManager {
   }
 
   /**
-   * add assignmentType into database
+   * Get assignment type Id by type name
    * 
-   * @param type Assignment_Type name
+   * @param typeName type name
+   * @return typeId type id
    */
-  public void addAssignmentType(String type) {
-    String sql = "INSERT INTO Assignment_Type(name)  VALUES( ?)";
+  public int getTypeIdByName(String typeName) {
+    String query = "SELECT * FROM Assignment_Type WHERE name = ?";
+    int typeId = 0;
 
     try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
-      preStmt.setString(1, type);
-      preStmt.executeUpdate();
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
-  }
-
-  /**
-   * delete assignmentType from database
-   * 
-   * @param type Assignment_Type name
-   */
-  public void deleteAssignmentType(String type) {
-    String sql = "DELETE FROM Assignment_Type WHERE name ='" + type + "'";
-
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
-      preStmt.setString(1, type);
-      preStmt.executeUpdate();
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
-  }
-
-  /**
-   * get assignment type Id by name
-   * 
-   * @param name Assignment_Type name
-   * @return type assignment type
-   */
-  public int getAssignmentTypeId(String name) {
-    int id = 0;
-    String sql = "SELECT * FROM Assignment_Type WHERE name=?";
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
-      preStmt.setString(1, name);
-      try (ResultSet rs = preStmt.executeQuery()) {
+        PreparedStatement preStmt = conn.prepareStatement(query)) {
+      preStmt.setString(1, typeName);
+      try (ResultSet rs = preStmt.executeQuery();) {
         while (rs.next()) {
-          id = rs.getInt("id");
+          typeId = rs.getInt("id");
         }
       }
     } catch (SQLException e) {
       e.printStackTrace();
     }
-    return id;
+    return typeId;
   }
 
   /**
-   * get assignment type name by Id
+   * Get assignment type name by type Id
    * 
-   * @param id Assignment_Type id
-   * @return name assignment name
+   * @param typeId type name
+   * @return type id
    */
-  public String getAssignmentTypeName(int id) {
+  public ProjectTypeEnum getTypeNameById(int typeId) {
+    String query = "SELECT * FROM Assignment_Type WHERE id = ?";
     String typeName = null;
-    String sql = "SELECT * FROM Assignment_Type WHERE id=?";
+
     try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
-      preStmt.setInt(1, id);
-      try (ResultSet rs = preStmt.executeQuery()) {
+        PreparedStatement preStmt = conn.prepareStatement(query)) {
+      preStmt.setInt(1, typeId);
+      try (ResultSet rs = preStmt.executeQuery();) {
         while (rs.next()) {
           typeName = rs.getString("name");
         }
@@ -96,7 +66,8 @@ public class AssignmentTypeDbManager {
     } catch (SQLException e) {
       e.printStackTrace();
     }
-    return typeName;
+    ProjectTypeEnum typeEnum = ProjectTypeEnum.getProjectTypeEnum(typeName);
+    return typeEnum;
   }
 
 }

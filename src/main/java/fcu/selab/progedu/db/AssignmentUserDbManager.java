@@ -21,43 +21,6 @@ public class AssignmentUserDbManager {
   }
 
   /**
-   * add AssignmentUser into database
-   * 
-   * @param aid Assignment Id
-   * @param uid User Id
-   */
-  public void addAssignmentUser(int aid, int uid) {
-    String sql = "INSERT INTO Assignment_User(aId, uId)  VALUES( ?, ?)";
-
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
-      preStmt.setInt(1, aid);
-      preStmt.setInt(2, uid);
-
-      preStmt.executeUpdate();
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
-  }
-
-  /**
-   * delete AssignmentUser from database
-   * 
-   * @param aid Assignment Id
-   * @param uid User Id
-   */
-  public void deleteAssignmentUser(int aid, int uid) {
-    String sql = "DELETE FROM Assignment_User WHERE aId ='" + aid + "' AND uId = '" + uid + "'";
-
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
-      preStmt.executeUpdate();
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
-  }
-
-  /**
    * get auId by assignment Id and user Id
    * 
    * @param aid Assignment Id

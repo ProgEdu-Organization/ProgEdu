@@ -5,6 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import fcu.selab.progedu.status.StatusEnum;
+
 public class CommitStatusDbManager {
   private static CommitStatusDbManager dbManager = new CommitStatusDbManager();
 
@@ -15,83 +17,52 @@ public class CommitStatusDbManager {
   private IDatabase database = new MySqlDatabase();
 
   /**
-   * add CommitStatus into database
+   * Get CommitStatus status Id by status name
    * 
-   * @param status Commit_Status status
+   * @param statusName status name
+   * @return statusId status id
    */
-  public void addAssignmentType(String status) {
-    String sql = "INSERT INTO Commit_Status(status)  VALUES( ?)";
+  public int getStatusIdByName(String statusName) {
+    String query = "SELECT * FROM Commit_Status WHERE status = ?";
+    int statusId = 0;
 
     try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
-      preStmt.setString(1, status);
-      preStmt.executeUpdate();
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
-  }
-
-  /**
-   * delete CommitStatus from database
-   * 
-   * @param status Commit_Status status
-   */
-  public void deleteAssignmentType(String status) {
-    String sql = "DELETE FROM Commit_Status WHERE status ='" + status + "'";
-
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
-      preStmt.setString(1, status);
-      preStmt.executeUpdate();
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
-  }
-
-  /**
-   * get CommitStatus id by status
-   * 
-   * @param status Commit_Status statusName
-   * @return id status id
-   */
-  public int getCommitStatusId(String status) {
-    int id = 0;
-    String sql = "SELECT * FROM Commit_Status WHERE status=?";
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
-      preStmt.setString(1, status);
-      try (ResultSet rs = preStmt.executeQuery()) {
+        PreparedStatement preStmt = conn.prepareStatement(query)) {
+      preStmt.setString(1, statusName);
+      try (ResultSet rs = preStmt.executeQuery();) {
         while (rs.next()) {
-          id = rs.getInt("id");
+          statusId = rs.getInt("id");
         }
       }
     } catch (SQLException e) {
       e.printStackTrace();
     }
-    return id;
+    return statusId;
   }
 
   /**
-   * get CommitStatus status by id
+   * Get CommitStatus status name by status Id
    * 
-   * @param id Commit_Status id
-   * @return status Commit_Status name
+   * @param statusId type name
+   * @return statusEnum statusEnum
    */
-  public String getCommitStatusName(int id) {
-    String status = null;
-    String sql = "SELECT * FROM Commit_Status WHERE id=?";
+  public StatusEnum getStatusNameById(int statusId) {
+    String query = "SELECT * FROM Commit_Status WHERE id = ?";
+    String statusName = null;
+
     try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
-      preStmt.setInt(1, id);
-      try (ResultSet rs = preStmt.executeQuery()) {
+        PreparedStatement preStmt = conn.prepareStatement(query)) {
+      preStmt.setInt(1, statusId);
+      try (ResultSet rs = preStmt.executeQuery();) {
         while (rs.next()) {
-          status = rs.getString("status");
+          statusName = rs.getString("status");
         }
       }
     } catch (SQLException e) {
       e.printStackTrace();
     }
-    return status;
+    StatusEnum statusEnum = StatusEnum.getStatusEnum(statusName);
+    return statusEnum;
   }
 
 }

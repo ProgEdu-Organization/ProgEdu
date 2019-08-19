@@ -22,9 +22,11 @@ import fcu.selab.progedu.db.AssignmentDbManager;
 import fcu.selab.progedu.db.AssignmentTypeDbManager;
 import fcu.selab.progedu.db.AssignmentUserDbManager;
 import fcu.selab.progedu.db.CommitRecordDbManager;
+import fcu.selab.progedu.db.CommitStatusDbManager;
 import fcu.selab.progedu.db.UserDbManager;
 import fcu.selab.progedu.project.AssignmentFactory;
 import fcu.selab.progedu.project.AssignmentType;
+import fcu.selab.progedu.status.StatusEnum;
 
 @Path("commits/")
 public class CommitRecordService {
@@ -33,6 +35,7 @@ public class CommitRecordService {
   UserDbManager userDb = UserDbManager.getInstance();
   AssignmentDbManager assignmentDb = AssignmentDbManager.getInstance();
   AssignmentTypeDbManager atDb = AssignmentTypeDbManager.getInstance();
+  CommitStatusDbManager csdb = CommitStatusDbManager.getInstance();
 
   /**
    * get all commit result.
@@ -121,32 +124,25 @@ public class CommitRecordService {
 
     JSONObject ob = new JSONObject();
     AssignmentType assignmentType = AssignmentFactory.getAssignmentType(
-        atDb.getAssignmentTypeName(assignmentDb.getAssignmentType(assignmentName)));
+        atDb.getTypeNameById(assignmentDb.getAssignmentType(assignmentName)).getTypeName());
 
     int auId = auDb.getAUId(assignmentDb.getAssignmentIdByName(assignmentName),
         userDb.getUserIdByUsername(username));
     int commitNumber = db.getCommitCount(auId) + 1;
     String time = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss")
         .format(Calendar.getInstance().getTime());
-    String status = assignmentType.checkStatusType(commitNumber, username, assignmentName)
-        .getTypeName();
-    int statusId = atDb.getAssignmentTypeId(status);
-    db.insertCommitRecord(auId, commitNumber, statusId, time);
+
+    StatusEnum statusEnum = assignmentType.checkStatusType(commitNumber, username, assignmentName);
+    db.insertCommitRecord(auId, commitNumber, statusEnum, time);
 
     ob.put("auId", auId);
     ob.put("commitNumber", commitNumber);
     ob.put("time", time);
-    ob.put("status", status);
+    ob.put("status", statusEnum.getTypeName());
 
     return Response.ok().entity(ob.toString()).build();
   }
 
-  /**
-   * delete DB commit record.
-   * 
-   * @param assignmentName
-   *          assignment name
-   */
   public void deleteRecord(String assignmentName) {
     int aId = assignmentDb.getAssignmentIdByName(assignmentName);
     List<Integer> uIds = auDb.getUids(aId);
