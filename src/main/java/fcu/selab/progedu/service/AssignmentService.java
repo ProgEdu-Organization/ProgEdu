@@ -126,6 +126,7 @@ public class AssignmentService {
      * TO-DO : unzip, create template and test file
      * 
      */
+    zipHandler.unzipFile();
 
 //    try {
 //      assignment.unzip(filePath, fileDetail.getFileName(), name, zipHandler);

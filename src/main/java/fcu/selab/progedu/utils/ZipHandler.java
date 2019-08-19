@@ -193,4 +193,8 @@ public class ZipHandler {
     return urlForJenkinsDownloadTestFile;
   }
 
+  public void unzipFile() {
+    
+  }
+
 }
