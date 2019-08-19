@@ -19,9 +19,12 @@ import org.json.JSONObject;
 
 import fcu.selab.progedu.data.User;
 import fcu.selab.progedu.db.AssignmentDbManager;
+import fcu.selab.progedu.db.AssignmentTypeDbManager;
 import fcu.selab.progedu.db.AssignmentUserDbManager;
 import fcu.selab.progedu.db.CommitRecordDbManager;
 import fcu.selab.progedu.db.UserDbManager;
+import fcu.selab.progedu.project.AssignmentFactory;
+import fcu.selab.progedu.project.AssignmentType;
 
 @Path("commits/")
 public class CommitRecordService {
@@ -29,8 +32,8 @@ public class CommitRecordService {
   AssignmentUserDbManager auDb = AssignmentUserDbManager.getInstance();
   UserDbManager userDb = UserDbManager.getInstance();
   AssignmentDbManager assignmentDb = AssignmentDbManager.getInstance();
+  AssignmentTypeDbManager atDb = AssignmentTypeDbManager.getInstance();
 
-  
   /**
    * get all commit result.
    *
@@ -84,8 +87,10 @@ public class CommitRecordService {
   /**
    * get student build detail info
    * 
-   * @param username       student id
-   * @param assignmentName assignment name
+   * @param username
+   *          student id
+   * @param assignmentName
+   *          assignment name
    * @return build detail
    */
   @GET
@@ -115,15 +120,18 @@ public class CommitRecordService {
       @FormParam("proName") String assignmentName) {
 
     JSONObject ob = new JSONObject();
+    AssignmentType assignmentType = AssignmentFactory.getAssignmentType(
+        atDb.getAssignmentTypeName(assignmentDb.getAssignmentType(assignmentName)));
 
     int auId = auDb.getAUId(assignmentDb.getAssignmentIdByName(assignmentName),
         userDb.getUserIdByUsername(username));
     int commitNumber = db.getCommitCount(auId) + 1;
-    int status = db.getCommitStatusbyAUId(auId); // �|������
     String time = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss")
         .format(Calendar.getInstance().getTime());
-
-    db.insertCommitRecord(auId, commitNumber, status, time);
+    String status = assignmentType.checkStatusType(commitNumber, username, assignmentName)
+        .getTypeName();
+    int statusId = atDb.getAssignmentTypeId(status);
+    db.insertCommitRecord(auId, commitNumber, statusId, time);
 
     ob.put("auId", auId);
     ob.put("commitNumber", commitNumber);
@@ -133,11 +141,17 @@ public class CommitRecordService {
     return Response.ok().entity(ob.toString()).build();
   }
 
-  public void deleteRecord(String assignmentName){
+  /**
+   * delete DB commit record.
+   * 
+   * @param assignmentName
+   *          assignment name
+   */
+  public void deleteRecord(String assignmentName) {
     int aId = assignmentDb.getAssignmentIdByName(assignmentName);
     List<Integer> uIds = auDb.getUids(aId);
 
-    for (int uId : uIds){
+    for (int uId : uIds) {
       int auId = auDb.getAUId(aId, uId);
       db.deleteRecord(auId);
     }
