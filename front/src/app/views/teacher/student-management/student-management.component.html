@@ -5,27 +5,31 @@
       <tabset>
         <tab id="add-one-student">
           <ng-template tabHeading><i class="icon-calculator"></i> Add One Student</ng-template>
-
-          <div class="form-group col-sm-6">
-            <label for="id">ID</label>
-            <input type="text" class="form-control" id="id" placeholder="Enter your id">
-          </div>
-          <div class="form-group col-sm-6">
-            <label for="name">Name</label>
-            <input type="text" class="form-control" id="name" placeholder="Enter your name">
-          </div>
-          <div class="form-group col-sm-6">
-            <label for="name">Password</label>
-            <input type="text" class="form-control" id="name" placeholder="Enter your password">
-          </div>
-          <div class="form-group col-sm-6">
-            <label for="email">Email</label> <input type="text" class="form-control" id="email"
-              placeholder="Enter your email">
-          </div>
-          <button class="btn btn-primary" type="button">Add
-            more</button>
-          <div class="form-group" style="text-align: right;">
-          </div>
+          <form *ngIf="addOneStudentForm" [formGroup]="addOneStudentForm" (ngSubmit)="addOneStudent()">
+            <div class="form-group col-sm-6">
+              <label for="name">Name</label>
+              <input type="text" class="form-control" id="name" placeholder="Enter your name" formControlName="name"
+                required>
+            </div>
+            <div class="form-group col-sm-6">
+              <label for="username">Username</label>
+              <input type="text" class="form-control" id="username" placeholder="Enter your Username"
+                formControlName="username" required>
+            </div>
+            <div class="form-group col-sm-6">
+              <label for="password">Password</label>
+              <input type="text" class="form-control" id="password" placeholder="Enter your password"
+                formControlName="password" required>
+            </div>
+            <div class="form-group col-sm-6">
+              <label for="email">Email</label> <input type="text" class="form-control" id="email"
+                placeholder="Enter your email" formControlName="email" required>
+            </div>
+            <button class="btn btn-primary" type="submit">Add
+              more</button>
+            <div class="form-group" style="text-align: right;">
+            </div>
+          </form>
         </tab>
         <tab id="add-muti-student">
           <ng-template tabHeading><i class="icon-basket-loaded"></i> Add Muti Student</ng-template>
@@ -58,8 +62,8 @@
           <table class="table">
             <thead>
               <tr>
-                <th>Id</th>
                 <th>Name</th>
+                <th>Username</th>
                 <th>Email</th>
                 <th>Status</th>
               </tr>
