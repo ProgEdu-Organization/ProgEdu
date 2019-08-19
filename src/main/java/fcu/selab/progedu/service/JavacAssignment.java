@@ -60,7 +60,7 @@ public class JavacAssignment extends AssignmentTypeMethod {
    * extract main method and modify pom.xml
    * 
    * @param testDirectory testDirectory
-   * @param projectName projectName
+   * @param projectName   projectName
    */
   public void extractFile(String zipFilePath, String testDirectory, String destDirectory,
       String projectName) {
@@ -158,12 +158,12 @@ public class JavacAssignment extends AssignmentTypeMethod {
   /**
    * modifyXmlFile
    * 
-   * @param filePath filePath
+   * @param filePath   filePath
    * @param progApiUrl progApiUrl
-   * @param userName userName
-   * @param proName proName
-   * @param tomcatUrl tomcatUrl
-   * @param sb sb
+   * @param userName   userName
+   * @param proName    proName
+   * @param tomcatUrl  tomcatUrl
+   * @param sb         sb
    */
   public void modifyXmlFile(String filePath, String progApiUrl, String userName, String proName,
       String tomcatUrl, StringBuilder sb) {
