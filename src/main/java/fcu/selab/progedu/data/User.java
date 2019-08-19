@@ -92,7 +92,11 @@ public class User implements Serializable {
   }
 
   public void setPassword(String password) {
-    this.password = password;
+    if (password == null || password.isEmpty()) {
+      this.password = this.username;
+    } else {
+      this.password = password;
+    }
   }
 
   public String getGitLabToken() {
