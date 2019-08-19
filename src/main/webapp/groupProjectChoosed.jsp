@@ -17,6 +17,9 @@
 <%@ page import="java.text.SimpleDateFormat"%>
 <%@ page import="fcu.selab.progedu.conn.*"%>
 <%@ page import="fcu.selab.progedu.status.*"%>
+<%@ page import="fcu.selab.progedu.service.IGroupProject"%>
+<%@ page import="fcu.selab.progedu.service.AssignmentTypeEnum"%>
+<%@ page import="fcu.selab.progedu.service.GroupProjectFactory"%>
 <%@ page import="fcu.selab.progedu.service.AssignmentTypeFactory"%>
 <%@ page import="fcu.selab.progedu.service.AssignmentTypeSelector"%>
 
@@ -194,7 +197,7 @@ html, body {
 					<%
 					  /*初始化group*/
 					  Group[] groups = { new Group(), new Group() };
-					  groups[0].setGroupName("小白組");
+					  groups[0].setGroupName("group1");
 					  groups[0].addContributor("小新");
 					  groups[0].addContributor("佳和");
 					  groups[0].addContributor("一拳");
@@ -246,49 +249,147 @@ html, body {
 			<hr>
 		</div>
 		<!-- ---------------------------- Student Project ------------------------------- -->
-		<div class="card" style="padding: 0; width: fit-content">
-			<h4 id="Student Projects" class="card-header">
-				<i class="fa fa-table" aria-hidden="true"></i>&nbsp; Records
-			</h4>
-			<div class="card-block">
-				<%@ include file="projectLight.jsp"%>
-				<table class="table table-hover"
-					style="margin-top: 20px; width: 100%; margin-bottom: 0px;">
-					<thead>
-						<tr>
-							<th width="10%" class="text-center">Commit</th>
-							<th width="10%">Light</th>
-							<th width="15%">Date</th>
-							<th width="10%">Author</th>
-							<th>Commit Message</th>
-						</tr>
-					</thead>
-					<tbody id="projectTbody">
-						<tr id="1" class="">
-
-							<th width="10%" class="text-center"><%=0%></th>
-							<td width="10%"><p id="color1" class="circle INI"></p></td>
-							<td width="15%" id="date1">2019-05-06 11:40</td>
-							<td width="15%" id="author1">小白</td>
-							<td id="message1">"Instructor&nbsp;Commit"</td>
-						</tr>
-					</tbody>
-				</table>
+		<div class="col-9">
+			<h4><fmt:message key="stuDashChooseProject_h4_programHistory"/></h4>
+			<div style="margin: 15px 0px;">
+				<%@ include file="projectLight.jsp" %>
 			</div>
+			
+			<table class="table table-hover" style="background-color: white" id="projectList">
+				<thead>
+					<tr>
+						<th width="5%" class="text-center">Commit</th>
+						<th width="5%">Light</th>
+						<th width="15%">Date</th>
+						<th width="5%">Author</th>
+						<th>Commit Message</th>
+					</tr>
+				</thead>
+				
+				<tbody id="projectTbody">
+				<%
+					String groupName = group.getGroupName();
+					String projectName = groupName;
+					List<Integer> buildNum = stuDashChoPro.getScmBuildCounts(groupName, projectName);
+					int commit_count = buildNum.size();
+					int i=1;
+					int lastBuildMessageNum = 0;
+					for(Integer num : buildNum){
+					  	%>
+					  	<script type="text/javascript">
+							var groupName = <%="'" + groupName + "'"%>
+							var projectName = <%="'" + projectName + "'"%>
+							var num, status, date, committer, message
+							$.ajax({
+								url : 'webapi/jenkins/groupProjectBuildDetail',
+								type : 'GET',
+								data: {
+									"num": <%=num%>,
+									"projectName" : projectName,
+									"groupName" : groupName
+								}, 
+								async : true,
+								cache : true,
+								contentType: 'application/json; charset=UTF-8',
+								success : function(responseText) {
+									
+									var str = JSON.stringify(responseText);
+									var obj = JSON.parse(str);
+									
+									num = obj.num;
+									status = obj.status;
+									date = obj.date;
+									committer = obj.committer;
+									message = obj.message;
+									
+									td_status = document.getElementById("status" + num);
+									td_date = document.getElementById("date" + num);
+									td_message = document.getElementById("message" + num);
+									td_committer = document.getElementById("committer" + num);
+									
+									td_status.className=status;
+									td_date.textContent = date;
+									td_message.innerHTML = message;
+									td_committer.textContent = committer;
+									
+								}, 
+								error : function(responseText) {
+									console.log("False!");
+								}
+							});
+						</script>
+						<%
+							String tableActive = "";
+							if(num == commit_count){
+							  tableActive = "tableActive";
+							}
+						%>
+					  	<tr id="<%=num %>" onClick="changeIframe(this)" class="<%=tableActive%>">
+					  		<td class="text-center"><%=i %></td>
+					  		<td width="5%" ><p id=<%="status" + num %>></p></td>
+					  		<td width="5%" id=<%="date" + num %>></td>
+					  		<td width="5%" id=<%="committer" + num %>></td>
+					  		<td width="15%" id=<%="message" + num %>></td>
+					  	</tr>
+					  	
+					  	<%
+					  	i++;
+					  	lastBuildMessageNum = num;
+					}
+				%>
+				</tbody>
+			</table>
 		</div>
 		<!-- ---------------------------- Student Project ------------------------------- -->
 		<!-- iFrame -->
 		<%
-		  String console = "Instructor Commit";
+		String jobName = groupName + "_" + projectName;
+		String jenkinsBuildNumUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName;
+		String lastBuildUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/" + lastBuildMessageNum + "/consoleText";
+		String url = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/";
+		String projectType = AssignmentTypeEnum.MAVEN.getTypeName();
+		StudentDashChoosePro studentDashChoosePro = new StudentDashChoosePro();
+		
+		String detailConsoleText = jenkins.getConsoleText(lastBuildUrl);
+		String buildApiJson = stuDashChoPro.getBuildApiJson(lastBuildMessageNum,groupName, projectName);
+		String statusType = stuDashChoPro.getCommitStatus(lastBuildMessageNum,groupName, projectName, buildApiJson,projectType);
+		//String statusType = "INI";
+		
+		IGroupProject groupProject = GroupProjectFactory.getGroupProjectType(projectType);
+		Status status = groupProject.getStatus(statusType);
+		
+		
+		String console = status.extractFailureMsg(detailConsoleText);
 		%>
 		<h4>
-			<a id="iFrameTitle" href="">Feedback Information (<%=1%>)
+			<a id="iFrameTitle" href="<%=jenkinsBuildNumUrl %>">Feedback Information (#<%=lastBuildMessageNum%>)
 			</a>
 		</h4>
 		<div id="container">
 			<pre style="overflow: auto;"><%=console%></pre>
 		</div>
 		<!-- iFrame -->
+		
+		<!-- changeIframe -->
+		<script type="text/javascript">
+			function changeIframe(tr){
+				var url = '<%=jenkinsBuildNumUrl%>' + '/' + tr.id + '/consoleText';
+				$.ajax({
+					url: 'webapi/jenkins/getFeedbackInfoForGroup',
+					type: 'POST',
+					data: url,
+					success: function(res){
+						$('#container pre').html(res);
+					}
+				})
+				$('#iFrameTitle').html("Feedback Information (#" + tr.id + ")");
+				$('#projectTbody tr').removeClass("tableActive");
+				$('#'+tr.id).addClass("tableActive");
+				//showJavaStyle(tr);
+			}
+		
+		</script>
+	<!-- changeIframe -->
 	</div>
 </body>
 </html>

@@ -1,0 +1,27 @@
+#Jenkins root account
+JENKINS_ROOT_USERNAME = 
+#eg. root
+
+#Jenkins password
+JENKINS_ROOT_PASSWORD = 
+#eg. 1234
+
+#Jenkins host url
+JENKINS_HOST_URL = http://[JENKINS_HOST_URL]
+#eg. http://127.0.0.1:8080
+
+#Selenium host url
+SELENIUM_HOST_URL = http://[SELENIUM_HOST_URL]
+#eg. http://127.0.0.1:4444
+
+#Jenkins api token
+JENKINS_API_TOKEN = 
+#eg. abcdef123456
+
+#Modify the Jenkins root username, token and host url
+JENKINS_ROOT_URL = http://[ROOT_USERNAME]:[API_TOKEN]@[JENKINS_HOST_URL]
+#eg. http://root:abcdef123456@127.0.0.1:8080
+
+#The following values are the features in development
+MAIL_USERNAME = 
+MAIL_PASSWORD = 

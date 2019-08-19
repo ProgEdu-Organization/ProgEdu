@@ -5,13 +5,12 @@ public class AssignmentTypeFactory {
   /**
    * getAssignmentType
    * 
-   * @param assignmentType
-   *          assignmentType
+   * @param assignmentType assignmentType
    */
   public static AssignmentTypeSelector getAssignmentType(String assignmentType) {
-    AssignmentTypeEnum assignmentTypeEnum = 
-        AssignmentTypeEnum.getStatusProjectTypeEnum(assignmentType);
-    
+    AssignmentTypeEnum assignmentTypeEnum = AssignmentTypeEnum
+        .getStatusProjectTypeEnum(assignmentType);
+
     switch (assignmentTypeEnum) {
       case JAVAC: {
         return new JavacAssignment();
@@ -28,6 +27,6 @@ public class AssignmentTypeFactory {
       default:
         return null;
     }
-   
+
   }
 }

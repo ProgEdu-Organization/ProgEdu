@@ -1,0 +1,120 @@
+<app-header [navbarBrandRouterLink]="[dashboard]" [fixed]="true"
+  [navbarBrandFull]="{src: 'assets/logo.svg', width: 89, height: 40, alt: 'ProgEdu'}"
+  [navbarBrandMinimized]="{src: 'assets/img/brand/sygnet.svg', width: 30, height: 30, alt: 'ProgEdu'}"
+  [sidebarToggler]="'lg'" [asideMenuToggler]="''">
+  <ul class="nav navbar-nav d-md-down-none">
+    <div class="btn-group" dropdown [isOpen]="status.isOpen" (isOpenChange)="change($event)" placement="top">
+      <li class="nav-item px-3">
+        <a class="nav-link" href="javascript:void(0);" (click)='changeToDashboard()'>Dashboard</a>
+      </li>
+      <li class="nav-item px-3" *ngIf="isAdmin">
+        <a dropdownToggle class="nav-link dropdown-toggle" href="javascript:void(0);"> Management</a>
+        <ul *dropdownMenu class="dropdown-menu" role="menu">
+          <li role="menuitem"><a class="dropdown-item" href="#/dashboard/assignmentManagement">Assignment Management</a>
+          </li>
+          <li role="menuitem"><a class="dropdown-item" href="#/dashboard/studentManagement">Student
+              Management</a> </li>
+          <li role="menuitem"><a class="dropdown-item" href="#/dashboard/groupManagement">Group Management</a></li>
+        </ul>
+      </li>
+      <li class="nav-item px-3">
+        <a class="nav-link" href="#">Group</a>
+      </li>
+    </div>
+  </ul>
+  <ul class="nav navbar-nav ml-auto">
+    <li class="nav-item dropdown" dropdown placement="bottom right">
+      <a class="nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"
+        dropdownToggle (click)="false">
+        <img src="assets/img/avatars/login.jpg" class="img-avatar" alt="admin@bootstrapmaster.com" />
+      </a>
+      <div class="dropdown-menu dropdown-menu-right" *dropdownMenu aria-labelledby="simple-dropdown">
+        <a class="dropdown-item" href="javascript:void(0);" (click)="modifySecretModal.show();"><i
+            class="fa fa-lock"></i>
+          Modify
+          Password</a>
+        <a class="dropdown-item" href (click)="logout()"><i class="fa fa-lock"></i> Logout</a>
+      </div>
+    </li>
+  </ul>
+</app-header>
+<div class="app-body">
+  <app-sidebar [fixed]="true" [display]="'lg'" *ngIf="isAdmin && navDataisload">
+    <app-sidebar-nav [navItems]="navItems" [perfectScrollbar] [disabled]="sidebarMinimized"></app-sidebar-nav>
+    <app-sidebar-minimizer></app-sidebar-minimizer>
+  </app-sidebar>
+
+  <!-- Main content -->
+  <main class="main">
+    <cui-breadcrumb>
+      <!-- Breadcrumb Menu-->
+      <li class="breadcrumb-menu d-md-down-none">
+        <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+          <a class="btn" href="#"><i class="icon-speech"></i></a>
+          <a class="btn" [routerLink]="['/dashboard']"><i class="icon-graph"></i> &nbsp;Dashboard</a>
+          <a class="btn" href="#"><i class="icon-settings"></i> &nbsp;Settings</a>
+        </div>
+      </li>
+    </cui-breadcrumb>
+    <div class="container-fluid">
+      <router-outlet></router-outlet>
+    </div> <!-- /.container-fluid -->
+  </main>
+</div>
+<!-- register secret area  -->
+<div bsModal #modifySecretModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-danger" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Modify Secret</h4>
+        <button type="button" class="close" (click)="modifySecretModal.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form *ngIf="modifySecretForm" [formGroup]=" modifySecretForm" (ngSubmit)="modifySecret">
+          <p class="text-muted">write your password</p>
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text"><i class="icon-user"></i></span>
+            </div>
+            <input type="text" matInput class="form-control" placeholder="Username" autocomplete="username"
+              formControlName="username" readonly>
+          </div>
+          <div class="input-group mb-4">
+            <div class="input-group-prepend">
+              <span class="input-group-text"><i class="icon-lock"></i></span>
+            </div>
+            <input id='password' type="password" matInput class="form-control" placeholder="Password"
+              autocomplete="current-password" formControlName="password" (change)='confirmInputOnChange()' required>
+            <div id='password-invalid-feedbacks' class='invalid-feedback'>
+              Your password must be at least 8 characters
+            </div>
+          </div>
+
+          <div class="input-group mb-4">
+            <div class="input-group-prepend">
+              <span class="input-group-text"><i class="icon-lock"></i></span>
+            </div>
+            <input id='confirmPassword' type="password" matInput class="form-control" placeholder="Confirm Password"
+              autocomplete="current-password" formControlName="confirmPassword" (change)='confirmInputOnChange()'
+              required>
+            <div id='confirmPassword-invalid-feedbacks' class='invalid-feedback'>
+              Please sure the confirm password
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-6">
+              <button type="submit" class="btn btn-primary px-4" (click)='modifySecret()'>save changes</button>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="modifySecretModal.hide()">Close</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

@@ -1,0 +1,106 @@
+<h1 style="text-align: center">Assignment List</h1>
+<div class="animated fadeIn">
+  <div class="card">
+    <div class="card-header">
+      <i class="cui-pencil icons"></i>
+      <div class="card-header-actions"><button class="btn btn-primary" type="button" (click)="changeToCreatePage();">Add
+          more</button></div>
+    </div>
+    <div class="card-body">
+      <table class='table table-striped' style="text-align:center;">
+        <thead>
+          <tr>
+            <th class='text-left'>Name</th>
+            <th>Create time
+            </th>
+            <th>Deadline </th>
+            <th>Edit</th>
+            <th>Delete</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let project of projects">
+            <td>{{project.name}}</td>
+            <td>{{project.createTime | date:'medium'}}
+            </td>
+            <td>{{project.deadline | date:'medium'}}
+            </td>
+            <td><button id="{{project.name}}" class="btn btn-info" (click)="editModal.show();"><i
+                  class="cui-pencil icons"></i></button>
+            </td>
+            <td>
+              <button id="{{project.name}}" class="btn btn-danger" type="button" data-toggle="modal"
+                (click)="deleteModal.show();setdeleteProjectName(project.name)"><i class="cui-trash icons"></i></button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<!--Alert Delete Project Modal-->
+<div bsModal #deleteModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-danger" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Delete Project</h4>
+        <button type="button" class="close" (click)="deleteModal.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <!--Delete Project Main-->
+      <div class="modal-body">
+        <p>Do you Want to Delete this {{deleteProjectName}} Project&hellip;</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="deleteModal.hide()">Close</button>
+        <button type="button" class="btn btn-danger" (click)="deleteProject()">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!--Edit Project Modal-->
+<div bsModal #editModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Edit Project</h4>
+        <button type="button" class="close" (click)="editModal.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <!--Edit Project Main-->
+      <div class="modal-body">
+        <form action="" method="post" class="form-horizontal">
+          <div class="form-group row">
+            <label class="col-md-3 col-form-label" for="date-input">Deadline</label>
+            <div class="col-md-9">
+              <input class="form-control is-valid" id="date-input" type="date" name="date-input" placeholder="date">
+              <span class="help-block">Please enter a valid date</span>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-md-3 col-form-label" for="textarea-input"> Assignment Description</label>
+            <div class="col-md-9">
+              <textarea id="textarea-input" name="textarea-input" rows="9" class="form-control"
+                placeholder="Content.."></textarea>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-md-3 col-form-label" for="file-input">Test Case File</label>
+            <div class="col-md-9">
+              <input type="file" id="file-input" name="file-input">
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="editModal.hide()">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

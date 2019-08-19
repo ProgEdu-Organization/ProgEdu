@@ -26,15 +26,13 @@ public class MavenAssignment extends AssignmentTypeMethod {
   }
 
   public String getSampleZip() {
-    String folderName = "MavenQuickStart.zip";
-    return folderName;
+    return "MavenQuickStart.zip";
   }
 
   /**
    * searchFile
    * 
-   * @param entryNewName
-   *          entryNewName
+   * @param entryNewName entryNewName
    */
   public void searchFile(String entryNewName) {
     StringBuilder sb = new StringBuilder();
@@ -58,12 +56,9 @@ public class MavenAssignment extends AssignmentTypeMethod {
   /**
    * copyTestFile
    * 
-   * @param folder
-   *          folder
-   * @param strFolder
-   *          strFolder
-   * @param testFilePath
-   *          testFilePath
+   * @param folder       folder
+   * @param strFolder    strFolder
+   * @param testFilePath testFilePath
    */
   public void copyTestFile(File folder, String strFolder, String testFilePath) {
     for (final File fileEntry : folder.listFiles()) {
@@ -96,20 +91,14 @@ public class MavenAssignment extends AssignmentTypeMethod {
   /**
    * modifyXmlFile
    * 
-   * @param filePath
-   *          filePath
-   * @param updateDbUrl
-   *          updateDbUrl
-   * @throws userName
-   *           userName
-   * @throws proName
-   *           proName
-   * @throws tomcatUrl
-   *           tomcatUrl
-   * @throws sb
-   *           sb
+   * @param filePath   filePath
+   * @param progApiUrl progApiUrl
+   * @param userName   userName
+   * @param proName    proName
+   * @param tomcatUrl  tomcatUrl
+   * @param sb         sb
    */
-  public void modifyXmlFile(String filePath, String updateDbUrl, String userName, String proName,
+  public void modifyXmlFile(String filePath, String progApiUrl, String userName, String proName,
       String tomcatUrl, StringBuilder sb) {
     try {
       String filepath = filePath;
@@ -124,6 +113,7 @@ public class MavenAssignment extends AssignmentTypeMethod {
       Node testFileName = doc.getElementsByTagName("testFileName").item(0);
       testFileName.setTextContent(proName);
 
+      String updateDbUrl = progApiUrl + "/commits/update";
       Node proDetailUrl = doc.getElementsByTagName("proDetailUrl").item(0);
       proDetailUrl.setTextContent(tomcatUrl);
 

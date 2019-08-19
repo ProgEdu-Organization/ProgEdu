@@ -1,0 +1,115 @@
+// Here you can add other styles
+.circle {
+  border-radius: 30px;
+  height: 30px;
+  font-weight: bold;
+  width: 30px;
+  color: white;
+  margin: 0px auto;
+}
+
+.ovol {
+  border-radius: 5px;
+  font-weight: bold;
+  color: white;
+  text-align: center;
+  float: left;
+  padding: 5px 10px;
+  margin-left: 5px;
+}
+
+#inline p {
+  display: inline;
+}
+
+.red,
+.CPF {
+  background: #ff6284;
+}
+
+.blue,
+.S {
+  background: #35a2eb;
+}
+
+.gray,
+.NB {
+  background: #878787;
+}
+
+.INI {
+  background: #878787;
+}
+
+.yellow,
+.CSF {
+  background: #ffcf57;
+}
+
+.green,
+.CJF {
+  background: #4bc0c0;
+}
+
+.circle a {
+  color: #fff;
+  line-height: 30px;
+}
+
+#Screenshots-area {
+  border-width: 2px;
+  border-style: dashed;
+  border-color: #63c2de;
+  padding: 5px;
+}
+
+.screenshotSlides {
+  display: none
+}
+
+img {
+  vertical-align: middle;
+}
+
+/* Slideshow container */
+.slideshow-container {
+  max-width: 1000px;
+  position: relative;
+  margin: auto;
+}
+
+/* Next & previous buttons */
+.prev,
+.next {
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  width: auto;
+  padding: 16px;
+  margin-top: -22px;
+  color: white;
+  font-weight: bold;
+  font-size: 18px;
+  transition: 0.6s ease;
+  border-radius: 0 3px 3px 0;
+  user-select: none;
+}
+
+/* Position the "next button" to the right */
+.next {
+  right: 0;
+  border-radius: 3px 0 0 3px;
+}
+
+/* On hover, add a grey background color */
+.prev:hover,
+.next:hover {
+  background-color: #f1f1f1;
+  color: black;
+}
+
+.carousel-control-next-icon,
+.carousel-control-prev-icon {
+  background-color: #000000;
+  color: black;
+}

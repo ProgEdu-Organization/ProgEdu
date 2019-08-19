@@ -20,21 +20,19 @@ import org.xml.sax.SAXException;
 import fcu.selab.progedu.status.JavacStatusFactory;
 
 public class JavacAssignment extends AssignmentTypeMethod {
-  
+
   public JavacAssignment() {
     super(new JavacStatusFactory());
   }
-  
+
   public String getSampleZip() {
-    String folderName = "JavacQuickStart.zip";
-    return folderName;
+    return "JavacQuickStart.zip";
   }
 
   /**
    * searchFile
    * 
-   * @param entryNewName
-   *          entryNewName
+   * @param entryNewName entryNewName
    */
   public void searchFile(String entryNewName) {
     StringBuilder sb = new StringBuilder();
@@ -59,12 +57,9 @@ public class JavacAssignment extends AssignmentTypeMethod {
   /**
    * copyTestFile
    * 
-   * @param folder
-   *          folder
-   * @param strFolder
-   *          strFolder
-   * @param testFilePath
-   *          testFilePath
+   * @param folder       folder
+   * @param strFolder    strFolder
+   * @param testFilePath testFilePath
    */
   public void copyTestFile(File folder, String strFolder, String testFilePath) {
     for (final File fileEntry : folder.listFiles()) {
@@ -97,20 +92,14 @@ public class JavacAssignment extends AssignmentTypeMethod {
   /**
    * modifyXmlFile
    * 
-   * @param filePath
-   *          filePath
-   * @param updateDbUrl
-   *          updateDbUrl
-   * @throws userName
-   *           userName
-   * @throws proName
-   *           proName
-   * @throws tomcatUrl
-   *           tomcatUrl
-   * @throws sb
-   *           sb
+   * @param filePath   filePath
+   * @param progApiUrl progApiUrl
+   * @param userName   userName
+   * @param proName    proName
+   * @param tomcatUrl  tomcatUrl
+   * @param sb         sb
    */
-  public void modifyXmlFile(String filePath, String updateDbUrl, String userName, String proName,
+  public void modifyXmlFile(String filePath, String progApiUrl, String userName, String proName,
       String tomcatUrl, StringBuilder sb) {
     try {
       String filepath = filePath;
@@ -121,6 +110,7 @@ public class JavacAssignment extends AssignmentTypeMethod {
       Node ndUrl = doc.getElementsByTagName("command").item(0);
       ndUrl.setTextContent(sb.toString());
 
+      String updateDbUrl = progApiUrl + "/commits/update";
       Node progeduDbUrl = doc.getElementsByTagName("progeduDbUrl").item(0);
       progeduDbUrl.setTextContent(updateDbUrl);
 
@@ -139,6 +129,6 @@ public class JavacAssignment extends AssignmentTypeMethod {
     } catch (ParserConfigurationException | TransformerException | SAXException | IOException e) {
       e.printStackTrace();
     }
-
   }
+
 }
