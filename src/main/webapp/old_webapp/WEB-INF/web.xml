@@ -25,9 +25,19 @@
 		<url-pattern>/webapi/*</url-pattern>
 	</servlet-mapping>
 	<welcome-file-list>
-		<welcome-file>index.html</welcome-file>
+		<welcome-file>index.jsp</welcome-file>
 	</welcome-file-list>
+	<servlet>
+		<description></description>
+		<display-name>AfterEnter</display-name>
+		<servlet-name>AfterEnter</servlet-name>
+		<servlet-class>fcu.selab.progedu.conn.AfterEnter</servlet-class>
+	</servlet>
 	
+	<servlet-mapping>
+		<servlet-name>AfterEnter</servlet-name>
+		<url-pattern>/AfterEnter</url-pattern>
+	</servlet-mapping>
 	<servlet>
 		<description>Test</description>
 		<display-name>LoginAuth</display-name>
@@ -39,6 +49,16 @@
 		<url-pattern>/LoginAuth</url-pattern>
 	</servlet-mapping>
 	
+	<servlet>
+		<description></description>
+		<display-name>ChooseLanguage</display-name>
+		<servlet-name>ChooseLanguage</servlet-name>
+		<servlet-class>fcu.selab.progedu.conn.ChooseLanguage</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ChooseLanguage</servlet-name>
+		<url-pattern>/ChooseLanguage</url-pattern>
+	</servlet-mapping>
 	<error-page>
 		<error-code>403</error-code>
 		<location>/error.jsp</location>

@@ -8,7 +8,7 @@
     "ng": "ng",
     "start": "ng serve  --host 140.134.26.77 --port 4200 --open",
     "build": "ng build --prod --aot --buildOptimizer --commonChunk --vendorChunk --optimization --progress",
-    "progedu_build": "ng build --prod --base-href /ProgEdu/temp/dist/",
+    "progedu_build": "ng build --prod --base-href /ProgEdu/",
     "lint": "ng lint",
     "e2e": "ng e2e"
   },
