@@ -25,14 +25,10 @@ public class CommitRecordDbManager {
   /**
    * insert student commit records into db
    * 
-   * @param auId
-   *          auId
-   * @param commitNumber
-   *          commitNumber
-   * @param status
-   *          status Id
-   * @param time
-   *          commit time
+   * @param auId         auId
+   * @param commitNumber commitNumber
+   * @param status       status Id
+   * @param time         commit time
    */
   public void insertCommitRecord(int auId, int commitNumber, StatusEnum status, String time) {
     String sql = "INSERT INTO Commit_Record" + "(auId, commitNumber, status, time) "
@@ -52,13 +48,11 @@ public class CommitRecordDbManager {
   }
 
   /**
-   * get each hw's CommitRecordStateCounts
+   * get each hw's CommitRecordId
    *
-   * @param auId
-   *          Commit_Record auId
-   * @param commitNumber
-   *          commit number
-   * @return status
+   * @param auId         Commit_Record auId
+   * @param commitNumber commit number
+   * @return id
    */
   public int getCommitRecordId(int auId, int commitNumber) {
     String query = "SELECT id FROM Commit_Record where auId = ? and commitNumber = ?";
@@ -83,10 +77,8 @@ public class CommitRecordDbManager {
   /**
    * get each hw's CommitRecordStateCounts
    *
-   * @param auId
-   *          Commit_Record auId
-   * @param num
-   *          num
+   * @param auId Commit_Record auId
+   * @param num  num
    * @return status
    */
   public String getCommitRecordStatus(int auId, int num) {
@@ -114,8 +106,7 @@ public class CommitRecordDbManager {
    * get commit record details from the homework of a student
    * 
    * 
-   * @param auIds
-   *          auId
+   * @param auIds auId
    * @return commit record details
    */
   public JSONObject getCommitRecord(int auIds) {
@@ -150,8 +141,7 @@ public class CommitRecordDbManager {
    * get last commit record details from assigned homework of one student
    * 
    * 
-   * @param auId
-   *          auId
+   * @param auId auId
    * @return last commit record details
    */
   public JSONObject getLastCommitRecord(int auId) {
@@ -186,8 +176,7 @@ public class CommitRecordDbManager {
    * get commit count by auId
    * 
    * 
-   * @param auid
-   *          auId
+   * @param auid auId
    * @return aId assignment Id
    */
   public int getCommitCount(int auid) {
@@ -211,8 +200,7 @@ public class CommitRecordDbManager {
   /**
    * delete built record of specific auId
    *
-   * @param auId
-   *          auId
+   * @param auId auId
    */
   public void deleteRecord(int auId) {
     String sql = "DELETE FROM Commit_Record WHERE auId=?";
@@ -229,8 +217,7 @@ public class CommitRecordDbManager {
   /**
    * get Commit_Status id by auid
    * 
-   * @param auid
-   *          auId
+   * @param auid auId
    * @return status status
    */
   public int getCommitStatusbyAUId(int auid) {
@@ -241,7 +228,7 @@ public class CommitRecordDbManager {
       preStmt.setInt(1, auid);
       try (ResultSet rs = preStmt.executeQuery()) {
         while (rs.next()) {
-          status = rs.getInt("auid");
+          status = rs.getInt(status);
         }
       }
     } catch (SQLException e) {
