@@ -2,6 +2,8 @@ package fcu.selab.progedu.data;
 
 import java.io.Serializable;
 
+import fcu.selab.progedu.service.RoleEnum;
+
 @SuppressWarnings("serial")
 public class User implements Serializable {
 
@@ -21,6 +23,8 @@ public class User implements Serializable {
   private String gitLabToken;
 
   private boolean display;
+
+  private RoleEnum role;
 
   public User() {
 
@@ -109,6 +113,14 @@ public class User implements Serializable {
 
   public void setDisplay(boolean display) {
     this.display = display;
+  }
+
+  public RoleEnum getRole() {
+    return role;
+  }
+
+  public void setRole(RoleEnum role) {
+    this.role = role;
   }
 
 }
