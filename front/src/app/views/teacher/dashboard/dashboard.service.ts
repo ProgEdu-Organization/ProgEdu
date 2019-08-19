@@ -10,6 +10,7 @@ import { Observable } from 'rxjs';
 
 export class DashboardService {
   ALL_COMMIT_API = environment.SERVER_URL + '/ProgEdu/webapi/commits/all';
+
   constructor(private http: HttpClient) { }
 
   getAllStudentData(): Observable<any> {
