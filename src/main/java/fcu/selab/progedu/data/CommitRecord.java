@@ -1,12 +1,14 @@
 package fcu.selab.progedu.data;
 
+import fcu.selab.progedu.status.StatusEnum;
+
 public class CommitRecord {
 
   private int id;
 
   private int auId;
 
-  private int status;
+  private StatusEnum status;
 
   private int commitNumber;
 
@@ -26,19 +28,19 @@ public class CommitRecord {
     this.auId = auId;
   }
 
-  public int getStatus() {
-    return status;
-  }
-
-  public void setStatus(int status) {
-    this.status = status;
-  }
-
   public int getCommitNumber() {
     return commitNumber;
   }
 
   public void setCommitNumber(int commitNumber) {
     this.commitNumber = commitNumber;
+  }
+
+  public StatusEnum getStatus() {
+    return status;
+  }
+
+  public void setStatus(StatusEnum status) {
+    this.status = status;
   }
 }

@@ -14,6 +14,7 @@ import java.util.List;
 import org.gitlab.api.models.GitlabUser;
 
 import fcu.selab.progedu.data.User;
+import fcu.selab.progedu.service.RoleEnum;
 
 public class UserDbManager {
   private static final String QUERY = "SELECT * FROM User WHERE id = ?";
@@ -24,6 +25,7 @@ public class UserDbManager {
   private static final String EMAIL = "email";
   private static final String GIT_LAB_TOKEN = "gitLabToken";
   private static final String DISPLAY = "display";
+  private static final RoleEnum ROLE = "role";
 
   private static UserDbManager dbManager = new UserDbManager();
 
@@ -154,6 +156,29 @@ public class UserDbManager {
   }
 
   /**
+   * user name to find userId in db
+   * 
+   * @return id
+   */
+  public int getUserIdByUsername(String username) {
+    String query = "SELECT * FROM User WHERE username = ?";
+    int id = -1;
+
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(query)) {
+      preStmt.setString(1, username);
+      try (ResultSet rs = preStmt.executeQuery();) {
+        while (rs.next()) {
+          id = rs.getInt("id");
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return id;
+  }
+
+  /**
    * Get user from database
    * 
    * @param username The gitlab user name
@@ -188,154 +213,6 @@ public class UserDbManager {
       e.printStackTrace();
     }
     return user;
-  }
-
-  /**
-   * Get user from database
-   *
-   * @param id The gitlab user id
-   * @return user
-   */
-  public User getUser(int id) {
-    User user = new User();
-
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(QUERY)) {
-      preStmt.setInt(1, id);
-      try (ResultSet rs = preStmt.executeQuery();) {
-        while (rs.next()) {
-          int gitLabId = rs.getInt(GIT_LAB_ID);
-          String username = rs.getString(USERNAME);
-          String name = rs.getString(NAME);
-          String password = rs.getString(PASSWORD);
-          String email = rs.getString(EMAIL);
-          String gitLabToken = rs.getString(GIT_LAB_TOKEN);
-          Boolean display = rs.getBoolean(DISPLAY);
-
-          user.setGitLabId(gitLabId);
-          user.setId(id);
-          user.setUsername(username);
-          user.setName(name);
-          user.setPassword(password);
-          user.setEmail(email);
-          user.setGitLabToken(gitLabToken);
-          user.setDisplay(display);
-        }
-      }
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
-    return user;
-  }
-
-  /**
-   * Get user from database
-   *
-   * @param id The db user id
-   * @return user
-   */
-  public String getName(int id) {
-    String name = "";
-
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(QUERY)) {
-      preStmt.setInt(1, id);
-      try (ResultSet rs = preStmt.executeQuery();) {
-        while (rs.next()) {
-          name = rs.getString(NAME);
-        }
-      }
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
-    return name;
-  }
-
-  /**
-   * Get user from database
-   *
-   * @param id The db user id
-   * @return user
-   */
-  public String getUsername(int id) {
-    String name = "";
-
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(QUERY)) {
-      preStmt.setInt(1, id);
-      try (ResultSet rs = preStmt.executeQuery();) {
-        while (rs.next()) {
-          name = rs.getString(USERNAME);
-        }
-      }
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
-    return name;
-  }
-
-  /**
-   * user name to find userId in db
-   * 
-   * @return id
-   */
-  public int getUserIdByUsername(String username) {
-    String query = "SELECT * FROM User WHERE username = ?";
-    int id = -1;
-
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(query)) {
-      preStmt.setString(1, username);
-      try (ResultSet rs = preStmt.executeQuery();) {
-        while (rs.next()) {
-          id = rs.getInt("id");
-        }
-      }
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
-    return id;
-  }
-
-  /**
-   * Get userdisplay from database
-   *
-   * @param username The gitlab user id
-   * @return display
-   */
-  public boolean getUserDisplay(String username) {
-    String query = "SELECT * FROM User WHERE username = ?";
-    boolean display = true;
-
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(query)) {
-      preStmt.setString(1, username);
-      try (ResultSet rs = preStmt.executeQuery();) {
-        while (rs.next()) {
-          display = rs.getBoolean(DISPLAY);
-        }
-      }
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
-    return display;
-  }
-
-  /**
-   * Set user display in database
-   *
-   * @param username The gitlab user id
-   */
-  public void setUserDisplay(String username) {
-    String query = "UPDATE User SET display= ? WHERE username = ?";
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(query)) {
-      preStmt.setBoolean(1, false);
-      preStmt.setString(2, username);
-      preStmt.executeUpdate();
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
   }
 
   /**
