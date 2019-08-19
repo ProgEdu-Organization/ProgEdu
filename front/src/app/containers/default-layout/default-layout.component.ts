@@ -1,14 +1,22 @@
+<<<<<<< HEAD
 import { Component, OnDestroy, Inject, OnInit, ViewChild } from '@angular/core';
+=======
+import { Component, OnDestroy, Inject, OnInit } from '@angular/core';
+>>>>>>> a12e377a735c6c70a0d3d4766c47a9f5657ea41a
 import { DOCUMENT } from '@angular/common';
 import { navItems } from './_nav';
 import { JwtService } from '../../services/jwt.service';
 import { User } from '../../models/user';
 import { DefaultLayoutService } from './default-layout.service';
 import { Router } from '@angular/router';
+<<<<<<< HEAD
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import * as $ from 'jquery';
 import { ɵangular_packages_platform_browser_platform_browser_d } from '@angular/platform-browser';
+=======
+import * as $ from 'jquery';
+>>>>>>> a12e377a735c6c70a0d3d4766c47a9f5657ea41a
 
 @Component({
   selector: 'app-dashboard',

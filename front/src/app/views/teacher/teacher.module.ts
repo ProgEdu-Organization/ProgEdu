@@ -6,6 +6,10 @@ import { ButtonsModule } from 'ngx-bootstrap/buttons';
 import { CommonModule } from '@angular/common';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { TeacherRoutingModule } from './teacher-routing.module';
+<<<<<<< HEAD
+=======
+import { FilterPipe } from '../../pipe/filter.pipe';
+>>>>>>> a12e377a735c6c70a0d3d4766c47a9f5657ea41a
 import { DashProjectChoosedComponent } from './dash-project-choosed/dash-project-choosed.component';
 import { AssignmentManagementComponent } from './assignment-management/assignment-management.component';
 
@@ -20,29 +24,33 @@ import { StudentManagementComponent } from './student-management/student-managem
 import { GroupManagementComponent } from './group-management/group-management.component';
 // Carousel Component
 import { CarouselModule } from 'ngx-bootstrap/carousel';
+<<<<<<< HEAD
 import { ChartComponent } from './chart/chart.component';
 import { FilterPipe } from '../../pipe/filter.pipe';
+=======
+
+>>>>>>> a12e377a735c6c70a0d3d4766c47a9f5657ea41a
 @NgModule({
-  imports: [
-    FormsModule,
-    CommonModule,
-    ChartsModule,
-    BsDropdownModule,
-    TeacherRoutingModule,
-    ButtonsModule.forRoot(),
-    AlertModule.forRoot(),
-    ModalModule.forRoot(),
-    TabsModule.forRoot(),
-    CarouselModule.forRoot()
-  ],
-  declarations: [
-    DashboardComponent,
-    DashProjectChoosedComponent,
-    AssignmentManagementComponent,
-    CreateAssignmentComponent,
-    StudentManagementComponent,
-    GroupManagementComponent,
-    ChartComponent,
-    FilterPipe]
+    imports: [
+        FormsModule,
+        CommonModule,
+        ChartsModule,
+        BsDropdownModule,
+        TeacherRoutingModule,
+        ButtonsModule.forRoot(),
+        AlertModule.forRoot(),
+        ModalModule.forRoot(),
+        TabsModule.forRoot(),
+        CarouselModule.forRoot()
+    ],
+    declarations: [
+        DashboardComponent,
+        DashProjectChoosedComponent,
+        AssignmentManagementComponent,
+        CreateAssignmentComponent,
+        StudentManagementComponent,
+        GroupManagementComponent,
+        ChartComponent,
+        FilterPipe]
 })
 export class TeacherModule { }

@@ -4,7 +4,6 @@ import { LoginAuthService } from '../../services/login-auth.service';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { JwtService } from '../../services/jwt.service';
-
 @Component({
   selector: 'app-dashboard',
   templateUrl: 'login.component.html'
