@@ -46,9 +46,9 @@ public class AssignmentUserDbManager {
   }
 
   /**
-   * get aId by User Id
+   * get aIds by User Id
    * 
-   * @return aids assignment Id
+   * @return lsAids assignment Id
    */
   public List<Integer> getAIds(int uId) {
     List<Integer> lsAids = new ArrayList<>();
@@ -69,9 +69,9 @@ public class AssignmentUserDbManager {
   }
 
   /**
-   * get aId by Assignment Id
+   * get uId by Assignment Id
    *
-   * @return aids assignment Id
+   * @return lsUids assignment Id
    */
   public List<Integer> getUids(int aId) {
     List<Integer> lsUids = new ArrayList<>();
