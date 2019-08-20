@@ -19,11 +19,8 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 import com.csvreader.CsvReader;
 
 import fcu.selab.progedu.config.CourseConfig;
-import fcu.selab.progedu.config.GitlabConfig;
-import fcu.selab.progedu.config.JenkinsConfig;
 import fcu.selab.progedu.conn.GitlabService;
 import fcu.selab.progedu.data.User;
-import fcu.selab.progedu.db.AssignmentDbManager;
 import fcu.selab.progedu.db.UserDbManager;
 
 @Path("user/")
@@ -38,9 +35,6 @@ public class UserService {
 
   CourseConfig course = CourseConfig.getInstance();
   private UserDbManager dbManager = UserDbManager.getInstance();
-  private AssignmentDbManager projectDbManager = AssignmentDbManager.getInstance();
-  private GitlabConfig gitlabData = GitlabConfig.getInstance();
-  private JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
 
   /**
    * Upload a csv file for student batch registration

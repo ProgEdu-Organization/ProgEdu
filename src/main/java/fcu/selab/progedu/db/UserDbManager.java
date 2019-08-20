@@ -49,12 +49,10 @@ public class UserDbManager {
 
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
-      String password = passwordMD5(user.getPassword());
-      password += user.getUsername();
       preStmt.setInt(1, user.getGitLabId());
       preStmt.setString(2, user.getUsername());
       preStmt.setString(3, user.getName());
-      preStmt.setString(4, password);
+      preStmt.setString(4, passwordMD5(user.getPassword()));
       preStmt.setString(5, user.getEmail());
       preStmt.setString(6, user.getGitLabToken());
       preStmt.setBoolean(7, true);
