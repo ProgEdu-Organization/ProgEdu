@@ -121,12 +121,16 @@ public class AssignmentService {
 
     // 4. Unzip the uploaded file to tests folder and uploads folder on tomcat,
     // extract main method from tests folder, then zip as root project
+    String uploadDirectory = uploadDir + assignmentName;
+    String testDirectory = testDir + assignmentName;
 
-    /*
-     * TO-DO : unzip, create template and test file
-     * 
-     */
-    zipHandler.unzipFile();
+    zipHandler.unzipFile(uploadDirectory, filePath);
+
+    zipHandler.unzipFile(testDirectory, filePath);
+
+    assignment.createTemplate(uploadDirectory);
+
+    assignment.createTestCase(testDirectory, assignmentName);
 
 //    try {
 //      assignment.unzip(filePath, fileDetail.getFileName(), name, zipHandler);
