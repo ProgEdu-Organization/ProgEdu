@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fcu.selab.progedu.data.User;
-import fcu.selab.progedu.service.RoleEnum;
 
 public class UserDbManager {
   private static final String QUERY = "SELECT * FROM User WHERE id = ?";
@@ -23,7 +22,6 @@ public class UserDbManager {
   private static final String EMAIL = "email";
   private static final String GIT_LAB_TOKEN = "gitLabToken";
   private static final String DISPLAY = "display";
-  private static final RoleEnum ROLE = "role";
 
   private static UserDbManager dbManager = new UserDbManager();
 
@@ -299,5 +297,28 @@ public class UserDbManager {
       e.printStackTrace();
     }
     return isExist;
+  }
+
+  /**
+   * Get user from database
+   *
+   * @param id The db user id
+   * @return user
+   */
+  public String getUsername(int id) {
+    String name = "";
+
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(QUERY)) {
+      preStmt.setInt(1, id);
+      try (ResultSet rs = preStmt.executeQuery();) {
+        while (rs.next()) {
+          name = rs.getString(USERNAME);
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return name;
   }
 }
