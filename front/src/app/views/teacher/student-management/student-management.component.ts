@@ -33,7 +33,7 @@ export class StudentManagementComponent implements OnInit {
     console.log('add one student' + environment.SERVER_URL);
 
     this.studentService.addOneStudent(this.addOneStudentForm).subscribe(response => {
-      console.log(response);
+      console.log(response.ok);
     });
   }
 

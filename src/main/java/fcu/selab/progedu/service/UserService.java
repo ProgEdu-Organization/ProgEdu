@@ -169,9 +169,7 @@ public class UserService {
     List<User> users = dbManager.listAllUsers();
     
     JSONObject ob = new JSONObject();
-    JSONArray array = new JSONArray();
-    //array.
-    ob.append("Users", users);
+    ob.put("Users", users);
     return Response.ok().entity(ob.toString()).build();
   }
 
