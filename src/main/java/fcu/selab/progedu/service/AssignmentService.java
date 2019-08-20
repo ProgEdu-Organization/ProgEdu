@@ -111,7 +111,8 @@ public class AssignmentService {
     rootProjectUrl = getRootProjectUrl(assignmentName);
 
     // 2. Clone the project to C:\\Users\\users\\AppData\\Temp\\uploads
-    String cloneDirectoryPath = gitlabService.cloneProject(gitlabRootUsername, assignmentName);
+    final String cloneDirectoryPath 
+        = gitlabService.cloneProject(gitlabRootUsername, assignmentName);
 
     // 3. Store Zip File to folder if file is not empty
     String filePath = null;
