@@ -310,14 +310,15 @@ public class UserDbManager {
   /**
    * Get user from database
    *
-   * @param id The db user id
+   * @param id
+   *          The db user id
    * @return user
    */
   public String getUsername(int id) {
     String name = "";
-
+    String query = "SELECT * FROM User WHERE id = ?";
     try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(QUERY)) {
+        PreparedStatement preStmt = conn.prepareStatement(query)) {
       preStmt.setInt(1, id);
       try (ResultSet rs = preStmt.executeQuery();) {
         while (rs.next()) {
