@@ -37,14 +37,14 @@ export class LoginComponent {
           this.dangerModal.show();
         } else {
           this.jwtService.setToken(response.token);
-          if (response.user === 'admin') {
+          if (response.user === 'teacher') {
             this.router.navigate(['dashboard']);
-          } else if (response.user === 'user') {
+          } else if (response.user === 'student') {
             this.router.navigate(['studashboard']);
           }
         }
       },
-      (error) => {
+      (err) => {
         this.router.navigate(['500']);
       }
     );

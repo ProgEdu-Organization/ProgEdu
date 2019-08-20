@@ -1,12 +1,11 @@
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ChartsModule } from 'ng2-charts';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { ButtonsModule } from 'ngx-bootstrap/buttons';
 import { CommonModule } from '@angular/common';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { TeacherRoutingModule } from './teacher-routing.module';
-import { FilterPipe } from '../../pipe/filter.pipe';
 import { DashProjectChoosedComponent } from './dash-project-choosed/dash-project-choosed.component';
 import { AssignmentManagementComponent } from './assignment-management/assignment-management.component';
 
@@ -21,27 +20,30 @@ import { StudentManagementComponent } from './student-management/student-managem
 import { GroupManagementComponent } from './group-management/group-management.component';
 // Carousel Component
 import { CarouselModule } from 'ngx-bootstrap/carousel';
-
+import { ChartComponent } from './chart/chart.component';
+import { FilterPipe } from '../../pipe/filter.pipe';
 @NgModule({
-  imports: [
-    FormsModule,
-    CommonModule,
-    ChartsModule,
-    BsDropdownModule,
-    TeacherRoutingModule,
-    ButtonsModule.forRoot(),
-    AlertModule.forRoot(),
-    ModalModule.forRoot(),
-    TabsModule.forRoot(),
-    CarouselModule.forRoot()
-  ],
-  declarations: [
-    DashboardComponent,
-    FilterPipe,
-    DashProjectChoosedComponent,
-    AssignmentManagementComponent,
-    CreateAssignmentComponent,
-    StudentManagementComponent,
-    GroupManagementComponent]
+    imports: [
+        FormsModule,
+        CommonModule,
+        ChartsModule,
+        BsDropdownModule,
+        TeacherRoutingModule,
+        ReactiveFormsModule,
+        ButtonsModule.forRoot(),
+        AlertModule.forRoot(),
+        ModalModule.forRoot(),
+        TabsModule.forRoot(),
+        CarouselModule.forRoot()
+    ],
+    declarations: [
+        DashboardComponent,
+        DashProjectChoosedComponent,
+        AssignmentManagementComponent,
+        CreateAssignmentComponent,
+        StudentManagementComponent,
+        GroupManagementComponent,
+        ChartComponent,
+        FilterPipe]
 })
 export class TeacherModule { }

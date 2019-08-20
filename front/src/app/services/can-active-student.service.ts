@@ -10,7 +10,7 @@ export class CanActiveStudentService implements CanActivate {
   constructor(public router: Router, private loginAuth: LoginAuthService, private jwtService: JwtService) { }
 
   canActivate(): Promise<boolean> | boolean {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       this.loginAuth.isLoginByStudent().subscribe((response) => {
         if (response.isLogin && !response.admin) {
           console.log('canActive student');
