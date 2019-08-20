@@ -5,7 +5,7 @@ public class WebUnitTestFailure implements Status {
   @Override
   public String extractFailureMsg(String consoleText) {
     String unitTestInfo = "WebUnitTestFailure";
-    String unitTestFailureStart = "> mocha ./src/test/indexTest.js --timeout 10000";
+    String unitTestFailureStart = "npm run test";
     String unitTestFailureEnd = "npm ERR! code ELIFECYCLE";
 
     unitTestInfo = consoleText.substring(

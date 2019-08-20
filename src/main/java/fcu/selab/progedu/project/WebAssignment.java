@@ -18,7 +18,9 @@ import org.xml.sax.SAXException;
 import fcu.selab.progedu.config.CourseConfig;
 import fcu.selab.progedu.config.GitlabConfig;
 import fcu.selab.progedu.config.JenkinsConfig;
+import fcu.selab.progedu.conn.JenkinsService;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
+import fcu.selab.progedu.service.StatusService;
 import fcu.selab.progedu.status.StatusEnum;
 
 public class WebAssignment extends AssignmentType {
@@ -84,12 +86,6 @@ public class WebAssignment extends AssignmentType {
   }
 
   @Override
-  public StatusEnum checkStatusType(int num, String username, String assignmentName) {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
   public void createTemplate() {
     // TODO Auto-generated method stub
 
@@ -101,108 +97,132 @@ public class WebAssignment extends AssignmentType {
 
   }
 
-//
-//  public WebAssignment() {
-//    super(new WebStatusFactory());
-//  }
-//
-//  public String getSampleZip() {
-//    return "WebQuickStart.zip";
-//  }
-//
-//  /**
-//   * searchFile
-//   * 
-//   * @param entryNewName entryNewName
-//   */
-//  public void searchFile(String entryNewName) {
-//  }
-//
-//  /**
-//   * extract main method and modify pom.xml
-//   * 
-//   * @param testDirectory testDirectory
-//   * @param projectName   projectName
-//   */
-//  public void extractFile(String zipFilePath, String testDirectory, String destDirectory,
-//      String projectName) {
-//
-//    try {
-//      FileUtils.deleteDirectory(new File(testDirectory + "/src/web"));
-//    } catch (IOException e) {
-//      e.printStackTrace();
-//    }
-//
-//    try {
-//      FileUtils.deleteDirectory(new File(destDirectory + "/src/test"));
-//    } catch (IOException e) {
-//      e.printStackTrace();
-//    }
-//  }
-//
-//  public String getJenkinsConfig() {
-//    return "config_web.xml";
-//  }
-//
-//  /**
-//   * modifyXmlFile
-//   * 
-//   * @param filePath   filePath
-//   * @param progApiUrl progApiUrl
-//   * @param userName   userName
-//   * @param proName    proName
-//   * @param tomcatUrl  tomcatUrl
-//   * @param sb         sb
-//   */
-//  public void modifyXmlFile(String filePath, String progApiUrl, String userName, String proName,
-//      String tomcatUrl, StringBuilder sb) {
-//    try {
-//      String filepath = filePath;
-//      DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-//      DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-//      Document doc = docBuilder.parse(filepath);
-//
-//      String strJobName = userName + "_" + proName;
-//      Node jobName = doc.getElementsByTagName("jobName").item(0);
-//      jobName.setTextContent(strJobName);
-//
-//      Node testFileName = doc.getElementsByTagName("testFileName").item(0);
-//      testFileName.setTextContent(proName);
-//
-//      Node proDetailUrl = doc.getElementsByTagName("proDetailUrl").item(0);
-//      proDetailUrl.setTextContent(tomcatUrl);
-//
-//      JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
-//      String seleniumUrl = jenkinsData.getSeleniumHostUrl() + "/wd/hub";
-//      Node ndSeleniumUrl = doc.getElementsByTagName("seleniumUrl").item(0);
-//      ndSeleniumUrl.setTextContent(seleniumUrl);
-//
-//      String updateDbUrl = progApiUrl + "/commits/update";
-//      Node progeduDbUrl = doc.getElementsByTagName("progeduDbUrl").item(0);
-//      progeduDbUrl.setTextContent(updateDbUrl);
-//
-//      Node user = doc.getElementsByTagName("user").item(0);
-//      user.setTextContent(userName);
-//
-//      Node ndProName = doc.getElementsByTagName("proName").item(0);
-//      ndProName.setTextContent(proName);
-//
-//      String progeduApiUrl = progApiUrl;
-//      Node ndProgeduApiUrl = doc.getElementsByTagName("progeduAPIUrl").item(0);
-//      ndProgeduApiUrl.setTextContent(progeduApiUrl);
-//
-//      Node jenkinsJobName = doc.getElementsByTagName("jenkinsJobName").item(0);
-//      jenkinsJobName.setTextContent(strJobName);
-//      // write the content into xml file
-//      TransformerFactory transformerFactory = TransformerFactory.newInstance();
-//      Transformer transformer = transformerFactory.newTransformer();
-//      DOMSource source = new DOMSource(doc);
-//      StreamResult result = new StreamResult(new File(filepath));
-//      transformer.transform(source, result);
-//    } catch (ParserConfigurationException | TransformerException | SAXException | IOException
-//        | LoadConfigFailureException e) {
-//      e.printStackTrace();
-//    }
-//
-//  }
+  @Override
+  public StatusEnum checkStatusType(int num, String username, String assignmentName) {
+    StatusEnum status = null;
+    StatusService statusService = StatusService.getInstance();
+    if (statusService.isInitialization(num)) {
+      status = StatusEnum.INITIALIZATION;
+    } else {
+      JenkinsService jenkinsService = JenkinsService.getInstance();
+      String jobName = username + "_" + assignmentName;
+      String console = jenkinsService.getConsole(jobName, num);
+
+      if (statusService.isBuildSuccess(console)) {
+        status = StatusEnum.BUILD_SUCCESS;
+      } else if (statusService.isWebUnitTestFailure(console)) {
+        status = StatusEnum.UNIT_TEST_FAILURE;
+      } else if (statusService.isWebCheckstyleFailure(console)) {
+        status = StatusEnum.CHECKSTYLE_FAILURE;
+      }
+    }
+    return status;
+  }
+  //
+  // public WebAssignment() {
+  // super(new WebStatusFactory());
+  // }
+  //
+  // public String getSampleZip() {
+  // return "WebQuickStart.zip";
+  // }
+  //
+  // /**
+  // * searchFile
+  // *
+  // * @param entryNewName entryNewName
+  // */
+  // public void searchFile(String entryNewName) {
+  // }
+  //
+  // /**
+  // * extract main method and modify pom.xml
+  // *
+  // * @param testDirectory testDirectory
+  // * @param projectName projectName
+  // */
+  // public void extractFile(String zipFilePath, String testDirectory, String
+  // destDirectory,
+  // String projectName) {
+  //
+  // try {
+  // FileUtils.deleteDirectory(new File(testDirectory + "/src/web"));
+  // } catch (IOException e) {
+  // e.printStackTrace();
+  // }
+  //
+  // try {
+  // FileUtils.deleteDirectory(new File(destDirectory + "/src/test"));
+  // } catch (IOException e) {
+  // e.printStackTrace();
+  // }
+  // }
+  //
+  // public String getJenkinsConfig() {
+  // return "config_web.xml";
+  // }
+  //
+  // /**
+  // * modifyXmlFile
+  // *
+  // * @param filePath filePath
+  // * @param progApiUrl progApiUrl
+  // * @param userName userName
+  // * @param proName proName
+  // * @param tomcatUrl tomcatUrl
+  // * @param sb sb
+  // */
+  // public void modifyXmlFile(String filePath, String progApiUrl, String
+  // userName, String proName,
+  // String tomcatUrl, StringBuilder sb) {
+  // try {
+  // String filepath = filePath;
+  // DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+  // DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+  // Document doc = docBuilder.parse(filepath);
+  //
+  // String strJobName = userName + "_" + proName;
+  // Node jobName = doc.getElementsByTagName("jobName").item(0);
+  // jobName.setTextContent(strJobName);
+  //
+  // Node testFileName = doc.getElementsByTagName("testFileName").item(0);
+  // testFileName.setTextContent(proName);
+  //
+  // Node proDetailUrl = doc.getElementsByTagName("proDetailUrl").item(0);
+  // proDetailUrl.setTextContent(tomcatUrl);
+  //
+  // JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
+  // String seleniumUrl = jenkinsData.getSeleniumHostUrl() + "/wd/hub";
+  // Node ndSeleniumUrl = doc.getElementsByTagName("seleniumUrl").item(0);
+  // ndSeleniumUrl.setTextContent(seleniumUrl);
+  //
+  // String updateDbUrl = progApiUrl + "/commits/update";
+  // Node progeduDbUrl = doc.getElementsByTagName("progeduDbUrl").item(0);
+  // progeduDbUrl.setTextContent(updateDbUrl);
+  //
+  // Node user = doc.getElementsByTagName("user").item(0);
+  // user.setTextContent(userName);
+  //
+  // Node ndProName = doc.getElementsByTagName("proName").item(0);
+  // ndProName.setTextContent(proName);
+  //
+  // String progeduApiUrl = progApiUrl;
+  // Node ndProgeduApiUrl = doc.getElementsByTagName("progeduAPIUrl").item(0);
+  // ndProgeduApiUrl.setTextContent(progeduApiUrl);
+  //
+  // Node jenkinsJobName = doc.getElementsByTagName("jenkinsJobName").item(0);
+  // jenkinsJobName.setTextContent(strJobName);
+  // // write the content into xml file
+  // TransformerFactory transformerFactory = TransformerFactory.newInstance();
+  // Transformer transformer = transformerFactory.newTransformer();
+  // DOMSource source = new DOMSource(doc);
+  // StreamResult result = new StreamResult(new File(filepath));
+  // transformer.transform(source, result);
+  // } catch (ParserConfigurationException | TransformerException | SAXException
+  // | IOException
+  // | LoadConfigFailureException e) {
+  // e.printStackTrace();
+  // }
+  //
+  // }
 }
