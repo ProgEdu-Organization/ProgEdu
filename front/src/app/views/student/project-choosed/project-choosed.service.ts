@@ -5,11 +5,11 @@ import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class AssignmentManagementService {
-
-  ALL_PROJECT_API = '/ProgEdu/webapi/project/getAllProjects';
+export class ProjectChoosedService {
+  ALL_PROJECT_API = `ProgEdu/webapi/jenkins/buildDetail?num=1&proName=WEB-HW1&userName=D0350510`;
   constructor(private http: HttpClient) { }
-  getAllProjects(): Observable<any> {
+
+  getCommitData(): Observable<any> {
     return this.http.get<any>(this.ALL_PROJECT_API);
   }
 }
