@@ -125,19 +125,13 @@ public class AssignmentService {
     String testDirectory = testDir + assignmentName;
 
     zipHandler.unzipFile(uploadDirectory, filePath);
-
     zipHandler.unzipFile(testDirectory, filePath);
-
     assignment.createTemplate(uploadDirectory);
-
     assignment.createTestCase(testDirectory, assignmentName);
+    zipHandler.zipTestFolder(testDirectory);
+    zipHandler.setUrlForJenkinsDownloadTestFile(zipHandler.serverIp
+        + "/ProgEdu/webapi/jenkins/getTestFile?filePath=" + testDirectory + ".zip");
 
-//    try {
-//      assignment.unzip(filePath, fileDetail.getFileName(), name, zipHandler);
-//      setTestFileInfo();
-//    } catch (IOException e) {
-//      e.printStackTrace();
-//    }
     // 5. Add .gitkeep if folder is empty.
     tomcatService.findEmptyFolder(cloneDirectoryPath);
 
@@ -335,23 +329,25 @@ public class AssignmentService {
       @FormDataParam("testCase") InputStream uploadedInputStream,
       @FormDataParam("testCase") FormDataContentDisposition fileDetail) {
 
-//    dbManager.editAssignment(deadline, readMe, releaseTime, assignmentName);
-//
-//    if (!fileDetail.getFileName().isEmpty()) {
-//      // update test case
-//      String filePath = storeFileToTestsFolder(assignmentName + ".zip", uploadedInputStream);
-//      // update database checksum
-//
-//      String checksum = getChecksum(filePath);
-////      System.out.println("checksum : " + checksum);
-//
-//      dbManager.updateAssignmentChecksum(assignmentName, checksum);
-//    }
+    // dbManager.editAssignment(deadline, readMe, releaseTime, assignmentName);
+    //
+    // if (!fileDetail.getFileName().isEmpty()) {
+    // // update test case
+    // String filePath = storeFileToTestsFolder(assignmentName + ".zip",
+    // uploadedInputStream);
+    // // update database checksum
+    //
+    // String checksum = getChecksum(filePath);
+    //// System.out.println("checksum : " + checksum);
+    //
+    // dbManager.updateAssignmentChecksum(assignmentName, checksum);
+    // }
 
-//    Response response = Response.ok().build();
-//    if (!isSave) {
-//      response = Response.serverError().status(Status.INTERNAL_SERVER_ERROR).build();
-//    }
+    // Response response = Response.ok().build();
+    // if (!isSave) {
+    // response =
+    // Response.serverError().status(Status.INTERNAL_SERVER_ERROR).build();
+    // }
 
     return Response.ok().build();
   }
@@ -390,22 +386,23 @@ public class AssignmentService {
 
     return name;
   }
-//
-//  private String getChecksum(String zipFilePath) {
-//    String strChecksum = "";
-//
-//    try (CheckedInputStream cis = new CheckedInputStream(new FileInputStream(zipFilePath),
-//        new CRC32());) {
-//      byte[] buf = new byte[1024];
-//      // noinspection StatementWithEmptyBody
-//      while (cis.read(buf) >= 0) {
-//      }
-//      System.out.println(cis.getChecksum().getValue());
-//      strChecksum = String.valueOf(cis.getChecksum().getValue());
-//    } catch (IOException e) {
-//      e.printStackTrace();
-//    }
-//    return strChecksum;
-//  }
+  //
+  // private String getChecksum(String zipFilePath) {
+  // String strChecksum = "";
+  //
+  // try (CheckedInputStream cis = new CheckedInputStream(new
+  // FileInputStream(zipFilePath),
+  // new CRC32());) {
+  // byte[] buf = new byte[1024];
+  // // noinspection StatementWithEmptyBody
+  // while (cis.read(buf) >= 0) {
+  // }
+  // System.out.println(cis.getChecksum().getValue());
+  // strChecksum = String.valueOf(cis.getChecksum().getValue());
+  // } catch (IOException e) {
+  // e.printStackTrace();
+  // }
+  // return strChecksum;
+  // }
 
 }
