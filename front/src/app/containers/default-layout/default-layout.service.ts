@@ -13,4 +13,8 @@ export class DefaultLayoutService {
   getNavData(): Observable<any> {
     return this.http.get<any>(this.ALL_COMMIT_API);
   }
+
+  modifySecret(): Observable<any> {
+    return this.http.get<any>(this.ALL_COMMIT_API);
+  }
 }

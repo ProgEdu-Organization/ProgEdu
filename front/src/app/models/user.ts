@@ -6,17 +6,16 @@ export class User {
 
   constructor(private jwtService: JwtService) {
     const decodedToken = jwtService.getDecodedToken();
-    console.log(JSON.stringify(decodedToken));
+    console.log('decodedToken' + JSON.stringify(decodedToken));
     this.isAdmin = decodedToken.admin;
     console.log('isAdmin' + decodedToken.admin);
     this.userId = decodedToken.aud;
   }
-
   public getIsAdmin(): boolean {
     return this.isAdmin;
   }
 
-  public getUserId(): string {
+  public getUsername(): string {
     return this.userId;
   }
 

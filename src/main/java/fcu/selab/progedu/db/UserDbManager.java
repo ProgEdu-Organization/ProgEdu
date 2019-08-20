@@ -12,10 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fcu.selab.progedu.data.User;
-import fcu.selab.progedu.service.RoleEnum;
 
 public class UserDbManager {
-  private static final String QUERY = "SELECT * FROM User WHERE id = ?";
   private static final String GIT_LAB_ID = "gitLabId";
   private static final String USERNAME = "username";
   private static final String NAME = "name";
@@ -23,7 +21,6 @@ public class UserDbManager {
   private static final String EMAIL = "email";
   private static final String GIT_LAB_TOKEN = "gitLabToken";
   private static final String DISPLAY = "display";
-  private static final RoleEnum ROLE = "role";
 
   private static UserDbManager dbManager = new UserDbManager();
 
@@ -40,21 +37,20 @@ public class UserDbManager {
   /**
    * Add gitlab user to database
    * 
-   * @param user The gitlab user
+   * @param user
+   *          The gitlab user
    */
   public void addUser(User user) {
-    String sql = "INSERT INTO "
-        + "User(gitLabId, username, name, password, email, gitLabToken, display)  "
+    String sql = "INSERT INTO " + "User(" + GIT_LAB_ID + "," + USERNAME + "," + NAME + ","
+        + PASSWORD + "," + EMAIL + "," + GIT_LAB_TOKEN + "," + DISPLAY + ")"
         + "VALUES(?, ?, ?, ?, ?, ?, ?)";
 
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
-      String password = passwordMD5(user.getPassword());
-      password += user.getUsername();
       preStmt.setInt(1, user.getGitLabId());
       preStmt.setString(2, user.getUsername());
       preStmt.setString(3, user.getName());
-      preStmt.setString(4, password);
+      preStmt.setString(4, passwordMD5(user.getPassword()));
       preStmt.setString(5, user.getEmail());
       preStmt.setString(6, user.getGitLabToken());
       preStmt.setBoolean(7, true);
@@ -67,9 +63,11 @@ public class UserDbManager {
   /**
    * encrypt the user password
    * 
-   * @param password The user's password
+   * @param password
+   *          The user's password
    * @return MD5 string
-   * @throws NoSuchAlgorithmException on security api call error
+   * @throws NoSuchAlgorithmException
+   *           on security api call error
    */
   public String passwordMD5(String password) {
     String hashtext = "";
@@ -96,7 +94,8 @@ public class UserDbManager {
   /**
    * get user password
    * 
-   * @param username user stu id
+   * @param username
+   *          user stu id
    * @return password
    */
   public String getPassword(String username) {
@@ -120,8 +119,10 @@ public class UserDbManager {
   /**
    * update user db password
    * 
-   * @param username user stu id
-   * @param password user new password
+   * @param username
+   *          user stu id
+   * @param password
+   *          user new password
    */
   public void modifiedUserPassword(String username, String password) {
     String query = "UPDATE User SET password=? WHERE username = ?";
@@ -140,8 +141,10 @@ public class UserDbManager {
   /**
    * check old password
    * 
-   * @param username user stu id
-   * @param password user old password
+   * @param username
+   *          user stu id
+   * @param password
+   *          user old password
    * @return T or F
    */
   public boolean checkPassword(String username, String password) {
@@ -179,7 +182,8 @@ public class UserDbManager {
   /**
    * Get user from database
    * 
-   * @param username The gitlab user name
+   * @param username
+   *          The gitlab user name
    * @return user
    */
   public User getUser(String username) {
@@ -254,7 +258,8 @@ public class UserDbManager {
   /**
    * check username
    * 
-   * @param username studentId
+   * @param username
+   *          studentId
    * @return isExist
    */
   public boolean checkUsername(String username) {
@@ -279,7 +284,8 @@ public class UserDbManager {
   /**
    * check e-mail
    * 
-   * @param email e-mail
+   * @param email
+   *          e-mail
    * @return isExist
    */
   public boolean checkEmail(String email) {
@@ -299,5 +305,29 @@ public class UserDbManager {
       e.printStackTrace();
     }
     return isExist;
+  }
+
+  /**
+   * Get user from database
+   *
+   * @param id
+   *          The db user id
+   * @return user
+   */
+  public String getUsername(int id) {
+    String name = "";
+    String query = "SELECT * FROM User WHERE id = ?";
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(query)) {
+      preStmt.setInt(1, id);
+      try (ResultSet rs = preStmt.executeQuery();) {
+        while (rs.next()) {
+          name = rs.getString(USERNAME);
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return name;
   }
 }

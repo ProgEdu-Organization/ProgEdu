@@ -11,7 +11,8 @@ export class DashboardComponent implements OnInit {
   public data: Array<any> = new Array<any>();
   public tableHead: Array<any> = new Array<any>();
   public tableData: Array<any> = new Array<any>();
-  private studentDatas: JSON;
+  public studentDatas: JSON;
+  public search;
   constructor(private dashboardService: DashboardService) { }
   async ngOnInit() {
     // Called after the constructor, initializing input properties, and the first call to ngOnChanges.
