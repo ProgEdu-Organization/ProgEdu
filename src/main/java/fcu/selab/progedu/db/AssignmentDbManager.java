@@ -46,7 +46,7 @@ public class AssignmentDbManager {
       preStmt.setString(4, assignment.getDescription());
       preStmt.setBoolean(5, assignment.isHasTemplate());
       preStmt.setInt(6, typeId);
-      preStmt.setString(7, assignment.getTestZipChecksum());
+      preStmt.setLong(7, assignment.getTestZipChecksum());
       preStmt.setString(8, assignment.getTestZipUrl());
       preStmt.setString(9, assignment.getReleaseTime());
       preStmt.setBoolean(10, assignment.isDisplay());
@@ -78,7 +78,7 @@ public class AssignmentDbManager {
           boolean hasTemplate = rs.getBoolean("hasTemplate");
           int typeId = rs.getInt("type");
           ProjectTypeEnum typeEnum = atDb.getTypeNameById(typeId);
-          String checksum = rs.getString("zipChecksum");
+          long checksum = Long.parseLong(rs.getString("zipChecksum"));
           String zipUrl = rs.getString("zipUrl");
           String releaseTime = rs.getString("releaseTime");
           boolean display = rs.getBoolean("display");

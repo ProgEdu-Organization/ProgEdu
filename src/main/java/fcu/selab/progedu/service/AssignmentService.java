@@ -64,7 +64,7 @@ public class AssignmentService {
 
   boolean isSave = true;
 
-  private String testZipChecksum = "";
+  private long testZipChecksum = 0;
   private String testZipUrl = "";
 
   /**
@@ -129,7 +129,7 @@ public class AssignmentService {
     assignment.createTemplate(uploadDirectory);
     assignment.createTestCase(testDirectory);
     zipHandler.zipTestFolder(testDirectory);
-    testZipChecksum = zipHandler.getChecksum() + "";
+    testZipChecksum = zipHandler.getChecksum();
     testZipUrl = zipHandler.serverIp
         + "/ProgEdu/webapi/jenkins/getTestFile?filePath=" + testDirectory + ".zip";
     // zipHandler.setUrlForJenkinsDownloadTestFile(zipHandler.serverIp
@@ -247,7 +247,7 @@ public class AssignmentService {
    * @param hasTemplate Has template
    */
   public void addProject(String name, String releaseTime, String deadline, String readMe,
-      ProjectTypeEnum projectType, boolean hasTemplate, String testZipChecksum, String testZipUrl) {
+      ProjectTypeEnum projectType, boolean hasTemplate, long testZipChecksum, String testZipUrl) {
     Assignment assignment = new Assignment();
 
     assignment.setName(name);
@@ -370,10 +370,10 @@ public class AssignmentService {
     return Response.ok().entity(assignment).build();
   }
 
-  public void setTestFileInfo() {
-    testZipChecksum = String.valueOf(zipHandler.getChecksum());
-    testZipUrl = zipHandler.getUrlForJenkinsDownloadTestFile();
-  }
+  // public void setTestFileInfo() {
+  //   testZipChecksum = String.valueOf(zipHandler.getChecksum());
+  //   testZipUrl = zipHandler.getUrlForJenkinsDownloadTestFile();
+  // }
 
   /**
    * get course name
