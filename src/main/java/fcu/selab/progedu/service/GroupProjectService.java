@@ -61,16 +61,15 @@ public class GroupProjectService {
   }
 
   /**
+   * (to do)
    * 
-   * @param groupProjectName abc
-   * @param readMe           abc
-   * @param projectType      abc
-   * @param file             abc
-   * @param fileDetail       abc
-   * @return abc
-   * @throws Exception abc
+   * @param group       (to do)
+   * @param deadline    (to do)
+   * @param readMe      (to do)
+   * @param projectType (to do)
+   * @param file        (to do)
+   * @param fileDetail  (to do)
    */
-
   public void createGroupProject(Group group, String deadline, String readMe, String projectType,
       InputStream file, FormDataContentDisposition fileDetail) {
 
@@ -160,7 +159,6 @@ public class GroupProjectService {
    * @param deadline    Project deadline
    * @param readMe      Project readme
    * @param projectType File type
-   * @param hasTemplate Has template
    */
   public void addProject(String name, String readMe, String deadline, ProjectTypeEnum projectType) {
     GroupProject groupProject = new GroupProject();

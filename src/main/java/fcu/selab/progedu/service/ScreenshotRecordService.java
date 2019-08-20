@@ -133,7 +133,7 @@ public class ScreenshotRecordService {
       System.out.println("url " + urls);
 
       int crId = commitRecordDb
-          .getCommitRecordId(auDb.getAUId(assignmentDb.getAssignmentIdByName(jobName),
+          .getCommitRecordId(auDb.getAuid(assignmentDb.getAssignmentIdByName(jobName),
               userDb.getUserIdByUsername(userName)), lastCommitNum);
 
       try {

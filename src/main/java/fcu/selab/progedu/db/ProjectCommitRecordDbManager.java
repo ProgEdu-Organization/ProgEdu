@@ -223,15 +223,15 @@ public class ProjectCommitRecordDbManager {
   /**
    * get Project_Commit_Status id by pgId
    * 
-   * @param pgId pgId
+   * @param pgid pgid
    * @return status status
    */
-  public int getCommitStatusbyPGId(int pgId) {
+  public int getCommitStatusbyPgid(int pgid) {
     int status = 0;
     String sql = "SELECT * FROM Project_Commit_Record WHERE pgId=?";
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
-      preStmt.setInt(1, pgId);
+      preStmt.setInt(1, pgid);
       try (ResultSet rs = preStmt.executeQuery()) {
         while (rs.next()) {
           status = rs.getInt(status);

@@ -47,7 +47,7 @@ public class LoginAuth extends HttpServlet {
   private static final String PRIVATE_TOKEN = "private_token";
   GitlabConfig gitData = GitlabConfig.getInstance();
   CourseConfig courseData = CourseConfig.getInstance();
-  private Conn conn = Conn.getInstance();
+  private  GitlabService conn = GitlabService.getInstance();
   JwtConfig jwt = JwtConfig.getInstance();
   boolean isEnter = true;
   

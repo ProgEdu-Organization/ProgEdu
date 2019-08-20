@@ -437,13 +437,12 @@ public class GitlabService {
    * transfer project into group
    * 
    * @param group       group
-   * @param projectName project name
    * @throws IOException IOException
    */
   public GitlabProject createGroupProject(Group group) throws IOException {
     GroupService gs = new GroupService();
-    int LeaderId = gs.getUserIdByUsername(group.getLeaderUsername());
-    GitlabProject project = createPrivateProject(LeaderId, group.getProjectName(), null);
+    int leaderId = gs.getUserIdByUsername(group.getLeaderUsername());
+    GitlabProject project = createPrivateProject(leaderId, group.getProjectName(), null);
     transferProjectToGroupProject(getGitlabGroup(group.getGroupName()).getId(), project.getId());
     return project;
   }
@@ -608,6 +607,11 @@ public class GitlabService {
     return committers;
   }
 
+/**
+   * get commits from gitlab project.
+   * (to do)
+   * @param username project's (to do)
+   */
   public String cloneProject(String username, String projectName) {
     String repoUrl = rootUrl + "/" + username + "/" + projectName + ".git";
     String target = System.getProperty("java.io.tmpdir") + "uploads/" + username;
@@ -617,6 +621,10 @@ public class GitlabService {
     return target;
   }
 
+  /**
+   * (to do)
+   * @param cloneDirectoryPath (to do)
+   */
   public void pushProject(String cloneDirectoryPath) {
     Linux linux = new Linux();
     String addCommand = "git add .";
@@ -629,12 +637,12 @@ public class GitlabService {
     linux.execLinuxCommandInFile(pushCommand, cloneDirectoryPath);
   }
 
-  /**
-   * set gitlab webhook that trigger jenkins job to build
-   * 
-   * @param username group name
-   * @param project  gitlab project
-   */
+/**
+ * (to do)
+ * @param project (to do)
+ * @throws IOException (to do)
+ * @throws LoadConfigFailureException (to do)
+ */
   public void setGitlabWebhook(GitlabProject project)
       throws IOException, LoadConfigFailureException {
     String username = project.getOwner().getUsername();
