@@ -1,19 +1,19 @@
 <%@ page language="java" contentType="text/html; charset=BIG5"
          pageEncoding="utf-8"%>
-<%@ page import="fcu.selab.progedu.conn.Conn,fcu.selab.progedu.conn.HttpConnect" %>
-<%@ page import="fcu.selab.progedu.jenkins.JenkinsApi, fcu.selab.progedu.conn.Language" %>
+<%@ page import="fcu.selab.progedu.conn.GitlabService,fcu.selab.progedu.conn.HttpConnect" %>
+<%@ page import="fcu.selab.progedu.jenkins.JenkinsApi,fcu.selab.progedu.conn.Language" %>
 <%@ page import="fcu.selab.progedu.config.GitlabConfig" %>
 <%@ page import="fcu.selab.progedu.config.JenkinsConfig" %>
-<%@ page import="fcu.selab.progedu.db.UserDbManager, fcu.selab.progedu.db.ProjectDbManager" %>
-<%@ page import="fcu.selab.progedu.data.User, fcu.selab.progedu.data.Project" %>
+<%@ page import="fcu.selab.progedu.db.UserDbManager,fcu.selab.progedu.db.AssignmentDbManager" %>
+<%@ page import="fcu.selab.progedu.data.User,fcu.selab.progedu.data.Assignment" %>
 <%@ page import="org.gitlab.api.models.*" %>
-<%@ page import="java.util.*, fcu.selab.progedu.conn.Dash" %>
+<%@ page import="java.util.*,fcu.selab.progedu.conn.Dash" %>
 <%@ page import="fcu.selab.progedu.jenkins.JobStatus" %>
-<%@ page import="org.json.JSONArray, org.json.JSONException, org.json.JSONObject" %>
+<%@ page import="org.json.JSONArray,org.json.JSONException,org.json.JSONObject" %>
 
 <%
-    if(session.getAttribute("username") == null || session.getAttribute("username").toString().equals("")){
-        response.sendRedirect("index.jsp");
+  if(session.getAttribute("username") == null || session.getAttribute("username").toString().equals("")){
+    response.sendRedirect("index.jsp");
     }
     session.putValue("page", "dashboard");
 %>
@@ -172,12 +172,12 @@
 </head>
 <body>
 <%
-    Conn conn = Conn.getInstance();
+  GitlabService conn = GitlabService.getInstance();
 
     HttpConnect httpConn = HttpConnect.getInstance();
 
     UserDbManager db = UserDbManager.getInstance();
-    ProjectDbManager Pdb = ProjectDbManager.getInstance();
+    AssignmentDbManager Pdb = AssignmentDbManager.getInstance();
 
     // db users
     List<User> users = db.listAllUsers();
@@ -186,7 +186,7 @@
     List<GitlabProject> gitProjects = new ArrayList<GitlabProject>();
 
     // db projects
-    List<Project> dbProjects = Pdb.listAllProjects();
+    List<Assignment> dbProjects = Pdb.listAllAssignments();
 
     // gitlab jenkins courseData
     GitlabConfig gitData = GitlabConfig.getInstance();
@@ -217,14 +217,14 @@
             <font size="4"><a href="javascript:;" data-toggle="collapse" data-target="#student" class="nav-link"><i class="fa fa-bars" aria-hidden="true"></i>&nbsp; <fmt:message key="dashboard_a_student"/> <i class="fa fa-chevron-down" aria-hidden="true"></i></a></font>
             <ul id="student" class="collapse" style="list-style: none;">
                 <%
-                    for(User user : users){
-                        String userName = user.getUserName();
-                        String name = user.getName();
-                        String href = "\"dashStuChoosed.jsp?studentId=" + user.getGitLabId() + "\"";
+                  for(User user : users){
+                                                                                    String userName = user.getStufentId();
+                                                                                    String name = user.getName();
+                                                                                    String href = "\"dashStuChoosed.jsp?studentId=" + user.getGitLabId() + "\"";
                 %>
-                <li class="nav-item"><font size="3"><a class="nav-link" href=<%=href %>><i class="fa fa-angle-right" aria-hidden="true"></i>&nbsp; <%=userName %>&nbsp; <%=name %></a></font></li>
+                <li class="nav-item"><font size="3"><a class="nav-link" href=<%=href%>><i class="fa fa-angle-right" aria-hidden="true"></i>&nbsp; <%=userName%>&nbsp; <%=name%></a></font></li>
                 <%
-                    }
+                  }
                 %>
             </ul>
         </li>
@@ -251,7 +251,7 @@
                 <tr>
                     <th style="font-weight: 900; font-size: 18px"><fmt:message key="dashboard_th_studentId"/></th>
                     <%
-                        for(Project project : dbProjects){
+                      for(Assignment project : dbProjects){
                     %>
                     <th style="font-weight: 900; font-size: 18px"><%=project.getName() %></th>
                     <%
@@ -313,7 +313,7 @@
                         
                         if(thName == hwName) {
                             pName = hwName;
-                            id="dashboard";
+                            //id="dashboard";
                             break;
                         }
                         else {

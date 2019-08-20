@@ -1,0 +1,93 @@
+package fcu.selab.progedu.db;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+public class AssignmentUserDbManager {
+  private static AssignmentUserDbManager dbManager = new AssignmentUserDbManager();
+
+  public static AssignmentUserDbManager getInstance() {
+    return dbManager;
+  }
+
+  private IDatabase database = new MySqlDatabase();
+
+  private AssignmentUserDbManager() {
+
+  }
+
+  /**
+   * get auId by assignment Id and user Id
+   * 
+   * @param aid Assignment Id
+   * @param uid User Id
+   * @return auId assignmentUser Id
+   */
+  public int getAUId(int aid, int uid) {
+    int auid = 0;
+    String sql = "SELECT id FROM Assignment_User WHERE aId=? AND uId=?";
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+      preStmt.setInt(1, aid);
+      preStmt.setInt(2, uid);
+      try (ResultSet rs = preStmt.executeQuery()) {
+        while (rs.next()) {
+          auid = rs.getInt("id");
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return auid;
+  }
+
+  /**
+   * get aIds by User Id
+   * 
+   * @return lsAids assignment Id
+   */
+  public List<Integer> getAIds(int uId) {
+    List<Integer> lsAids = new ArrayList<>();
+    String sql = "SELECT * FROM Assignment_User WHERE uId = ?";
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+      preStmt.setInt(1, uId);
+      try (ResultSet rs = preStmt.executeQuery()) {
+        while (rs.next()) {
+          int aid = rs.getInt("aId");
+          lsAids.add(aid);
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return lsAids;
+  }
+
+  /**
+   * get uId by Assignment Id
+   *
+   * @return lsUids assignment Id
+   */
+  public List<Integer> getUids(int aId) {
+    List<Integer> lsUids = new ArrayList<>();
+    String sql = "SELECT * FROM Assignment_User WHERE aId = ?";
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+      preStmt.setInt(1, aId);
+      try (ResultSet rs = preStmt.executeQuery()) {
+        while (rs.next()) {
+          int uid = rs.getInt("uId");
+          lsUids.add(uid);
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return lsUids;
+  }
+}

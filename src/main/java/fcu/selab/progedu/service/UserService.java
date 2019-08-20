@@ -7,56 +7,35 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.gitlab.api.models.GitlabUser;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
-import org.json.JSONObject;
 
 import com.csvreader.CsvReader;
 
 import fcu.selab.progedu.config.CourseConfig;
-import fcu.selab.progedu.config.GitlabConfig;
-import fcu.selab.progedu.config.JenkinsConfig;
-import fcu.selab.progedu.conn.Conn;
-import fcu.selab.progedu.data.Project;
+import fcu.selab.progedu.conn.GitlabService;
 import fcu.selab.progedu.data.User;
-import fcu.selab.progedu.db.ProjectDbManager;
 import fcu.selab.progedu.db.UserDbManager;
-import fcu.selab.progedu.jenkins.JenkinsApi;
 
 @Path("user/")
 public class UserService {
+  private static UserService instance = new UserService();
 
-  Conn userConn = Conn.getInstance();
+  public static UserService getInstance() {
+    return instance;
+  }
+
+  GitlabService gitlabService = GitlabService.getInstance();
 
   CourseConfig course = CourseConfig.getInstance();
   private UserDbManager dbManager = UserDbManager.getInstance();
-  private ProjectDbManager projectDbManager = ProjectDbManager.getInstance();
-  private GitlabConfig gitlabData = GitlabConfig.getInstance();
-  private JenkinsApi jenkins = JenkinsApi.getInstance();
-  private JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
 
-  /**
-   * Upload a csv file for student batch registration
-   * 
-   * @return List Users
-   */
-  @GET
-  @Path("getUsers")
-  @Produces(MediaType.APPLICATION_JSON)
-  public Response getAllUsers() {
-    JSONObject ob = new JSONObject();
-    ob.put("results", dbManager.listAllUsers());
-    return Response.ok().entity(ob.toString()).build();
-  }
-  
   /**
    * Upload a csv file for student batch registration
    * 
@@ -67,104 +46,55 @@ public class UserService {
   @POST
   @Path("upload")
   @Consumes(MediaType.MULTIPART_FORM_DATA)
-  public Response upload(@FormDataParam("file") InputStream uploadedInputStream,
+  public Response createAccounts(@FormDataParam("file") InputStream uploadedInputStream,
       @FormDataParam("file") FormDataContentDisposition fileDetail) {
     Response response = null;
-    List<User> userList = new ArrayList<>();
-
+    List<User> users = new ArrayList<>();
+    String errorMessage = "";
     try {
       CsvReader csvReader = new CsvReader(new InputStreamReader(uploadedInputStream, "UTF-8"));
       csvReader.readHeaders();
       while (csvReader.readRecord()) {
-        User user = new User(csvReader.get("StudentId"), csvReader.get("Name"),
-            csvReader.get("Email"), csvReader.get("Password"));
-        userList.add(user);
-        response = checkErrorType(user);
-        if (response != null) {
+        User newUser = new User();
+        String username = csvReader.get("Username");
+        String password = csvReader.get("Password");
+        String name = csvReader.get("Name");
+        String email = csvReader.get("Email");
+
+        newUser.setDisplay(true);
+        newUser.setUsername(username);
+        newUser.setPassword(password);
+        newUser.setName(name);
+        newUser.setEmail(email);
+
+        errorMessage = getErrorMessage(users, newUser);
+        if (errorMessage.isEmpty()) {
+          users.add(newUser);
+        } else {
           break;
         }
       }
-
-      if (response == null) {
-        response = checkForDuplicates(userList);
-        if (response == null) {
-          register(userList);
-          response = Response.ok().build();
-        }
-
-      }
       csvReader.close();
+
+      if (errorMessage == null || errorMessage.isEmpty()) {
+        for (User user : users) {
+          register(user);
+        }
+        response = Response.ok().build();
+      } else {
+        response = Response.serverError().entity(errorMessage).build();
+      }
     } catch (IOException e) {
       response = Response.serverError().entity("failed !").build();
       e.printStackTrace();
     }
-
     return response;
-  }
-
-  /**
-   * check for duplicates.
-   * 
-   * @param userList user list
-   * @return response
-   */
-  public Response checkForDuplicates(List<User> userList) {
-    Response response = null;
-    for (int index = 0; index < userList.size() - 1; index++) {
-      for (int index2 = index + 1; index2 < userList.size(); index2++) {
-        if (userList.get(index).getUserName().equals(userList.get(index2).getUserName())) {
-          response = Response.serverError().entity(
-              "username : " + userList.get(index).getUserName() + " is duplicated in student list.")
-              .build();
-          break;
-        } else if (userList.get(index).getEmail().equals(userList.get(index2).getEmail())) {
-          response = Response.serverError()
-              .entity(
-                  "Email : " + userList.get(index).getEmail() + " is duplicated in student list.")
-              .build();
-          break;
-        }
-      }
-    }
-    return response;
-  }
-
-  /**
-   * check error type.
-   * 
-   * @param user user's information
-   * @return response
-   */
-  public Response checkErrorType(User user) {
-    Response response = null;
-    if (user.getPassword().length() < 8) {
-      response = Response.serverError().entity("Password must be at least 8 characters.").build();
-    } else if (dbManager.checkUsername(user.getUserName())) {
-      response = Response.serverError()
-          .entity("username : " + user.getUserName() + " already exists.").build();
-    } else if (dbManager.checkEmail(user.getEmail())) {
-      response = Response.serverError().entity("Email : " + user.getEmail() + " already exists.")
-          .build();
-    }
-    return response;
-  }
-
-  /**
-   * Translate uploaded file content to string and parse to register
-   * 
-   * @param userList file content to string
-   */
-  public void register(List<User> userList) {
-    for (User user : userList) {
-      userConn.createUser(user.getEmail(), user.getPassword(), user.getUserName(), user.getName());
-    }
-    printStudent(userList);
   }
 
   /**
    *
    * @param name     name
-   * @param id       id
+   * @param username id
    * @param email    email
    * @param password password
    * @return response
@@ -172,135 +102,27 @@ public class UserService {
   @POST
   @Path("new")
   @Consumes(MediaType.MULTIPART_FORM_DATA)
-  public Response createAStudentAccount(@FormDataParam("studentName") String name,
-      @FormDataParam("studentId") String id, @FormDataParam("studentEmail") String email,
-      @FormDataParam("password") String password) {
+  public Response createAccount(@FormDataParam("name") String name,
+      @FormDataParam("username") String username, @FormDataParam("email") String email,
+      @FormDataParam("password") String password,
+      @FormDataParam("isDisplayed") boolean isDisplayed) {
     Response response = null;
-    boolean isSave = false;
-    try {
-      response = checkErrorType(new User(id, name, email, password));
-      if (response == null) {
-        isSave = userConn.createUser(email, password, id, name);
-        User user = dbManager.getUser(id);
-        boolean isSuccess = importPreviousProject(user);
-        isSave = isSave && isSuccess;
-      }
+    User user = new User(username, name, email, password, isDisplayed);
+    String errorMessage = getErrorMessage(user);
 
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-    if (response == null) {
-      if (isSave) {
+    if (errorMessage.isEmpty()) {
+      try {
+        register(user);
         response = Response.ok().build();
-      } else {
-        response = Response.serverError().entity("failed !").build();
+      } catch (IOException e) {
+        response = Response.serverError().entity("Failed !").build();
+        e.printStackTrace();
       }
+    } else {
+      response = Response.serverError().entity(errorMessage).build();
     }
 
     return response;
-  }
-
-  /**
-   * create previous project for new student.
-   * 
-   * @param user student
-   * @return check
-   */
-  public boolean importPreviousProject(User user) {
-    boolean check = false;
-    List<Project> projects = projectDbManager.listAllProjects();
-    String url = "";
-    String gitlabUrl = "";
-    String userName = user.getUserName();
-    try {
-      gitlabUrl = gitlabData.getGitlabRootUrl();
-      for (Project project : projects) {
-        String projectName = project.getName();
-        Project project1 = projectDbManager.getProjectByName(projectName);
-        url = gitlabUrl + "/root/" + projectName;
-        userConn.createPrivateProject(user.getGitLabId(), project.getName(), url);
-        boolean isSuccess = createPreviuosJob(userName, projectName, project1.getType());
-        check = check && isSuccess;
-      }
-      check = true;
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-    return check;
-  }
-
-  /**
-   * create previous job for new student.
-   * 
-   * @param username student name
-   * @param proName  project name
-   * @param fileType job type
-   * @return check
-   */
-  public boolean createPreviuosJob(String username, String proName, String fileType) {
-    boolean check = false;
-    String jenkinsRootUsername = null;
-    String jenkinsRootPassword = null;
-    String tempDir = System.getProperty("java.io.tmpdir");
-    try {
-      proName = proName.toUpperCase();
-
-      String proUrl = gitlabData.getGitlabHostUrl() + "/" + username + "/" + proName + ".git";
-      proUrl = proUrl.toLowerCase();
-      String filePath = tempDir + "/configs/" + proName + ".xml";
-      jenkins.modifyXmlFileUrl(filePath, proUrl);
-      if ("Javac".equals(fileType)) {
-        jenkins.modifyXmlFileCommand(filePath, username, proName);
-      }
-      if ("Maven".equals(fileType)) {
-        jenkins.modifyXmlFileProgEdu(filePath, username, proName);
-      }
-      if ("Web".equals(fileType)) {
-        jenkins.modifyWebXmlFile(filePath, username, proName);
-      }
-
-      jenkinsRootUsername = jenkinsData.getJenkinsRootUsername();
-      jenkinsRootPassword = jenkinsData.getJenkinsRootPassword();
-      String jenkinsCrumb = jenkins.getCrumb(jenkinsRootUsername, jenkinsRootPassword);
-      jenkins.postCreateJob(username, proName, proUrl, jenkinsCrumb, filePath);
-      jenkins.buildJob(username, proName, jenkinsCrumb);
-      check = true;
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-    return check;
-  }
-
-  /**
-   * Print user information
-   * 
-   * @param student user
-   */
-  public void printStudent(List<User> student) {
-    String userName = "";
-    String password = "";
-    String email = "";
-    String name = "";
-    for (User user : student) {
-      userName = user.getUserName();
-      password = user.getPassword();
-      email = user.getEmail();
-      name = user.getName();
-
-      System.out.println("userName: " + userName + ", password: " + password + ", email: " + email
-          + ", name: " + name);
-    }
-  }
-
-  /**
-   * Get all user on GitLab
-   * 
-   * @return all GitLab users
-   */
-  public List<GitlabUser> getUsers() {
-    List<GitlabUser> users = new ArrayList<>();
-    users = userConn.getUsers();
-    return users;
   }
 
   /**
@@ -312,21 +134,126 @@ public class UserService {
    * @return true false
    */
   @POST
-  @Path("changePwd")
+  @Path("updatePassword")
   @Consumes(MediaType.MULTIPART_FORM_DATA)
-  public Response changePassword(@FormDataParam("oldPwd") String oldPwd,
-      @FormDataParam("newPwd") String newPwd, @FormDataParam("checkPwd") String checkPwd,
-      @FormDataParam("userId") Integer userId) {
-    String userName = userConn.getUserById(userId).getUsername();
-    boolean check = dbManager.checkPassword(userName, oldPwd);
-    if (check) {
-      dbManager.modifiedUserPassword(userName, newPwd);
-      userConn.updateUserPassword(userId, newPwd);
+  public Response updatePassword(@FormDataParam("id") Integer id,
+      @FormDataParam("currentPassword") String currentPassword,
+      @FormDataParam("newPassword") String newPassword) {
+    Response response = null;
+    String username = gitlabService.getUserById(id).getUsername();
+    boolean isSame = dbManager.checkPassword(username, currentPassword);
+    if (isSame) {
+      gitlabService.updateUserPassword(id, newPassword);
+      dbManager.modifiedUserPassword(username, newPassword);
+      response = Response.ok().build();
     } else {
-      return Response.serverError().entity("The current password is wrong").build();
+      response = Response.ok().entity("The current password is wrong").build();
     }
 
-    return Response.ok().build();
+    return response;
 
   }
+
+  /**
+   * Get all user which role is student
+   * 
+   * @return all GitLab users
+   */
+  public List<User> getStudents() {
+    List<User> studentUsers = new ArrayList<>();
+    List<User> users = dbManager.listAllUsers();
+
+    for (User user : users) {
+      if (user.getRole() == RoleEnum.STUDENT) {
+        studentUsers.add(user);
+      }
+    }
+    return studentUsers;
+  }
+
+  /**
+   * Register user
+   * 
+   * @param user user of ProgEdu
+   * @throws IOException
+   */
+  private void register(User user) throws IOException {
+    GitlabUser gitlabUser = gitlabService.createUser(user.getEmail(), user.getPassword(),
+        user.getUsername(), user.getName());
+    user.setGitLabToken(gitlabUser.getPrivateToken());
+    user.setGitLabId(gitlabUser.getId());
+
+    dbManager.addUser(user);
+  }
+
+  private boolean isPasswordTooShort(String password) {
+    boolean isPasswordTooShort = false;
+    if (password.length() < 8) {
+      isPasswordTooShort = true;
+    }
+    return isPasswordTooShort;
+  }
+
+  private boolean isDuplicateUsername(String username) {
+    boolean isDuplicateUsername = false;
+    if (dbManager.checkUsername(username)) {
+      isDuplicateUsername = true;
+    }
+    return isDuplicateUsername;
+  }
+
+  private boolean isDuplicateEmail(String email) {
+    boolean isDuplicateEmail = false;
+    if (dbManager.checkEmail(email)) {
+      isDuplicateEmail = true;
+    }
+    return isDuplicateEmail;
+  }
+
+  private boolean isDuplicateUsername(List<User> users, String username) {
+    boolean isDuplicateUsername = false;
+    for (User user : users) {
+      if (username.equals(user.getUsername())) {
+        isDuplicateUsername = true;
+        break;
+      }
+    }
+    return isDuplicateUsername;
+  }
+
+  private boolean isDuplicateEmail(List<User> users, String email) {
+    boolean isDuplicateEmail = false;
+    for (User user : users) {
+      if (email.equals(user.getEmail())) {
+        isDuplicateEmail = true;
+        break;
+      }
+    }
+    return isDuplicateEmail;
+  }
+
+  private String getErrorMessage(List<User> users, User user) {
+    String errorMessage = getErrorMessage(user);
+    if (errorMessage.isEmpty()) {
+      if (isDuplicateUsername(users, user.getUsername())) {
+        errorMessage = "username : " + user.getUsername() + " is duplicated in student list.";
+      } else if (isDuplicateEmail(users, user.getEmail())) {
+        errorMessage = "Email : " + user.getEmail() + " is duplicated in student list.";
+      }
+    }
+    return errorMessage;
+  }
+
+  private String getErrorMessage(User user) {
+    String errorMessage = "";
+    if (isPasswordTooShort(user.getPassword())) {
+      errorMessage = user.getName() + " : Password must be at least 8 characters.";
+    } else if (isDuplicateUsername(user.getUsername())) {
+      errorMessage = "username : " + user.getUsername() + " already exists.";
+    } else if (isDuplicateEmail(user.getEmail())) {
+      errorMessage = "Email : " + user.getEmail() + " already exists.";
+    }
+    return errorMessage;
+  }
+
 }

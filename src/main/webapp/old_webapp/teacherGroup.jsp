@@ -1,20 +1,20 @@
-<%@ page import="fcu.selab.progedu.conn.Conn, fcu.selab.progedu.conn.HttpConnect, fcu.selab.progedu.db.GroupDbManager"%>
-<%@ page import="fcu.selab.progedu.conn.Language,fcu.selab.progedu.config.GitlabConfig, fcu.selab.progedu.data.Group" %>
-<%@ page import="fcu.selab.progedu.jenkins.JenkinsApi, fcu.selab.progedu.conn.Language" %>
+<%@ page import="fcu.selab.progedu.conn.GitlabService,fcu.selab.progedu.conn.HttpConnect,fcu.selab.progedu.db.GroupDbManager"%>
+<%@ page import="fcu.selab.progedu.conn.Language,fcu.selab.progedu.config.GitlabConfig,fcu.selab.progedu.data.Group" %>
+<%@ page import="fcu.selab.progedu.jenkins.JenkinsApi,fcu.selab.progedu.conn.Language" %>
 <%@ page import="fcu.selab.progedu.config.GitlabConfig" %>
 <%@ page import="fcu.selab.progedu.config.JenkinsConfig" %>
-<%@ page import="fcu.selab.progedu.db.UserDbManager, fcu.selab.progedu.db.ProjectDbManager" %>
-<%@ page import="fcu.selab.progedu.data.User, fcu.selab.progedu.data.Project" %>   
+<%@ page import="fcu.selab.progedu.db.UserDbManager,fcu.selab.progedu.db.AssignmentDbManager" %>
+<%@ page import="fcu.selab.progedu.data.User,fcu.selab.progedu.data.Assignment" %>   
 <%@ page import="org.gitlab.api.GitlabAPI" %>
 <%@ page import="org.gitlab.api.models.*" %>
-<%@ page import="java.util.*, java.io.BufferedReader, java.io.InputStreamReader, java.io.IOException" %>
-<%@ page import="org.json.JSONArray, org.json.JSONException, org.json.JSONObject" %>
-<%@ page import="org.apache.http.client.HttpClient, org.apache.http.client.methods.HttpGet" %>
-<%@ page import="org.apache.http.HttpEntity, org.apache.http.HttpResponse, org.apache.http.impl.client.DefaultHttpClient" %>
+<%@ page import="java.util.*,java.io.BufferedReader,java.io.InputStreamReader,java.io.IOException" %>
+<%@ page import="org.json.JSONArray,org.json.JSONException,org.json.JSONObject" %>
+<%@ page import="org.apache.http.client.HttpClient,org.apache.http.client.methods.HttpGet" %>
+<%@ page import="org.apache.http.HttpEntity,org.apache.http.HttpResponse,org.apache.http.impl.client.DefaultHttpClient" %>
 
 
 <%
-	if(session.getAttribute("username") == null || session.getAttribute("username").toString().equals("")){
+  if(session.getAttribute("username") == null || session.getAttribute("username").toString().equals("")){
 		response.sendRedirect("index.jsp");
 	}
 	session.putValue("page", "teacherGroup");
@@ -23,7 +23,7 @@
 <%@ include file="language.jsp" %>
 
 <%
-	Conn conn = Conn.getInstance();
+  GitlabService conn = GitlabService.getInstance();
 	GitlabConfig gitData = GitlabConfig.getInstance();
 	
 	List<GitlabGroup> groups = conn.getGroups();

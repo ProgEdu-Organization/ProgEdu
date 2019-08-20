@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=BIG5"
     pageEncoding="utf-8"%>
-<%@ page import="fcu.selab.progedu.conn.Conn,fcu.selab.progedu.conn.Language" %>
+<%@ page import="fcu.selab.progedu.conn.GitlabService,fcu.selab.progedu.conn.Language" %>
 <%@ page import="fcu.selab.progedu.db.UserDbManager, fcu.selab.progedu.data.User" %>
 <%@ page import="fcu.selab.progedu.service.UserService" %>
 <%@ page import="java.util.List" %>
@@ -148,7 +148,7 @@
 									<%
 										for(User user : users){
 									%>
-											<option id="member" value="<%=user.getUserName()%>"><%=user.getUserName() %>-<%=user.getName() %></option>
+											<option id="member" value="<%=user.getStufentId()%>"><%=user.getStufentId()%>-<%=user.getName() %></option>
 									<%
 										}
 									%>

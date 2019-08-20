@@ -37,7 +37,7 @@ public class GitlabConfig {
    */
   public String getGitlabHostUrl() throws LoadConfigFailureException {
     if (props != null) {
-      return props.getProperty("GITLAB_HOST_URL");
+      return props.getProperty("GITLAB_HOST_URL").trim();
     }
     throw new LoadConfigFailureException(EXCEPTION + PROPERTY_FILE);
   }
@@ -50,7 +50,7 @@ public class GitlabConfig {
    */
   public String getGitlabRootUsername() throws LoadConfigFailureException {
     if (props != null) {
-      return props.getProperty("GITLAB_ROOT_USERNAME");
+      return props.getProperty("GITLAB_ROOT_USERNAME").trim();
     }
     throw new LoadConfigFailureException(EXCEPTION + PROPERTY_FILE);
   }
@@ -63,7 +63,7 @@ public class GitlabConfig {
    */
   public String getGitlabRootPassword() throws LoadConfigFailureException {
     if (props != null) {
-      return props.getProperty("GITLAB_ROOT_PASSWORD");
+      return props.getProperty("GITLAB_ROOT_PASSWORD").trim();
     }
     throw new LoadConfigFailureException(EXCEPTION + PROPERTY_FILE);
   }
@@ -76,7 +76,7 @@ public class GitlabConfig {
    */
   public String getGitlabApiToken() throws LoadConfigFailureException {
     if (props != null) {
-      return props.getProperty("GITLAB_API_TOKEN");
+      return props.getProperty("GITLAB_API_TOKEN").trim();
     }
     throw new LoadConfigFailureException(EXCEPTION + PROPERTY_FILE);
   }
@@ -89,7 +89,7 @@ public class GitlabConfig {
    */
   public String getGitlabRootUrl() throws LoadConfigFailureException {
     if (props != null) {
-      return props.getProperty("GITLAB_ROOT_URL");
+      return props.getProperty("GITLAB_ROOT_URL").trim();
     }
     throw new LoadConfigFailureException(EXCEPTION + PROPERTY_FILE);
   }
@@ -102,7 +102,7 @@ public class GitlabConfig {
    */
   public String getGitlabContainerId() throws LoadConfigFailureException {
     if (props != null) {
-      return props.getProperty("GITLAB_CONTAINER");
+      return props.getProperty("GITLAB_CONTAINER").trim();
     }
     throw new LoadConfigFailureException(EXCEPTION + PROPERTY_FILE);
   }

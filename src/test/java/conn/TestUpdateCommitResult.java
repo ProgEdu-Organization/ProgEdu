@@ -4,10 +4,10 @@ import java.util.List;
 
 import fcu.selab.progedu.data.User;
 import fcu.selab.progedu.db.UserDbManager;
-import fcu.selab.progedu.service.CommitResultService;
+import fcu.selab.progedu.service.CommitRecordService;
 
 public class TestUpdateCommitResult {
-  static CommitResultService service = new CommitResultService();
+  static CommitRecordService service = new CommitRecordService();
   static UserDbManager userDb = UserDbManager.getInstance();
 
   public static void main(String[] args) {
@@ -15,7 +15,7 @@ public class TestUpdateCommitResult {
 
     int i = 1;
     for (User user : users) {
-      String userName = user.getUserName();
+      String userName = user.getUsername();
       System.out.println(i + ", " + userName);
       service.updateCommitResult(userName, "OOP-HW4");
       i++;

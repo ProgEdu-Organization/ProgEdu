@@ -3,13 +3,9 @@ package fcu.selab.progedu.db;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.List;
 
 public class ScreenshotRecordDbManager {
-  private static final String STATUS = "status";
-  private static final String COMMIT = "commit";
   private static ScreenshotRecordDbManager dbManager = new ScreenshotRecordDbManager();
-  private UserDbManager udb = UserDbManager.getInstance();
   private IDatabase database = new MySqlDatabase();
 
   public static ScreenshotRecordDbManager getInstance() {
@@ -17,31 +13,22 @@ public class ScreenshotRecordDbManager {
   }
 
   /**
-   * aggregate jenkins situation
-   *
-   * @param id
-   *          student id
-   * @param hw
-   *          hw name
-   * @param commit
-   *          commit count
-   * @param urls
-   *          screenshot urls
-   * @throws SQLException
-   *           SQLException
+   * Add assignment to database
+   * 
+   * @param crId commitRecord id
+   * @param url  screenshot url
    */
-  public void insertJenkinsCommitCount(int id, String hw, int commit, List<String> urls)
-      throws SQLException {
-    String sql = "INSERT INTO Screenshot_Record" + "(stuId, hw, commitNumber, pngUrl) "
-        + "VALUES(?, ?, ?, ?)";
-    Connection conn = database.getConnection();
-    PreparedStatement preStmt = conn.prepareStatement(sql);
-    for (String url : urls) {
-      preStmt.setInt(1, id);
-      preStmt.setString(2, hw);
-      preStmt.setInt(3, commit);
-      preStmt.setString(4, url);
+  public void addScreenshotRecord(int crId, String url) {
+    String sql = "INSERT INTO Screenshot_Record(crId, pngUrl)  VALUES(?, ?)";
+
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+      preStmt.setInt(1, crId);
+      preStmt.setString(2, url);
       preStmt.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
     }
   }
+
 }

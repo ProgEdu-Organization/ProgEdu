@@ -1,7 +1,5 @@
 package fcu.selab.progedu.service;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -12,13 +10,10 @@ import java.util.List;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
-import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 
 import org.gitlab.api.models.GitlabGroup;
@@ -28,18 +23,20 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 
 import com.csvreader.CsvReader;
 
-import fcu.selab.progedu.conn.Conn;
+import fcu.selab.progedu.conn.GitlabService;
 import fcu.selab.progedu.data.Group;
 import fcu.selab.progedu.data.Student;
 import fcu.selab.progedu.db.GroupDbManager;
+import fcu.selab.progedu.exception.LoadConfigFailureException;
+import fcu.selab.progedu.project.ProjectTypeEnum;
 
 @Path("group/")
 public class GroupService {
 
-  Conn conn = Conn.getInstance();
+  GitlabService gitlabService = GitlabService.getInstance();
   UserService userService = new UserService();
   GroupDbManager gdb = GroupDbManager.getInstance();
-  ProjectService projectService = new ProjectService();
+  AssignmentService projectService = new AssignmentService();
 
   /**
    * upload a csvfile to create group
@@ -51,7 +48,7 @@ public class GroupService {
   @POST
   @Path("upload")
   @Consumes(MediaType.MULTIPART_FORM_DATA)
-  public Response upload(@FormDataParam("file") InputStream uploadedInputStream,
+  public Response createGroup(@FormDataParam("file") InputStream uploadedInputStream,
       @FormDataParam("file") FormDataContentDisposition fileDetail) {
     Response response;
     boolean isSuccess = true;
@@ -68,15 +65,17 @@ public class GroupService {
         student.setStudentId(csvReader.get("Student_Id"));
         student.setName(csvReader.get("name"));
         studentList.add(student);
+
       }
       csvReader.close();
-    } catch (IOException e) {
+
+      studentList = sort(studentList);
+      List<Group> groups = group(studentList);
+      createGitlabGroupAndProject(groups);
+    } catch (LoadConfigFailureException | IOException e) {
       isSuccess = false;
       e.printStackTrace();
     }
-    studentList = sort(studentList);
-    List<Group> groups = group(studentList);
-    newGroup(groups);
 
     if (isSuccess) {
       response = Response.ok().build();
@@ -107,7 +106,7 @@ public class GroupService {
       }
 
       if (studentList.get(index).getTeamLeader()) {
-        group.setMaster(studentList.get(index).getStudentId());
+        group.setLeaderUsername(studentList.get(index).getStudentId());
       } else {
         group.addContributor(studentList.get(index).getStudentId());
       }
@@ -134,19 +133,14 @@ public class GroupService {
     return studentList;
   }
 
-  /**
-   * parse csv file to create a group
-   * 
-   * @param groups group data
-   */
-  private void newGroup(List<Group> groups) {
+  private void createGitlabGroupAndProject(List<Group> groups)
+      throws IOException, LoadConfigFailureException {
 
     for (Group group : groups) {
-      GroupProject groupProject = GroupProjectFactory
-          .getGroupProjectType(AssignmentTypeEnum.MAVEN.getTypeName());
-      createGroup(group);
-      groupProject.createGitlabProject(group.getGroupName());// project name
-      groupProject.createJenkinsJob(group.getGroupName());// project name
+      createGitlabGroup(group);
+      GroupProjectService groupProjectService = GroupProjectService.getInstance();
+      groupProjectService.createGroupProject(group, null, null, ProjectTypeEnum.MAVEN.getTypeName(),
+          null, null);
 
     }
   }
@@ -154,20 +148,20 @@ public class GroupService {
   /**
    * Use GitLab API to create GitlabGroup
    * 
-   * @param name The group's name
+   * @param groupName The group's name
    * @return GitLabGroup
    */
-  public GitlabGroup newGroup(String name) {
-    return conn.createGroup(name);
+  public GitlabGroup createGitlabGroup(String groupName) {
+    return gitlabService.createGroup(groupName);
   }
 
   /**
-   * Get new GitLab group id
+   * Get GitLab group id
    * 
    * @param group group on GitLab
    * @return id of GitLab group
    */
-  public int newGroupId(GitlabGroup group) {
+  public int getGroupId(GitlabGroup group) {
     return group.getId();
   }
 
@@ -176,20 +170,19 @@ public class GroupService {
    * 
    * @param group Group in database
    */
-  public void createGroup(Group group) {
-
-    int groupId = newGroupId(newGroup(group.getGroupName()));
-
-    int masterId = findUserByUsername(group.getMaster());
-    conn.addMember(groupId, masterId, 40); // add member on GitLab
-    gdb.addGroup(group.getGroupName(), group.getMaster(), true); // insert into db
+  public GitlabGroup createGitlabGroup(Group group) {
+    int leaderId = getUserIdByUsername(group.getLeaderUsername());
+    GitlabGroup gitlabGroup = createGitlabGroup(group.getGroupName());
+    int groupId = getGroupId(gitlabGroup);
+    gitlabService.addMember(groupId, leaderId, 40);
+    gdb.addGroup(group.getGroupName(), group.getLeaderUsername(), true); // insert into db
 
     for (String developName : group.getContributor()) {
-      int developerId = findUserByUsername(developName);
-      conn.addMember(groupId, developerId, 30); // add member on GitLab
+      int developerId = getUserIdByUsername(developName);
+      gitlabService.addMember(groupId, developerId, 30); // add member on GitLab
       gdb.addGroup(group.getGroupName(), developName, false); // insert into db
     }
-
+    return gitlabGroup;
   }
 
   /**
@@ -200,7 +193,7 @@ public class GroupService {
    */
   public int findUserByName(String name) {
     List<GitlabUser> users;
-    users = conn.getUsers();
+    users = gitlabService.getUsers();
     for (GitlabUser user : users) {
       if (user.getName().equals(name)) {
         return user.getId();
@@ -211,14 +204,14 @@ public class GroupService {
   }
 
   /**
-   * Find user by username
+   * Get user id by username
    * 
    * @param username username
    * @return user id
    */
-  public int findUserByUsername(String username) {
+  public int getUserIdByUsername(String username) {
     List<GitlabUser> users;
-    users = conn.getUsers();
+    users = gitlabService.getUsers();
     for (GitlabUser user : users) {
       if (user.getUsername().equals(username)) {
         return user.getId();
@@ -228,70 +221,87 @@ public class GroupService {
   }
 
   /**
-   * Export student list
+   * Get user by username
    * 
-   * @return response
-   * @throws Exception on file writer call error
+   * @param username username
+   * @return user id
    */
-  @GET
-  @Path("export")
-  @Produces(MediaType.APPLICATION_OCTET_STREAM)
-  public Response exportStudentList() throws Exception {
-
-    String tempDir = System.getProperty("java.io.tmpdir");
-
-    String downloadDir = tempDir + "/downloads/";
-
-    File fileUploadDir = new File(downloadDir);
-    if (!fileUploadDir.exists()) {
-      fileUploadDir.mkdirs();
-    }
-
-    String filepath = downloadDir + "StdentList.csv";
-
-    final File file = new File(filepath);
-    try (final FileWriter writer = new FileWriter(filepath);) {
-      StringBuilder build = new StringBuilder();
-
-      String[] csvTitle = { "Team", "TeamLeader", "Student_Id", "name" };
-
-      List<GitlabUser> lsUsers = userService.getUsers();
-      Collections.reverse(lsUsers);
-
-      // insert title into file
-      for (int i = 0; i < csvTitle.length; i++) {
-        build.append(csvTitle[i]);
-        if (i == csvTitle.length) {
-          break;
-        }
-        build.append(",");
+  public GitlabUser getUserByUsername(String username) {
+    List<GitlabUser> users;
+    users = gitlabService.getUsers();
+    for (GitlabUser user : users) {
+      if (user.getUsername().equals(username)) {
+        return user;
       }
-      build.append("\n");
-
-      // insert user's id and name into file
-      for (GitlabUser user : lsUsers) {
-        if (user.getId() == 1) {
-          continue;
-        }
-        build.append(""); // Team
-        build.append(",");
-        build.append(""); // TeamLeader
-        build.append(",");
-        build.append(user.getUsername()); // userName
-        build.append(",");
-        build.append(user.getName()); // name
-        build.append("\n");
-      }
-      // write the file
-      writer.write(build.toString());
-    } catch (Exception e) {
-      e.printStackTrace();
     }
-    ResponseBuilder response = Response.ok((Object) file);
-    response.header("Content-Disposition", "attachment;filename=StudentList.csv");
-    return response.build();
-
+    return null;
   }
+
+//  /**
+//   * Export student list
+//   * 
+//   * @return response
+//   * @throws Exception on file writer call error
+//   */
+//  @GET
+//  @Path("export")
+//  @Produces(MediaType.APPLICATION_OCTET_STREAM)
+//  public Response exportStudentList() throws Exception {
+//
+//    String tempDir = System.getProperty("java.io.tmpdir");
+//
+//    String downloadDir = tempDir + "/downloads/";
+//
+//    File fileUploadDir = new File(downloadDir);
+//    if (!fileUploadDir.exists()) {
+//      fileUploadDir.mkdirs();
+//    }
+//
+//    String filepath = downloadDir + "StdentList.csv";
+//
+//    final File file = new File(filepath);
+//    try (final FileWriter writer = new FileWriter(filepath);) {
+//      StringBuilder build = new StringBuilder();
+//
+//      String[] csvTitle = { "Team", "TeamLeader", "Student_Id", "name" };
+//
+//      List<GitlabUser> lsUsers = userService.getUsers();
+//      Collections.reverse(lsUsers);
+//
+//      // insert title into file
+//      for (int i = 0; i < csvTitle.length; i++) {
+//        build.append(csvTitle[i]);
+//        if (i == csvTitle.length) {
+//          break;
+//        }
+//        build.append(",");
+//      }
+//      build.append("\n");
+//
+//      // insert user's id and name into file
+//      for (GitlabUser user : lsUsers) {
+//        if (user.getId() == 1) {
+//          continue;
+//        }
+//        build.append(""); // Team
+//        build.append(",");
+//        build.append(""); // TeamLeader
+//        build.append(",");
+//        build.append(user.getUsername()); // userName
+//        build.append(",");
+//        build.append(user.getName()); // name
+//        build.append("\n");
+//      }
+//      // write the file
+//      writer.write(build.toString());
+//    } catch (Exception e) {
+//      e.printStackTrace();
+//    }
+//    ResponseBuilder response = Response.ok((Object) file);
+//    response.header("Content-Disposition", "attachment;filename=StudentList.csv");
+//    return response.build();
+//
+//  }
 
   /**
    * Add a new member into a group
@@ -303,12 +313,12 @@ public class GroupService {
   @Path("add")
   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
   public Response addMember(@FormParam("groupName") String groupName,
-      @FormParam("select2") List<String> members) {
+      @FormParam("select") List<String> members) {
     boolean check = gdb.addGroupMember(groupName, members);
     for (String userName : members) {
-      int groupId = conn.getGitlabGroup(groupName).getId();
-      int userId = conn.getUserViaSudo(userName).getId();
-      conn.addMember(groupId, userId, 30);
+      int groupId = gitlabService.getGitlabGroup(groupName).getId();
+      int userId = gitlabService.getUserViaSudo(userName).getId();
+      gitlabService.addMember(groupId, userId, 30);
     }
     Response response = Response.ok().build();
     if (!check) {

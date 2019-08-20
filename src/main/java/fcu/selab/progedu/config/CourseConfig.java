@@ -48,7 +48,7 @@ public class CourseConfig {
    */
   public String getCourseName() throws LoadConfigFailureException {
     if (props != null) {
-      return props.getProperty("COURSE_NAME");
+      return props.getProperty("COURSE_NAME").trim();
     }
     throw new LoadConfigFailureException(EXCEPTION + PROPERTY_FILE);
   }
@@ -61,7 +61,7 @@ public class CourseConfig {
    */
   public String getSchoolEmail() throws LoadConfigFailureException {
     if (props != null) {
-      return props.getProperty("COURSE_SCHOOL_EMAIL");
+      return props.getProperty("COURSE_SCHOOL_EMAIL").trim();
     }
     throw new LoadConfigFailureException(EXCEPTION + PROPERTY_FILE);
   }
@@ -75,7 +75,7 @@ public class CourseConfig {
    */
   public String getCourseFullName() throws LoadConfigFailureException {
     if (props != null) {
-      return props.getProperty("COURSE_FULL_NAME");
+      return props.getProperty("COURSE_FULL_NAME").trim();
     }
     throw new LoadConfigFailureException(EXCEPTION + PROPERTY_FILE);
   }
@@ -89,7 +89,7 @@ public class CourseConfig {
    */
   public String getTomcatServerIp() throws LoadConfigFailureException {
     if (props != null) {
-      return props.getProperty("COURSE_TOMCAT_SERVER_IP");
+      return props.getProperty("COURSE_TOMCAT_SERVER_IP").trim();
     }
     throw new LoadConfigFailureException(EXCEPTION + PROPERTY_FILE);
   }

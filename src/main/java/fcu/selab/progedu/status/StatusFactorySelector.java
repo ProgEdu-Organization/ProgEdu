@@ -1,6 +1,6 @@
 package fcu.selab.progedu.status;
 
-import fcu.selab.progedu.service.AssignmentTypeEnum;
+import fcu.selab.progedu.project.ProjectTypeEnum;
 
 public class StatusFactorySelector {
   /**
@@ -8,7 +8,7 @@ public class StatusFactorySelector {
    * 
    * @param projectType project type
    */
-  public static StatusFactory getStatusFactory(AssignmentTypeEnum projectType) {
+  public static StatusFactory getStatusFactory(ProjectTypeEnum projectType) {
     switch (projectType) {
       case JAVAC: {
         return new JavacStatusFactory();

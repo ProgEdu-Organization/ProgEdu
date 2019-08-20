@@ -8,9 +8,11 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import fcu.selab.progedu.data.Project;
+import fcu.selab.progedu.data.GroupProject;
+import fcu.selab.progedu.project.ProjectTypeEnum;
 
 public class ProjectDbManager {
+  AssignmentTypeDbManager atDb = AssignmentTypeDbManager.getInstance();
 
   private static ProjectDbManager dbManager = new ProjectDbManager();
 
@@ -24,16 +26,15 @@ public class ProjectDbManager {
 
   }
 
-  UserDbManager udb = UserDbManager.getInstance();
-
   /**
    * Add project to database
    * 
    * @param project Project
    */
-  public void addProject(Project project) {
-    String sql = "INSERT INTO Assignment(name, createTime, deadline, description, hasTemplate"
-        + ", type, zipChecksum, zipUrl)  VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
+  public void addProject(GroupProject project) {
+    String sql = "INSERT INTO Project(name, createTime, deadline, description,"
+        + " type)  VALUES(?, ?, ?, ?, ?)";
+    int typeId = atDb.getTypeIdByName(project.getType().getTypeName());
 
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
@@ -41,10 +42,7 @@ public class ProjectDbManager {
       preStmt.setString(2, project.getCreateTime());
       preStmt.setString(3, project.getDeadline());
       preStmt.setString(4, project.getDescription());
-      preStmt.setBoolean(5, project.isHasTemplate());
-      preStmt.setString(6, project.getType());
-      preStmt.setString(7, project.getTestZipChecksum());
-      preStmt.setString(8, project.getTestZipUrl());
+      preStmt.setInt(5, typeId);
       preStmt.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();
@@ -57,9 +55,9 @@ public class ProjectDbManager {
    * @param name project name
    * @return project
    */
-  public Project getProjectByName(String name) {
-    Project project = new Project();
-    String sql = "SELECT * FROM Assignment WHERE name = ?";
+  public GroupProject getGroupProjectByName(String name) {
+    GroupProject project = new GroupProject();
+    String sql = "SELECT * FROM Project WHERE name = ?";
 
     try (Connection conn = database.getConnection();
         PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -69,19 +67,14 @@ public class ProjectDbManager {
           String createTime = rs.getString("createTime");
           String deadline = rs.getString("deadline").replace("T", " ");
           String description = rs.getString("description");
-          boolean hasTemplate = rs.getBoolean("hasTemplate");
-          String type = rs.getString("type");
-          String checksum = rs.getString("zipChecksum");
-          String zipUrl = rs.getString("zipUrl");
+          int typeId = rs.getInt("type");
+          ProjectTypeEnum typeEnum = atDb.getTypeNameById(typeId);
 
           project.setName(name);
           project.setCreateTime(createTime);
           project.setDescription(description);
-          project.setHasTemplate(hasTemplate);
-          project.setType(type);
+          project.setType(typeEnum);
           project.setDeadline(deadline);
-          project.setTestZipChecksum(checksum);
-          project.setTestZipUrl(zipUrl);
         }
       }
     } catch (SQLException e) {
@@ -91,54 +84,83 @@ public class ProjectDbManager {
   }
 
   /**
-   * List all the projects
+   * get project name by project id
    * 
-   * @return List of projects
+   * @param pId project id
+   * @return assignment name
    */
-  public List<Project> listAllProjects() {
-    List<Project> lsProjects = new ArrayList<>();
-    String sql = "SELECT * FROM Assignment";
-
+  public String getProjectNameById(int pId) {
+    String sql = "SELECT * FROM Project WHERE pId = ?";
+    String projectName = "";
     try (Connection conn = database.getConnection();
-        Statement stmt = conn.createStatement();
-        ResultSet rs = stmt.executeQuery(sql)) {
-      while (rs.next()) {
-        String name = rs.getString("name");
-        String description = rs.getString("description");
-        boolean hasTemplate = rs.getBoolean("hasTemplate");
-        String type = rs.getString("type");
-        String checksum = rs.getString("zipChecksum");
-        String zipUrl = rs.getString("zipUrl");
-        String createTime = rs.getString("createTime");
-        String deadline = rs.getString("deadline");
-
-        Project project = new Project();
-        project.setName(name);
-        project.setDescription(description);
-        project.setHasTemplate(hasTemplate);
-        project.setType(type);
-        project.setTestZipChecksum(checksum);
-        project.setTestZipUrl(zipUrl);
-        project.setCreateTime(createTime);
-        project.setDeadline(deadline);
-
-        lsProjects.add(project);
+        PreparedStatement stmt = conn.prepareStatement(sql)) {
+      stmt.setInt(1, pId);
+      try (ResultSet rs = stmt.executeQuery();) {
+        while (rs.next()) {
+          projectName = rs.getString("name");
+        }
       }
-
     } catch (SQLException e) {
       e.printStackTrace();
     }
-    return lsProjects;
+    return projectName;
+  }
+
+  /**
+   * get project id by project name
+   * 
+   * @param projectName project name
+   * @return id project id
+   */
+  public int getProjectIdByName(String projectName) {
+    String query = "SELECT * FROM Project WHERE name = ?";
+    int id = -1;
+
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(query)) {
+      preStmt.setString(1, projectName);
+      try (ResultSet rs = preStmt.executeQuery();) {
+        while (rs.next()) {
+          id = rs.getInt("id");
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return id;
+  }
+
+  /**
+   * get project type by project name
+   * 
+   * @param projectName project name
+   * @return type project type
+   */
+  public int getAssignmentType(String projectName) {
+    int typeId = 0;
+    String sql = "SELECT * FROM Project WHERE name=?";
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+      preStmt.setString(1, projectName);
+      try (ResultSet rs = preStmt.executeQuery()) {
+        while (rs.next()) {
+          typeId = rs.getInt("type");
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return typeId;
   }
 
   /**
    * list all project names;
    * 
-   * @return all names
+   * @return all project names
    */
   public List<String> listAllProjectNames() {
     List<String> lsNames = new ArrayList<>();
-    String sql = "SELECT * FROM Assignment";
+    String sql = "SELECT * FROM Project";
 
     try (Connection conn = database.getConnection();
         Statement stmt = conn.createStatement();
@@ -159,7 +181,7 @@ public class ProjectDbManager {
    * @param name project name
    */
   public void deleteProject(String name) {
-    String sql = "DELETE FROM Assignment WHERE name='" + name + "'";
+    String sql = "DELETE FROM Project WHERE name='" + name + "'";
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
       preStmt.executeUpdate();
@@ -168,64 +190,4 @@ public class ProjectDbManager {
     }
   }
 
-  /**
-   * Edit project from database
-   * 
-   * @param deadline new deadline
-   * @param readMe   new readMe
-   * @param name     project name
-   */
-  public void editProject(String deadline, String readMe, String name) {
-    String sql = "UPDATE Assignment SET deadline=?, description=? WHERE name=?";
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
-      preStmt.setString(1, deadline);
-      preStmt.setString(2, readMe);
-      preStmt.setString(3, name);
-      preStmt.executeUpdate();
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
-  }
-
-  /**
-   * Edit project checksum
-   * 
-   * @param name     project name
-   * @param checksum new checksum
-   */
-  public void updateProjectChecksum(String name, String checksum) {
-    String sql = "UPDATE Assignment SET zipChecksum=? WHERE name=?";
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
-      preStmt.setString(1, checksum);
-      preStmt.setString(2, name);
-      preStmt.executeUpdate();
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
-  }
-
-  /**
-   * get assignment type
-   * 
-   * @param name assignment name
-   * @return type assignment type
-   */
-  public String getAssignmentType(String name) {
-    String type = null;
-    String sql = "SELECT * FROM Assignment WHERE name=?";
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
-      preStmt.setString(1, name);
-      try (ResultSet rs = preStmt.executeQuery()) {
-        while (rs.next()) {
-          type = rs.getString("type");
-        }
-      }
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
-    return type;
-  }
 }

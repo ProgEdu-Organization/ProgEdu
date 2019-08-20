@@ -1,9 +1,13 @@
 package fcu.selab.progedu.service;
 
-import java.sql.Connection;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 
+import javax.ws.rs.Consumes;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
@@ -13,61 +17,139 @@ import javax.ws.rs.core.Response;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import fcu.selab.progedu.data.User;
+import fcu.selab.progedu.db.AssignmentDbManager;
+import fcu.selab.progedu.db.AssignmentTypeDbManager;
+import fcu.selab.progedu.db.AssignmentUserDbManager;
 import fcu.selab.progedu.db.CommitRecordDbManager;
-import fcu.selab.progedu.db.IDatabase;
-import fcu.selab.progedu.db.MySqlDatabase;
-import fcu.selab.progedu.db.ProjectDbManager;
+import fcu.selab.progedu.db.CommitStatusDbManager;
+import fcu.selab.progedu.db.UserDbManager;
+import fcu.selab.progedu.project.AssignmentFactory;
+import fcu.selab.progedu.project.AssignmentType;
+import fcu.selab.progedu.status.StatusEnum;
 
-@Path("commits/record/")
+@Path("commits/")
 public class CommitRecordService {
-  CommitRecordDbManager commitRecordDb = CommitRecordDbManager.getInstance();
-  ProjectDbManager pdb = ProjectDbManager.getInstance();
+  CommitRecordDbManager db = CommitRecordDbManager.getInstance();
+  AssignmentUserDbManager auDb = AssignmentUserDbManager.getInstance();
+  UserDbManager userDb = UserDbManager.getInstance();
+  AssignmentDbManager assignmentDb = AssignmentDbManager.getInstance();
+  AssignmentTypeDbManager atDb = AssignmentTypeDbManager.getInstance();
+  CommitStatusDbManager csdb = CommitStatusDbManager.getInstance();
 
   /**
-   * get counts by different color
-   * 
-   * @param color color
-   * @return counts
+   * get all commit result.
+   *
+   * @return hw, color, commit
    */
   @GET
-  @Path("color")
+  @Path("allUsers")
+  @Produces(MediaType.TEXT_PLAIN)
+  public Response getAllUsersCommitRecord() {
+    JSONArray array = new JSONArray();
+    JSONObject result = new JSONObject();
+    List<User> users = userDb.listAllUsers();
+    for (User user : users) {
+      String username = user.getName();
+      Response userCommitRecord = getOneUserCommitRecord(username);
+      JSONObject ob = new JSONObject();
+      ob.put("user", user);
+      ob.put("commitRecord", userCommitRecord);
+    }
+    result.put("allUsersCommitRecord", array);
+
+    return Response.ok().entity(result.toString()).build();
+  }
+
+  /**
+   * get all commit record of one student.
+   *
+   * @return homework, commit status, commit number
+   */
+  @GET
+  @Path("oneUser")
+  @Produces(MediaType.TEXT_PLAIN)
+  public Response getOneUserCommitRecord(@FormParam("user") String username) {
+    JSONArray array = new JSONArray();
+    JSONObject result = new JSONObject();
+    int userId = userDb.getUserIdByUsername(username);
+    List<Integer> aIds = auDb.getAIds(userId);
+
+    for (int assignment : aIds) {
+      int auIds = auDb.getAUId(assignment, userId);
+      String assignmentName = assignmentDb.getAssignmentNameById(assignment);
+      JSONObject ob = new JSONObject();
+      ob.put("assignmentName", assignmentName);
+      ob.put("commitRecord", db.getLastCommitRecord(auIds));
+      array.put(ob);
+    }
+    result.put("oneUserCommitRecord", array);
+    return Response.ok().entity(result.toString()).build();
+  }
+
+  /**
+   * get student build detail info
+   * 
+   * @param username
+   *          student id
+   * @param assignmentName
+   *          assignment name
+   * @return build detail
+   */
+  @GET
+  @Path("buildDetail")
   @Produces(MediaType.APPLICATION_JSON)
-  public Response getCounts(@QueryParam("color") String color) {
-    List<Integer> array = commitRecordDb.getCounts(color);
+  public Response getCommitRecord(@QueryParam("username") String username,
+      @QueryParam("assignmentName") String assignmentName) {
+    int auId = auDb.getAUId(userDb.getUserIdByUsername(username),
+        assignmentDb.getAssignmentIdByName(assignmentName));
+    JSONObject buildDetail = db.getCommitRecord(auId);
+    // ob.put("message", commitMessage);
+    return Response.ok().entity(buildDetail.toString()).build();
+  }
+
+  /**
+   * update user assignment commit record to DB.
+   * 
+   * @param username
+   *          username
+   * @param assignmentName
+   *          assignment name
+   */
+  @POST
+  @Path("update")
+  @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+  public Response updateCommitResult(@FormParam("user") String username,
+      @FormParam("proName") String assignmentName) {
+
     JSONObject ob = new JSONObject();
-    ob.put("data", array);
-    ob.put("name", color);
+    AssignmentType assignmentType = AssignmentFactory.getAssignmentType(
+        atDb.getTypeNameById(assignmentDb.getAssignmentType(assignmentName)).getTypeName());
+
+    int auId = auDb.getAUId(assignmentDb.getAssignmentIdByName(assignmentName),
+        userDb.getUserIdByUsername(username));
+    int commitNumber = db.getCommitCount(auId) + 1;
+    String time = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss")
+        .format(Calendar.getInstance().getTime());
+
+    StatusEnum statusEnum = assignmentType.checkStatusType(commitNumber, username, assignmentName);
+    db.insertCommitRecord(auId, commitNumber, statusEnum, time);
+
+    ob.put("auId", auId);
+    ob.put("commitNumber", commitNumber);
+    ob.put("time", time);
+    ob.put("status", statusEnum.getTypeName());
+
     return Response.ok().entity(ob.toString()).build();
   }
 
-  /**
-   * get Count Group By Hw And Time
-   * 
-   * @param hw hw number
-   * @return records
-   */
-  @GET
-  @Path("records")
-  @Produces(MediaType.APPLICATION_JSON)
-  public Response getCountGroupByHwAndTime(@QueryParam("hw") String hw) {
-    JSONObject ob = new JSONObject();
-    JSONArray records = commitRecordDb.getCountGroupByHwAndTime(hw);
-    String deadline = pdb.getProjectByName(hw).getDeadline();
-    ob.put("records", records);
-    ob.put("title", hw);
-    ob.put("deadline", deadline);
-    return Response.ok().entity(ob.toString()).build();
-  }
+  public void deleteRecord(String assignmentName) {
+    int aId = assignmentDb.getAssignmentIdByName(assignmentName);
+    List<Integer> uIds = auDb.getUids(aId);
 
-  /**
-   * delete build record of hw
-   * 
-   * @param hw hw
-   */
-  public void deleteRecord(String hw) {
-    IDatabase database = new MySqlDatabase();
-    Connection connection = database.getConnection();
-    commitRecordDb.deleteRecord(hw);
+    for (int uId : uIds) {
+      int auId = auDb.getAUId(aId, uId);
+      db.deleteRecord(auId);
+    }
   }
-
 }
