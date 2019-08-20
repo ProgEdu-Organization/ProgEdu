@@ -29,7 +29,8 @@ public class AssignmentDbManager {
   /**
    * Add assignment to database
    * 
-   * @param assignment Project
+   * @param assignment
+   *          Project
    */
   public void addAssignment(Assignment assignment) {
     String sql = "INSERT INTO Assignment(name, createTime, deadline, description, hasTemplate"
@@ -58,7 +59,8 @@ public class AssignmentDbManager {
   /**
    * get assignment info by assignment name
    * 
-   * @param name assignment name
+   * @param name
+   *          assignment name
    * @return assignment
    */
   public Assignment getAssignmentByName(String name) {
@@ -102,7 +104,8 @@ public class AssignmentDbManager {
   /**
    * get assignment name by assignment id
    * 
-   * @param aId assignment id
+   * @param aId
+   *          assignment id
    * @return assignment name
    */
   public String getAssignmentNameById(int aId) {
@@ -125,7 +128,8 @@ public class AssignmentDbManager {
   /**
    * assignment name to find assignmentId in db
    * 
-   * @param assignmentName assignment name
+   * @param assignmentName
+   *          assignment name
    * @return id
    */
   public int getAssignmentIdByName(String assignmentName) {
@@ -144,6 +148,30 @@ public class AssignmentDbManager {
       e.printStackTrace();
     }
     return id;
+  }
+
+  /**
+   * get assignment type by name
+   * 
+   * @param name
+   *          assignment name
+   * @return type assignment type
+   */
+  public int getAssignmentType(String name) {
+    int typeId = 0;
+    String sql = "SELECT * FROM Assignment WHERE name=?";
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+      preStmt.setString(1, name);
+      try (ResultSet rs = preStmt.executeQuery()) {
+        while (rs.next()) {
+          typeId = rs.getInt("type");
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return typeId;
   }
 
   /**
@@ -171,7 +199,8 @@ public class AssignmentDbManager {
   /**
    * Delete assignment from database
    * 
-   * @param name assignment name
+   * @param name
+   *          assignment name
    */
   public void deleteAssignment(String name) {
     String sql = "DELETE FROM Assignment WHERE name='" + name + "'";

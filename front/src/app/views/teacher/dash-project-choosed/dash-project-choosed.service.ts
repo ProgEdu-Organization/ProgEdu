@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { environment } from '../../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
@@ -7,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class DashProjectChoosedService {
-  ALL_PROJECT_API = environment + '/ProgEdu/webapi/jenkins/buildDetail?num=1&proName=WEB-HW5&userName=D0350510';
+  ALL_PROJECT_API = 'ProgEdu/webapi/jenkins/buildDetail?num=1&proName=WEB-HW5&userName=D0350510';
   constructor(private http: HttpClient) { }
 
   getCommitData(): Observable<any> {
