@@ -220,7 +220,7 @@ public class CommitRecordDbManager {
    * @param auid auId
    * @return status status
    */
-  public int getCommitStatusbyAUId(int auid) {
+  public int getCommitStatusbyAuid(int auid) {
     int status = 0;
     String sql = "SELECT * FROM Commit_Record WHERE auId=?";
     try (Connection conn = database.getConnection();

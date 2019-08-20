@@ -154,17 +154,7 @@ public class GroupService {
   public GitlabGroup createGitlabGroup(String groupName) {
     return gitlabService.createGroup(groupName);
   }
-
-  /**
-   * Get GitLab group id
-   * 
-   * @param group group on GitLab
-   * @return id of GitLab group
-   */
-  public int getGroupId(GitlabGroup group) {
-    return group.getId();
-  }
-
+  
   /**
    * Create group in database
    * 
@@ -183,6 +173,16 @@ public class GroupService {
       gdb.addGroup(group.getGroupName(), developName, false); // insert into db
     }
     return gitlabGroup;
+  }
+
+  /**
+   * Get GitLab group id
+   * 
+   * @param group group on GitLab
+   * @return id of GitLab group
+   */
+  public int getGroupId(GitlabGroup group) {
+    return group.getId();
   }
 
   /**

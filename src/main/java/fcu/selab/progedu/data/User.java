@@ -25,26 +25,24 @@ public class User implements Serializable {
   private boolean display;
 
   private RoleEnum role;
-
-  public User() {
-
-  }
+  
+  public User() {}
 
   /**
-   * User constructor
+   * (to do)
    * 
-   * @param username studentId
-   * @param name     student's full name
-   * @param email    student's email
-   * @param password student's password
-   * @param display  student's display
+   * @param username    (to do)
+   * @param name        (to do)
+   * @param email       (to do)
+   * @param password    (to do)
+   * @param isDisplayed (to do)
    */
-  public User(String username, String name, String email, String password, boolean display) {
+  public User(String username, String name, String email, String password, boolean isDisplayed) {
     this.username = username;
     this.name = name;
     this.email = email;
     this.password = password;
-    this.display = display;
+    this.display = isDisplayed;
   }
 
   public int getId() {
@@ -91,6 +89,11 @@ public class User implements Serializable {
     return password;
   }
 
+  /**
+   * to do
+   * 
+   * @param password password
+   */
   public void setPassword(String password) {
     if (password == null || password.isEmpty()) {
       this.password = this.username;
