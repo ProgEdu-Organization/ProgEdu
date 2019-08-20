@@ -27,7 +27,7 @@ public class ProjectGroupDbManager {
    * @param gid Group Id
    * @return pgId projectGroup Id
    */
-  public int getPGId(int pid, int gid) {
+  public int getPgid(int pid, int gid) {
     int pgid = 0;
     String sql = "SELECT id FROM Project_Group WHERE pId=? AND gId=?";
     try (Connection conn = database.getConnection();
@@ -46,16 +46,16 @@ public class ProjectGroupDbManager {
   }
 
   /**
-   * get pIds by Group Id
+   * get pids by Group Id
    * 
    * @return lsPids project Id
    */
-  public List<Integer> getPIds(int gId) {
+  public List<Integer> getPIds(int gid) {
     List<Integer> lsPids = new ArrayList<>();
     String sql = "SELECT * FROM Project_Group WHERE gId = ?";
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
-      preStmt.setInt(1, gId);
+      preStmt.setInt(1, gid);
       try (ResultSet rs = preStmt.executeQuery()) {
         while (rs.next()) {
           int pid = rs.getInt("pId");
@@ -73,12 +73,12 @@ public class ProjectGroupDbManager {
    *
    * @return lsGids Group Id
    */
-  public List<Integer> getUids(int pId) {
+  public List<Integer> getUids(int pid) {
     List<Integer> lsGids = new ArrayList<>();
     String sql = "SELECT * FROM Project_Group WHERE pId = ?";
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
-      preStmt.setInt(1, pId);
+      preStmt.setInt(1, pid);
       try (ResultSet rs = preStmt.executeQuery()) {
         while (rs.next()) {
           int gid = rs.getInt("gId");

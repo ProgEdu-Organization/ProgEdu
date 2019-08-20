@@ -104,16 +104,16 @@ public class AssignmentDbManager {
   /**
    * get assignment name by assignment id
    * 
-   * @param aId
+   * @param aid
    *          assignment id
    * @return assignment name
    */
-  public String getAssignmentNameById(int aId) {
+  public String getAssignmentNameById(int aid) {
     String sql = "SELECT * FROM Assignment WHERE aId = ?";
     String assignmentName = "";
     try (Connection conn = database.getConnection();
         PreparedStatement stmt = conn.prepareStatement(sql)) {
-      stmt.setInt(1, aId);
+      stmt.setInt(1, aid);
       try (ResultSet rs = stmt.executeQuery();) {
         while (rs.next()) {
           assignmentName = rs.getString("name");

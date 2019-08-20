@@ -126,12 +126,11 @@ public class UserService {
   }
 
   /**
-   * Change user password
-   * 
-   * @param oldPwd   old password
-   * @param newPwd   new password
-   * @param checkPwd check new password
-   * @return true false
+   * (to do )
+   * @param id (to do )
+   * @param currentPassword (to do )
+   * @param newPassword (to do )
+   * @return response (to do)
    */
   @POST
   @Path("updatePassword")
@@ -175,7 +174,6 @@ public class UserService {
    * Register user
    * 
    * @param user user of ProgEdu
-   * @throws IOException
    */
   private void register(User user) throws IOException {
     GitlabUser gitlabUser = gitlabService.createUser(user.getEmail(), user.getPassword(),
@@ -201,15 +199,7 @@ public class UserService {
     }
     return isDuplicateUsername;
   }
-
-  private boolean isDuplicateEmail(String email) {
-    boolean isDuplicateEmail = false;
-    if (dbManager.checkEmail(email)) {
-      isDuplicateEmail = true;
-    }
-    return isDuplicateEmail;
-  }
-
+  
   private boolean isDuplicateUsername(List<User> users, String username) {
     boolean isDuplicateUsername = false;
     for (User user : users) {
@@ -219,6 +209,14 @@ public class UserService {
       }
     }
     return isDuplicateUsername;
+  }
+
+  private boolean isDuplicateEmail(String email) {
+    boolean isDuplicateEmail = false;
+    if (dbManager.checkEmail(email)) {
+      isDuplicateEmail = true;
+    }
+    return isDuplicateEmail;
   }
 
   private boolean isDuplicateEmail(List<User> users, String email) {

@@ -23,6 +23,12 @@ public class TomcatService {
     return instance;
   }
 
+  /**
+   * (to do)
+   * @param file (to do)
+   * @param target (to do)
+   * @return target (to do)
+   */
   public String storeFileToUploadsFolder(InputStream file, String target) {
     try {
       createFolderIfNotExists(target);
@@ -65,6 +71,14 @@ public class TomcatService {
     }
   }
 
+  /**
+   * (to do)
+   * @param file (to do)
+   * @param folderName (to do)
+   * @param uploadDir (to do)
+   * @param project (to do)
+   * @return target (to do)
+   */
   public String storeFileToServer(InputStream file, String folderName, String uploadDir,
       ProjectType project) {
     String target;
@@ -79,6 +93,11 @@ public class TomcatService {
 
   }
 
+  /**
+   * (to do)
+   * @param folderName (to do)
+   * @return hasTemplate (to do)
+   */
   public boolean hasTemplate(String folderName) {
     boolean hasTemplate = false;
     if (!folderName.isEmpty()) {
@@ -87,6 +106,10 @@ public class TomcatService {
     return hasTemplate;
   }
 
+  /**
+   * (to do)
+   * @param path (to do)
+   */
   public void findEmptyFolder(String path) {
     File dir = new File(path);
     File[] files = dir.listFiles();
@@ -113,6 +136,10 @@ public class TomcatService {
     }
   }
 
+  /**
+   * (to do)
+   * @param path (to do)
+   */
   public void removeFile(String path) {
     Linux linux = new Linux();
     String removeFileCommand = "rm -rf " + path;
@@ -120,10 +147,9 @@ public class TomcatService {
   }
 
   /**
-   * create readme file
-   * 
-   * @param readMe      content
-   * @param projectName project name
+   * (to do)
+   * @param readMe (to do)
+   * @param path (to do)
    */
   public void createReadmeFile(String readMe, String path) {
     try (Writer writer = new BufferedWriter(

@@ -68,15 +68,15 @@ public class CommitRecordService {
    */
   @GET
   @Path("oneUser")
-  @Produces(MediaType.TEXT_PLAIN)
-  public Response getOneUserCommitRecord(@FormParam("user") String username) {
+  @Produces(MediaType.APPLICATION_FORM_URLENCODED)
+  public Response getOneUserCommitRecord(@QueryParam("username") String username) {
     JSONArray array = new JSONArray();
     JSONObject result = new JSONObject();
     int userId = userDb.getUserIdByUsername(username);
-    List<Integer> aIds = auDb.getAIds(userId);
+    List<Integer> aids = auDb.getAIds(userId);
 
-    for (int assignment : aIds) {
-      int auIds = auDb.getAUId(assignment, userId);
+    for (int assignment : aids) {
+      int auIds = auDb.getAuid(assignment, userId);
       String assignmentName = assignmentDb.getAssignmentNameById(assignment);
       JSONObject ob = new JSONObject();
       ob.put("assignmentName", assignmentName);
@@ -90,10 +90,8 @@ public class CommitRecordService {
   /**
    * get student build detail info
    * 
-   * @param username
-   *          student id
-   * @param assignmentName
-   *          assignment name
+   * @param username       student id
+   * @param assignmentName assignment name
    * @return build detail
    */
   @GET
@@ -101,7 +99,7 @@ public class CommitRecordService {
   @Produces(MediaType.APPLICATION_JSON)
   public Response getCommitRecord(@QueryParam("username") String username,
       @QueryParam("assignmentName") String assignmentName) {
-    int auId = auDb.getAUId(userDb.getUserIdByUsername(username),
+    int auId = auDb.getAuid(userDb.getUserIdByUsername(username),
         assignmentDb.getAssignmentIdByName(assignmentName));
     JSONObject buildDetail = db.getCommitRecord(auId);
     // ob.put("message", commitMessage);
@@ -111,10 +109,8 @@ public class CommitRecordService {
   /**
    * update user assignment commit record to DB.
    * 
-   * @param username
-   *          username
-   * @param assignmentName
-   *          assignment name
+   * @param username       username
+   * @param assignmentName assignment name
    */
   @POST
   @Path("update")
@@ -126,7 +122,7 @@ public class CommitRecordService {
     AssignmentType assignmentType = AssignmentFactory.getAssignmentType(
         atDb.getTypeNameById(assignmentDb.getAssignmentType(assignmentName)).getTypeName());
 
-    int auId = auDb.getAUId(assignmentDb.getAssignmentIdByName(assignmentName),
+    int auId = auDb.getAuid(assignmentDb.getAssignmentIdByName(assignmentName),
         userDb.getUserIdByUsername(username));
     int commitNumber = db.getCommitCount(auId) + 1;
     String time = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss")
@@ -143,12 +139,17 @@ public class CommitRecordService {
     return Response.ok().entity(ob.toString()).build();
   }
 
+  /**
+   * (to do)
+   * 
+   * @param assignmentName (to do)
+   */
   public void deleteRecord(String assignmentName) {
-    int aId = assignmentDb.getAssignmentIdByName(assignmentName);
-    List<Integer> uIds = auDb.getUids(aId);
+    int aid = assignmentDb.getAssignmentIdByName(assignmentName);
+    List<Integer> uids = auDb.getUids(aid);
 
-    for (int uId : uIds) {
-      int auId = auDb.getAUId(aId, uId);
+    for (int uid : uids) {
+      int auId = auDb.getAuid(aid, uid);
       db.deleteRecord(auId);
     }
   }

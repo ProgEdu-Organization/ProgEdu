@@ -27,7 +27,7 @@ public class AssignmentUserDbManager {
    * @param uid User Id
    * @return auId assignmentUser Id
    */
-  public int getAUId(int aid, int uid) {
+  public int getAuid(int aid, int uid) {
     int auid = 0;
     String sql = "SELECT id FROM Assignment_User WHERE aId=? AND uId=?";
     try (Connection conn = database.getConnection();
@@ -46,16 +46,16 @@ public class AssignmentUserDbManager {
   }
 
   /**
-   * get aIds by User Id
+   * get aids by User Id
    * 
-   * @return lsAids assignment Id
+   * @return lsAids assignment id
    */
-  public List<Integer> getAIds(int uId) {
+  public List<Integer> getAIds(int uid) {
     List<Integer> lsAids = new ArrayList<>();
     String sql = "SELECT * FROM Assignment_User WHERE uId = ?";
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
-      preStmt.setInt(1, uId);
+      preStmt.setInt(1, uid);
       try (ResultSet rs = preStmt.executeQuery()) {
         while (rs.next()) {
           int aid = rs.getInt("aId");
@@ -73,12 +73,12 @@ public class AssignmentUserDbManager {
    *
    * @return lsUids assignment Id
    */
-  public List<Integer> getUids(int aId) {
+  public List<Integer> getUids(int aid) {
     List<Integer> lsUids = new ArrayList<>();
     String sql = "SELECT * FROM Assignment_User WHERE aId = ?";
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
-      preStmt.setInt(1, aId);
+      preStmt.setInt(1, aid);
       try (ResultSet rs = preStmt.executeQuery()) {
         while (rs.next()) {
           int uid = rs.getInt("uId");
