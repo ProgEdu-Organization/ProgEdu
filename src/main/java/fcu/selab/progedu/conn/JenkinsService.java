@@ -35,6 +35,9 @@ public class JenkinsService {
   private final String contentType = "Content-Type";
   private final String jenkinsCrumb = "Jenkins-Crumb";
 
+  /**
+   * (to do)
+   */
   public JenkinsService() {
     try {
       jenkinsConfig = JenkinsConfig.getInstance();
@@ -51,6 +54,13 @@ public class JenkinsService {
     return instance;
   }
 
+  /**
+   * (to do)
+   * 
+   * @param username (to do)
+   * @param password (to do)
+   * @return jenkinsCrumb (to do)
+   */
   public String getCrumb(String username, String password) {
 
     String jenkinsCrumb = null;
@@ -90,9 +100,15 @@ public class JenkinsService {
     return jenkinsCrumb;
   }
 
+  /**
+   * (to do)
+   * 
+   * @param jobName    (to do)
+   * @param crumb      (to do)
+   * @param configPath (to do)
+   */
   public void createJob(String jobName, String crumb, String configPath) {
     try {
-      HttpClient client = new DefaultHttpClient();
       String url = jenkinsRootUrl + "/createItem?name=" + jobName;
       HttpPost post = new HttpPost(url);
 
@@ -104,6 +120,7 @@ public class JenkinsService {
       se.setChunked(true);
       post.setEntity(se);
 
+      HttpClient client = new DefaultHttpClient();
 //      HttpResponse response = 
       client.execute(post);
 //      HttpEntity resEntity = response.getEntity();
@@ -113,6 +130,12 @@ public class JenkinsService {
     }
   }
 
+  /**
+   * (to do)
+   * 
+   * @param jobName (to do)
+   * @param crumb   (to do)
+   */
   public void deleteJob(String jobName, String crumb) {
 
     try {
@@ -136,9 +159,14 @@ public class JenkinsService {
     }
   }
 
+  /**
+   * (to do)
+   * @param jobName (to do)
+   * @param jenkinsCrumb (to do)
+   */
   public void buildJob(String jobName, String jenkinsCrumb) {
     try {
-      HttpClient client = new DefaultHttpClient();
+      
       String url = jenkinsRootUrl + "/job/" + jobName + "/build";
       HttpPost post = new HttpPost(url);
 
@@ -151,7 +179,8 @@ public class JenkinsService {
       UrlEncodedFormEntity ent = null;
       ent = new UrlEncodedFormEntity(params, HTTP.UTF_8);
       post.setEntity(ent);
-
+      
+      HttpClient client = new DefaultHttpClient();
 //      HttpResponse response = 
       client.execute(post);
 //      HttpEntity resEntity = response.getEntity();
@@ -164,6 +193,12 @@ public class JenkinsService {
     }
   }
 
+  /**
+   * (to do)
+   * @param jobName (to do)
+   * @param num (to do)
+   * @return  message (to do)
+   */
   public String getCommitMessage(String jobName, int num) {
     String console = getCompleteConsole(jobName, num);
     String beginStr = "Commit message: ";
@@ -233,10 +268,10 @@ public class JenkinsService {
   }
 
   /**
-   * Get jenkins console url
-   * 
-   * @param userName userName
-   * @return console
+   * (to do)
+   * @param jobName (to do)
+   * @param num (to do)
+   * @return consoleUrl (to do)
    */
   public String getConsoleUrl(String jobName, int num) {
     return (jenkinsRootUrl + "/job/" + jobName + "/" + num + "/consoleText");

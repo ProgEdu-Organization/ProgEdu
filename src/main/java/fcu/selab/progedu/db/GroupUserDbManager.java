@@ -27,7 +27,7 @@ public class GroupUserDbManager {
    * @param uid User Id
    * @return guId GroupUser Id
    */
-  public int getGUId(int gid, int uid) {
+  public int getGuid(int gid, int uid) {
     int guid = 0;
     String sql = "SELECT id FROM Group_User WHERE gId=? AND uId=?";
     try (Connection conn = database.getConnection();
@@ -50,12 +50,12 @@ public class GroupUserDbManager {
    * 
    * @return lsGids group Id
    */
-  public List<Integer> getGIds(int uId) {
+  public List<Integer> getGIds(int uid) {
     List<Integer> lsGids = new ArrayList<>();
     String sql = "SELECT * FROM Group_User WHERE uId = ?";
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
-      preStmt.setInt(1, uId);
+      preStmt.setInt(1, uid);
       try (ResultSet rs = preStmt.executeQuery()) {
         while (rs.next()) {
           int gid = rs.getInt("gId");
@@ -73,12 +73,12 @@ public class GroupUserDbManager {
    * 
    * @return lsUids User Id
    */
-  public List<Integer> getUIds(int gId) {
+  public List<Integer> getUIds(int gid) {
     List<Integer> lsUids = new ArrayList<>();
     String sql = "SELECT * FROM Group_User WHERE gId = ?";
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
-      preStmt.setInt(1, gId);
+      preStmt.setInt(1, gid);
       try (ResultSet rs = preStmt.executeQuery()) {
         while (rs.next()) {
           int uid = rs.getInt("uId");

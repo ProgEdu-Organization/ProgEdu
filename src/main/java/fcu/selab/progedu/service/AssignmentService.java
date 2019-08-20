@@ -103,8 +103,6 @@ public class AssignmentService {
 
     String rootProjectUrl = null;
     String folderName = null;
-    String filePath = null;
-    boolean hasTemplate = false;
 
     final AssignmentType assignment = AssignmentFactory.getAssignmentType(assignmentType);
     final ProjectTypeEnum projectTypeEnum = ProjectTypeEnum.getProjectTypeEnum(assignmentType);
@@ -116,6 +114,7 @@ public class AssignmentService {
     String cloneDirectoryPath = gitlabService.cloneProject(gitlabRootUsername, assignmentName);
 
     // 3. Store Zip File to folder if file is not empty
+    String filePath = null;
     folderName = fileDetail.getFileName();
     filePath = tomcatService.storeFileToServer(file, folderName, uploadDir, assignment);
 
@@ -152,6 +151,7 @@ public class AssignmentService {
     tomcatService.removeFile(testDir + assignmentName);
 
     // 10. import project infomation to database
+    boolean hasTemplate = false;
     addProject(assignmentName, releaseTime, deadline, readMe, projectTypeEnum, hasTemplate,
         testZipChecksum, testZipUrl);
 
@@ -272,7 +272,6 @@ public class AssignmentService {
   @Produces(MediaType.APPLICATION_JSON)
   public Response deleteProject(@FormDataParam("del_Hw_Name") String name) {
     Linux linuxApi = new Linux();
-    CommitRecordService commitRecordService = new CommitRecordService();
     // delete tomcat test file
     String removeTestDirectoryCommand = "rm -rf tests/" + name;
     linuxApi.execLinuxCommandInFile(removeTestDirectoryCommand, tempDir);
@@ -283,6 +282,7 @@ public class AssignmentService {
     String removeFileCommand = "rm -rf tests/" + name + "-COMPLETE";
     linuxApi.execLinuxCommandInFile(removeFileCommand, tempDir);
     // delete db
+    CommitRecordService commitRecordService = new CommitRecordService();
     dbManager.deleteAssignment(name);
     commitRecordService.deleteRecord(name);
 

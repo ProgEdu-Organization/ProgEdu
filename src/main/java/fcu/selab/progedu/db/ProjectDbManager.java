@@ -86,15 +86,15 @@ public class ProjectDbManager {
   /**
    * get project name by project id
    * 
-   * @param pId project id
+   * @param pid project id
    * @return assignment name
    */
-  public String getProjectNameById(int pId) {
+  public String getProjectNameById(int pid) {
     String sql = "SELECT * FROM Project WHERE pId = ?";
     String projectName = "";
     try (Connection conn = database.getConnection();
         PreparedStatement stmt = conn.prepareStatement(sql)) {
-      stmt.setInt(1, pId);
+      stmt.setInt(1, pid);
       try (ResultSet rs = stmt.executeQuery();) {
         while (rs.next()) {
           projectName = rs.getString("name");

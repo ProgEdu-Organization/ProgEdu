@@ -5,11 +5,11 @@ import java.util.List;
 import org.gitlab.api.models.GitlabUser;
 
 import fcu.selab.progedu.conn.GitlabService;
-import fcu.selab.progedu.jenkins.JenkinsApi;
+import fcu.selab.progedu.conn.JenkinsService;
 import fcu.selab.progedu.utils.Linux;
 
 public class JenkinsApiTest {
-  JenkinsApi jenkins = JenkinsApi.getInstance();
+  JenkinsService jenkins = JenkinsService.getInstance();
   GitlabService conn = GitlabService.getInstance();
   List<GitlabUser> users = conn.getUsers();
 
