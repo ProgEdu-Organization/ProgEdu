@@ -308,4 +308,27 @@ public class UserDbManager {
     }
     return isExist;
   }
+
+  /**
+   * Get user from database
+   *
+   * @param id The db user id
+   * @return user
+   */
+  public String getUsername(int id) {
+    String name = "";
+
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(QUERY)) {
+      preStmt.setInt(1, id);
+      try (ResultSet rs = preStmt.executeQuery();) {
+        while (rs.next()) {
+          name = rs.getString(USERNAME);
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return name;
+  }
 }

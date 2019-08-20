@@ -7,78 +7,78 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AssignmentUserDbManager {
-  private static AssignmentUserDbManager dbManager = new AssignmentUserDbManager();
+public class GroupUserDbManager {
+  private static GroupUserDbManager dbManager = new GroupUserDbManager();
 
-  public static AssignmentUserDbManager getInstance() {
+  public static GroupUserDbManager getInstance() {
     return dbManager;
   }
 
   private IDatabase database = new MySqlDatabase();
 
-  private AssignmentUserDbManager() {
+  private GroupUserDbManager() {
 
   }
 
   /**
-   * get auId by assignment Id and user Id
+   * get guId by group Id and user Id
    * 
-   * @param aid Assignment Id
+   * @param gid group Id
    * @param uid User Id
-   * @return auId assignmentUser Id
+   * @return guId GroupUser Id
    */
-  public int getAUId(int aid, int uid) {
-    int auid = 0;
-    String sql = "SELECT id FROM Assignment_User WHERE aId=? AND uId=?";
+  public int getGUId(int gid, int uid) {
+    int guid = 0;
+    String sql = "SELECT id FROM Group_User WHERE gId=? AND uId=?";
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
-      preStmt.setInt(1, aid);
+      preStmt.setInt(1, gid);
       preStmt.setInt(2, uid);
       try (ResultSet rs = preStmt.executeQuery()) {
         while (rs.next()) {
-          auid = rs.getInt("id");
+          guid = rs.getInt("id");
         }
       }
     } catch (SQLException e) {
       e.printStackTrace();
     }
-    return auid;
+    return guid;
   }
 
   /**
-   * get aIds by User Id
+   * get gId by User Id
    * 
-   * @return lsAids assignment Id
+   * @return lsGids group Id
    */
-  public List<Integer> getAIds(int uId) {
-    List<Integer> lsAids = new ArrayList<>();
-    String sql = "SELECT * FROM Assignment_User WHERE uId = ?";
+  public List<Integer> getGIds(int uId) {
+    List<Integer> lsGids = new ArrayList<>();
+    String sql = "SELECT * FROM Group_User WHERE uId = ?";
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
       preStmt.setInt(1, uId);
       try (ResultSet rs = preStmt.executeQuery()) {
         while (rs.next()) {
-          int aid = rs.getInt("aId");
-          lsAids.add(aid);
+          int gid = rs.getInt("gId");
+          lsGids.add(gid);
         }
       }
     } catch (SQLException e) {
       e.printStackTrace();
     }
-    return lsAids;
+    return lsGids;
   }
 
   /**
-   * get uId by Assignment Id
-   *
-   * @return lsUids assignment Id
+   * get uId by Group Id
+   * 
+   * @return lsUids User Id
    */
-  public List<Integer> getUids(int aId) {
+  public List<Integer> getUIds(int gId) {
     List<Integer> lsUids = new ArrayList<>();
-    String sql = "SELECT * FROM Assignment_User WHERE aId = ?";
+    String sql = "SELECT * FROM Group_User WHERE gId = ?";
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
-      preStmt.setInt(1, aId);
+      preStmt.setInt(1, gId);
       try (ResultSet rs = preStmt.executeQuery()) {
         while (rs.next()) {
           int uid = rs.getInt("uId");
@@ -90,4 +90,5 @@ public class AssignmentUserDbManager {
     }
     return lsUids;
   }
+
 }
