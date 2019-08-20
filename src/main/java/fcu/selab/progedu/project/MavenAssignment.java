@@ -126,7 +126,6 @@ public class MavenAssignment extends AssignmentType {
       zipHandler = new ZipHandler();
       zipHandler.modifyPomXml(testDirectory + "/pom.xml", assignmentName);
     } catch (LoadConfigFailureException e1) {
-      // TODO Auto-generated catch block
       e1.printStackTrace();
     }
   }

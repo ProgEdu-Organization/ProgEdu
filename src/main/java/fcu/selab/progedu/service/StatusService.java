@@ -24,7 +24,7 @@ public class StatusService {
   /**
    * Check is build success
    * 
-   * @param result result
+   * @param console console
    * @return boolean
    */
   public boolean isBuildSuccess(String console) {

@@ -195,7 +195,13 @@ public class ZipHandler {
     return urlForJenkinsDownloadTestFile;
   }
 
-  public void unzipFile(String targetDirectory, String filePath) {
+  /**
+   * Unzip a zip file to specified directory
+   * 
+   * @param targetDirectory the directory unzip to
+   * @param sourceFilePath  path of zip file
+   */
+  public void unzipFile(String targetDirectory, String sourceFilePath) {
     File testsDir = new File(targetDirectory);
     if (!testsDir.exists()) {
       testsDir.mkdir();
@@ -203,7 +209,7 @@ public class ZipHandler {
       System.out.println(targetDirectory);
     }
     try {
-      ZipFile zipFileToTests = new ZipFile(filePath);
+      ZipFile zipFileToTests = new ZipFile(sourceFilePath);
       zipFileToTests.extractAll(targetDirectory);
     } catch (ZipException e) {
       e.printStackTrace();
