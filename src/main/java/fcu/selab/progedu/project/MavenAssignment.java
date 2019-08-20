@@ -114,19 +114,11 @@ public class MavenAssignment extends AssignmentType {
   }
 
   @Override
-  public void createTestCase(String testDirectory, String assignmentName) {
-    ZipHandler zipHandler;
+  public void createTestCase(String testDirectory) {
     try {
       FileUtils.deleteDirectory(new File(testDirectory + "/src/main"));
     } catch (IOException e) {
       e.printStackTrace();
-    }
-
-    try {
-      zipHandler = new ZipHandler();
-      zipHandler.modifyPomXml(testDirectory + "/pom.xml", assignmentName);
-    } catch (LoadConfigFailureException e1) {
-      e1.printStackTrace();
     }
   }
 

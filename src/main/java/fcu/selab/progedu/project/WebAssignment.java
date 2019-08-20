@@ -96,7 +96,7 @@ public class WebAssignment extends AssignmentType {
   }
 
   @Override
-  public void createTestCase(String testDirectory, String assignmentName) {
+  public void createTestCase(String testDirectory) {
     try {
       FileUtils.deleteDirectory(new File(testDirectory + "/src/web"));
     } catch (IOException e) {

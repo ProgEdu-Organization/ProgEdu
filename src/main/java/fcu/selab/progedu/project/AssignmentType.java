@@ -4,6 +4,6 @@ public abstract class AssignmentType extends ProjectTypeImp {
 
   public abstract void createTemplate(String uploadDirectory);
 
-  public abstract void createTestCase(String testDirectory, String assignmentName);
+  public abstract void createTestCase(String testDirectory);
 
 }

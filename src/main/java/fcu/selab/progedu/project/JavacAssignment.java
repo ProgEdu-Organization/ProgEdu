@@ -54,7 +54,7 @@ public class JavacAssignment extends AssignmentType {
           + ".git";
       String updateDbUrl = progEduApiUrl + "/commits/update";
       // to-do : command
-      String assignmentPath = System.getProperty("java.io.tmpdir") + "/tests/" + projectName;
+      String assignmentPath = System.getProperty("java.io.tmpdir") + "/uploads/" + projectName;
       String command = searchJavaFile(assignmentPath);
       DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
       DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
@@ -104,7 +104,7 @@ public class JavacAssignment extends AssignmentType {
   }
 
   @Override
-  public void createTestCase(String testDirectory, String assignmentName) {
+  public void createTestCase(String testDirectory) {
   }
 
   /**
@@ -114,14 +114,10 @@ public class JavacAssignment extends AssignmentType {
    */
   public String searchJavaFile(String assignmentPath) {
     File testDir = new File(assignmentPath);
-    List<String> result = new ArrayList<>();
     String assignmentName = new File(assignmentPath).getName();
     String command = "";
 
-    search(testDir, result, assignmentName);
-    for (String s : result) {
-      command += s;
-    }
+    command = search(testDir, assignmentName).toString();
 
     return command;
   }
@@ -131,13 +127,14 @@ public class JavacAssignment extends AssignmentType {
    * @param folder folder
    * @param result result
    */
-  private void search(File folder, List<String> result, String assignmentName) {
+  private StringBuilder search(File folder, String assignmentName) {
     String pattern = ".*\\.java";
+    StringBuilder result = new StringBuilder();
 
     for (final File f : folder.listFiles()) {
 
       if (f.isDirectory()) {
-        search(f, result, assignmentName);
+        result = search(f, assignmentName);
       }
 
       if (f.isFile()) {
@@ -145,10 +142,11 @@ public class JavacAssignment extends AssignmentType {
           String filePath = f.getAbsolutePath()
               .substring(f.getAbsolutePath().indexOf(assignmentName) + assignmentName.length() + 1);
           String shell = "javac " + filePath + "\n";
-          result.add(shell);
+          result.append(shell);
         }
       }
     }
+    return result;
   }
 
 //  public String searchFile(String entryNewName) {

@@ -127,10 +127,13 @@ public class AssignmentService {
     zipHandler.unzipFile(uploadDirectory, filePath);
     zipHandler.unzipFile(testDirectory, filePath);
     assignment.createTemplate(uploadDirectory);
-    assignment.createTestCase(testDirectory, assignmentName);
+    assignment.createTestCase(testDirectory);
     zipHandler.zipTestFolder(testDirectory);
-    zipHandler.setUrlForJenkinsDownloadTestFile(zipHandler.serverIp
-        + "/ProgEdu/webapi/jenkins/getTestFile?filePath=" + testDirectory + ".zip");
+    testZipChecksum = zipHandler.getChecksum() + "";
+    testZipUrl = zipHandler.serverIp
+        + "/ProgEdu/webapi/jenkins/getTestFile?filePath=" + testDirectory + ".zip";
+    // zipHandler.setUrlForJenkinsDownloadTestFile(zipHandler.serverIp
+    //     + "/ProgEdu/webapi/jenkins/getTestFile?filePath=" + testDirectory + ".zip");
 
     // 5. Add .gitkeep if folder is empty.
     tomcatService.findEmptyFolder(cloneDirectoryPath);
