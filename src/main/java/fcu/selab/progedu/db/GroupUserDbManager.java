@@ -71,7 +71,7 @@ public class GroupUserDbManager {
    */
   public List<Integer> getGIds(int uid) {
     List<Integer> lsGids = new ArrayList<>();
-    String sql = "SELECT * FROM Group_User WHERE uId = ?";
+    String sql = "SELECT gId FROM Group_User WHERE uId = ?";
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
       preStmt.setInt(1, uid);
@@ -94,7 +94,7 @@ public class GroupUserDbManager {
    */
   public List<Integer> getUIds(int gid) {
     List<Integer> lsUids = new ArrayList<>();
-    String sql = "SELECT * FROM Group_User WHERE gId = ?";
+    String sql = "SELECT uId FROM Group_User WHERE gId = ?";
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
       preStmt.setInt(1, gid);

@@ -24,7 +24,7 @@ public class RoleDbManager {
    * @return roleId role Id
    */
   public int getRoleIdByName(String roleName) {
-    String query = "SELECT * FROM Role WHERE role = ?";
+    String query = "SELECT id FROM Role WHERE role = ?";
     int roleId = 0;
 
     try (Connection conn = database.getConnection();
@@ -48,7 +48,7 @@ public class RoleDbManager {
    * @return statusEnum statusEnum
    */
   public RoleEnum getRoleNameById(int roleId) {
-    String query = "SELECT * FROM Role WHERE id = ?";
+    String query = "SELECT role FROM Role WHERE id = ?";
     String roleName = null;
 
     try (Connection conn = database.getConnection();

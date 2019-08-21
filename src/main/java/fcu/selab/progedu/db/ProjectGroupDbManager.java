@@ -71,7 +71,7 @@ public class ProjectGroupDbManager {
    */
   public List<Integer> getPIds(int gid) {
     List<Integer> lsPids = new ArrayList<>();
-    String sql = "SELECT * FROM Project_Group WHERE gId = ?";
+    String sql = "SELECT pId FROM Project_Group WHERE gId = ?";
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
       preStmt.setInt(1, gid);
@@ -94,7 +94,7 @@ public class ProjectGroupDbManager {
    */
   public List<Integer> getUids(int pid) {
     List<Integer> lsGids = new ArrayList<>();
-    String sql = "SELECT * FROM Project_Group WHERE pId = ?";
+    String sql = "SELECT gId FROM Project_Group WHERE pId = ?";
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
       preStmt.setInt(1, pid);
