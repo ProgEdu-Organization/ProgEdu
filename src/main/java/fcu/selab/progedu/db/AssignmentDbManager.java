@@ -78,7 +78,7 @@ public class AssignmentDbManager {
           boolean hasTemplate = rs.getBoolean("hasTemplate");
           int typeId = rs.getInt("type");
           ProjectTypeEnum typeEnum = atDb.getTypeNameById(typeId);
-          long checksum = rs.getInt("zipChecksum");
+          long checksum = rs.getLong("zipChecksum");
           String zipUrl = rs.getString("zipUrl");
           String releaseTime = rs.getString("releaseTime");
           boolean display = rs.getBoolean("display");
