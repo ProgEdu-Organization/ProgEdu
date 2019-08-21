@@ -36,6 +36,31 @@ public class RoleUserDbManager {
   }
 
   /**
+   * get Top Role by user Id
+   * 
+   * @param uid User Id
+   * @return topRid Top Role Id
+   */
+  public int getTopRid(int uid) {
+    int topRid = 0;
+    String sql = "SELECT * from Role_User a where uId = ? "
+        + "AND (a.rId =(SELECT min(rId) FROM Role_User WHERE uId = ?));";
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+      preStmt.setInt(1, uid);
+      preStmt.setInt(2, uid);
+      try (ResultSet rs = preStmt.executeQuery()) {
+        while (rs.next()) {
+          topRid = rs.getInt("rid");
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return topRid;
+  }
+
+  /**
    * get ruid by Role Id and user Id
    * 
    * @param rid Role Id
@@ -88,7 +113,7 @@ public class RoleUserDbManager {
    * 
    * @return lsUids role id
    */
-  public List<Integer> getAIds(int rid) {
+  public List<Integer> getUids(int rid) {
     List<Integer> lsUids = new ArrayList<>();
     String sql = "SELECT * FROM Role_User WHERE rId = ?";
     try (Connection conn = database.getConnection();
