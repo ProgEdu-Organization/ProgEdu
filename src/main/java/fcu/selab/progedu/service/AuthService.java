@@ -1,12 +1,5 @@
 package fcu.selab.progedu.service;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.security.Key;
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
@@ -14,24 +7,18 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
-import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.json.JSONObject;
 
-import com.csvreader.CsvReader;
-
 import fcu.selab.progedu.config.JwtConfig;
-import fcu.selab.progedu.conn.LoginAuth;
-import fcu.selab.progedu.data.User;
+import fcu.selab.progedu.db.RoleDbManager;
+import fcu.selab.progedu.db.RoleUserDbManager;
+import fcu.selab.progedu.db.UserDbManager;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
 
 @Path("auth/")
 public class AuthService {
   JwtConfig jwt = JwtConfig.getInstance();
-  
+
   /**
    * @param token test
    * @return Response
@@ -60,5 +47,14 @@ public class AuthService {
       ob.put("isLogin", false);
     }
     return Response.ok().entity(ob.toString()).build();
+  }
+
+  private RoleEnum getRole(String username) {
+    UserDbManager userDb = UserDbManager.getInstance();
+    RoleUserDbManager roleUserDb = RoleUserDbManager.getInstance();
+    RoleDbManager roleDb = RoleDbManager.getInstance();
+    int uid = userDb.getUserIdByUsername(username);
+    int rid = roleUserDb.getTopRid(uid);
+    return roleDb.getRoleNameById(rid);
   }
 }
