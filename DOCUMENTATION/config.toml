@@ -1,3 +1,4 @@
+baseurl = "https://fcumselab.github.io/ProgEdu/"
 languageCode = "en-us"
 publishDir = "../docs"
 title = "ProgEdu"
