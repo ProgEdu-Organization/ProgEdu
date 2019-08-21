@@ -21,6 +21,25 @@ public class ProjectGroupDbManager {
   }
 
   /**
+   * Add ProjectGroup to database
+   * 
+   * @param pid Project Id
+   * @param gid Group Id
+   */
+  public void addProjectGroup(int pid, int gid) {
+    String sql = "INSERT INTO AssignmentUser(pId, gId)  VALUES(?, ?)";
+
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+      preStmt.setInt(1, pid);
+      preStmt.setInt(2, gid);
+      preStmt.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
+
+  /**
    * get pgId by project Id and group Id
    * 
    * @param pid Project Id
