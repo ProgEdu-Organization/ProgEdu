@@ -1,4 +1,3 @@
-baseurl = "/ProgEdu/"
 languageCode = "en-us"
 publishDir = "../docs"
 title = "ProgEdu"
