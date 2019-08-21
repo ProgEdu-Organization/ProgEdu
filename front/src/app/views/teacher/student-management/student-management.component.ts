@@ -24,12 +24,17 @@ export class StudentManagementComponent implements OnInit {
   }
   async getAllUserData() {
     this.studentService.getAllUserData().subscribe(response => {
-      this.users = response.results;
+      console.log(response.Users);
+      this.users = response.Users;
     });
   }
 
   public addOneStudent() {
-    console.log(this.addOneStudentForm.value);
+    console.log('add one student' + environment.SERVER_URL);
+
+    this.studentService.addOneStudent(this.addOneStudentForm).subscribe(response => {
+      console.log(response.ok);
+    });
   }
 
 }

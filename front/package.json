@@ -5,10 +5,11 @@
   "homepage": "https://coreui.io/angular",
   "license": "MIT",
   "scripts": {
+    "prebuild": "node prebuild.js",
     "ng": "ng",
-    "start": "ng serve  --host 140.134.26.77 --port 4200 --open",
+    "start": "npm run prebuild && ng serve --host 140.134.26.77 --port 4200 --open",
     "build": "ng build --prod --aot --buildOptimizer --commonChunk --vendorChunk --optimization --progress",
-    "progedu_build": "ng build --prod --base-href /ProgEdu/",
+    "progedu_build": "npm run prebuild && ng build --prod --base-href /ProgEdu/",
     "lint": "ng lint",
     "e2e": "ng e2e"
   },

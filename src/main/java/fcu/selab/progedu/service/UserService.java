@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.FormParam;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
@@ -15,6 +17,8 @@ import javax.ws.rs.core.Response;
 import org.gitlab.api.models.GitlabUser;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import com.csvreader.CsvReader;
 
@@ -101,12 +105,13 @@ public class UserService {
    */
   @POST
   @Path("new")
-  @Consumes(MediaType.MULTIPART_FORM_DATA)
-  public Response createAccount(@FormDataParam("name") String name,
-      @FormDataParam("username") String username, @FormDataParam("email") String email,
-      @FormDataParam("password") String password,
-      @FormDataParam("isDisplayed") boolean isDisplayed) {
+  @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+  public Response createAccount(@FormParam("name") String name,
+      @FormParam("username") String username, @FormParam("email") String email,
+      @FormParam("password") String password,
+      @FormParam("isDisplayed") boolean isDisplayed) {
     Response response = null;
+    System.out.println(name + "  " + username);
     User user = new User(username, name, email, password, isDisplayed);
     String errorMessage = getErrorMessage(user);
 
@@ -151,6 +156,21 @@ public class UserService {
 
     return response;
 
+  }
+  
+  /**
+   * Get all user which role is student
+   * 
+   * @return all GitLab users
+   */
+  @GET
+  @Path("getUsers")
+  public Response getUsers() {
+    List<User> users = dbManager.listAllUsers();
+    
+    JSONObject ob = new JSONObject();
+    ob.put("Users", users);
+    return Response.ok().entity(ob.toString()).build();
   }
 
   /**

@@ -83,7 +83,6 @@ public class UserDbManager {
         bld.append("0");
       }
       hashtext = bld.toString() + hashtext;
-      System.out.println(hashtext);
     } catch (NoSuchAlgorithmException e) {
       e.printStackTrace();
     }
