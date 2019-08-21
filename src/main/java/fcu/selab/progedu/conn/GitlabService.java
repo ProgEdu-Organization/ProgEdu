@@ -385,8 +385,7 @@ public class GitlabService {
    * @param username User name
    * @param name     Full name
    * @return true or false
-   * @throws LoadConfigFailureException on a instance call error
-   * @throws IOException                on gitlab api call error
+   * @throws IOException on gitlab api call error
    */
   public GitlabUser createUser(String email, String password, String username, String name)
       throws IOException {
@@ -436,7 +435,7 @@ public class GitlabService {
   /**
    * transfer project into group
    * 
-   * @param group       group
+   * @param group group
    * @throws IOException IOException
    */
   public GitlabProject createGroupProject(Group group) throws IOException {
@@ -607,9 +606,9 @@ public class GitlabService {
     return committers;
   }
 
-/**
-   * get commits from gitlab project.
-   * (to do)
+  /**
+   * get commits from gitlab project. (to do)
+   * 
    * @param username project's (to do)
    */
   public String cloneProject(String username, String projectName) {
@@ -623,6 +622,7 @@ public class GitlabService {
 
   /**
    * (to do)
+   * 
    * @param cloneDirectoryPath (to do)
    */
   public void pushProject(String cloneDirectoryPath) {
@@ -637,12 +637,13 @@ public class GitlabService {
     linux.execLinuxCommandInFile(pushCommand, cloneDirectoryPath);
   }
 
-/**
- * (to do)
- * @param project (to do)
- * @throws IOException (to do)
- * @throws LoadConfigFailureException (to do)
- */
+  /**
+   * (to do)
+   * 
+   * @param project (to do)
+   * @throws IOException                (to do)
+   * @throws LoadConfigFailureException (to do)
+   */
   public void setGitlabWebhook(GitlabProject project)
       throws IOException, LoadConfigFailureException {
     String username = project.getOwner().getUsername();
