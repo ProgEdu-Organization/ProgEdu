@@ -22,7 +22,7 @@ public class Assignment {
 
   private String jenkinsUrl = "";
 
-  private String testZipChecksum = "";
+  private long testZipChecksum = 0;
 
   private String testZipUrl = "";
 
@@ -102,11 +102,11 @@ public class Assignment {
     this.jenkinsUrl = jenkinsUrl;
   }
 
-  public String getTestZipChecksum() {
+  public long getTestZipChecksum() {
     return testZipChecksum;
   }
 
-  public void setTestZipChecksum(String testZipChecksum) {
+  public void setTestZipChecksum(long testZipChecksum) {
     this.testZipChecksum = testZipChecksum;
   }
 

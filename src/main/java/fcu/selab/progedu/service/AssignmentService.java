@@ -64,7 +64,7 @@ public class AssignmentService {
 
   boolean isSave = true;
 
-  private String testZipChecksum = "";
+  private long testZipChecksum = 0;
   private String testZipUrl = "";
 
   /**
@@ -111,7 +111,8 @@ public class AssignmentService {
     rootProjectUrl = getRootProjectUrl(assignmentName);
 
     // 2. Clone the project to C:\\Users\\users\\AppData\\Temp\\uploads
-    String cloneDirectoryPath = gitlabService.cloneProject(gitlabRootUsername, assignmentName);
+    final String cloneDirectoryPath 
+        = gitlabService.cloneProject(gitlabRootUsername, assignmentName);
 
     // 3. Store Zip File to folder if file is not empty
     String filePath = null;
@@ -120,18 +121,20 @@ public class AssignmentService {
 
     // 4. Unzip the uploaded file to tests folder and uploads folder on tomcat,
     // extract main method from tests folder, then zip as root project
+    String uploadDirectory = uploadDir + assignmentName;
+    String testDirectory = testDir + assignmentName;
 
-    /*
-     * TO-DO : unzip, create template and test file
-     * 
-     */
+    zipHandler.unzipFile(uploadDirectory, filePath);
+    zipHandler.unzipFile(testDirectory, filePath);
+    assignment.createTemplate(uploadDirectory);
+    assignment.createTestCase(testDirectory);
+    zipHandler.zipTestFolder(testDirectory);
+    testZipChecksum = zipHandler.getChecksum();
+    testZipUrl = zipHandler.serverIp
+        + "/ProgEdu/webapi/jenkins/getTestFile?filePath=" + testDirectory + ".zip";
+    // zipHandler.setUrlForJenkinsDownloadTestFile(zipHandler.serverIp
+    //     + "/ProgEdu/webapi/jenkins/getTestFile?filePath=" + testDirectory + ".zip");
 
-//    try {
-//      assignment.unzip(filePath, fileDetail.getFileName(), name, zipHandler);
-//      setTestFileInfo();
-//    } catch (IOException e) {
-//      e.printStackTrace();
-//    }
     // 5. Add .gitkeep if folder is empty.
     tomcatService.findEmptyFolder(cloneDirectoryPath);
 
@@ -244,7 +247,7 @@ public class AssignmentService {
    * @param hasTemplate Has template
    */
   public void addProject(String name, String releaseTime, String deadline, String readMe,
-      ProjectTypeEnum projectType, boolean hasTemplate, String testZipChecksum, String testZipUrl) {
+      ProjectTypeEnum projectType, boolean hasTemplate, long testZipChecksum, String testZipUrl) {
     Assignment assignment = new Assignment();
 
     assignment.setName(name);
@@ -330,23 +333,25 @@ public class AssignmentService {
       @FormDataParam("testCase") InputStream uploadedInputStream,
       @FormDataParam("testCase") FormDataContentDisposition fileDetail) {
 
-//    dbManager.editAssignment(deadline, readMe, releaseTime, assignmentName);
-//
-//    if (!fileDetail.getFileName().isEmpty()) {
-//      // update test case
-//      String filePath = storeFileToTestsFolder(assignmentName + ".zip", uploadedInputStream);
-//      // update database checksum
-//
-//      String checksum = getChecksum(filePath);
-////      System.out.println("checksum : " + checksum);
-//
-//      dbManager.updateAssignmentChecksum(assignmentName, checksum);
-//    }
+    // dbManager.editAssignment(deadline, readMe, releaseTime, assignmentName);
+    //
+    // if (!fileDetail.getFileName().isEmpty()) {
+    // // update test case
+    // String filePath = storeFileToTestsFolder(assignmentName + ".zip",
+    // uploadedInputStream);
+    // // update database checksum
+    //
+    // String checksum = getChecksum(filePath);
+    //// System.out.println("checksum : " + checksum);
+    //
+    // dbManager.updateAssignmentChecksum(assignmentName, checksum);
+    // }
 
-//    Response response = Response.ok().build();
-//    if (!isSave) {
-//      response = Response.serverError().status(Status.INTERNAL_SERVER_ERROR).build();
-//    }
+    // Response response = Response.ok().build();
+    // if (!isSave) {
+    // response =
+    // Response.serverError().status(Status.INTERNAL_SERVER_ERROR).build();
+    // }
 
     return Response.ok().build();
   }
@@ -365,10 +370,10 @@ public class AssignmentService {
     return Response.ok().entity(assignment).build();
   }
 
-  public void setTestFileInfo() {
-    testZipChecksum = String.valueOf(zipHandler.getChecksum());
-    testZipUrl = zipHandler.getUrlForJenkinsDownloadTestFile();
-  }
+  // public void setTestFileInfo() {
+  //   testZipChecksum = String.valueOf(zipHandler.getChecksum());
+  //   testZipUrl = zipHandler.getUrlForJenkinsDownloadTestFile();
+  // }
 
   /**
    * get course name
@@ -385,22 +390,23 @@ public class AssignmentService {
 
     return name;
   }
-//
-//  private String getChecksum(String zipFilePath) {
-//    String strChecksum = "";
-//
-//    try (CheckedInputStream cis = new CheckedInputStream(new FileInputStream(zipFilePath),
-//        new CRC32());) {
-//      byte[] buf = new byte[1024];
-//      // noinspection StatementWithEmptyBody
-//      while (cis.read(buf) >= 0) {
-//      }
-//      System.out.println(cis.getChecksum().getValue());
-//      strChecksum = String.valueOf(cis.getChecksum().getValue());
-//    } catch (IOException e) {
-//      e.printStackTrace();
-//    }
-//    return strChecksum;
-//  }
+  //
+  // private String getChecksum(String zipFilePath) {
+  // String strChecksum = "";
+  //
+  // try (CheckedInputStream cis = new CheckedInputStream(new
+  // FileInputStream(zipFilePath),
+  // new CRC32());) {
+  // byte[] buf = new byte[1024];
+  // // noinspection StatementWithEmptyBody
+  // while (cis.read(buf) >= 0) {
+  // }
+  // System.out.println(cis.getChecksum().getValue());
+  // strChecksum = String.valueOf(cis.getChecksum().getValue());
+  // } catch (IOException e) {
+  // e.printStackTrace();
+  // }
+  // return strChecksum;
+  // }
 
 }
