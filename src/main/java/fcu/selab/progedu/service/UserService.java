@@ -44,20 +44,19 @@ public class UserService {
    * Upload a csv file for student batch registration
    * 
    * @param uploadedInputStream file of student list
-   * @param fileDetail          file information
    * @return Response
    */
   @POST
   @Path("upload")
-  @Consumes(MediaType.MULTIPART_FORM_DATA)
-  public Response createAccounts(@FormDataParam("file") InputStream uploadedInputStream,
-      @FormDataParam("file") FormDataContentDisposition fileDetail) {
+  public Response createAccounts(@FormDataParam("file") InputStream uploadedInputStream) {
     Response response = null;
     List<User> users = new ArrayList<>();
     String errorMessage = "";
+    System.out.println("test1");
     try {
       CsvReader csvReader = new CsvReader(new InputStreamReader(uploadedInputStream, "UTF-8"));
       csvReader.readHeaders();
+      System.out.println("test2");
       while (csvReader.readRecord()) {
         User newUser = new User();
         String username = csvReader.get("Username");
@@ -70,7 +69,7 @@ public class UserService {
         newUser.setPassword(password);
         newUser.setName(name);
         newUser.setEmail(email);
-
+        System.out.println("test3");
         errorMessage = getErrorMessage(users, newUser);
         if (errorMessage.isEmpty()) {
           users.add(newUser);
@@ -79,7 +78,7 @@ public class UserService {
         }
       }
       csvReader.close();
-
+      System.out.println("test4");
       if (errorMessage == null || errorMessage.isEmpty()) {
         for (User user : users) {
           register(user);
@@ -108,13 +107,12 @@ public class UserService {
   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
   public Response createAccount(@FormParam("name") String name,
       @FormParam("username") String username, @FormParam("email") String email,
-      @FormParam("password") String password,
-      @FormParam("isDisplayed") boolean isDisplayed) {
+      @FormParam("password") String password, @FormParam("isDisplayed") boolean isDisplayed) {
     Response response = null;
     System.out.println(name + "  " + username);
     User user = new User(username, name, email, password, isDisplayed);
     String errorMessage = getErrorMessage(user);
-
+    System.out.println(errorMessage);
     if (errorMessage.isEmpty()) {
       try {
         register(user);
@@ -132,9 +130,10 @@ public class UserService {
 
   /**
    * (to do )
-   * @param id (to do )
+   * 
+   * @param id              (to do )
    * @param currentPassword (to do )
-   * @param newPassword (to do )
+   * @param newPassword     (to do )
    * @return response (to do)
    */
   @POST
@@ -157,7 +156,7 @@ public class UserService {
     return response;
 
   }
-  
+
   /**
    * Get all user which role is student
    * 
@@ -167,7 +166,7 @@ public class UserService {
   @Path("getUsers")
   public Response getUsers() {
     List<User> users = dbManager.listAllUsers();
-    
+
     JSONObject ob = new JSONObject();
     ob.put("Users", users);
     return Response.ok().entity(ob.toString()).build();
@@ -219,7 +218,7 @@ public class UserService {
     }
     return isDuplicateUsername;
   }
-  
+
   private boolean isDuplicateUsername(List<User> users, String username) {
     boolean isDuplicateUsername = false;
     for (User user : users) {
