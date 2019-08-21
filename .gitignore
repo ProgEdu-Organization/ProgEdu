@@ -8,3 +8,5 @@
 progedu.iml
 
 /src/main/resources/config/*.properties
+
+docs/

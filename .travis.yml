@@ -1,0 +1,20 @@
+language: bash
+sudo: required
+
+env:
+  matrix:
+    - HUGO_VERSION=0.20.2
+
+script: ./travis-build.sh
+
+deploy:
+  provider: pages
+  skip_cleanup: true
+  local_dir: docs
+  github_token: $GITHUB_TOKEN
+  on:
+    branch: master
+    condition: -n "${HUGO_VERSION}"
+
+notifications:
+  email: false
