@@ -23,7 +23,7 @@ public class CommitStatusDbManager {
    * @return statusId status id
    */
   public int getStatusIdByName(String statusName) {
-    String query = "SELECT * FROM Commit_Status WHERE status = ?";
+    String query = "SELECT id FROM Commit_Status WHERE status = ?";
     int statusId = 0;
 
     try (Connection conn = database.getConnection();
@@ -47,7 +47,7 @@ public class CommitStatusDbManager {
    * @return statusEnum statusEnum
    */
   public StatusEnum getStatusNameById(int statusId) {
-    String query = "SELECT * FROM Commit_Status WHERE id = ?";
+    String query = "SELECT status FROM Commit_Status WHERE id = ?";
     String statusName = null;
 
     try (Connection conn = database.getConnection();

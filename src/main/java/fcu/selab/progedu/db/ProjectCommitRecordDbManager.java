@@ -33,7 +33,7 @@ public class ProjectCommitRecordDbManager {
       String commitStudent) {
     String sql = "INSERT INTO Project_Commit_Record"
         + "(pgId, commitNumber, status, time, commitStudent) " + "VALUES(?, ?, ?, ?, ?)";
-    int statusId = csDb.getStatusIdByName(status.getTypeName());
+    int statusId = csDb.getStatusIdByName(status.getType());
 
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
@@ -127,7 +127,7 @@ public class ProjectCommitRecordDbManager {
           String commitTime = rs.getString("time");
           String commitStudent = rs.getString("commitStudent");
           JSONObject eachHw = new JSONObject();
-          eachHw.put("status", statusEnum.getTypeName());
+          eachHw.put("status", statusEnum.getType());
           eachHw.put("commitNumber", commitNumber);
           eachHw.put("commitTime", commitTime);
           eachHw.put("commitStudent", commitStudent);
@@ -165,7 +165,7 @@ public class ProjectCommitRecordDbManager {
         String commitTime = rs.getString("time");
         String commitStudent = rs.getString("commitStudent");
         JSONObject eachHw = new JSONObject();
-        eachHw.put("status", statusEnum.getTypeName());
+        eachHw.put("status", statusEnum.getType());
         eachHw.put("commitNumber", commitNumber);
         eachHw.put("commitTime", commitTime);
         eachHw.put("commitStudent", commitStudent);
@@ -187,7 +187,7 @@ public class ProjectCommitRecordDbManager {
    */
   public int getProjectCommitCount(int pgId) {
     int commitNumber = 0;
-    String sql = "SELECT * from Project_Commit_Record a where (a.commitNumber = "
+    String sql = "SELECT commitNumber from Project_Commit_Record a where (a.commitNumber = "
         + "(SELECT max(commitNumber) FROM Project_Commit_Record WHERE auId = ?));";
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
@@ -228,13 +228,13 @@ public class ProjectCommitRecordDbManager {
    */
   public int getCommitStatusbyPgid(int pgid) {
     int status = 0;
-    String sql = "SELECT * FROM Project_Commit_Record WHERE pgId=?";
+    String sql = "SELECT status FROM Project_Commit_Record WHERE pgId=?";
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
       preStmt.setInt(1, pgid);
       try (ResultSet rs = preStmt.executeQuery()) {
         while (rs.next()) {
-          status = rs.getInt(status);
+          status = rs.getInt("status");
         }
       }
     } catch (SQLException e) {

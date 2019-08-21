@@ -90,7 +90,7 @@ public class ProjectDbManager {
    * @return assignment name
    */
   public String getProjectNameById(int pid) {
-    String sql = "SELECT * FROM Project WHERE pId = ?";
+    String sql = "SELECT name FROM Project WHERE pId = ?";
     String projectName = "";
     try (Connection conn = database.getConnection();
         PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -113,7 +113,7 @@ public class ProjectDbManager {
    * @return id project id
    */
   public int getProjectIdByName(String projectName) {
-    String query = "SELECT * FROM Project WHERE name = ?";
+    String query = "SELECT id FROM Project WHERE name = ?";
     int id = -1;
 
     try (Connection conn = database.getConnection();
@@ -138,7 +138,7 @@ public class ProjectDbManager {
    */
   public int getAssignmentType(String projectName) {
     int typeId = 0;
-    String sql = "SELECT * FROM Project WHERE name=?";
+    String sql = "SELECT type FROM Project WHERE name=?";
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
       preStmt.setString(1, projectName);
@@ -160,7 +160,7 @@ public class ProjectDbManager {
    */
   public List<String> listAllProjectNames() {
     List<String> lsNames = new ArrayList<>();
-    String sql = "SELECT * FROM Project";
+    String sql = "SELECT name FROM Project";
 
     try (Connection conn = database.getConnection();
         Statement stmt = conn.createStatement();

@@ -37,8 +37,7 @@ public class UserDbManager {
   /**
    * Add gitlab user to database
    * 
-   * @param user
-   *          The gitlab user
+   * @param user The gitlab user
    */
   public void addUser(User user) {
     String sql = "INSERT INTO " + "User(" + GIT_LAB_ID + "," + USERNAME + "," + NAME + ","
@@ -53,7 +52,7 @@ public class UserDbManager {
       preStmt.setString(4, passwordMD5(user.getPassword()));
       preStmt.setString(5, user.getEmail());
       preStmt.setString(6, user.getGitLabToken());
-      preStmt.setBoolean(7, true);
+      preStmt.setBoolean(7, user.getDisplay());
       preStmt.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();
@@ -63,11 +62,9 @@ public class UserDbManager {
   /**
    * encrypt the user password
    * 
-   * @param password
-   *          The user's password
+   * @param password The user's password
    * @return MD5 string
-   * @throws NoSuchAlgorithmException
-   *           on security api call error
+   * @throws NoSuchAlgorithmException on security api call error
    */
   public String passwordMD5(String password) {
     String hashtext = "";
@@ -93,13 +90,12 @@ public class UserDbManager {
   /**
    * get user password
    * 
-   * @param username
-   *          user stu id
+   * @param username user stu id
    * @return password
    */
   public String getPassword(String username) {
     String password = "";
-    String query = "SELECT * FROM User WHERE username = ?";
+    String query = "SELECT password FROM User WHERE username = ?";
 
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(query)) {
@@ -118,10 +114,8 @@ public class UserDbManager {
   /**
    * update user db password
    * 
-   * @param username
-   *          user stu id
-   * @param password
-   *          user new password
+   * @param username user stu id
+   * @param password user new password
    */
   public void modifiedUserPassword(String username, String password) {
     String query = "UPDATE User SET password=? WHERE username = ?";
@@ -140,16 +134,14 @@ public class UserDbManager {
   /**
    * check old password
    * 
-   * @param username
-   *          user stu id
-   * @param password
-   *          user old password
+   * @param username user stu id
+   * @param password user old password
    * @return T or F
    */
   public boolean checkPassword(String username, String password) {
     boolean check = false;
     String currPassword = getPassword(username);
-    if (currPassword.equals(passwordMD5(password) + username)) {
+    if (currPassword.equals(passwordMD5(password))) {
       check = true;
     }
     return check;
@@ -161,7 +153,7 @@ public class UserDbManager {
    * @return id
    */
   public int getUserIdByUsername(String username) {
-    String query = "SELECT * FROM User WHERE username = ?";
+    String query = "SELECT id FROM User WHERE username = ?";
     int id = -1;
 
     try (Connection conn = database.getConnection();
@@ -181,8 +173,7 @@ public class UserDbManager {
   /**
    * Get user from database
    * 
-   * @param username
-   *          The gitlab user name
+   * @param username The gitlab user name
    * @return user
    */
   public User getUser(String username) {
@@ -200,6 +191,7 @@ public class UserDbManager {
           String password = rs.getString(PASSWORD);
           String email = rs.getString(EMAIL);
           String gitLabToken = rs.getString(GIT_LAB_TOKEN);
+          boolean display = rs.getBoolean(DISPLAY);
 
           user.setGitLabId(gitLabId);
           user.setId(id);
@@ -208,6 +200,7 @@ public class UserDbManager {
           user.setPassword(password);
           user.setEmail(email);
           user.setGitLabToken(gitLabToken);
+          user.setDisplay(display);
         }
       }
     } catch (SQLException e) {
@@ -235,6 +228,7 @@ public class UserDbManager {
           String password = rs.getString(PASSWORD);
           String email = rs.getString(EMAIL);
           String gitLabToken = rs.getString(GIT_LAB_ID);
+          boolean display = rs.getBoolean(DISPLAY);
 
           User user = new User();
           user.setId(id);
@@ -244,6 +238,7 @@ public class UserDbManager {
           user.setPassword(password);
           user.setEmail(email);
           user.setGitLabToken(gitLabToken);
+          user.setDisplay(display);
           lsUsers.add(user);
         }
       }
@@ -257,8 +252,7 @@ public class UserDbManager {
   /**
    * check username
    * 
-   * @param username
-   *          studentId
+   * @param username studentId
    * @return isExist
    */
   public boolean checkUsername(String username) {
@@ -283,8 +277,7 @@ public class UserDbManager {
   /**
    * check e-mail
    * 
-   * @param email
-   *          e-mail
+   * @param email e-mail
    * @return isExist
    */
   public boolean checkEmail(String email) {
@@ -309,13 +302,12 @@ public class UserDbManager {
   /**
    * Get user from database
    *
-   * @param id
-   *          The db user id
+   * @param id The db user id
    * @return user
    */
   public String getUsername(int id) {
     String name = "";
-    String query = "SELECT * FROM User WHERE id = ?";
+    String query = "SELECT username FROM User WHERE id = ?";
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(query)) {
       preStmt.setInt(1, id);

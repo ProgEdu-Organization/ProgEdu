@@ -33,7 +33,7 @@ public class CommitRecordDbManager {
   public void insertCommitRecord(int auId, int commitNumber, StatusEnum status, String time) {
     String sql = "INSERT INTO Commit_Record" + "(auId, commitNumber, status, time) "
         + "VALUES(?, ?, ?, ?)";
-    int statusId = csDb.getStatusIdByName(status.getTypeName());
+    int statusId = csDb.getStatusIdByName(status.getType());
 
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
@@ -124,7 +124,7 @@ public class CommitRecordDbManager {
           int commitNumber = rs.getInt("commitNumber");
           String commitTime = rs.getString("time");
           JSONObject eachHw = new JSONObject();
-          eachHw.put("status", statusEnum.getTypeName());
+          eachHw.put("status", statusEnum.getType());
           eachHw.put("commitNumber", commitNumber);
           eachHw.put("commitTime", commitTime);
           array.put(eachHw);
@@ -160,7 +160,7 @@ public class CommitRecordDbManager {
         int commitNumber = rs.getInt("commitNumber");
         String commitTime = rs.getString("time");
         JSONObject eachHw = new JSONObject();
-        eachHw.put("status", statusEnum.getTypeName());
+        eachHw.put("status", statusEnum.getType());
         eachHw.put("commitNumber", commitNumber);
         eachHw.put("commitTime", commitTime);
         array.put(eachHw);
@@ -181,7 +181,7 @@ public class CommitRecordDbManager {
    */
   public int getCommitCount(int auid) {
     int commitNumber = 0;
-    String sql = "SELECT * from Commit_Record a where (a.commitNumber = "
+    String sql = "SELECT commitNumber from Commit_Record a where (a.commitNumber = "
         + "(SELECT max(commitNumber) FROM Commit_Record WHERE auId = ?));";
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
@@ -222,13 +222,13 @@ public class CommitRecordDbManager {
    */
   public int getCommitStatusbyAuid(int auid) {
     int status = 0;
-    String sql = "SELECT * FROM Commit_Record WHERE auId=?";
+    String sql = "SELECT status FROM Commit_Record WHERE auId=?";
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
       preStmt.setInt(1, auid);
       try (ResultSet rs = preStmt.executeQuery()) {
         while (rs.next()) {
-          status = rs.getInt(status);
+          status = rs.getInt("status");
         }
       }
     } catch (SQLException e) {
