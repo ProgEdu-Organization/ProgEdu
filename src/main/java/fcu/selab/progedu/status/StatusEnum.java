@@ -17,14 +17,14 @@ public enum StatusEnum {
    */
   public static StatusEnum getStatusEnum(String type) {
     for (StatusEnum status : StatusEnum.values()) {
-      if (status.getTypeName().equals(type)) {
+      if (status.getType().equals(type)) {
         return status;
       }
     }
     return null;
   }
 
-  public String getTypeName() {
+  public String getType() {
     return this.type;
   }
 

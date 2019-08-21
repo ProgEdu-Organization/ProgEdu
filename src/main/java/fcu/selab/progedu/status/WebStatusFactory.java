@@ -5,7 +5,7 @@ public class WebStatusFactory implements StatusFactory {
   @Override
   public Status getStatus(String statusType) {
     StatusEnum statusEnum = StatusEnum.getStatusEnum(statusType);
-    System.out.println(statusEnum.getTypeName());
+    System.out.println(statusEnum.getType());
     switch (statusEnum) {
       case INITIALIZATION: {
         return new Initialization();

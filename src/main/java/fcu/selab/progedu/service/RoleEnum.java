@@ -16,14 +16,14 @@ public enum RoleEnum {
    */
   public static RoleEnum getRoleEnum(String role) {
     for (RoleEnum roleType : RoleEnum.values()) {
-      if (roleType.getRole() == role) {
+      if (roleType.getType() == role) {
         return roleType;
       }
     }
     return null;
   }
 
-  public String getRole() {
+  public String getType() {
     return this.role;
   }
 

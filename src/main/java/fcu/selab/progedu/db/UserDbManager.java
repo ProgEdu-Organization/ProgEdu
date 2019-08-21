@@ -37,8 +37,7 @@ public class UserDbManager {
   /**
    * Add gitlab user to database
    * 
-   * @param user
-   *          The gitlab user
+   * @param user The gitlab user
    */
   public void addUser(User user) {
     String sql = "INSERT INTO " + "User(" + GIT_LAB_ID + "," + USERNAME + "," + NAME + ","
@@ -63,11 +62,9 @@ public class UserDbManager {
   /**
    * encrypt the user password
    * 
-   * @param password
-   *          The user's password
+   * @param password The user's password
    * @return MD5 string
-   * @throws NoSuchAlgorithmException
-   *           on security api call error
+   * @throws NoSuchAlgorithmException on security api call error
    */
   public String passwordMD5(String password) {
     String hashtext = "";
@@ -93,8 +90,7 @@ public class UserDbManager {
   /**
    * get user password
    * 
-   * @param username
-   *          user stu id
+   * @param username user stu id
    * @return password
    */
   public String getPassword(String username) {
@@ -118,10 +114,8 @@ public class UserDbManager {
   /**
    * update user db password
    * 
-   * @param username
-   *          user stu id
-   * @param password
-   *          user new password
+   * @param username user stu id
+   * @param password user new password
    */
   public void modifiedUserPassword(String username, String password) {
     String query = "UPDATE User SET password=? WHERE username = ?";
@@ -140,16 +134,14 @@ public class UserDbManager {
   /**
    * check old password
    * 
-   * @param username
-   *          user stu id
-   * @param password
-   *          user old password
+   * @param username user stu id
+   * @param password user old password
    * @return T or F
    */
   public boolean checkPassword(String username, String password) {
     boolean check = false;
     String currPassword = getPassword(username);
-    if (currPassword.equals(passwordMD5(password) + username)) {
+    if (currPassword.equals(passwordMD5(password))) {
       check = true;
     }
     return check;
@@ -181,8 +173,7 @@ public class UserDbManager {
   /**
    * Get user from database
    * 
-   * @param username
-   *          The gitlab user name
+   * @param username The gitlab user name
    * @return user
    */
   public User getUser(String username) {
@@ -257,8 +248,7 @@ public class UserDbManager {
   /**
    * check username
    * 
-   * @param username
-   *          studentId
+   * @param username studentId
    * @return isExist
    */
   public boolean checkUsername(String username) {
@@ -283,8 +273,7 @@ public class UserDbManager {
   /**
    * check e-mail
    * 
-   * @param email
-   *          e-mail
+   * @param email e-mail
    * @return isExist
    */
   public boolean checkEmail(String email) {
@@ -309,8 +298,7 @@ public class UserDbManager {
   /**
    * Get user from database
    *
-   * @param id
-   *          The db user id
+   * @param id The db user id
    * @return user
    */
   public String getUsername(int id) {

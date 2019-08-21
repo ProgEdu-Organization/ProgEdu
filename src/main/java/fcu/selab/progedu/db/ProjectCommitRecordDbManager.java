@@ -33,7 +33,7 @@ public class ProjectCommitRecordDbManager {
       String commitStudent) {
     String sql = "INSERT INTO Project_Commit_Record"
         + "(pgId, commitNumber, status, time, commitStudent) " + "VALUES(?, ?, ?, ?, ?)";
-    int statusId = csDb.getStatusIdByName(status.getTypeName());
+    int statusId = csDb.getStatusIdByName(status.getType());
 
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
@@ -127,7 +127,7 @@ public class ProjectCommitRecordDbManager {
           String commitTime = rs.getString("time");
           String commitStudent = rs.getString("commitStudent");
           JSONObject eachHw = new JSONObject();
-          eachHw.put("status", statusEnum.getTypeName());
+          eachHw.put("status", statusEnum.getType());
           eachHw.put("commitNumber", commitNumber);
           eachHw.put("commitTime", commitTime);
           eachHw.put("commitStudent", commitStudent);
@@ -165,7 +165,7 @@ public class ProjectCommitRecordDbManager {
         String commitTime = rs.getString("time");
         String commitStudent = rs.getString("commitStudent");
         JSONObject eachHw = new JSONObject();
-        eachHw.put("status", statusEnum.getTypeName());
+        eachHw.put("status", statusEnum.getType());
         eachHw.put("commitNumber", commitNumber);
         eachHw.put("commitTime", commitTime);
         eachHw.put("commitStudent", commitStudent);

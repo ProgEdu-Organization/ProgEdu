@@ -49,6 +49,18 @@ public class AuthService {
     return Response.ok().entity(ob.toString()).build();
   }
 
+  private String checkPermission(String username, String password) {
+    String role = "";
+    if (checkPassword(username, password)) {
+      role = getRole(username).getType();
+    }
+    return role;
+  }
+
+  private boolean checkPassword(String username, String password) {
+    return UserDbManager.getInstance().checkPassword(username, password);
+  }
+
   private RoleEnum getRole(String username) {
     UserDbManager userDb = UserDbManager.getInstance();
     RoleUserDbManager roleUserDb = RoleUserDbManager.getInstance();
