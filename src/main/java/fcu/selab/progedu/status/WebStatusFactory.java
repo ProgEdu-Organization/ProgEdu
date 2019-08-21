@@ -1,6 +1,6 @@
 package fcu.selab.progedu.status;
 
-public class WebStatusFactory extends StatusFactory {
+public class WebStatusFactory implements StatusFactory {
 
   @Override
   public Status getStatus(String statusType) {
