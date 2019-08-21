@@ -385,7 +385,6 @@ public class GitlabService {
    * @param username User name
    * @param name     Full name
    * @return true or false
-   * @throws LoadConfigFailureException on a instance call error
    * @throws IOException                on gitlab api call error
    */
   public GitlabUser createUser(String email, String password, String username, String name)
