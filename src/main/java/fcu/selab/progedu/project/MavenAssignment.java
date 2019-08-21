@@ -105,9 +105,9 @@ public class MavenAssignment extends AssignmentType {
   }
 
   @Override
-  public void createTemplate(String uploadDirectory) {
+  public void createTemplate(String cloneDirectoryPath) {
     try {
-      FileUtils.deleteDirectory(new File(uploadDirectory + "/src/test"));
+      FileUtils.deleteDirectory(new File(cloneDirectoryPath + "/src/test"));
     } catch (IOException e) {
       e.printStackTrace();
     }
