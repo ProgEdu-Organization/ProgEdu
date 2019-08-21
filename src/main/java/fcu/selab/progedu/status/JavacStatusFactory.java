@@ -1,6 +1,6 @@
 package fcu.selab.progedu.status;
 
-public class JavacStatusFactory extends StatusFactory {
+public class JavacStatusFactory implements StatusFactory {
   @Override
   public Status getStatus(String statusType) {
     StatusEnum statusEnum = StatusEnum.getStatusEnum(statusType);

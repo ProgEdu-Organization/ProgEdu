@@ -52,7 +52,8 @@ public class JavacAssignment extends AssignmentType {
           + ".git";
       String updateDbUrl = progEduApiUrl + "/commits/update";
       // to-do : command
-      String command = "";
+      String assignmentPath = System.getProperty("java.io.tmpdir") + "/uploads/" + projectName;
+      String command = searchJavaFile(assignmentPath);
       DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
       DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 
@@ -97,147 +98,191 @@ public class JavacAssignment extends AssignmentType {
   }
 
   @Override
-  public void createTemplate() {
-
+  public void createTemplate(String uploadDirectory) {
   }
 
   @Override
-  public void createTestCase() {
-
+  public void createTestCase(String testDirectory) {
   }
 
-//  public String searchFile(String entryNewName) {
-//    StringBuilder sb = new StringBuilder();
-//    String last = "";
-//    if (entryNewName.endsWith(".java")) {
-//      last = entryNewName.substring(entryNewName.length() - 5, entryNewName.length());
-//    }
-//    String fileName = null;
-//    for (int i = 0; i < entryNewName.length() - 3; i++) {
-//      if (entryNewName.substring(i, i + 3).equals("src")) {
-//        fileName = entryNewName.substring(i);
-//        System.out.println("Search java file fileName : " + fileName);
-//        if (last.equals(".java")) {
-//          sb.append("javac " + fileName + "\n");
-//          sb.append("echo \"BUILD SUCCESS\"");
-//          zipHandler.setStringBuilder(sb);
-//        }
-//      }
-//    }
-//  }
-//
-//  public JavacAssignment() {
-//    super(new JavacStatusFactory());
-//  }
-//
-//  public String getSampleZip() {
-//    return "JavacQuickStart.zip";
-//  }
-//
-//  /**
-//   * searchFile
-//   * 
-//   * @param entryNewName entryNewName
-//   */
-//  public void searchFile(String entryNewName) {
-//    StringBuilder sb = new StringBuilder();
-//    String last = "";
-//    if (entryNewName.endsWith(".java")) {
-//      last = entryNewName.substring(entryNewName.length() - 5, entryNewName.length());
-//    }
-//    String fileName = null;
-//    for (int i = 0; i < entryNewName.length() - 3; i++) {
-//      if (entryNewName.substring(i, i + 3).equals("src")) {
-//        fileName = entryNewName.substring(i);
-//        System.out.println("Search java file fileName : " + fileName);
-//        if (last.equals(".java")) {
-//          sb.append("javac " + fileName + "\n");
-//          sb.append("echo \"BUILD SUCCESS\"");
-//          zipHandler.setStringBuilder(sb);
-//        }
-//      }
-//    }
-//  }
-//
-//  /**
-//   * extract main method and modify pom.xml
-//   * 
-//   * @param testDirectory testDirectory
-//   * @param projectName   projectName
-//   */
-//  public void extractFile(String zipFilePath, String testDirectory, String destDirectory,
-//      String projectName) {
-//    int parDirLength = 0;
-//    String parentDir = null;
-//
-//    try (ZipInputStream zipIn = new ZipInputStream(new FileInputStream(zipFilePath))) {
-//
-//      ZipEntry entry = zipIn.getNextEntry();
-//      while (entry != null) {
-//        String filePath = destDirectory + File.separator + entry.getName();
-//        ;
-//
-//        if (filePath.substring(filePath.length() - 4).equals("src/") && parDirLength == 0) {
-//          parentDir = zipHandler.getParentDir(filePath);
-//          parDirLength = parentDir.length() + 1;
-//        }
-//        String entryNewName = filePath.substring(parDirLength);
-//
-//        if (!entry.isDirectory()) {
-//          searchFile(entryNewName);
-//        }
-//        zipIn.closeEntry();
-//        entry = zipIn.getNextEntry();
-//      }
-//    } catch (Exception e) {
-//      e.printStackTrace();
-//    }
-//  }
-//
-//  public String getJenkinsConfig() {
-//    return "config_javac.xml";
-//  }
-//
-//  /**
-//   * modifyXmlFile
-//   * 
-//   * @param filePath   filePath
-//   * @param progApiUrl progApiUrl
-//   * @param userName   userName
-//   * @param proName    proName
-//   * @param tomcatUrl  tomcatUrl
-//   * @param sb         sb
-//   */
-//  public void modifyXmlFile(String filePath, String progApiUrl, String userName, String proName,
-//      String tomcatUrl, StringBuilder sb) {
-//    try {
-//      String filepath = filePath;
-//      DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-//      DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-//      Document doc = docBuilder.parse(filepath);
-//
-//      Node ndUrl = doc.getElementsByTagName("command").item(0);
-//      ndUrl.setTextContent(sb.toString());
-//
-//      String updateDbUrl = progApiUrl + "/commits/update";
-//      Node progeduDbUrl = doc.getElementsByTagName("progeduDbUrl").item(0);
-//      progeduDbUrl.setTextContent(updateDbUrl);
-//
-//      Node user = doc.getElementsByTagName("user").item(0);
-//      user.setTextContent(userName);
-//
-//      Node ndProName = doc.getElementsByTagName("proName").item(0);
-//      ndProName.setTextContent(proName);
-//
-//      // write the content into xml file
-//      TransformerFactory transformerFactory = TransformerFactory.newInstance();
-//      Transformer transformer = transformerFactory.newTransformer();
-//      DOMSource source = new DOMSource(doc);
-//      StreamResult result = new StreamResult(new File(filepath));
-//      transformer.transform(source, result);
-//    } catch (ParserConfigurationException | TransformerException | SAXException | IOException e) {
-//      e.printStackTrace();
-//    }
-//
-//  }
+  /**
+   * Search all Java file in this assignment
+   * 
+   * @param assignmentPath assignmentPath
+   */
+  public String searchJavaFile(String assignmentPath) {
+    File testDir = new File(assignmentPath);
+    String assignmentName = new File(assignmentPath).getName();
+
+    return search(testDir, assignmentName);
+  }
+
+  /**
+   * 
+   * @param folder folder
+   * @param result result
+   */
+  private String search(File folder, String assignmentName) {
+    String pattern = ".*\\.java";
+    StringBuilder command = new StringBuilder();
+
+    for (final File f : folder.listFiles()) {
+
+      if (f.isDirectory()) {
+        return search(f, assignmentName);
+      }
+
+      if (f.isFile()) {
+        if (f.getName().matches(pattern)) {
+          String filePath = f.getAbsolutePath()
+              .substring(f.getAbsolutePath().indexOf(assignmentName) + assignmentName.length() + 1);
+          String shell = "javac " + filePath + "\n";
+          command.append(shell);
+        }
+      }
+    }
+    return command.toString();
+  }
+
+  // public String searchFile(String entryNewName) {
+  // StringBuilder sb = new StringBuilder();
+  // String last = "";
+  // if (entryNewName.endsWith(".java")) {
+  // last = entryNewName.substring(entryNewName.length() - 5,
+  // entryNewName.length());
+  // }
+  // String fileName = null;
+  // for (int i = 0; i < entryNewName.length() - 3; i++) {
+  // if (entryNewName.substring(i, i + 3).equals("src")) {
+  // fileName = entryNewName.substring(i);
+  // System.out.println("Search java file fileName : " + fileName);
+  // if (last.equals(".java")) {
+  // sb.append("javac " + fileName + "\n");
+  // sb.append("echo \"BUILD SUCCESS\"");
+  // zipHandler.setStringBuilder(sb);
+  // }
+  // }
+  // }
+  // }
+  //
+  // public JavacAssignment() {
+  // super(new JavacStatusFactory());
+  // }
+  //
+  // public String getSampleZip() {
+  // return "JavacQuickStart.zip";
+  // }
+  //
+  // /**
+  // * searchFile
+  // *
+  // * @param entryNewName entryNewName
+  // */
+  // public void searchFile(String entryNewName) {
+  // StringBuilder sb = new StringBuilder();
+  // String last = "";
+  // if (entryNewName.endsWith(".java")) {
+  // last = entryNewName.substring(entryNewName.length() - 5,
+  // entryNewName.length());
+  // }
+  // String fileName = null;
+  // for (int i = 0; i < entryNewName.length() - 3; i++) {
+  // if (entryNewName.substring(i, i + 3).equals("src")) {
+  // fileName = entryNewName.substring(i);
+  // System.out.println("Search java file fileName : " + fileName);
+  // if (last.equals(".java")) {
+  // sb.append("javac " + fileName + "\n");
+  // sb.append("echo \"BUILD SUCCESS\"");
+  // zipHandler.setStringBuilder(sb);
+  // }
+  // }
+  // }
+  // }
+  //
+  // /**
+  // * extract main method and modify pom.xml
+  // *
+  // * @param testDirectory testDirectory
+  // * @param projectName projectName
+  // */
+  // public void extractFile(String zipFilePath, String testDirectory, String
+  // destDirectory,
+  // String projectName) {
+  // int parDirLength = 0;
+  // String parentDir = null;
+  //
+  // try (ZipInputStream zipIn = new ZipInputStream(new
+  // FileInputStream(zipFilePath))) {
+  //
+  // ZipEntry entry = zipIn.getNextEntry();
+  // while (entry != null) {
+  // String filePath = destDirectory + File.separator + entry.getName();
+  // ;
+  //
+  // if (filePath.substring(filePath.length() - 4).equals("src/") &&
+  // parDirLength == 0) {
+  // parentDir = zipHandler.getParentDir(filePath);
+  // parDirLength = parentDir.length() + 1;
+  // }
+  // String entryNewName = filePath.substring(parDirLength);
+  //
+  // if (!entry.isDirectory()) {
+  // searchFile(entryNewName);
+  // }
+  // zipIn.closeEntry();
+  // entry = zipIn.getNextEntry();
+  // }
+  // } catch (Exception e) {
+  // e.printStackTrace();
+  // }
+  // }
+  //
+  // public String getJenkinsConfig() {
+  // return "config_javac.xml";
+  // }
+  //
+  // /**
+  // * modifyXmlFile
+  // *
+  // * @param filePath filePath
+  // * @param progApiUrl progApiUrl
+  // * @param userName userName
+  // * @param proName proName
+  // * @param tomcatUrl tomcatUrl
+  // * @param sb sb
+  // */
+  // public void modifyXmlFile(String filePath, String progApiUrl, String
+  // userName, String proName,
+  // String tomcatUrl, StringBuilder sb) {
+  // try {
+  // String filepath = filePath;
+  // DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+  // DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+  // Document doc = docBuilder.parse(filepath);
+  //
+  // Node ndUrl = doc.getElementsByTagName("command").item(0);
+  // ndUrl.setTextContent(sb.toString());
+  //
+  // String updateDbUrl = progApiUrl + "/commits/update";
+  // Node progeduDbUrl = doc.getElementsByTagName("progeduDbUrl").item(0);
+  // progeduDbUrl.setTextContent(updateDbUrl);
+  //
+  // Node user = doc.getElementsByTagName("user").item(0);
+  // user.setTextContent(userName);
+  //
+  // Node ndProName = doc.getElementsByTagName("proName").item(0);
+  // ndProName.setTextContent(proName);
+  //
+  // // write the content into xml file
+  // TransformerFactory transformerFactory = TransformerFactory.newInstance();
+  // Transformer transformer = transformerFactory.newTransformer();
+  // DOMSource source = new DOMSource(doc);
+  // StreamResult result = new StreamResult(new File(filepath));
+  // transformer.transform(source, result);
+  // } catch (ParserConfigurationException | TransformerException | SAXException
+  // | IOException e) {
+  // e.printStackTrace();
+  // }
+  //
+  // }
 }

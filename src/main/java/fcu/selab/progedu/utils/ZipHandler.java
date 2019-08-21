@@ -27,6 +27,8 @@ import org.xml.sax.SAXException;
 import fcu.selab.progedu.config.CourseConfig;
 import fcu.selab.progedu.config.GitlabConfig;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
+import net.lingala.zip4j.core.ZipFile;
+import net.lingala.zip4j.exception.ZipException;
 
 public class ZipHandler {
   GitlabConfig gitData = GitlabConfig.getInstance();
@@ -191,6 +193,27 @@ public class ZipHandler {
 
   public String getUrlForJenkinsDownloadTestFile() {
     return urlForJenkinsDownloadTestFile;
+  }
+
+  /**
+   * Unzip a zip file to specified directory
+   * 
+   * @param targetDirectory the directory unzip to
+   * @param sourceFilePath  path of zip file
+   */
+  public void unzipFile(String targetDirectory, String sourceFilePath) {
+    File testsDir = new File(targetDirectory);
+    if (!testsDir.exists()) {
+      testsDir.mkdir();
+    } else {
+      System.out.println(targetDirectory);
+    }
+    try {
+      ZipFile zipFileToTests = new ZipFile(sourceFilePath);
+      zipFileToTests.extractAll(targetDirectory);
+    } catch (ZipException e) {
+      e.printStackTrace();
+    }
   }
 
 }

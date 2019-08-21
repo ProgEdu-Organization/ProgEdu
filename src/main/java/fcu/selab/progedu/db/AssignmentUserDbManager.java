@@ -21,6 +21,25 @@ public class AssignmentUserDbManager {
   }
 
   /**
+   * Add AssignmentUser to database
+   * 
+   * @param aid Assignment Id
+   * @param uid User Id
+   */
+  public void addAssignmentUser(int aid, int uid) {
+    String sql = "INSERT INTO AssignmentUser(aId, uId)  VALUES(?, ?)";
+
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+      preStmt.setInt(1, aid);
+      preStmt.setInt(2, uid);
+      preStmt.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
+
+  /**
    * get auId by assignment Id and user Id
    * 
    * @param aid Assignment Id
