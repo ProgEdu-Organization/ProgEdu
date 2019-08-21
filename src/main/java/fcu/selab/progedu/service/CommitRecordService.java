@@ -134,7 +134,7 @@ public class CommitRecordService {
     ob.put("auId", auId);
     ob.put("commitNumber", commitNumber);
     ob.put("time", time);
-    ob.put("status", statusEnum.getTypeName());
+    ob.put("status", statusEnum.getType());
 
     return Response.ok().entity(ob.toString()).build();
   }

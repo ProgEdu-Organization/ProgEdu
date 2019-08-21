@@ -33,7 +33,7 @@ public class CommitRecordDbManager {
   public void insertCommitRecord(int auId, int commitNumber, StatusEnum status, String time) {
     String sql = "INSERT INTO Commit_Record" + "(auId, commitNumber, status, time) "
         + "VALUES(?, ?, ?, ?)";
-    int statusId = csDb.getStatusIdByName(status.getTypeName());
+    int statusId = csDb.getStatusIdByName(status.getType());
 
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
@@ -124,7 +124,7 @@ public class CommitRecordDbManager {
           int commitNumber = rs.getInt("commitNumber");
           String commitTime = rs.getString("time");
           JSONObject eachHw = new JSONObject();
-          eachHw.put("status", statusEnum.getTypeName());
+          eachHw.put("status", statusEnum.getType());
           eachHw.put("commitNumber", commitNumber);
           eachHw.put("commitTime", commitTime);
           array.put(eachHw);
@@ -160,7 +160,7 @@ public class CommitRecordDbManager {
         int commitNumber = rs.getInt("commitNumber");
         String commitTime = rs.getString("time");
         JSONObject eachHw = new JSONObject();
-        eachHw.put("status", statusEnum.getTypeName());
+        eachHw.put("status", statusEnum.getType());
         eachHw.put("commitNumber", commitNumber);
         eachHw.put("commitTime", commitTime);
         array.put(eachHw);

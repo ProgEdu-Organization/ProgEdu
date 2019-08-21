@@ -70,11 +70,12 @@
             </thead>
             <tbody>
               <tr *ngFor="let user of users">
-                <td>{{user.userName}}</td>
                 <td>{{user.name}}</td>
+                <td>{{user.username}}</td>
                 <td>{{user.email}}</td>
                 <td>
-                  <span class="badge badge-success">Active</span>
+                  <span class="badge badge-success" *ngIf="user.display === true">Active</span>
+                  <span class="badge badge-danger" *ngIf="user.display === false">Drop</span>
                 </td>
               </tr>
             </tbody>
