@@ -43,7 +43,7 @@ public class RoleUserDbManager {
    */
   public int getTopRid(int uid) {
     int topRid = 0;
-    String sql = "SELECT * from Role_User a where uId = ? "
+    String sql = "SELECT rid from Role_User a where uId = ? "
         + "AND (a.rId =(SELECT min(rId) FROM Role_User WHERE uId = ?));";
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
@@ -69,7 +69,7 @@ public class RoleUserDbManager {
    */
   public int getRuid(int rid, int uid) {
     int ruid = 0;
-    String sql = "SELECT * FROM Role_User WHERE rId=? AND uId=?";
+    String sql = "SELECT id FROM Role_User WHERE rId=? AND uId=?";
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
       preStmt.setInt(1, rid);
@@ -92,7 +92,7 @@ public class RoleUserDbManager {
    */
   public List<Integer> getRids(int uid) {
     List<Integer> lsRids = new ArrayList<>();
-    String sql = "SELECT * FROM Role_User WHERE uId = ?";
+    String sql = "SELECT rId FROM Role_User WHERE uId = ?";
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
       preStmt.setInt(1, uid);
@@ -115,7 +115,7 @@ public class RoleUserDbManager {
    */
   public List<Integer> getUids(int rid) {
     List<Integer> lsUids = new ArrayList<>();
-    String sql = "SELECT * FROM Role_User WHERE rId = ?";
+    String sql = "SELECT uId FROM Role_User WHERE rId = ?";
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
       preStmt.setInt(1, rid);
