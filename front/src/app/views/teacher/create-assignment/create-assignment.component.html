@@ -7,24 +7,33 @@
           (click)="changeToAssignmentPage();">Assignment List</button></div>
     </div>
     <div class="card-body">
-      <form action="" method="post" class="form-horizontal">
+      <form [formGroup]="assignment" (ngSubmit)="summit()">
         <div class="form-group row">
           <label class="col-md-3 col-form-label" for="name">Name</label>
           <div class="col-md-9">
-            <input type="text" class="form-control" id="name" placeholder="Enter your name">
+            <input type="text" class="form-control" id="name" formControlName='name' placeholder="Enter your name">
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-md-3 col-form-label" for="date-input">Deadline</label>
+          <label class="col-md-3 col-form-label" for="releaseTime">ReleaseTine</label>
           <div class="col-md-9">
-            <input class="form-control is-valid" id="date-input" type="date" name="date-input" placeholder="date">
+            <input class="form-control is-valid" id="releaseTime" type="date" name="releaseTime"
+              formControlName='releaseTime' placeholder="date">
             <span class="help-block">Please enter a valid date</span>
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-md-3 col-form-label" for="textarea-input"> Assignment Description</label>
+          <label class="col-md-3 col-form-label" for="deadline">Deadline</label>
           <div class="col-md-9">
-            <textarea id="textarea-input" name="textarea-input" rows="9" class="form-control"
+            <input class="form-control is-valid" id="deadline" type="date" name="deadline" formControlName='deadline'
+              placeholder="date">
+            <span class="help-block">Please enter a valid date</span>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-md-3 col-form-label" for="readMe"> Assignment Description</label>
+          <div class="col-md-9">
+            <textarea id="readMe" name="readMe" rows="9" class="form-control" formControlName='readMe'
               placeholder="Content.."></textarea>
           </div>
         </div>
@@ -64,7 +73,7 @@
               <label class="col-md-3 col-form-label" for="file-input">Upload your Assignment example (accept zip)
               </label>
               <div class="col-md-9">
-                <input type="file" id="file-input" name="file-input">
+                <input type="file" id="file-input" name="file-input" (change)='fileListener($event)'>
               </div>
             </div>
           </tab>
@@ -73,7 +82,7 @@
             <div class="form-group row">
               <label class="col-md-3 col-form-label" for="file-input">Android File</label>
               <div class="col-md-9">
-                <input type="file" id="file-input" name="file-input">
+                <input type="file" id="file-input" name="file-input" (change)='fileListener($event)'>
               </div>
             </div>
           </tab>
@@ -82,10 +91,11 @@
             <div class="form-group row">
               <label class="col-md-3 col-form-label" for="file-input">Web File</label>
               <div class="col-md-9">
-                <input type="file" id="file-input" name="file-input">
+                <input type="file" id="file-input" name="file-input" (change)='fileListener($event)'>
               </div>
             </div>
           </tab>
+          <button type='summit'>Summit</button>
         </tabset>
         <!--/.col-->
       </form>

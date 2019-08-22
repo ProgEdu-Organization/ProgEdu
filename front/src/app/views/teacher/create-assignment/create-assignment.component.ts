@@ -1,6 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { environment } from '../../../../environments/environment';
 import { Router } from '@angular/router';
+import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { CreateAssignmentService } from './create-assignment.service';
 
 @Component({
   selector: 'app-create-assignment',
@@ -11,19 +13,42 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
   disabled: boolean = false;
   isDropup: boolean = true;
   autoClose: boolean = false;
-
+  assignment: FormGroup;
   items: string[] = [
     'The first choice!',
     'And another choice for you.',
     'but wait! A third!'
   ];
-  constructor(private router: Router) { }
+  constructor(private router: Router, private fb: FormBuilder, private createService: CreateAssignmentService) { }
 
   ngOnInit() {
+    this.assignment = this.fb.group({
+      name: ['', Validators.required],
+      releaseTime: ['', Validators.required],
+      deadline: ['', Validators.required],
+      readMe: ['', Validators.required],
+      type: ['Maven', Validators.required],
+      file: File,
+    });
   }
 
   changeToAssignmentPage() {
     this.router.navigate(['./dashboard/assignmentManagement']);
+  }
+
+  fileListener($event) {
+    this.assignment.value.file = $event.target.files[0];
+  }
+
+  public summit() {
+    console.log(this.assignment.value);
+    this.createService.createAssignment(this.assignment).subscribe(
+      (response) => {
+        console.log('Sul');
+      },
+      error => {
+        console.log(error.error);
+      });
   }
 
 
