@@ -11,7 +11,7 @@ public class TestUpdateCommitResult {
   static UserDbManager userDb = UserDbManager.getInstance();
 
   public static void main(String[] args) {
-    List<User> users = userDb.listAllUsers();
+    List<User> users = userDb.getAllUsers();
 
     int i = 1;
     for (User user : users) {

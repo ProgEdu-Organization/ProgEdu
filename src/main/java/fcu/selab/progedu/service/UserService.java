@@ -15,9 +15,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.gitlab.api.models.GitlabUser;
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.csvreader.CsvReader;
@@ -165,7 +163,7 @@ public class UserService {
   @GET
   @Path("getUsers")
   public Response getUsers() {
-    List<User> users = dbManager.listAllUsers();
+    List<User> users = dbManager.getAllUsers();
 
     JSONObject ob = new JSONObject();
     ob.put("Users", users);
@@ -179,7 +177,7 @@ public class UserService {
    */
   public List<User> getStudents() {
     List<User> studentUsers = new ArrayList<>();
-    List<User> users = dbManager.listAllUsers();
+    List<User> users = dbManager.getAllUsers();
 
     for (User user : users) {
       if (user.getRole() == RoleEnum.STUDENT) {

@@ -48,7 +48,7 @@ public class CommitRecordService {
   public Response getAllUsersCommitRecord() {
     JSONArray array = new JSONArray();
     JSONObject result = new JSONObject();
-    List<User> users = userDb.listAllUsers();
+    List<User> users = userDb.getAllUsers();
     for (User user : users) {
       String username = user.getName();
       Response userCommitRecord = getOneUserCommitRecord(username);

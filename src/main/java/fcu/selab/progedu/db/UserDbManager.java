@@ -214,8 +214,8 @@ public class UserDbManager {
    * 
    * @return list of user
    */
-  public List<User> listAllUsers() {
-    List<User> lsUsers = new ArrayList<>();
+  public List<User> getAllUsers() {
+    List<User> users = new ArrayList<>();
     String sql = "SELECT * FROM User";
 
     try (Connection conn = database.getConnection(); Statement stmt = conn.createStatement()) {
@@ -239,14 +239,14 @@ public class UserDbManager {
           user.setEmail(email);
           user.setGitLabToken(gitLabToken);
           user.setDisplay(display);
-          lsUsers.add(user);
+          users.add(user);
         }
       }
 
     } catch (SQLException e) {
       e.printStackTrace();
     }
-    return lsUsers;
+    return users;
   }
 
   /**
