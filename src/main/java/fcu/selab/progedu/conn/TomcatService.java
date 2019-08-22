@@ -12,6 +12,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
+import org.apache.commons.io.IOUtils;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+
 import fcu.selab.progedu.project.ProjectType;
 import fcu.selab.progedu.utils.Linux;
 
@@ -25,13 +28,13 @@ public class TomcatService {
 
   /**
    * (to do)
-   * @param file (to do)
+   * 
+   * @param file   (to do)
    * @param target (to do)
    * @return target (to do)
    */
   public String storeFileToUploadsFolder(InputStream file, String target) {
     try {
-      createFolderIfNotExists(target);
       storeFile(file, target);
     } catch (SecurityException | IOException e) {
       e.printStackTrace();
@@ -56,34 +59,28 @@ public class TomcatService {
   /**
    * Utility method to save InputStream data to target location/file
    * 
-   * @param file   - InputStream to be saved
+   * @param input  - InputStream to be saved
    * @param target - full path to destination file
    */
-  private void storeFile(InputStream file, String target) throws IOException {
-    int read = 0;
-    byte[] bytes = new byte[1024];
-    try (OutputStream out = new FileOutputStream(new File(target));) {
-      while ((read = file.read(bytes)) != -1) {
-        out.write(bytes, 0, read);
-      }
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
+  private void storeFile(InputStream input, String target) throws IOException {
+    OutputStream output = new FileOutputStream(target);
+    IOUtils.copy(input, output);
   }
 
   /**
    * (to do)
-   * @param file (to do)
-   * @param folderName (to do)
-   * @param uploadDir (to do)
-   * @param project (to do)
+   * 
+   * @param file       (to do)
+   * @param fileDetail (to do)
+   * @param uploadDir  (to do)
+   * @param project    (to do)
    * @return target (to do)
    */
-  public String storeFileToServer(InputStream file, String folderName, String uploadDir,
-      ProjectType project) {
+  public String storeFileToServer(InputStream file, FormDataContentDisposition fileDetail,
+      String uploadDir, ProjectType project) {
     String target;
-    if (hasTemplate(folderName)) {
-      target = uploadDir + folderName;
+    if (hasTemplate(fileDetail)) {
+      target = uploadDir + fileDetail.getFileName();
       // store to C://User/AppData/Temp/uploads/
       storeFileToUploadsFolder(file, target);
     } else {
@@ -95,12 +92,13 @@ public class TomcatService {
 
   /**
    * (to do)
-   * @param folderName (to do)
+   * 
+   * @param fileDetail (to do)
    * @return hasTemplate (to do)
    */
-  public boolean hasTemplate(String folderName) {
+  public boolean hasTemplate(FormDataContentDisposition fileDetail) {
     boolean hasTemplate = false;
-    if (!folderName.isEmpty()) {
+    if (fileDetail != null) {
       hasTemplate = true;
     }
     return hasTemplate;
@@ -108,6 +106,7 @@ public class TomcatService {
 
   /**
    * (to do)
+   * 
    * @param path (to do)
    */
   public void findEmptyFolder(String path) {
@@ -138,6 +137,7 @@ public class TomcatService {
 
   /**
    * (to do)
+   * 
    * @param path (to do)
    */
   public void removeFile(String path) {
@@ -148,8 +148,9 @@ public class TomcatService {
 
   /**
    * (to do)
+   * 
    * @param readMe (to do)
-   * @param path (to do)
+   * @param path   (to do)
    */
   public void createReadmeFile(String readMe, String path) {
     try (Writer writer = new BufferedWriter(

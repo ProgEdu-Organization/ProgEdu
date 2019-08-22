@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fcu.selab.progedu.data.User;
+import fcu.selab.progedu.service.RoleEnum;
 
 public class UserDbManager {
   private static final String GIT_LAB_ID = "gitLabId";
@@ -239,6 +240,7 @@ public class UserDbManager {
           user.setEmail(email);
           user.setGitLabToken(gitLabToken);
           user.setDisplay(display);
+          user.setRole(RoleEnum.STUDENT);
           users.add(user);
         }
       }
