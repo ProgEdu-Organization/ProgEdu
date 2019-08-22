@@ -5,7 +5,7 @@
       <tabset>
         <tab id="add-one-student">
           <ng-template tabHeading><i class="icon-calculator"></i> Add One Student</ng-template>
-          <form *ngIf="addOneStudentForm" [formGroup]="addOneStudentForm" (ngSubmit)="addOneStudent()">
+          <form *ngIf="OneStudentForm" [formGroup]="OneStudentForm" (ngSubmit)="addOneStudent()">
             <div class="form-group col-sm-6">
               <label for="name">Name</label>
               <input type="text" class="form-control" id="name" placeholder="Enter your name" formControlName="name"
@@ -25,7 +25,10 @@
               <label for="email">Email</label> <input type="text" class="form-control" id="email"
                 placeholder="Enter your email" formControlName="email" required>
             </div>
-            <button class="btn btn-primary" type="submit">Add
+            <div id='confirmPassword-invalid-feedbacks' class='invalid-feedback'>
+              Please sure the confirm password
+            </div>
+            <button class="btn btn-primary" stype type="submit">Add
               more</button>
             <div class="form-group" style="text-align: right;">
             </div>
@@ -33,26 +36,28 @@
         </tab>
         <tab id="add-muti-student">
           <ng-template tabHeading><i class="icon-basket-loaded"></i> Add Muti Student</ng-template>
-          <div class="form-group row">
-            <label class="col-md-3 col-form-label" for="file-input">Sdutent file Example
-            </label>
-            <div class="col-md-9">
-              <a href="{{SERVER_URL}}/ProgEdu/StudentTemplate.csv" download>
-                <button class="btn btn-primary" type="button">download</button>
-              </a>
+          <form (ngSubmit)="addMutipleStudent()">
+            <div class="form-group row">
+              <label class="col-md-3 col-form-label" for="file-input">Sdutent file Example
+              </label>
+              <div class="col-md-9">
+                <a href="{{SERVER_URL}}/ProgEdu/resources/StudentTemplate.csv" download>
+                  <button class="btn btn-primary" type="button">download</button>
+                </a>
+              </div>
             </div>
-          </div>
 
-          <div class="form-group row">
-            <label class="col-md-3 col-form-label" for="file-input">Upload your Assignment example (accept zip)
-            </label>
-            <div class="col-md-9">
-              <input type="file" id="file-input" name="file-input">
+            <div class="form-group row">
+              <label class="col-md-3 col-form-label" for="file-input">Upload Student files(accept csv)
+              </label>
+              <div class="col-md-9">
+                <input type="file" id="file-input" name="file-input" (change)="changeFileLister($event)">
+              </div>
             </div>
-          </div>
-          <div class="form-group" style="text-align: center;">
-            <button class="btn btn-primary" type="button">Upload</button>
-          </div>
+            <div class="form-group" style="text-align: center;">
+              <button class="btn btn-primary" type="submit">Upload</button>
+            </div>
+          </form>
         </tab>
       </tabset>
     </div>

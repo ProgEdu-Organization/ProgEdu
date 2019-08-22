@@ -71,7 +71,7 @@ public class AssignmentUserDbManager {
    */
   public List<Integer> getAIds(int uid) {
     List<Integer> lsAids = new ArrayList<>();
-    String sql = "SELECT * FROM Assignment_User WHERE uId = ?";
+    String sql = "SELECT aId FROM Assignment_User WHERE uId = ?";
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
       preStmt.setInt(1, uid);
@@ -94,7 +94,7 @@ public class AssignmentUserDbManager {
    */
   public List<Integer> getUids(int aid) {
     List<Integer> lsUids = new ArrayList<>();
-    String sql = "SELECT * FROM Assignment_User WHERE aId = ?";
+    String sql = "SELECT uId FROM Assignment_User WHERE aId = ?";
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
       preStmt.setInt(1, aid);
