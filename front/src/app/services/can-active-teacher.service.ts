@@ -12,7 +12,8 @@ export class CanActiveTeacherService implements CanActivate {
   canActivate(): Promise<boolean> | boolean {
     return new Promise((resolve) => {
       this.loginAuth.isLoginByTeacher().subscribe((response) => {
-        if (response.isLogin && response.admin) {
+        console.log(response);
+        if (response.isLogin && response.isTeacher) {
           console.log('canActive teacher');
           resolve(true);
         } else {
