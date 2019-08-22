@@ -15,6 +15,7 @@ import fcu.selab.progedu.conn.JenkinsService;
 import fcu.selab.progedu.conn.TomcatService;
 import fcu.selab.progedu.data.Group;
 import fcu.selab.progedu.data.GroupProject;
+import fcu.selab.progedu.db.ProjectDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.project.GroupProjectFactory;
 import fcu.selab.progedu.project.GroupProjectType;
@@ -83,8 +84,8 @@ public class GroupProjectService {
     GitlabProject project = null;
     try {
       project = gitlabService.createGroupProject(group);
-    } catch (IOException e1) {
-      e1.printStackTrace();
+    } catch (IOException e) {
+      e.printStackTrace();
     }
 
     // 2. Clone the project to C:\\Users\\users\\AppData\\Temp\\uploads
@@ -161,6 +162,7 @@ public class GroupProjectService {
    * @param projectType File type
    */
   public void addProject(String name, String readMe, String deadline, ProjectTypeEnum projectType) {
+    ProjectDbManager projectDb = ProjectDbManager.getInstance();
     GroupProject groupProject = new GroupProject();
 
     groupProject.setName(name);
@@ -168,7 +170,7 @@ public class GroupProjectService {
     groupProject.setCreateTime(tomcatService.getCurrentTime());
     groupProject.setDescription(readMe);
     groupProject.setType(projectType);
-//    dbManager.addGroupProject(groupProject);
+    projectDb.addProject(groupProject);
   }
 
 }

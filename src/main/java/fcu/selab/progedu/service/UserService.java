@@ -166,7 +166,7 @@ public class UserService {
   @GET
   @Path("getUsers")
   public Response getUsers() {
-    List<User> users = dbManager.listAllUsers();
+    List<User> users = dbManager.getAllUsers();
     
     JSONObject ob = new JSONObject();
     ob.put("Users", users);
@@ -180,7 +180,7 @@ public class UserService {
    */
   public List<User> getStudents() {
     List<User> studentUsers = new ArrayList<>();
-    List<User> users = dbManager.listAllUsers();
+    List<User> users = dbManager.getAllUsers();
 
     for (User user : users) {
       if (user.getRole() == RoleEnum.STUDENT) {
