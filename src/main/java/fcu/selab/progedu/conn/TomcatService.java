@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
@@ -167,11 +168,17 @@ public class TomcatService {
    * 
    * @return current time
    */
-  public String getCurrentTime() {
+  public Date getCurrentTime() {
     Date date = new Date();
     SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     format.setTimeZone(TimeZone.getTimeZone("Asia/Taipei"));
-    return format.format(date);
+    DateFormat datetime = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+    try {
+      date = datetime.parse(format.format(date));
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return date;
 
   }
 }

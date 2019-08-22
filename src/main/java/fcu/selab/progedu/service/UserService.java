@@ -23,6 +23,8 @@ import com.csvreader.CsvReader;
 import fcu.selab.progedu.config.CourseConfig;
 import fcu.selab.progedu.conn.GitlabService;
 import fcu.selab.progedu.data.User;
+import fcu.selab.progedu.db.RoleDbManager;
+import fcu.selab.progedu.db.RoleUserDbManager;
 import fcu.selab.progedu.db.UserDbManager;
 
 @Path("user/")
@@ -37,6 +39,8 @@ public class UserService {
 
   CourseConfig course = CourseConfig.getInstance();
   private UserDbManager dbManager = UserDbManager.getInstance();
+  private RoleUserDbManager rudb = RoleUserDbManager.getInstance();
+  private RoleDbManager rdb = RoleDbManager.getInstance();
 
   /**
    * Upload a csv file for student batch registration
@@ -50,11 +54,9 @@ public class UserService {
     Response response = null;
     List<User> users = new ArrayList<>();
     String errorMessage = "";
-    System.out.println("test1");
     try {
       CsvReader csvReader = new CsvReader(new InputStreamReader(uploadedInputStream, "UTF-8"));
       csvReader.readHeaders();
-      System.out.println("test2");
       while (csvReader.readRecord()) {
         User newUser = new User();
         String username = csvReader.get("Username");
@@ -67,7 +69,6 @@ public class UserService {
         newUser.setPassword(password);
         newUser.setName(name);
         newUser.setEmail(email);
-        System.out.println("test3");
         errorMessage = getErrorMessage(users, newUser);
         if (errorMessage.isEmpty()) {
           users.add(newUser);
@@ -76,7 +77,6 @@ public class UserService {
         }
       }
       csvReader.close();
-      System.out.println("test4");
       if (errorMessage == null || errorMessage.isEmpty()) {
         for (User user : users) {
           register(user);
@@ -105,10 +105,12 @@ public class UserService {
   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
   public Response createAccount(@FormParam("name") String name,
       @FormParam("username") String username, @FormParam("email") String email,
-      @FormParam("password") String password, @FormParam("isDisplayed") boolean isDisplayed) {
+      @FormParam("password") String password, @FormParam("role") String role,
+      @FormParam("isDisplayed") boolean isDisplayed) {
     Response response = null;
     System.out.println(name + "  " + username);
-    User user = new User(username, name, email, password, isDisplayed);
+    RoleEnum roleEnum = RoleEnum.getRoleEnum(role);
+    User user = new User(username, name, email, password, roleEnum, isDisplayed);
     String errorMessage = getErrorMessage(user);
     System.out.println(errorMessage);
     if (errorMessage.isEmpty()) {
@@ -199,6 +201,9 @@ public class UserService {
     user.setGitLabId(gitlabUser.getId());
 
     dbManager.addUser(user);
+    int rid = rdb.getRoleIdByName(user.getRole().getTypeName());
+    rudb.addRoleUser(rid, user.getId());
+
   }
 
   private boolean isPasswordTooShort(String password) {

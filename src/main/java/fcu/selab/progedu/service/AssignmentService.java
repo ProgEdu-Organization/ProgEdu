@@ -2,6 +2,7 @@ package fcu.selab.progedu.service;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.Date;
 import java.util.List;
 import java.util.Properties;
 
@@ -96,7 +97,7 @@ public class AssignmentService {
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   @Produces(MediaType.APPLICATION_JSON)
   public Response createAssignment(@FormDataParam("assignmentName") String assignmentName,
-      @FormDataParam("releaseTime") String releaseTime, @FormDataParam("deadline") String deadline,
+      @FormDataParam("releaseTime") Date releaseTime, @FormDataParam("deadline") Date deadline,
       @FormDataParam("readMe") String readMe, @FormDataParam("fileRadio") String assignmentType,
       @FormDataParam("file") InputStream file,
       @FormDataParam("file") FormDataContentDisposition fileDetail) {
@@ -246,7 +247,7 @@ public class AssignmentService {
    * @param projectType File type
    * @param hasTemplate Has template
    */
-  public void addProject(String name, String releaseTime, String deadline, String readMe,
+  public void addProject(String name, Date releaseTime, Date deadline, String readMe,
       ProjectTypeEnum projectType, boolean hasTemplate, long testZipChecksum, String testZipUrl) {
     Assignment assignment = new Assignment();
 

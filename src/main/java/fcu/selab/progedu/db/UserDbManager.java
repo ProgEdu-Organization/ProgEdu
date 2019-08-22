@@ -21,6 +21,7 @@ public class UserDbManager {
   private static final String PASSWORD = "password";
   private static final String EMAIL = "email";
   private static final String GIT_LAB_TOKEN = "gitLabToken";
+  private static final String ROLE = "role";
   private static final String DISPLAY = "display";
 
   private static UserDbManager dbManager = new UserDbManager();
@@ -30,6 +31,7 @@ public class UserDbManager {
   }
 
   private IDatabase database = new MySqlDatabase();
+  RoleDbManager rdb = RoleDbManager.getInstance();
 
   private UserDbManager() {
 

@@ -25,8 +25,9 @@ public class User implements Serializable {
   private boolean display;
 
   private RoleEnum role;
-  
-  public User() {}
+
+  public User() {
+  }
 
   /**
    * (to do)
@@ -37,11 +38,13 @@ public class User implements Serializable {
    * @param password    (to do)
    * @param isDisplayed (to do)
    */
-  public User(String username, String name, String email, String password, boolean isDisplayed) {
+  public User(String username, String name, String email, String password, RoleEnum role,
+      boolean isDisplayed) {
     this.username = username;
     this.name = name;
     this.email = email;
     this.password = password;
+    this.role = role;
     this.display = isDisplayed;
   }
 
