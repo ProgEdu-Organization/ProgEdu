@@ -201,6 +201,7 @@ public class UserService {
     user.setGitLabId(gitlabUser.getId());
 
     dbManager.addUser(user);
+    
   }
 
   private boolean isPasswordTooShort(String password) {
