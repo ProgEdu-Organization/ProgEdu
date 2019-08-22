@@ -101,9 +101,12 @@ public class AssignmentService {
       @FormDataParam("readMe") String readMe, @FormDataParam("fileRadio") String assignmentType,
       @FormDataParam("file") InputStream file,
       @FormDataParam("file") FormDataContentDisposition fileDetail) {
-
+    System.out.println(assignmentName);
+    System.out.println(releaseTime);
+    System.out.println(deadline);
+    System.out.println(readMe);
+    System.out.println(assignmentType);
     String rootProjectUrl = null;
-    String folderName = null;
 
     final AssignmentType assignment = AssignmentFactory.getAssignmentType(assignmentType);
     final ProjectTypeEnum projectTypeEnum = ProjectTypeEnum.getProjectTypeEnum(assignmentType);
@@ -114,11 +117,9 @@ public class AssignmentService {
     // 2. Clone the project to C:\\Users\\users\\AppData\\Temp\\uploads
     final String cloneDirectoryPath = gitlabService.cloneProject(gitlabRootUsername,
         assignmentName);
-
-    // 3. Store Zip File to folder if file is not empty
-    String filePath = null;
-    folderName = fileDetail.getFileName();
-    filePath = tomcatService.storeFileToServer(file, folderName, uploadDir, assignment);
+//
+//    // 3. Store Zip File to folder if file is not empty
+    String filePath = tomcatService.storeFileToServer(file, fileDetail, uploadDir, assignment);
 
     // 4. Unzip the uploaded file to tests folder and uploads folder on tomcat,
     // extract main method from tests folder, then zip as root project
@@ -148,10 +149,10 @@ public class AssignmentService {
     gitlabService.pushProject(cloneDirectoryPath);
 
     // 8. remove project file in linux
-    tomcatService.removeFile(uploadDir);
+//    tomcatService.removeFile(uploadDir);
 
     // 9. String removeTestDirectoryCommand = "rm -rf tests/" + name;
-    tomcatService.removeFile(testDir + assignmentName);
+//    tomcatService.removeFile(testDir + assignmentName);
 
     // 10. import project infomation to database
     boolean hasTemplate = false;
