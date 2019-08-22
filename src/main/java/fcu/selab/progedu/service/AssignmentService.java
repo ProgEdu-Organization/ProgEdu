@@ -2,6 +2,7 @@ package fcu.selab.progedu.service;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.Date;
 import java.util.List;
 import java.util.Properties;
 
@@ -96,7 +97,7 @@ public class AssignmentService {
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   @Produces(MediaType.APPLICATION_JSON)
   public Response createAssignment(@FormDataParam("assignmentName") String assignmentName,
-      @FormDataParam("releaseTime") String releaseTime, @FormDataParam("deadline") String deadline,
+      @FormDataParam("releaseTime") Date releaseTime, @FormDataParam("deadline") Date deadline,
       @FormDataParam("readMe") String readMe, @FormDataParam("fileRadio") String assignmentType,
       @FormDataParam("file") InputStream file,
       @FormDataParam("file") FormDataContentDisposition fileDetail) {
@@ -111,8 +112,8 @@ public class AssignmentService {
     rootProjectUrl = getRootProjectUrl(assignmentName);
 
     // 2. Clone the project to C:\\Users\\users\\AppData\\Temp\\uploads
-    final String cloneDirectoryPath 
-        = gitlabService.cloneProject(gitlabRootUsername, assignmentName);
+    final String cloneDirectoryPath = gitlabService.cloneProject(gitlabRootUsername,
+        assignmentName);
 
     // 3. Store Zip File to folder if file is not empty
     String filePath = null;
@@ -129,10 +130,10 @@ public class AssignmentService {
     assignment.createTestCase(testDirectory);
     zipHandler.zipTestFolder(testDirectory);
     testZipChecksum = zipHandler.getChecksum();
-    testZipUrl = zipHandler.serverIp
-        + "/ProgEdu/webapi/jenkins/getTestFile?filePath=" + testDirectory + ".zip";
+    testZipUrl = zipHandler.serverIp + "/ProgEdu/webapi/jenkins/getTestFile?filePath="
+        + testDirectory + ".zip";
     // zipHandler.setUrlForJenkinsDownloadTestFile(zipHandler.serverIp
-    //     + "/ProgEdu/webapi/jenkins/getTestFile?filePath=" + testDirectory + ".zip");
+    // + "/ProgEdu/webapi/jenkins/getTestFile?filePath=" + testDirectory + ".zip");
 
     // 5. Add .gitkeep if folder is empty.
     tomcatService.findEmptyFolder(cloneDirectoryPath);
@@ -245,7 +246,7 @@ public class AssignmentService {
    * @param projectType File type
    * @param hasTemplate Has template
    */
-  public void addProject(String name, String releaseTime, String deadline, String readMe,
+  public void addProject(String name, Date releaseTime, Date deadline, String readMe,
       ProjectTypeEnum projectType, boolean hasTemplate, long testZipChecksum, String testZipUrl) {
     Assignment assignment = new Assignment();
 
@@ -370,8 +371,8 @@ public class AssignmentService {
   }
 
   // public void setTestFileInfo() {
-  //   testZipChecksum = String.valueOf(zipHandler.getChecksum());
-  //   testZipUrl = zipHandler.getUrlForJenkinsDownloadTestFile();
+  // testZipChecksum = String.valueOf(zipHandler.getChecksum());
+  // testZipUrl = zipHandler.getUrlForJenkinsDownloadTestFile();
   // }
 
   /**
