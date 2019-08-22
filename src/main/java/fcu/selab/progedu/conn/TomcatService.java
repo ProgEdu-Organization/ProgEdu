@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
@@ -25,7 +26,8 @@ public class TomcatService {
 
   /**
    * (to do)
-   * @param file (to do)
+   * 
+   * @param file   (to do)
    * @param target (to do)
    * @return target (to do)
    */
@@ -73,10 +75,11 @@ public class TomcatService {
 
   /**
    * (to do)
-   * @param file (to do)
+   * 
+   * @param file       (to do)
    * @param folderName (to do)
-   * @param uploadDir (to do)
-   * @param project (to do)
+   * @param uploadDir  (to do)
+   * @param project    (to do)
    * @return target (to do)
    */
   public String storeFileToServer(InputStream file, String folderName, String uploadDir,
@@ -95,6 +98,7 @@ public class TomcatService {
 
   /**
    * (to do)
+   * 
    * @param folderName (to do)
    * @return hasTemplate (to do)
    */
@@ -108,6 +112,7 @@ public class TomcatService {
 
   /**
    * (to do)
+   * 
    * @param path (to do)
    */
   public void findEmptyFolder(String path) {
@@ -138,6 +143,7 @@ public class TomcatService {
 
   /**
    * (to do)
+   * 
    * @param path (to do)
    */
   public void removeFile(String path) {
@@ -148,8 +154,9 @@ public class TomcatService {
 
   /**
    * (to do)
+   * 
    * @param readMe (to do)
-   * @param path (to do)
+   * @param path   (to do)
    */
   public void createReadmeFile(String readMe, String path) {
     try (Writer writer = new BufferedWriter(
@@ -166,11 +173,17 @@ public class TomcatService {
    * 
    * @return current time
    */
-  public String getCurrentTime() {
+  public Date getCurrentTime() {
     Date date = new Date();
     SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     format.setTimeZone(TimeZone.getTimeZone("Asia/Taipei"));
-    return format.format(date);
+    DateFormat datetime = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+    try {
+      date = datetime.parse(format.format(date));
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return date;
 
   }
 }

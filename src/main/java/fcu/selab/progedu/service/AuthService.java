@@ -52,7 +52,7 @@ public class AuthService {
   private String checkPermission(String username, String password) {
     String role = "";
     if (checkPassword(username, password)) {
-      role = getRole(username).getType();
+      role = getRole(username).getTypeName();
     }
     return role;
   }

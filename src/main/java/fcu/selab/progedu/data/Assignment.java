@@ -1,16 +1,20 @@
 package fcu.selab.progedu.data;
 
+import java.sql.Date;
+
 import fcu.selab.progedu.project.ProjectTypeEnum;
 
 public class Assignment {
 
   private int id = 0;
 
-  private String createTime = "";
-
   private String name = "";
 
-  private String deadline = "";
+  private Date createTime = null;
+
+  private Date deadline = null;
+
+  private Date releaseTime = null;
 
   private String description = "";
 
@@ -26,8 +30,6 @@ public class Assignment {
 
   private String testZipUrl = "";
 
-  private String releaseTime = "";
-
   private boolean display = true;
 
   public int getId() {
@@ -38,11 +40,11 @@ public class Assignment {
     this.id = id;
   }
 
-  public String getCreateTime() {
+  public Date getCreateTime() {
     return createTime;
   }
 
-  public void setCreateTime(String createTime) {
+  public void setCreateTime(Date createTime) {
     this.createTime = createTime;
   }
 
@@ -54,11 +56,11 @@ public class Assignment {
     this.name = name;
   }
 
-  public String getDeadline() {
+  public Date getDeadline() {
     return deadline;
   }
 
-  public void setDeadline(String deadline) {
+  public void setDeadline(Date deadline) {
     this.deadline = deadline;
   }
 
@@ -118,11 +120,11 @@ public class Assignment {
     this.testZipUrl = testZipUrl;
   }
 
-  public String getReleaseTime() {
+  public Date getReleaseTime() {
     return releaseTime;
   }
 
-  public void setReleaseTime(String releaseTime) {
+  public void setReleaseTime(Date releaseTime) {
     this.releaseTime = releaseTime;
   }
 

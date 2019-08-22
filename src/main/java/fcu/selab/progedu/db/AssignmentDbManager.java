@@ -1,10 +1,12 @@
 package fcu.selab.progedu.db;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,18 +38,21 @@ public class AssignmentDbManager {
         + ", type, zipChecksum, zipUrl, releaseTime, display)  VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?,"
         + "?)";
     int typeId = atDb.getTypeIdByName(assignment.getType().getTypeName());
+    Timestamp createtimes = new Timestamp(assignment.getCreateTime().getTime());
+    Timestamp deadlinetimes = new Timestamp(assignment.getDeadline().getTime());
+    Timestamp releasetimes = new Timestamp(assignment.getReleaseTime().getTime());
 
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
       preStmt.setString(1, assignment.getName());
-      preStmt.setString(2, assignment.getCreateTime());
-      preStmt.setString(3, assignment.getDeadline());
+      preStmt.setTimestamp(2, createtimes);
+      preStmt.setTimestamp(3, deadlinetimes);
       preStmt.setString(4, assignment.getDescription());
       preStmt.setBoolean(5, assignment.isHasTemplate());
       preStmt.setInt(6, typeId);
       preStmt.setLong(7, assignment.getTestZipChecksum());
       preStmt.setString(8, assignment.getTestZipUrl());
-      preStmt.setString(9, assignment.getReleaseTime());
+      preStmt.setTimestamp(9, releasetimes);
       preStmt.setBoolean(10, assignment.isDisplay());
       preStmt.executeUpdate();
     } catch (SQLException e) {
@@ -70,15 +75,15 @@ public class AssignmentDbManager {
       stmt.setString(1, name);
       try (ResultSet rs = stmt.executeQuery();) {
         while (rs.next()) {
-          String createTime = rs.getString("createTime");
-          String deadline = rs.getString("deadline").replace("T", " ");
+          Date createTime = rs.getString("createTime");
+          Date deadline = rs.getString("deadline").replace("T", " ");
           String description = rs.getString("description");
           boolean hasTemplate = rs.getBoolean("hasTemplate");
           int typeId = rs.getInt("type");
           ProjectTypeEnum typeEnum = atDb.getTypeNameById(typeId);
           long checksum = rs.getLong("zipChecksum");
           String zipUrl = rs.getString("zipUrl");
-          String releaseTime = rs.getString("releaseTime");
+          Date releaseTime = rs.getString("releaseTime");
           boolean display = rs.getBoolean("display");
 
           assignment.setName(name);
