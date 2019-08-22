@@ -175,15 +175,16 @@ public class TomcatService {
    */
   public Date getCurrentTime() {
     Date date = new Date();
+    Date currentTime = new Date();
     SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     format.setTimeZone(TimeZone.getTimeZone("Asia/Taipei"));
     DateFormat datetime = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
     try {
-      date = datetime.parse(format.format(date));
+      currentTime = datetime.parse(format.format(date));
     } catch (Exception e) {
       e.printStackTrace();
     }
-    return date;
+    return currentTime;
 
   }
 }
