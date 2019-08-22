@@ -181,7 +181,7 @@ public class CommitRecordDbManager {
    */
   public int getCommitCount(int auid) {
     int commitNumber = 0;
-    String sql = "SELECT * from Commit_Record a where (a.commitNumber = "
+    String sql = "SELECT commitNumber from Commit_Record a where (a.commitNumber = "
         + "(SELECT max(commitNumber) FROM Commit_Record WHERE auId = ?));";
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
@@ -222,13 +222,13 @@ public class CommitRecordDbManager {
    */
   public int getCommitStatusbyAuid(int auid) {
     int status = 0;
-    String sql = "SELECT * FROM Commit_Record WHERE auId=?";
+    String sql = "SELECT status FROM Commit_Record WHERE auId=?";
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
       preStmt.setInt(1, auid);
       try (ResultSet rs = preStmt.executeQuery()) {
         while (rs.next()) {
-          status = rs.getInt(status);
+          status = rs.getInt("status");
         }
       }
     } catch (SQLException e) {

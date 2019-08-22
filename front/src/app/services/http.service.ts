@@ -11,7 +11,7 @@ export class HttpService {
   constructor(private http: HttpClient) { }
 
   getData(URL: string): Promise<any> {
-    let data = this.http.get(URL).toPromise();
+    const data = this.http.get(URL).toPromise();
     return data;
   }
 

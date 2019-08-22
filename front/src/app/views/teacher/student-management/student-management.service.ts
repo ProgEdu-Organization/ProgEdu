@@ -4,11 +4,18 @@ import { Observable } from 'rxjs';
 import { FormGroup } from '@angular/forms';
 import { environment } from '../../../../environments/environment';
 
-const options = ({
+const addOneStudentOptions = ({
   headers: new HttpHeaders({
     'Content-Type': 'application/x-www-form-urlencoded',
   })
 });
+
+const addMutipleStudentOptions = ({
+  headers: new HttpHeaders(
+  )
+});
+
+
 @Injectable({
   providedIn: 'root'
 })
@@ -17,6 +24,7 @@ const options = ({
 export class StudentManagementService {
   GET_USERS_API = environment.SERVER_URL + '/ProgEdu/webapi/user/getUsers';
   ADD_ONE_USER_API = environment.SERVER_URL + '/ProgEdu/webapi/user/new';
+  ADD_MUTIPLE_USER_API = environment.SERVER_URL + '/ProgEdu/webapi/user/upload';
   constructor(private http: HttpClient) { }
 
   getAllUserData(): Observable<any> {
@@ -33,6 +41,12 @@ export class StudentManagementService {
     params = params.append('email', student.value.email);
     params = params.append('isDisplayed', student.value.isDisplayed);
 
-    return this.http.post<any>(this.ADD_ONE_USER_API, params, options);
+    return this.http.post<any>(this.ADD_ONE_USER_API, params, addOneStudentOptions);
+  }
+
+  addMutipleStudent(file: File) {
+    const frmData = new FormData();
+    frmData.append('file', file);
+    return this.http.post<any>(this.ADD_MUTIPLE_USER_API, frmData, addMutipleStudentOptions);
   }
 }

@@ -28,7 +28,7 @@ public class AssignmentTypeDbManager {
    * @return typeId type id
    */
   public int getTypeIdByName(String typeName) {
-    String query = "SELECT * FROM Assignment_Type WHERE name = ?";
+    String query = "SELECT id FROM Assignment_Type WHERE name = ?";
     int typeId = 0;
 
     try (Connection conn = database.getConnection();
@@ -52,7 +52,7 @@ public class AssignmentTypeDbManager {
    * @return type id
    */
   public ProjectTypeEnum getTypeNameById(int typeId) {
-    String query = "SELECT * FROM Assignment_Type WHERE id = ?";
+    String query = "SELECT name FROM Assignment_Type WHERE id = ?";
     String typeName = null;
 
     try (Connection conn = database.getConnection();
