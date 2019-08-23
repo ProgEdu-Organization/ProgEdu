@@ -10,7 +10,9 @@ import { ModalDirective } from 'ngx-bootstrap/modal';
   templateUrl: './create-assignment.component.html'
 })
 export class CreateAssignmentComponent implements OnInit, OnDestroy {
-  status: { isOpen: boolean } = { isOpen: false };
+  javaTabStatus: { isOpen: boolean } = { isOpen: false };
+  androidTabStatus: { isOpen: boolean } = { isOpen: false };
+  webTabStatus: { isOpen: boolean } = { isOpen: false };
   disabled: boolean = false;
   isDropup: boolean = true;
   autoClose: boolean = false;
@@ -55,6 +57,12 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
 
   fileListener($event) {
     this.assignment.value.file = $event.target.files[0];
+    console.log($event.target.files[0]);
+  }
+
+  typeListener($event) {
+    this.assignment.value.type = $event.target.value;
+    console.log(this.assignment.value);
   }
 
   public submit() {
@@ -75,27 +83,8 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
 
 
   ngOnDestroy() {
-    this.status.isOpen = false;
+    this.javaTabStatus.isOpen = false;
+    this.webTabStatus.isOpen = false;
+    this.androidTabStatus.isOpen = false;
   }
-
-  onHidden(): void {
-    console.log('Dropdown is hidden');
-  }
-  onShown(): void {
-    console.log('Dropdown is shown');
-  }
-  isOpenChange(): void {
-    console.log('Dropdown state is changed');
-  }
-
-  toggleDropdown($event: MouseEvent): void {
-    $event.preventDefault();
-    $event.stopPropagation();
-    this.status.isOpen = !this.status.isOpen;
-  }
-
-  change(value: boolean): void {
-    this.status.isOpen = value;
-  }
-
 }
