@@ -42,11 +42,11 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.assignment = this.fb.group({
-      name: ['', Validators.required],
-      releaseTime: ['', Validators.required],
-      deadline: ['', Validators.required],
-      readMe: ['', Validators.required],
-      type: ['maven', Validators.required],
+      name: [undefined, Validators.required],
+      releaseTime: [undefined, Validators.required],
+      deadline: [undefined, Validators.required],
+      readMe: [undefined, Validators.required],
+      type: [undefined, Validators.required],
       file: File,
     });
   }
@@ -66,19 +66,25 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
   }
 
   public submit() {
-    this.progressModal.show();
     console.log(this.assignment.value);
+    console.log(this.assignment.dirty);
+    console.log(this.assignment.valid);
+    if (this.assignment.dirty && this.assignment.valid) {
+      this.progressModal.show();
+      this.createService.createAssignment(this.assignment).subscribe(
+        (response) => {
+          this.router.navigate(['./dashboard/assignmentManagement']);
+        },
+        error => {
+          this.errorMsg = error.message;
+          this.progressModal.hide();
+          this.errorModal.show();
+          console.log(error);
+        });
+    } else {
+      alert('is dirty');
+    }
 
-    this.createService.createAssignment(this.assignment).subscribe(
-      (response) => {
-        this.router.navigate(['./dashboard/assignmentManagement']);
-      },
-      error => {
-        this.errorMsg = error.message;
-        this.progressModal.hide();
-        this.errorModal.show();
-        console.log(error);
-      });
   }
 
 

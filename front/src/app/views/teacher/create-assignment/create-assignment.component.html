@@ -104,7 +104,7 @@
               <div class="col-md-9" (change)='typeListener($event)'>
                 <div class="form-check form-check-inline mr-1" id="inline-radios">
                   <input class="form-check-input" type="radio" name="inline-radios" id="inlineRadio3" value="android">
-                  <label class="form-check-label" for="inlineRadio1">Android</label>
+                  <label class="form-check-label" for="inlineRadio3">Android</label>
                 </div>
               </div>
             </div>
@@ -137,8 +137,8 @@
               <label class="col-md-3 col-form-label" for="inline-radios">Type Radios</label>
               <div class="col-md-9" (change)='typeListener($event)'>
                 <div class="form-check form-check-inline mr-1" id="inline-radios">
-                  <input class="form-check-input" type="radio" name="inline-radios" id="inlineRadio3" value="web">
-                  <label class="form-check-label" for="inlineRadio1">Web</label>
+                  <input class="form-check-input" type="radio" name="inline-radios" id="inlineRadio4" value="web">
+                  <label class="form-check-label" for="inlineRadio4">Web</label>
                 </div>
               </div>
             </div>
@@ -154,7 +154,7 @@
         <!--/.col-->
       </div>
       <div class="card-footer">
-        <button class="btn btn-sm btn-primary" type='submit'>Submit</button>
+        <button class="btn btn-sm btn-primary" [disabled]='!assignment.valid' type='submit'>Submit</button>
       </div>
     </form>
   </div>
@@ -193,7 +193,8 @@
         <p>{{errorMsg}}&hellip;</p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" (click)="dangerModal.hide()">Close</button>
+        <button type="button" class="btn btn-secondary" [disabled]="!assignment.valid"
+          (click)="dangerModal.hide()">Close</button>
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
