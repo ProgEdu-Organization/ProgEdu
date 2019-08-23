@@ -1,8 +1,9 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { environment } from '../../../../environments/environment';
 import { Router } from '@angular/router';
 import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { CreateAssignmentService } from './create-assignment.service';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 
 @Component({
   selector: 'app-create-assignment',
@@ -19,7 +20,23 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
     'And another choice for you.',
     'but wait! A third!'
   ];
+
+  errorMsg: string;
+  SERVER_URL: string = environment.SERVER_URL;
+
+  max: number = 100;
+  showWarning: boolean;
+  dynamic: number = 60;
+  type: string = 'Waiting';
+
+  stacked: any[] = [];
+
+  timer: any = null;
+  buttonCaption: string = 'Start';
   constructor(private router: Router, private fb: FormBuilder, private createService: CreateAssignmentService) { }
+  @ViewChild('myModal', { static: true }) public progressModal: ModalDirective;
+  @ViewChild('dangerModal', { static: false }) public errorModal: ModalDirective;
+
 
   ngOnInit() {
     this.assignment = this.fb.group({
@@ -41,13 +58,18 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
   }
 
   public submit() {
+    this.progressModal.show();
     console.log(this.assignment.value);
+
     this.createService.createAssignment(this.assignment).subscribe(
       (response) => {
-        console.log('Sul');
+        this.router.navigate(['./dashboard/assignmentManagement']);
       },
       error => {
-        console.log(error.error);
+        this.errorMsg = error.message;
+        this.progressModal.hide();
+        this.errorModal.show();
+        console.log(error);
       });
   }
 
