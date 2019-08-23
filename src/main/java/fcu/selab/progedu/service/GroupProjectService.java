@@ -163,14 +163,13 @@ public class GroupProjectService {
    * @param projectType File type
    */
   public void addProject(String name, String readMe, String deadline, ProjectTypeEnum projectType) {
-    ProjectDbManager projectDb = ProjectDbManager.getInstance();
     GroupProject groupProject = new GroupProject();
-
     groupProject.setName(name);
     groupProject.setDeadline(deadline);
     groupProject.setCreateTime(tomcatService.getCurrentTime());
     groupProject.setDescription(readMe);
     groupProject.setType(projectType);
+    ProjectDbManager projectDb = ProjectDbManager.getInstance();
     projectDb.addProject(groupProject);
   }
 
