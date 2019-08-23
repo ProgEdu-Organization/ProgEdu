@@ -1,6 +1,6 @@
 package fcu.selab.progedu.data;
 
-import java.sql.Date;
+import java.util.Date;
 
 import fcu.selab.progedu.project.ProjectTypeEnum;
 

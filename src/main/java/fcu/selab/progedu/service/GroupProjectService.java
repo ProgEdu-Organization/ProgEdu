@@ -2,6 +2,7 @@ package fcu.selab.progedu.service;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Date;
 
 import org.gitlab.api.models.GitlabProject;
 import org.gitlab.api.models.GitlabUser;
@@ -71,7 +72,7 @@ public class GroupProjectService {
    * @param file        (to do)
    * @param fileDetail  (to do)
    */
-  public void createGroupProject(Group group, String deadline, String readMe, String projectType,
+  public void createGroupProject(Group group, Date deadline, String readMe, String projectType,
       InputStream file, FormDataContentDisposition fileDetail) {
 
     String folderName = null;
@@ -161,7 +162,7 @@ public class GroupProjectService {
    * @param readMe      Project readme
    * @param projectType File type
    */
-  public void addProject(String name, String readMe, String deadline, ProjectTypeEnum projectType) {
+  public void addProject(String name, String readMe, Date deadline, ProjectTypeEnum projectType) {
     GroupProject groupProject = new GroupProject();
     groupProject.setName(name);
     groupProject.setDeadline(deadline);

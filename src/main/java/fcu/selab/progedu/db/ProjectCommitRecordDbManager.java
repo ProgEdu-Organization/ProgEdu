@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.Date;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -29,18 +31,18 @@ public class ProjectCommitRecordDbManager {
    * @param time          commit time
    * @param commitStudent commit Student
    */
-  public void insertProjectCommitRecord(int pgId, int commitNumber, StatusEnum status, String time,
+  public void insertProjectCommitRecord(int pgId, int commitNumber, StatusEnum status, Date time,
       String commitStudent) {
     String sql = "INSERT INTO Project_Commit_Record"
         + "(pgId, commitNumber, status, time, commitStudent) " + "VALUES(?, ?, ?, ?, ?)";
     int statusId = csDb.getStatusIdByName(status.getType());
-
+    Timestamp date = new Timestamp(time.getTime());
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
       preStmt.setInt(1, pgId);
       preStmt.setInt(2, commitNumber);
       preStmt.setInt(3, statusId);
-      preStmt.setString(4, time);
+      preStmt.setTimestamp(4, date);
       preStmt.setString(5, commitStudent);
       preStmt.executeUpdate();
     } catch (SQLException e) {
@@ -124,7 +126,7 @@ public class ProjectCommitRecordDbManager {
           int statusId = rs.getInt("status");
           StatusEnum statusEnum = csDb.getStatusNameById(statusId);
           int commitNumber = rs.getInt("commitNumber");
-          String commitTime = rs.getString("time");
+          Date commitTime = rs.getTimestamp("time");
           String commitStudent = rs.getString("commitStudent");
           JSONObject eachHw = new JSONObject();
           eachHw.put("status", statusEnum.getType());
@@ -162,7 +164,7 @@ public class ProjectCommitRecordDbManager {
         int statusId = rs.getInt("status");
         StatusEnum statusEnum = csDb.getStatusNameById(statusId);
         int commitNumber = rs.getInt("commitNumber");
-        String commitTime = rs.getString("time");
+        Date commitTime = rs.getTimestamp("time");
         String commitStudent = rs.getString("commitStudent");
         JSONObject eachHw = new JSONObject();
         eachHw.put("status", statusEnum.getType());
