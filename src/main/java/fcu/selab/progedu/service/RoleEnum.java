@@ -23,7 +23,7 @@ public enum RoleEnum {
     return null;
   }
 
-  public String getType() {
+  public String getTypeName() {
     return this.role;
   }
 

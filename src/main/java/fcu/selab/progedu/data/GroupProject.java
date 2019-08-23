@@ -1,15 +1,17 @@
 package fcu.selab.progedu.data;
 
+import java.sql.Date;
+
 import fcu.selab.progedu.project.ProjectTypeEnum;
 
 public class GroupProject {
   private int id = 0;
 
-  private String createTime = "";
-
   private String name = "";
 
-  private String deadline = "";
+  private Date createTime = null;
+
+  private Date deadline = null;
 
   private String description = "";
 
@@ -23,11 +25,11 @@ public class GroupProject {
     this.id = id;
   }
 
-  public String getCreateTime() {
+  public Date getCreateTime() {
     return createTime;
   }
 
-  public void setCreateTime(String createTime) {
+  public void setCreateTime(Date createTime) {
     this.createTime = createTime;
   }
 
@@ -39,11 +41,11 @@ public class GroupProject {
     this.name = name;
   }
 
-  public String getDeadline() {
+  public Date getDeadline() {
     return deadline;
   }
 
-  public void setDeadline(String deadline) {
+  public void setDeadline(Date deadline) {
     this.deadline = deadline;
   }
 
