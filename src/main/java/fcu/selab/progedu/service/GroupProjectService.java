@@ -162,9 +162,7 @@ public class GroupProjectService {
    * @param readMe      Project readme
    * @param projectType File type
    */
-
   public void addProject(String name, String readMe, Date deadline, ProjectTypeEnum projectType) {
-
     GroupProject groupProject = new GroupProject();
     groupProject.setName(name);
     groupProject.setDeadline(deadline);
