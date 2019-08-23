@@ -82,13 +82,6 @@ public class LoginAuth extends HttpServlet {
     String token;
     JSONObject ob = new JSONObject();
     System.out.println("receive: " + username + ": " + password);
-    /////////////////////////////////////////////////
-    try {
-      System.out.println(checkPermission(username, password));
-    } catch (LoadConfigFailureException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
     
     try {
       String user = checkPermission(username, password);
