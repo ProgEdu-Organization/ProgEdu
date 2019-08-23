@@ -2,22 +2,15 @@ package fcu.selab.progedu.conn;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Enumeration;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-import javax.json.JsonObject;
 import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.gitlab.api.models.GitlabSession;
 import org.json.JSONObject;
 
-import fcu.selab.progedu.config.CourseConfig;
 import fcu.selab.progedu.config.GitlabConfig;
 import fcu.selab.progedu.config.JwtConfig;
 import fcu.selab.progedu.db.RoleDbManager;
@@ -25,22 +18,6 @@ import fcu.selab.progedu.db.RoleUserDbManager;
 import fcu.selab.progedu.db.UserDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.service.RoleEnum;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
-
-import java.security.Key;
-import java.util.Date;
-import java.util.UUID;
-
-import javax.crypto.spec.SecretKeySpec;
-import javax.json.Json;
-import javax.json.stream.JsonParser;
-
-import org.json.JSONObject;
 
 /**
  * Servlet implementation class AfterEnter
@@ -82,7 +59,7 @@ public class LoginAuth extends HttpServlet {
     String token;
     JSONObject ob = new JSONObject();
     System.out.println("receive: " + username + ": " + password);
-    
+
     try {
       String user = checkPermission(username, password);
       if (!user.equals("")) {
@@ -98,7 +75,7 @@ public class LoginAuth extends HttpServlet {
       ob.put("isLogin", false);
       e.printStackTrace();
     }
-    
+
     System.out.println(ob.toString());
     response.setStatus(200);
     PrintWriter pw = response.getWriter();
@@ -107,11 +84,11 @@ public class LoginAuth extends HttpServlet {
     pw.close();
   }
 
-  private String checkPermission(String username, String password) 
-       throws LoadConfigFailureException {
+  private String checkPermission(String username, String password)
+      throws LoadConfigFailureException {
     String role = "";
-    if (username.equals(gitlabConfig.getGitlabRootUsername()) 
-         && password.equals(gitlabConfig.getGitlabRootPassword())) {
+    if (username.equals(gitlabConfig.getGitlabRootUsername())
+        && password.equals(gitlabConfig.getGitlabRootPassword())) {
       role = "teacher";
     } else {
       if (checkPassword(username, password)) {

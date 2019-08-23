@@ -1,5 +1,6 @@
 package fcu.selab.progedu.service;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
@@ -21,6 +22,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 
 import org.gitlab.api.models.GitlabProject;
@@ -37,6 +39,8 @@ import fcu.selab.progedu.conn.TomcatService;
 import fcu.selab.progedu.data.Assignment;
 import fcu.selab.progedu.data.User;
 import fcu.selab.progedu.db.AssignmentDbManager;
+import fcu.selab.progedu.db.AssignmentUserDbManager;
+import fcu.selab.progedu.db.UserDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.project.AssignmentFactory;
 import fcu.selab.progedu.project.AssignmentType;
@@ -59,6 +63,8 @@ public class AssignmentService {
   private String mailPassword;
   private String gitlabRootUsername;
   private AssignmentDbManager dbManager = AssignmentDbManager.getInstance();
+  private AssignmentUserDbManager auDbManager = AssignmentUserDbManager.getInstance();
+  private UserDbManager userDbManager = UserDbManager.getInstance();
   private final String tempDir = System.getProperty("java.io.tmpdir");
   private final String uploadDir = tempDir + "/uploads/";
   private final String testDir = tempDir + "/tests/";
@@ -131,7 +137,7 @@ public class AssignmentService {
     assignment.createTestCase(testDirectory);
     zipHandler.zipTestFolder(testDirectory);
     testZipChecksum = zipHandler.getChecksum();
-    testZipUrl = zipHandler.serverIp + "/ProgEdu/webapi/jenkins/getTestFile?filePath="
+    testZipUrl = zipHandler.serverIp + "/ProgEdu/webapi/assignment/getTestFile?filePath="
         + testDirectory + ".zip";
     // zipHandler.setUrlForJenkinsDownloadTestFile(zipHandler.serverIp
     // + "/ProgEdu/webapi/jenkins/getTestFile?filePath=" + testDirectory + ".zip");
@@ -156,6 +162,7 @@ public class AssignmentService {
 
     // 10. import project infomation to database
     boolean hasTemplate = false;
+
     addProject(assignmentName, releaseTime, deadline, readMe, projectTypeEnum, hasTemplate,
         testZipChecksum, testZipUrl);
 
@@ -169,7 +176,7 @@ public class AssignmentService {
       } catch (IOException | LoadConfigFailureException e) {
         e.printStackTrace();
       }
-
+      addAuid(user.getUsername(), assignmentName);
       // 12. Create each Jenkins Jobs
       assignment.createJenkinsJob(user.getUsername(), assignmentName);
     }
@@ -262,6 +269,19 @@ public class AssignmentService {
     assignment.setTestZipUrl(testZipUrl);
 
     dbManager.addAssignment(assignment);
+  }
+
+  /**
+   * Add auid to database
+   * 
+   * @param username       username
+   * @param assignmentName assignment name
+   */
+  public void addAuid(String username, String assignmentName) {
+    int aid = dbManager.getAssignmentIdByName(assignmentName);
+    int uid = userDbManager.getUserIdByUsername(username);
+
+    auDbManager.addAssignmentUser(aid, uid);
   }
 
   /**
@@ -391,23 +411,22 @@ public class AssignmentService {
 
     return name;
   }
-  //
-  // private String getChecksum(String zipFilePath) {
-  // String strChecksum = "";
-  //
-  // try (CheckedInputStream cis = new CheckedInputStream(new
-  // FileInputStream(zipFilePath),
-  // new CRC32());) {
-  // byte[] buf = new byte[1024];
-  // // noinspection StatementWithEmptyBody
-  // while (cis.read(buf) >= 0) {
-  // }
-  // System.out.println(cis.getChecksum().getValue());
-  // strChecksum = String.valueOf(cis.getChecksum().getValue());
-  // } catch (IOException e) {
-  // e.printStackTrace();
-  // }
-  // return strChecksum;
-  // }
+
+  /**
+   * get test folder
+   * 
+   * @param filePath folder directory
+   * @return zip file
+   */
+  @GET
+  @Path("getTestFile")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response getTestFile(@QueryParam("filePath") String filePath) {
+    File file = new File(filePath);
+
+    ResponseBuilder response = Response.ok((Object) file);
+    response.header("Content-Disposition", "attachment;filename=");
+    return response.build();
+  }
 
 }
