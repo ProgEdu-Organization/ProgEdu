@@ -74,7 +74,7 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
     this.navItems[2].children.length = 0;
     this.defaultLayoutService.getNavData().subscribe(response => {
       console.log('test' + JSON.stringify(response));
-      this.navData = response.result.sort(function (a, b) {
+      this.navData = response.allUsersCommitRecord.sort(function (a, b) {
         return a.name > b.name ? 1 : - 1;
       });
       // add the data to the navItem

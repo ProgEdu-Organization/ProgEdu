@@ -7,7 +7,7 @@
           (click)="changeToAssignmentPage();">Assignment List</button></div>
     </div>
     <div class="card-body">
-      <form [formGroup]="assignment" (ngSubmit)="summit()">
+      <form [formGroup]="assignment" (ngSubmit)="submit()">
         <div class="form-group row">
           <label class="col-md-3 col-form-label" for="name">Name</label>
           <div class="col-md-9">
@@ -37,6 +37,7 @@
               placeholder="Content.."></textarea>
           </div>
         </div>
+
         <!--tabs-->
         <!-- Nav tabs -->
         <tabset>
@@ -57,14 +58,15 @@
                 <div class="btn-group" dropdown [isOpen]="status.isOpen" (isOpenChange)="change($event)"
                   placement="top">
                   <button dropdownToggle type="button" class="btn btn-primary dropdown-toggle">
-                    Button dropdown <span class="caret"></span>
+                    Quick Start<span class="caret"></span>
                   </button>
                   <ul *dropdownMenu class="dropdown-menu" role="menu">
-                    <li role="menuitem"><a class="dropdown-item" href="#">Action</a></li>
-                    <li role="menuitem"><a class="dropdown-item" href="#">Another action</a>
+                    <li role="menuitem"><a class="dropdown-item"
+                        href="{{SERVER_URL}}/ProgEdu/resources/JavacQuickStart.zip" download>JavacQuickStart.zip</a>
                     </li>
-                    <li role="menuitem"><a class="dropdown-item" href="#">Something else
-                        here</a></li>
+                    <li role="menuitem"><a class="dropdown-item"
+                        href="{{SERVER_URL}}/ProgEdu/resources/MvnQuickStart.zip" download>MvnQuickStart.zip</a>
+                    </li>
                   </ul>
                 </div>
               </div>
@@ -95,10 +97,48 @@
               </div>
             </div>
           </tab>
-          <button type='summit'>Summit</button>
+          <button type='submit'>Submit</button>
         </tabset>
         <!--/.col-->
       </form>
     </div>
   </div>
 </div>
+<div bsModal #myModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Waiting Create Assignment</h4>
+      </div>
+      <div class="modal-body">
+        <progressbar class="progress-bar progress-bar-striped progress-bar-animated" [value]="dynamic" [max]="max"
+          [type]="type">
+          {{type}}
+        </progressbar>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="changeToAssignmentPage()">Back</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<div bsModal #dangerModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-danger" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Create Assignment Error</h4>
+        <button type="button" class="close" (click)="dangerModal.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>{{errorMsg}}&hellip;</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="dangerModal.hide()">Close</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
