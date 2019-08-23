@@ -5,7 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import fcu.selab.progedu.data.GroupProject;
@@ -35,12 +37,14 @@ public class ProjectDbManager {
     String sql = "INSERT INTO Project(name, createTime, deadline, description,"
         + " type)  VALUES(?, ?, ?, ?, ?)";
     int typeId = atDb.getTypeIdByName(project.getType().getTypeName());
+    Timestamp createtimes = new Timestamp(project.getCreateTime().getTime());
+    Timestamp deadline = new Timestamp(project.getDeadline().getTime());
 
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
       preStmt.setString(1, project.getName());
-      preStmt.setString(2, project.getCreateTime());
-      preStmt.setString(3, project.getDeadline());
+      preStmt.setTimestamp(2, createtimes);
+      preStmt.setTimestamp(3, deadline);
       preStmt.setString(4, project.getDescription());
       preStmt.setInt(5, typeId);
       preStmt.executeUpdate();
@@ -64,8 +68,8 @@ public class ProjectDbManager {
       stmt.setString(1, name);
       try (ResultSet rs = stmt.executeQuery();) {
         while (rs.next()) {
-          String createTime = rs.getString("createTime");
-          String deadline = rs.getString("deadline").replace("T", " ");
+          Date createTime = rs.getTimestamp("createTime");
+          Date deadline = rs.getTimestamp("deadline");
           String description = rs.getString("description");
           int typeId = rs.getInt("type");
           ProjectTypeEnum typeEnum = atDb.getTypeNameById(typeId);

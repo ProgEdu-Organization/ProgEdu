@@ -1,7 +1,7 @@
 package fcu.selab.progedu.project;
 
 public enum ProjectTypeEnum {
-  JAVAC("Javac"), MAVEN("Maven"), WEB("Web"), APP("App");
+  JAVAC("javac"), MAVEN("maven"), WEB("web"), APP("app");
 
   private String type;
 
