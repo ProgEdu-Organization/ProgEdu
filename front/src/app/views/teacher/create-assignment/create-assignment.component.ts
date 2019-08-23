@@ -44,7 +44,7 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
       releaseTime: ['', Validators.required],
       deadline: ['', Validators.required],
       readMe: ['', Validators.required],
-      type: ['Maven', Validators.required],
+      type: ['maven', Validators.required],
       file: File,
     });
   }
