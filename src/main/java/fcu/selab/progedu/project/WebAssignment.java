@@ -55,7 +55,7 @@ public class WebAssignment extends AssignmentType {
       String updateDbUrl = progEduApiUrl + "/commits/update";
       JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
       String seleniumUrl = jenkinsData.getSeleniumHostUrl() + "/wd/hub";
-      String checksumUrl = progEduApiUrl + "project/checksum?proName=" + projectName;
+      String checksumUrl = progEduApiUrl + "assignment/checksum?proName=" + projectName;
 
       DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
       DocumentBuilder docBuilder = docFactory.newDocumentBuilder();

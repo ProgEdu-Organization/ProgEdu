@@ -27,7 +27,7 @@ public class AssignmentUserDbManager {
    * @param uid User Id
    */
   public void addAssignmentUser(int aid, int uid) {
-    String sql = "INSERT INTO AssignmentUser(aId, uId)  VALUES(?, ?)";
+    String sql = "INSERT INTO Assignment_User(aId, uId)  VALUES(?, ?)";
 
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
