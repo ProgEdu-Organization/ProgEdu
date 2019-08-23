@@ -7,7 +7,7 @@
       <li class="nav-item px-3">
         <a class="nav-link" href="javascript:void(0);" (click)='changeToDashboard()'>Dashboard</a>
       </li>
-      <li class="nav-item px-3" *ngIf="isAdmin">
+      <li class="nav-item px-3" *ngIf="isTeacher">
         <a dropdownToggle class="nav-link dropdown-toggle" href="javascript:void(0);"> Management</a>
         <ul *dropdownMenu class="dropdown-menu" role="menu">
           <li role="menuitem"><a class="dropdown-item" href="#/dashboard/assignmentManagement">Assignment Management</a>

@@ -16,7 +16,7 @@ public enum RoleEnum {
    */
   public static RoleEnum getRoleEnum(String role) {
     for (RoleEnum roleType : RoleEnum.values()) {
-      if (roleType.getTypeName() == role) {
+      if (roleType.getType().equals(role)) {
         return roleType;
       }
     }
