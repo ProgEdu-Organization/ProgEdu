@@ -22,6 +22,8 @@ import { GroupManagementComponent } from './group-management/group-management.co
 import { CarouselModule } from 'ngx-bootstrap/carousel';
 import { ChartComponent } from './chart/chart.component';
 import { FilterPipe } from '../../pipe/filter.pipe';
+
+import { ProgressbarModule } from 'ngx-bootstrap/progressbar';
 @NgModule({
     imports: [
         FormsModule,
@@ -30,6 +32,7 @@ import { FilterPipe } from '../../pipe/filter.pipe';
         BsDropdownModule,
         TeacherRoutingModule,
         ReactiveFormsModule,
+        ProgressbarModule.forRoot(),
         ButtonsModule.forRoot(),
         AlertModule.forRoot(),
         ModalModule.forRoot(),

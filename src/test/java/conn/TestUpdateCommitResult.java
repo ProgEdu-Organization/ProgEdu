@@ -1,5 +1,6 @@
 package conn;
 
+import java.text.ParseException;
 import java.util.List;
 
 import fcu.selab.progedu.data.User;
@@ -10,7 +11,7 @@ public class TestUpdateCommitResult {
   static CommitRecordService service = new CommitRecordService();
   static UserDbManager userDb = UserDbManager.getInstance();
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws ParseException {
     List<User> users = userDb.getAllUsers();
 
     int i = 1;
