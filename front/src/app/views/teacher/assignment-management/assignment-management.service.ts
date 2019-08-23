@@ -7,7 +7,7 @@ import { environment } from '../../../../environments/environment';
 })
 export class AssignmentManagementService {
 
-  ALL_PROJECT_API = environment.SERVER_URL + '/ProgEdu/webapi/project/getAllProjects';
+  ALL_PROJECT_API = environment.SERVER_URL + '/ProgEdu/webapi/assignment/getAllProjects';
   constructor(private http: HttpClient) { }
   getAllProjects(): Observable<any> {
     return this.http.get<any>(this.ALL_PROJECT_API);
