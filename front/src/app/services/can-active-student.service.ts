@@ -12,7 +12,7 @@ export class CanActiveStudentService implements CanActivate {
   canActivate(): Promise<boolean> | boolean {
     return new Promise((resolve, reject) => {
       this.loginAuth.isLoginByStudent().subscribe((response) => {
-        if (response.isLogin && !response.isStudent) {
+        if (response.isLogin && response.isStudent) {
           console.log('canActive student');
           resolve(true);
         } else {

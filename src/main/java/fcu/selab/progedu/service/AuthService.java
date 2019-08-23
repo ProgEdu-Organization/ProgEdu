@@ -18,8 +18,6 @@ import io.jsonwebtoken.Claims;
 @Path("auth/")
 public class AuthService {
   JwtConfig jwt = JwtConfig.getInstance();
-  static final int Teacher = 1;
-  static final int Student = 2;
 
   /**
    * @param token test

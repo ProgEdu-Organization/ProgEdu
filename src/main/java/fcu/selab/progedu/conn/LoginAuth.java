@@ -47,7 +47,7 @@ import org.json.JSONObject;
  */
 public class LoginAuth extends HttpServlet {
   private static final long serialVersionUID = 1L;
-  private static final String USER_NAME = "username";
+  private static final String USERNAME = "username";
   private static final String USER_PASSWORD = "password";
   private GitlabService gitlabService = GitlabService.getInstance();
   private GitlabConfig gitlabConfig = GitlabConfig.getInstance();
@@ -77,18 +77,11 @@ public class LoginAuth extends HttpServlet {
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
     final HttpSession session = request.getSession();
-    String username = request.getParameter(USER_NAME);
+    String username = request.getParameter(USERNAME);
     String password = request.getParameter(USER_PASSWORD);
     String token;
     JSONObject ob = new JSONObject();
     System.out.println("receive: " + username + ": " + password);
-    /////////////////////////////////////////////////
-    try {
-      System.out.println(checkPermission(username, password));
-    } catch (LoadConfigFailureException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
     
     try {
       String user = checkPermission(username, password);
