@@ -22,7 +22,6 @@ import fcu.selab.progedu.conn.JenkinsService;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.service.StatusService;
 import fcu.selab.progedu.status.StatusEnum;
-import fcu.selab.progedu.utils.ZipHandler;
 
 public class MavenAssignment extends AssignmentType {
 
@@ -53,7 +52,7 @@ public class MavenAssignment extends AssignmentType {
       String projectUrl = gitlabConfig.getGitlabHostUrl() + "/" + username + "/" + projectName
           + ".git";
       String updateDbUrl = progEduApiUrl + "/commits/update";
-      String checksumUrl = progEduApiUrl + "project/checksum?proName=" + projectName;
+      String checksumUrl = progEduApiUrl + "assignment/checksum?proName=" + projectName;
       DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
       DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
       Document doc = docBuilder.parse(jenkinsJobConfigPath);
