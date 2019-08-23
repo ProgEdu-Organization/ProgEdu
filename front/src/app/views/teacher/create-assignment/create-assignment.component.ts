@@ -40,7 +40,7 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
     this.assignment.value.file = $event.target.files[0];
   }
 
-  public summit() {
+  public submit() {
     console.log(this.assignment.value);
     this.createService.createAssignment(this.assignment).subscribe(
       (response) => {

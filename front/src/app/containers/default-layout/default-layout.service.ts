@@ -7,7 +7,8 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class DefaultLayoutService {
-  ALL_COMMIT_API = environment.SERVER_URL + '/ProgEdu/webapi/commits/all';
+  ALL_COMMIT_API = environment.SERVER_URL + '/ProgEdu/webapi/commits/allUsers';
+  MODIFY_API = environment.SERVER_URL + '/ProgEdu/webapi/commits/allUsers';
   constructor(private http: HttpClient) { }
 
   getNavData(): Observable<any> {
@@ -15,6 +16,6 @@ export class DefaultLayoutService {
   }
 
   modifySecret(): Observable<any> {
-    return this.http.get<any>(this.ALL_COMMIT_API);
+    return this.http.get<any>(this.MODIFY_API);
   }
 }

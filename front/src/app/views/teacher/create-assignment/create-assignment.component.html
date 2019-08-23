@@ -7,7 +7,7 @@
           (click)="changeToAssignmentPage();">Assignment List</button></div>
     </div>
     <div class="card-body">
-      <form [formGroup]="assignment" (ngSubmit)="summit()">
+      <form [formGroup]="assignment" (ngSubmit)="submit()">
         <div class="form-group row">
           <label class="col-md-3 col-form-label" for="name">Name</label>
           <div class="col-md-9">
@@ -95,7 +95,7 @@
               </div>
             </div>
           </tab>
-          <button type='summit'>Summit</button>
+          <button type='submit'>Submit</button>
         </tabset>
         <!--/.col-->
       </form>

@@ -1,13 +1,13 @@
 package fcu.selab.progedu.db;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import fcu.selab.progedu.data.Assignment;
@@ -75,15 +75,15 @@ public class AssignmentDbManager {
       stmt.setString(1, name);
       try (ResultSet rs = stmt.executeQuery();) {
         while (rs.next()) {
-          Date createTime = rs.getString("createTime");
-          Date deadline = rs.getString("deadline").replace("T", " ");
+          Date createTime = rs.getTimestamp("createTime");
+          Date deadline = rs.getTimestamp("deadline");
           String description = rs.getString("description");
           boolean hasTemplate = rs.getBoolean("hasTemplate");
           int typeId = rs.getInt("type");
           ProjectTypeEnum typeEnum = atDb.getTypeNameById(typeId);
           long checksum = rs.getLong("zipChecksum");
           String zipUrl = rs.getString("zipUrl");
-          Date releaseTime = rs.getString("releaseTime");
+          Date releaseTime = rs.getTimestamp("releaseTime");
           boolean display = rs.getBoolean("display");
 
           assignment.setName(name);

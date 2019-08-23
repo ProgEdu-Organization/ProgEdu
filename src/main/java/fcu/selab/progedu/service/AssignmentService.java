@@ -2,7 +2,7 @@ package fcu.selab.progedu.service;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.Date;
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
@@ -250,9 +250,9 @@ public class AssignmentService {
   public void addProject(String name, Date releaseTime, Date deadline, String readMe,
       ProjectTypeEnum projectType, boolean hasTemplate, long testZipChecksum, String testZipUrl) {
     Assignment assignment = new Assignment();
-
+    Date date = tomcatService.getCurrentTime();
     assignment.setName(name);
-    assignment.setCreateTime(tomcatService.getCurrentTime());
+    assignment.setCreateTime(date);
     assignment.setReleaseTime(releaseTime);
     assignment.setDeadline(deadline);
     assignment.setDescription(readMe);
@@ -329,7 +329,7 @@ public class AssignmentService {
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   @Produces(MediaType.APPLICATION_JSON)
   public Response editProject(@FormDataParam("assignmentName") String assignmentName,
-      @FormDataParam("releaseTime") String releaseTime, @FormDataParam("deadline") String deadline,
+      @FormDataParam("releaseTime") Date releaseTime, @FormDataParam("deadline") Date deadline,
       @FormDataParam("readMe") String readMe,
       @FormDataParam("testCase") InputStream uploadedInputStream,
       @FormDataParam("testCase") FormDataContentDisposition fileDetail) {

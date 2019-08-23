@@ -122,7 +122,7 @@ public class LoginAuth extends HttpServlet {
       role = "teacher";
     } else {
       if (checkPassword(username, password)) {
-        role = getRole(username).getType();
+        role = getRole(username).getTypeName();
       }
     }
     return role;

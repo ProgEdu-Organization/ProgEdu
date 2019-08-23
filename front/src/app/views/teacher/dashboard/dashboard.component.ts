@@ -23,8 +23,12 @@ export class DashboardComponent implements OnInit {
   async getAllStudentData() {
     // clear student array
     this.dashboardService.getAllStudentData().subscribe(response => {
-      this.studentDatas = response.result;
-      this.tableHead = this.studentDatas[0].commits;
+      this.studentDatas = response.allUsersCommitRecord;
+      if (this.studentDatas[0] === undefined) {
+        this.tableHead.length = 0;
+      } else {
+        this.tableHead = this.studentDatas[0].commits;
+      }
     });
   }
 }
