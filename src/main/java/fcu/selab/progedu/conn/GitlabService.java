@@ -613,7 +613,7 @@ public class GitlabService {
    */
   public String cloneProject(String username, String projectName) {
     String repoUrl = rootUrl + "/" + username + "/" + projectName + ".git";
-    String target = System.getProperty("java.io.tmpdir") + "uploads/" + projectName;
+    String target = System.getProperty("java.io.tmpdir") + "/uploads/" + projectName;
     String cloneCommand = "git clone " + repoUrl + " " + target;
     Linux linux = new Linux();
     linux.execLinuxCommand(cloneCommand);
