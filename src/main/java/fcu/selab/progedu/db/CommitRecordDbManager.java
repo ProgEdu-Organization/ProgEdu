@@ -108,17 +108,17 @@ public class CommitRecordDbManager {
    * get commit record details from the homework of a student
    * 
    * 
-   * @param auIds auId
+   * @param auId auId
    * @return commit record details
    */
-  public JSONObject getCommitRecord(int auIds) {
+  public JSONObject getCommitRecord(int auId) {
     String sql = "SELECT * FROM Commit_Record WHERE auId=?";
     JSONObject ob = new JSONObject();
     JSONArray array = new JSONArray();
 
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
-      preStmt.setInt(1, auIds);
+      preStmt.setInt(1, auId);
       try (ResultSet rs = preStmt.executeQuery()) {
         while (rs.next()) {
           int statusId = rs.getInt("status");

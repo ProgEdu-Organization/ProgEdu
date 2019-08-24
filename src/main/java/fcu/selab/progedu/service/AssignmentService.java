@@ -191,7 +191,7 @@ public class AssignmentService {
   }
 
   public List<String> getAllAssignmentNames() {
-    return dbManager.listAllAssignmentNames();
+    return dbManager.getAllAssignmentNames();
   }
 
   private String getRootProjectUrl(String name) {
@@ -390,13 +390,23 @@ public class AssignmentService {
   @Produces(MediaType.APPLICATION_JSON)
   public Response getProject(@QueryParam("proName") String projectName) {
     Assignment assignment = dbManager.getAssignmentByName(projectName);
+
     return Response.ok().entity(assignment).build();
   }
 
-  // public void setTestFileInfo() {
-  // testZipChecksum = String.valueOf(zipHandler.getChecksum());
-  // testZipUrl = zipHandler.getUrlForJenkinsDownloadTestFile();
-  // }
+  /**
+   * get project checksum
+   * 
+   * @param projectName project name
+   * @return checksum
+   */
+  @GET
+  @Path("getAllProjects")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response getProject() {
+    List<Assignment> assignments = dbManager.getAllAssignment();
+    return Response.ok().entity(assignments).build();
+  }
 
   /**
    * get course name

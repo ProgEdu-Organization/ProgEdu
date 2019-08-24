@@ -175,11 +175,61 @@ public class AssignmentDbManager {
   }
 
   /**
+   * get test file Url by assignment name
+   * 
+   * @param assignmentName assignment name
+   * @return zipUrl
+   */
+  public String getTestFileUrl(String assignmentName) {
+    String sql = "SELECT zipUrl FROM Assignment WHERE name = ?";
+    String zipUrl = "";
+    try (Connection conn = database.getConnection();
+        PreparedStatement stmt = conn.prepareStatement(sql)) {
+      stmt.setString(1, assignmentName);
+      try (ResultSet rs = stmt.executeQuery();) {
+        while (rs.next()) {
+          zipUrl = rs.getString("zipUrl");
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return zipUrl;
+  }
+
+  /**
    * list all assignment names;
    * 
    * @return all names
    */
-  public List<String> listAllAssignmentNames() {
+  public List<Assignment> getAllAssignment() {
+    List<Assignment> assignments = new ArrayList<>();
+    String sql = "SELECT name,createTime,deadline,releaseTime,display FROM Assignment;";
+
+    try (Connection conn = database.getConnection();
+        Statement stmt = conn.createStatement();
+        ResultSet rs = stmt.executeQuery(sql)) {
+      while (rs.next()) {
+        Assignment assignment = new Assignment();
+        assignment.setName(rs.getString("name"));
+        assignment.setCreateTime(rs.getDate("createTime"));
+        assignment.setDeadline(rs.getDate("deadline"));
+        assignment.setReleaseTime(rs.getDate("releaseTime"));
+        assignment.setDisplay(rs.getBoolean("display"));
+        assignments.add(assignment);
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return assignments;
+  }
+
+  /**
+   * list all assignment names;
+   * 
+   * @return all names
+   */
+  public List<String> getAllAssignmentNames() {
     List<String> lsNames = new ArrayList<>();
     String sql = "SELECT name FROM Assignment";
 

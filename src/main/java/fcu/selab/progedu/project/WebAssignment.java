@@ -20,6 +20,7 @@ import fcu.selab.progedu.config.CourseConfig;
 import fcu.selab.progedu.config.GitlabConfig;
 import fcu.selab.progedu.config.JenkinsConfig;
 import fcu.selab.progedu.conn.JenkinsService;
+import fcu.selab.progedu.db.AssignmentDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.service.StatusService;
 import fcu.selab.progedu.status.StatusEnum;
@@ -55,7 +56,8 @@ public class WebAssignment extends AssignmentType {
       String updateDbUrl = progEduApiUrl + "/commits/update";
       JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
       String seleniumUrl = jenkinsData.getSeleniumHostUrl() + "/wd/hub";
-      String checksumUrl = progEduApiUrl + "assignment/checksum?proName=" + projectName;
+      String checksumUrl = progEduApiUrl + "/assignment/checksum?proName=" + projectName;
+      String testFileUrl = AssignmentDbManager.getInstance().getTestFileUrl(projectName);
 
       DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
       DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
@@ -71,6 +73,7 @@ public class WebAssignment extends AssignmentType {
       doc.getElementsByTagName("user").item(0).setTextContent(username);
       doc.getElementsByTagName("proName").item(0).setTextContent(projectName);
       doc.getElementsByTagName("progeduAPIUrl").item(0).setTextContent(progEduApiUrl);
+      doc.getElementsByTagName("testFileUrl").item(0).setTextContent(testFileUrl);
       doc.getElementsByTagName("jenkinsJobName").item(0).setTextContent(jobName);
 
       // write the content into xml file
