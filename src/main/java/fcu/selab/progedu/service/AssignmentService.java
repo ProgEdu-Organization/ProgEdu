@@ -395,10 +395,8 @@ public class AssignmentService {
   }
 
   /**
-   * get project checksum
    * 
-   * @param projectName project name
-   * @return checksum
+   * @return  AllProjects
    */
   @GET
   @Path("getAllProjects")
