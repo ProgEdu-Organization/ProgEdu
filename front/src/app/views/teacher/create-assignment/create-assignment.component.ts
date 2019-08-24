@@ -47,7 +47,7 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
       deadline: [undefined, Validators.required],
       readMe: [undefined, Validators.required],
       type: [undefined, Validators.required],
-      file: File,
+      file: [undefined, Validators.required],
     });
   }
 
@@ -56,19 +56,16 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
   }
 
   fileListener($event) {
-    this.assignment.value.file = $event.target.files[0];
-    console.log($event.target.files[0]);
-  }
-
-  typeListener($event) {
-    this.assignment.value.type = $event.target.value;
+    this.assignment.controls['file'].setValue($event.target.files[0]);
     console.log(this.assignment.value);
   }
+
 
   public submit() {
     console.log(this.assignment.value);
     console.log(this.assignment.dirty);
     console.log(this.assignment.valid);
+
     if (this.assignment.dirty && this.assignment.valid) {
       this.progressModal.show();
       this.createService.createAssignment(this.assignment).subscribe(
@@ -82,9 +79,8 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
           console.log(error);
         });
     } else {
-      alert('is dirty');
+      return;
     }
-
   }
 
 
