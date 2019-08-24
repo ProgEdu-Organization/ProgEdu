@@ -17,6 +17,7 @@ export class StudentManagementComponent implements OnInit {
   async ngOnInit() {
     await this.getAllUserData();
     this.oneStudentForm = this.fb.group({
+      role: ['', Validators.required],
       name: ['', Validators.pattern('^[a-zA-Z0-9-_]{5,20}')],
       username: ['', Validators.pattern('^[a-zA-Z0-9-_]{5,20}')],
       password: ['', Validators.pattern('^[a-zA-Z0-9-_]{5,20}')],
@@ -71,7 +72,8 @@ export class StudentManagementComponent implements OnInit {
   }
 
   public addOneStudent() {
-    console.log('add one student' + environment.SERVER_URL);
+    console.log(this.oneStudentForm.value);
+
     if (this.oneStudentForm.dirty && this.oneStudentForm.valid) {
       this.studentService.addOneStudent(this.oneStudentForm).subscribe(
         (response) => {

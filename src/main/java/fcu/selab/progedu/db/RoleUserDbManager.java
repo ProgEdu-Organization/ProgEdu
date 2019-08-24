@@ -23,7 +23,7 @@ public class RoleUserDbManager {
    * @param uid User Id
    */
   public void addRoleUser(int rid, int uid) {
-    String sql = "INSERT INTO RoleUser(rId, uId)  VALUES(?, ?)";
+    String sql = "INSERT INTO Role_User(rId, uId)  VALUES(?, ?)";
 
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {

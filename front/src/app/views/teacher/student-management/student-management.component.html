@@ -7,6 +7,16 @@
           <ng-template tabHeading><i class="icon-calculator"></i> Add One Student</ng-template>
           <form *ngIf="oneStudentForm" [formGroup]="oneStudentForm" (ngSubmit)="addOneStudent()">
             <div class="form-group col-sm-6">
+              <div class="form-check form-check-inline mr-1">
+                <input class="form-check-input" type="radio" name="role" value="student" formControlName='role'>
+                <label class="form-check-label" for="inlineRadio1">student</label>
+              </div>
+              <div class="form-check form-check-inline mr-1"><input class="form-check-input" type="radio" name="role"
+                  value="teacher" formControlName='role'>
+                <label class="form-check-label" for="inlineRadio1"> teacher</label>
+              </div>
+            </div>
+            <div class="form-group col-sm-6">
               <label for="name">Name</label>
               <input type="text" class="form-control" id="name" placeholder="Enter your name" formControlName="name"
                 required>
@@ -14,12 +24,12 @@
             <div class="form-group col-sm-6">
               <label for="username">Username</label>
               <input type="text" class="form-control" id="username" placeholder="Enter your Username"
-                formControlName="username" required>
+                formControlName="username">
             </div>
             <div class="form-group col-sm-6">
               <label for="password">Password</label>
               <input type="password" class="form-control" id="password" placeholder="Enter your password"
-                formControlName="password" required>
+                formControlName="password">
             </div>
             <div class="form-group col-sm-6">
               <label for="email">Email</label> <input type="text" class="form-control" id="email"
