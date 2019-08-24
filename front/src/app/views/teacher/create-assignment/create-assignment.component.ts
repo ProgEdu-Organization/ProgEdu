@@ -42,13 +42,53 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.assignment = this.fb.group({
-      name: [undefined, Validators.required],
+      name: [undefined, [Validators.required, Validators.maxLength(10)]],
       releaseTime: [undefined, Validators.required],
       deadline: [undefined, Validators.required],
       readMe: [undefined, Validators.required],
       type: [undefined, Validators.required],
-      file: File,
+      file: [undefined, Validators.required],
     });
+    this.onChanges();
+  }
+
+  onChanges(): void {
+    const name = 'name';
+    const releaseTime = 'releaseTime';
+    const deadline = 'deadline';
+    const readMe = 'readMe';
+    this.assignment.get(name).valueChanges.subscribe(
+      () => {
+        this.assignment.get(name).valid ? this.showIsValidById(name) : this.hideIsInvalidById(name);
+      }
+    );
+
+    this.assignment.get(releaseTime).valueChanges.subscribe(
+      val => {
+        val.length !== 0 ? this.showIsValidById(releaseTime) : this.hideIsInvalidById(releaseTime);
+      }
+    );
+    this.assignment.get(deadline).valueChanges.subscribe(
+      val => {
+        val.length !== 0 ? this.showIsValidById(deadline) : this.hideIsInvalidById(deadline);
+      }
+    );
+
+    this.assignment.get(readMe).valueChanges.subscribe(
+      val => {
+        val.length !== 0 ? this.showIsValidById(readMe) : this.hideIsInvalidById(readMe);
+      }
+    );
+  }
+
+  showIsValidById(id: string) {
+    $('#' + id).addClass('is-valid');
+    $('#' + id).removeClass('is-invalid');
+  }
+
+  hideIsInvalidById(id: string) {
+    $('#' + id).removeClass('is-valid');
+    $('#' + id).addClass('is-invalid');
   }
 
   changeToAssignmentPage() {
@@ -56,19 +96,12 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
   }
 
   fileListener($event) {
-    this.assignment.value.file = $event.target.files[0];
-    console.log($event.target.files[0]);
+    this.assignment.controls['file'].setValue($event.target.files[0]);
   }
 
-  typeListener($event) {
-    this.assignment.value.type = $event.target.value;
-    console.log(this.assignment.value);
-  }
 
   public submit() {
     console.log(this.assignment.value);
-    console.log(this.assignment.dirty);
-    console.log(this.assignment.valid);
     if (this.assignment.dirty && this.assignment.valid) {
       this.progressModal.show();
       this.createService.createAssignment(this.assignment).subscribe(
@@ -82,9 +115,8 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
           console.log(error);
         });
     } else {
-      alert('is dirty');
+      return;
     }
-
   }
 
 

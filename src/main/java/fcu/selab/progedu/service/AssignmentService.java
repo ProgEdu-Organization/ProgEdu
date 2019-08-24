@@ -112,6 +112,8 @@ public class AssignmentService {
     System.out.println(deadline);
     System.out.println(readMe);
     System.out.println(assignmentType);
+    System.out.println(file.toString());
+    System.out.println(fileDetail.getFileName());
     String rootProjectUrl = null;
 
     final AssignmentType assignment = AssignmentFactory.getAssignmentType(assignmentType);

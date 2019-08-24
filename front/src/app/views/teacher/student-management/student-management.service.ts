@@ -39,7 +39,7 @@ export class StudentManagementService {
     params = params.append('username', student.value.username);
     params = params.append('password', student.value.password);
     params = params.append('email', student.value.email);
-    params = params.append('role', "student");
+    params = params.append('role', student.value.role);
     params = params.append('isDisplayed', student.value.isDisplayed);
 
     return this.http.post<any>(this.ADD_ONE_USER_API, params, addOneStudentOptions);

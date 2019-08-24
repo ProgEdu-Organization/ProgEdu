@@ -5,7 +5,17 @@
       <tabset>
         <tab id="add-one-student">
           <ng-template tabHeading><i class="icon-calculator"></i> Add One Student</ng-template>
-          <form *ngIf="OneStudentForm" [formGroup]="OneStudentForm" (ngSubmit)="addOneStudent()">
+          <form *ngIf="oneStudentForm" [formGroup]="oneStudentForm" (ngSubmit)="addOneStudent()">
+            <div class="form-group col-sm-6">
+              <div class="form-check form-check-inline mr-1">
+                <input class="form-check-input" type="radio" name="role" value="student" formControlName='role'>
+                <label class="form-check-label" for="inlineRadio1">student</label>
+              </div>
+              <div class="form-check form-check-inline mr-1"><input class="form-check-input" type="radio" name="role"
+                  value="teacher" formControlName='role'>
+                <label class="form-check-label" for="inlineRadio1"> teacher</label>
+              </div>
+            </div>
             <div class="form-group col-sm-6">
               <label for="name">Name</label>
               <input type="text" class="form-control" id="name" placeholder="Enter your name" formControlName="name"
@@ -14,23 +24,23 @@
             <div class="form-group col-sm-6">
               <label for="username">Username</label>
               <input type="text" class="form-control" id="username" placeholder="Enter your Username"
-                formControlName="username" required>
+                formControlName="username">
             </div>
             <div class="form-group col-sm-6">
               <label for="password">Password</label>
               <input type="password" class="form-control" id="password" placeholder="Enter your password"
-                formControlName="password" required>
+                formControlName="password">
             </div>
             <div class="form-group col-sm-6">
               <label for="email">Email</label> <input type="text" class="form-control" id="email"
-                placeholder="Enter your email" formControlName="email" required>
+                placeholder="Enter your email" formControlName="email">
+
+              <span *ngIf="!oneStudentForm.get('email').valid" class="help-block">Please enter a valid date</span>
             </div>
-            <div id='confirmPassword-invalid-feedbacks' class='invalid-feedback'>
-              Please sure the confirm password
-            </div>
-            <button class="btn btn-primary" stype type="submit">Add
-              more</button>
+
             <div class="form-group" style="text-align: right;">
+              <button class="btn btn-primary" [disabled]='!oneStudentForm.valid' type="submit">Add
+                more</button>
             </div>
           </form>
         </tab>
@@ -38,9 +48,9 @@
           <ng-template tabHeading><i class="icon-basket-loaded"></i> Add Muti Student</ng-template>
           <form (ngSubmit)="addMutipleStudent()">
             <div class="form-group row">
-              <label class="col-md-3 col-form-label" for="file-input">Sdutent file Example
+              <label class="col-md-6 col-form-label" for="file-input">Sdutent file Example
               </label>
-              <div class="col-md-9">
+              <div class="col-md-6">
                 <a href="{{SERVER_URL}}/ProgEdu/resources/StudentTemplate.csv" download>
                   <button class="btn btn-primary" type="button">download</button>
                 </a>
@@ -48,14 +58,14 @@
             </div>
 
             <div class="form-group row">
-              <label class="col-md-3 col-form-label" for="file-input">Upload Student files(accept csv)
+              <label class="col-md-6 col-form-label" for="file-input">Upload Student files(accept csv)
               </label>
-              <div class="col-md-9">
+              <div class="col-md-6">
                 <input type="file" id="file-input" name="file-input" (change)="changeFileLister($event)">
               </div>
             </div>
-            <div class="form-group" style="text-align: center;">
-              <button class="btn btn-primary" type="submit">Upload</button>
+            <div class="form-group" style="text-align: right;">
+              <button class="btn btn-primary" [disabled]='!mutipleStudentFile' type="submit">Upload</button>
             </div>
           </form>
         </tab>

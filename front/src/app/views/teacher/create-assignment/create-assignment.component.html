@@ -12,22 +12,23 @@
           <label class="col-md-3 col-form-label" for="name">Name</label>
           <div class="col-md-9">
             <input type="text" class="form-control" id="name" formControlName='name' placeholder="Enter your name">
+            <span *ngIf="!assignment.get('name').valid" class="help-block">your name too long</span>
           </div>
         </div>
         <div class="form-group row">
           <label class="col-md-3 col-form-label" for="releaseTime">ReleaseTime</label>
           <div class="col-md-9">
-            <input class="form-control is-valid" id="releaseTime" type="datetime-local" name="releaseTime"
+            <input class="form-control" id="releaseTime" type="datetime-local" name="releaseTime"
               formControlName='releaseTime' placeholder="date">
-            <span class="help-block">Please enter a valid date</span>
+            <span *ngIf="!assignment.get('releaseTime').valid" class="help-block">Please enter a valid date</span>
           </div>
         </div>
         <div class="form-group row">
           <label class="col-md-3 col-form-label" for="deadline">Deadline</label>
           <div class="col-md-9">
-            <input class="form-control is-valid" id="deadline" type="datetime-local" name="deadline"
-              formControlName='deadline' placeholder="date">
-            <span class="help-block">Please enter a valid date</span>
+            <input class="form-control" id="deadline" type="datetime-local" name="deadline" formControlName='deadline'
+              placeholder="date">
+            <span *ngIf="!assignment.get('deadline').valid" class="help-block">Please enter a valid date</span>
           </div>
         </div>
         <div class="form-group row">
@@ -62,14 +63,16 @@
               </div>
             </div>
             <div class="form-group row">
-              <label class="col-md-3 col-form-label" for="inline-radios">Type Radios</label>
-              <div class="col-md-9" (change)='typeListener($event)'>
-                <div class="form-check form-check-inline mr-1" id="inline-radios">
-                  <input class="form-check-input" type="radio" name="inline-radios" id="inlineRadio1" value="java">
+              <label class="col-md-3 col-form-label" for="type">Type Radios</label>
+              <div class="col-md-9">
+                <div class="form-check form-check-inline mr-1">
+                  <input class="form-check-input" type="radio" name="type" id="inlineRadio1" value="javac"
+                    formControlName='type'>
                   <label class="form-check-label" for="inlineRadio1">Java</label>
                 </div>
                 <div class="form-check form-check-inline mr-1">
-                  <input class="form-check-input" type="radio" name="inline-radios" id="inlineRadio2" value="maven">
+                  <input class="form-check-input" type="radio" name="type" id="inlineRadio2" value="maven"
+                    formControlName='type'>
                   <label class="form-check-label" for="inlineRadio2">Maven</label>
                 </div>
               </div>
@@ -83,9 +86,9 @@
             </div>
           </tab>
           <!---- Android ---->
-          <tab heading="Android" (click)='typeListener($event)'>
+          <tab heading="Android">
             <div class="form-group row">
-              <label class="col-md-3 col-form-label" for="file-input">Android File</label>
+              <label class="col-md-3 col-form-label">Android File</label>
               <div class="col-md-9">
                 <div class="btn-group" dropdown [isOpen]="webTabStatus.isOpen" placement="top">
                   <button dropdownToggle type="button" class="btn btn-primary dropdown-toggle">
@@ -100,10 +103,11 @@
               </div>
             </div>
             <div class="form-group row">
-              <label class="col-md-3 col-form-label" for="inline-radios">Type Radios</label>
-              <div class="col-md-9" (change)='typeListener($event)'>
-                <div class="form-check form-check-inline mr-1" id="inline-radios">
-                  <input class="form-check-input" type="radio" name="inline-radios" id="inlineRadio3" value="android">
+              <label class="col-md-3 col-form-label" for="type">Type Radios</label>
+              <div class="col-md-9">
+                <div class="form-check form-check-inline mr-1">
+                  <input class="form-check-input" type="radio" name="type" id="inlineRadio3" value="android"
+                    formControlName='type'>
                   <label class="form-check-label" for="inlineRadio3">Android</label>
                 </div>
               </div>
@@ -119,7 +123,7 @@
           <!---- Web ---->
           <tab heading="Web">
             <div class="form-group row">
-              <label class="col-md-3 col-form-label" for="file-input">Web File</label>
+              <label class="col-md-3 col-form-label">Web File</label>
               <div class="col-md-9">
                 <div class="btn-group" dropdown [isOpen]="androidTabStatus.isOpen" placement="top">
                   <button dropdownToggle type="button" class="btn btn-primary dropdown-toggle">
@@ -134,10 +138,10 @@
               </div>
             </div>
             <div class="form-group row">
-              <label class="col-md-3 col-form-label" for="inline-radios">Type Radios</label>
-              <div class="col-md-9" (change)='typeListener($event)'>
-                <div class="form-check form-check-inline mr-1" id="inline-radios">
-                  <input class="form-check-input" type="radio" name="inline-radios" id="inlineRadio4" value="web">
+              <label class="col-md-3 col-form-label" for="type">Type Radios</label>
+              <div class="col-md-9">
+                <div class="form-check form-check-inline mr-1">
+                  <input class="form-check-input" type="radio" name="type" value="web" formControlName='type'>
                   <label class="form-check-label" for="inlineRadio4">Web</label>
                 </div>
               </div>
@@ -156,6 +160,7 @@
       <div class="card-footer">
         <button class="btn btn-sm btn-primary" [disabled]='!assignment.valid' type='submit'>Submit</button>
       </div>
+      <input type="hidden" name="fileHidden" formControlName="file" />
     </form>
   </div>
 
