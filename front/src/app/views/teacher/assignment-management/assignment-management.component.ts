@@ -19,7 +19,9 @@ export class AssignmentManagementComponent implements OnInit {
 
   getAllProjects() {
     this.assignmentService.getAllProjects().subscribe(response => {
-      this.projects = response.results;
+      console.log(response.allProjects);
+      this.projects = response.allProjects;
+
     });
   }
   changeToCreatePage() {

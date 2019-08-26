@@ -51,7 +51,7 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
     // Called after the constructor, initializing input properties, and the first call to ngOnChanges.
     // Add 'implements OnInit' to the class.
     this.user = new User(this.jwtService);
-    if (this.user.getIsTeacher) {
+    if (this.user.isTeacher) {
       this.dashboard = '/dashboard';
       this.isTeacher = true;
     } else {
