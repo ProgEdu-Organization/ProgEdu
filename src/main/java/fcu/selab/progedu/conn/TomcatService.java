@@ -169,7 +169,7 @@ public class TomcatService {
    * @return current time
    */
   public Date getCurrentTime() {
-    Date date = new Date();
+    Date date = null;
     SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     format.setTimeZone(TimeZone.getTimeZone("Asia/Taipei"));
     try {
