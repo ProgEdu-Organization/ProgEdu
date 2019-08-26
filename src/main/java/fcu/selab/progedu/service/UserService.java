@@ -276,6 +276,8 @@ public class UserService {
       errorMessage = "username : " + user.getUsername() + " already exists.";
     } else if (isDuplicateEmail(user.getEmail())) {
       errorMessage = "Email : " + user.getEmail() + " already exists.";
+    } else if (user.getRole() == null) {
+      errorMessage = "Role is empty";
     }
     return errorMessage;
   }

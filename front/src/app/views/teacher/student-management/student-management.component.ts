@@ -97,6 +97,7 @@ export class StudentManagementComponent implements OnInit {
       this.studentService.addMutipleStudent(this.mutipleStudentFile).subscribe(
         (response) => {
           console.log('Sul');
+          this.getAllUser();
         },
         error => {
           console.log(error.error);
