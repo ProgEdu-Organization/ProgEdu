@@ -29,6 +29,7 @@ import org.gitlab.api.models.GitlabProject;
 import org.gitlab.api.models.GitlabUser;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
+import org.json.JSONObject;
 
 import fcu.selab.progedu.config.CourseConfig;
 import fcu.selab.progedu.config.GitlabConfig;
@@ -403,7 +404,9 @@ public class AssignmentService {
   @Produces(MediaType.APPLICATION_JSON)
   public Response getProject() {
     List<Assignment> assignments = dbManager.getAllAssignment();
-    return Response.ok().entity(assignments).build();
+    JSONObject ob = new JSONObject();
+    ob.append("allProjects", assignments);
+    return Response.ok().entity(ob.toString()).build();
   }
 
   /**
