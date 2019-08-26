@@ -7,6 +7,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import fcu.selab.progedu.data.User;
+import fcu.selab.progedu.service.RoleEnum;
+
 public class RoleUserDbManager {
   private static RoleUserDbManager dbManager = new RoleUserDbManager();
 
@@ -15,9 +18,27 @@ public class RoleUserDbManager {
   }
 
   private IDatabase database = new MySqlDatabase();
+  RoleDbManager rdb = RoleDbManager.getInstance();
 
   /**
-   * Add RoleUser to database
+   * Add RoleUser to database by User
+   * 
+   * @param user User
+   */
+  public void addRoleUser(User user) {
+    try {
+      for (RoleEnum roleEnum : user.getRole()) {
+        int rid = rdb.getRoleIdByName(roleEnum.getTypeName());
+        addRoleUser(rid, user.getId());
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
+  }
+
+  /**
+   * Add RoleUser to database by rid and uid
    * 
    * @param rid Role Id
    * @param uid User Id
@@ -86,12 +107,12 @@ public class RoleUserDbManager {
   }
 
   /**
-   * get rids by User Id
+   * get RoleList by User Id
    * 
-   * @return lsRids role id
+   * @return lsRids List RoleEnum
    */
-  public List<Integer> getRids(int uid) {
-    List<Integer> lsRids = new ArrayList<>();
+  public List<RoleEnum> getRoleList(int uid) {
+    List<RoleEnum> lsRole = new ArrayList<>();
     String sql = "SELECT rId FROM Role_User WHERE uId = ?";
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
@@ -99,13 +120,14 @@ public class RoleUserDbManager {
       try (ResultSet rs = preStmt.executeQuery()) {
         while (rs.next()) {
           int rid = rs.getInt("rId");
-          lsRids.add(rid);
+          RoleEnum role = rdb.getRoleNameById(rid);
+          lsRole.add(role);
         }
       }
     } catch (SQLException e) {
       e.printStackTrace();
     }
-    return lsRids;
+    return lsRole;
   }
 
   /**
