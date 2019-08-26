@@ -15,7 +15,7 @@ export class StudentManagementComponent implements OnInit {
   constructor(private studentService: StudentManagementService, private fb: FormBuilder) { }
 
   async ngOnInit() {
-    await this.getAllUserData();
+    await this.getAllUser();
     this.oneStudentForm = this.fb.group({
       role: ['', Validators.required],
       name: ['', Validators.pattern('^[a-zA-Z0-9-_]{5,20}')],
@@ -65,9 +65,10 @@ export class StudentManagementComponent implements OnInit {
     $('#' + id).addClass('is-invalid');
   }
 
-  async getAllUserData() {
+  async getAllUser() {
     this.studentService.getAllUserData().subscribe(response => {
       this.users = response.Users;
+      console.log(this.users);
     });
   }
 
@@ -78,6 +79,7 @@ export class StudentManagementComponent implements OnInit {
       this.studentService.addOneStudent(this.oneStudentForm).subscribe(
         (response) => {
           console.log('Sul');
+          this.getAllUser();
         },
         error => {
           $('#confirmPassword-invalid-feedbacks').show().text(error.error);

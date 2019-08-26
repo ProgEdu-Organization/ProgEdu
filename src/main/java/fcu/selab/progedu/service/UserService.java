@@ -63,12 +63,15 @@ public class UserService {
         String password = csvReader.get("Password");
         String name = csvReader.get("Name");
         String email = csvReader.get("Email");
+        String role = csvReader.get("Role");
+        RoleEnum roleEnum = RoleEnum.getRoleEnum(role);
 
         newUser.setDisplay(true);
         newUser.setUsername(username);
         newUser.setPassword(password);
         newUser.setName(name);
         newUser.setEmail(email);
+        newUser.setRole(roleEnum);
         errorMessage = getErrorMessage(users, newUser);
         if (errorMessage.isEmpty()) {
           users.add(newUser);
@@ -202,6 +205,7 @@ public class UserService {
 
     dbManager.addUser(user);
     int rid = rdb.getRoleIdByName(user.getRole().getTypeName());
+    user.setId(dbManager.getUserIdByUsername(user.getUsername()));
     rudb.addRoleUser(rid, user.getId());
 
   }
