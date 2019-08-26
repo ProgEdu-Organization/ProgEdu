@@ -20,8 +20,8 @@ export class CreateAssignmentService {
     const formData = new FormData();
 
     formData.append('assignmentName', assigememt.value.name);
-    formData.append('releaseTime', new Date(assigememt.value.releaseTime + 'T03:24:00').toUTCString());
-    formData.append('deadline', new Date(assigememt.value.deadline + 'T03:24:00').toUTCString());
+    formData.append('releaseTime', new Date(assigememt.value.releaseTime).toUTCString());
+    formData.append('deadline', new Date(assigememt.value.deadline).toUTCString());
     formData.append('readMe', assigememt.value.readMe);
     formData.append('fileRadio', assigememt.value.type);
     formData.append('file', assigememt.value.file);

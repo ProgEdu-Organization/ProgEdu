@@ -29,6 +29,7 @@ import org.gitlab.api.models.GitlabProject;
 import org.gitlab.api.models.GitlabUser;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
+import org.json.JSONObject;
 
 import fcu.selab.progedu.config.CourseConfig;
 import fcu.selab.progedu.config.GitlabConfig;
@@ -112,6 +113,8 @@ public class AssignmentService {
     System.out.println(deadline);
     System.out.println(readMe);
     System.out.println(assignmentType);
+    System.out.println(file.toString());
+    System.out.println(fileDetail.getFileName());
     String rootProjectUrl = null;
 
     final AssignmentType assignment = AssignmentFactory.getAssignmentType(assignmentType);
@@ -393,17 +396,17 @@ public class AssignmentService {
   }
 
   /**
-   * get project checksum
    * 
-   * @param projectName project name
-   * @return checksum
+   * @return  AllProjects
    */
   @GET
   @Path("getAllProjects")
   @Produces(MediaType.APPLICATION_JSON)
   public Response getProject() {
     List<Assignment> assignments = dbManager.getAllAssignment();
-    return Response.ok().entity(assignments).build();
+    JSONObject ob = new JSONObject();
+    ob.append("allProjects", assignments);
+    return Response.ok().entity(ob.toString()).build();
   }
 
   /**
