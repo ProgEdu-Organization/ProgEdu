@@ -43,7 +43,7 @@ public class UserDbManager {
    * 
    * @param user The gitlab user
    */
-  public int addUser(User user) {
+  public void addUser(User user) {
     String sql = "INSERT INTO " + "User(" + GIT_LAB_ID + "," + USERNAME + "," + NAME + ","
         + PASSWORD + "," + EMAIL + "," + GIT_LAB_TOKEN + "," + DISPLAY + ")"
         + "VALUES(?, ?, ?, ?, ?, ?, ?)";
@@ -61,7 +61,6 @@ public class UserDbManager {
     } catch (SQLException e) {
       e.printStackTrace();
     }
-    return dbManager.getUserIdByUsername(user.getUsername());
   }
 
   /**

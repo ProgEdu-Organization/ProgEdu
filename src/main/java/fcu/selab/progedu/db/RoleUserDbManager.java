@@ -19,6 +19,7 @@ public class RoleUserDbManager {
 
   private IDatabase database = new MySqlDatabase();
   RoleDbManager rdb = RoleDbManager.getInstance();
+  UserDbManager udb = UserDbManager.getInstance();
 
   /**
    * Add RoleUser to database by User
@@ -27,9 +28,10 @@ public class RoleUserDbManager {
    */
   public void addRoleUser(User user) {
     try {
+      int uid = udb.getUserIdByUsername(user.getName());
       for (RoleEnum roleEnum : user.getRole()) {
         int rid = rdb.getRoleIdByName(roleEnum.getTypeName());
-        addRoleUser(rid, user.getId());
+        addRoleUser(rid, uid);
       }
     } catch (Exception e) {
       e.printStackTrace();

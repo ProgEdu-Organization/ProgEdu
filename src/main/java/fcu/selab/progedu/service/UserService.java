@@ -210,8 +210,7 @@ public class UserService {
     user.setGitLabToken(gitlabUser.getPrivateToken());
     user.setGitLabId(gitlabUser.getId());
 
-    int userId = dbManager.addUser(user);
-    user.setId(userId);
+    dbManager.addUser(user);
     rudb.addRoleUser(user);
 
   }
