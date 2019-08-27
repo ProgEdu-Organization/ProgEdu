@@ -11,23 +11,28 @@ export class DashboardComponent implements OnInit {
   public data: Array<any> = new Array<any>();
   public tableHead: Array<any> = new Array<any>();
   public tableData: Array<any> = new Array<any>();
-  public studentDatas: JSON;
+  public studentData: JSON;
   public search;
   constructor(private dashboardService: DashboardService) { }
   async ngOnInit() {
-    // Called after the constructor, initializing input properties, and the first call to ngOnChanges.
-    // Add 'implements OnInit' to the class.
-    await this.getAllStudentData();
+    await this.getAllAssignment();
+    await this.getAllStudent();
   }
 
-  async getAllStudentData() {
+  async getAllAssignment() {
+    this.dashboardService.getAllProjectName().subscribe(response => {
+      this.tableHead = response.allProjects;
+    });
+  }
+
+  async getAllStudent() {
     // clear student array
-    this.dashboardService.getAllStudentData().subscribe(response => {
-      this.studentDatas = response.allUsersCommitRecord;
-      if (this.studentDatas[0] === undefined) {
+    this.dashboardService.getAllStudent().subscribe(response => {
+      console.log('test');
+      console.log(response);
+      this.studentData = response.allUsersCommitRecord;
+      if (this.studentData[0] === undefined) {
         this.tableHead.length = 0;
-      } else {
-        this.tableHead = this.studentDatas[0].commits;
       }
     });
   }

@@ -51,7 +51,7 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
     // Called after the constructor, initializing input properties, and the first call to ngOnChanges.
     // Add 'implements OnInit' to the class.
     this.user = new User(this.jwtService);
-    if (this.user.getIsTeacher) {
+    if (this.user.isTeacher) {
       this.dashboard = '/dashboard';
       this.isTeacher = true;
     } else {
@@ -73,7 +73,6 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
     // clear student array
     this.navItems[2].children.length = 0;
     this.defaultLayoutService.getNavData().subscribe(response => {
-      console.log('test' + JSON.stringify(response));
       this.navData = response.allUsersCommitRecord.sort(function (a, b) {
         return a.name > b.name ? 1 : - 1;
       });

@@ -47,17 +47,20 @@ public class CommitRecordService {
    */
   @GET
   @Path("allUsers")
-  @Produces(MediaType.TEXT_PLAIN)
+  @Produces(MediaType.APPLICATION_JSON)
   public Response getAllUsersCommitRecord() {
     JSONArray array = new JSONArray();
     JSONObject result = new JSONObject();
     List<User> users = userDb.getAllUsers();
     for (User user : users) {
-      String username = user.getName();
+      String username = user.getUsername();
       Response userCommitRecord = getOneUserCommitRecord(username);
       JSONObject ob = new JSONObject();
-      ob.put("user", user);
-      ob.put("commitRecord", userCommitRecord);
+      
+      ob.put("name", user.getName());
+      ob.put("username", user.getUsername());
+      ob.put("commitRecord",new JSONObject(userCommitRecord.getEntity().toString()));
+      array.put(ob);
     }
     result.put("allUsersCommitRecord", array);
 
@@ -71,23 +74,24 @@ public class CommitRecordService {
    */
   @GET
   @Path("oneUser")
-  @Produces(MediaType.APPLICATION_FORM_URLENCODED)
+  @Produces(MediaType.APPLICATION_JSON)
   public Response getOneUserCommitRecord(@QueryParam("username") String username) {
+    System.out.println(username);
     JSONArray array = new JSONArray();
-    JSONObject result = new JSONObject();
     int userId = userDb.getUserIdByUsername(username);
     List<Integer> aids = auDb.getAIds(userId);
 
     for (int assignment : aids) {
-      int auIds = auDb.getAuid(assignment, userId);
+      int auId = auDb.getAuid(assignment, userId);
       String assignmentName = assignmentDb.getAssignmentNameById(assignment);
       JSONObject ob = new JSONObject();
       ob.put("assignmentName", assignmentName);
-      ob.put("commitRecord", db.getLastCommitRecord(auIds));
+      ob.put("commitRecord", db.getLastCommitRecord(auId));
       array.put(ob);
     }
+    JSONObject result = new JSONObject();
     result.put("oneUserCommitRecord", array);
-    return Response.ok().entity(result.toString()).build();
+    return Response.ok(result.toString()).build();
   }
 
   /**
