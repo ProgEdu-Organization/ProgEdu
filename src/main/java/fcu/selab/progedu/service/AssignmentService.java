@@ -405,7 +405,7 @@ public class AssignmentService {
   public Response getProject() {
     List<Assignment> assignments = dbManager.getAllAssignment();
     JSONObject ob = new JSONObject();
-    ob.append("allProjects", assignments);
+    ob.put("allProjects", assignments);
     return Response.ok().entity(ob.toString()).build();
   }
 

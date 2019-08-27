@@ -34,8 +34,8 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor='let student of studentDatas'>
-            <div *ngIf='student.userName === user.getUsername()'>
+          <tr *ngFor='let student of studentData'>
+            <div *ngIf='student'>
               <th class='text-left' width="10%">
                 {{student.userName | uppercase}}
                 <br>

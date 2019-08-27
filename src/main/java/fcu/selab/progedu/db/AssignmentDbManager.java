@@ -111,7 +111,7 @@ public class AssignmentDbManager {
    * @return assignment name
    */
   public String getAssignmentNameById(int aid) {
-    String sql = "SELECT name FROM Assignment WHERE aId = ?";
+    String sql = "SELECT name FROM Assignment WHERE id = ?";
     String assignmentName = "";
     try (Connection conn = database.getConnection();
         PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -124,6 +124,7 @@ public class AssignmentDbManager {
     } catch (SQLException e) {
       e.printStackTrace();
     }
+    System.out.println(assignmentName);
     return assignmentName;
   }
 
