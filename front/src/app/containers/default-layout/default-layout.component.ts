@@ -22,7 +22,7 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
   public element: HTMLElement;
   public navDataisload: boolean = false;
   public user: User;
-  public isAdmin: boolean = false;
+  public isTeacher: boolean = false;
 
   public modifySecretForm: FormGroup;
 
@@ -36,7 +36,6 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
   constructor(@Inject(DOCUMENT) _document?: any, private defaultLayoutService?: DefaultLayoutService,
     private fb?: FormBuilder,
     private jwtService?: JwtService, private router?: Router) {
-    console.log('isTeacher: ' + this.isAdmin);
     this.changes = new MutationObserver((mutations) => {
       this.sidebarMinimized = _document.body.classList.contains('sidebar-minimized');
     });
@@ -52,12 +51,11 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
     // Called after the constructor, initializing input properties, and the first call to ngOnChanges.
     // Add 'implements OnInit' to the class.
     this.user = new User(this.jwtService);
-    if (this.user.getIsAdmin()) {
+    if (this.user.getIsTeacher) {
       this.dashboard = '/dashboard';
-      this.isAdmin = true;
+      this.isTeacher = true;
     } else {
       this.dashboard = '/studashboard';
-      this.isAdmin = false;
     }
     /* Modify Secret Area*/
     this.modifySecretForm = this.fb.group({
@@ -76,7 +74,7 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
     this.navItems[2].children.length = 0;
     this.defaultLayoutService.getNavData().subscribe(response => {
       console.log('test' + JSON.stringify(response));
-      this.navData = response.result.sort(function (a, b) {
+      this.navData = response.allUsersCommitRecord.sort(function (a, b) {
         return a.name > b.name ? 1 : - 1;
       });
       // add the data to the navItem
@@ -103,7 +101,6 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
   confirmInputOnChange() {
     const password = this.modifySecretForm.value.password;
     const confirmPassword = this.modifySecretForm.value.confirmPassword;
-    console.log(password + '    ' + confirmPassword);
 
     if (password.length >= 8) {
       $('#password').addClass('is-valid').removeClass('is-invalid');

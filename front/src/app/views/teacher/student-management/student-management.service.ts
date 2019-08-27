@@ -32,13 +32,14 @@ export class StudentManagementService {
     return this.http.get<any>(this.GET_USERS_API);
 
   }
-  addOneStudent(student: FormGroup) {
+  addOneStudent(student: FormGroup): Observable<any> {
     let params = new HttpParams();
 
     params = params.append('name', student.value.name);
     params = params.append('username', student.value.username);
     params = params.append('password', student.value.password);
     params = params.append('email', student.value.email);
+    params = params.append('role', student.value.role);
     params = params.append('isDisplayed', student.value.isDisplayed);
 
     return this.http.post<any>(this.ADD_ONE_USER_API, params, addOneStudentOptions);

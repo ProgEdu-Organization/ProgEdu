@@ -15,11 +15,13 @@ export class CreateAssignmentService {
   CREATE_ASSIGNMENT_API = environment.SERVER_URL + '/ProgEdu/webapi/assignment/create';
   constructor(private http: HttpClient) { }
 
-  createAssignment(assigememt: FormGroup) {
+  createAssignment(assigememt: FormGroup): Observable<any> {
+
     const formData = new FormData();
+
     formData.append('assignmentName', assigememt.value.name);
-    formData.append('releaseTime', assigememt.value.releaseTime);
-    formData.append('deadline', assigememt.value.deadline);
+    formData.append('releaseTime', new Date(assigememt.value.releaseTime).toUTCString());
+    formData.append('deadline', new Date(assigememt.value.deadline).toUTCString());
     formData.append('readMe', assigememt.value.readMe);
     formData.append('fileRadio', assigememt.value.type);
     formData.append('file', assigememt.value.file);

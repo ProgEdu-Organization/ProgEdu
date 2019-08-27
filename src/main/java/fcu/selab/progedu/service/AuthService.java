@@ -31,42 +31,29 @@ public class AuthService {
     JSONObject ob = new JSONObject();
     if (!token.equals("null") && jwt.validateToken(token)) {
       Claims body = jwt.decodeToken(token);
-      /*
-       * add the database auth
-       */
       System.out.print("body" + body);
-      if ((boolean) body.get("admin")) {
-        ob.put("isLogin", true);
-        ob.put("admin", true);
-      } else {
-        ob.put("isLogin", true);
-        ob.put("admin", false);
+      RoleEnum roleEnum = RoleEnum.getRoleEnum((String) body.get("sub"));
+      
+      switch (roleEnum) {
+        case TEACHER: {
+          ob.put("isLogin", true);
+          ob.put("isTeacher", true);
+          break;
+        }
+        case STUDENT: {
+          ob.put("isLogin", true);
+          ob.put("isStudent", true);
+          break;
+        }
+        default: {
+          ob.put("isLogin", false);
+        }
       }
+
     } else {
-      ob = new JSONObject();
       ob.put("isLogin", false);
     }
+    System.out.println(ob.toString());
     return Response.ok().entity(ob.toString()).build();
-  }
-
-  private String checkPermission(String username, String password) {
-    String role = "";
-    if (checkPassword(username, password)) {
-      role = getRole(username).getType();
-    }
-    return role;
-  }
-
-  private boolean checkPassword(String username, String password) {
-    return UserDbManager.getInstance().checkPassword(username, password);
-  }
-
-  private RoleEnum getRole(String username) {
-    UserDbManager userDb = UserDbManager.getInstance();
-    RoleUserDbManager roleUserDb = RoleUserDbManager.getInstance();
-    RoleDbManager roleDb = RoleDbManager.getInstance();
-    int uid = userDb.getUserIdByUsername(username);
-    int rid = roleUserDb.getTopRid(uid);
-    return roleDb.getRoleNameById(rid);
   }
 }

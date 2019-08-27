@@ -1,7 +1,10 @@
 package fcu.selab.progedu.service;
 
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -99,8 +102,8 @@ public class CommitRecordService {
   @Produces(MediaType.APPLICATION_JSON)
   public Response getCommitRecord(@QueryParam("username") String username,
       @QueryParam("assignmentName") String assignmentName) {
-    int auId = auDb.getAuid(userDb.getUserIdByUsername(username),
-        assignmentDb.getAssignmentIdByName(assignmentName));
+    int auId = auDb.getAuid(assignmentDb.getAssignmentIdByName(assignmentName),
+        userDb.getUserIdByUsername(username));
     JSONObject buildDetail = db.getCommitRecord(auId);
     // ob.put("message", commitMessage);
     return Response.ok().entity(buildDetail.toString()).build();
@@ -111,12 +114,13 @@ public class CommitRecordService {
    * 
    * @param username       username
    * @param assignmentName assignment name
+   * @throws ParseException (to do)
    */
   @POST
   @Path("update")
   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
   public Response updateCommitResult(@FormParam("user") String username,
-      @FormParam("proName") String assignmentName) {
+      @FormParam("proName") String assignmentName) throws ParseException {
 
     JSONObject ob = new JSONObject();
     AssignmentType assignmentType = AssignmentFactory.getAssignmentType(
@@ -125,11 +129,45 @@ public class CommitRecordService {
     int auId = auDb.getAuid(assignmentDb.getAssignmentIdByName(assignmentName),
         userDb.getUserIdByUsername(username));
     int commitNumber = db.getCommitCount(auId) + 1;
-    String time = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss")
-        .format(Calendar.getInstance().getTime());
+    Date date = new Date();
+    DateFormat time = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss");
+    date = time.parse(time.format(Calendar.getInstance().getTime()));
 
     StatusEnum statusEnum = assignmentType.checkStatusType(commitNumber, username, assignmentName);
-    db.insertCommitRecord(auId, commitNumber, statusEnum, time);
+    db.insertCommitRecord(auId, commitNumber, statusEnum, date);
+
+    ob.put("auId", auId);
+    ob.put("commitNumber", commitNumber);
+    ob.put("time", time);
+    ob.put("status", statusEnum.getType());
+
+    return Response.ok().entity(ob.toString()).build();
+  }
+
+  /**
+   * update user assignment commit record to DB.
+   * 
+   * @throws ParseException (to do)
+   */
+  @POST
+  @Path("update2")
+  @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+  public Response updateCommitResult2() throws ParseException {
+    String username = "d0381908";
+    String assignmentName = "errr";
+    JSONObject ob = new JSONObject();
+    AssignmentType assignmentType = AssignmentFactory.getAssignmentType(
+        atDb.getTypeNameById(assignmentDb.getAssignmentType(assignmentName)).getTypeName());
+
+    int auId = auDb.getAuid(assignmentDb.getAssignmentIdByName(assignmentName),
+        userDb.getUserIdByUsername(username));
+    int commitNumber = db.getCommitCount(auId) + 1;
+    Date date = new Date();
+    DateFormat time = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss");
+    date = time.parse(time.format(Calendar.getInstance().getTime()));
+
+    StatusEnum statusEnum = assignmentType.checkStatusType(commitNumber, username, assignmentName);
+    db.insertCommitRecord(auId, commitNumber, statusEnum, date);
 
     ob.put("auId", auId);
     ob.put("commitNumber", commitNumber);

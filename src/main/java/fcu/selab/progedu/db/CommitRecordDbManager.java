@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.Date;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -30,17 +32,17 @@ public class CommitRecordDbManager {
    * @param status       status Id
    * @param time         commit time
    */
-  public void insertCommitRecord(int auId, int commitNumber, StatusEnum status, String time) {
+  public void insertCommitRecord(int auId, int commitNumber, StatusEnum status, Date time) {
     String sql = "INSERT INTO Commit_Record" + "(auId, commitNumber, status, time) "
         + "VALUES(?, ?, ?, ?)";
     int statusId = csDb.getStatusIdByName(status.getType());
-
+    Timestamp date = new Timestamp(time.getTime());
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
       preStmt.setInt(1, auId);
       preStmt.setInt(2, commitNumber);
       preStmt.setInt(3, statusId);
-      preStmt.setString(4, time);
+      preStmt.setTimestamp(4, date);
       preStmt.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();
@@ -106,23 +108,23 @@ public class CommitRecordDbManager {
    * get commit record details from the homework of a student
    * 
    * 
-   * @param auIds auId
+   * @param auId auId
    * @return commit record details
    */
-  public JSONObject getCommitRecord(int auIds) {
+  public JSONObject getCommitRecord(int auId) {
     String sql = "SELECT * FROM Commit_Record WHERE auId=?";
     JSONObject ob = new JSONObject();
     JSONArray array = new JSONArray();
 
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
-      preStmt.setInt(1, auIds);
+      preStmt.setInt(1, auId);
       try (ResultSet rs = preStmt.executeQuery()) {
         while (rs.next()) {
           int statusId = rs.getInt("status");
           StatusEnum statusEnum = csDb.getStatusNameById(statusId);
           int commitNumber = rs.getInt("commitNumber");
-          String commitTime = rs.getString("time");
+          Date commitTime = rs.getTimestamp("time");
           JSONObject eachHw = new JSONObject();
           eachHw.put("status", statusEnum.getType());
           eachHw.put("commitNumber", commitNumber);
@@ -158,7 +160,7 @@ public class CommitRecordDbManager {
         int statusId = rs.getInt("status");
         StatusEnum statusEnum = csDb.getStatusNameById(statusId);
         int commitNumber = rs.getInt("commitNumber");
-        String commitTime = rs.getString("time");
+        Date commitTime = rs.getTimestamp("time");
         JSONObject eachHw = new JSONObject();
         eachHw.put("status", statusEnum.getType());
         eachHw.put("commitNumber", commitNumber);

@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fcu.selab.progedu.data.User;
+import fcu.selab.progedu.service.RoleEnum;
 
 public class UserDbManager {
   private static final String GIT_LAB_ID = "gitLabId";
@@ -20,6 +21,7 @@ public class UserDbManager {
   private static final String PASSWORD = "password";
   private static final String EMAIL = "email";
   private static final String GIT_LAB_TOKEN = "gitLabToken";
+  private static final String ROLE = "role";
   private static final String DISPLAY = "display";
 
   private static UserDbManager dbManager = new UserDbManager();
@@ -29,6 +31,7 @@ public class UserDbManager {
   }
 
   private IDatabase database = new MySqlDatabase();
+  RoleDbManager rdb = RoleDbManager.getInstance();
 
   private UserDbManager() {
 
@@ -239,6 +242,7 @@ public class UserDbManager {
           user.setEmail(email);
           user.setGitLabToken(gitLabToken);
           user.setDisplay(display);
+          user.setRole(RoleEnum.STUDENT);
           users.add(user);
         }
       }

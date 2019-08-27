@@ -1,7 +1,9 @@
 package fcu.selab.progedu.service;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
@@ -20,12 +22,14 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 
 import org.gitlab.api.models.GitlabProject;
 import org.gitlab.api.models.GitlabUser;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
+import org.json.JSONObject;
 
 import fcu.selab.progedu.config.CourseConfig;
 import fcu.selab.progedu.config.GitlabConfig;
@@ -36,6 +40,8 @@ import fcu.selab.progedu.conn.TomcatService;
 import fcu.selab.progedu.data.Assignment;
 import fcu.selab.progedu.data.User;
 import fcu.selab.progedu.db.AssignmentDbManager;
+import fcu.selab.progedu.db.AssignmentUserDbManager;
+import fcu.selab.progedu.db.UserDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.project.AssignmentFactory;
 import fcu.selab.progedu.project.AssignmentType;
@@ -58,6 +64,8 @@ public class AssignmentService {
   private String mailPassword;
   private String gitlabRootUsername;
   private AssignmentDbManager dbManager = AssignmentDbManager.getInstance();
+  private AssignmentUserDbManager auDbManager = AssignmentUserDbManager.getInstance();
+  private UserDbManager userDbManager = UserDbManager.getInstance();
   private final String tempDir = System.getProperty("java.io.tmpdir");
   private final String uploadDir = tempDir + "/uploads/";
   private final String testDir = tempDir + "/tests/";
@@ -96,13 +104,18 @@ public class AssignmentService {
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   @Produces(MediaType.APPLICATION_JSON)
   public Response createAssignment(@FormDataParam("assignmentName") String assignmentName,
-      @FormDataParam("releaseTime") String releaseTime, @FormDataParam("deadline") String deadline,
+      @FormDataParam("releaseTime") Date releaseTime, @FormDataParam("deadline") Date deadline,
       @FormDataParam("readMe") String readMe, @FormDataParam("fileRadio") String assignmentType,
       @FormDataParam("file") InputStream file,
       @FormDataParam("file") FormDataContentDisposition fileDetail) {
-
+    System.out.println(assignmentName);
+    System.out.println(releaseTime);
+    System.out.println(deadline);
+    System.out.println(readMe);
+    System.out.println(assignmentType);
+    System.out.println(file.toString());
+    System.out.println(fileDetail.getFileName());
     String rootProjectUrl = null;
-    String folderName = null;
 
     final AssignmentType assignment = AssignmentFactory.getAssignmentType(assignmentType);
     final ProjectTypeEnum projectTypeEnum = ProjectTypeEnum.getProjectTypeEnum(assignmentType);
@@ -111,13 +124,11 @@ public class AssignmentService {
     rootProjectUrl = getRootProjectUrl(assignmentName);
 
     // 2. Clone the project to C:\\Users\\users\\AppData\\Temp\\uploads
-    final String cloneDirectoryPath 
-        = gitlabService.cloneProject(gitlabRootUsername, assignmentName);
-
-    // 3. Store Zip File to folder if file is not empty
-    String filePath = null;
-    folderName = fileDetail.getFileName();
-    filePath = tomcatService.storeFileToServer(file, folderName, uploadDir, assignment);
+    final String cloneDirectoryPath = gitlabService.cloneProject(gitlabRootUsername,
+        assignmentName);
+//
+//    // 3. Store Zip File to folder if file is not empty
+    String filePath = tomcatService.storeFileToServer(file, fileDetail, uploadDir, assignment);
 
     // 4. Unzip the uploaded file to tests folder and uploads folder on tomcat,
     // extract main method from tests folder, then zip as root project
@@ -129,10 +140,10 @@ public class AssignmentService {
     assignment.createTestCase(testDirectory);
     zipHandler.zipTestFolder(testDirectory);
     testZipChecksum = zipHandler.getChecksum();
-    testZipUrl = zipHandler.serverIp
-        + "/ProgEdu/webapi/jenkins/getTestFile?filePath=" + testDirectory + ".zip";
+    testZipUrl = zipHandler.serverIp + "/ProgEdu/webapi/assignment/getTestFile?filePath="
+        + testDirectory + ".zip";
     // zipHandler.setUrlForJenkinsDownloadTestFile(zipHandler.serverIp
-    //     + "/ProgEdu/webapi/jenkins/getTestFile?filePath=" + testDirectory + ".zip");
+    // + "/ProgEdu/webapi/jenkins/getTestFile?filePath=" + testDirectory + ".zip");
 
     // 5. Add .gitkeep if folder is empty.
     tomcatService.findEmptyFolder(cloneDirectoryPath);
@@ -147,13 +158,14 @@ public class AssignmentService {
     gitlabService.pushProject(cloneDirectoryPath);
 
     // 8. remove project file in linux
-    tomcatService.removeFile(uploadDir);
+//    tomcatService.removeFile(uploadDir);
 
     // 9. String removeTestDirectoryCommand = "rm -rf tests/" + name;
-    tomcatService.removeFile(testDir + assignmentName);
+//    tomcatService.removeFile(testDir + assignmentName);
 
     // 10. import project infomation to database
     boolean hasTemplate = false;
+
     addProject(assignmentName, releaseTime, deadline, readMe, projectTypeEnum, hasTemplate,
         testZipChecksum, testZipUrl);
 
@@ -167,7 +179,7 @@ public class AssignmentService {
       } catch (IOException | LoadConfigFailureException e) {
         e.printStackTrace();
       }
-
+      addAuid(user.getUsername(), assignmentName);
       // 12. Create each Jenkins Jobs
       assignment.createJenkinsJob(user.getUsername(), assignmentName);
     }
@@ -180,7 +192,7 @@ public class AssignmentService {
   }
 
   public List<String> getAllAssignmentNames() {
-    return dbManager.listAllAssignmentNames();
+    return dbManager.getAllAssignmentNames();
   }
 
   private String getRootProjectUrl(String name) {
@@ -245,12 +257,12 @@ public class AssignmentService {
    * @param projectType File type
    * @param hasTemplate Has template
    */
-  public void addProject(String name, String releaseTime, String deadline, String readMe,
+  public void addProject(String name, Date releaseTime, Date deadline, String readMe,
       ProjectTypeEnum projectType, boolean hasTemplate, long testZipChecksum, String testZipUrl) {
     Assignment assignment = new Assignment();
-
+    Date date = tomcatService.getCurrentTime();
     assignment.setName(name);
-    assignment.setCreateTime(tomcatService.getCurrentTime());
+    assignment.setCreateTime(date);
     assignment.setReleaseTime(releaseTime);
     assignment.setDeadline(deadline);
     assignment.setDescription(readMe);
@@ -260,6 +272,19 @@ public class AssignmentService {
     assignment.setTestZipUrl(testZipUrl);
 
     dbManager.addAssignment(assignment);
+  }
+
+  /**
+   * Add auid to database
+   * 
+   * @param username       username
+   * @param assignmentName assignment name
+   */
+  public void addAuid(String username, String assignmentName) {
+    int aid = dbManager.getAssignmentIdByName(assignmentName);
+    int uid = userDbManager.getUserIdByUsername(username);
+
+    auDbManager.addAssignmentUser(aid, uid);
   }
 
   /**
@@ -327,7 +352,7 @@ public class AssignmentService {
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   @Produces(MediaType.APPLICATION_JSON)
   public Response editProject(@FormDataParam("assignmentName") String assignmentName,
-      @FormDataParam("releaseTime") String releaseTime, @FormDataParam("deadline") String deadline,
+      @FormDataParam("releaseTime") Date releaseTime, @FormDataParam("deadline") Date deadline,
       @FormDataParam("readMe") String readMe,
       @FormDataParam("testCase") InputStream uploadedInputStream,
       @FormDataParam("testCase") FormDataContentDisposition fileDetail) {
@@ -366,13 +391,23 @@ public class AssignmentService {
   @Produces(MediaType.APPLICATION_JSON)
   public Response getProject(@QueryParam("proName") String projectName) {
     Assignment assignment = dbManager.getAssignmentByName(projectName);
+
     return Response.ok().entity(assignment).build();
   }
 
-  // public void setTestFileInfo() {
-  //   testZipChecksum = String.valueOf(zipHandler.getChecksum());
-  //   testZipUrl = zipHandler.getUrlForJenkinsDownloadTestFile();
-  // }
+  /**
+   * 
+   * @return  AllProjects
+   */
+  @GET
+  @Path("getAllProjects")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response getProject() {
+    List<Assignment> assignments = dbManager.getAllAssignment();
+    JSONObject ob = new JSONObject();
+    ob.append("allProjects", assignments);
+    return Response.ok().entity(ob.toString()).build();
+  }
 
   /**
    * get course name
@@ -389,23 +424,22 @@ public class AssignmentService {
 
     return name;
   }
-  //
-  // private String getChecksum(String zipFilePath) {
-  // String strChecksum = "";
-  //
-  // try (CheckedInputStream cis = new CheckedInputStream(new
-  // FileInputStream(zipFilePath),
-  // new CRC32());) {
-  // byte[] buf = new byte[1024];
-  // // noinspection StatementWithEmptyBody
-  // while (cis.read(buf) >= 0) {
-  // }
-  // System.out.println(cis.getChecksum().getValue());
-  // strChecksum = String.valueOf(cis.getChecksum().getValue());
-  // } catch (IOException e) {
-  // e.printStackTrace();
-  // }
-  // return strChecksum;
-  // }
+
+  /**
+   * get test folder
+   * 
+   * @param filePath folder directory
+   * @return zip file
+   */
+  @GET
+  @Path("getTestFile")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response getTestFile(@QueryParam("filePath") String filePath) {
+    File file = new File(filePath);
+
+    ResponseBuilder response = Response.ok((Object) file);
+    response.header("Content-Disposition", "attachment;filename=");
+    return response.build();
+  }
 
 }

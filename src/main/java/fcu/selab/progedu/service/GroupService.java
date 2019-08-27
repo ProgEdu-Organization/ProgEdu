@@ -154,7 +154,7 @@ public class GroupService {
   public GitlabGroup createGitlabGroup(String groupName) {
     return gitlabService.createGroup(groupName);
   }
-  
+
   /**
    * Create group in database
    * 

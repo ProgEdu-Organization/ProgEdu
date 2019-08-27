@@ -380,10 +380,10 @@ public class GitlabService {
   /**
    * Create a new User
    * 
-   * @param email    User email
+   * @param email User email
    * @param password User password
    * @param username User name
-   * @param name     Full name
+   * @param name Full name
    * @return true or false
    * @throws IOException on gitlab api call error
    */
@@ -395,32 +395,32 @@ public class GitlabService {
 
     String privateToken = instance.getSession(username, password).getPrivateToken();
     user.setPrivateToken(privateToken);
-//    dbManager.addUser(user);
+    // dbManager.addUser(user);
     return user;
   }
 
-//  /**
-//   * Creates a Group
-//   *
-//   * @param groupName The name of the group. The name will also be used as the
-//   *                  path of the group.
-//   * @param owner     the owner of the group.
-//   * @return The GitLab Group
-//   */
-//  public GitlabGroup createGroup(String groupName, GitlabUser owner) {
-//    try {
-//      return gitlab.createGroupViaSudo(groupName, groupName, owner);
-//    } catch (IOException e) {
-//      System.out.println(e);
-//    }
-//    return null;
-//  }
+  // /**
+  // * Creates a Group
+  // *
+  // * @param groupName The name of the group. The name will also be used as the
+  // * path of the group.
+  // * @param owner the owner of the group.
+  // * @return The GitLab Group
+  // */
+  // public GitlabGroup createGroup(String groupName, GitlabUser owner) {
+  // try {
+  // return gitlab.createGroupViaSudo(groupName, groupName, owner);
+  // } catch (IOException e) {
+  // System.out.println(e);
+  // }
+  // return null;
+  // }
 
   /**
    * Creates a Group
    *
    * @param groupName The name of the group. The name will also be used as the
-   *                  path of the group.
+   *          path of the group.
    * @return The GitLab Group
    */
   public GitlabGroup createGroup(String groupName) {
@@ -450,8 +450,8 @@ public class GitlabService {
    * Add a member to group
    * 
    * @param groupId Group id
-   * @param userId  User id
-   * @param level   User level in group
+   * @param userId User id
+   * @param level User level in group
    * @return true or false
    * @throws IOException on gitlab api call error
    */
@@ -613,7 +613,7 @@ public class GitlabService {
    */
   public String cloneProject(String username, String projectName) {
     String repoUrl = rootUrl + "/" + username + "/" + projectName + ".git";
-    String target = System.getProperty("java.io.tmpdir") + "uploads/" + projectName;
+    String target = System.getProperty("java.io.tmpdir") + "/uploads/" + projectName;
     String cloneCommand = "git clone " + repoUrl + " " + target;
     Linux linux = new Linux();
     linux.execLinuxCommand(cloneCommand);
@@ -641,7 +641,7 @@ public class GitlabService {
    * (to do)
    * 
    * @param project (to do)
-   * @throws IOException                (to do)
+   * @throws IOException (to do)
    * @throws LoadConfigFailureException (to do)
    */
   public void setGitlabWebhook(GitlabProject project)
@@ -666,7 +666,7 @@ public class GitlabService {
   /**
    * transfer project from root to group
    * 
-   * @param groupId   group id
+   * @param groupId group id
    * @param projectId project id
    */
   public void transferProjectToGroupProject(int groupId, int projectId) {

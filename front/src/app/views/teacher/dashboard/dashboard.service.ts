@@ -9,7 +9,7 @@ import { environment } from '../../../../environments/environment';
 
 
 export class DashboardService {
-  ALL_COMMIT_API = environment.SERVER_URL + '/webapi/commits/all';
+  ALL_COMMIT_API = environment.SERVER_URL + '/ProgEdu/webapi/commits/allUsers';
   constructor(private http: HttpClient) { }
 
   getAllStudentData(): Observable<any> {

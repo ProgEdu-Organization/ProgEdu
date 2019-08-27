@@ -7,7 +7,7 @@
       <li class="nav-item px-3">
         <a class="nav-link" href="javascript:void(0);" (click)='changeToDashboard()'>Dashboard</a>
       </li>
-      <li class="nav-item px-3" *ngIf="isAdmin">
+      <li class="nav-item px-3" *ngIf="isTeacher">
         <a dropdownToggle class="nav-link dropdown-toggle" href="javascript:void(0);"> Management</a>
         <ul *dropdownMenu class="dropdown-menu" role="menu">
           <li role="menuitem"><a class="dropdown-item" href="#/dashboard/assignmentManagement">Assignment Management</a>
@@ -39,7 +39,7 @@
   </ul>
 </app-header>
 <div class="app-body">
-  <app-sidebar [fixed]="true" [display]="'lg'" *ngIf="isAdmin && navDataisload">
+  <app-sidebar [fixed]="true" [display]="'lg'" *ngIf="isTeacher">
     <app-sidebar-nav [navItems]="navItems" [perfectScrollbar] [disabled]="sidebarMinimized"></app-sidebar-nav>
     <app-sidebar-minimizer></app-sidebar-minimizer>
   </app-sidebar>
@@ -86,7 +86,7 @@
             <div class="input-group-prepend">
               <span class="input-group-text"><i class="icon-lock"></i></span>
             </div>
-            <input id='password' type="password" matInput class="form-control" placeholder="Password"
+            <input id='current-password' type="password" matInput class="form-control" placeholder="Password"
               autocomplete="current-password" formControlName="password" (change)='confirmInputOnChange()' required>
             <div id='password-invalid-feedbacks' class='invalid-feedback'>
               Your password must be at least 8 characters

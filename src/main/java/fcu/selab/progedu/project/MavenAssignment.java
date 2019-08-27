@@ -19,10 +19,10 @@ import org.xml.sax.SAXException;
 import fcu.selab.progedu.config.CourseConfig;
 import fcu.selab.progedu.config.GitlabConfig;
 import fcu.selab.progedu.conn.JenkinsService;
+import fcu.selab.progedu.db.AssignmentDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.service.StatusService;
 import fcu.selab.progedu.status.StatusEnum;
-import fcu.selab.progedu.utils.ZipHandler;
 
 public class MavenAssignment extends AssignmentType {
 
@@ -53,7 +53,8 @@ public class MavenAssignment extends AssignmentType {
       String projectUrl = gitlabConfig.getGitlabHostUrl() + "/" + username + "/" + projectName
           + ".git";
       String updateDbUrl = progEduApiUrl + "/commits/update";
-      String checksumUrl = progEduApiUrl + "project/checksum?proName=" + projectName;
+      String checksumUrl = progEduApiUrl + "/assignment/checksum?proName=" + projectName;
+      String testFileUrl = AssignmentDbManager.getInstance().getTestFileUrl(projectName);
       DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
       DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
       Document doc = docBuilder.parse(jenkinsJobConfigPath);
@@ -64,6 +65,7 @@ public class MavenAssignment extends AssignmentType {
       doc.getElementsByTagName("testFileName").item(0).setTextContent(projectName);
       doc.getElementsByTagName("proDetailUrl").item(0).setTextContent(checksumUrl);
       doc.getElementsByTagName("progeduDbUrl").item(0).setTextContent(updateDbUrl);
+      doc.getElementsByTagName("testFileUrl").item(0).setTextContent(testFileUrl);
       doc.getElementsByTagName("user").item(0).setTextContent(username);
       doc.getElementsByTagName("proName").item(0).setTextContent(projectName);
 
