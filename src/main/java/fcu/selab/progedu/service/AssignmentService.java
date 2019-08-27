@@ -158,10 +158,10 @@ public class AssignmentService {
     gitlabService.pushProject(cloneDirectoryPath);
 
     // 8. remove project file in linux
-//    tomcatService.removeFile(uploadDir);
+    tomcatService.removeFile(uploadDir);
 
     // 9. String removeTestDirectoryCommand = "rm -rf tests/" + name;
-//    tomcatService.removeFile(testDir + assignmentName);
+    tomcatService.removeFile(testDir + assignmentName);
 
     // 10. import project infomation to database
     boolean hasTemplate = false;
@@ -300,14 +300,8 @@ public class AssignmentService {
   public Response deleteProject(@FormDataParam("del_Hw_Name") String name) {
     Linux linuxApi = new Linux();
     // delete tomcat test file
-    String removeTestDirectoryCommand = "rm -rf tests/" + name;
-    linuxApi.execLinuxCommandInFile(removeTestDirectoryCommand, tempDir);
-
     String removeZipTestFileCommand = "rm tests/" + name + ".zip";
     linuxApi.execLinuxCommandInFile(removeZipTestFileCommand, tempDir);
-
-    String removeFileCommand = "rm -rf tests/" + name + "-COMPLETE";
-    linuxApi.execLinuxCommandInFile(removeFileCommand, tempDir);
     // delete db
     CommitRecordService commitRecordService = new CommitRecordService();
     dbManager.deleteAssignment(name);
@@ -397,7 +391,7 @@ public class AssignmentService {
 
   /**
    * 
-   * @return  AllProjects
+   * @return AllProjects
    */
   @GET
   @Path("getAllProjects")

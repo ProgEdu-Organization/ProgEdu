@@ -20,6 +20,8 @@ import javax.ws.rs.core.Response;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import fcu.selab.progedu.conn.JenkinsService;
+import fcu.selab.progedu.data.CommitRecord;
 import fcu.selab.progedu.data.User;
 import fcu.selab.progedu.db.AssignmentDbManager;
 import fcu.selab.progedu.db.AssignmentTypeDbManager;
@@ -33,12 +35,13 @@ import fcu.selab.progedu.status.StatusEnum;
 
 @Path("commits/")
 public class CommitRecordService {
-  CommitRecordDbManager db = CommitRecordDbManager.getInstance();
-  AssignmentUserDbManager auDb = AssignmentUserDbManager.getInstance();
-  UserDbManager userDb = UserDbManager.getInstance();
-  AssignmentDbManager assignmentDb = AssignmentDbManager.getInstance();
-  AssignmentTypeDbManager atDb = AssignmentTypeDbManager.getInstance();
-  CommitStatusDbManager csdb = CommitStatusDbManager.getInstance();
+  private CommitRecordDbManager db = CommitRecordDbManager.getInstance();
+  private AssignmentUserDbManager auDb = AssignmentUserDbManager.getInstance();
+  private UserDbManager userDb = UserDbManager.getInstance();
+  private AssignmentDbManager assignmentDb = AssignmentDbManager.getInstance();
+  private AssignmentTypeDbManager atDb = AssignmentTypeDbManager.getInstance();
+  private CommitStatusDbManager csdb = CommitStatusDbManager.getInstance();
+  private JenkinsService js = JenkinsService.getInstance();
 
   /**
    * get all commit result.
@@ -56,10 +59,10 @@ public class CommitRecordService {
       String username = user.getUsername();
       Response userCommitRecord = getOneUserCommitRecord(username);
       JSONObject ob = new JSONObject();
-      
+
       ob.put("name", user.getName());
       ob.put("username", user.getUsername());
-      ob.put("commitRecord",new JSONObject(userCommitRecord.getEntity().toString()));
+      ob.put("commitRecord", new JSONObject(userCommitRecord.getEntity().toString()));
       array.put(ob);
     }
     result.put("allUsersCommitRecord", array);
@@ -102,15 +105,30 @@ public class CommitRecordService {
    * @return build detail
    */
   @GET
-  @Path("buildDetail")
+  @Path("commitRecords")
   @Produces(MediaType.APPLICATION_JSON)
   public Response getCommitRecord(@QueryParam("username") String username,
       @QueryParam("assignmentName") String assignmentName) {
+    JSONArray array = new JSONArray();
+    String jobName = username + "_" + assignmentName;
     int auId = auDb.getAuid(assignmentDb.getAssignmentIdByName(assignmentName),
         userDb.getUserIdByUsername(username));
-    JSONObject buildDetail = db.getCommitRecord(auId);
-    // ob.put("message", commitMessage);
-    return Response.ok().entity(buildDetail.toString()).build();
+    List<CommitRecord> commitRecords = db.getCommitRecord(auId);
+    for (CommitRecord commitRecord : commitRecords) {
+      int number = commitRecord.getNumber();
+      String message = js.getCommitMessage(jobName, number);
+      Date time = commitRecord.getTime();
+      String status = commitRecord.getStatus().getType();
+      JSONObject ob = new JSONObject();
+
+      ob.put("number", number);
+      ob.put("status", status);
+      ob.put("time", time);
+      ob.put("message", message);
+      array.put(ob);
+    }
+
+    return Response.ok(array.toString()).build();
   }
 
   /**
