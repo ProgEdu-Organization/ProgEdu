@@ -303,7 +303,10 @@ public class AssignmentService {
     // delete tomcat test file
     String removeZipTestFileCommand = "rm tests/" + name + ".zip";
     linuxApi.execLinuxCommandInFile(removeZipTestFileCommand, tempDir);
+<<<<<<< HEAD
 
+=======
+>>>>>>> fcuselab/#71
     // delete db
     CommitRecordService commitRecordService = new CommitRecordService();
     dbManager.deleteAssignment(name);
