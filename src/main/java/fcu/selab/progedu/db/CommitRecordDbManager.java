@@ -150,7 +150,6 @@ public class CommitRecordDbManager {
     String sql = "SELECT * from Commit_Record as a WHERE (a.commitNumber = "
         + "(SELECT max(commitNumber) FROM Commit_Record WHERE auId = ?) AND auId = ?);";
     JSONObject ob = new JSONObject();
-    JSONArray array = new JSONArray();
 
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
@@ -162,14 +161,11 @@ public class CommitRecordDbManager {
           StatusEnum statusEnum = csDb.getStatusNameById(statusId);
           int commitNumber = rs.getInt("commitNumber");
           Date commitTime = rs.getTimestamp("time");
-          JSONObject eachHw = new JSONObject();
-          eachHw.put("status", statusEnum.getType());
-          eachHw.put("commitNumber", commitNumber);
-          eachHw.put("commitTime", commitTime);
-          array.put(eachHw);
+          ob.put("status", statusEnum.getType());
+          ob.put("commitNumber", commitNumber);
+          ob.put("commitTime", commitTime);
         }
       }
-      ob.put("commits", array);
     } catch (SQLException e) {
       e.printStackTrace();
     }

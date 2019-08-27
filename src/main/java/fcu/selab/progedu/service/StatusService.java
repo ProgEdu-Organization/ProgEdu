@@ -31,7 +31,7 @@ public class StatusService {
    */
   public boolean isBuildSuccess(String console) {
     boolean isBuildSuccess = false;
-    if (console.contains("Finished: SUCCESS")) {
+    if (console.contains("BUILD SUCCESS")) {
       isBuildSuccess = true;
     }
     return isBuildSuccess;

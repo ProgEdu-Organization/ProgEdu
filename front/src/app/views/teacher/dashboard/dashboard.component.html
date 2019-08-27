@@ -41,12 +41,12 @@
             <br>
             {{student.name}}
           </th>
-
+          {{student.commitRecord.oneUserCommitRecord}}
           <th *ngFor='let commit of student.commitRecord.oneUserCommitRecord'>
-            {{commit.commitRecord.commits.commitNumber}}
-            <p id="{{student.userName}}_{{commit.hw}}" class="circle {{commit.status}}">
-              <a id="{{student.userName}}_{{commit.hw}}_{{commit.commit}}"
-                href="#/dashboard/dashprojectChoosed?userId=3&proName=WEB-HW5">{{commit.commit}}</a>
+
+            <p id="{{student.username}}_{{commit.assignmentName}}" class="circle {{commit.status}}">
+              <a id="{{student.username}}_{{commit.assignmentName}}_{{commit.commit}}"
+                href="#/dashboard/dashprojectChoosed?userId=3&proName=WEB-HW5">{{commit.commitNumber}}</a>
             </p>
           </th>
           <th class='text-left'></th>
