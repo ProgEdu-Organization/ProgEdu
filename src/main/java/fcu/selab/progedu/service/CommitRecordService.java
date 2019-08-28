@@ -21,8 +21,10 @@ import javax.ws.rs.core.Response;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import fcu.selab.progedu.data.Assignment;
 import fcu.selab.progedu.conn.JenkinsService;
 import fcu.selab.progedu.data.CommitRecord;
+
 import fcu.selab.progedu.data.User;
 import fcu.selab.progedu.db.AssignmentDbManager;
 import fcu.selab.progedu.db.AssignmentTypeDbManager;
@@ -82,14 +84,14 @@ public class CommitRecordService {
   public Response getOneUserCommitRecord(@QueryParam("username") String username) {
     System.out.println(username);
     int userId = userDb.getUserIdByUsername(username);
-    List<Integer> aids = auDb.getAIds(userId);
-    JSONObject result = new JSONObject();
-    for (int assignment : aids) {
-      int auId = auDb.getAuid(assignment, userId);
-      String assignmentName = assignmentDb.getAssignmentNameById(assignment);
-      JSONObject ob = db.getLastCommitRecord(auId);
-      ob.put("assignmentName", assignmentName);
-      result.put("oneUserCommitRecord", ob);
+
+    for (Assignment assignment : assignmentDb.getAllAssignment()) {
+      int auId = auDb.getAuid(assignment.getId(), userId);
+      JSONObject ob = new JSONObject();
+      ob.put("assignmentName", assignment.getName());
+      ob.put("commitRecord", db.getLastCommitRecord(auId));
+      array.put(ob);
+
     }
     return Response.ok(result.toString()).build();
   }

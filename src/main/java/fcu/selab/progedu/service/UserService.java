@@ -59,19 +59,21 @@ public class UserService {
       csvReader.readHeaders();
       while (csvReader.readRecord()) {
         User newUser = new User();
+        String role = csvReader.get("Role");
+        RoleEnum roleEnum = RoleEnum.getRoleEnum(role);
+        List<RoleEnum> roleList = new ArrayList<>();
+        roleList.add(roleEnum);
         String username = csvReader.get("Username");
         String password = csvReader.get("Password");
         String name = csvReader.get("Name");
         String email = csvReader.get("Email");
-        String role = csvReader.get("Role");
-        RoleEnum roleEnum = RoleEnum.getRoleEnum(role);
 
         newUser.setDisplay(true);
         newUser.setUsername(username);
         newUser.setPassword(password);
         newUser.setName(name);
         newUser.setEmail(email);
-        newUser.setRole(roleEnum);
+        newUser.setRole(roleList);
         errorMessage = getErrorMessage(users, newUser);
         if (errorMessage.isEmpty()) {
           users.add(newUser);
@@ -112,8 +114,12 @@ public class UserService {
       @FormParam("isDisplayed") boolean isDisplayed) {
     Response response = null;
     System.out.println(name + "  " + username);
+    List<RoleEnum> roleList = new ArrayList<>();
+
     RoleEnum roleEnum = RoleEnum.getRoleEnum(role);
-    User user = new User(username, name, email, password, roleEnum, isDisplayed);
+    roleList.add(roleEnum);
+
+    User user = new User(username, name, email, password, roleList, isDisplayed);
     String errorMessage = getErrorMessage(user);
     System.out.println(errorMessage);
     if (errorMessage.isEmpty()) {
@@ -185,7 +191,7 @@ public class UserService {
     List<User> users = dbManager.getAllUsers();
 
     for (User user : users) {
-      if (user.getRole() == RoleEnum.STUDENT) {
+      if (user.getRole().contains(RoleEnum.STUDENT)) {
         studentUsers.add(user);
       }
     }
@@ -204,9 +210,7 @@ public class UserService {
     user.setGitLabId(gitlabUser.getId());
 
     dbManager.addUser(user);
-    int rid = rdb.getRoleIdByName(user.getRole().getTypeName());
-    user.setId(dbManager.getUserIdByUsername(user.getUsername()));
-    rudb.addRoleUser(rid, user.getId());
+    rudb.addRoleUser(user);
 
   }
 

@@ -32,6 +32,7 @@ public class UserDbManager {
 
   private IDatabase database = new MySqlDatabase();
   RoleDbManager rdb = RoleDbManager.getInstance();
+  RoleUserDbManager rudb = RoleUserDbManager.getInstance();
 
   private UserDbManager() {
 
@@ -255,6 +256,7 @@ public class UserDbManager {
           String email = rs.getString(EMAIL);
           String gitLabToken = rs.getString(GIT_LAB_ID);
           boolean display = rs.getBoolean(DISPLAY);
+          List<RoleEnum> roleList = rudb.getRoleList(id);
 
           User user = new User();
           user.setId(id);
@@ -265,7 +267,7 @@ public class UserDbManager {
           user.setEmail(email);
           user.setGitLabToken(gitLabToken);
           user.setDisplay(display);
-          user.setRole(RoleEnum.STUDENT);
+          user.setRole(roleList);
           users.add(user);
         }
       }
