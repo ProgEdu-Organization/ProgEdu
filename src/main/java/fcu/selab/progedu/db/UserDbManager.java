@@ -125,7 +125,7 @@ public class UserDbManager {
 
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(query)) {
-      String newPass = passwordMD5(password) + username;
+      String newPass = passwordMD5(password);
       preStmt.setString(1, newPass);
       preStmt.setString(2, username);
       preStmt.executeUpdate();

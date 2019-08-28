@@ -143,7 +143,9 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
     console.log(this.modifySecretForm.value);
     if (this.modifySecretForm.dirty && this.modifySecretForm.valid && this.isConfirm) {
       this.defaultLayoutService.modifySecret(this.modifySecretForm).subscribe(
-        response => { },
+        response => {
+          this.router.navigate(['login']);
+        },
         error => {
         }
       );

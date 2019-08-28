@@ -13,27 +13,38 @@ example: http://localhost:4200/#/dashboard/dashprojectchoosed?userId=3&proName=W
   ]
 })
 export class DashProjectChoosedComponent implements OnInit {
-  gitlabId: string;
-  proName: string;
-  commitData: Array<JSON> = [];
+  username: string;
+  assignmentName: string;
+  assignment;
+  commits: Array<JSON> = [];
   constructor(private route: ActivatedRoute, private dashProjectService: DashProjectChoosedService) { }
 
   ngOnInit() {
-    this.gitlabId = this.route.snapshot.queryParamMap.get('gitlabId');
-    this.proName = this.route.snapshot.queryParamMap.get('proName');
-    this.getCommitData();
-    this.getFeedback();
+    this.username = this.route.snapshot.queryParamMap.get('username');
+    this.assignmentName = this.route.snapshot.queryParamMap.get('assignmentName');
+    this.getCommitDetail();
+    this.getAssignment();
   }
 
-  async getCommitData() {
-    this.dashProjectService.getCommitData().subscribe(response => {
-      this.commitData.push(response);
-      console.log(response);
+  async getCommitDetail() {
+    this.dashProjectService.getCommitDetail(this.assignmentName, this.username).subscribe(response => {
+      this.commits = response;
     });
   }
 
-  async getFeedback() {
-    const url = 'http://140.134.26.71:58321/job/D0350510_WEB-HW5/1/console';
+  async getAssignment() {
+    this.dashProjectService.getAssignment(this.assignmentName).subscribe(response => {
+      this.assignment = response;
+    });
+  }
+
+  async getFeedback(commitNumber) {
+    this.dashProjectService.getFeedback(this.assignmentName, this.username, commitNumber).subscribe(
+      response => {
+
+      },
+      error => { },
+    );
   }
 
 }

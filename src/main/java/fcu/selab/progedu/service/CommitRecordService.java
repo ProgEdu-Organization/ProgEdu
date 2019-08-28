@@ -119,7 +119,7 @@ public class CommitRecordService {
       JSONObject ob = new JSONObject();
 
       ob.put("number", number);
-      ob.put("status", status);
+      ob.put("status", status.toUpperCase());
       ob.put("time", time);
       ob.put("message", message);
       array.put(ob);
