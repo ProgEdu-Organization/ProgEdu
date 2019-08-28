@@ -58,7 +58,7 @@ public class ScreenshotRecordService {
    */
   @GET
   @Path("nextCommitNumber/")
-  @Produces(MediaType.TEXT_PLAIN)
+  @Produces(MediaType.APPLICATION_JSON)
   public int getJenkinsNextBuildNumber(@QueryParam("jobName") String jobName) {
     int nextBuildNumber = 0;
     String username = "";
@@ -114,13 +114,17 @@ public class ScreenshotRecordService {
   /**
    * update stu project commit record.
    * 
-   * @param proName project name
-   * @param urls    screenshot png urls
-   * @throws SQLException SQLException
+   * @param proName
+   *          project name
+   * @param urls
+   *          screenshot png urls
+   * @throws SQLException
+   *           SQLException
    */
   @POST
   @Path("updateURL")
   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+  @Produces(MediaType.APPLICATION_JSON)
   public Response updateScreenshotPng(@FormParam("proName") String proName,
       @FormParam("url") List<String> urls) {
     String[] userJob = proName.split("_");
