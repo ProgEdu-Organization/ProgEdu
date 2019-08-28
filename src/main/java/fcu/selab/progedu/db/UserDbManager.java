@@ -32,6 +32,7 @@ public class UserDbManager {
 
   private IDatabase database = new MySqlDatabase();
   RoleDbManager rdb = RoleDbManager.getInstance();
+  RoleUserDbManager rudb = RoleUserDbManager.getInstance();
 
   private UserDbManager() {
 
@@ -174,6 +175,29 @@ public class UserDbManager {
   }
 
   /**
+   * user name to find userId in db
+   * 
+   * @return id
+   */
+  public int getGitLabIdByUsername(String username) {
+    String query = "SELECT gitLabId FROM User WHERE username = ?";
+    int id = -1;
+
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(query)) {
+      preStmt.setString(1, username);
+      try (ResultSet rs = preStmt.executeQuery();) {
+        while (rs.next()) {
+          id = rs.getInt("gitLabId");
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return id;
+  }
+
+  /**
    * Get user from database
    * 
    * @param username The gitlab user name
@@ -232,6 +256,7 @@ public class UserDbManager {
           String email = rs.getString(EMAIL);
           String gitLabToken = rs.getString(GIT_LAB_ID);
           boolean display = rs.getBoolean(DISPLAY);
+          List<RoleEnum> roleList = rudb.getRoleList(id);
 
           User user = new User();
           user.setId(id);
@@ -242,7 +267,7 @@ public class UserDbManager {
           user.setEmail(email);
           user.setGitLabToken(gitLabToken);
           user.setDisplay(display);
-          user.setRole(RoleEnum.STUDENT);
+          user.setRole(roleList);
           users.add(user);
         }
       }

@@ -9,21 +9,28 @@ import { AssignmentManagementService } from './assignment-management.service';
 })
 export class AssignmentManagementComponent implements OnInit {
   @ViewChild('dangerModal', { static: false }) public dangerModal: ModalDirective;
-  projects: Array<any>;
-  deleteProjectName: string;
+  assignments: Array<any>;
+  assignmentName: string;
   constructor(private assignmentService: AssignmentManagementService, private router: Router) { }
 
   ngOnInit() {
-    this.getAllProjects();
+    this.getAllAssignments();
   }
 
-  getAllProjects() {
-    this.assignmentService.getAllProjects().subscribe(response => {
-      console.log(response.allProjects);
-      this.projects = response.allProjects;
+  getAllAssignments() {
+    this.assignmentService.getAllAssignments().subscribe(response => {
+      console.log(response);
+      this.assignments = response.allAssignments;
 
     });
   }
+
+  deleteAssignment() {
+    this.assignmentService.deleteAssignment(this.assignmentName).subscribe(response => {
+
+    });
+  }
+
   changeToCreatePage() {
     this.router.navigate(['./dashboard/assignmentManagement/create']);
   }
@@ -32,12 +39,8 @@ export class AssignmentManagementComponent implements OnInit {
     this.router.navigate(['./dashboard/assignmentManagement/edit']);
   }
 
-  setdeleteProjectName(data) {
-    this.deleteProjectName = data;
+  setSelectAssignment(data) {
+    this.assignmentName = data;
     console.log(data);
-  }
-
-  deleteProject() {
-    console.log(this.deleteProjectName);
   }
 }
