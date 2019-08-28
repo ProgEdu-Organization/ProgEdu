@@ -48,13 +48,6 @@
   <main class="main">
     <cui-breadcrumb>
       <!-- Breadcrumb Menu-->
-      <li class="breadcrumb-menu d-md-down-none">
-        <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-          <a class="btn" href="#"><i class="icon-speech"></i></a>
-          <a class="btn" [routerLink]="['/dashboard']"><i class="icon-graph"></i> &nbsp;Dashboard</a>
-          <a class="btn" href="#"><i class="icon-settings"></i> &nbsp;Settings</a>
-        </div>
-      </li>
     </cui-breadcrumb>
     <div class="container-fluid">
       <router-outlet></router-outlet>
@@ -72,8 +65,8 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body">
-        <form *ngIf="modifySecretForm" [formGroup]=" modifySecretForm" (ngSubmit)="modifySecret">
+      <form *ngIf="modifySecretForm" [formGroup]=" modifySecretForm" (ngSubmit)="modifySecret()">
+        <div class="modal-body">
           <p class="text-muted">write your password</p>
           <div class="input-group mb-3">
             <div class="input-group-prepend">
@@ -86,10 +79,10 @@
             <div class="input-group-prepend">
               <span class="input-group-text"><i class="icon-lock"></i></span>
             </div>
-            <input id='current-password' type="password" matInput class="form-control" placeholder="Password"
-              autocomplete="current-password" formControlName="password" (change)='confirmInputOnChange()' required>
-            <div id='password-invalid-feedbacks' class='invalid-feedback'>
-              Your password must be at least 8 characters
+            <input id='currentPassword' type="password" matInput class="form-control" placeholder="Current Password"
+              autocomplete="currentPassword" formControlName="currentPassword">
+            <div id='currentPassword-invalid-feedbacks' class='invalid-feedback'>
+              Please sure the current_password
             </div>
           </div>
 
@@ -97,9 +90,19 @@
             <div class="input-group-prepend">
               <span class="input-group-text"><i class="icon-lock"></i></span>
             </div>
-            <input id='confirmPassword' type="password" matInput class="form-control" placeholder="Confirm Password"
-              autocomplete="current-password" formControlName="confirmPassword" (change)='confirmInputOnChange()'
-              required>
+            <input id='newPassword' type="password" matInput class="form-control" placeholder="New Password"
+              autocomplete="current-password" formControlName="newPassword">
+            <div id='newPassword-invalid-feedbacks' class='invalid-feedback'>
+              Please sure the confirm password
+            </div>
+          </div>
+
+          <div class="input-group mb-4">
+            <div class="input-group-prepend">
+              <span class="input-group-text"><i class="icon-lock"></i></span>
+            </div>
+            <input id='confirmPassword' type="password" matInput class="form-control" placeholder="Confirm New Password"
+              autocomplete="current-password" formControlName="confirmPassword">
             <div id='confirmPassword-invalid-feedbacks' class='invalid-feedback'>
               Please sure the confirm password
             </div>
@@ -107,14 +110,15 @@
 
           <div class="row">
             <div class="col-6">
-              <button type="submit" class="btn btn-primary px-4" (click)='modifySecret()'>save changes</button>
+              <button type="submit" class="btn btn-primary px-4" [disabled]="!modifySecretForm.valid || !isConfirm">save
+                changes</button>
             </div>
           </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" (click)="modifySecretModal.hide()">Close</button>
-      </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="modifySecretModal.hide()">Close</button>
+        </div>
+      </form>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->

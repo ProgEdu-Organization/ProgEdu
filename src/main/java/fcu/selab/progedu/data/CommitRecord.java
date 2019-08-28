@@ -1,5 +1,7 @@
 package fcu.selab.progedu.data;
 
+import java.util.Date;
+
 import fcu.selab.progedu.status.StatusEnum;
 
 public class CommitRecord {
@@ -10,7 +12,35 @@ public class CommitRecord {
 
   private StatusEnum status;
 
-  private int commitNumber;
+  private int number;
+
+  private String message;
+
+  private Date time;
+
+  public int getNumber() {
+    return number;
+  }
+
+  public void setNumber(int number) {
+    this.number = number;
+  }
+
+  public String getMessage() {
+    return message;
+  }
+
+  public void setMessage(String message) {
+    this.message = message;
+  }
+
+  public Date getTime() {
+    return time;
+  }
+
+  public void setTime(Date time) {
+    this.time = time;
+  }
 
   public int getId() {
     return id;
@@ -26,14 +56,6 @@ public class CommitRecord {
 
   public void setAuId(int auId) {
     this.auId = auId;
-  }
-
-  public int getCommitNumber() {
-    return commitNumber;
-  }
-
-  public void setCommitNumber(int commitNumber) {
-    this.commitNumber = commitNumber;
   }
 
   public StatusEnum getStatus() {

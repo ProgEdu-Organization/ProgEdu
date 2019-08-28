@@ -10,7 +10,7 @@
       <table class='table table-striped' style="text-align:center;">
         <thead>
           <tr>
-            <th class='text-left'>Name</th>
+            <th>Name</th>
             <th>Create time
             </th>
             <th>Deadline </th>
@@ -19,18 +19,20 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let project of projects">
-            <td>{{project.name}}</td>
-            <td>{{project.createTime | date:'medium'}}
+          <tr *ngFor="let assignment of assignments">
+            <td>{{assignment.name}}</td>
+            <td>{{assignment.createTime | date:'medium'}}
             </td>
-            <td>{{project.deadline | date:'medium'}}
+            <td>{{assignment.deadline | date:'medium'}}
             </td>
-            <td><button id="{{project.name}}" class="btn btn-info" (click)="editModal.show();"><i
+            <td><button id="{{assignment.name}}" class="btn btn-info"
+                (click)="editModal.show();setSelectAssignment(assignment.name)"><i
                   class="cui-pencil icons"></i></button>
             </td>
             <td>
-              <button id="{{project.name}}" class="btn btn-danger" type="button" data-toggle="modal"
-                (click)="deleteModal.show();setdeleteProjectName(project.name)"><i class="cui-trash icons"></i></button>
+              <button id="{{assignment.name}}" class="btn btn-danger" type="button" data-toggle="modal"
+                (click)="deleteModal.show();setSelectAssignment(assignment.name)"><i
+                  class="cui-trash icons"></i></button>
             </td>
           </tr>
         </tbody>
@@ -38,40 +40,40 @@
     </div>
   </div>
 </div>
-<!--Alert Delete Project Modal-->
+<!--Alert Delete Assignment Modal-->
 <div bsModal #deleteModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
   aria-hidden="true">
   <div class="modal-dialog modal-danger" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title">Delete Project</h4>
+        <h4 class="modal-title">Delete Assignment</h4>
         <button type="button" class="close" (click)="deleteModal.hide()" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <!--Delete Project Main-->
+      <!--Delete Assignment Main-->
       <div class="modal-body">
-        <p>Do you Want to Delete this {{deleteProjectName}} Project&hellip;</p>
+        <p>Do you Want to Delete this "{{assignmentName}}" Assignment&hellip;</p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" (click)="deleteModal.hide()">Close</button>
-        <button type="button" class="btn btn-danger" (click)="deleteProject()">Delete</button>
+        <button type="button" class="btn btn-danger" (click)="deleteAssignment()">Delete</button>
       </div>
     </div>
   </div>
 </div>
-<!--Edit Project Modal-->
+<!--Edit Assignment Modal-->
 <div bsModal #editModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
   aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title">Edit Project</h4>
+        <h4 class="modal-title">Edit Assignment</h4>
         <button type="button" class="close" (click)="editModal.hide()" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <!--Edit Project Main-->
+      <!--Edit Assignment Main-->
       <div class="modal-body">
         <form action="" method="post" class="form-horizontal">
           <div class="form-group row">

@@ -148,14 +148,14 @@ public class UserService {
   @POST
   @Path("updatePassword")
   @Consumes(MediaType.MULTIPART_FORM_DATA)
-  public Response updatePassword(@FormDataParam("id") Integer id,
+  public Response updatePassword(@FormDataParam("username") String username,
       @FormDataParam("currentPassword") String currentPassword,
       @FormDataParam("newPassword") String newPassword) {
     Response response = null;
-    String username = gitlabService.getUserById(id).getUsername();
     boolean isSame = dbManager.checkPassword(username, currentPassword);
     if (isSame) {
-      gitlabService.updateUserPassword(id, newPassword);
+      int gitLabId = dbManager.getGitLabIdByUsername(username);
+      gitlabService.updateUserPassword(gitLabId, newPassword);
       dbManager.modifiedUserPassword(username, newPassword);
       response = Response.ok().build();
     } else {

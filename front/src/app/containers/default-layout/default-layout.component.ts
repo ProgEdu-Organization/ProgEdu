@@ -31,6 +31,7 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
   disabled: boolean = false;
   isDropup: boolean = true;
   autoClose: boolean = false;
+  isConfirm: boolean = false;
   @ViewChild('modifySecretModal', { static: false }) public modifySecretModal: ModalDirective;
 
   constructor(@Inject(DOCUMENT) _document?: any, private defaultLayoutService?: DefaultLayoutService,
@@ -51,7 +52,7 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
     // Called after the constructor, initializing input properties, and the first call to ngOnChanges.
     // Add 'implements OnInit' to the class.
     this.user = new User(this.jwtService);
-    if (this.user.getIsTeacher) {
+    if (this.user.isTeacher) {
       this.dashboard = '/dashboard';
       this.isTeacher = true;
     } else {
@@ -59,21 +60,22 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
     }
     /* Modify Secret Area*/
     this.modifySecretForm = this.fb.group({
-      username: [this.user.getUsername(), Validators.pattern('^[a-zA-Z0-9-_]{5,20}')],
-      password: ['', Validators.pattern('^[a-zA-Z0-9-_]{5,20}')],
-      confirmPassword: ['', Validators.pattern('^[a-zA-Z0-9-_]{5,20}')],
+      username: [this.user.getUsername(), Validators.pattern('^[a-zA-Z0-9-_]{8,20}')],
+      currentPassword: ['', [Validators.pattern('^[a-zA-Z0-9-_]{8,20}'), Validators.required]],
+      newPassword: ['', [Validators.pattern('^[a-zA-Z0-9-_]{8,20}'), Validators.required]],
+      confirmPassword: ['', [Validators.pattern('^[a-zA-Z0-9-_]{8,20}'), Validators.required]],
       rememberMe: [true]
     });
 
     this.updateNavData();
-    // console.log($('a[.navbar]').attr('href', 'studashboard'))
+
+    this.modifySecretAreaOnchange();
   }
 
   async updateNavData() {
     // clear student array
     this.navItems[2].children.length = 0;
     this.defaultLayoutService.getNavData().subscribe(response => {
-      console.log('test' + JSON.stringify(response));
       this.navData = response.allUsersCommitRecord.sort(function (a, b) {
         return a.name > b.name ? 1 : - 1;
       });
@@ -90,6 +92,45 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
     });
   }
 
+  modifySecretAreaOnchange() {
+    const currentPassword = 'currentPassword';
+    const newPassword = 'newPassword';
+    const confirmPassword = 'confirmPassword';
+    this.modifySecretForm.get(currentPassword).valueChanges.subscribe(
+      () => this.modifySecretForm.get(currentPassword).valid ?
+        this.showIsValidById(currentPassword) : this.hideIsInvalidById(currentPassword)
+    );
+    this.modifySecretForm.get(newPassword).valueChanges.subscribe(
+      () => {
+        this.modifySecretForm.get(newPassword).valid ?
+          this.showIsValidById(newPassword) : this.hideIsInvalidById(newPassword),
+          this.hideIsInvalidById(confirmPassword),
+          this.isConfirm = false;
+      }
+    );
+    this.modifySecretForm.get(confirmPassword).valueChanges.subscribe(
+      value => {
+        if (value === this.modifySecretForm.get(newPassword).value) {
+          this.showIsValidById(confirmPassword);
+          this.isConfirm = true;
+        } else {
+          this.hideIsInvalidById(confirmPassword);
+          this.isConfirm = false;
+        }
+      }
+    );
+  }
+
+  showIsValidById(id: string) {
+    $('#' + id).addClass('is-valid');
+    $('#' + id).removeClass('is-invalid');
+  }
+
+  hideIsInvalidById(id: string) {
+    $('#' + id).removeClass('is-valid');
+    $('#' + id).addClass('is-invalid');
+  }
+
   changeToDashboard() {
     this.router.navigate([this.dashboard]);
   }
@@ -98,29 +139,15 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
     this.jwtService.removeToken();
   }
 
-  confirmInputOnChange() {
-    const password = this.modifySecretForm.value.password;
-    const confirmPassword = this.modifySecretForm.value.confirmPassword;
-
-    if (password.length >= 8) {
-      $('#password').addClass('is-valid').removeClass('is-invalid');
-      $('#password-invalid-feedbacks').hide();
-    } else {
-      $('#password').addClass('is-invalid').removeClass('is-valid');
-      $('#password-invalid-feedbacks').show();
-    }
-    if (confirmPassword !== '') {
-      if (password === confirmPassword) {
-        $('#confirmPassword').addClass('is-valid').removeClass('is-invalid');
-        $('#confirmPassword-invalid-feedbacks').hide();
-      } else {
-        $('#confirmPassword').addClass('is-invalid').removeClass('is-valid');
-        $('#confirmPassword-invalid-feedbacks').show();
-      }
-    }
-  }
-
   modifySecret() {
+    console.log(this.modifySecretForm.value);
+    if (this.modifySecretForm.dirty && this.modifySecretForm.valid && this.isConfirm) {
+      this.defaultLayoutService.modifySecret(this.modifySecretForm).subscribe(
+        response => { },
+        error => {
+        }
+      );
+    }
     console.log('modifySecret');
   }
 

@@ -10,7 +10,7 @@ export class StudashboardComponent implements OnInit {
   public data: Array<any> = new Array<any>();
   public tableHead: Array<any> = new Array<any>();
   public tableData: Array<any> = new Array<any>();
-  public studentDatas: JSON;
+  public studentData: JSON;
   public user: User;
   constructor(private studashboardService: StudashboardService, private jwtService?: JwtService) { }
   async ngOnInit() {
@@ -21,12 +21,11 @@ export class StudashboardComponent implements OnInit {
 
   async getAllStudentData() {
     // clear student array
-    this.studashboardService.getAllStudentData().subscribe(response => {
+    this.user = new User(this.jwtService);
+    this.studashboardService.getStudentData(this.user.getUsername()).subscribe(response => {
       console.log(response);
-      this.user = new User(this.jwtService);
-      console.log('userID' + this.user.getUsername());
-      this.studentDatas = response.result;
-      this.tableHead = this.studentDatas[0].commits;
+      console.log('username: ' + this.user.getUsername());
+      this.studentData = response.oneUserCommitRecord;
     });
   }
 

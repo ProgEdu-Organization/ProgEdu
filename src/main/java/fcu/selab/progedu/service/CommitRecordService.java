@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import javax.naming.spi.DirStateFactory.Result;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -21,6 +22,9 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import fcu.selab.progedu.data.Assignment;
+import fcu.selab.progedu.conn.JenkinsService;
+import fcu.selab.progedu.data.CommitRecord;
+
 import fcu.selab.progedu.data.User;
 import fcu.selab.progedu.db.AssignmentDbManager;
 import fcu.selab.progedu.db.AssignmentTypeDbManager;
@@ -34,12 +38,13 @@ import fcu.selab.progedu.status.StatusEnum;
 
 @Path("commits/")
 public class CommitRecordService {
-  CommitRecordDbManager db = CommitRecordDbManager.getInstance();
-  AssignmentUserDbManager auDb = AssignmentUserDbManager.getInstance();
-  UserDbManager userDb = UserDbManager.getInstance();
-  AssignmentDbManager assignmentDb = AssignmentDbManager.getInstance();
-  AssignmentTypeDbManager atDb = AssignmentTypeDbManager.getInstance();
-  CommitStatusDbManager csdb = CommitStatusDbManager.getInstance();
+  private CommitRecordDbManager db = CommitRecordDbManager.getInstance();
+  private AssignmentUserDbManager auDb = AssignmentUserDbManager.getInstance();
+  private UserDbManager userDb = UserDbManager.getInstance();
+  private AssignmentDbManager assignmentDb = AssignmentDbManager.getInstance();
+  private AssignmentTypeDbManager atDb = AssignmentTypeDbManager.getInstance();
+  private CommitStatusDbManager csdb = CommitStatusDbManager.getInstance();
+  private JenkinsService js = JenkinsService.getInstance();
 
   /**
    * get all commit result.
@@ -48,17 +53,20 @@ public class CommitRecordService {
    */
   @GET
   @Path("allUsers")
-  @Produces(MediaType.TEXT_PLAIN)
+  @Produces(MediaType.APPLICATION_JSON)
   public Response getAllUsersCommitRecord() {
     JSONArray array = new JSONArray();
     JSONObject result = new JSONObject();
     List<User> users = userDb.getAllUsers();
     for (User user : users) {
-      String username = user.getName();
+      String username = user.getUsername();
       Response userCommitRecord = getOneUserCommitRecord(username);
       JSONObject ob = new JSONObject();
-      ob.put("user", user);
-      ob.put("commitRecord", userCommitRecord);
+      
+      ob.put("name", user.getName());
+      ob.put("username", user.getUsername());
+      ob.put("commitRecord",new JSONObject(userCommitRecord.getEntity().toString()));
+      array.put(ob);
     }
     result.put("allUsersCommitRecord", array);
 
@@ -72,12 +80,10 @@ public class CommitRecordService {
    */
   @GET
   @Path("oneUser")
-  @Produces(MediaType.APPLICATION_FORM_URLENCODED)
+  @Produces(MediaType.APPLICATION_JSON)
   public Response getOneUserCommitRecord(@QueryParam("username") String username) {
-    JSONArray array = new JSONArray();
-    JSONObject result = new JSONObject();
+    System.out.println(username);
     int userId = userDb.getUserIdByUsername(username);
-//    List<Integer> aids = auDb.getAIds(userId);
 
     for (Assignment assignment : assignmentDb.getAllAssignment()) {
       int auId = auDb.getAuid(assignment.getId(), userId);
@@ -85,9 +91,9 @@ public class CommitRecordService {
       ob.put("assignmentName", assignment.getName());
       ob.put("commitRecord", db.getLastCommitRecord(auId));
       array.put(ob);
+
     }
-    result.put("oneUserCommitRecord", array);
-    return Response.ok().entity(result.toString()).build();
+    return Response.ok(result.toString()).build();
   }
 
   /**
@@ -98,15 +104,30 @@ public class CommitRecordService {
    * @return build detail
    */
   @GET
-  @Path("buildDetail")
+  @Path("commitRecords")
   @Produces(MediaType.APPLICATION_JSON)
   public Response getCommitRecord(@QueryParam("username") String username,
       @QueryParam("assignmentName") String assignmentName) {
+    JSONArray array = new JSONArray();
+    String jobName = username + "_" + assignmentName;
     int auId = auDb.getAuid(assignmentDb.getAssignmentIdByName(assignmentName),
         userDb.getUserIdByUsername(username));
-    JSONObject buildDetail = db.getCommitRecord(auId);
-    // ob.put("message", commitMessage);
-    return Response.ok().entity(buildDetail.toString()).build();
+    List<CommitRecord> commitRecords = db.getCommitRecord(auId);
+    for (CommitRecord commitRecord : commitRecords) {
+      int number = commitRecord.getNumber();
+      String message = js.getCommitMessage(jobName, number);
+      Date time = commitRecord.getTime();
+      String status = commitRecord.getStatus().getType();
+      JSONObject ob = new JSONObject();
+
+      ob.put("number", number);
+      ob.put("status", status);
+      ob.put("time", time);
+      ob.put("message", message);
+      array.put(ob);
+    }
+
+    return Response.ok(array.toString()).build();
   }
 
   /**
@@ -119,42 +140,10 @@ public class CommitRecordService {
   @POST
   @Path("update")
   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+  @Produces(MediaType.APPLICATION_JSON)
   public Response updateCommitResult(@FormParam("user") String username,
       @FormParam("proName") String assignmentName) throws ParseException {
 
-    JSONObject ob = new JSONObject();
-    AssignmentType assignmentType = AssignmentFactory.getAssignmentType(
-        atDb.getTypeNameById(assignmentDb.getAssignmentType(assignmentName)).getTypeName());
-
-    int auId = auDb.getAuid(assignmentDb.getAssignmentIdByName(assignmentName),
-        userDb.getUserIdByUsername(username));
-    int commitNumber = db.getCommitCount(auId) + 1;
-    Date date = new Date();
-    DateFormat time = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss");
-    date = time.parse(time.format(Calendar.getInstance().getTime()));
-
-    StatusEnum statusEnum = assignmentType.checkStatusType(commitNumber, username, assignmentName);
-    db.insertCommitRecord(auId, commitNumber, statusEnum, date);
-
-    ob.put("auId", auId);
-    ob.put("commitNumber", commitNumber);
-    ob.put("time", time);
-    ob.put("status", statusEnum.getType());
-
-    return Response.ok().entity(ob.toString()).build();
-  }
-
-  /**
-   * update user assignment commit record to DB.
-   * 
-   * @throws ParseException (to do)
-   */
-  @POST
-  @Path("update2")
-  @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-  public Response updateCommitResult2() throws ParseException {
-    String username = "d0381908";
-    String assignmentName = "errr";
     JSONObject ob = new JSONObject();
     AssignmentType assignmentType = AssignmentFactory.getAssignmentType(
         atDb.getTypeNameById(assignmentDb.getAssignmentType(assignmentName)).getTypeName());
