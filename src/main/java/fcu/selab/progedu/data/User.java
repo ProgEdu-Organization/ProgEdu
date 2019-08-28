@@ -1,6 +1,7 @@
 package fcu.selab.progedu.data;
 
 import java.io.Serializable;
+import java.util.List;
 
 import fcu.selab.progedu.service.RoleEnum;
 
@@ -24,7 +25,7 @@ public class User implements Serializable {
 
   private boolean display;
 
-  private RoleEnum role;
+  private List<RoleEnum> roleList;
 
   public User() {
   }
@@ -38,13 +39,13 @@ public class User implements Serializable {
    * @param password    (to do)
    * @param isDisplayed (to do)
    */
-  public User(String username, String name, String email, String password, RoleEnum role,
+  public User(String username, String name, String email, String password, List<RoleEnum> role,
       boolean isDisplayed) {
     this.username = username;
     this.name = name;
     this.email = email;
     this.password = password;
-    this.role = role;
+    this.roleList = role;
     this.display = isDisplayed;
   }
 
@@ -121,12 +122,12 @@ public class User implements Serializable {
     this.display = display;
   }
 
-  public RoleEnum getRole() {
-    return role;
+  public List<RoleEnum> getRole() {
+    return roleList;
   }
 
-  public void setRole(RoleEnum role) {
-    this.role = role;
+  public void setRole(List<RoleEnum> role) {
+    this.roleList = role;
   }
 
 }
