@@ -20,6 +20,7 @@ import javax.ws.rs.core.Response;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import fcu.selab.progedu.data.Assignment;
 import fcu.selab.progedu.data.User;
 import fcu.selab.progedu.db.AssignmentDbManager;
 import fcu.selab.progedu.db.AssignmentTypeDbManager;
@@ -76,14 +77,13 @@ public class CommitRecordService {
     JSONArray array = new JSONArray();
     JSONObject result = new JSONObject();
     int userId = userDb.getUserIdByUsername(username);
-    List<Integer> aids = auDb.getAIds(userId);
+//    List<Integer> aids = auDb.getAIds(userId);
 
-    for (int assignment : aids) {
-      int auIds = auDb.getAuid(assignment, userId);
-      String assignmentName = assignmentDb.getAssignmentNameById(assignment);
+    for (Assignment assignment : assignmentDb.getAllAssignment()) {
+      int auId = auDb.getAuid(assignment.getId(), userId);
       JSONObject ob = new JSONObject();
-      ob.put("assignmentName", assignmentName);
-      ob.put("commitRecord", db.getLastCommitRecord(auIds));
+      ob.put("assignmentName", assignment.getName());
+      ob.put("commitRecord", db.getLastCommitRecord(auId));
       array.put(ob);
     }
     result.put("oneUserCommitRecord", array);
