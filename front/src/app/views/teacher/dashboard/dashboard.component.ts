@@ -21,7 +21,7 @@ export class DashboardComponent implements OnInit {
 
   async getAllAssignment() {
     this.dashboardService.getAllProjectName().subscribe(response => {
-      this.tableHead = response.allProjects;
+      this.tableHead = response.allAssignments;
     });
   }
 

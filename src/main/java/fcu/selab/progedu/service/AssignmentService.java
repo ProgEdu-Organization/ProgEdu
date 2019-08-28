@@ -298,10 +298,12 @@ public class AssignmentService {
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   @Produces(MediaType.APPLICATION_JSON)
   public Response deleteProject(@FormDataParam("del_Hw_Name") String name) {
+
     Linux linuxApi = new Linux();
     // delete tomcat test file
     String removeZipTestFileCommand = "rm tests/" + name + ".zip";
     linuxApi.execLinuxCommandInFile(removeZipTestFileCommand, tempDir);
+
     // delete db
     CommitRecordService commitRecordService = new CommitRecordService();
     dbManager.deleteAssignment(name);
@@ -351,25 +353,23 @@ public class AssignmentService {
       @FormDataParam("testCase") InputStream uploadedInputStream,
       @FormDataParam("testCase") FormDataContentDisposition fileDetail) {
 
-    // dbManager.editAssignment(deadline, readMe, releaseTime, assignmentName);
-    //
-    // if (!fileDetail.getFileName().isEmpty()) {
-    // // update test case
-    // String filePath = storeFileToTestsFolder(assignmentName + ".zip",
-    // uploadedInputStream);
-    // // update database checksum
-    //
-    // String checksum = getChecksum(filePath);
-    //// System.out.println("checksum : " + checksum);
-    //
-    // dbManager.updateAssignmentChecksum(assignmentName, checksum);
-    // }
-
-    // Response response = Response.ok().build();
-    // if (!isSave) {
-    // response =
-    // Response.serverError().status(Status.INTERNAL_SERVER_ERROR).build();
-    // }
+//    dbManager.editAssignment(deadline, readMe, releaseTime, assignmentName);
+//   
+//    if (!fileDetail.getFileName().isEmpty()) {
+//    update test case
+//    String filePath = storeFileToTestsFolder(assignmentName + ".zip",
+//    uploadedInputStream);
+//    // update database checksum
+//    String checksum = getChecksum(filePath);
+//    // System.out.println("checksum : " + checksum);
+//    dbManager.updateAssignmentChecksum(assignmentName, checksum);
+//    }
+//
+//    Response response = Response.ok().build();
+//    if (!isSave) {
+//    response =
+//    Response.serverError().status(Status.INTERNAL_SERVER_ERROR).build();
+//    }
 
     return Response.ok().build();
   }
@@ -391,15 +391,15 @@ public class AssignmentService {
 
   /**
    * 
-   * @return AllProjects
+   * @return  AllAssignments
    */
   @GET
-  @Path("getAllProjects")
+  @Path("getAllAssignments")
   @Produces(MediaType.APPLICATION_JSON)
-  public Response getProject() {
+  public Response getAllAssignments() {
     List<Assignment> assignments = dbManager.getAllAssignment();
     JSONObject ob = new JSONObject();
-    ob.put("allProjects", assignments);
+    ob.put("allAssignments", assignments);
     return Response.ok().entity(ob.toString()).build();
   }
 
