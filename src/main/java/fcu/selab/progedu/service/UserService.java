@@ -191,7 +191,7 @@ public class UserService {
     List<User> users = dbManager.getAllUsers();
 
     for (User user : users) {
-      if (user.getRole().contains(RoleEnum.STUDENT) == true) {
+      if (user.getRole().contains(RoleEnum.STUDENT)) {
         studentUsers.add(user);
       }
     }
