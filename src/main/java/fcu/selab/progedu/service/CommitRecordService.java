@@ -7,7 +7,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import javax.naming.spi.DirStateFactory.Result;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -21,10 +20,9 @@ import javax.ws.rs.core.Response;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import fcu.selab.progedu.data.Assignment;
 import fcu.selab.progedu.conn.JenkinsService;
+import fcu.selab.progedu.data.Assignment;
 import fcu.selab.progedu.data.CommitRecord;
-
 import fcu.selab.progedu.data.User;
 import fcu.selab.progedu.db.AssignmentDbManager;
 import fcu.selab.progedu.db.AssignmentTypeDbManager;
@@ -62,10 +60,10 @@ public class CommitRecordService {
       String username = user.getUsername();
       Response userCommitRecord = getOneUserCommitRecord(username);
       JSONObject ob = new JSONObject();
-      
+
       ob.put("name", user.getName());
       ob.put("username", user.getUsername());
-      ob.put("commitRecord",new JSONObject(userCommitRecord.getEntity().toString()));
+      ob.put("commitRecord", new JSONObject(userCommitRecord.getEntity().toString()));
       array.put(ob);
     }
     result.put("allUsersCommitRecord", array);
@@ -84,7 +82,7 @@ public class CommitRecordService {
   public Response getOneUserCommitRecord(@QueryParam("username") String username) {
     System.out.println(username);
     int userId = userDb.getUserIdByUsername(username);
-
+    JSONArray array = new JSONArray();
     for (Assignment assignment : assignmentDb.getAllAssignment()) {
       int auId = auDb.getAuid(assignment.getId(), userId);
       JSONObject ob = new JSONObject();
@@ -93,7 +91,7 @@ public class CommitRecordService {
       array.put(ob);
 
     }
-    return Response.ok(result.toString()).build();
+    return Response.ok(array.toString()).build();
   }
 
   /**
