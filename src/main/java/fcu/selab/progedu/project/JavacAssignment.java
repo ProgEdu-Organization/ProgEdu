@@ -2,6 +2,12 @@ package fcu.selab.progedu.project;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -111,37 +117,37 @@ public class JavacAssignment extends AssignmentType {
    * @param assignmentPath assignmentPath
    */
   public String searchJavaFile(String assignmentPath) {
-    File testDir = new File(assignmentPath);
+    List<String> fileList = null;
     String assignmentName = new File(assignmentPath).getName();
 
-    return search(testDir, assignmentName);
+    try (Stream<Path> walk = Files.walk(Paths.get(assignmentPath))) {
+
+      fileList = walk.filter(Files::isRegularFile).map(x -> x.toString())
+          .filter(f -> f.endsWith(".java")).collect(Collectors.toList());
+
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    System.out.print(getCommand(fileList, assignmentName));
+    return getCommand(fileList, assignmentName);
   }
 
   /**
    * 
-   * @param folder folder
-   * @param result result
+   * @param fileList fileList
+   * @param command command
    */
-  private String search(File folder, String assignmentName) {
-    String pattern = ".*\\.java";
-    StringBuilder command = new StringBuilder();
+  private String getCommand(List<String> fileList, String assignmentName) {
+    String command = "";
 
-    for (final File f : folder.listFiles()) {
-
-      if (f.isDirectory()) {
-        return search(f, assignmentName);
-      }
-
-      if (f.isFile()) {
-        if (f.getName().matches(pattern)) {
-          String filePath = f.getAbsolutePath()
-              .substring(f.getAbsolutePath().indexOf(assignmentName) + assignmentName.length() + 1);
-          String shell = "javac " + filePath + "\n";
-          command.append(shell);
-        }
-      }
+    for (String absolutePath : fileList) {
+      String subPath = absolutePath
+          .substring(absolutePath.indexOf(assignmentName) + assignmentName.length() + 1);
+      command += "javac " + subPath + "\n";
     }
-    return command.toString();
+    command += "echo \"BUILD SUCCESS\"";
+
+    return command;
   }
 
   // public String searchFile(String entryNewName) {
