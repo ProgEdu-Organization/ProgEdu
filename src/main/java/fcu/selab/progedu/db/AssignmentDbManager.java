@@ -205,13 +205,14 @@ public class AssignmentDbManager {
    */
   public List<Assignment> getAllAssignment() {
     List<Assignment> assignments = new ArrayList<>();
-    String sql = "SELECT name,createTime,deadline,releaseTime,display FROM Assignment;";
+    String sql = "SELECT id, name,createTime,deadline,releaseTime,display FROM Assignment;";
 
     try (Connection conn = database.getConnection();
         Statement stmt = conn.createStatement();
         ResultSet rs = stmt.executeQuery(sql)) {
       while (rs.next()) {
         Assignment assignment = new Assignment();
+        assignment.setId(rs.getInt("id"));
         assignment.setName(rs.getString("name"));
         assignment.setCreateTime(rs.getDate("createTime"));
         assignment.setDeadline(rs.getDate("deadline"));

@@ -23,10 +23,16 @@ public class UserDbManager {
   private static final String GIT_LAB_TOKEN = "gitLabToken";
   private static final String ROLE = "role";
   private static final String DISPLAY = "display";
+  private static UserDbManager dbManager = null;
 
-  private static UserDbManager dbManager = new UserDbManager();
-
+  /**
+   * 
+   * @return
+   */
   public static UserDbManager getInstance() {
+    if (dbManager == null) {
+      dbManager = new UserDbManager();
+    }
     return dbManager;
   }
 
@@ -159,7 +165,6 @@ public class UserDbManager {
   public int getUserIdByUsername(String username) {
     String query = "SELECT id FROM User WHERE username = ?";
     int id = -1;
-
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(query)) {
       preStmt.setString(1, username);

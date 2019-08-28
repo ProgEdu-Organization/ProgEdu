@@ -75,6 +75,7 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
   async updateNavData() {
     // clear student array
     this.navItems[2].children.length = 0;
+    /*
     this.defaultLayoutService.getNavData().subscribe(response => {
       this.navData = response.allUsersCommitRecord.sort(function (a, b) {
         return a.name > b.name ? 1 : - 1;
@@ -90,6 +91,7 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
       }
       this.navDataisload = true;
     });
+    */
   }
 
   modifySecretAreaOnchange() {
@@ -143,18 +145,14 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
     console.log(this.modifySecretForm.value);
     if (this.modifySecretForm.dirty && this.modifySecretForm.valid && this.isConfirm) {
       this.defaultLayoutService.modifySecret(this.modifySecretForm).subscribe(
-<<<<<<< HEAD
         response => {
+          this.logout();
           this.router.navigate(['login']);
         },
-=======
-        response => { },
->>>>>>> fcuselab/#71
         error => {
         }
       );
     }
-    console.log('modifySecret');
   }
 
   toggleDropdown($event: MouseEvent): void {

@@ -16,7 +16,7 @@
           Checkstyle Failure
         </p>
         <!-- <p class="ovol plagirism" style="padding: 5px 10px;"><fmt:message key="dashboard_p_plagiarism"/></p> -->
-        <p class="ovol CJF">
+        <p class="ovol UTF">
           Unit Test Failure
         </p>
         <p class="ovol S">
@@ -37,16 +37,15 @@
       <tbody>
         <tr *ngFor='let student of studentData | filter:search'>
           <th class='text-left' width="10%">
-            {{student.username | uppercase}}
+            {{student.username}}
             <br>
             {{student.name}}
           </th>
-          {{student.commitRecord.oneUserCommitRecord}}
-          <th *ngFor='let commit of student.commitRecord.oneUserCommitRecord'>
+          <th *ngFor='let commit of student.commitRecord'>
 
-            <p id="{{student.username}}_{{commit.assignmentName}}" class="circle {{commit.status}}">
-              <a id="{{student.username}}_{{commit.assignmentName}}_{{commit.commit}}"
-                href="#/dashboard/dashprojectChoosed?userId=3&proName=WEB-HW5">{{commit.commitNumber}}</a>
+            <p id="{{student.username}}_{{commit.assignmentName}}" class="circle {{commit.commitRecord.status}}">
+              <a id="{{student.username}}_{{commit.assignmentName}}_{{commit.commitRecord.commitNumber}}"
+                href="#/dashboard/dashProjectChoosed?username={{student.username}}&assignmentName={{commit.assignmentName}}">{{commit.commitRecord.commitNumber}}</a>
             </p>
           </th>
           <th class='text-left'></th>

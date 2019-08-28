@@ -61,10 +61,9 @@ public class CommitRecordService {
       String username = user.getUsername();
       Response userCommitRecord = getOneUserCommitRecord(username);
       JSONObject ob = new JSONObject();
-      
       ob.put("name", user.getName());
       ob.put("username", user.getUsername());
-      ob.put("commitRecord",new JSONObject(userCommitRecord.getEntity().toString()));
+      ob.put("commitRecord", new JSONArray(userCommitRecord.getEntity().toString()));      
       array.put(ob);
     }
     result.put("allUsersCommitRecord", array);
@@ -81,7 +80,6 @@ public class CommitRecordService {
   @Path("oneUser")
   @Produces(MediaType.APPLICATION_JSON)
   public Response getOneUserCommitRecord(@QueryParam("username") String username) {
-    System.out.println(username);
     int userId = userDb.getUserIdByUsername(username);
     JSONArray array = new JSONArray();
     for (Assignment assignment : assignmentDb.getAllAssignment()) {
@@ -90,7 +88,6 @@ public class CommitRecordService {
       ob.put("assignmentName", assignment.getName());
       ob.put("commitRecord", db.getLastCommitRecord(auId));
       array.put(ob);
-
     }
     return Response.ok(array.toString()).build();
   }
