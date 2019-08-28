@@ -32,6 +32,7 @@ import fcu.selab.progedu.db.CommitStatusDbManager;
 import fcu.selab.progedu.db.UserDbManager;
 import fcu.selab.progedu.project.AssignmentFactory;
 import fcu.selab.progedu.project.AssignmentType;
+import fcu.selab.progedu.project.ProjectTypeEnum;
 import fcu.selab.progedu.status.StatusEnum;
 
 @Path("commits/")
@@ -178,4 +179,51 @@ public class CommitRecordService {
       db.deleteRecord(auId);
     }
   }
+
+  /**
+   * update user assignment commit record to DB.
+   * 
+   * @param username       username
+   * @param assignmentName assignment name
+   * @throws ParseException (to do)
+   */
+  @GET
+  @Path("feedback")
+  @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response getFeedback(@FormParam("username") String username,
+      @FormParam("assignmentName") String assignmentName, @FormParam("number") int number) {
+    JenkinsService js = JenkinsService.getInstance();
+    JSONObject ob = new JSONObject();
+
+    AssignmentType assignmentType = getAssignmentType(assignmentName);
+
+    String jobName = username + "_" + assignmentName;
+    String console = js.getConsole(jobName, number);
+    int auId = getAuid(username, assignmentName);
+    String statusType = getStatusTypeName(auId, number);
+    String message = assignmentType.getStatus(statusType).extractFailureMsg(console);
+    ob.put("message", message);
+
+    return Response.ok().entity(ob.toString()).build();
+  }
+
+  private AssignmentType getAssignmentType(String assignmentName) {
+    AssignmentDbManager adb = AssignmentDbManager.getInstance();
+    AssignmentTypeDbManager atdb = AssignmentTypeDbManager.getInstance();
+    int typeId = adb.getAssignmentType(assignmentName);
+    ProjectTypeEnum type = atdb.getTypeNameById(typeId);
+    return AssignmentFactory.getAssignmentType(type.getTypeName());
+  }
+
+  private int getAuid(String username, String assignmentName) {
+    return auDb.getAuid(assignmentDb.getAssignmentIdByName(assignmentName),
+        userDb.getUserIdByUsername(username));
+  }
+
+  private String getStatusTypeName(int auId, int number) {
+    int statusId = db.getCommitRecordStatus(auId, number);
+    return csdb.getStatusNameById(statusId).getType();
+  }
+
 }

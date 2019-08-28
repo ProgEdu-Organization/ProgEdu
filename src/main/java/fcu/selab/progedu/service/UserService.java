@@ -140,7 +140,7 @@ public class UserService {
   /**
    * (to do )
    * 
-   * @param id              (to do )
+   * @param username        (to do )
    * @param currentPassword (to do )
    * @param newPassword     (to do )
    * @return response (to do)
