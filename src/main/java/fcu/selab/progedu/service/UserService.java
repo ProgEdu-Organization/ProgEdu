@@ -110,15 +110,14 @@ public class UserService {
   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
   public Response createAccount(@FormParam("name") String name,
       @FormParam("username") String username, @FormParam("email") String email,
-      @FormParam("password") String password, @FormParam("role") List<String> role,
+      @FormParam("password") String password, @FormParam("role") String role,
       @FormParam("isDisplayed") boolean isDisplayed) {
     Response response = null;
     System.out.println(name + "  " + username);
     List<RoleEnum> roleList = new ArrayList<>();
-    for (String roleName : role) {
-      RoleEnum roleEnum = RoleEnum.getRoleEnum(roleName);
-      roleList.add(roleEnum);
-    }
+
+    RoleEnum roleEnum = RoleEnum.getRoleEnum(role);
+    roleList.add(roleEnum);
 
     User user = new User(username, name, email, password, roleList, isDisplayed);
     String errorMessage = getErrorMessage(user);
