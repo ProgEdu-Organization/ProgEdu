@@ -7,6 +7,12 @@ import java.io.InputStreamReader;
 
 public class Linux {
 
+  private static Linux instance = new Linux();
+
+  public static Linux getInstance() {
+    return instance;
+  }
+
   /**
    * execLinuxCommand
    * 

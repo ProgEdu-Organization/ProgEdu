@@ -134,8 +134,8 @@ public class AssignmentService {
     // extract main method from tests folder, then zip as root project
     String testDirectory = testDir + assignmentName;
 
-    zipHandler.unzipFile(cloneDirectoryPath, filePath);
-    zipHandler.unzipFile(testDirectory, filePath);
+    zipHandler.unzipFile(filePath, cloneDirectoryPath);
+    zipHandler.unzipFile(filePath, testDirectory);
     assignment.createTemplate(cloneDirectoryPath);
     assignment.createTestCase(testDirectory);
     zipHandler.zipTestFolder(testDirectory);
@@ -296,6 +296,7 @@ public class AssignmentService {
   @POST
   @Path("delete")
   @Produces(MediaType.APPLICATION_JSON)
+
   public Response deleteProject(@QueryParam("del_Hw_Name") String name) {
 
     Linux linuxApi = new Linux();
@@ -352,28 +353,32 @@ public class AssignmentService {
   @Produces(MediaType.APPLICATION_JSON)
   public Response editProject(@FormDataParam("assignmentName") String assignmentName,
       @FormDataParam("releaseTime") Date releaseTime, @FormDataParam("deadline") Date deadline,
-      @FormDataParam("readMe") String readMe,
-      @FormDataParam("testCase") InputStream uploadedInputStream,
-      @FormDataParam("testCase") FormDataContentDisposition fileDetail) {
+      @FormDataParam("readMe") String readMe, @FormDataParam("file") InputStream file,
+      @FormDataParam("file") FormDataContentDisposition fileDetail) {
+    int id = dbManager.getAssignmentIdByName(assignmentName);
+    if (file == null) {
+      dbManager.editAssignment(deadline, releaseTime, readMe, id);
+    } else {
+      ProjectTypeEnum assignmentType = dbManager.getAssignmentType(assignmentName);
+      final AssignmentType assignment = AssignmentFactory
+          .getAssignmentType(assignmentType.getTypeName());
 
-//    dbManager.editAssignment(deadline, readMe, releaseTime, assignmentName);
-//   
-//    if (!fileDetail.getFileName().isEmpty()) {
-//    update test case
-//    String filePath = storeFileToTestsFolder(assignmentName + ".zip",
-//    uploadedInputStream);
-//    // update database checksum
-//    String checksum = getChecksum(filePath);
-//    // System.out.println("checksum : " + checksum);
-//    dbManager.updateAssignmentChecksum(assignmentName, checksum);
-//    }
-//
-//    Response response = Response.ok().build();
-//    if (!isSave) {
-//    response =
-//    Response.serverError().status(Status.INTERNAL_SERVER_ERROR).build();
-//    }
+      String tempFilePath = uploadDir + assignmentName;
+      String testCasePath = testDir + assignmentName;
+      String testCaseZipPath = testCasePath + ".zip";
+      // remove current test case
+      tomcatService.removeFile(testCaseZipPath);
+      tomcatService.storeFileToUploadsFolder(file, tempFilePath);
 
+      zipHandler.unzipFile(tempFilePath, testCasePath);
+      assignment.createTestCase(testCasePath);
+      zipHandler.zipTestFolder(testCasePath);
+      long checksum = zipHandler.getChecksum();
+      tomcatService.removeFile(uploadDir);
+      tomcatService.removeFile(testCasePath);
+
+      dbManager.editAssignment(deadline, releaseTime, readMe, checksum, id);
+    }
     return Response.ok().build();
   }
 

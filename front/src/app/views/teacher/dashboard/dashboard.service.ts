@@ -13,11 +13,11 @@ export class DashboardService {
   ALL_ASSIGNMENT_API = environment.SERVER_URL + '/ProgEdu/webapi/assignment/getAllAssignments';
   constructor(private http: HttpClient) { }
 
-  getAllStudent(): Observable<any> {
+  getAllStudentCommitRecord(): Observable<any> {
     return this.http.get<any>(this.ALL_COMMIT_API);
   }
 
-  getAllProjectName(): Observable<any> {
+  getAllAssignments(): Observable<any> {
     return this.http.get<any>(this.ALL_ASSIGNMENT_API);
   }
 
