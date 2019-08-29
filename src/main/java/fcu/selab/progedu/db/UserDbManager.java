@@ -27,7 +27,7 @@ public class UserDbManager {
 
   /**
    * 
-   * @return
+   * @return dbManager
    */
   public static UserDbManager getInstance() {
     if (dbManager == null) {

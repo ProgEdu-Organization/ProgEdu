@@ -187,10 +187,9 @@ public class CommitRecordService {
    */
   @GET
   @Path("feedback")
-  @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
   @Produces(MediaType.APPLICATION_JSON)
-  public Response getFeedback(@FormParam("username") String username,
-      @FormParam("assignmentName") String assignmentName, @FormParam("number") int number) {
+  public Response getFeedback(@QueryParam("username") String username,
+      @QueryParam("assignmentName") String assignmentName, @QueryParam("number") int number) {
     JenkinsService js = JenkinsService.getInstance();
     JSONObject ob = new JSONObject();
 
