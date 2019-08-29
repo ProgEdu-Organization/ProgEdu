@@ -298,7 +298,7 @@ public class AssignmentService {
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   @Produces(MediaType.APPLICATION_JSON)
   public Response deleteProject(@FormDataParam("del_Hw_Name") String name) {
-
+    System.out.println("delete: " + name);
     Linux linuxApi = new Linux();
     // delete tomcat test file
     String removeZipTestFileCommand = "rm tests/" + name + ".zip";

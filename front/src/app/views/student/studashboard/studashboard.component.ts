@@ -7,25 +7,28 @@ import { User } from '../../../models/user';
   templateUrl: './studashboard.component.html'
 })
 export class StudashboardComponent implements OnInit {
-  public data: Array<any> = new Array<any>();
   public tableHead: Array<any> = new Array<any>();
-  public tableData: Array<any> = new Array<any>();
-  public studentData: JSON;
-  public user: User;
+  public studentCommitRecord: JSON;
+  public username: string;
   constructor(private studashboardService: StudashboardService, private jwtService?: JwtService) { }
   async ngOnInit() {
-    // Called after the constructor, initializing input properties, and the first call to ngOnChanges.
-    // Add 'implements OnInit' to the class.
-    await this.getAllStudentData();
+    this.username = new User(this.jwtService).getUsername();
+    await this.getAllAssignments();
+    await this.getStudentCommitRecords();
   }
 
-  async getAllStudentData() {
+  async getAllAssignments() {
+    this.studashboardService.getAllAssignments().subscribe(response => {
+      console.log(response.allAssignments);
+      this.tableHead = response.allAssignments;
+    });
+  }
+
+  async getStudentCommitRecords() {
     // clear student array
-    this.user = new User(this.jwtService);
-    this.studashboardService.getStudentData(this.user.getUsername()).subscribe(response => {
+    this.studashboardService.getStudentCommitRecord(this.username).subscribe(response => {
       console.log(response);
-      console.log('username: ' + this.user.getUsername());
-      this.studentData = response.oneUserCommitRecord;
+      this.studentCommitRecord = response;
     });
   }
 

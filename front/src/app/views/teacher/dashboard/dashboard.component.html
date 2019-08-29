@@ -35,7 +35,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor='let student of studentData | filter:search'>
+        <tr *ngFor='let student of allStudentCommitRecord | filter:search'>
           <th class='text-left' width="10%">
             {{student.username}}
             <br>

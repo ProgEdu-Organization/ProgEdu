@@ -7,7 +7,8 @@ import { environment } from '../../../../environments/environment';
 })
 export class DashProjectChoosedService {
   COMMIT_RECORD_DETAIL = environment.SERVER_URL + '/ProgEdu/webapi/commits/commitRecords';
-  ALL_ASSIGNMENT_API = environment.SERVER_URL + '/ProgEdu/webapi/assignment/getAssignment?assignmentName=HW4';
+  ASSIGNMENT_API = environment.SERVER_URL + '/ProgEdu/webapi/assignment/getAssignment';
+  FEEDBACK_API = environment.SERVER_URL + '/ProgEdu/webapi/assignment/feedback';
   constructor(private http: HttpClient) { }
 
   getCommitDetail(assignmentName, username): Observable<any> {
@@ -20,7 +21,7 @@ export class DashProjectChoosedService {
   getAssignment(assignmentName: string): Observable<any> {
     const params = new HttpParams()
       .set('assignmentName', assignmentName);
-    return this.http.get<any>(this.ALL_ASSIGNMENT_API, { params });
+    return this.http.get<any>(this.ASSIGNMENT_API, { params });
   }
 
   getFeedback(assignmentName: string, username: string, commitNumber): Observable<any> {
@@ -28,6 +29,6 @@ export class DashProjectChoosedService {
       .set('assignmentName', assignmentName)
       .set('username', username)
       .set('commitNumber', commitNumber);
-    return this.http.get<any>(this.ALL_ASSIGNMENT_API, { params });
+    return this.http.get<any>(this.FEEDBACK_API, { params });
   }
 }
