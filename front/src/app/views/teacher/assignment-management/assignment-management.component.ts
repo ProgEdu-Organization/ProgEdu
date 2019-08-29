@@ -8,7 +8,7 @@ import { AssignmentManagementService } from './assignment-management.service';
   templateUrl: './assignment-management.component.html'
 })
 export class AssignmentManagementComponent implements OnInit {
-  @ViewChild('dangerModal', { static: false }) public dangerModal: ModalDirective;
+  @ViewChild('dangerModal', { static: false }) public deleteModal: ModalDirective;
   assignments: Array<any>;
   assignmentName: string;
   constructor(private assignmentService: AssignmentManagementService, private router: Router) { }
@@ -26,9 +26,14 @@ export class AssignmentManagementComponent implements OnInit {
   }
 
   deleteAssignment() {
-    this.assignmentService.deleteAssignment(this.assignmentName).subscribe(response => {
-
-    });
+    this.assignmentService.deleteAssignment(this.assignmentName).subscribe(
+      response => {
+        console.log(response);
+        this.deleteModal.hide();
+      },
+      error => {
+        console.log(error);
+      });
   }
 
   changeToCreatePage() {

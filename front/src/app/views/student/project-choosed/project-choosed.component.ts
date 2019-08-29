@@ -1,41 +1,46 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { CarouselConfig } from 'ngx-bootstrap/carousel';
 import { ProjectChoosedService } from './project-choosed.service';
-import { FormsModule } from '@angular/forms';
-/*
-example: http://localhost:4200/#/dashboard/dashprojectchoosed?userId=3&proName=WEB-HW5
-*/
+
 @Component({
   selector: 'app-project-choosed',
   templateUrl: './project-choosed.component.html'
 })
 export class ProjectChoosedComponent implements OnInit {
 
-  gitlabId: string;
-  proName: string;
-  commitData: Array<JSON> = [];
-  copyHwURL: string;
+  username: string;
+  assignmentName: string;
+  assignment = { type: false };
+  commits: Array<JSON> = [];
+  gitlabAssignmentURL: string;
+  feedback: string;
   constructor(private route: ActivatedRoute, private projectService: ProjectChoosedService) { }
 
   ngOnInit() {
-    this.gitlabId = this.route.snapshot.queryParamMap.get('gitlabId');
-    this.proName = this.route.snapshot.queryParamMap.get('proName');
-    this.getCommitData();
+    this.username = this.route.snapshot.queryParamMap.get('username');
+    this.assignmentName = this.route.snapshot.queryParamMap.get('assignmentName');
+    this.getAssignment();
+    this.getCommitDetail();
     this.getFeedback();
-    this.copyHwURL = 'http://140.134.26.71:58321/job/D0350510_WEB-HW3/1/artifact/target/screenshot/index.png';
+    // ex http://140.134.26.71:20008/victor6666/hoky3
+
+    this.gitlabAssignmentURL = `test`;
   }
 
-  async getCommitData() {
-    this.projectService.getCommitData().subscribe(response => {
-      this.commitData.push(response);
-      console.log(response);
+  async getCommitDetail() {
+    this.projectService.getCommitDetail(this.assignmentName, this.username).subscribe(response => {
+      this.commits = response;
+    });
+  }
+  async getAssignment() {
+    await this.projectService.getAssignment(this.assignmentName).subscribe(response => {
+      this.assignment = response;
     });
   }
 
   public copyToClipboard() {
     const copyBox = document.createElement('textarea');
-    copyBox.value = this.copyHwURL;
+    copyBox.value = this.gitlabAssignmentURL;
 
     document.body.appendChild(copyBox);
     copyBox.focus();
@@ -46,7 +51,11 @@ export class ProjectChoosedComponent implements OnInit {
   }
 
   async getFeedback() {
-    const url = 'http://140.134.26.71:58321/job/D0350510_WEB-HW5/1/console';
+    this.projectService.getFeedback(this.assignmentName, this.username, '1').subscribe(
+      response => {
+        this.feedback = response.message;
+      }
+    );
   }
 
 }

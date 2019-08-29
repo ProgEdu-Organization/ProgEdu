@@ -15,7 +15,7 @@ example: http://localhost:4200/#/dashboard/dashprojectchoosed?userId=3&proName=W
 export class DashProjectChoosedComponent implements OnInit {
   username: string;
   assignmentName: string;
-  assignment;
+  assignment = { type: false };
   commits: Array<JSON> = [];
   constructor(private route: ActivatedRoute, private dashProjectService: DashProjectChoosedService) { }
 
@@ -35,6 +35,7 @@ export class DashProjectChoosedComponent implements OnInit {
   async getAssignment() {
     this.dashProjectService.getAssignment(this.assignmentName).subscribe(response => {
       this.assignment = response;
+      console.log(this.assignment);
     });
   }
 
