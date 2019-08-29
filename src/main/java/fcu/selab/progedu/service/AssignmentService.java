@@ -383,12 +383,16 @@ public class AssignmentService {
   @GET
   @Path("checksum")
   @Produces(MediaType.APPLICATION_JSON)
-  public Response getProject(@QueryParam("assignmentName") String assignmentName) {
+  public Response getProject(@QueryParam("proName") String assignmentName) {
     Assignment assignment = dbManager.getAssignmentByName(assignmentName);
+    JSONObject ob = new JSONObject();
 
-    return Response.ok().entity(assignment.toString()).build();
+    ob.put("testZipUrl", assignment.getTestZipUrl());
+    ob.put("testZipChecksum", assignment.getTestZipChecksum());
+    System.out.println(ob.toString());
+    return Response.ok().entity(ob.toString()).build();
   }
-  
+
   /**
    * get project checksum
    * 
@@ -404,13 +408,13 @@ public class AssignmentService {
     ob.put("description", assignment.getDescription());
     ob.put("deadline", assignment.getDeadline());
     ob.put("type", assignment.getType());
-    
+
     return Response.ok().entity(ob.toString()).build();
   }
 
   /**
    * 
-   * @return  AllAssignments
+   * @return AllAssignments
    */
   @GET
   @Path("getAllAssignments")
@@ -446,7 +450,6 @@ public class AssignmentService {
    */
   @GET
   @Path("getTestFile")
-  @Produces(MediaType.APPLICATION_JSON)
   public Response getTestFile(@QueryParam("filePath") String filePath) {
     File file = new File(filePath);
 
