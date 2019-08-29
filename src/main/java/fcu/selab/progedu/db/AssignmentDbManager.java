@@ -277,17 +277,18 @@ public class AssignmentDbManager {
   /**
    * edit assignment to database
    * 
-   * @param deadline
-   * @param releaseTime
-   * @param readMe
-   * @param checksum
-   * @param assignmentName
+   * @param deadline    deadline
+   * @param releaseTime releaseTime
+   * @param readMe      readMe
+   * @param checksum    checksum
+   * @param id          id
    */
   public void editAssignment(Date deadline, Date releaseTime, String readMe, long checksum,
       int id) {
     Timestamp deadlinetime = new Timestamp(deadline.getTime());
     Timestamp releasetime = new Timestamp(releaseTime.getTime());
-    String sql = "UPDATE Assignment SET deadline = ?, releaseTime = ?, description = ?,zipChecksum = ? WHERE id = ?";
+    String sql = "UPDATE Assignment SET deadline = ?, releaseTime = ?, description = ?,"
+        + "zipChecksum = ? WHERE id = ?";
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
       preStmt.setTimestamp(1, deadlinetime);
@@ -304,15 +305,16 @@ public class AssignmentDbManager {
   /**
    * edit assignment
    * 
-   * @param deadline
-   * @param releaseTime
-   * @param readMe
-   * @param id
+   * @param deadline    deadline
+   * @param releaseTime releaseTime
+   * @param readMe      readMe
+   * @param id          id
    */
   public void editAssignment(Date deadline, Date releaseTime, String readMe, int id) {
     Timestamp deadlinetime = new Timestamp(deadline.getTime());
     Timestamp releasetime = new Timestamp(releaseTime.getTime());
-    String sql = "UPDATE Assignment SET deadline = ?, releaseTime = ?, description = ? WHERE id = ?";
+    String sql = "UPDATE Assignment SET deadline = ?, releaseTime = ?, "
+        + "description = ? WHERE id = ?";
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
       preStmt.setTimestamp(1, deadlinetime);

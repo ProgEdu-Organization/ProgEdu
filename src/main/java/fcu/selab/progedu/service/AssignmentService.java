@@ -51,7 +51,6 @@ import fcu.selab.progedu.utils.ZipHandler;
 
 @Path("assignment/")
 public class AssignmentService {
-  private Linux linuxAPI = Linux.getInstance();
   private GitlabService gitlabService = GitlabService.getInstance();
   private GitlabUser root = gitlabService.getRoot();
   private ZipHandler zipHandler;
@@ -359,7 +358,7 @@ public class AssignmentService {
       ProjectTypeEnum assignmentType = dbManager.getAssignmentType(assignmentName);
       final AssignmentType assignment = AssignmentFactory
           .getAssignmentType(assignmentType.getTypeName());
-      long checksum = zipHandler.getChecksum();
+
       String tempFilePath = uploadDir + assignmentName;
       String testCasePath = testDir + assignmentName;
       String testCaseZipPath = testCasePath + ".zip";
@@ -370,8 +369,7 @@ public class AssignmentService {
       zipHandler.unzipFile(tempFilePath, testCasePath);
       assignment.createTestCase(testCasePath);
       zipHandler.zipTestFolder(testCasePath);
-      testZipChecksum = zipHandler.getChecksum();
-
+      long checksum = zipHandler.getChecksum();
       tomcatService.removeFile(uploadDir);
       tomcatService.removeFile(testCasePath);
 
