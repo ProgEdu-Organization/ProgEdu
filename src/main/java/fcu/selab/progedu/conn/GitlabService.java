@@ -403,8 +403,8 @@ public class GitlabService {
 //   * Creates a Group
 //   *
 //   * @param groupName The name of the group. The name will also be used as the
-//   *                  path of the group.
-//   * @param owner     the owner of the group.
+//   *          path of the group.
+//   * @param owner the owner of the group.
 //   * @return The GitLab Group
 //   */
 //  public GitlabGroup createGroup(String groupName, GitlabUser owner) {
