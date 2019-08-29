@@ -26,6 +26,7 @@ export class StudentManagementComponent implements OnInit {
       rememberMe: [true]
     });
     this.onChange();
+
   }
 
   onChange() {
