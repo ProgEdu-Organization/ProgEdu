@@ -143,7 +143,7 @@ public class CommitRecordService {
 
     JSONObject ob = new JSONObject();
     AssignmentType assignmentType = AssignmentFactory.getAssignmentType(
-        atDb.getTypeNameById(assignmentDb.getAssignmentType(assignmentName)).getTypeName());
+        atDb.getTypeNameById(assignmentDb.getAssignmentTypeId(assignmentName)).getTypeName());
 
     int auId = auDb.getAuid(assignmentDb.getAssignmentIdByName(assignmentName),
         userDb.getUserIdByUsername(username));
@@ -208,7 +208,7 @@ public class CommitRecordService {
   private AssignmentType getAssignmentType(String assignmentName) {
     AssignmentDbManager adb = AssignmentDbManager.getInstance();
     AssignmentTypeDbManager atdb = AssignmentTypeDbManager.getInstance();
-    int typeId = adb.getAssignmentType(assignmentName);
+    int typeId = adb.getAssignmentTypeId(assignmentName);
     ProjectTypeEnum type = atdb.getTypeNameById(typeId);
     return AssignmentFactory.getAssignmentType(type.getTypeName());
   }

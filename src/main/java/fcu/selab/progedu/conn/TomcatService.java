@@ -8,7 +8,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
@@ -32,15 +31,13 @@ public class TomcatService {
    * 
    * @param file   (to do)
    * @param target (to do)
-   * @return target (to do)
    */
-  public String storeFileToUploadsFolder(InputStream file, String target) {
+  public void storeFileToUploadsFolder(InputStream file, String target) {
     try {
       storeFile(file, target);
     } catch (SecurityException | IOException e) {
       e.printStackTrace();
     }
-    return target;
   }
 
   /**
