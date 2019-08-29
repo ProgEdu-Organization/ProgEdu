@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import fcu.selab.progedu.data.CommitRecord;
@@ -86,18 +85,18 @@ public class CommitRecordDbManager {
    * @param num  num
    * @return status
    */
-  public String getCommitRecordStatus(int auId, int num) {
-    String status = "";
-    String query = "SELECT status FROM Commit_Record where auId = ? and limit ?,1";
+  public int getCommitRecordStatus(int auId, int num) {
+    int status = -1;
+    String query = "SELECT status FROM Commit_Record where auId = ? and commitNumber = ?";
 
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(query)) {
       preStmt.setInt(1, auId);
-      preStmt.setInt(2, num - 1);
+      preStmt.setInt(2, num);
 
       try (ResultSet rs = preStmt.executeQuery();) {
         if (rs.next()) {
-          status = rs.getString(FIELD_NAME_STATUS);
+          status = rs.getInt(FIELD_NAME_STATUS);
         }
       }
     } catch (SQLException e) {
