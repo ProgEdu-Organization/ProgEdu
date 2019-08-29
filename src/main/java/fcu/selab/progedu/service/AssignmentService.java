@@ -377,16 +377,35 @@ public class AssignmentService {
   /**
    * get project checksum
    * 
-   * @param projectName project name
+   * @param assignmentName assignment name
    * @return checksum
    */
   @GET
   @Path("checksum")
   @Produces(MediaType.APPLICATION_JSON)
-  public Response getProject(@QueryParam("proName") String projectName) {
-    Assignment assignment = dbManager.getAssignmentByName(projectName);
+  public Response getProject(@QueryParam("assignmentName") String assignmentName) {
+    Assignment assignment = dbManager.getAssignmentByName(assignmentName);
 
-    return Response.ok().entity(assignment).build();
+    return Response.ok().entity(assignment.toString()).build();
+  }
+  
+  /**
+   * get project checksum
+   * 
+   * @param assignmentName assignment name
+   * @return checksum
+   */
+  @GET
+  @Path("getAssignment")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response getAssignment(@QueryParam("assignmentName") String assignmentName) {
+    Assignment assignment = dbManager.getAssignmentByName(assignmentName);
+    JSONObject ob = new JSONObject();
+    ob.put("description", assignment.getDescription());
+    ob.put("deadline", assignment.getDeadline());
+    ob.put("type", assignment.getType());
+    
+    return Response.ok().entity(ob.toString()).build();
   }
 
   /**

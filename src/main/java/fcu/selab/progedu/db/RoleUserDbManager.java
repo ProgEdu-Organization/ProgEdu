@@ -28,7 +28,8 @@ public class RoleUserDbManager {
    */
   public void addRoleUser(User user) {
     try {
-      int uid = udb.getUserIdByUsername(user.getName());
+      String username = user.getUsername();
+      int uid = udb.getUserIdByUsername(username);
       for (RoleEnum roleEnum : user.getRole()) {
         int rid = rdb.getRoleIdByName(roleEnum.getTypeName());
         addRoleUser(rid, uid);

@@ -2,17 +2,13 @@
   <div class="card">
     <div class="card-header">
       <i class="cui-pencil icons"></i>
-      <label>{{proName}}</label>
+      <label>{{assignmentName}}</label>
     </div>
     <div class="card-body">
       <span class="h5">Assignment Description</span>
-      <p style="border-bottom: 1rem;margin: 10px;">Documentation and examples for Bootstrap typography, including global
-        settings,
-        headings, body text,
-        lists, and
-        more.</p>
+      <p style="border-bottom: 1rem;margin: 10px;">{{assignment.description}}</p>
       <span class="h5">Deadline</span>
-      <p style="margin: 10px;">2019-08-14 15:15</p>
+      <p style="margin: 10px;">{{assignment.deadline}}</p>
     </div>
     <div id="inline">
       <p class="ovol NB">
@@ -25,10 +21,10 @@
         Checkstyle Failure
       </p>
       <!-- <p class="ovol plagirism" style="padding: 5px 10px;"><fmt:message key="dashboard_p_plagiarism"/></p> -->
-      <p class="ovol CJF">
+      <p class="ovol UTF">
         Unit Test Failure
       </p>
-      <p class="ovol S">
+      <p class="ovol BS">
         Build Success
       </p>
     </div>
@@ -45,18 +41,18 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let commit of commitData">
-                <td>{{commit.num}} </td>
+              <tr *ngFor="let commit of commits" (click)='getFeedback(commit.number)'>
+                <td>{{commit.number}} </td>
                 <td>
-                  <p class="circle {{commit.color}}"></p>
+                  <p class="circle {{commit.status || uppercase}}"></p>
                 </td>
-                <td>{{commit.date}}</td>
+                <td>{{commit.time}}</td>
                 <td>{{commit.message}}</td>
               </tr>
             </tbody>
           </table>
         </div>
-        <div class="col-lg-6">
+        <div class="col-lg-6" *ngIf="assignment.type === 'WEB'">
           <carousel [interval]="false" style="background:black">
             <slide style="background:black">
               <a href="http://140.134.26.71:58321/job/D0350510_WEB-HW7/1/artifact/src/test/screenshot/sec.png">
