@@ -295,13 +295,14 @@ public class AssignmentService {
    */
   @POST
   @Path("delete")
-  @Consumes(MediaType.MULTIPART_FORM_DATA)
   @Produces(MediaType.APPLICATION_JSON)
-  public Response deleteProject(@FormDataParam("del_Hw_Name") String name) {
+  public Response deleteProject(@QueryParam("del_Hw_Name") String name) {
 
     Linux linuxApi = new Linux();
     // delete tomcat test file
-    String removeZipTestFileCommand = "rm tests/" + name + ".zip";
+
+    String removeZipTestFileCommand = testDir + name + ".zip";
+    tomcatService.removeFile(removeZipTestFileCommand);
     linuxApi.execLinuxCommandInFile(removeZipTestFileCommand, tempDir);
 
     // delete db
@@ -311,6 +312,8 @@ public class AssignmentService {
 
     // delete gitlab
     gitlabService.deleteProjects(name);
+
+    // delete Jenkins
     String jenkinsUserName = "";
     String jenkinsPass = "";
     try {
@@ -323,7 +326,7 @@ public class AssignmentService {
     String crumb = jenkins.getCrumb(jenkinsUserName, jenkinsPass);
 
     List<User> users = userService.getStudents();
-    // delete Jenkins
+
     for (User user : users) {
       String jobName = user.getUsername() + "_" + name;
       jenkins.deleteJob(jobName, crumb);
