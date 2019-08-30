@@ -9,7 +9,7 @@ import { environment } from '../../../../environments/environment';
 export class ProjectChoosedService {
   COMMIT_RECORD_DETAIL = environment.SERVER_URL + '/ProgEdu/webapi/commits/commitRecords';
   ASSIGNMENT_API = environment.SERVER_URL + '/ProgEdu/webapi/assignment/getAssignment';
-  GITLAB_URL_API = environment.SERVER_URL + '/ProgEdu/webapi/assignment/gitlabURL';
+  GITLAB_URL_API = environment.SERVER_URL + '/ProgEdu/webapi/commits/gitLab';
   FEEDBACK_API = environment.SERVER_URL + '/ProgEdu/webapi/commits/feedback';
 
   constructor(private http: HttpClient) { }

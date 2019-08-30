@@ -20,20 +20,30 @@ export class ProjectChoosedComponent implements OnInit {
     this.username = this.route.snapshot.queryParamMap.get('username');
     this.assignmentName = this.route.snapshot.queryParamMap.get('assignmentName');
     this.getAssignment();
+    this.getGitAssignmentURL();
     this.getCommitDetail();
-    this.getFeedback();
     // ex http://140.134.26.71:20008/victor6666/hoky3
 
-    this.gitlabAssignmentURL = `test`;
+    this.gitlabAssignmentURL = ``;
+  }
+  getGitAssignmentURL() {
+    this.projectService.getGitAssignmentURL(this.assignmentName, this.username).subscribe(
+      response => {
+        this.gitlabAssignmentURL = response.url;
+      },
+      error => {
+        console.log(error);
+      });
   }
 
-  async getCommitDetail() {
+  getCommitDetail() {
     this.projectService.getCommitDetail(this.assignmentName, this.username).subscribe(response => {
       this.commits = response;
+      this.getFeedback();
     });
   }
-  async getAssignment() {
-    await this.projectService.getAssignment(this.assignmentName).subscribe(response => {
+  getAssignment() {
+    this.projectService.getAssignment(this.assignmentName).subscribe(response => {
       this.assignment = response;
     });
   }
@@ -47,15 +57,29 @@ export class ProjectChoosedComponent implements OnInit {
     copyBox.select();
     document.execCommand('copy');
     document.body.removeChild(copyBox);
-    console.log('copy successful');
   }
 
-  async getFeedback() {
-    this.projectService.getFeedback(this.assignmentName, this.username, '1').subscribe(
+  getFeedback() {
+    this.projectService.getFeedback(this.assignmentName, this.username, this.commits.length.toString()).subscribe(
       response => {
         this.feedback = response.message;
+      },
+      error => {
+        console.log(error);
       }
     );
   }
+
+  updateFeedback(commitNumber: string) {
+    this.projectService.getFeedback(this.assignmentName, this.username, commitNumber).subscribe(
+      response => {
+        this.feedback = response.message;
+      },
+      error => {
+        console.log(error);
+      }
+    );
+  }
+
 
 }
