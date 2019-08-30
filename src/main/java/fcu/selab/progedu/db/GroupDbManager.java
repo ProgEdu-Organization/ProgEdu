@@ -27,11 +27,11 @@ public class GroupDbManager {
   private UserDbManager udb = UserDbManager.getInstance();
 
   /**
-   * add group member into db
+   * add groupinto db
    * 
-   * @param groupName group name
-   * @param username  username
-   * @param isLeader  whether current member is leader or not
+   * @param gitlabId  gitlabId
+   * @param groupName groupName
+   * @param leaderId  leaderId
    */
   public void addGroup(int gitlabId, String groupName, int leaderId) {
     String sql = "INSERT INTO Group(gitLabId, name, leaderId) " + "VALUES(?, ?, ?)";
@@ -47,6 +47,11 @@ public class GroupDbManager {
     }
   }
 
+  /**
+   * get id
+   * 
+   * @param name name
+   */
   public int getId(String name) {
     int id = -1;
     String statement = "SELECT id FROM Group WHERE name = ?";
