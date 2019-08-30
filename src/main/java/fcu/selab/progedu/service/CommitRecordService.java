@@ -20,6 +20,7 @@ import javax.ws.rs.core.Response;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import fcu.selab.progedu.conn.GitlabService;
 import fcu.selab.progedu.conn.JenkinsService;
 import fcu.selab.progedu.data.Assignment;
 import fcu.selab.progedu.data.CommitRecord;
@@ -32,6 +33,7 @@ import fcu.selab.progedu.db.CommitStatusDbManager;
 import fcu.selab.progedu.db.UserDbManager;
 import fcu.selab.progedu.project.AssignmentFactory;
 import fcu.selab.progedu.project.AssignmentType;
+import fcu.selab.progedu.project.ProjectTypeEnum;
 import fcu.selab.progedu.status.StatusEnum;
 
 @Path("commits/")
@@ -43,6 +45,7 @@ public class CommitRecordService {
   private AssignmentTypeDbManager atDb = AssignmentTypeDbManager.getInstance();
   private CommitStatusDbManager csdb = CommitStatusDbManager.getInstance();
   private JenkinsService js = JenkinsService.getInstance();
+  private GitlabService gs = GitlabService.getInstance();
 
   /**
    * get all commit result.
@@ -60,10 +63,9 @@ public class CommitRecordService {
       String username = user.getUsername();
       Response userCommitRecord = getOneUserCommitRecord(username);
       JSONObject ob = new JSONObject();
-
       ob.put("name", user.getName());
       ob.put("username", user.getUsername());
-      ob.put("commitRecord", new JSONObject(userCommitRecord.getEntity().toString()));
+      ob.put("commitRecord", new JSONArray(userCommitRecord.getEntity().toString()));
       array.put(ob);
     }
     result.put("allUsersCommitRecord", array);
@@ -80,7 +82,6 @@ public class CommitRecordService {
   @Path("oneUser")
   @Produces(MediaType.APPLICATION_JSON)
   public Response getOneUserCommitRecord(@QueryParam("username") String username) {
-    System.out.println(username);
     int userId = userDb.getUserIdByUsername(username);
     JSONArray array = new JSONArray();
     for (Assignment assignment : assignmentDb.getAllAssignment()) {
@@ -89,7 +90,6 @@ public class CommitRecordService {
       ob.put("assignmentName", assignment.getName());
       ob.put("commitRecord", db.getLastCommitRecord(auId));
       array.put(ob);
-
     }
     return Response.ok(array.toString()).build();
   }
@@ -119,7 +119,7 @@ public class CommitRecordService {
       JSONObject ob = new JSONObject();
 
       ob.put("number", number);
-      ob.put("status", status);
+      ob.put("status", status.toUpperCase());
       ob.put("time", time);
       ob.put("message", message);
       array.put(ob);
@@ -144,7 +144,7 @@ public class CommitRecordService {
 
     JSONObject ob = new JSONObject();
     AssignmentType assignmentType = AssignmentFactory.getAssignmentType(
-        atDb.getTypeNameById(assignmentDb.getAssignmentType(assignmentName)).getTypeName());
+        atDb.getTypeNameById(assignmentDb.getAssignmentTypeId(assignmentName)).getTypeName());
 
     int auId = auDb.getAuid(assignmentDb.getAssignmentIdByName(assignmentName),
         userDb.getUserIdByUsername(username));
@@ -178,4 +178,66 @@ public class CommitRecordService {
       db.deleteRecord(auId);
     }
   }
+
+  /**
+   * update user assignment commit record to DB.
+   * 
+   * @param username       username
+   * @param assignmentName assignment name
+   * @throws ParseException (to do)
+   */
+  @GET
+  @Path("feedback")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response getFeedback(@QueryParam("username") String username,
+      @QueryParam("assignmentName") String assignmentName, @QueryParam("number") int number) {
+    JenkinsService js = JenkinsService.getInstance();
+    JSONObject ob = new JSONObject();
+    AssignmentType assignmentType = getAssignmentType(assignmentName);
+    String jobName = username + "_" + assignmentName;
+    String console = js.getConsole(jobName, number);
+    int auId = getAuid(username, assignmentName);
+    String statusType = getStatusTypeName(auId, number);
+    String message = assignmentType.getStatus(statusType).extractFailureMsg(console);
+    ob.put("message", message);
+
+    return Response.ok().entity(ob.toString()).build();
+  }
+
+  /**
+   * get GitLab project url
+   * 
+   * @param username       username
+   * @param assignmentName assignmentName
+   */
+  @GET
+  @Path("gitLab")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response getGitLabProjectUrl(@QueryParam("username") String username,
+      @QueryParam("assignmentName") String assignmentName) {
+    JSONObject ob = new JSONObject();
+    String projectUrl = gs.getProjectUrl(username, assignmentName);
+    ob.put("url", projectUrl);
+
+    return Response.ok().entity(ob.toString()).build();
+  }
+
+  private AssignmentType getAssignmentType(String assignmentName) {
+    AssignmentDbManager adb = AssignmentDbManager.getInstance();
+    AssignmentTypeDbManager atdb = AssignmentTypeDbManager.getInstance();
+    int typeId = adb.getAssignmentTypeId(assignmentName);
+    ProjectTypeEnum type = atdb.getTypeNameById(typeId);
+    return AssignmentFactory.getAssignmentType(type.getTypeName());
+  }
+
+  private int getAuid(String username, String assignmentName) {
+    return auDb.getAuid(assignmentDb.getAssignmentIdByName(assignmentName),
+        userDb.getUserIdByUsername(username));
+  }
+
+  private String getStatusTypeName(int auId, int number) {
+    int statusId = db.getCommitRecordStatus(auId, number);
+    return csdb.getStatusNameById(statusId).getType();
+  }
+
 }

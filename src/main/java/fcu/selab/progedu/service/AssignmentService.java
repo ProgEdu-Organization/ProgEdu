@@ -134,8 +134,8 @@ public class AssignmentService {
     // extract main method from tests folder, then zip as root project
     String testDirectory = testDir + assignmentName;
 
-    zipHandler.unzipFile(cloneDirectoryPath, filePath);
-    zipHandler.unzipFile(testDirectory, filePath);
+    zipHandler.unzipFile(filePath, cloneDirectoryPath);
+    zipHandler.unzipFile(filePath, testDirectory);
     assignment.createTemplate(cloneDirectoryPath);
     assignment.createTestCase(testDirectory);
     zipHandler.zipTestFolder(testDirectory);
@@ -298,7 +298,7 @@ public class AssignmentService {
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   @Produces(MediaType.APPLICATION_JSON)
   public Response deleteProject(@FormDataParam("del_Hw_Name") String name) {
-
+    System.out.println("delete: " + name);
     Linux linuxApi = new Linux();
     // delete tomcat test file
     String removeZipTestFileCommand = "rm tests/" + name + ".zip";
@@ -349,49 +349,77 @@ public class AssignmentService {
   @Produces(MediaType.APPLICATION_JSON)
   public Response editProject(@FormDataParam("assignmentName") String assignmentName,
       @FormDataParam("releaseTime") Date releaseTime, @FormDataParam("deadline") Date deadline,
-      @FormDataParam("readMe") String readMe,
-      @FormDataParam("testCase") InputStream uploadedInputStream,
-      @FormDataParam("testCase") FormDataContentDisposition fileDetail) {
+      @FormDataParam("readMe") String readMe, @FormDataParam("file") InputStream file,
+      @FormDataParam("file") FormDataContentDisposition fileDetail) {
+    
+    int id = dbManager.getAssignmentIdByName(assignmentName);
+    if (file == null) {
+      dbManager.editAssignment(deadline, releaseTime, readMe, id);
+    } else {
+      ProjectTypeEnum assignmentType = dbManager.getAssignmentType(assignmentName);
+      final AssignmentType assignment = AssignmentFactory
+          .getAssignmentType(assignmentType.getTypeName());
 
-//    dbManager.editAssignment(deadline, readMe, releaseTime, assignmentName);
-//   
-//    if (!fileDetail.getFileName().isEmpty()) {
-//    update test case
-//    String filePath = storeFileToTestsFolder(assignmentName + ".zip",
-//    uploadedInputStream);
-//    // update database checksum
-//    String checksum = getChecksum(filePath);
-//    // System.out.println("checksum : " + checksum);
-//    dbManager.updateAssignmentChecksum(assignmentName, checksum);
-//    }
-//
-//    Response response = Response.ok().build();
-//    if (!isSave) {
-//    response =
-//    Response.serverError().status(Status.INTERNAL_SERVER_ERROR).build();
-//    }
+      String tempFilePath = uploadDir + assignmentName;
+      String testCasePath = testDir + assignmentName;
+      String testCaseZipPath = testCasePath + ".zip";
+      // remove current test case
+      tomcatService.removeFile(testCaseZipPath);
+      tomcatService.storeFileToUploadsFolder(file, tempFilePath);
 
+      zipHandler.unzipFile(tempFilePath, testCasePath);
+      assignment.createTestCase(testCasePath);
+      zipHandler.zipTestFolder(testCasePath);
+      long checksum = zipHandler.getChecksum();
+      tomcatService.removeFile(uploadDir);
+      tomcatService.removeFile(testCasePath);
+
+      dbManager.editAssignment(deadline, releaseTime, readMe, checksum, id);
+    }
     return Response.ok().build();
   }
 
   /**
    * get project checksum
    * 
-   * @param projectName project name
+   * @param assignmentName assignment name
    * @return checksum
    */
   @GET
   @Path("checksum")
   @Produces(MediaType.APPLICATION_JSON)
-  public Response getProject(@QueryParam("proName") String projectName) {
-    Assignment assignment = dbManager.getAssignmentByName(projectName);
+  public Response getProject(@QueryParam("proName") String assignmentName) {
+    Assignment assignment = dbManager.getAssignmentByName(assignmentName);
+    JSONObject ob = new JSONObject();
 
-    return Response.ok().entity(assignment).build();
+    ob.put("testZipUrl", assignment.getTestZipUrl());
+    ob.put("testZipChecksum", assignment.getTestZipChecksum());
+    System.out.println(ob.toString());
+    return Response.ok().entity(ob.toString()).build();
+  }
+
+  /**
+   * get project checksum
+   * 
+   * @param assignmentName assignment name
+   * @return checksum
+   */
+  @GET
+  @Path("getAssignment")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response getAssignment(@QueryParam("assignmentName") String assignmentName) {
+    Assignment assignment = dbManager.getAssignmentByName(assignmentName);
+    JSONObject ob = new JSONObject();
+    ob.put("description", assignment.getDescription());
+    ob.put("deadline", assignment.getDeadline());
+    ob.put("type", assignment.getType());
+
+    return Response.ok().entity(ob.toString()).build();
   }
 
   /**
    * 
-   * @return  AllAssignments
+   * @return AllAssignments
    */
   @GET
   @Path("getAllAssignments")
@@ -427,7 +455,6 @@ public class AssignmentService {
    */
   @GET
   @Path("getTestFile")
-  @Produces(MediaType.APPLICATION_JSON)
   public Response getTestFile(@QueryParam("filePath") String filePath) {
     File file = new File(filePath);
 

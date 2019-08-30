@@ -11,6 +11,7 @@ import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -50,6 +51,7 @@ public class UserService {
    */
   @POST
   @Path("upload")
+  @Produces(MediaType.APPLICATION_JSON)
   public Response createAccounts(@FormDataParam("file") InputStream uploadedInputStream) {
     Response response = null;
     List<User> users = new ArrayList<>();
@@ -108,6 +110,7 @@ public class UserService {
   @POST
   @Path("new")
   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+  @Produces(MediaType.APPLICATION_JSON)
   public Response createAccount(@FormParam("name") String name,
       @FormParam("username") String username, @FormParam("email") String email,
       @FormParam("password") String password, @FormParam("role") String role,
@@ -148,6 +151,7 @@ public class UserService {
   @POST
   @Path("updatePassword")
   @Consumes(MediaType.MULTIPART_FORM_DATA)
+  @Produces(MediaType.APPLICATION_JSON)
   public Response updatePassword(@FormDataParam("username") String username,
       @FormDataParam("currentPassword") String currentPassword,
       @FormDataParam("newPassword") String newPassword) {
@@ -173,6 +177,7 @@ public class UserService {
    */
   @GET
   @Path("getUsers")
+  @Produces(MediaType.APPLICATION_JSON)
   public Response getUsers() {
     List<User> users = dbManager.getAllUsers();
 

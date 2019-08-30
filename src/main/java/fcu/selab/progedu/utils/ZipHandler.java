@@ -201,7 +201,7 @@ public class ZipHandler {
    * @param targetDirectory the directory unzip to
    * @param sourceFilePath  path of zip file
    */
-  public void unzipFile(String targetDirectory, String sourceFilePath) {
+  public void unzipFile(String sourceFilePath, String targetDirectory) {
     File testsDir = new File(targetDirectory);
     if (!testsDir.exists()) {
       testsDir.mkdir();

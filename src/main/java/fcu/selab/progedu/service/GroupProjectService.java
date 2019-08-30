@@ -102,7 +102,7 @@ public class GroupProjectService {
      * TO-DO : unzip
      * 
      */
-    zipHandler.unzipFile(cloneDirectoryPath, filePath);
+    zipHandler.unzipFile(filePath, cloneDirectoryPath);
 
     // 5. Add .gitkeep if folder is empty.
     tomcatService.findEmptyFolder(cloneDirectoryPath);

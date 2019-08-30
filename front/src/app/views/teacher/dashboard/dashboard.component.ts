@@ -10,28 +10,27 @@ export class DashboardComponent implements OnInit {
   public allStudentDatas = allStudentDatas;
   public data: Array<any> = new Array<any>();
   public tableHead: Array<any> = new Array<any>();
-  public tableData: Array<any> = new Array<any>();
-  public studentData: JSON;
+  public allStudentCommitRecord: JSON;
   public search;
   constructor(private dashboardService: DashboardService) { }
   async ngOnInit() {
-    await this.getAllAssignment();
+    await this.getAllAssignments();
     await this.getAllStudent();
   }
 
-  async getAllAssignment() {
-    this.dashboardService.getAllProjectName().subscribe(response => {
+  async getAllAssignments() {
+    this.dashboardService.getAllAssignments().subscribe(response => {
       this.tableHead = response.allAssignments;
     });
   }
 
   async getAllStudent() {
     // clear student array
-    this.dashboardService.getAllStudent().subscribe(response => {
+    this.dashboardService.getAllStudentCommitRecord().subscribe(response => {
       console.log('test');
       console.log(response);
-      this.studentData = response.allUsersCommitRecord;
-      if (this.studentData[0] === undefined) {
+      this.allStudentCommitRecord = response.allUsersCommitRecord;
+      if (this.allStudentCommitRecord[0] === undefined) {
         this.tableHead.length = 0;
       }
     });

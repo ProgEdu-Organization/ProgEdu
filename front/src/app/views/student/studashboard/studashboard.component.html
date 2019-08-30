@@ -14,10 +14,10 @@
           Checkstyle Failure
         </p>
         <!-- <p class="ovol plagirism" style="padding: 5px 10px;"><fmt:message key="dashboard_p_plagiarism"/></p> -->
-        <p class="ovol CJF">
+        <p class="ovol UTF">
           Unit Test Failure
         </p>
-        <p class="ovol S">
+        <p class="ovol BS">
           Build Success
         </p>
       </div>
@@ -29,27 +29,21 @@
         <thead>
           <tr>
             <th width="10%" class='text-left'>學生</th>
-            <th width="10%" *ngFor='let head of tableHead'>{{head.hw}}</th>
+            <th width="10%" *ngFor='let head of tableHead'>{{head.name}}</th>
             <th class='text-left'></th>
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor='let student of studentData'>
-            <div *ngIf='student'>
-              <th class='text-left' width="10%">
-                {{student.userName | uppercase}}
-                <br>
-                {{student.name }}
-              </th>
-
-              <th *ngFor='let commit of student.commits'>
-                <p id="{{student.userName}}_{{commit.hw}}" class="circle {{commit.status}}">
-                  <a id="{{student.userName}}_{{commit.hw}}_{{commit.commit}}"
-                    href="#/studashboard/studashProjectChoosed?userId=3&proName=WEB-HW5">{{commit.commit}}</a>
-                </p>
-              </th>
-              <th class='text-left'></th>
-            </div>
+          <tr *ngIf='studentCommitRecord'>
+            <th class='text-left' width="10%">
+              {{username}}
+            </th>
+            <th *ngFor='let commit of studentCommitRecord'>
+              <p id="{{username}}_{{commit.assignmentName}}" class="circle {{commit.commitRecord.status}}">
+                <a id="{{username}}_{{commit.hw}}_{{commit.commit}}"
+                  href="#/studashboard/studashProjectChoosed?username={{username}}&assignmentName={{commit.assignmentName}}">{{commit.commitRecord.commitNumber}}</a>
+              </p>
+            <th class='text-left'></th>
           </tr>
         </tbody>
       </table>

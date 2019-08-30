@@ -27,7 +27,7 @@ public class GroupUserDbManager {
    * @param uid User Id
    */
   public void addGroupUser(int gid, int uid) {
-    String sql = "INSERT INTO GroupUser(gId, uId)  VALUES(?, ?)";
+    String sql = "INSERT INTO Group_User(gId, uId)  VALUES(?, ?)";
 
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {

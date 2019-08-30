@@ -58,7 +58,6 @@ public class LoginAuth extends HttpServlet {
     String password = request.getParameter(USER_PASSWORD);
     String token;
     JSONObject ob = new JSONObject();
-    System.out.println("receive: " + username + ": " + password);
 
     try {
       String user = checkPermission(username, password);

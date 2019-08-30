@@ -23,31 +23,37 @@
 }
 
 .red,
-.CPF {
+.CPF,
+.cpf {
   background: #ff6284;
 }
 
 .blue,
-.S {
+.BS,
+.bs {
   background: #35a2eb;
 }
 
 .gray,
-.NB {
+.NB,
+.nb {
   background: #878787;
 }
 
-.INI {
+.INI,
+.ini {
   background: #878787;
 }
 
 .yellow,
-.CSF {
+.CSF,
+.csf {
   background: #ffcf57;
 }
 
 .green,
-.CJF {
+.UTF,
+.utf {
   background: #4bc0c0;
 }
 
@@ -76,6 +82,10 @@ img {
   max-width: 1000px;
   position: relative;
   margin: auto;
+}
+
+#container {
+  background: #fff3cd;
 }
 
 /* Next & previous buttons */

@@ -449,22 +449,13 @@ public class GitlabService {
   /**
    * Add a member to group
    * 
-   * @param groupId Group id
-   * @param userId  User id
-   * @param level   User level in group
+   * @param groupId     Group id
+   * @param userId      User id
+   * @param accessLevel User level in group
    * @return true or false
    * @throws IOException on gitlab api call error
    */
-  public boolean addMember(int groupId, int userId, int level) {
-    GitlabAccessLevel accessLevel = null;
-    if (level == 40) {
-      accessLevel = GitlabAccessLevel.Master;
-    } else if (level == 30) {
-      accessLevel = GitlabAccessLevel.Developer;
-    } else {
-      accessLevel = GitlabAccessLevel.Guest;
-    }
-
+  public boolean addMember(int groupId, int userId, GitlabAccessLevel accessLevel) {
     try {
       gitlab.addGroupMember(groupId, userId, accessLevel);
     } catch (IOException e) {
@@ -687,6 +678,10 @@ public class GitlabService {
     } catch (IOException e) {
       e.printStackTrace();
     }
+  }
+
+  public String getProjectUrl(String username, String projectName) {
+    return hostUrl + "/" + username + "/" + projectName + ".git";
   }
 
 }

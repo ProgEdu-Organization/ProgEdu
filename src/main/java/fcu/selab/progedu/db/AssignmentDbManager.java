@@ -158,7 +158,18 @@ public class AssignmentDbManager {
    * @param name assignment name
    * @return type assignment type
    */
-  public int getAssignmentType(String name) {
+  public ProjectTypeEnum getAssignmentType(String name) {
+    int typeId = getAssignmentTypeId(name);
+    return atDb.getTypeNameById(typeId);
+  }
+
+  /**
+   * get assignment type id by name
+   * 
+   * @param name assignment name
+   * @return type assignment type
+   */
+  public int getAssignmentTypeId(String name) {
     int typeId = 0;
     String sql = "SELECT type FROM Assignment WHERE name=?";
     try (Connection conn = database.getConnection();
@@ -205,13 +216,14 @@ public class AssignmentDbManager {
    */
   public List<Assignment> getAllAssignment() {
     List<Assignment> assignments = new ArrayList<>();
-    String sql = "SELECT name,createTime,deadline,releaseTime,display FROM Assignment;";
+    String sql = "SELECT id, name,createTime,deadline,releaseTime,display FROM Assignment;";
 
     try (Connection conn = database.getConnection();
         Statement stmt = conn.createStatement();
         ResultSet rs = stmt.executeQuery(sql)) {
       while (rs.next()) {
         Assignment assignment = new Assignment();
+        assignment.setId(rs.getInt("id"));
         assignment.setName(rs.getString("name"));
         assignment.setCreateTime(rs.getDate("createTime"));
         assignment.setDeadline(rs.getDate("deadline"));
@@ -256,6 +268,59 @@ public class AssignmentDbManager {
     String sql = "DELETE FROM Assignment WHERE name='" + name + "'";
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
+      preStmt.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
+
+  /**
+   * edit assignment to database
+   * 
+   * @param deadline    deadline
+   * @param releaseTime releaseTime
+   * @param readMe      readMe
+   * @param checksum    checksum
+   * @param id          id
+   */
+  public void editAssignment(Date deadline, Date releaseTime, String readMe, long checksum,
+      int id) {
+    Timestamp deadlinetime = new Timestamp(deadline.getTime());
+    Timestamp releasetime = new Timestamp(releaseTime.getTime());
+    String sql = "UPDATE Assignment SET deadline = ?, releaseTime = ?, description = ?,"
+        + "zipChecksum = ? WHERE id = ?";
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+      preStmt.setTimestamp(1, deadlinetime);
+      preStmt.setTimestamp(2, releasetime);
+      preStmt.setString(3, readMe);
+      preStmt.setLong(4, checksum);
+      preStmt.setInt(5, id);
+      preStmt.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
+
+  /**
+   * edit assignment
+   * 
+   * @param deadline    deadline
+   * @param releaseTime releaseTime
+   * @param readMe      readMe
+   * @param id          id
+   */
+  public void editAssignment(Date deadline, Date releaseTime, String readMe, int id) {
+    Timestamp deadlinetime = new Timestamp(deadline.getTime());
+    Timestamp releasetime = new Timestamp(releaseTime.getTime());
+    String sql = "UPDATE Assignment SET deadline = ?, releaseTime = ?, "
+        + "description = ? WHERE id = ?";
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+      preStmt.setTimestamp(1, deadlinetime);
+      preStmt.setTimestamp(2, releasetime);
+      preStmt.setString(3, readMe);
+      preStmt.setInt(4, id);
       preStmt.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();
