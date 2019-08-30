@@ -689,4 +689,8 @@ public class GitlabService {
     }
   }
 
+  public String getProjectUrl(String username, String projectName) {
+    return hostUrl + "/" + username + "/" + projectName + ".git";
+  }
+
 }

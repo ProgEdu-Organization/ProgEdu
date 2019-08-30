@@ -20,10 +20,20 @@ export class ProjectChoosedComponent implements OnInit {
     this.username = this.route.snapshot.queryParamMap.get('username');
     this.assignmentName = this.route.snapshot.queryParamMap.get('assignmentName');
     this.getAssignment();
+    this.getGitAssignmentURL();
     this.getCommitDetail();
     // ex http://140.134.26.71:20008/victor6666/hoky3
 
-    this.gitlabAssignmentURL = `test`;
+    this.gitlabAssignmentURL = ``;
+  }
+  getGitAssignmentURL() {
+    this.projectService.getGitAssignmentURL(this.assignmentName, this.username).subscribe(
+      response => {
+        this.gitlabAssignmentURL = response.url;
+      },
+      error => {
+        console.log(error);
+      });
   }
 
   getCommitDetail() {
@@ -47,7 +57,6 @@ export class ProjectChoosedComponent implements OnInit {
     copyBox.select();
     document.execCommand('copy');
     document.body.removeChild(copyBox);
-    console.log('copy successful');
   }
 
   getFeedback() {
