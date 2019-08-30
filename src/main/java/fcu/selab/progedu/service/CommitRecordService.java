@@ -206,6 +206,12 @@ public class CommitRecordService {
     return Response.ok().entity(ob.toString()).build();
   }
 
+  /**
+   * get GitLab project url
+   * 
+   * @param username       username
+   * @param assignmentName assignmentName
+   */
   @GET
   @Path("gitLab")
   @Produces(MediaType.APPLICATION_JSON)
