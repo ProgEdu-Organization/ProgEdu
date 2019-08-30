@@ -10,7 +10,7 @@ export class ProjectChoosedComponent implements OnInit {
 
   username: string;
   assignmentName: string;
-  assignment = { type: false };
+  assignment = { type: '' };
   commits: Array<JSON> = [];
   gitlabAssignmentURL: string;
   feedback: string;
