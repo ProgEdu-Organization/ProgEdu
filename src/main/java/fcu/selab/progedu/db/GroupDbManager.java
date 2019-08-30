@@ -33,20 +33,36 @@ public class GroupDbManager {
    * @param username  username
    * @param isLeader  whether current member is leader or not
    */
-  public void addGroup(String groupName, String username, boolean isLeader) {
-    String sql = "INSERT INTO Team(name, sId, isLeader) " + "VALUES(?, ?, ?)";
+  public void addGroup(int gitlabId, String groupName, int leaderId) {
+    String sql = "INSERT INTO Group(gitLabId, name, leaderId) " + "VALUES(?, ?, ?)";
 
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
-      int id = -1;
-      id = udb.getUserIdByUsername(username);
-      preStmt.setString(1, groupName);
-      preStmt.setInt(2, id);
-      preStmt.setBoolean(3, isLeader);
+      preStmt.setInt(1, gitlabId);
+      preStmt.setString(2, groupName);
+      preStmt.setInt(3, leaderId);
       preStmt.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();
     }
+  }
+
+  public int getId(String name) {
+    int id = -1;
+    String statement = "SELECT id FROM Group WHERE name = ?";
+
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(statement)) {
+      preStmt.setString(1, name);
+      try (ResultSet rs = preStmt.executeQuery()) {
+        if (rs.next()) {
+          id = rs.getInt("id");
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return id;
   }
 
   /**
@@ -76,7 +92,7 @@ public class GroupDbManager {
           } else {
             int memberId = rs.getInt("sId");
             members.add(udb.getUsername(memberId));
-            group.setContributor(members);
+            group.setContributors(members);
           }
         } else {
           group = new Group();
@@ -91,7 +107,7 @@ public class GroupDbManager {
           } else {
             int memberId = rs.getInt("sId");
             members.add(udb.getUsername(memberId));
-            group.setContributor(members);
+            group.setContributors(members);
           }
           lsGroups.add(group);
         }

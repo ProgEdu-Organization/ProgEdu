@@ -455,16 +455,7 @@ public class GitlabService {
    * @return true or false
    * @throws IOException on gitlab api call error
    */
-  public boolean addMember(int groupId, int userId, int level) {
-    GitlabAccessLevel accessLevel = null;
-    if (level == 40) {
-      accessLevel = GitlabAccessLevel.Master;
-    } else if (level == 30) {
-      accessLevel = GitlabAccessLevel.Developer;
-    } else {
-      accessLevel = GitlabAccessLevel.Guest;
-    }
-
+  public boolean addMember(int groupId, int userId, GitlabAccessLevel accessLevel) {
     try {
       gitlab.addGroupMember(groupId, userId, accessLevel);
     } catch (IOException e) {

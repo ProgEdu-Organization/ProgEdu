@@ -9,7 +9,7 @@ public class Group {
 
   private int groupId;
   private String leaderUsername;
-  private List<String> contributorId;
+  private List<String> contributors;
 
   public int getGroupId() {
     return groupId;
@@ -31,16 +31,16 @@ public class Group {
     return leaderUsername;
   }
 
-  public void setLeaderUsername(String leaderUid) {
-    this.leaderUsername = leaderUid;
+  public void setLeaderUsername(String leaderUsername) {
+    this.leaderUsername = leaderUsername;
   }
 
-  public List<String> getContributor() {
-    return contributorId;
+  public List<String> getContributors() {
+    return contributors;
   }
 
-  public void setContributor(List<String> contributorId) {
-    this.contributorId = contributorId;
+  public void setContributors(List<String> contributor) {
+    this.contributors = contributor;
   }
 
   public String getProjectName() {
@@ -54,14 +54,14 @@ public class Group {
   /**
    * add contirbutor to list
    * 
-   * @param contributorId contirbutor's username
+   * @param contributor contirbutor's username
    */
-  public void addContributor(String contributorId) {
-    if (this.contributorId == null) {
-      this.contributorId = new ArrayList<>();
+  public void addContributor(String contributor) {
+    if (this.contributors == null) {
+      this.contributors = new ArrayList<>();
     }
 
-    this.contributorId.add(contributorId);
+    this.contributors.add(contributor);
   }
 
 }
