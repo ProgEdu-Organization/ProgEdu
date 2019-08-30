@@ -218,7 +218,6 @@ public class JenkinsService {
     String consoleUrl = getConsoleUrl(jobName, num);
     String console = "";
     HttpURLConnection conn = null;
-
     try {
       if (Thread.interrupted()) {
         throw new InterruptedException();
