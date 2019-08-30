@@ -320,7 +320,7 @@ public class AssignmentDbManager {
       preStmt.setTimestamp(1, deadlinetime);
       preStmt.setTimestamp(2, releasetime);
       preStmt.setString(3, readMe);
-      preStmt.setInt(5, id);
+      preStmt.setInt(4, id);
       preStmt.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();
