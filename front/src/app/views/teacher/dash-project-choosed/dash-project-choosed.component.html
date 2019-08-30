@@ -41,7 +41,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let commit of commits" (click)='getFeedback(commit.number)'>
+              <tr *ngFor="let commit of commits" (click)='updateFeedback(commit.number)'>
                 <td>{{commit.number}} </td>
                 <td>
                   <p class="circle {{commit.status || uppercase}}"></p>
@@ -71,7 +71,7 @@
     <div class="card-footer">
       <span class="h4"><a href="#">Feedback Information (#1)</a></span>
       <div id="container">
-        <pre style="overflow: auto;">Instructor Commit</pre>
+        <pre style="overflow: auto;">{{feedback}}</pre>
       </div>
     </div>
   </div>

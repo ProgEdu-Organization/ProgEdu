@@ -24,11 +24,11 @@ export class DashProjectChoosedService {
     return this.http.get<any>(this.ASSIGNMENT_API, { params });
   }
 
-  getFeedback(assignmentName: string, username: string, commitNumber): Observable<any> {
+  getFeedback(assignmentName: string, username: string, commitNumber: string): Observable<any> {
     const params = new HttpParams()
       .set('assignmentName', assignmentName)
       .set('username', username)
-      .set('commitNumber', commitNumber);
+      .set('number', commitNumber);
     return this.http.get<any>(this.FEEDBACK_API, { params });
   }
 }

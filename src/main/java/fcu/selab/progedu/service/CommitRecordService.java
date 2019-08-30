@@ -193,9 +193,7 @@ public class CommitRecordService {
       @QueryParam("assignmentName") String assignmentName, @QueryParam("number") int number) {
     JenkinsService js = JenkinsService.getInstance();
     JSONObject ob = new JSONObject();
-
     AssignmentType assignmentType = getAssignmentType(assignmentName);
-
     String jobName = username + "_" + assignmentName;
     String console = js.getConsole(jobName, number);
     int auId = getAuid(username, assignmentName);
