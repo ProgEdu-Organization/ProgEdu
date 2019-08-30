@@ -109,4 +109,19 @@ public class AssignmentUserDbManager {
     }
     return lsUids;
   }
+
+  /**
+   * Delete assignment_user from database by aid
+   * 
+   */
+  public void deleteAssignmentUserByAid(int aid) {
+    String sql = "DELETE FROM Assignment_User WHERE aId = ?";
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+      preStmt.setInt(1, aid);
+      preStmt.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
 }

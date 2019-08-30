@@ -308,8 +308,10 @@ public class AssignmentService {
 
     // delete db
     CommitRecordService commitRecordService = new CommitRecordService();
-    dbManager.deleteAssignment(name);
     commitRecordService.deleteRecord(name);
+    int aid = dbManager.getAssignmentIdByName(name);
+    auDbManager.deleteAssignmentUserByAid(aid);
+    dbManager.deleteAssignment(name);
 
     // delete gitlab
     gitlabService.deleteProjects(name);
