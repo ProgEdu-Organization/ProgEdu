@@ -449,9 +449,9 @@ public class GitlabService {
   /**
    * Add a member to group
    * 
-   * @param groupId Group id
-   * @param userId  User id
-   * @param level   User level in group
+   * @param groupId     Group id
+   * @param userId      User id
+   * @param accessLevel User level in group
    * @return true or false
    * @throws IOException on gitlab api call error
    */

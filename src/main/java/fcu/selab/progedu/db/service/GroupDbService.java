@@ -20,6 +20,12 @@ public class GroupDbService {
     gdb.addGroup(gitlabId, groupName, leaderId);
   }
 
+  /**
+   * add member to group
+   * 
+   * @param username  username
+   * @param groupName groupName
+   */
   public void addMember(String username, String groupName) {
     int userId = udb.getUserIdByUsername(username);
     int groupId = gdb.getId(groupName);
