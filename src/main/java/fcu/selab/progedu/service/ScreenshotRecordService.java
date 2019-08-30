@@ -114,12 +114,9 @@ public class ScreenshotRecordService {
   /**
    * update stu project commit record.
    * 
-   * @param proName
-   *          project name
-   * @param urls
-   *          screenshot png urls
-   * @throws SQLException
-   *           SQLException
+   * @param proName project name
+   * @param urls    screenshot png urls
+   * @throws SQLException SQLException
    */
   @POST
   @Path("updateURL")
@@ -133,12 +130,12 @@ public class ScreenshotRecordService {
     System.out.println("userName: " + userName + "jobName: " + jobName);
     JSONObject ob = new JSONObject();
     if (!userJob[0].equals("root")) {
-      int lastCommitNum = getJenkinsNextBuildNumber(proName);
-      System.out.println("url " + urls);
 
-      int crId = commitRecordDb
-          .getCommitRecordId(auDb.getAuid(assignmentDb.getAssignmentIdByName(jobName),
-              userDb.getUserIdByUsername(userName)), lastCommitNum);
+      int auid = auDb.getAuid(assignmentDb.getAssignmentIdByName(jobName),
+          userDb.getUserIdByUsername(userName));
+      System.out.println("url " + urls);
+      int lastCommitNum = commitRecordDb.getCommitCount(auid);
+      int crId = commitRecordDb.getCommitRecordId(auid, lastCommitNum);
 
       try {
         for (String url : urls) {
