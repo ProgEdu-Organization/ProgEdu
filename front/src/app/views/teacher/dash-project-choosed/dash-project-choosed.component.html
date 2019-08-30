@@ -4,7 +4,7 @@
       <i class="cui-pencil icons"></i>
       <label>{{assignmentName}}</label>
     </div>
-    <div class="card-body">
+    <div *ngIf='assignment' class="card-body">
       <span class="h5">Assignment Description</span>
       <p style="border-bottom: 1rem;margin: 10px;">{{assignment.description}}</p>
       <span class="h5">Deadline</span>
