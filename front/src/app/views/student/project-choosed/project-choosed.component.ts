@@ -21,19 +21,19 @@ export class ProjectChoosedComponent implements OnInit {
     this.assignmentName = this.route.snapshot.queryParamMap.get('assignmentName');
     this.getAssignment();
     this.getCommitDetail();
-    this.getFeedback();
     // ex http://140.134.26.71:20008/victor6666/hoky3
 
     this.gitlabAssignmentURL = `test`;
   }
 
-  async getCommitDetail() {
+  getCommitDetail() {
     this.projectService.getCommitDetail(this.assignmentName, this.username).subscribe(response => {
       this.commits = response;
+      this.getFeedback();
     });
   }
-  async getAssignment() {
-    await this.projectService.getAssignment(this.assignmentName).subscribe(response => {
+  getAssignment() {
+    this.projectService.getAssignment(this.assignmentName).subscribe(response => {
       this.assignment = response;
     });
   }
@@ -50,12 +50,27 @@ export class ProjectChoosedComponent implements OnInit {
     console.log('copy successful');
   }
 
-  async getFeedback() {
-    this.projectService.getFeedback(this.assignmentName, this.username, '1').subscribe(
+  getFeedback() {
+    this.projectService.getFeedback(this.assignmentName, this.username, this.commits.length.toString()).subscribe(
       response => {
         this.feedback = response.message;
+      },
+      error => {
+        console.log(error);
       }
     );
   }
+
+  updateFeedback(commitNumber: string) {
+    this.projectService.getFeedback(this.assignmentName, this.username, commitNumber).subscribe(
+      response => {
+        this.feedback = response.message;
+      },
+      error => {
+        console.log(error);
+      }
+    );
+  }
+
 
 }

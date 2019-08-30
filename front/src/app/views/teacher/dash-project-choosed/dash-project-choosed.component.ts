@@ -45,7 +45,6 @@ export class DashProjectChoosedComponent implements OnInit {
 
     this.dashProjectService.getFeedback(this.assignmentName, this.username, this.commits.length.toString()).subscribe(
       response => {
-        console.log(response);
         this.feedback = response.message;
       },
       error => {
@@ -54,10 +53,9 @@ export class DashProjectChoosedComponent implements OnInit {
     );
   }
 
-  updateFeedback(commmitNumber) {
+  updateFeedback(commmitNumber: string) {
     this.dashProjectService.getFeedback(this.assignmentName, this.username, commmitNumber).subscribe(
       response => {
-        console.log(response);
         this.feedback = response.message;
       },
       error => {
