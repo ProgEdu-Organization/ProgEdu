@@ -360,18 +360,18 @@ public class AssignmentService {
       final AssignmentType assignment = AssignmentFactory
           .getAssignmentType(assignmentType.getTypeName());
 
-      String tempFilePath = uploadDir + assignmentName;
+      // String tempFilePath = uploadDir + assignmentName;
       String testCasePath = testDir + assignmentName;
       String testCaseZipPath = testCasePath + ".zip";
       // remove current test case
       tomcatService.removeFile(testCaseZipPath);
-      tomcatService.storeFileToUploadsFolder(file, tempFilePath);
+      // tomcatService.storeFileToUploadsFolder(file, tempFilePath);
 
-      zipHandler.unzipFile(tempFilePath, testCasePath);
+      // zipHandler.unzipFile(tempFilePath, testCasePath);
       assignment.createTestCase(testCasePath);
       zipHandler.zipTestFolder(testCasePath);
       long checksum = zipHandler.getChecksum();
-      tomcatService.removeFile(uploadDir);
+      // tomcatService.removeFile(uploadDir);
       tomcatService.removeFile(testCasePath);
 
       dbManager.editAssignment(deadline, releaseTime, readMe, checksum, id);
