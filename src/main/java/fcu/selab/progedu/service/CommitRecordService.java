@@ -7,7 +7,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import javax.naming.spi.DirStateFactory.Result;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -21,6 +20,7 @@ import javax.ws.rs.core.Response;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import fcu.selab.progedu.conn.GitlabService;
 import fcu.selab.progedu.conn.JenkinsService;
 import fcu.selab.progedu.data.Assignment;
 import fcu.selab.progedu.data.CommitRecord;
@@ -45,6 +45,7 @@ public class CommitRecordService {
   private AssignmentTypeDbManager atDb = AssignmentTypeDbManager.getInstance();
   private CommitStatusDbManager csdb = CommitStatusDbManager.getInstance();
   private JenkinsService js = JenkinsService.getInstance();
+  private GitlabService gs = GitlabService.getInstance();
 
   /**
    * get all commit result.
@@ -64,7 +65,7 @@ public class CommitRecordService {
       JSONObject ob = new JSONObject();
       ob.put("name", user.getName());
       ob.put("username", user.getUsername());
-      ob.put("commitRecord", new JSONArray(userCommitRecord.getEntity().toString()));      
+      ob.put("commitRecord", new JSONArray(userCommitRecord.getEntity().toString()));
       array.put(ob);
     }
     result.put("allUsersCommitRecord", array);
@@ -201,6 +202,18 @@ public class CommitRecordService {
     String statusType = getStatusTypeName(auId, number);
     String message = assignmentType.getStatus(statusType).extractFailureMsg(console);
     ob.put("message", message);
+
+    return Response.ok().entity(ob.toString()).build();
+  }
+
+  @GET
+  @Path("gitLab")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response getGitLabProjectUrl(@QueryParam("username") String username,
+      @QueryParam("assignmentName") String assignmentName) {
+    JSONObject ob = new JSONObject();
+    String projectUrl = gs.getProjectUrl(username, assignmentName);
+    ob.put("url", projectUrl);
 
     return Response.ok().entity(ob.toString()).build();
   }
