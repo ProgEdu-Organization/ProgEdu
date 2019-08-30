@@ -15,11 +15,8 @@ example: http://localhost:4200/#/dashboard/dashprojectchoosed?userId=3&proName=W
 export class DashProjectChoosedComponent implements OnInit {
   username: string;
   assignmentName: string;
-<<<<<<< HEAD
   assignment = { type: '' };
-=======
-  assignment = { type: false };
->>>>>>> fcuselab/#71
+
   commits: Array<JSON> = [];
   constructor(private route: ActivatedRoute, private dashProjectService: DashProjectChoosedService) { }
 
