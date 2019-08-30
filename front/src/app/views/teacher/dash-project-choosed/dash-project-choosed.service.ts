@@ -8,7 +8,7 @@ import { environment } from '../../../../environments/environment';
 export class DashProjectChoosedService {
   COMMIT_RECORD_DETAIL = environment.SERVER_URL + '/ProgEdu/webapi/commits/commitRecords';
   ASSIGNMENT_API = environment.SERVER_URL + '/ProgEdu/webapi/assignment/getAssignment';
-  FEEDBACK_API = environment.SERVER_URL + '/ProgEdu/webapi/assignment/feedback';
+  FEEDBACK_API = environment.SERVER_URL + '/ProgEdu/webapi/commits/feedback';
   constructor(private http: HttpClient) { }
 
   getCommitDetail(assignmentName, username): Observable<any> {
