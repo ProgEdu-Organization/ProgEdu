@@ -50,7 +50,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let commit of commits">
+              <tr *ngFor="let commit of commits" (click)='updateFeedback(commit.number)'>
                 <td>{{commit.number}}</td>
                 <td>
                   <p class="circle {{commit.status}}"></p>

@@ -16,8 +16,8 @@ export class DashProjectChoosedComponent implements OnInit {
   username: string;
   assignmentName: string;
   assignment = { type: '' };
-
   commits: Array<JSON> = [];
+  feedback: string;
   constructor(private route: ActivatedRoute, private dashProjectService: DashProjectChoosedService) { }
 
   ngOnInit() {
@@ -27,25 +27,40 @@ export class DashProjectChoosedComponent implements OnInit {
     this.getAssignment();
   }
 
-  async getCommitDetail() {
+
+  getCommitDetail() {
     this.dashProjectService.getCommitDetail(this.assignmentName, this.username).subscribe(response => {
       this.commits = response;
+      this.getFeedback();
     });
   }
 
-  async getAssignment() {
+  getAssignment() {
     this.dashProjectService.getAssignment(this.assignmentName).subscribe(response => {
       this.assignment = response;
-      console.log(this.assignment);
     });
   }
 
-  async getFeedback(commitNumber) {
-    this.dashProjectService.getFeedback(this.assignmentName, this.username, commitNumber).subscribe(
-      response => {
+  getFeedback() {
 
+    this.dashProjectService.getFeedback(this.assignmentName, this.username, this.commits.length.toString()).subscribe(
+      response => {
+        this.feedback = response.message;
       },
-      error => { },
+      error => {
+        console.log(error);
+      },
+    );
+  }
+
+  updateFeedback(commmitNumber: string) {
+    this.dashProjectService.getFeedback(this.assignmentName, this.username, commmitNumber).subscribe(
+      response => {
+        this.feedback = response.message;
+      },
+      error => {
+        console.log(error);
+      },
     );
   }
 

@@ -135,7 +135,6 @@ public class ScreenshotRecordService {
       int auid = auDb.getAuid(assignmentDb.getAssignmentIdByName(jobName),
           userDb.getUserIdByUsername(userName));
       int lastCommitNum = commitRecordDb.getCommitCount(auid);
-
       int crId = commitRecordDb.getCommitRecordId(auid, lastCommitNum);
 
       try {

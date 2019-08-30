@@ -9,13 +9,13 @@ import java.util.Comparator;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
-import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.gitlab.api.models.GitlabAccessLevel;
 import org.gitlab.api.models.GitlabGroup;
 import org.gitlab.api.models.GitlabUser;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
@@ -26,7 +26,8 @@ import com.csvreader.CsvReader;
 import fcu.selab.progedu.conn.GitlabService;
 import fcu.selab.progedu.data.Group;
 import fcu.selab.progedu.data.Student;
-import fcu.selab.progedu.db.GroupDbManager;
+import fcu.selab.progedu.db.service.GroupDbService;
+import fcu.selab.progedu.db.service.UserDbService;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.project.ProjectTypeEnum;
 
@@ -35,7 +36,8 @@ public class GroupService {
 
   GitlabService gitlabService = GitlabService.getInstance();
   UserService userService = new UserService();
-  GroupDbManager gdb = GroupDbManager.getInstance();
+  GroupDbService gdb = GroupDbService.getInstance();
+  UserDbService udb = UserDbService.getInstance();
   AssignmentService projectService = new AssignmentService();
 
   /**
@@ -161,28 +163,22 @@ public class GroupService {
    * @param group Group in database
    */
   public GitlabGroup createGitlabGroup(Group group) {
-    int leaderId = getUserIdByUsername(group.getLeaderUsername());
     GitlabGroup gitlabGroup = createGitlabGroup(group.getGroupName());
-    int groupId = getGroupId(gitlabGroup);
-    gitlabService.addMember(groupId, leaderId, 40);
-    gdb.addGroup(group.getGroupName(), group.getLeaderUsername(), true); // insert into db
-
-    for (String developName : group.getContributor()) {
-      int developerId = getUserIdByUsername(developName);
-      gitlabService.addMember(groupId, developerId, 30); // add member on GitLab
-      gdb.addGroup(group.getGroupName(), developName, false); // insert into db
+    int groupGitLabId = gitlabGroup.getId();
+    int leaderGitLabId = udb.getGitLabId(group.getLeaderUsername());
+    String groupName = group.getGroupName();
+    String leaderUsername = group.getLeaderUsername();
+    gitlabService.addMember(groupGitLabId, leaderGitLabId, GitlabAccessLevel.Master);
+    // insert into db
+    gdb.addGroup(groupGitLabId, groupName, leaderUsername);
+    for (String username : group.getContributors()) {
+      int gitLabId = udb.getGitLabId(username);
+      // add member to GitLab group
+      gitlabService.addMember(groupGitLabId, gitLabId, GitlabAccessLevel.Developer);
+      // insert into db
+      gdb.addMember(username, groupName);
     }
     return gitlabGroup;
-  }
-
-  /**
-   * Get GitLab group id
-   * 
-   * @param group group on GitLab
-   * @return id of GitLab group
-   */
-  public int getGroupId(GitlabGroup group) {
-    return group.getId();
   }
 
   /**
@@ -235,6 +231,10 @@ public class GroupService {
       }
     }
     return null;
+  }
+
+  private void addMember(String groupName, String username) {
+
   }
 
 //  /**
@@ -303,28 +303,28 @@ public class GroupService {
 //
 //  }
 
-  /**
-   * Add a new member into a group
-   * 
-   * @param groupName the group name which new member join
-   * @param members   the member name
-   */
-  @POST
-  @Path("add")
-  @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-  public Response addMember(@FormParam("groupName") String groupName,
-      @FormParam("select") List<String> members) {
-    boolean check = gdb.addGroupMember(groupName, members);
-    for (String userName : members) {
-      int groupId = gitlabService.getGitlabGroup(groupName).getId();
-      int userId = gitlabService.getUserViaSudo(userName).getId();
-      gitlabService.addMember(groupId, userId, 30);
-    }
-    Response response = Response.ok().build();
-    if (!check) {
-      response = Response.serverError().status(Status.INTERNAL_SERVER_ERROR).build();
-    }
-    return response;
-  }
+//  /**
+//   * Add a new member into a group
+//   * 
+//   * @param groupName the group name which new member join
+//   * @param members   the member name
+//   */
+//  @POST
+//  @Path("add")
+//  @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+//  public Response addMember(@FormParam("groupName") String groupName,
+//      @FormParam("select") List<String> members) {
+//    boolean check = gdb.addGroupMember(groupName, members);
+//    for (String userName : members) {
+//      int groupId = gitlabService.getGitlabGroup(groupName).getId();
+//      int userId = gitlabService.getUserViaSudo(userName).getId();
+//      gitlabService.addMember(groupId, userId, 30);
+//    }
+//    Response response = Response.ok().build();
+//    if (!check) {
+//      response = Response.serverError().status(Status.INTERNAL_SERVER_ERROR).build();
+//    }
+//    return response;
+//  }
 
 }
