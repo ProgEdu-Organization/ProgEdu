@@ -79,6 +79,32 @@ public class CommitRecordDbManager {
   }
 
   /**
+   * get all hw's CommitRecordId by auid
+   *
+   * @param auId Commit_Record auId
+   * @return lsCRid list of CRid
+   */
+  public List<Integer> getCommitRecordId(int auId) {
+    String query = "SELECT id FROM Commit_Record where auId = ?";
+    List<Integer> lsCRid = new ArrayList<>();
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(query)) {
+      preStmt.setInt(1, auId);
+
+      try (ResultSet rs = preStmt.executeQuery();) {
+        if (rs.next()) {
+          int id = rs.getInt("id");
+          lsCRid.add(id);
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+
+    return lsCRid;
+  }
+
+  /**
    * get each hw's CommitRecordStateCounts
    *
    * @param auId Commit_Record auId

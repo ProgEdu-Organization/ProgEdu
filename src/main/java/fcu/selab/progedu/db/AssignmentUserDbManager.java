@@ -65,6 +65,30 @@ public class AssignmentUserDbManager {
   }
 
   /**
+   * get auIds by assignment Id
+   * 
+   * @param aid Assignment Id
+   * @return auId assignmentUser Id
+   */
+  public List<Integer> getAuids(int aid) {
+    List<Integer> lsAUid = new ArrayList<>();
+    String sql = "SELECT id FROM Assignment_User WHERE aId = ?";
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+      preStmt.setInt(1, aid);
+      try (ResultSet rs = preStmt.executeQuery()) {
+        while (rs.next()) {
+          int auid = rs.getInt("id");
+          lsAUid.add(auid);
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return lsAUid;
+  }
+
+  /**
    * get aids by User Id
    * 
    * @return lsAids assignment id

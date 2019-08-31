@@ -41,6 +41,8 @@ import fcu.selab.progedu.data.Assignment;
 import fcu.selab.progedu.data.User;
 import fcu.selab.progedu.db.AssignmentDbManager;
 import fcu.selab.progedu.db.AssignmentUserDbManager;
+import fcu.selab.progedu.db.CommitRecordDbManager;
+import fcu.selab.progedu.db.ScreenshotRecordDbManager;
 import fcu.selab.progedu.db.UserDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.project.AssignmentFactory;
@@ -66,6 +68,8 @@ public class AssignmentService {
   private AssignmentDbManager dbManager = AssignmentDbManager.getInstance();
   private AssignmentUserDbManager auDbManager = AssignmentUserDbManager.getInstance();
   private UserDbManager userDbManager = UserDbManager.getInstance();
+  private CommitRecordDbManager crDbManager = CommitRecordDbManager.getInstance();
+  private ScreenshotRecordDbManager srDbManager = ScreenshotRecordDbManager.getInstance();
   private final String tempDir = System.getProperty("java.io.tmpdir");
   private final String uploadDir = tempDir + "/uploads/";
   private final String testDir = tempDir + "/tests/";
@@ -297,7 +301,7 @@ public class AssignmentService {
   @Path("delete")
   @Produces(MediaType.APPLICATION_JSON)
 
-  public Response deleteProject(@QueryParam("del_Hw_Name") String name) {
+  public Response deleteProject(@QueryParam("assignmentName") String name) {
 
     Linux linuxApi = new Linux();
     // delete tomcat test file
@@ -307,11 +311,7 @@ public class AssignmentService {
     linuxApi.execLinuxCommandInFile(removeZipTestFileCommand, tempDir);
 
     // delete db
-    CommitRecordService commitRecordService = new CommitRecordService();
-    commitRecordService.deleteRecord(name);
-    int aid = dbManager.getAssignmentIdByName(name);
-    auDbManager.deleteAssignmentUserByAid(aid);
-    dbManager.deleteAssignment(name);
+    deleteAssignmentDatabase(name);
 
     // delete gitlab
     gitlabService.deleteProjects(name);
@@ -357,7 +357,7 @@ public class AssignmentService {
       @FormDataParam("releaseTime") Date releaseTime, @FormDataParam("deadline") Date deadline,
       @FormDataParam("readMe") String readMe, @FormDataParam("file") InputStream file,
       @FormDataParam("file") FormDataContentDisposition fileDetail) {
-    
+
     int id = dbManager.getAssignmentIdByName(assignmentName);
     if (file == null) {
       dbManager.editAssignment(deadline, releaseTime, readMe, id);
@@ -469,4 +469,24 @@ public class AssignmentService {
     return response.build();
   }
 
+  /**
+   * delete Assignment from Database by name
+   * 
+   */
+  public void deleteAssignmentDatabase(String name) {
+
+    int aid = dbManager.getAssignmentIdByName(name);
+    List<Integer> auidList = auDbManager.getAuids(aid);
+
+    for (int auid : auidList) { // CommitRecord
+      List<Integer> cridList = crDbManager.getCommitRecordId(auid);
+      for (int crid : cridList) { // ScreenShot
+        srDbManager.deleteScreenshotByCrid(crid);
+      }
+      crDbManager.deleteRecord(auid);
+    }
+    auDbManager.deleteAssignmentUserByAid(aid);// Assignment_User
+    dbManager.deleteAssignment(name);// Assignment
+
+  }
 }
