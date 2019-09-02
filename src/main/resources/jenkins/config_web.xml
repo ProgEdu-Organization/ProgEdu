@@ -1,7 +1,6 @@
-<?xml version='1.1' encoding='UTF-8'?>
-<project>
+<?xml version="1.1" encoding="UTF-8"?><project>
   <actions/>
-  <description></description>
+  <description/>
   <keepDependencies>false</keepDependencies>
   <properties>
     <com.dabsquared.gitlabjenkins.connection.GitLabConnectionProperty plugin="gitlab-plugin@1.5.12">
@@ -12,7 +11,7 @@
     <configVersion>2</configVersion>
     <userRemoteConfigs>
       <hudson.plugins.git.UserRemoteConfig>
-        <url>http://140.134.26.71:20008/m1234567/web-hw999.git</url>
+        <url>http://140.134.26.71:20008/testtest05/WEB-VICTOR.git</url>
         <credentialsId>gitlab_root</credentialsId>
       </hudson.plugins.git.UserRemoteConfig>
     </userRemoteConfigs>
@@ -31,7 +30,7 @@
   <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
   <triggers>
     <com.dabsquared.gitlabjenkins.GitLabPushTrigger plugin="gitlab-plugin@1.5.12">
-      <spec></spec>
+      <spec/>
       <triggerOnPush>true</triggerOnPush>
       <triggerOnMergeRequest>true</triggerOnMergeRequest>
       <triggerOnPipelineEvent>false</triggerOnPipelineEvent>
@@ -45,11 +44,11 @@
       <skipWorkInProgressMergeRequest>true</skipWorkInProgressMergeRequest>
       <setBuildDescription>true</setBuildDescription>
       <branchFilterType>All</branchFilterType>
-      <includeBranchesSpec></includeBranchesSpec>
-      <excludeBranchesSpec></excludeBranchesSpec>
-      <sourceBranchRegex></sourceBranchRegex>
-      <targetBranchRegex></targetBranchRegex>
-      <pendingBuildName></pendingBuildName>
+      <includeBranchesSpec/>
+      <excludeBranchesSpec/>
+      <sourceBranchRegex/>
+      <targetBranchRegex/>
+      <pendingBuildName/>
       <cancelPendingBuildsOnUpdate>false</cancelPendingBuildsOnUpdate>
     </com.dabsquared.gitlabjenkins.GitLabPushTrigger>
   </triggers>
@@ -63,12 +62,12 @@
         <timeoutMinutes>15</timeoutMinutes>
       </strategy>
       <buildStep class="org.jenkinsci.plugins.AssessmentBuilder" plugin="jenkins-progedu@1.0-SNAPSHOT">
-        <jobName>M1234567_WEB-HW999</jobName>
-        <testFileName>WEB-HW999</testFileName>
-        <proDetailUrl>http://140.134.26.71:10008/ProgEdu/webapi/project/checksum?proName=WEB-HW999</proDetailUrl>
-        <testFileUrl>http://140.134.26.71:10008/ProgEdu/webapi/jenkins/getTestFile?filePath=/usr/local/tomcat/temp/tests/WEB-HW1.zip</testFileUrl>
+        <jobName>testtest05_WEB-VICTOR</jobName>
+        <testFileName>WEB-VICTOR</testFileName>
+        <proDetailUrl>http://140.134.26.71:33000/ProgEdu/webapi/assignment/checksum?proName=WEB-VICTOR</proDetailUrl>
+        <testFileUrl>http://140.134.26.71:33000/ProgEdu/webapi/assignment/getTestFile?filePath=/usr/local/tomcat/temp/tests/WEB-VICTOR.zip</testFileUrl>
         <testFileChecksum>2354726748</testFileChecksum>
-        <testFilePath></testFilePath>
+        <testFilePath/>
       </buildStep>
       <operationList>
         <hudson.plugins.build__timeout.operations.FailOperation/>
@@ -100,13 +99,14 @@ npm run eslint</command>
       <caseSensitive>true</caseSensitive>
     </hudson.tasks.ArtifactArchiver>
     <io.jenkins.plugins.progupdatetodb.UpdateToDbPublisher plugin="progedDB@1.0-SNAPSHOT">
-      <progeduAPIUrl></progeduAPIUrl>
-      <jenkinsJobName></jenkinsJobName>
+      <progeduAPIUrl>http://140.134.26.71:33000/ProgEdu/webapi</progeduAPIUrl>
+      <jenkinsUserName>testtest05</jenkinsUserName>
+      <jenkinsAssignmnetName>WEB-VICTOR</jenkinsAssignmnetName>
     </io.jenkins.plugins.progupdatetodb.UpdateToDbPublisher>
     <org.jenkinsci.plugins.UpdatingDbPublisher plugin="jenkins-progedu@1.0-SNAPSHOT">
-      <progeduDbUrl>http://140.134.26.71:10008/ProgEdu/webapi/commits/update</progeduDbUrl>
-      <user>M1234567</user>
-      <proName>WEB-HW999</proName>
+      <progeduDbUrl>http://140.134.26.71:33000/ProgEdu/webapi/commits/update</progeduDbUrl>
+      <user>testtest05</user>
+      <proName>WEB-VICTOR</proName>
     </org.jenkinsci.plugins.UpdatingDbPublisher>
     <hudson.plugins.ws__cleanup.WsCleanup plugin="ws-cleanup@0.37">
       <patterns class="empty-list"/>
@@ -119,7 +119,7 @@ npm run eslint</command>
       <cleanWhenAborted>true</cleanWhenAborted>
       <notFailBuild>false</notFailBuild>
       <cleanupMatrixParent>false</cleanupMatrixParent>
-      <externalDelete></externalDelete>
+      <externalDelete/>
       <disableDeferredWipeout>false</disableDeferredWipeout>
     </hudson.plugins.ws__cleanup.WsCleanup>
   </publishers>
