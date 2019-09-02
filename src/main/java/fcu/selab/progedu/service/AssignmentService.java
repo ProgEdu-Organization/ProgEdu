@@ -157,13 +157,10 @@ public class AssignmentService {
     // 7. git push
     gitlabService.pushProject(cloneDirectoryPath);
 
-    // 8. remove project file in linux
-    tomcatService.removeFile(uploadDir);
-
-    // 9. String removeTestDirectoryCommand = "rm -rf tests/" + name;
+    // 8. String removeTestDirectoryCommand = "rm -rf tests/" + name;
     tomcatService.removeFile(testDir + assignmentName);
 
-    // 10. import project infomation to database
+    // 9. import project infomation to database
     boolean hasTemplate = false;
 
     addProject(assignmentName, releaseTime, deadline, readMe, projectTypeEnum, hasTemplate,
@@ -171,7 +168,7 @@ public class AssignmentService {
 
     List<User> users = userService.getStudents();
     for (User user : users) {
-      // 11. Create student project, and import project
+      // 10. Create student project, and import project
       try {
         GitlabProject project = gitlabService.createPrivateProject(user.getGitLabId(),
             assignmentName, rootProjectUrl);
@@ -180,9 +177,12 @@ public class AssignmentService {
         e.printStackTrace();
       }
       addAuid(user.getUsername(), assignmentName);
-      // 12. Create each Jenkins Jobs
+      // 11. Create each Jenkins Jobs
       assignment.createJenkinsJob(user.getUsername(), assignmentName);
     }
+
+    // 12. remove project file in linux
+    tomcatService.removeFile(uploadDir);
 
     return Response.ok().build();
   }
