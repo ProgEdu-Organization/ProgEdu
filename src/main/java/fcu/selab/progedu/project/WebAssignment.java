@@ -74,7 +74,8 @@ public class WebAssignment extends AssignmentType {
       doc.getElementsByTagName("proName").item(0).setTextContent(projectName);
       doc.getElementsByTagName("progeduAPIUrl").item(0).setTextContent(progEduApiUrl);
       doc.getElementsByTagName("testFileUrl").item(0).setTextContent(testFileUrl);
-      doc.getElementsByTagName("jenkinsJobName").item(0).setTextContent(jobName);
+      doc.getElementsByTagName("jenkinsUserName").item(0).setTextContent(username);
+      doc.getElementsByTagName("jenkinsAssignmnetName").item(0).setTextContent(projectName);
 
       // write the content into xml file
       TransformerFactory transformerFactory = TransformerFactory.newInstance();
