@@ -67,8 +67,8 @@ public class ScreenshotRecordService {
           db.addScreenshotRecord(crId, screenShotUrl);
         }
         ob.put("userName", userName);
-        ob.put("assignmnetName", assignmneName);
-        ob.put("commitNumber", lastCommitNum);
+        ob.put("proName", assignmneName);
+        ob.put("commitCount", lastCommitNum);
         ob.put("url", urls);
         return Response.ok().entity(ob.toString()).build();
       } catch (Exception e) {
