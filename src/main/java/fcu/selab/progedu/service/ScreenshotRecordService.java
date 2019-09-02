@@ -131,9 +131,9 @@ public class ScreenshotRecordService {
     JSONObject ob = new JSONObject();
     if (!userJob[0].equals("root")) {
 
+      System.out.println("url " + urls);
       int auid = auDb.getAuid(assignmentDb.getAssignmentIdByName(jobName),
           userDb.getUserIdByUsername(userName));
-      System.out.println("url " + urls);
       int lastCommitNum = commitRecordDb.getCommitCount(auid);
       int crId = commitRecordDb.getCommitRecordId(auid, lastCommitNum);
 

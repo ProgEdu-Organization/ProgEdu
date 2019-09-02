@@ -31,4 +31,19 @@ public class ScreenshotRecordDbManager {
     }
   }
 
+  /**
+   * Delete Screenshot_Record from database by crid
+   * 
+   */
+  public void deleteScreenshotByCrid(int crid) {
+    String sql = "DELETE FROM Screenshot_Record WHERE crId = ?";
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+      preStmt.setInt(1, crid);
+      preStmt.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
+
 }
