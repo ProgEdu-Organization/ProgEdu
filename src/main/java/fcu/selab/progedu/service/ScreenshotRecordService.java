@@ -52,27 +52,27 @@ public class ScreenshotRecordService {
       @FormParam("assignmentName") String assignmentName, @FormParam("url") List<String> urls) {
     System.out.println("username: " + username + "jobName: " + assignmentName);
     JSONObject ob = new JSONObject();
-      System.out.println("Png file name " + urls);
-      int auid = auDb.getAuid(assignmentDb.getAssignmentIdByName(assignmentName),
-          userDb.getUserIdByUsername(username));
-      int lastCommitNum = commitRecordDb.getCommitCount(auid);
-      int crId = commitRecordDb.getCommitRecordId(auid, lastCommitNum);
+    System.out.println("Png file name " + urls);
+    int auid = auDb.getAuid(assignmentDb.getAssignmentIdByName(assignmentName),
+        userDb.getUserIdByUsername(username));
+    int lastCommitNum = commitRecordDb.getCommitCount(auid);
+    int crId = commitRecordDb.getCommitRecordId(auid, lastCommitNum);
 
-      try {
-        for (String url : urls) {
-          String screenShotUrl = "/job/" + username + "_" + assignmentName + "/" + lastCommitNum
-              + "/artifact/target/screenshot/" + url + ".png";
-          db.addScreenshotRecord(crId, screenShotUrl);
-        }
-        ob.put("username", username);
-        ob.put("proName", assignmentName);
-        ob.put("commitCount", lastCommitNum);
-        ob.put("url", urls);
-        return Response.ok().entity(ob.toString()).build();
-      } catch (Exception e) {
-        System.out.print("update URL to DB error: ");
-        e.printStackTrace();
+    try {
+      for (String url : urls) {
+        String screenShotUrl = "/job/" + username + "_" + assignmentName + "/" + lastCommitNum
+            + "/artifact/target/screenshot/" + url + ".png";
+        db.addScreenshotRecord(crId, screenShotUrl);
       }
+      ob.put("username", username);
+      ob.put("proName", assignmentName);
+      ob.put("commitCount", lastCommitNum);
+      ob.put("url", urls);
+      return Response.ok().entity(ob.toString()).build();
+    } catch (Exception e) {
+      System.out.print("update URL to DB error: ");
+      e.printStackTrace();
+    }
     return Response.serverError().status(Status.INTERNAL_SERVER_ERROR).build();
   }
 
