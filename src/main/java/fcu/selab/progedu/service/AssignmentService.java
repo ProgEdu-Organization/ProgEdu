@@ -300,8 +300,7 @@ public class AssignmentService {
   @POST
   @Path("delete")
   @Produces(MediaType.APPLICATION_JSON)
-  public Response deleteProject(@QueryParam("assignmentName") String name) {
-
+  public Response deleteProject(@FormDataParam("assignmentName") String name) {
     Linux linuxApi = new Linux();
     // delete tomcat test file
 
@@ -423,7 +422,6 @@ public class AssignmentService {
     ob.put("description", assignment.getDescription());
     ob.put("deadline", assignment.getDeadline());
     ob.put("type", assignment.getType());
-
     return Response.ok().entity(ob.toString()).build();
   }
 

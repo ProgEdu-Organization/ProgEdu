@@ -32,7 +32,6 @@ export class LoginComponent {
   async login() {
     this._loginAuthService.Login(this.getUsername(), this.getPassword()).subscribe(
       (response) => {
-        console.log(response);
         if (!response.isLogin) {
           this.dangerModal.show();
         } else {
@@ -52,7 +51,6 @@ export class LoginComponent {
   async autoLogin() {
     if (this.jwtService.getToken() != null) {
       const decodedToken = this.jwtService.getDecodedToken();
-      console.log(JSON.stringify(decodedToken));
       if (!this.jwtService.isTokenExpired()) {
         if (decodedToken.sub === 'teacher') {
           this.router.navigate(['dashboard']);

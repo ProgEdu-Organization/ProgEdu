@@ -23,7 +23,6 @@ export class LoginAuthService {
     let params = new HttpParams();
     params = params.append('username', username);
     params = params.append('password', password);
-    console.log(this.LOGIN_URL);
     return this.http.post<any>(this.LOGIN_URL, params, options);
   }
 

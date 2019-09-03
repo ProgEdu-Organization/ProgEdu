@@ -26,8 +26,8 @@ export class DashProjectChoosedService {
 
   getFeedback(assignmentName: string, username: string, commitNumber: string): Observable<any> {
     const params = new HttpParams()
-      .set('assignmentName', assignmentName)
       .set('username', username)
+      .set('assignmentName', assignmentName)
       .set('number', commitNumber);
     return this.http.get<any>(this.FEEDBACK_API, { params });
   }

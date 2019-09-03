@@ -37,14 +37,14 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
   buttonCaption: string = 'Start';
   constructor(private router: Router, private fb: FormBuilder, private createService: CreateAssignmentService) { }
   @ViewChild('myModal', { static: true }) public progressModal: ModalDirective;
-  @ViewChild('dangerModal', { static: false }) public errorModal: ModalDirective;
+  @ViewChild('bsModal', { static: false }) public errorModal: ModalDirective;
 
 
   ngOnInit() {
     this.assignment = this.fb.group({
       name: [undefined, [Validators.required, Validators.maxLength(10)]],
-      releaseTime: [undefined, Validators.required],
-      deadline: [undefined, Validators.required],
+      releaseTime: [new Date().toISOString().slice(0, 19), Validators.required],
+      deadline: [new Date().toISOString().slice(0, 19), Validators.required],
       readMe: [undefined, Validators.required],
       type: [undefined, Validators.required],
       file: [undefined, Validators.required],
