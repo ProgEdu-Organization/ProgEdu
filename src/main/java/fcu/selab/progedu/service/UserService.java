@@ -57,7 +57,7 @@ public class UserService {
     List<User> users = new ArrayList<>();
     String errorMessage = "";
     try {
-      CsvReader csvReader = new CsvReader(new InputStreamReader(uploadedInputStream, "UTF-8"));
+      CsvReader csvReader = new CsvReader(new InputStreamReader(uploadedInputStream, "BIG5"));
       csvReader.readHeaders();
       while (csvReader.readRecord()) {
         User newUser = new User();
