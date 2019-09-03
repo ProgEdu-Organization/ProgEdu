@@ -62,7 +62,7 @@ public class ScreenshotRecordService {
 
       try {
         for (String url : urls) {
-          String screenShotUrl = "/job/" + assignmentName + "/" + lastCommitNum
+          String screenShotUrl = "/job/" + userName + "_" + assignmentName + "/" + lastCommitNum
               + "/artifact/target/screenshot/" + url + ".png";
           db.addScreenshotRecord(crId, screenShotUrl);
         }
