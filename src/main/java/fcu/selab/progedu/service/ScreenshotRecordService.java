@@ -48,25 +48,23 @@ public class ScreenshotRecordService {
   @Path("updateURL")
   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
   @Produces(MediaType.APPLICATION_JSON)
-  public Response updateScreenshotPng(@FormParam("userName") String userName,
+  public Response updateScreenshotPng(@FormParam("username") String username,
       @FormParam("assignmentName") String assignmentName, @FormParam("url") List<String> urls) {
-    System.out.println("userName: " + userName + "jobName: " + assignmentName);
+    System.out.println("username: " + username + "jobName: " + assignmentName);
     JSONObject ob = new JSONObject();
-    if (!userName.equals("root")) {
-
       System.out.println("Png file name " + urls);
       int auid = auDb.getAuid(assignmentDb.getAssignmentIdByName(assignmentName),
-          userDb.getUserIdByUsername(userName));
+          userDb.getUserIdByUsername(username));
       int lastCommitNum = commitRecordDb.getCommitCount(auid);
       int crId = commitRecordDb.getCommitRecordId(auid, lastCommitNum);
 
       try {
         for (String url : urls) {
-          String screenShotUrl = "/job/" + userName + "_" + assignmentName + "/" + lastCommitNum
+          String screenShotUrl = "/job/" + username + "_" + assignmentName + "/" + lastCommitNum
               + "/artifact/target/screenshot/" + url + ".png";
           db.addScreenshotRecord(crId, screenShotUrl);
         }
-        ob.put("userName", userName);
+        ob.put("username", username);
         ob.put("proName", assignmentName);
         ob.put("commitCount", lastCommitNum);
         ob.put("url", urls);
@@ -75,7 +73,6 @@ public class ScreenshotRecordService {
         System.out.print("update URL to DB error: ");
         e.printStackTrace();
       }
-    }
     return Response.serverError().status(Status.INTERNAL_SERVER_ERROR).build();
   }
 

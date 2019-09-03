@@ -105,7 +105,7 @@ npm run eslint</command>
     </org.jenkinsci.plugins.UpdatingDbPublisher>
     <io.jenkins.plugins.progupdatetodb.UpdateToDbPublisher plugin="progedDB@1.0-SNAPSHOT">
       <progeduAPIUrl>http://140.134.26.71:33000/ProgEdu/webapi</progeduAPIUrl>
-      <jenkinsUserName>testtest05</jenkinsUserName>
+      <jenkinsUsername>testtest05</jenkinsUsername>
       <jenkinsAssignmentName>WEB-VICTOR</jenkinsAssignmentName>
     </io.jenkins.plugins.progupdatetodb.UpdateToDbPublisher>
     <hudson.plugins.ws__cleanup.WsCleanup plugin="ws-cleanup@0.37">
