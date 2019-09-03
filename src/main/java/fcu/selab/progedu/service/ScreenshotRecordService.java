@@ -1,20 +1,13 @@
 package fcu.selab.progedu.service;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.sql.SQLException;
-import java.util.Base64;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
-import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -28,16 +21,9 @@ import fcu.selab.progedu.db.AssignmentUserDbManager;
 import fcu.selab.progedu.db.CommitRecordDbManager;
 import fcu.selab.progedu.db.ScreenshotRecordDbManager;
 import fcu.selab.progedu.db.UserDbManager;
-import fcu.selab.progedu.exception.LoadConfigFailureException;
 
 @Path("commits/screenshot/")
 public class ScreenshotRecordService {
-  private static final String JOB = "/job/";
-  private static final String JSON = "/api/json";
-  private static final String AUTHORIZATION = "Authorization";
-  private static final String BASIC = "Basic ";
-  private static final String UTF_8 = "UTF-8";
-
   JenkinsConfig jenkinsData;
   JenkinsService jenkins;
   CommitRecordDbManager commitRecordDb = CommitRecordDbManager.getInstance();
@@ -52,97 +38,34 @@ public class ScreenshotRecordService {
   }
 
   /**
-   * Jenkins job next build number
-   * 
-   * @return next build number
-   */
-  @GET
-  @Path("nextCommitNumber/")
-  @Produces(MediaType.APPLICATION_JSON)
-  public int getJenkinsNextBuildNumber(@QueryParam("jobName") String jobName) {
-    int nextBuildNumber = 0;
-    String username = "";
-    String password = "";
-    String jobUrl = "";
-    HttpURLConnection conn = null;
-    try {
-      username = jenkinsData.getJenkinsRootUsername();
-      password = jenkinsData.getJenkinsRootPassword();
-      jobUrl = jenkinsData.getJenkinsHostUrl() + JOB + jobName + JSON;
-      System.out.println("jobUrl:" + jobUrl);
-    } catch (LoadConfigFailureException e) {
-      e.printStackTrace();
-    }
-    try {
-      if (Thread.interrupted()) {
-        throw new InterruptedException();
-      }
-
-      URL url = new URL(jobUrl);
-      conn = (HttpURLConnection) url.openConnection();
-      String input = username + ":" + password;
-      Base64.Encoder encoder = Base64.getEncoder();
-      String encoding = encoder.encodeToString(input.getBytes());
-      conn.setRequestProperty(AUTHORIZATION, BASIC + encoding);
-      conn.setReadTimeout(10000);
-      conn.setConnectTimeout(15000);
-      conn.setRequestMethod("GET");
-      conn.connect();
-      if (Thread.interrupted()) {
-        throw new InterruptedException();
-      }
-      try (BufferedReader reader = new BufferedReader(
-          new InputStreamReader(conn.getInputStream(), UTF_8));) {
-
-        String jsonString = reader.readLine();
-        JSONObject j1 = new JSONObject(jsonString);
-        nextBuildNumber = j1.optInt("nextBuildNumber") - 1;
-      }
-
-    } catch (Exception e) {
-      System.out.print("Jenkins get job build result error : ");
-      e.printStackTrace();
-    } finally {
-      if (conn != null) {
-        conn.disconnect();
-      }
-    }
-    System.out.println("nextBuildNumber= " + nextBuildNumber);
-    return nextBuildNumber;
-  }
-
-  /**
    * update stu project commit record.
    * 
-   * @param proName project name
-   * @param urls    screenshot png urls
+   * @param assignmentName assignment name
+   * @param urls           screenshot png file name
    * @throws SQLException SQLException
    */
   @POST
   @Path("updateURL")
   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
   @Produces(MediaType.APPLICATION_JSON)
-  public Response updateScreenshotPng(@FormParam("proName") String proName,
-      @FormParam("url") List<String> urls) {
-    String[] userJob = proName.split("_");
-    String userName = userJob[0];
-    String jobName = userJob[1];
-    System.out.println("userName: " + userName + "jobName: " + jobName);
+  public Response updateScreenshotPng(@FormParam("username") String username,
+      @FormParam("assignmentName") String assignmentName, @FormParam("url") List<String> urls) {
+    System.out.println("username: " + username + "jobName: " + assignmentName);
     JSONObject ob = new JSONObject();
-    if (!userJob[0].equals("root")) {
-
-      System.out.println("url " + urls);
-      int auid = auDb.getAuid(assignmentDb.getAssignmentIdByName(jobName),
-          userDb.getUserIdByUsername(userName));
+      System.out.println("Png file name " + urls);
+      int auid = auDb.getAuid(assignmentDb.getAssignmentIdByName(assignmentName),
+          userDb.getUserIdByUsername(username));
       int lastCommitNum = commitRecordDb.getCommitCount(auid);
       int crId = commitRecordDb.getCommitRecordId(auid, lastCommitNum);
 
       try {
         for (String url : urls) {
-          db.addScreenshotRecord(crId, url);
+          String screenShotUrl = "/job/" + username + "_" + assignmentName + "/" + lastCommitNum
+              + "/artifact/target/screenshot/" + url + ".png";
+          db.addScreenshotRecord(crId, screenShotUrl);
         }
-        ob.put("userName", userName);
-        ob.put("proName", jobName);
+        ob.put("username", username);
+        ob.put("proName", assignmentName);
         ob.put("commitCount", lastCommitNum);
         ob.put("url", urls);
         return Response.ok().entity(ob.toString()).build();
@@ -150,7 +73,6 @@ public class ScreenshotRecordService {
         System.out.print("update URL to DB error: ");
         e.printStackTrace();
       }
-    }
     return Response.serverError().status(Status.INTERNAL_SERVER_ERROR).build();
   }
 
