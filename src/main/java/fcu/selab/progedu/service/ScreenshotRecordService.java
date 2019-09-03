@@ -40,8 +40,8 @@ public class ScreenshotRecordService {
   /**
    * update stu project commit record.
    * 
-   * @param assignmneName assignmne name
-   * @param urls          screenshot png file name
+   * @param assignmentName assignment name
+   * @param urls           screenshot png file name
    * @throws SQLException SQLException
    */
   @POST
@@ -49,25 +49,25 @@ public class ScreenshotRecordService {
   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
   @Produces(MediaType.APPLICATION_JSON)
   public Response updateScreenshotPng(@FormParam("userName") String userName,
-      @FormParam("assignmnetName") String assignmneName, @FormParam("url") List<String> urls) {
-    System.out.println("userName: " + userName + "jobName: " + assignmneName);
+      @FormParam("assignmentName") String assignmentName, @FormParam("url") List<String> urls) {
+    System.out.println("userName: " + userName + "jobName: " + assignmentName);
     JSONObject ob = new JSONObject();
     if (!userName.equals("root")) {
 
       System.out.println("Png file name " + urls);
-      int auid = auDb.getAuid(assignmentDb.getAssignmentIdByName(assignmneName),
+      int auid = auDb.getAuid(assignmentDb.getAssignmentIdByName(assignmentName),
           userDb.getUserIdByUsername(userName));
       int lastCommitNum = commitRecordDb.getCommitCount(auid);
       int crId = commitRecordDb.getCommitRecordId(auid, lastCommitNum);
 
       try {
         for (String url : urls) {
-          String screenShotUrl = "/job/" + assignmneName + "/" + lastCommitNum
+          String screenShotUrl = "/job/" + assignmentName + "/" + lastCommitNum
               + "/artifact/target/screenshot/" + url + ".png";
           db.addScreenshotRecord(crId, screenShotUrl);
         }
         ob.put("userName", userName);
-        ob.put("proName", assignmneName);
+        ob.put("proName", assignmentName);
         ob.put("commitCount", lastCommitNum);
         ob.put("url", urls);
         return Response.ok().entity(ob.toString()).build();
