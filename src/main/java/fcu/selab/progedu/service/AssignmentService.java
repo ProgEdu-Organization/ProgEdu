@@ -132,7 +132,7 @@ public class AssignmentService {
         assignmentName);
 //
 //    // 3. Store Zip File to folder if file is not empty
-    String filePath = tomcatService.storeFileToServer(file, fileDetail, uploadDir, assignment);
+    String filePath = tomcatService.storeFileToServer(file, fileDetail, assignment);
 
     // 4. Unzip the uploaded file to tests folder and uploads folder on tomcat,
     // extract main method from tests folder, then zip as root project
@@ -300,7 +300,6 @@ public class AssignmentService {
   @POST
   @Path("delete")
   @Produces(MediaType.APPLICATION_JSON)
-
   public Response deleteProject(@QueryParam("assignmentName") String name) {
 
     Linux linuxApi = new Linux();
@@ -364,7 +363,7 @@ public class AssignmentService {
     System.out.println(file.toString());
 
     int id = dbManager.getAssignmentIdByName(assignmentName);
-    if (file == null) {
+    if (fileDetail == null || fileDetail.getName().isEmpty()) {
       dbManager.editAssignment(deadline, releaseTime, readMe, id);
     } else {
       ProjectTypeEnum assignmentType = dbManager.getAssignmentType(assignmentName);
@@ -376,7 +375,7 @@ public class AssignmentService {
       String testCaseZipPath = testCasePath + ".zip";
       // remove current test case
       tomcatService.removeFile(testCaseZipPath);
-      tomcatService.storeFileToUploadsFolder(file, tempFilePath);
+      tomcatService.storeFileToUploadsFolder(file, assignmentName);
 
       zipHandler.unzipFile(tempFilePath, testCasePath);
       assignment.createTestCase(testCasePath);
