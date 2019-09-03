@@ -363,7 +363,7 @@ public class AssignmentService {
     System.out.println(file.toString());
 
     int id = dbManager.getAssignmentIdByName(assignmentName);
-    if (fileDetail == null || fileDetail.getName().isEmpty()) {
+    if (fileDetail.getFileName() == null) {
       dbManager.editAssignment(deadline, releaseTime, readMe, id);
     } else {
       ProjectTypeEnum assignmentType = dbManager.getAssignmentType(assignmentName);
