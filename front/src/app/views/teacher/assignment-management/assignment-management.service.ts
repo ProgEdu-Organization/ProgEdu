@@ -43,8 +43,9 @@ export class AssignmentManagementService {
   }
 
   deleteAssignment(assignmentName: string): Observable<any> {
+    console.log(assignmentName);
     const form = new FormData();
-    form.append('del_Hw_Name', assignmentName);
+    form.append('assignmentName', assignmentName);
     return this.http.post<any>(this.DELETE_ASSIGNMENT_API, form, deleteAssignmentOptions);
   }
 
