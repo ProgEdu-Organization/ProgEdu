@@ -242,6 +242,49 @@ public class UserDbManager {
   }
 
   /**
+   * Get user status from database
+   * 
+   * @param username The gitlab user name
+   */
+  public boolean getUserStatus(String username) {
+    boolean isDisplay = false;
+    String query = "SELECT display FROM User WHERE username = ?";
+
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(query)) {
+      preStmt.setString(1, username);
+      try (ResultSet rs = preStmt.executeQuery()) {
+        if (rs.next()) {
+          isDisplay = rs.getBoolean(DISPLAY);
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return isDisplay;
+  }
+
+  /**
+   * Update user status
+   * 
+   * @param username  The gitlab user name
+   * @param isDisplay isDisplay
+   */
+  public void updateUserStatus(String username, boolean isDisplay) {
+    String query = "UPDATE User SET display=? WHERE username = ?";
+
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(query)) {
+      preStmt.setBoolean(1, isDisplay);
+      preStmt.setString(2, username);
+      preStmt.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+
+  }
+
+  /**
    * List all the database user
    * 
    * @return list of user
