@@ -70,9 +70,21 @@ export class AssignmentManagementComponent implements OnInit {
   getAllAssignments() {
     this.assignmentService.getAllAssignments().subscribe(response => {
       this.assignments = response.allAssignments;
-      console.log(this.assignments);
+      for (const num in this.assignments) {
+        if (num) {
+          this.assignments[num].createTime = this.getUTCAdjustTime(this.assignments[num].createTime);
+          this.assignments[num].releaseTime = this.getUTCAdjustTime(this.assignments[num].releaseTime);
+          this.assignments[num].deadline = this.getUTCAdjustTime(this.assignments[num].deadline);
+        }
+      }
     });
+  }
 
+  getUTCAdjustTime(time: any): Date {
+    const timeOffset = (new Date().getTimezoneOffset() * 60 * 1000);
+    const assigenmentTime = new Date(time).getTime();
+
+    return new Date(assigenmentTime - timeOffset);
   }
 
   deleteAssignment() {
@@ -81,6 +93,7 @@ export class AssignmentManagementComponent implements OnInit {
     this.assignmentService.deleteAssignment(this.assignmentName).subscribe(
       response => {
         this.deleteModal.hide();
+        this.getAllAssignments();
       },
       error => {
         console.log(error);
