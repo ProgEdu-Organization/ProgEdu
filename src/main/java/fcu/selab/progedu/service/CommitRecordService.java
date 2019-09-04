@@ -3,6 +3,7 @@ package fcu.selab.progedu.service;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -46,7 +47,6 @@ public class CommitRecordService {
   private CommitStatusDbManager csdb = CommitStatusDbManager.getInstance();
   private JenkinsService js = JenkinsService.getInstance();
   private GitlabService gs = GitlabService.getInstance();
-//  private UserService us = UserService.getInstance();
 
   /**
    * get all commit result.
@@ -59,8 +59,7 @@ public class CommitRecordService {
   public Response getAllUsersCommitRecord() {
     JSONArray array = new JSONArray();
     JSONObject result = new JSONObject();
-//    List<User> users = us.getStudents();
-    List<User> users = userDb.getAllUsers();
+    List<User> users = getStudents();
     for (User user : users) {
       String username = user.getUsername();
       Response userCommitRecord = getOneUserCommitRecord(username);
@@ -240,6 +239,23 @@ public class CommitRecordService {
   private String getStatusTypeName(int auId, int number) {
     int statusId = db.getCommitRecordStatus(auId, number);
     return csdb.getStatusNameById(statusId).getType();
+  }
+
+  /**
+   * Get all user which role is student
+   * 
+   * @return all GitLab users
+   */
+  public List<User> getStudents() {
+    List<User> studentUsers = new ArrayList<>();
+    List<User> users = userDb.getAllUsers();
+
+    for (User user : users) {
+      if (user.getRole().contains(RoleEnum.STUDENT)) {
+        studentUsers.add(user);
+      }
+    }
+    return studentUsers;
   }
 
 }
