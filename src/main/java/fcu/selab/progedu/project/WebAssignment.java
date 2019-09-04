@@ -119,7 +119,7 @@ public class WebAssignment extends AssignmentType {
       String jobName = username + "_" + assignmentName;
       String console = jenkinsService.getConsole(jobName, num);
 
-    if (statusService.isWebUnitTestFailure(console)) {
+      if (statusService.isWebUnitTestFailure(console)) {
         status = StatusEnum.UNIT_TEST_FAILURE;
       } else if (statusService.isWebCheckstyleFailure(console)) {
         status = StatusEnum.CHECKSTYLE_FAILURE;
