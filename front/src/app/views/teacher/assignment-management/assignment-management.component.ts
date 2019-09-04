@@ -9,11 +9,17 @@ import { FormBuilder, Validators, FormGroup } from '@angular/forms';
   templateUrl: './assignment-management.component.html'
 })
 export class AssignmentManagementComponent implements OnInit {
-  @ViewChild('dangerModal', { static: false }) public deleteModal: ModalDirective;
-  @ViewChild('bsModal', { static: false }) public editModal: ModalDirective;
+  @ViewChild('editModal', { static: true }) public editModal: ModalDirective;
+  @ViewChild('deleteModal', { static: true }) public deleteModal: ModalDirective;
   assignments: Array<any>;
   assignmentName: string;
   assignmentForm: FormGroup;
+
+  max: number = 100;
+  showWarning: boolean;
+  dynamic: number = 0;
+  type: string = 'Waiting';
+  isDeleteProgress = false;
 
   constructor(private assignmentService: AssignmentManagementService, private router: Router, private fb: FormBuilder) { }
 
@@ -63,15 +69,15 @@ export class AssignmentManagementComponent implements OnInit {
 
   getAllAssignments() {
     this.assignmentService.getAllAssignments().subscribe(response => {
-      console.log(response);
       this.assignments = response.allAssignments;
     });
   }
 
   deleteAssignment() {
+    this.isDeleteProgress = true;
+
     this.assignmentService.deleteAssignment(this.assignmentName).subscribe(
       response => {
-        console.log(response);
         this.deleteModal.hide();
       },
       error => {
@@ -99,7 +105,6 @@ export class AssignmentManagementComponent implements OnInit {
 
   setSelectAssignment(data) {
     this.assignmentName = data;
-    console.log(data);
   }
 
   editAssignment() {
@@ -108,7 +113,7 @@ export class AssignmentManagementComponent implements OnInit {
       this.assignmentForm.get('name').setValue(this.assignmentName);
       this.assignmentService.editAssignment(this.assignmentForm).subscribe(
         response => {
-          console.log(response);
+          this.editModal.hide();
         },
         errpr => {
 

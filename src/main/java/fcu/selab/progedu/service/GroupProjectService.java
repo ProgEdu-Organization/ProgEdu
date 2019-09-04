@@ -94,7 +94,7 @@ public class GroupProjectService {
         group.getProjectName());
 
     // 3. Store Zip File to folder if file is not empty
-    filePath = tomcatService.storeFileToServer(file, fileDetail, uploadDir, groupProject);
+    filePath = tomcatService.storeFileToServer(file, fileDetail, groupProject);
 
     // 4. Unzip the uploaded file to uploads folder on tomcat
 

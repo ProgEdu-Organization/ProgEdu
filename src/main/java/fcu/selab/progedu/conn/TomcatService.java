@@ -29,15 +29,22 @@ public class TomcatService {
   /**
    * (to do)
    * 
-   * @param file   (to do)
-   * @param target (to do)
+   * @param file        (to do)
+   * @param projectName (to do)
    */
-  public void storeFileToUploadsFolder(InputStream file, String target) {
+  public String storeFileToUploadsFolder(InputStream file, String projectName) {
+    String uploadsDir = System.getProperty("java.io.tmpdir") + "/uploads/";
+    File uploadsFolder = new File(uploadsDir);
+    if (!uploadsFolder.exists()) {
+      uploadsFolder.mkdirs();
+    }
+    String target = uploadsDir + projectName;
     try {
       storeFile(file, target);
     } catch (SecurityException | IOException e) {
       e.printStackTrace();
     }
+    return target;
   }
 
   /**
@@ -70,17 +77,15 @@ public class TomcatService {
    * 
    * @param file       (to do)
    * @param fileDetail (to do)
-   * @param uploadDir  (to do)
    * @param project    (to do)
    * @return target (to do)
    */
   public String storeFileToServer(InputStream file, FormDataContentDisposition fileDetail,
-      String uploadDir, ProjectType project) {
+      ProjectType project) {
     String target;
     if (hasTemplate(fileDetail)) {
-      target = uploadDir + fileDetail.getFileName();
       // store to C://User/AppData/Temp/uploads/
-      storeFileToUploadsFolder(file, target);
+      target = storeFileToUploadsFolder(file, fileDetail.getFileName());
     } else {
       target = this.getClass().getResource(project.getSampleTemplate()).getFile();
     }

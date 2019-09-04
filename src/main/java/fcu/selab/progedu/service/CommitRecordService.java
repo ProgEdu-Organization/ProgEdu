@@ -46,6 +46,7 @@ public class CommitRecordService {
   private CommitStatusDbManager csdb = CommitStatusDbManager.getInstance();
   private JenkinsService js = JenkinsService.getInstance();
   private GitlabService gs = GitlabService.getInstance();
+//  private UserService us = UserService.getInstance();
 
   /**
    * get all commit result.
@@ -58,6 +59,7 @@ public class CommitRecordService {
   public Response getAllUsersCommitRecord() {
     JSONArray array = new JSONArray();
     JSONObject result = new JSONObject();
+//    List<User> users = us.getStudents();
     List<User> users = userDb.getAllUsers();
     for (User user : users) {
       String username = user.getUsername();

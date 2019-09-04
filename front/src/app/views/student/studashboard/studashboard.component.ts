@@ -19,7 +19,6 @@ export class StudashboardComponent implements OnInit {
 
   async getAllAssignments() {
     this.studashboardService.getAllAssignments().subscribe(response => {
-      console.log(response.allAssignments);
       this.tableHead = response.allAssignments;
     });
   }
@@ -27,7 +26,6 @@ export class StudashboardComponent implements OnInit {
   async getStudentCommitRecords() {
     // clear student array
     this.studashboardService.getStudentCommitRecord(this.username).subscribe(response => {
-      console.log(response);
       this.studentCommitRecord = response;
     });
   }

@@ -18,7 +18,7 @@ export class StudentManagementComponent implements OnInit {
     await this.getAllUser();
     this.oneStudentForm = this.fb.group({
       role: ['', Validators.required],
-      name: ['', Validators.pattern('^[a-zA-Z0-9-_]{5,20}')],
+      name: ['', Validators.required],
       username: ['', Validators.pattern('^[a-zA-Z0-9-_]{5,20}')],
       password: ['', Validators.pattern('^[a-zA-Z0-9-_]{8,20}')],
       email: ['', [Validators.required, Validators.email]],

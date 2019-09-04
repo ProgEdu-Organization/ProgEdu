@@ -13,7 +13,6 @@ export class CanActiveStudentService implements CanActivate {
     return new Promise((resolve, reject) => {
       this.loginAuth.isLoginByStudent().subscribe((response) => {
         if (response.isLogin && response.isStudent) {
-          console.log('canActive student');
           resolve(true);
         } else {
           this.jwtService.removeToken();

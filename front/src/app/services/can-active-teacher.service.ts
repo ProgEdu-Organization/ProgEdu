@@ -12,9 +12,7 @@ export class CanActiveTeacherService implements CanActivate {
   canActivate(): Promise<boolean> | boolean {
     return new Promise((resolve) => {
       this.loginAuth.isLoginByTeacher().subscribe((response) => {
-        console.log(response);
         if (response.isLogin && response.isTeacher) {
-          console.log('canActive teacher');
           resolve(true);
         } else {
           this.jwtService.removeToken();

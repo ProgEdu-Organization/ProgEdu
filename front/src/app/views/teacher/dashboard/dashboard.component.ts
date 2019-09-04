@@ -27,8 +27,6 @@ export class DashboardComponent implements OnInit {
   async getAllStudent() {
     // clear student array
     this.dashboardService.getAllStudentCommitRecord().subscribe(response => {
-      console.log('test');
-      console.log(response);
       this.allStudentCommitRecord = response.allUsersCommitRecord;
       if (this.allStudentCommitRecord[0] === undefined) {
         this.tableHead.length = 0;

@@ -36,12 +36,13 @@ public class UserService {
     return instance;
   }
 
-  GitlabService gitlabService = GitlabService.getInstance();
+  private GitlabService gitlabService = GitlabService.getInstance();
 
-  CourseConfig course = CourseConfig.getInstance();
+  private CourseConfig course = CourseConfig.getInstance();
   private UserDbManager dbManager = UserDbManager.getInstance();
   private RoleUserDbManager rudb = RoleUserDbManager.getInstance();
   private RoleDbManager rdb = RoleDbManager.getInstance();
+  private AssignmentService as = AssignmentService.getInstance();
 
   /**
    * Upload a csv file for student batch registration
@@ -57,7 +58,7 @@ public class UserService {
     List<User> users = new ArrayList<>();
     String errorMessage = "";
     try {
-      CsvReader csvReader = new CsvReader(new InputStreamReader(uploadedInputStream, "UTF-8"));
+      CsvReader csvReader = new CsvReader(new InputStreamReader(uploadedInputStream, "BIG5"));
       csvReader.readHeaders();
       while (csvReader.readRecord()) {
         User newUser = new User();
@@ -87,6 +88,7 @@ public class UserService {
       if (errorMessage == null || errorMessage.isEmpty()) {
         for (User user : users) {
           register(user);
+          createPreviousAssginment(user.getUsername(), user.getRole());
         }
         response = Response.ok().build();
       } else {
@@ -128,6 +130,7 @@ public class UserService {
     if (errorMessage.isEmpty()) {
       try {
         register(user);
+        createPreviousAssginment(username, roleList);
         response = Response.ok().build();
       } catch (IOException e) {
         response = Response.serverError().entity("Failed !").build();
@@ -184,6 +187,19 @@ public class UserService {
     JSONObject ob = new JSONObject();
     ob.put("Users", users);
     return Response.ok().entity(ob.toString()).build();
+  }
+
+  /**
+   * Display
+   * 
+   * @param username username
+   */
+  @POST
+  @Path("display")
+  public Response updateStatus(@FormDataParam("username") String username) {
+    boolean isDisplay = !dbManager.getUserStatus(username);
+    dbManager.updateUserStatus(username, isDisplay);
+    return Response.ok().build();
   }
 
   /**
@@ -289,6 +305,15 @@ public class UserService {
       errorMessage = "Role is empty";
     }
     return errorMessage;
+  }
+
+  private void createPreviousAssginment(String username, List<RoleEnum> roles) {
+    for (RoleEnum role : roles) {
+      if (role == RoleEnum.STUDENT) {
+        as.createPreviousAssginment(username);
+        break;
+      }
+    }
   }
 
 }

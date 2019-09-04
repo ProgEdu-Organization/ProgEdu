@@ -53,6 +53,12 @@ import fcu.selab.progedu.utils.ZipHandler;
 
 @Path("assignment/")
 public class AssignmentService {
+  private static AssignmentService instance = new AssignmentService();
+
+  public static AssignmentService getInstance() {
+    return instance;
+  }
+
   private GitlabService gitlabService = GitlabService.getInstance();
   private GitlabUser root = gitlabService.getRoot();
   private ZipHandler zipHandler;
@@ -132,7 +138,7 @@ public class AssignmentService {
         assignmentName);
 //
 //    // 3. Store Zip File to folder if file is not empty
-    String filePath = tomcatService.storeFileToServer(file, fileDetail, uploadDir, assignment);
+    String filePath = tomcatService.storeFileToServer(file, fileDetail, assignment);
 
     // 4. Unzip the uploaded file to tests folder and uploads folder on tomcat,
     // extract main method from tests folder, then zip as root project
@@ -172,17 +178,7 @@ public class AssignmentService {
 
     List<User> users = userService.getStudents();
     for (User user : users) {
-      // 10. Create student project, and import project
-      try {
-        GitlabProject project = gitlabService.createPrivateProject(user.getGitLabId(),
-            assignmentName, rootProjectUrl);
-        gitlabService.setGitlabWebhook(project);
-      } catch (IOException | LoadConfigFailureException e) {
-        e.printStackTrace();
-      }
-      addAuid(user.getUsername(), assignmentName);
-      // 11. Create each Jenkins Jobs
-      assignment.createJenkinsJob(user.getUsername(), assignmentName);
+      createAssignmentSettings(user.getUsername(), assignmentName, rootProjectUrl);
     }
 
     // 12. remove project file in linux
@@ -300,9 +296,7 @@ public class AssignmentService {
   @POST
   @Path("delete")
   @Produces(MediaType.APPLICATION_JSON)
-
-  public Response deleteProject(@QueryParam("assignmentName") String name) {
-
+  public Response deleteProject(@FormDataParam("assignmentName") String name) {
     Linux linuxApi = new Linux();
     // delete tomcat test file
 
@@ -364,7 +358,7 @@ public class AssignmentService {
     System.out.println(file.toString());
 
     int id = dbManager.getAssignmentIdByName(assignmentName);
-    if (file == null) {
+    if (fileDetail.getFileName() == null) {
       dbManager.editAssignment(deadline, releaseTime, readMe, id);
     } else {
       ProjectTypeEnum assignmentType = dbManager.getAssignmentType(assignmentName);
@@ -376,7 +370,7 @@ public class AssignmentService {
       String testCaseZipPath = testCasePath + ".zip";
       // remove current test case
       tomcatService.removeFile(testCaseZipPath);
-      tomcatService.storeFileToUploadsFolder(file, tempFilePath);
+      tomcatService.storeFileToUploadsFolder(file, assignmentName);
 
       zipHandler.unzipFile(tempFilePath, testCasePath);
       assignment.createTestCase(testCasePath);
@@ -424,7 +418,6 @@ public class AssignmentService {
     ob.put("description", assignment.getDescription());
     ob.put("deadline", assignment.getDeadline());
     ob.put("type", assignment.getType());
-
     return Response.ok().entity(ob.toString()).build();
   }
 
@@ -494,4 +487,37 @@ public class AssignmentService {
     dbManager.deleteAssignment(name);// Assignment
 
   }
+
+  private void createAssignmentSettings(String username, String assignmentName,
+      String rootProjectUrl) {
+    ProjectTypeEnum assignmentTypeEnum = dbManager.getAssignmentType(assignmentName);
+    AssignmentType assignment = AssignmentFactory
+        .getAssignmentType(assignmentTypeEnum.getTypeName());
+    addAuid(username, assignmentName);
+    try {
+      int gitLabId = userDbManager.getGitLabIdByUsername(username);
+      GitlabProject project = gitlabService.createPrivateProject(gitLabId, assignmentName,
+          rootProjectUrl);
+      gitlabService.setGitlabWebhook(project);
+      assignment.createJenkinsJob(username, assignmentName);
+    } catch (IOException | LoadConfigFailureException e) {
+      e.printStackTrace();
+    }
+  }
+
+  /**
+   * create previous Assignemnt
+   * 
+   * @param username username
+   */
+  public void createPreviousAssginment(String username) {
+    List<String> assignmentNames = dbManager.getAllAssignmentNames();
+
+    for (String assignmentName : assignmentNames) {
+      String rootProjectUrl = getRootProjectUrl(assignmentName);
+      createAssignmentSettings(username, assignmentName, rootProjectUrl);
+    }
+
+  }
+
 }

@@ -1,27 +1,28 @@
 <h1 style="text-align: center">Overview</h1>
 <div class='card'>
   <div class='card-header'>
-    <i class='fa fa-align-justify'></i>
-    <label>Search:</label>
-    <input type='text' [(ngModel)]='search'>
-    <div class="card-header-actions">
-      <div id="inline">
-        <p class="ovol NB">
+    <div class='input-group'>
+      <span class="input-group-prepend">
+        <button class="btn btn-primary" type="button" [disabled]='true'><i class="fa fa-search"></i>
+          Search</button></span>
+      <input type='text' class='form-control col-md-2' [(ngModel)]='search'>
+      <div class='ml-auto'>
+        <span class="ovol NB">
           Not Build
-        </p>
-        <p class="ovol CPF">
+        </span>
+        <span class="ovol CPF">
           Compile Failure
-        </p>
-        <p class="ovol CSF">
+        </span>
+        <span class="ovol CSF">
           Checkstyle Failure
-        </p>
+        </span>
         <!-- <p class="ovol plagirism" style="padding: 5px 10px;"><fmt:message key="dashboard_p_plagiarism"/></p> -->
-        <p class="ovol UTF">
+        <span class="ovol UTF">
           Unit Test Failure
-        </p>
-        <p class="ovol BS">
+        </span>
+        <span class="ovol BS">
           Build Success
-        </p>
+        </span>
       </div>
     </div>
   </div>
