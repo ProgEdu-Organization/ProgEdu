@@ -1,9 +1,11 @@
 package fcu.selab.progedu.project;
 
+import fcu.selab.progedu.utils.ZipFileInfo;
+
 public abstract class AssignmentType extends ProjectTypeImp {
 
   public abstract void createTemplate(String uploadDirectory);
 
-  public abstract void createTestCase(String testDirectory);
+  public abstract ZipFileInfo createTestCase(String testDirectory);
 
 }

@@ -23,6 +23,8 @@ import fcu.selab.progedu.db.AssignmentDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.service.StatusService;
 import fcu.selab.progedu.status.StatusEnum;
+import fcu.selab.progedu.utils.ZipFileInfo;
+import fcu.selab.progedu.utils.ZipHandler;
 
 public class MavenAssignment extends AssignmentType {
 
@@ -116,12 +118,30 @@ public class MavenAssignment extends AssignmentType {
   }
 
   @Override
-  public void createTestCase(String testDirectory) {
+  public ZipFileInfo createTestCase(String testDirectory) {
+    ZipHandler zipHandler;
+    long testZipChecksum = 0;
+    String testZipUrl = "";
+
     try {
       FileUtils.deleteDirectory(new File(testDirectory + "/src/main"));
     } catch (IOException e) {
       e.printStackTrace();
     }
+
+    try {
+      zipHandler = new ZipHandler();
+      zipHandler.zipTestFolder(testDirectory);
+      testZipChecksum = zipHandler.getChecksum();
+      testZipUrl = zipHandler.serverIp + "/ProgEdu/webapi/assignment/getTestFile?filePath="
+          + testDirectory + ".zip";
+    } catch (LoadConfigFailureException e) {
+      e.printStackTrace();
+    }
+
+    ZipFileInfo zipFileInfo = new ZipFileInfo(testZipChecksum, testZipUrl);
+
+    return zipFileInfo;
   }
 
 }
