@@ -196,7 +196,9 @@ public class UserService {
    */
   @POST
   @Path("display")
-  public Response updateStatus(@FormDataParam("username") String username) {
+  @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+  public Response updateStatus(@FormParam("username") String username) {
+    System.out.println("username" + username);
     boolean isDisplay = !dbManager.getUserStatus(username);
     dbManager.updateUserStatus(username, isDisplay);
     return Response.ok().build();
