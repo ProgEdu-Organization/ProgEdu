@@ -97,9 +97,9 @@
                 <td>{{user.email}}</td>
                 <td>
                   <button class="badge badge-success" *ngIf="user.display === true"
-                    (click)='updateDisplay()'>Active</button>
+                    (click)='updateDisplay(user.username)'>Active</button>
                   <button class="badge badge-danger" *ngIf="user.display === false"
-                    (click)='updateDisplay()'>Drop</button>
+                    (click)='updateDisplay(user.username)'>Drop</button>
                 </td>
               </tr>
             </tbody>
