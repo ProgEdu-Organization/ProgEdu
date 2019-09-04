@@ -225,9 +225,9 @@ public class AssignmentDbManager {
         Assignment assignment = new Assignment();
         assignment.setId(rs.getInt("id"));
         assignment.setName(rs.getString("name"));
-        assignment.setCreateTime(rs.getDate("createTime"));
-        assignment.setDeadline(rs.getDate("deadline"));
-        assignment.setReleaseTime(rs.getDate("releaseTime"));
+        assignment.setCreateTime(rs.getTimestamp("createTime"));
+        assignment.setDeadline(rs.getTimestamp("deadline"));
+        assignment.setReleaseTime(rs.getTimestamp("releaseTime"));
         assignment.setDisplay(rs.getBoolean("display"));
         assignments.add(assignment);
       }

@@ -25,11 +25,11 @@ export class AssignmentManagementComponent implements OnInit {
 
   ngOnInit() {
     this.getAllAssignments();
-
+    const now_time = Date.now() - (new Date().getTimezoneOffset() * 60 * 1000);
     this.assignmentForm = this.fb.group({
       name: [''],
-      releaseTime: [new Date().toISOString().slice(0, 19), Validators.required],
-      deadline: [new Date().toISOString().slice(0, 19), Validators.required],
+      releaseTime: [new Date(now_time).toISOString().slice(0, 19), Validators.required],
+      deadline: [new Date(now_time).toISOString().slice(0, 19), Validators.required],
       readMe: ['', Validators.required],
       file: [],
       rememberMe: [true]
@@ -70,7 +70,9 @@ export class AssignmentManagementComponent implements OnInit {
   getAllAssignments() {
     this.assignmentService.getAllAssignments().subscribe(response => {
       this.assignments = response.allAssignments;
+      console.log(this.assignments);
     });
+
   }
 
   deleteAssignment() {

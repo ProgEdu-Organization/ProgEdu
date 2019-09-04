@@ -47,12 +47,6 @@ export const navItems: NavData[] = [
       variant: 'info',
       text: 'NEW'
     }
-  },
-  {
-    name: 'Student',
-    url: '/base',
-    icon: 'align-center',
-    children: []
   }
 ];
 

@@ -66,6 +66,7 @@ public class CommitRecordService {
       JSONObject ob = new JSONObject();
       ob.put("name", user.getName());
       ob.put("username", user.getUsername());
+      ob.put("display", user.getDisplay());
       ob.put("commitRecord", new JSONArray(userCommitRecord.getEntity().toString()));
       array.put(ob);
     }
