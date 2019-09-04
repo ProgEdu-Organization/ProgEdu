@@ -53,6 +53,12 @@ import fcu.selab.progedu.utils.ZipHandler;
 
 @Path("assignment/")
 public class AssignmentService {
+  private static AssignmentService instance = new AssignmentService();
+
+  public static AssignmentService getInstance() {
+    return instance;
+  }
+
   private GitlabService gitlabService = GitlabService.getInstance();
   private GitlabUser root = gitlabService.getRoot();
   private ZipHandler zipHandler;
@@ -172,17 +178,7 @@ public class AssignmentService {
 
     List<User> users = userService.getStudents();
     for (User user : users) {
-      // 10. Create student project, and import project
-      try {
-        GitlabProject project = gitlabService.createPrivateProject(user.getGitLabId(),
-            assignmentName, rootProjectUrl);
-        gitlabService.setGitlabWebhook(project);
-      } catch (IOException | LoadConfigFailureException e) {
-        e.printStackTrace();
-      }
-      addAuid(user.getUsername(), assignmentName);
-      // 11. Create each Jenkins Jobs
-      assignment.createJenkinsJob(user.getUsername(), assignmentName);
+      createAssignmentSettings(user.getUsername(), assignmentName, rootProjectUrl);
     }
 
     // 12. remove project file in linux
@@ -491,4 +487,37 @@ public class AssignmentService {
     dbManager.deleteAssignment(name);// Assignment
 
   }
+
+  private void createAssignmentSettings(String username, String assignmentName,
+      String rootProjectUrl) {
+    ProjectTypeEnum assignmentTypeEnum = dbManager.getAssignmentType(assignmentName);
+    AssignmentType assignment = AssignmentFactory
+        .getAssignmentType(assignmentTypeEnum.getTypeName());
+    addAuid(username, assignmentName);
+    try {
+      int gitLabId = userDbManager.getGitLabIdByUsername(username);
+      GitlabProject project = gitlabService.createPrivateProject(gitLabId, assignmentName,
+          rootProjectUrl);
+      gitlabService.setGitlabWebhook(project);
+      assignment.createJenkinsJob(username, assignmentName);
+    } catch (IOException | LoadConfigFailureException e) {
+      e.printStackTrace();
+    }
+  }
+
+  /**
+   * create previous Assignemnt
+   * 
+   * @param username username
+   */
+  public void createPreviousAssginment(String username) {
+    List<String> assignmentNames = dbManager.getAllAssignmentNames();
+
+    for (String assignmentName : assignmentNames) {
+      String rootProjectUrl = getRootProjectUrl(assignmentName);
+      createAssignmentSettings(username, assignmentName, rootProjectUrl);
+    }
+
+  }
+
 }
