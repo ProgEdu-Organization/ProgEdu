@@ -43,7 +43,6 @@
             {{student.name}}
           </th>
           <th *ngFor='let commit of student.commitRecord'>
-
             <p id="{{student.username}}_{{commit.assignmentName}}" class="circle {{commit.commitRecord.status}}">
               <a id="{{student.username}}_{{commit.assignmentName}}_{{commit.commitRecord.commitNumber}}"
                 href="#/dashboard/dashProjectChoosed?username={{student.username}}&assignmentName={{commit.assignmentName}}">{{commit.commitRecord.commitNumber}}</a>

@@ -24,6 +24,8 @@ import { ChartComponent } from './chart/chart.component';
 import { FilterPipe } from '../../pipe/filter.pipe';
 
 import { ProgressbarModule } from 'ngx-bootstrap/progressbar';
+
+import { CollapseModule } from 'ngx-bootstrap/collapse';
 @NgModule({
     imports: [
         FormsModule,
@@ -37,7 +39,8 @@ import { ProgressbarModule } from 'ngx-bootstrap/progressbar';
         AlertModule.forRoot(),
         ModalModule.forRoot(),
         TabsModule.forRoot(),
-        CarouselModule.forRoot()
+        CarouselModule.forRoot(),
+        CollapseModule.forRoot(),
     ],
     declarations: [
         DashboardComponent,

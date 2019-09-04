@@ -11,9 +11,9 @@
         <thead>
           <tr>
             <th>Name</th>
-            <th>Create time
-            </th>
-            <th>Deadline </th>
+            <th>Create time</th>
+            <th>Release Time</th>
+            <th>Deadline</th>
             <th>Edit</th>
             <th>Delete</th>
           </tr>
@@ -21,10 +21,9 @@
         <tbody>
           <tr *ngFor="let assignment of assignments">
             <td>{{assignment.name}}</td>
-            <td>{{assignment.createTime | date:'medium'}}
-            </td>
-            <td>{{assignment.deadline | date:'medium'}}
-            </td>
+            <td>{{assignment.createTime | date:'short'}}</td>
+            <td>{{assignment.releaseTime | date:'short'}}</td>
+            <td>{{assignment.deadline | date:'short'}}</td>
             <td><button id="{{assignment.name}}" class="btn btn-info" data-toggle="modal"
                 (click)="editModal.show();setSelectAssignment(assignment.name)"><i
                   class="cui-pencil icons"></i></button>
