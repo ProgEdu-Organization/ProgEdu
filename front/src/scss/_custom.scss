@@ -93,6 +93,11 @@ img {
   cursor: pointer;
 }
 
+.assigned:hover {
+  background-color: #c8ced3;
+  cursor: pointer;
+}
+
 /* Next & previous buttons */
 .prev,
 .next {
