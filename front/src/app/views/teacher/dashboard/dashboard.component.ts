@@ -1,6 +1,7 @@
 import { Component, OnInit, NgModule } from '@angular/core';
 import { allStudentDatas } from '../../../containers/default-layout/_nav';
 import { DashboardService } from './dashboard.service';
+import { controllers } from 'chart.js';
 
 @Component({
   templateUrl: 'dashboard.component.html'
@@ -31,6 +32,7 @@ export class DashboardComponent implements OnInit {
       if (this.allStudentCommitRecord[0] === undefined) {
         this.tableHead.length = 0;
       }
+      console.log(this.allStudentCommitRecord);
     });
   }
 }

@@ -12,6 +12,7 @@ export class StudentManagementComponent implements OnInit {
   public oneStudentForm: FormGroup;
   public mutipleStudentFile: File;
   public SERVER_URL = environment.SERVER_URL;
+  public isCollapsed = true;
   constructor(private studentService: StudentManagementService, private fb: FormBuilder) { }
 
   async ngOnInit() {
@@ -26,7 +27,6 @@ export class StudentManagementComponent implements OnInit {
       rememberMe: [true]
     });
     this.onChange();
-
   }
 
   onChange() {
@@ -69,7 +69,6 @@ export class StudentManagementComponent implements OnInit {
   async getAllUser() {
     this.studentService.getAllUserData().subscribe(response => {
       this.users = response.Users;
-      console.log(this.users);
     });
   }
 
@@ -79,7 +78,6 @@ export class StudentManagementComponent implements OnInit {
     if (this.oneStudentForm.dirty && this.oneStudentForm.valid) {
       this.studentService.addOneStudent(this.oneStudentForm).subscribe(
         (response) => {
-          console.log('Sul');
           this.getAllUser();
         },
         error => {
@@ -97,13 +95,21 @@ export class StudentManagementComponent implements OnInit {
     if (this.mutipleStudentFile != null) {
       this.studentService.addMutipleStudent(this.mutipleStudentFile).subscribe(
         (response) => {
-          console.log('Sul');
           this.getAllUser();
         },
         error => {
           console.log(error.error);
         });
     }
+  }
+
+  public updateDisplay(username: string) {
+    this.studentService.updateDisplay(username).subscribe(
+      response => {
+        this.getAllUser();
+      },
+      error => { }
+    );
   }
 
 }

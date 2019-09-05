@@ -21,6 +21,7 @@ export class LoginAuthService {
   // 是否登录
   public Login(username, password): Observable<any> {
     let params = new HttpParams();
+    console.log(this.LOGIN_URL);
     params = params.append('username', username);
     params = params.append('password', password);
     return this.http.post<any>(this.LOGIN_URL, params, options);

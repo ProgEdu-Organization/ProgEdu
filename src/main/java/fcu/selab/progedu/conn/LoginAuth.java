@@ -54,6 +54,7 @@ public class LoginAuth extends HttpServlet {
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
     final HttpSession session = request.getSession();
+    System.out.println("Logining");
     String username = request.getParameter(USERNAME);
     String password = request.getParameter(USER_PASSWORD);
     String token;

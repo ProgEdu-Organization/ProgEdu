@@ -15,6 +15,11 @@ const addMutipleStudentOptions = ({
   )
 });
 
+const updateDisplayOptions = ({
+  headers: new HttpHeaders(
+  )
+});
+
 
 @Injectable({
   providedIn: 'root'
@@ -25,22 +30,21 @@ export class StudentManagementService {
   GET_USERS_API = environment.SERVER_URL + '/ProgEdu/webapi/user/getUsers';
   ADD_ONE_USER_API = environment.SERVER_URL + '/ProgEdu/webapi/user/new';
   ADD_MUTIPLE_USER_API = environment.SERVER_URL + '/ProgEdu/webapi/user/upload';
+  DISPLAY_API = environment.SERVER_URL + '/ProgEdu/webapi/user/display';
   constructor(private http: HttpClient) { }
 
   getAllUserData(): Observable<any> {
-    console.log('test: ' + this.GET_USERS_API);
     return this.http.get<any>(this.GET_USERS_API);
 
   }
   addOneStudent(student: FormGroup): Observable<any> {
-    let params = new HttpParams();
-
-    params = params.append('name', student.value.name);
-    params = params.append('username', student.value.username);
-    params = params.append('password', student.value.password);
-    params = params.append('email', student.value.email);
-    params = params.append('role', student.value.role);
-    params = params.append('isDisplayed', student.value.isDisplayed);
+    const params = new HttpParams()
+      .append('name', student.value.name)
+      .append('username', student.value.username)
+      .append('password', student.value.password)
+      .append('email', student.value.email)
+      .append('role', student.value.role)
+      .append('isDisplayed', student.value.isDisplayed);
 
     return this.http.post<any>(this.ADD_ONE_USER_API, params, addOneStudentOptions);
   }
@@ -50,4 +54,13 @@ export class StudentManagementService {
     frmData.append('file', file);
     return this.http.post<any>(this.ADD_MUTIPLE_USER_API, frmData, addMutipleStudentOptions);
   }
+
+  updateDisplay(username: string) {
+    console.log(username);
+    const params = new HttpParams()
+      .append('username', username);
+
+    return this.http.post<any>(this.DISPLAY_API, params, updateDisplayOptions);
+  }
+
 }

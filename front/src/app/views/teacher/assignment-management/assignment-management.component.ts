@@ -25,11 +25,11 @@ export class AssignmentManagementComponent implements OnInit {
 
   ngOnInit() {
     this.getAllAssignments();
-
+    const now_time = Date.now() - (new Date().getTimezoneOffset() * 60 * 1000);
     this.assignmentForm = this.fb.group({
       name: [''],
-      releaseTime: [new Date().toISOString().slice(0, 19), Validators.required],
-      deadline: [new Date().toISOString().slice(0, 19), Validators.required],
+      releaseTime: [new Date(now_time).toISOString().slice(0, 19), Validators.required],
+      deadline: [new Date(now_time).toISOString().slice(0, 19), Validators.required],
       readMe: ['', Validators.required],
       file: [],
       rememberMe: [true]
@@ -70,7 +70,21 @@ export class AssignmentManagementComponent implements OnInit {
   getAllAssignments() {
     this.assignmentService.getAllAssignments().subscribe(response => {
       this.assignments = response.allAssignments;
+      for (const num in this.assignments) {
+        if (num) {
+          this.assignments[num].createTime = this.getUTCAdjustTime(this.assignments[num].createTime);
+          this.assignments[num].releaseTime = this.getUTCAdjustTime(this.assignments[num].releaseTime);
+          this.assignments[num].deadline = this.getUTCAdjustTime(this.assignments[num].deadline);
+        }
+      }
     });
+  }
+
+  getUTCAdjustTime(time: any): Date {
+    const timeOffset = (new Date().getTimezoneOffset() * 60 * 1000);
+    const assigenmentTime = new Date(time).getTime();
+
+    return new Date(assigenmentTime - timeOffset);
   }
 
   deleteAssignment() {
@@ -79,6 +93,7 @@ export class AssignmentManagementComponent implements OnInit {
     this.assignmentService.deleteAssignment(this.assignmentName).subscribe(
       response => {
         this.deleteModal.hide();
+        this.getAllAssignments();
       },
       error => {
         console.log(error);
