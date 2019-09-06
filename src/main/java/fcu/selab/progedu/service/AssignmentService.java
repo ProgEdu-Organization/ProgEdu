@@ -510,7 +510,7 @@ public class AssignmentService {
    * 
    * @param username username
    */
-  public void createPreviousAssginment(String username) {
+  public void createPreviousAssignment(String username) {
     List<String> assignmentNames = dbManager.getAllAssignmentNames();
 
     for (String assignmentName : assignmentNames) {

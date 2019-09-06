@@ -312,7 +312,7 @@ public class UserService {
   private void createPreviousAssginment(String username, List<RoleEnum> roles) {
     for (RoleEnum role : roles) {
       if (role == RoleEnum.STUDENT) {
-        as.createPreviousAssginment(username);
+        as.createPreviousAssignment(username);
         break;
       }
     }
