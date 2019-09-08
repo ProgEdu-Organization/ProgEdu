@@ -5,46 +5,52 @@
         <div class="card-header">
           <strong>Basic Form</strong> Elements
         </div>
-        <div class="card-body">
-          <form [formGroup]="group" (ngSubmit)="submit()">
+        <form [formGroup]="group" (ngSubmit)="groupSubmit()">
+          <div class="card-body">
             <div class="form-group row">
-
-              <label class="col-md-3 col-form-label" for="group-name">Group Name</label>
+              <label class="col-md-3 col-form-label" for="name">Group Name</label>
               <div class="col-md-9">
-                <input type="text" id="group-name" name="group-name" class="form-control" formControlName='name'>
-                <!--<span class="help-block">This is a help text</span>-->
+                <input type="text" id="name" name="name" class="form-control" formControlName='name'>
               </div>
             </div>
             <div class="form-group row">
-              <label class="col-md-3 col-form-label" for="group-name">Leader</label>
+              <label class="col-md-3 col-form-label" for="leader">Leader</label>
               <div class="col-md-9">
-                <input type="text" id="group-name" name="group-name" class="form-control" formControlName='leader'>
+                <input type="text" id="leader" name="leader" class="form-control" formControlName='leader'>
               </div>
             </div>
             <div class="form-group row">
-              <label class="col-md-3 col-form-label" for="group-name">Group Member</label>
+              <label class="col-md-3 col-form-label" for="member">Group Member</label>
               <div class="col-md-9">
-                <i></i>
-                <p *ngFor="let member of group.get('member').value;let recordIndex=index;"
-                  class="col-form-label assigned" (click)="setLeader(member)">
-                  {{recordIndex+1}}. {{member}}</p>
+                <table class="table">
+                  <tr *ngFor="let member of group.get('member').value;let recordIndex=index;">
+                    <td>
+                      <p class="col-form-label assigned" (click)="setLeader(member)">
+                        {{recordIndex+1}}. {{member}}</p>
+                    </td>
+                    <td><button class="badge badge-danger"
+                        (click)='removeGroupMemberByUsername(member);'>Remove</button>
+                    </td>
+                  </tr>
+                </table>
+                <p class='alert alert-danger' *ngIf="group.get('member').value.length === 0">No member</p>
               </div>
             </div>
-          </form>
-        </div>
-        <div class="card-footer">
-          <div class=""><button class="btn btn-primary" type="button">Add Group</button></div>
-        </div>
+          </div>
+          <div class="card-footer">
+            <button class="btn btn-sm btn-primary" [disabled]='!group.valid' type='submit'>Submit</button>
+          </div>
+        </form>
       </div>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-3">
       <div class="card">
         <div class='card-header'>
           <div class='input-group'>
             <span>
               <button class="btn btn-primary" type="button" [disabled]='true'><i class="fa fa-search"></i>
                 Search</button></span>
-            <input type='text' class='form-control col-md-4' [(ngModel)]='search'>
+            <input type='text' class='form-control col-md-6' [(ngModel)]='search'>
           </div>
         </div>
         <div class="card-body">
@@ -53,7 +59,6 @@
               <tr>
                 <th>Username</th>
                 <th>Add To Group</th>
-                <th>Remove From Group</th>
               </tr>
             </thead>
             <tbody>
@@ -62,16 +67,13 @@
                 <td>
                   <button class="badge badge-success" (click)='addGroupMemberByUsername(user.username);'>Add</button>
                 </td>
-                <td><button class="badge badge-danger"
-                    (click)='removeGroupMemberByUsername(user.username);'>Remove</button>
-                </td>
               </tr>
             </tbody>
           </table>
         </div>
       </div>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-5">
       <div class="card">
         <div class="card-body">
           <table class="table">
