@@ -26,6 +26,7 @@ import { FilterPipe } from '../../pipe/filter.pipe';
 import { ProgressbarModule } from 'ngx-bootstrap/progressbar';
 
 import { CollapseModule } from 'ngx-bootstrap/collapse';
+import { GroupDashboardComponent } from './group-dashboard/group-dashboard.component';
 @NgModule({
     imports: [
         FormsModule,
@@ -50,6 +51,7 @@ import { CollapseModule } from 'ngx-bootstrap/collapse';
         StudentManagementComponent,
         GroupManagementComponent,
         ChartComponent,
-        FilterPipe]
+        FilterPipe,
+        GroupDashboardComponent]
 })
 export class TeacherModule { }

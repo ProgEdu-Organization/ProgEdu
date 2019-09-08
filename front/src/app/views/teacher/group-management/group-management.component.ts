@@ -18,6 +18,7 @@ export class GroupManagementComponent implements OnInit {
 
     this.group = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(10)]],
+      projectName: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(10)]],
       leader: ['', [Validators.required, Validators.maxLength(10)]],
       member: [new Array<string>(), Validators.minLength(3)],
     });
@@ -25,11 +26,17 @@ export class GroupManagementComponent implements OnInit {
   }
   onChanges(): void {
     const name = 'name';
+    const projectName = 'projectName';
     const leader = 'leader';
     const member = 'member';
     this.group.get(name).valueChanges.subscribe(
       () => {
         this.group.get(name).valid ? this.showIsValidById(name) : this.hideIsInvalidById(name);
+      }
+    );
+    this.group.get(projectName).valueChanges.subscribe(
+      () => {
+        this.group.get(projectName).valid ? this.showIsValidById(projectName) : this.hideIsInvalidById(projectName);
       }
     );
 

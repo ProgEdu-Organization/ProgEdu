@@ -1,52 +1,53 @@
-<h1 style="text-align: center">Overview</h1>
-<div class='card'>
-  <div class='card-header'>
-    <i class='fa fa-align-justify'></i>
-    <div class="card-header-actions">
-      <div class='ml-auto'>
-        <span class="ovol NB">
-          Not Build
-        </span>
-        <span class="ovol CPF">
-          Compile Failure
-        </span>
-        <span class="ovol CSF">
-          Checkstyle Failure
-        </span>
-        <!-- <p class="ovol plagirism" style="padding: 5px 10px;"><fmt:message key="dashboard_p_plagiarism"/></p> -->
-        <span class="ovol UTF">
-          Unit Test Failure
-        </span>
-        <span class="ovol BS">
-          Build Success
-        </span>
+<div class="animated fadeIn">
+  <div class='card'>
+    <div class='card-header'>
+      <i class='fa fa-align-justify'></i>
+      <div class="card-header-actions">
+        <div class='ml-auto'>
+          <span class="ovol NB">
+            Not Build
+          </span>
+          <span class="ovol CPF">
+            Compile Failure
+          </span>
+          <span class="ovol CSF">
+            Checkstyle Failure
+          </span>
+          <!-- <p class="ovol plagirism" style="padding: 5px 10px;"><fmt:message key="dashboard_p_plagiarism"/></p> -->
+          <span class="ovol UTF">
+            Unit Test Failure
+          </span>
+          <span class="ovol BS">
+            Build Success
+          </span>
+        </div>
       </div>
     </div>
-  </div>
-  <div class='card-body'>
-    <table class='table table-striped' style="text-align:center;">
+    <div class='card-body'>
       <table class='table table-striped' style="text-align:center;">
-        <thead>
-          <tr>
-            <th width="10%" class='text-left'>學生</th>
-            <th width="10%" *ngFor='let head of tableHead'>{{head.name}}</th>
-            <th class='text-left'></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngIf='studentCommitRecord'>
-            <th class='text-left' width="10%">
-              {{username}}
-            </th>
-            <th *ngFor='let commit of studentCommitRecord'>
-              <p id="{{username}}_{{commit.assignmentName}}" class="circle {{commit.commitRecord.status}}">
-                <a id="{{username}}_{{commit.hw}}_{{commit.commit}}"
-                  href="#/studashboard/studashProjectChoosed?username={{username}}&assignmentName={{commit.assignmentName}}">{{commit.commitRecord.commitNumber}}</a>
-              </p>
-            <th class='text-left'></th>
-          </tr>
-        </tbody>
+        <table class='table table-striped' style="text-align:center;">
+          <thead>
+            <tr>
+              <th width="10%" class='text-left'>學生</th>
+              <th width="10%" *ngFor='let head of tableHead'>{{head.name}}</th>
+              <th class='text-left'></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngIf='studentCommitRecord'>
+              <th class='text-left' width="10%">
+                {{username}}
+              </th>
+              <th *ngFor='let commit of studentCommitRecord'>
+                <p id="{{username}}_{{commit.assignmentName}}" class="circle {{commit.commitRecord.status}}">
+                  <a id="{{username}}_{{commit.hw}}_{{commit.commit}}"
+                    href="#/studashboard/studashProjectChoosed?username={{username}}&assignmentName={{commit.assignmentName}}">{{commit.commitRecord.commitNumber}}</a>
+                </p>
+              <th class='text-left'></th>
+            </tr>
+          </tbody>
+        </table>
       </table>
-    </table>
+    </div>
   </div>
 </div>

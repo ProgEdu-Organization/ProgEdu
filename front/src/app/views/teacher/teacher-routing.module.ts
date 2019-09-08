@@ -7,6 +7,7 @@ import { CreateAssignmentComponent } from './create-assignment/create-assignment
 import { StudentManagementComponent } from './student-management/student-management.component';
 import { GroupManagementComponent } from './group-management/group-management.component';
 import { ChartComponent } from './chart/chart.component';
+import { GroupDashboardComponent } from './group-dashboard/group-dashboard.component';
 const routes: Routes = [
   {
     path: '',
@@ -62,6 +63,13 @@ const routes: Routes = [
     component: ChartComponent,
     data: {
       title: 'Chart'
+    }
+  },
+  {
+    path: 'groupDashboard',
+    component: GroupDashboardComponent,
+    data: {
+      title: 'Group Dashboard'
     }
   }
 ];
