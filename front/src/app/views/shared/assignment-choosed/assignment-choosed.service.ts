@@ -6,12 +6,12 @@ import { environment } from '../../../../environments/environment';
 @Injectable({
   providedIn: 'root'
 })
-export class ProjectChoosedService {
+export class AssignmentChoosedService {
   COMMIT_RECORD_DETAIL = environment.SERVER_URL + '/ProgEdu/webapi/commits/commitRecords';
   ASSIGNMENT_API = environment.SERVER_URL + '/ProgEdu/webapi/assignment/getAssignment';
   GITLAB_URL_API = environment.SERVER_URL + '/ProgEdu/webapi/commits/gitLab';
   FEEDBACK_API = environment.SERVER_URL + '/ProgEdu/webapi/commits/feedback';
-
+  SCREENSHOt_API = environment.SERVER_URL + '/ProgEdu/webapi/commits/screenshot/getScreenshotURL';
   constructor(private http: HttpClient) { }
 
   getCommitDetail(assignmentName: string, username: string): Observable<any> {
@@ -40,6 +40,14 @@ export class ProjectChoosedService {
       .set('username', username)
       .set('assignmentName', assignmentName);
     return this.http.get<any>(this.GITLAB_URL_API, { params });
+  }
+
+  getScreenshotUrls(username: string, assignmentName: string, commitNumber: number): Observable<any> {
+    const params = new HttpParams()
+      .set('username', username)
+      .set('assignmentName', assignmentName)
+      .set('commitNumber', commitNumber.toString());
+    return this.http.get<any>(this.SCREENSHOt_API, { params });
   }
 
 }

@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DashProjectChoosedComponent } from './dash-project-choosed.component';
+import { AssignmentChoosedComponent } from './assignment-choosed.component';
 
-describe('DashProjectChoosedComponent', () => {
-  let component: DashProjectChoosedComponent;
-  let fixture: ComponentFixture<DashProjectChoosedComponent>;
+describe('AssignmentChoosedComponent', () => {
+  let component: AssignmentChoosedComponent;
+  let fixture: ComponentFixture<AssignmentChoosedComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DashProjectChoosedComponent ]
+      declarations: [ AssignmentChoosedComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DashProjectChoosedComponent);
+    fixture = TestBed.createComponent(AssignmentChoosedComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
