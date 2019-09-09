@@ -40,8 +40,9 @@
               </th>
               <th *ngFor='let commit of studentCommitRecord'>
                 <p id="{{username}}_{{commit.assignmentName}}" class="circle {{commit.commitRecord.status}}">
-                  <a id="{{username}}_{{commit.hw}}_{{commit.commit}}"
+                  <a *ngIf='isNA(commit)' id="{{username}}_{{commit.hw}}_{{commit.commit}}"
                     href="#/studashboard/assignmentChoosed?username={{username}}&assignmentName={{commit.assignmentName}}">{{commit.commitRecord.commitNumber}}</a>
+                  <a *ngIf='!isNA(commit)'>N/A</a>
                 </p>
               <th class='text-left'></th>
             </tr>
