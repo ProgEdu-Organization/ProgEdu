@@ -7,6 +7,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class GroupDashboardComponent implements OnInit {
   isCollapsed = false;
+  public search;
   constructor() { }
 
   ngOnInit() {

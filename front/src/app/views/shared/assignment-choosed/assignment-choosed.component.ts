@@ -20,12 +20,12 @@ export class AssignmentChoosedComponent implements OnInit {
 
   constructor(private route: ActivatedRoute, private assignmentService: AssignmentChoosedService) { }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.username = this.route.snapshot.queryParamMap.get('username');
     this.assignmentName = this.route.snapshot.queryParamMap.get('assignmentName');
-    this.getAssignment();
-    this.getGitAssignmentURL();
-    this.getCommitDetail();
+    await this.getAssignment();
+    await this.getGitAssignmentURL();
+    await this.getCommitDetail();
     this.gitlabAssignmentURL = ``;
   }
   getGitAssignmentURL() {
@@ -49,7 +49,6 @@ export class AssignmentChoosedComponent implements OnInit {
   getAssignment() {
     this.assignmentService.getAssignment(this.assignmentName).subscribe(response => {
       this.assignment = response;
-      console.log(this.assignment);
     });
   }
 
@@ -87,11 +86,12 @@ export class AssignmentChoosedComponent implements OnInit {
   }
 
   getScreenshotUrls() {
-    console.log(this.selectedCommitNumber);
-    this.assignmentService.getScreenshotUrls(this.username, this.assignmentName, this.selectedCommitNumber).subscribe(
-      (resopnse) => {
-        this.screenshotUrls = resopnse.urls;
-      }
-    );
+    if (this.assignment) {
+      this.assignmentService.getScreenshotUrls(this.username, this.assignmentName, this.selectedCommitNumber).subscribe(
+        (resopnse) => {
+          this.screenshotUrls = resopnse.urls;
+        }
+      );
+    }
   }
 }

@@ -5,8 +5,7 @@ import { StudentRoutingModule } from './student-routing.module';
 import { StudashboardComponent } from './studashboard/studashboard.component';
 import { FormsModule } from '@angular/forms';
 import { ChartsModule } from 'ng2-charts';
-import { AssignmentChoosedComponent } from '../assignment-choosed/assignment-choosed.component';
-
+import { SharedModule } from '../shared/shared.module';
 
 
 @NgModule({
@@ -15,7 +14,8 @@ import { AssignmentChoosedComponent } from '../assignment-choosed/assignment-cho
     CommonModule,
     ChartsModule,
     StudentRoutingModule,
+    SharedModule
   ],
-  declarations: [StudashboardComponent, AssignmentChoosedComponent],
+  declarations: [StudashboardComponent],
 })
 export class StudentModule { }

@@ -25,7 +25,7 @@ import { GroupDashboardComponent } from './group-dashboard/group-dashboard.compo
 
 import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { CarouselModule } from 'ngx-bootstrap/carousel';
-import { AssignmentChoosedComponent } from '../assignment-choosed/assignment-choosed.component';
+import { SharedModule } from '../shared/shared.module';
 @NgModule({
     imports: [
         FormsModule,
@@ -41,6 +41,7 @@ import { AssignmentChoosedComponent } from '../assignment-choosed/assignment-cho
         TabsModule.forRoot(),
         CollapseModule,
         CarouselModule,
+        SharedModule
     ],
     declarations: [
         DashboardComponent,
@@ -51,7 +52,6 @@ import { AssignmentChoosedComponent } from '../assignment-choosed/assignment-cho
         ChartComponent,
         FilterPipe,
         GroupDashboardComponent,
-        AssignmentChoosedComponent
     ]
 })
 export class TeacherModule { }

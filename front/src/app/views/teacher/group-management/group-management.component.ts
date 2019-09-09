@@ -10,6 +10,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 export class GroupManagementComponent implements OnInit {
   public users: Array<any> = new Array<any>();
   public group: FormGroup;
+  public search;
   constructor(private groupManagementService: GroupManagementService, private fb: FormBuilder) { }
 
   ngOnInit() {

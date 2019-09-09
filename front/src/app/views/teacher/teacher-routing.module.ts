@@ -7,7 +7,8 @@ import { StudentManagementComponent } from './student-management/student-managem
 import { GroupManagementComponent } from './group-management/group-management.component';
 import { ChartComponent } from './chart/chart.component';
 import { GroupDashboardComponent } from './group-dashboard/group-dashboard.component';
-import { AssignmentChoosedComponent } from '../assignment-choosed/assignment-choosed.component';
+import { SharedModule } from '../shared/shared.module';
+import { AssignmentChoosedComponent } from '../shared/assignment-choosed/assignment-choosed.component';
 const routes: Routes = [
   {
     path: '',
@@ -75,7 +76,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forChild(routes)],
+  imports: [RouterModule.forChild(routes), SharedModule],
   exports: [RouterModule]
 })
 export class TeacherRoutingModule { }
