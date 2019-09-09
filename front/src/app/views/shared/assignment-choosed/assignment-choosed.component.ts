@@ -78,6 +78,8 @@ export class AssignmentChoosedComponent implements OnInit {
     this.assignmentService.getFeedback(this.assignmentName, this.username, commitNumber).subscribe(
       response => {
         this.feedback = response.message;
+        this.selectedCommitNumber = commitNumber;
+        this.getScreenshotUrls();
       },
       error => {
         console.log(error);
