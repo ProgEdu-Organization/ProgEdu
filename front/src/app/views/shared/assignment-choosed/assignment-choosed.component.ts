@@ -43,7 +43,9 @@ export class AssignmentChoosedComponent implements OnInit {
       this.commits = response;
       this.selectedCommitNumber = this.commits.length;
       this.getFeedback();
-      this.getScreenshotUrls();
+      if (this.assignment.type === 'WEB') {
+        this.getScreenshotUrls();
+      }
     });
   }
   getAssignment() {
