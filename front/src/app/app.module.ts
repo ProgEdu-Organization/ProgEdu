@@ -45,6 +45,10 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { AppConfig } from './app.config';
 //  Modal Component
 import { ModalModule } from 'ngx-bootstrap/modal';
+import { AssignmentChoosedComponent } from './views/assignment-choosed/assignment-choosed.component';
+
+import { CollapseModule } from 'ngx-bootstrap/collapse';
+import { CarouselModule } from 'ngx-bootstrap/carousel';
 @NgModule({
   imports: [
     BrowserModule,

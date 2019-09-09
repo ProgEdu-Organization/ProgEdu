@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ProjectChoosedService } from './project-choosed.service';
+import { AssignmentChoosedService } from './assignment-choosed.service';
 
 @Component({
-  selector: 'app-project-choosed',
-  templateUrl: './project-choosed.component.html'
+  selector: 'app-assignment-choosed',
+  templateUrl: './assignment-choosed.component.html'
 })
-export class ProjectChoosedComponent implements OnInit {
+export class AssignmentChoosedComponent implements OnInit {
 
   username: string;
   assignmentName: string;
@@ -18,7 +18,7 @@ export class ProjectChoosedComponent implements OnInit {
   selectedCommitNumber;
   screenshotUrls: Array<string>;
 
-  constructor(private route: ActivatedRoute, private projectService: ProjectChoosedService) { }
+  constructor(private route: ActivatedRoute, private assignmentService: AssignmentChoosedService) { }
 
   ngOnInit() {
     this.username = this.route.snapshot.queryParamMap.get('username');
@@ -29,7 +29,7 @@ export class ProjectChoosedComponent implements OnInit {
     this.gitlabAssignmentURL = ``;
   }
   getGitAssignmentURL() {
-    this.projectService.getGitAssignmentURL(this.assignmentName, this.username).subscribe(
+    this.assignmentService.getGitAssignmentURL(this.assignmentName, this.username).subscribe(
       response => {
         this.gitlabAssignmentURL = response.url;
       },
@@ -39,7 +39,7 @@ export class ProjectChoosedComponent implements OnInit {
   }
 
   getCommitDetail() {
-    this.projectService.getCommitDetail(this.assignmentName, this.username).subscribe(response => {
+    this.assignmentService.getCommitDetail(this.assignmentName, this.username).subscribe(response => {
       this.commits = response;
       this.selectedCommitNumber = this.commits.length;
       this.getFeedback();
@@ -47,7 +47,7 @@ export class ProjectChoosedComponent implements OnInit {
     });
   }
   getAssignment() {
-    this.projectService.getAssignment(this.assignmentName).subscribe(response => {
+    this.assignmentService.getAssignment(this.assignmentName).subscribe(response => {
       this.assignment = response;
     });
   }
@@ -64,7 +64,7 @@ export class ProjectChoosedComponent implements OnInit {
   }
 
   getFeedback() {
-    this.projectService.getFeedback(this.assignmentName, this.username, this.commits.length.toString()).subscribe(
+    this.assignmentService.getFeedback(this.assignmentName, this.username, this.commits.length.toString()).subscribe(
       response => {
         this.feedback = response.message;
       },
@@ -75,7 +75,7 @@ export class ProjectChoosedComponent implements OnInit {
   }
 
   updateFeedback(commitNumber: string) {
-    this.projectService.getFeedback(this.assignmentName, this.username, commitNumber).subscribe(
+    this.assignmentService.getFeedback(this.assignmentName, this.username, commitNumber).subscribe(
       response => {
         this.feedback = response.message;
       },
@@ -87,7 +87,7 @@ export class ProjectChoosedComponent implements OnInit {
 
   getScreenshotUrls() {
     console.log(this.selectedCommitNumber);
-    this.projectService.getScreenshotUrls(this.username, this.assignmentName, this.selectedCommitNumber).subscribe(
+    this.assignmentService.getScreenshotUrls(this.username, this.assignmentName, this.selectedCommitNumber).subscribe(
       (resopnse) => {
         this.screenshotUrls = resopnse.urls;
       }

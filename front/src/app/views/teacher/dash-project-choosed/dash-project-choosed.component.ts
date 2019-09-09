@@ -18,6 +18,9 @@ export class DashProjectChoosedComponent implements OnInit {
   assignment = { type: '' };
   commits: Array<JSON> = [];
   feedback: string;
+  selectedCommitNumber: number;
+  screenshotUrls: Array<String>;
+  isCollapsed = true;
   constructor(private route: ActivatedRoute, private dashProjectService: DashProjectChoosedService) { }
 
   ngOnInit() {
@@ -31,7 +34,9 @@ export class DashProjectChoosedComponent implements OnInit {
   getCommitDetail() {
     this.dashProjectService.getCommitDetail(this.assignmentName, this.username).subscribe(response => {
       this.commits = response;
+      this.selectedCommitNumber = this.commits.length;
       this.getFeedback();
+      this.getScreenshotUrls();
     });
   }
 
@@ -43,7 +48,7 @@ export class DashProjectChoosedComponent implements OnInit {
 
   getFeedback() {
 
-    this.dashProjectService.getFeedback(this.assignmentName, this.username, this.commits.length.toString()).subscribe(
+    this.dashProjectService.getFeedback(this.assignmentName, this.username, this.commits.length).subscribe(
       response => {
         this.feedback = response.message;
       },
@@ -53,14 +58,24 @@ export class DashProjectChoosedComponent implements OnInit {
     );
   }
 
-  updateFeedback(commmitNumber: string) {
+  updateFeedback(commmitNumber: number) {
     this.dashProjectService.getFeedback(this.assignmentName, this.username, commmitNumber).subscribe(
       response => {
         this.feedback = response.message;
+        this.selectedCommitNumber = commmitNumber;
       },
       error => {
         console.log(error);
       },
+    );
+  }
+
+  getScreenshotUrls() {
+    console.log(this.selectedCommitNumber);
+    this.dashProjectService.getScreenshotUrls(this.username, this.assignmentName, this.selectedCommitNumber).subscribe(
+      (resopnse) => {
+        this.screenshotUrls = resopnse.urls;
+      }
     );
   }
 

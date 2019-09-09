@@ -8,6 +8,8 @@ import { StudentManagementComponent } from './student-management/student-managem
 import { GroupManagementComponent } from './group-management/group-management.component';
 import { ChartComponent } from './chart/chart.component';
 import { GroupDashboardComponent } from './group-dashboard/group-dashboard.component';
+import { ScreenshotComponent } from '../screenshot/screenshot.component';
+import { AssignmentChoosedComponent } from '../assignment-choosed/assignment-choosed.component';
 const routes: Routes = [
   {
     path: '',
@@ -17,10 +19,10 @@ const routes: Routes = [
     }
   },
   {
-    path: 'dashProjectChoosed',
-    component: DashProjectChoosedComponent,
+    path: 'assignmentChoosed',
+    component: AssignmentChoosedComponent,
     data: {
-      title: 'Project'
+      title: 'Assignment Choose'
     }
   },
   {

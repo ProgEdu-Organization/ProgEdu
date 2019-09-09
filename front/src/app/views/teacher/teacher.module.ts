@@ -6,7 +6,6 @@ import { ButtonsModule } from 'ngx-bootstrap/buttons';
 import { CommonModule } from '@angular/common';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { TeacherRoutingModule } from './teacher-routing.module';
-import { DashProjectChoosedComponent } from './dash-project-choosed/dash-project-choosed.component';
 import { AssignmentManagementComponent } from './assignment-management/assignment-management.component';
 
 import { AlertModule } from 'ngx-bootstrap/alert';
@@ -27,6 +26,8 @@ import { ProgressbarModule } from 'ngx-bootstrap/progressbar';
 
 import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { GroupDashboardComponent } from './group-dashboard/group-dashboard.component';
+
+import { AssignmentChoosedComponent } from '../assignment-choosed/assignment-choosed.component';
 @NgModule({
     imports: [
         FormsModule,
@@ -45,7 +46,7 @@ import { GroupDashboardComponent } from './group-dashboard/group-dashboard.compo
     ],
     declarations: [
         DashboardComponent,
-        DashProjectChoosedComponent,
+        AssignmentChoosedComponent,
         AssignmentManagementComponent,
         CreateAssignmentComponent,
         StudentManagementComponent,
