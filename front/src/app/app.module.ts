@@ -45,7 +45,6 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { AppConfig } from './app.config';
 //  Modal Component
 import { ModalModule } from 'ngx-bootstrap/modal';
-import { AssignmentChoosedComponent } from './views/assignment-choosed/assignment-choosed.component';
 
 import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { CarouselModule } from 'ngx-bootstrap/carousel';
@@ -67,7 +66,9 @@ import { CarouselModule } from 'ngx-bootstrap/carousel';
     ChartsModule,
     HttpClientModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    CollapseModule.forRoot(),
+    CarouselModule.forRoot()
   ],
   declarations: [
     AppComponent,
@@ -80,6 +81,9 @@ import { CarouselModule } from 'ngx-bootstrap/carousel';
     provide: LocationStrategy,
     useClass: HashLocationStrategy
   }, AppConfig],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  exports: [
+
+  ],
 })
 export class AppModule { }

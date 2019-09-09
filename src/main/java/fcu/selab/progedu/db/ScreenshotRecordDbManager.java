@@ -44,9 +44,9 @@ public class ScreenshotRecordDbManager {
     try (Connection conn = database.getConnection();
          PreparedStatement preStmt = conn.prepareStatement(sql)) {
       preStmt.setInt(1, crId);
-      try(ResultSet rs = preStmt.executeQuery()){
+      try (ResultSet rs = preStmt.executeQuery()) {
         ArrayList urls = new ArrayList<String>();
-        while(rs.next()){
+        while (rs.next()) {
           urls.add(rs.getString("pngUrl"));
         }
         return urls;

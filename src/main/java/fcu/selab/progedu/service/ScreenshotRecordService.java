@@ -4,20 +4,25 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.FormParam;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.json.JSONObject;
-
-import fcu.selab.progedu.config.JenkinsConfig;
 import fcu.selab.progedu.conn.JenkinsService;
+import fcu.selab.progedu.config.JenkinsConfig;
 import fcu.selab.progedu.db.AssignmentDbManager;
 import fcu.selab.progedu.db.AssignmentUserDbManager;
 import fcu.selab.progedu.db.CommitRecordDbManager;
 import fcu.selab.progedu.db.ScreenshotRecordDbManager;
 import fcu.selab.progedu.db.UserDbManager;
+import org.json.JSONObject;
 
 @Path("commits/screenshot/")
 public class ScreenshotRecordService {
@@ -84,8 +89,7 @@ public class ScreenshotRecordService {
   @Path("getScreenshotURL")
   @Produces(MediaType.APPLICATION_JSON)
   public Response updateScreenshotPng(@QueryParam("username") String username,
-                                      @QueryParam("assignmentName") String assignmentName, @QueryParam("commitNumber") int number) {
-    System.out.println(username + "   "+ assignmentName +"   " + number);
+      @QueryParam("assignmentName") String assignmentName, @QueryParam("commitNumber") int number) {
     JSONObject ob = new JSONObject();
     int auid = auDb.getAuid(assignmentDb.getAssignmentIdByName(assignmentName),
             userDb.getUserIdByUsername(username));
@@ -94,7 +98,7 @@ public class ScreenshotRecordService {
     System.out.println(crId);
     try {
       ArrayList<String> urls = db.getScreenshotUrl(crId);
-      for(String url: urls){
+      for (String url: urls) {
         urls.set(urls.indexOf(url),jenkinsData.getJenkinsHostUrl() + url);
       }
       System.out.println(urls);

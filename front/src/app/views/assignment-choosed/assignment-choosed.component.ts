@@ -49,6 +49,7 @@ export class AssignmentChoosedComponent implements OnInit {
   getAssignment() {
     this.assignmentService.getAssignment(this.assignmentName).subscribe(response => {
       this.assignment = response;
+      console.log(this.assignment);
     });
   }
 

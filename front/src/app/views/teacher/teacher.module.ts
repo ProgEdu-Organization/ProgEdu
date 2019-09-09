@@ -18,15 +18,13 @@ import { TabsModule } from 'ngx-bootstrap/tabs';
 import { StudentManagementComponent } from './student-management/student-management.component';
 import { GroupManagementComponent } from './group-management/group-management.component';
 // Carousel Component
-import { CarouselModule } from 'ngx-bootstrap/carousel';
 import { ChartComponent } from './chart/chart.component';
 import { FilterPipe } from '../../pipe/filter.pipe';
-
 import { ProgressbarModule } from 'ngx-bootstrap/progressbar';
-
-import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { GroupDashboardComponent } from './group-dashboard/group-dashboard.component';
 
+import { CollapseModule } from 'ngx-bootstrap/collapse';
+import { CarouselModule } from 'ngx-bootstrap/carousel';
 import { AssignmentChoosedComponent } from '../assignment-choosed/assignment-choosed.component';
 @NgModule({
     imports: [
@@ -41,18 +39,19 @@ import { AssignmentChoosedComponent } from '../assignment-choosed/assignment-cho
         AlertModule.forRoot(),
         ModalModule.forRoot(),
         TabsModule.forRoot(),
-        CarouselModule.forRoot(),
-        CollapseModule.forRoot(),
+        CollapseModule,
+        CarouselModule,
     ],
     declarations: [
         DashboardComponent,
-        AssignmentChoosedComponent,
         AssignmentManagementComponent,
         CreateAssignmentComponent,
         StudentManagementComponent,
         GroupManagementComponent,
         ChartComponent,
         FilterPipe,
-        GroupDashboardComponent]
+        GroupDashboardComponent,
+        AssignmentChoosedComponent
+    ]
 })
 export class TeacherModule { }
