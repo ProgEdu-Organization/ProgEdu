@@ -32,6 +32,13 @@ export class DashboardComponent implements OnInit {
       if (this.allStudentCommitRecord[0] === undefined) {
         this.tableHead.length = 0;
       }
+
     });
+  }
+  isNA(commit: any) {
+    if (JSON.stringify(commit.commitRecord) !== '{}') {
+      return true;
+    }
+    return false;
   }
 }
