@@ -16,6 +16,7 @@ export class AssignmentChoosedComponent implements OnInit {
   feedback: string;
   isCollapsed = true;
   selectedCommitNumber;
+  selectedScreenshotName;
   screenshotUrls: Array<string>;
 
   constructor(private route: ActivatedRoute, private assignmentService: AssignmentChoosedService) { }
@@ -26,7 +27,9 @@ export class AssignmentChoosedComponent implements OnInit {
     await this.getAssignment();
     await this.getGitAssignmentURL();
     await this.getCommitDetail();
-    this.gitlabAssignmentURL = ``;
+
+    // this.selectedScreenshotName = $('#screenshot:visible').attr('src');
+    // console.log(this.selectedScreenshotName);
   }
   getGitAssignmentURL() {
     this.assignmentService.getGitAssignmentURL(this.assignmentName, this.username).subscribe(
@@ -36,6 +39,11 @@ export class AssignmentChoosedComponent implements OnInit {
       error => {
         console.log(error);
       });
+  }
+
+  updateScrennshotName() {
+    const url_split = $('.screenshot:visible').attr('src').split('/');
+    this.selectedScreenshotName = url_split[url_split.length - 1];
   }
 
   getCommitDetail() {
@@ -80,6 +88,8 @@ export class AssignmentChoosedComponent implements OnInit {
     this.assignmentService.getFeedback(this.assignmentName, this.username, commitNumber).subscribe(
       response => {
         this.feedback = response.message;
+        this.selectedCommitNumber = commitNumber;
+        this.getScreenshotUrls();
       },
       error => {
         console.log(error);
