@@ -115,22 +115,10 @@ public class JavacAssignment extends AssignmentType {
 
   @Override
   public ZipFileInfo createTestCase(String testDirectory) {
-    ZipHandler zipHandler;
     long testZipChecksum = 0;
     String testZipUrl = "";
 
     createCommandFile(testDirectory);
-
-    try {
-      zipHandler = new ZipHandler();
-      zipHandler.zipTestFolder(testDirectory);
-      testZipChecksum = zipHandler.getChecksum();
-      testZipUrl = zipHandler.serverIp + "/ProgEdu/webapi/assignment/getTestFile?filePath="
-          + testDirectory + ".zip";
-    } catch (LoadConfigFailureException e) {
-      e.printStackTrace();
-    }
-
     ZipFileInfo zipFileInfo = new ZipFileInfo(testZipChecksum, testZipUrl);
 
     return zipFileInfo;
@@ -195,7 +183,7 @@ public class JavacAssignment extends AssignmentType {
   /**
    * 
    * @param fileList fileList
-   * @param command command
+   * @param assignmentName assignmentName
    */
   private String getCommand(List<String> fileList, String assignmentName) {
     String command = "";
