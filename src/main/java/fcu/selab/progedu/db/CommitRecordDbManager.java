@@ -92,7 +92,7 @@ public class CommitRecordDbManager {
       preStmt.setInt(1, auId);
 
       try (ResultSet rs = preStmt.executeQuery();) {
-        if (rs.next()) {
+        while (rs.next()) {
           int id = rs.getInt("id");
           lsCRid.add(id);
         }

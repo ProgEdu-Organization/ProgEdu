@@ -31,9 +31,9 @@ export class StudashboardComponent implements OnInit {
   }
   isNA(commit: any) {
     if (JSON.stringify(commit.commitRecord) !== '{}') {
-      return true;
+      return false;
     }
-    return false;
+    return true;
   }
 
 }
