@@ -1,49 +1,100 @@
 <div class="animated fadeIn">
   <div class="row">
-    <div class="col-md-7">
-      <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
-        <div class="card">
-          <div class="card-header">
-            <strong>Basic Form</strong> Elements
-          </div>
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-header">
+          <strong>Basic Form</strong> Elements
+        </div>
+        <form [formGroup]="group" (ngSubmit)="groupSubmit()">
           <div class="card-body">
             <div class="form-group row">
-              <label class="col-md-3 col-form-label" for="group-name">Group Name</label>
+              <label class="col-md-3 col-form-label" for="name">Group Name</label>
               <div class="col-md-9">
-                <input type="text" id="group-name" name="group-name" class="form-control" placeholder="Text">
-                <!--<span class="help-block">This is a help text</span>-->
+                <input type="text" id="name" name="name" class="form-control" formControlName='name'>
               </div>
             </div>
             <div class="form-group row">
-              <label class="col-md-3 col-form-label" for="multiple-select">Select the Group Member</label>
+              <label class="col-md-3 col-form-label" for="projectName">Project Name</label>
               <div class="col-md-9">
-                <select id="multiple-select" name="multiple-select" class="form-control"
-                  (change)="selectedMenber($event);" size="6" multiple>
-                  <option value="1">Option #1</option>
-                  <option value="2">Option #2</option>
-                  <option value="3">Option #3</option>
-                  <option value="4">Option #4</option>
-                  <option value="5">Option #5</option>
-                  <option value="6">Option #6</option>
-                  <option value="7">Option #7</option>
-                  <option value="8">Option #8</option>
-                  <option value="9">Option #9</option>
-                  <option value="10">Option #10</option>
-                </select>
+                <input type="text" id="projectName" name="projectName" class="form-control"
+                  formControlName='projectName'>
               </div>
             </div>
             <div class="form-group row">
-              <label class="col-md-3 col-form-label" for="group-name">Group Member</label>
+              <label class="col-md-3 col-form-label" for="leader">Leader</label>
               <div class="col-md-9">
-                <span id="selected-member"></span>
+                <input type="text" id="leader" name="leader" class="form-control" formControlName='leader'>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-md-3 col-form-label" for="member">Group Member</label>
+              <div class="col-md-9">
+                <table class="table">
+                  <tr *ngFor="let member of group.get('member').value;let recordIndex=index;">
+                    <td>
+                      <p class="col-form-label assigned" (click)="setLeader(member)">
+                        {{recordIndex+1}}. {{member}}</p>
+                    </td>
+                    <td><button class="badge badge-danger"
+                        (click)='removeGroupMemberByUsername(member);'>Remove</button>
+                    </td>
+                  </tr>
+                </table>
+                <p class='alert alert-danger' *ngIf="group.get('member').value.length === 0">No member</p>
               </div>
             </div>
           </div>
           <div class="card-footer">
-            <div class=""><button class="btn btn-primary" type="button">Add Group</button></div>
+            <button class="btn btn-sm btn-primary" [disabled]='!group.valid' type='submit'>Submit</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card">
+        <div class='card-header'>
+          <div class='input-group'>
+            <span>
+              <button class="btn btn-primary" type="button" [disabled]='true'><i class="fa fa-search"></i>
+                Search</button></span>
+            <input type='text' class='form-control col-md-6' [(ngModel)]='search'>
           </div>
         </div>
-      </form>
+        <div class="card-body">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Username</th>
+                <th>Add To Group</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let user of users | filter:search">
+                <td>{{user.username}}</td>
+                <td>
+                  <button class="badge badge-success" (click)='addGroupMemberByUsername(user.username);'>Add</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-5">
+      <div class="card">
+        <div class="card-body">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Group</th>
+                <th>Username</th>
+              </tr>
+            </thead>
+            <tbody>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   </div>
 </div>

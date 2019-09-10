@@ -1,7 +1,8 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { StudashboardComponent } from './studashboard/studashboard.component';
-import { ProjectChoosedComponent } from './project-choosed/project-choosed.component';
+import { SharedModule } from '../shared/shared.module';
+import { AssignmentChoosedComponent } from '../shared/assignment-choosed/assignment-choosed.component';
 
 const routes: Routes = [
   {
@@ -12,16 +13,16 @@ const routes: Routes = [
     }
   },
   {
-    path: 'studashProjectChoosed',
-    component: ProjectChoosedComponent,
+    path: 'assignmentChoosed',
+    component: AssignmentChoosedComponent,
     data: {
-      title: 'Project'
+      title: 'Assignment Choose'
     }
   },
 ];
 
 @NgModule({
-  imports: [RouterModule.forChild(routes)],
+  imports: [RouterModule.forChild(routes), SharedModule],
   exports: [RouterModule]
 })
 

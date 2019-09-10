@@ -6,7 +6,6 @@ import { ButtonsModule } from 'ngx-bootstrap/buttons';
 import { CommonModule } from '@angular/common';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { TeacherRoutingModule } from './teacher-routing.module';
-import { DashProjectChoosedComponent } from './dash-project-choosed/dash-project-choosed.component';
 import { AssignmentManagementComponent } from './assignment-management/assignment-management.component';
 
 import { AlertModule } from 'ngx-bootstrap/alert';
@@ -19,13 +18,14 @@ import { TabsModule } from 'ngx-bootstrap/tabs';
 import { StudentManagementComponent } from './student-management/student-management.component';
 import { GroupManagementComponent } from './group-management/group-management.component';
 // Carousel Component
-import { CarouselModule } from 'ngx-bootstrap/carousel';
 import { ChartComponent } from './chart/chart.component';
 import { FilterPipe } from '../../pipe/filter.pipe';
-
 import { ProgressbarModule } from 'ngx-bootstrap/progressbar';
+import { GroupDashboardComponent } from './group-dashboard/group-dashboard.component';
 
 import { CollapseModule } from 'ngx-bootstrap/collapse';
+import { CarouselModule } from 'ngx-bootstrap/carousel';
+import { SharedModule } from '../shared/shared.module';
 @NgModule({
     imports: [
         FormsModule,
@@ -39,17 +39,19 @@ import { CollapseModule } from 'ngx-bootstrap/collapse';
         AlertModule.forRoot(),
         ModalModule.forRoot(),
         TabsModule.forRoot(),
-        CarouselModule.forRoot(),
-        CollapseModule.forRoot(),
+        CollapseModule,
+        CarouselModule,
+        SharedModule
     ],
     declarations: [
         DashboardComponent,
-        DashProjectChoosedComponent,
         AssignmentManagementComponent,
         CreateAssignmentComponent,
         StudentManagementComponent,
         GroupManagementComponent,
         ChartComponent,
-        FilterPipe]
+        FilterPipe,
+        GroupDashboardComponent,
+    ]
 })
 export class TeacherModule { }

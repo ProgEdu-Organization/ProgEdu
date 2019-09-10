@@ -5,16 +5,17 @@ import { StudentRoutingModule } from './student-routing.module';
 import { StudashboardComponent } from './studashboard/studashboard.component';
 import { FormsModule } from '@angular/forms';
 import { ChartsModule } from 'ng2-charts';
-import { ProjectChoosedComponent } from './project-choosed/project-choosed.component';
-import { CarouselModule } from 'ngx-bootstrap/carousel';
+import { SharedModule } from '../shared/shared.module';
+
+
 @NgModule({
   imports: [
     FormsModule,
     CommonModule,
     ChartsModule,
     StudentRoutingModule,
-    CarouselModule.forRoot()
+    SharedModule
   ],
-  declarations: [StudashboardComponent, ProjectChoosedComponent],
+  declarations: [StudashboardComponent],
 })
 export class StudentModule { }

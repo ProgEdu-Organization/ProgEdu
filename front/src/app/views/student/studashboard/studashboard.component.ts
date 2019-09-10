@@ -29,5 +29,11 @@ export class StudashboardComponent implements OnInit {
       this.studentCommitRecord = response;
     });
   }
+  isNA(commit: any) {
+    if (JSON.stringify(commit.commitRecord) !== '{}') {
+      return false;
+    }
+    return true;
+  }
 
 }
