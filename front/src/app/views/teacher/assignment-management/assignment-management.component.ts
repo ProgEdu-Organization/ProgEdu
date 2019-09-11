@@ -28,8 +28,8 @@ export class AssignmentManagementComponent implements OnInit {
     const now_time = Date.now() - (new Date().getTimezoneOffset() * 60 * 1000);
     this.assignmentForm = this.fb.group({
       name: [''],
-      releaseTime: [new Date(now_time).toISOString().slice(0, 19), Validators.required],
-      deadline: [new Date(now_time).toISOString().slice(0, 19), Validators.required],
+      releaseTime: [, Validators.required],
+      deadline: [, Validators.required],
       description: ['', Validators.required],
       file: [],
       rememberMe: [true]
@@ -124,8 +124,8 @@ export class AssignmentManagementComponent implements OnInit {
     if (assignment) {
       this.assignmentName = assignment.name;
       this.assignmentForm.get('description').setValue(assignment.description);
-      this.assignmentForm.get('releaseTime').setValue(new Date(assignment.releaseTime).toISOString().slice(0, 19));
-      this.assignmentForm.get('deadline').setValue(new Date(assignment.deadline).toISOString().slice(0, 19));
+      this.assignmentForm.get('releaseTime').setValue(this.getUTCAdjustTime(assignment.releaseTime).toISOString().slice(0, 19));
+      this.assignmentForm.get('deadline').setValue(this.getUTCAdjustTime(assignment.deadline).toISOString().slice(0, 19));
     }
   }
 
