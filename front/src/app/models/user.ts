@@ -7,7 +7,6 @@ export class User {
 
   constructor(private jwtService: JwtService) {
     const decodedToken = jwtService.getDecodedToken();
-    console.log(decodedToken);
     if (decodedToken.sub === 'teacher') {
       this.isTeacher = true;
     }

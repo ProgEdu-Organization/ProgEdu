@@ -16,7 +16,6 @@ export class CanActiveTeacherService implements CanActivate {
           resolve(true);
         } else {
           this.jwtService.removeToken();
-          console.log('not authenticated');
           this.router.navigate(['login']);
           resolve(false);
         }

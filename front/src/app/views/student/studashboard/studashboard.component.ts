@@ -27,7 +27,6 @@ export class StudashboardComponent implements OnInit {
     // clear student array
     this.studashboardService.getStudentCommitRecord(this.username).subscribe(response => {
       this.studentCommitRecord = response;
-      console.log(this.studentCommitRecord);
     });
   }
 

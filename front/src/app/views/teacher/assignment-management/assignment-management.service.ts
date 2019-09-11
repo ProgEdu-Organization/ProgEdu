@@ -32,7 +32,6 @@ export class AssignmentManagementService {
 
   editAssignment(assignment: FormGroup): Observable<any> {
     const form = new FormData();
-    console.log('test' + assignment.get('name').value);
     form.append('assignmentName', assignment.get('name').value);
     form.append('releaseTime', new Date(assignment.get('releaseTime').value).toUTCString());
     form.append('deadline', new Date(assignment.get('deadline').value).toUTCString());

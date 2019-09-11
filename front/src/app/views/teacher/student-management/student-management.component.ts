@@ -73,7 +73,6 @@ export class StudentManagementComponent implements OnInit {
   }
 
   public addOneStudent() {
-    console.log(this.oneStudentForm.value);
 
     if (this.oneStudentForm.dirty && this.oneStudentForm.valid) {
       this.studentService.addOneStudent(this.oneStudentForm).subscribe(
@@ -88,7 +87,6 @@ export class StudentManagementComponent implements OnInit {
   }
 
   changeFileLister(e: { target: { files: File[]; }; }) {
-    console.log(e.target.files[0]);
     this.mutipleStudentFile = e.target.files[0];
   }
   public addMutipleStudent() {
