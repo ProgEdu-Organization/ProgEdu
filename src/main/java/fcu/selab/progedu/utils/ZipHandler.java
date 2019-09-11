@@ -20,6 +20,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import fcu.selab.progedu.data.ZipFileInfo;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
@@ -214,6 +215,23 @@ public class ZipHandler {
     } catch (ZipException e) {
       e.printStackTrace();
     }
+  }
+
+  /**
+   * get checksum and the file url after zip
+   *
+   * @param testDirectory testDirectory
+   */
+  public ZipFileInfo getZipInfo(String testDirectory) {
+    long testZipChecksum;
+    String testZipUrl;
+
+    zipTestFolder(testDirectory);
+    testZipChecksum = getChecksum();
+    testZipUrl = serverIp + "/ProgEdu/webapi/assignment/getTestFile?filePath="
+            + testDirectory + ".zip";
+
+    return new ZipFileInfo(testZipChecksum, testZipUrl);
   }
 
 }

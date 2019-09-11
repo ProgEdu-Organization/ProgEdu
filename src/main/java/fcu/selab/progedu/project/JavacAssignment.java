@@ -1,10 +1,13 @@
 package fcu.selab.progedu.project;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -27,6 +30,7 @@ import fcu.selab.progedu.conn.JenkinsService;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.service.StatusService;
 import fcu.selab.progedu.status.StatusEnum;
+import fcu.selab.progedu.data.ZipFileInfo;
 
 public class JavacAssignment extends AssignmentType {
 
@@ -58,8 +62,8 @@ public class JavacAssignment extends AssignmentType {
           + ".git";
       String updateDbUrl = progEduApiUrl + "/commits/update";
       // to-do : command
-      String assignmentPath = System.getProperty("java.io.tmpdir") + "/uploads/" + projectName;
-      String command = searchJavaFile(assignmentPath);
+      String assignmentPath = System.getProperty("java.io.tmpdir") + "/tests/" + projectName;
+      String command = getCommandFromFile(assignmentPath);
       DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
       DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 
@@ -108,7 +112,49 @@ public class JavacAssignment extends AssignmentType {
   }
 
   @Override
-  public void createTestCase(String testDirectory) {
+  public ZipFileInfo createTestCase(String testDirectory) {
+    long testZipChecksum = 0;
+    String testZipUrl = "";
+
+    createCommandFile(testDirectory);
+    ZipFileInfo zipFileInfo = new ZipFileInfo(testZipChecksum, testZipUrl);
+
+    return zipFileInfo;
+  }
+
+  /**
+   * Create a file with compile command in test directory
+   * @param assignmentPath assignmentPath
+   */
+  private void createCommandFile(String assignmentPath) {
+    String command = searchJavaFile(assignmentPath);
+    List<String> lines = Arrays.asList(command);
+    Path file = Paths.get(assignmentPath + "-command");
+    try {
+      Files.write(file, lines, StandardCharsets.UTF_8);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+  /**
+   * Raed the command file in test directory and return command string
+   * 
+   * @param assignmentPath assignmentPath
+   */
+  private String getCommandFromFile(String assignmentPath) {
+    StringBuilder sb = new StringBuilder();
+
+    try (BufferedReader br = Files.newBufferedReader(Paths.get(assignmentPath + "-command"))) {
+      String line;
+
+      while ((line = br.readLine()) != null) {
+        sb.append(line).append("\n");
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return sb.toString();
   }
 
   /**
@@ -135,7 +181,7 @@ public class JavacAssignment extends AssignmentType {
   /**
    * 
    * @param fileList fileList
-   * @param command command
+   * @param assignmentName assignmentName
    */
   private String getCommand(List<String> fileList, String assignmentName) {
     String command = "";
