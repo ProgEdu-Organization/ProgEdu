@@ -1,4 +1,4 @@
-package fcu.selab.progedu.utils;
+package fcu.selab.progedu.data;
 
 public class ZipFileInfo {
   long testZipChecksum = 0;

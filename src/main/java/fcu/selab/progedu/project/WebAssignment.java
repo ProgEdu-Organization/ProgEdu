@@ -24,7 +24,7 @@ import fcu.selab.progedu.db.AssignmentDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.service.StatusService;
 import fcu.selab.progedu.status.StatusEnum;
-import fcu.selab.progedu.utils.ZipFileInfo;
+import fcu.selab.progedu.data.ZipFileInfo;
 import fcu.selab.progedu.utils.ZipHandler;
 
 public class WebAssignment extends AssignmentType {
