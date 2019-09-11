@@ -24,6 +24,8 @@ import fcu.selab.progedu.db.AssignmentDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.service.StatusService;
 import fcu.selab.progedu.status.StatusEnum;
+import fcu.selab.progedu.data.ZipFileInfo;
+import fcu.selab.progedu.utils.ZipHandler;
 
 public class WebAssignment extends AssignmentType {
 
@@ -100,12 +102,24 @@ public class WebAssignment extends AssignmentType {
   }
 
   @Override
-  public void createTestCase(String testDirectory) {
+  public ZipFileInfo createTestCase(String testDirectory) {
+    ZipHandler zipHandler;
+    ZipFileInfo zipFileInfo = null;
+
     try {
       FileUtils.deleteDirectory(new File(testDirectory + "/src/web"));
     } catch (IOException e) {
       e.printStackTrace();
     }
+
+    try {
+      zipHandler = new ZipHandler();
+      zipFileInfo = zipHandler.getZipInfo(testDirectory);
+    } catch (LoadConfigFailureException e) {
+      e.printStackTrace();
+    }
+
+    return zipFileInfo;
   }
 
   @Override
