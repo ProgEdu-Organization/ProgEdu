@@ -20,7 +20,7 @@ export class StudentManagementComponent implements OnInit {
     this.oneStudentForm = this.fb.group({
       role: ['', Validators.required],
       name: ['', Validators.required],
-      username: ['', Validators.pattern('^[a-zA-Z0-9-_]{5,20}')],
+      username: ['', Validators.pattern('^[a-zA-Z0-9-_]{8,20}')],
       password: ['', Validators.pattern('^[a-zA-Z0-9-_]{8,20}')],
       email: ['', [Validators.required, Validators.email]],
       isDisplayed: [true],

@@ -43,7 +43,7 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
   ngOnInit() {
     const now_time = Date.now() - (new Date().getTimezoneOffset() * 60 * 1000);
     this.assignment = this.fb.group({
-      name: [undefined, [Validators.required, Validators.maxLength(10)]],
+      name: [undefined, [Validators.required, Validators.pattern('^[a-zA-Z0-9-_]{1,10}')]],
       releaseTime: [new Date(now_time).toISOString().slice(0, 19), Validators.required],
       deadline: [new Date(now_time).toISOString().slice(0, 19), Validators.required],
       readMe: [undefined, Validators.required],

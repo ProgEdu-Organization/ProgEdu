@@ -53,7 +53,6 @@ public class AuthService {
     } else {
       ob.put("isLogin", false);
     }
-    System.out.println(ob.toString());
     return Response.ok().entity(ob.toString()).build();
   }
 }
