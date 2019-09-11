@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import fcu.selab.progedu.data.User;
 import org.json.JSONObject;
 
 import fcu.selab.progedu.config.GitlabConfig;
@@ -60,11 +61,17 @@ public class LoginAuth extends HttpServlet {
     JSONObject ob = new JSONObject();
 
     try {
-      String user = checkPermission(username, password);
-      if (!user.equals("")) {
+      String role = checkPermission(username, password);
+      if (!role.equals("")) {
         ob.put("isLogin", true);
-        ob.put("user", user);
-        token = jwt.generateToken(user, username);
+        ob.put("role", role);
+        String name = "";
+        if (!username.equals("root")) {
+          name = UserDbManager.getInstance().getUser(username).getName();
+        } else {
+          name = username;
+        }
+        token = jwt.generateToken(role, username, name);
         ob.put("token", token);
       } else {
         ob.put("isLogin", false);
@@ -73,8 +80,6 @@ public class LoginAuth extends HttpServlet {
       ob.put("isLogin", false);
       e.printStackTrace();
     }
-
-    System.out.println(ob.toString());
     response.setStatus(200);
     PrintWriter pw = response.getWriter();
     pw.print(ob);

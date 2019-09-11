@@ -36,9 +36,9 @@ export class LoginComponent {
           this.dangerModal.show();
         } else {
           this.jwtService.setToken(response.token);
-          if (response.user === 'teacher') {
+          if (response.role === 'teacher') {
             this.router.navigate(['dashboard']);
-          } else if (response.user === 'student') {
+          } else if (response.role === 'student') {
             this.router.navigate(['studashboard']);
           }
         }

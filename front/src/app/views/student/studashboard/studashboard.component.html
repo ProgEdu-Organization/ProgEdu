@@ -29,7 +29,9 @@
           <thead>
             <tr>
               <th width="10%" class='text-left'>學生</th>
-              <th width="10%" *ngFor='let head of tableHead'>{{head.name}}</th>
+              <th width="10%" *ngFor='let col of assignmentTable'>
+                <div *ngIf='isRelease(col.releaseTime)'>{{col.name}}</div>
+              </th>
               <th class='text-left'></th>
             </tr>
           </thead>
@@ -39,11 +41,13 @@
                 {{username}}
               </th>
               <th *ngFor='let commit of studentCommitRecord'>
-                <p id="{{username}}_{{commit.assignmentName}}" class="circle {{commit.commitRecord.status}}">
-                  <a *ngIf='!isNA(commit)' id="{{username}}_{{commit.hw}}_{{commit.commit}}"
-                    href="#/studashboard/assignmentChoosed?username={{username}}&assignmentName={{commit.assignmentName}}">{{commit.commitRecord.commitNumber}}</a>
-                  <a *ngIf='isNA(commit)'>N/A</a>
-                </p>
+                <div *ngIf='isRelease(commit.releaseTime)'>
+                  <p id="{{username}}_{{commit.assignmentName}}" class="circle {{commit.commitRecord.status}}">
+                    <a *ngIf='!isNA(commit)' id="{{username}}_{{commit.hw}}_{{commit.commit}}"
+                      href="#/studashboard/assignmentChoosed?username={{username}}&assignmentName={{commit.assignmentName}}">{{commit.commitRecord.commitNumber}}</a>
+                    <a *ngIf='isNA(commit)'>N/A</a>
+                  </p>
+                </div>
               <th class='text-left'></th>
             </tr>
           </tbody>

@@ -7,7 +7,7 @@ import { User } from '../../../models/user';
   templateUrl: './studashboard.component.html'
 })
 export class StudashboardComponent implements OnInit {
-  public tableHead: Array<any> = new Array<any>();
+  public assignmentTable: Array<any> = new Array<any>();
   public studentCommitRecord: JSON;
   public username: string;
   constructor(private studashboardService: StudashboardService, private jwtService?: JwtService) { }
@@ -19,7 +19,7 @@ export class StudashboardComponent implements OnInit {
 
   async getAllAssignments() {
     this.studashboardService.getAllAssignments().subscribe(response => {
-      this.tableHead = response.allAssignments;
+      this.assignmentTable = response.allAssignments;
     });
   }
 
@@ -27,8 +27,19 @@ export class StudashboardComponent implements OnInit {
     // clear student array
     this.studashboardService.getStudentCommitRecord(this.username).subscribe(response => {
       this.studentCommitRecord = response;
+      console.log(this.studentCommitRecord);
     });
   }
+
+  isRelease(release: Date) {
+    const now_time = new Date().getTime();
+    const realease_time = new Date(release).getTime() - (new Date().getTimezoneOffset() * 60 * 1000);
+    if (now_time >= realease_time) {
+      return true;
+    }
+    return false;
+  }
+
   isNA(commit: any) {
     if (JSON.stringify(commit.commitRecord) !== '{}') {
       return false;

@@ -26,8 +26,8 @@
               <input type="text" class="form-control" id="username" placeholder="Enter your Username"
                 formControlName="username">
               <span *ngIf="!oneStudentForm.get('username').valid" class="invalid-feedback">Your username must be more
-                than
-                8</span>
+                than or equals
+                4</span>
             </div>
             <div class="form-group col-sm-6">
               <label for="password">Password</label>
