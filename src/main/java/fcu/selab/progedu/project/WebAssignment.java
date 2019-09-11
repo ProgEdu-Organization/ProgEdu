@@ -104,8 +104,7 @@ public class WebAssignment extends AssignmentType {
   @Override
   public ZipFileInfo createTestCase(String testDirectory) {
     ZipHandler zipHandler;
-    long testZipChecksum = 0;
-    String testZipUrl = "";
+    ZipFileInfo zipFileInfo = null;
 
     try {
       FileUtils.deleteDirectory(new File(testDirectory + "/src/web"));
@@ -115,15 +114,10 @@ public class WebAssignment extends AssignmentType {
 
     try {
       zipHandler = new ZipHandler();
-      zipHandler.zipTestFolder(testDirectory);
-      testZipChecksum = zipHandler.getChecksum();
-      testZipUrl = zipHandler.serverIp + "/ProgEdu/webapi/assignment/getTestFile?filePath="
-          + testDirectory + ".zip";
+      zipFileInfo = zipHandler.getZipInfo(testDirectory);
     } catch (LoadConfigFailureException e) {
       e.printStackTrace();
     }
-
-    ZipFileInfo zipFileInfo = new ZipFileInfo(testZipChecksum, testZipUrl);
 
     return zipFileInfo;
   }
