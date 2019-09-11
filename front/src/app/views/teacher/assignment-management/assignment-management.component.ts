@@ -118,8 +118,10 @@ export class AssignmentManagementComponent implements OnInit {
     $('#' + id).addClass('is-invalid');
   }
 
-  setSelectAssignment(data) {
-    this.assignmentName = data;
+  setSelectAssignment(assignment) {
+    console.log(assignment);
+    this.assignmentName = assignment.name;
+    this.assignmentForm.get('readMe').setValue(assignment.description);
   }
 
   editAssignment() {

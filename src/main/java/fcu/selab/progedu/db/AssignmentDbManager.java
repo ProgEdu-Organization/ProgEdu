@@ -75,27 +75,16 @@ public class AssignmentDbManager {
       stmt.setString(1, name);
       try (ResultSet rs = stmt.executeQuery();) {
         while (rs.next()) {
-          Date createTime = rs.getTimestamp("createTime");
-          Date deadline = rs.getTimestamp("deadline");
-          String description = rs.getString("description");
-          boolean hasTemplate = rs.getBoolean("hasTemplate");
-          int typeId = rs.getInt("type");
-          ProjectTypeEnum typeEnum = atDb.getTypeNameById(typeId);
-          long checksum = rs.getLong("zipChecksum");
-          String zipUrl = rs.getString("zipUrl");
-          Date releaseTime = rs.getTimestamp("releaseTime");
-          boolean display = rs.getBoolean("display");
-
           assignment.setName(name);
-          assignment.setCreateTime(createTime);
-          assignment.setDescription(description);
-          assignment.setHasTemplate(hasTemplate);
-          assignment.setType(typeEnum);
-          assignment.setDeadline(deadline);
-          assignment.setTestZipChecksum(checksum);
-          assignment.setTestZipUrl(zipUrl);
-          assignment.setReleaseTime(releaseTime);
-          assignment.setDisplay(display);
+          assignment.setCreateTime(rs.getTimestamp("createTime"));
+          assignment.setDeadline( rs.getTimestamp("deadline"));
+          assignment.setDescription(rs.getString("description"));
+          assignment.setHasTemplate(rs.getBoolean("hasTemplate"));
+          assignment.setType(atDb.getTypeNameById(rs.getInt("type")));
+          assignment.setTestZipChecksum(rs.getLong("zipChecksum"));
+          assignment.setTestZipUrl(rs.getString("zipUrl"));
+          assignment.setReleaseTime(rs.getTimestamp("releaseTime"));
+          assignment.setDisplay(rs.getBoolean("display"));
         }
       }
     } catch (SQLException e) {
@@ -216,8 +205,8 @@ public class AssignmentDbManager {
    */
   public List<Assignment> getAllAssignment() {
     List<Assignment> assignments = new ArrayList<>();
-    String sql = "SELECT id, name,createTime,deadline,releaseTime,display FROM Assignment;";
-
+    String sql = "SELECT id, name, createTime, deadline, releaseTime, display, description "
+            + "FROM Assignment;";
     try (Connection conn = database.getConnection();
         Statement stmt = conn.createStatement();
         ResultSet rs = stmt.executeQuery(sql)) {
@@ -229,6 +218,7 @@ public class AssignmentDbManager {
         assignment.setDeadline(rs.getTimestamp("deadline"));
         assignment.setReleaseTime(rs.getTimestamp("releaseTime"));
         assignment.setDisplay(rs.getBoolean("display"));
+        assignment.setDescription(rs.getString("description"));
         assignments.add(assignment);
       }
     } catch (SQLException e) {
