@@ -1,0 +1,102 @@
+version: "3.7"
+services:
+  db:
+    # image: mysql:latest
+    # image: mysql:5.7
+    # image: fcumselab/progedu-mysql:latest
+    image: hub.ahkui.com/progedu/mysql:latest
+    build: ./mysql
+    ports:
+      - "${DB_PORT}:3306"
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      # MYSQL_USER: ${DB_USER}
+      # MYSQL_PASSWORD: ${DB_PASSWORD}
+      # MYSQL_DATABASE: ${DB_DATABASE}
+    volumes:
+      - ${DATA_PATH_HOST}/mysql:/var/lib/mysql
+
+  gitlab:
+    # image: gitlab/gitlab-ce
+    # image: gitlab/gitlab-ce:10.8.5-ce.0
+    # image: gitlab/gitlab-ce:10.0.0-ce.0
+    image: gitlab/gitlab-ce:9.5.10-ce.0
+    # image: gitlab/gitlab-ce:9.4.2-ce.0
+    ports:
+      - "${GITLAB_HTTP_PORT}:80"
+      - "${GITLAB_SSH_PORT}:22"
+    restart: always
+    privileged: true
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url '${GITLAB_HOST}'
+        nginx['listen_port'] = 80
+        nginx['listen_https'] = false
+        gitlab_rails['initial_root_password'] = "${GITLAB_ROOT_PASSWORD}"
+        gitlab_rails['gitlab_shell_ssh_port'] = ${GITLAB_SSH_PORT}
+    volumes:
+      - ${DATA_PATH_HOST}/gitlab/config:/etc/gitlab
+      - ${DATA_PATH_HOST}/gitlab/logs:/var/log/gitlab
+      - ${DATA_PATH_HOST}/gitlab/data:/var/opt/gitlab
+
+  server:
+    image: hub.ahkui.com/progedu/server:dev
+    # image: hub.ahkui.com/progedu/server:latest
+    # image: fcumselab/progedu-server:latest
+    # image: fcumselab/progedu-server:dev
+    # build:
+    #   context: ./server
+    #   args:
+    #     - DEBUG=${DEBUG}
+    env_file:
+      - .env
+    ports:
+      - "${WEB_PORT}:8080"
+    depends_on:
+      - db
+      - jenkins
+      - gitlab
+      - server-dev
+      - server-stable
+
+  server-stable:
+    # image: fcumselab/progedu-server:latest
+    image: hub.ahkui.com/progedu/server:latest
+    build:
+      context: ./server
+      args:
+        - DEBUG=false
+    command: echo Build Latest Version Only!
+
+  server-dev:
+    # image: fcumselab/progedu-server:dev
+    image: hub.ahkui.com/progedu/server:dev
+    build:
+      context: ./server
+      args:
+        - DEBUG=true
+    command: echo Build Dev Version Only!
+
+  jenkins:
+    # image: jenkins/jenkins:lts
+    image: hub.ahkui.com/progedu/jenkins:latest
+    build:
+      context: ./jenkins
+      args:
+        - GITLAB_USER=${JENKINS_PLUGIN_GITLAB_LOGIN_USER}
+        - GITLAB_TOKEN=${JENKINS_PLUGIN_GITLAB_LOGIN_TOKEN}
+    ports:
+      - "${JENKINS_PORT}:8080"
+      # - "30000:50000"
+    restart: always
+    volumes:
+      - ${DATA_PATH_HOST}/jenkins:/var/jenkins_home
+
+  selenium:
+    image: selenium/standalone-chrome
+    # ports:
+    #   - "${SELENIUM_PORT}:4444"
+    restart: always
+    volumes:
+      - ${DATA_PATH_HOST}/jenkins/workspace:/var/lib/workspace
