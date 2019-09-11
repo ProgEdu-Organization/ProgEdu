@@ -30,7 +30,7 @@ export class AssignmentManagementComponent implements OnInit {
       name: [''],
       releaseTime: [new Date(now_time).toISOString().slice(0, 19), Validators.required],
       deadline: [new Date(now_time).toISOString().slice(0, 19), Validators.required],
-      readMe: ['', Validators.required],
+      description: ['', Validators.required],
       file: [],
       rememberMe: [true]
     });
@@ -41,7 +41,7 @@ export class AssignmentManagementComponent implements OnInit {
   onChange() {
     const releaseTime = 'releaseTime';
     const deadline = 'deadline';
-    const readMe = 'readMe';
+    const description = 'description';
 
     this.assignmentForm.get(releaseTime).valueChanges.subscribe(
       val => {
@@ -54,9 +54,9 @@ export class AssignmentManagementComponent implements OnInit {
       }
     );
 
-    this.assignmentForm.get(readMe).valueChanges.subscribe(
+    this.assignmentForm.get(description).valueChanges.subscribe(
       val => {
-        val.length !== 0 ? this.showIsValidById(readMe) : this.hideIsInvalidById(readMe);
+        val.length !== 0 ? this.showIsValidById(description) : this.hideIsInvalidById(description);
       }
     );
   }
@@ -70,6 +70,7 @@ export class AssignmentManagementComponent implements OnInit {
   getAllAssignments() {
     this.assignmentService.getAllAssignments().subscribe(response => {
       this.assignments = response.allAssignments;
+      console.log(this.assignments);
       for (const num in this.assignments) {
         if (num) {
           this.assignments[num].createTime = this.getUTCAdjustTime(this.assignments[num].createTime);
@@ -94,6 +95,7 @@ export class AssignmentManagementComponent implements OnInit {
       response => {
         this.deleteModal.hide();
         this.getAllAssignments();
+        this.isDeleteProgress = false;
       },
       error => {
         console.log(error);
@@ -118,18 +120,23 @@ export class AssignmentManagementComponent implements OnInit {
     $('#' + id).addClass('is-invalid');
   }
 
-  setSelectAssignment(assignment) {
-    this.assignmentName = assignment.name;
-    this.assignmentForm.get('readMe').setValue(assignment.description);
+  setSelectAssignment(assignment: any) {
+    if (assignment) {
+      this.assignmentName = assignment.name;
+      this.assignmentForm.get('description').setValue(assignment.description);
+      this.assignmentForm.get('releaseTime').setValue(new Date(assignment.releaseTime).toISOString().slice(0, 19));
+      this.assignmentForm.get('deadline').setValue(new Date(assignment.deadline).toISOString().slice(0, 19));
+    }
   }
 
   editAssignment() {
 
-    if (this.assignmentForm.dirty && this.assignmentForm.valid) {
+    if (this.assignmentForm.valid) {
       this.assignmentForm.get('name').setValue(this.assignmentName);
       this.assignmentService.editAssignment(this.assignmentForm).subscribe(
         response => {
           this.editModal.hide();
+          this.getAllAssignments();
         },
         errpr => {
 

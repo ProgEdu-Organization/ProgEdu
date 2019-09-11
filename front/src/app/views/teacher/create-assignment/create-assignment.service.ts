@@ -22,7 +22,7 @@ export class CreateAssignmentService {
     formData.append('assignmentName', assigememt.value.name);
     formData.append('releaseTime', new Date(assigememt.value.releaseTime).toUTCString());
     formData.append('deadline', new Date(assigememt.value.deadline).toUTCString());
-    formData.append('readMe', assigememt.value.readMe);
+    formData.append('readMe', assigememt.value.description);
     formData.append('fileRadio', assigememt.value.type);
     formData.append('file', assigememt.value.file);
 

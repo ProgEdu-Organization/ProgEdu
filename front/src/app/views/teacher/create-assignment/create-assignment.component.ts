@@ -46,7 +46,7 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
       name: [undefined, [Validators.required, Validators.pattern('^[a-zA-Z0-9-_]{1,10}')]],
       releaseTime: [new Date(now_time).toISOString().slice(0, 19), Validators.required],
       deadline: [new Date(now_time).toISOString().slice(0, 19), Validators.required],
-      readMe: [undefined, Validators.required],
+      description: [undefined, Validators.required],
       type: [undefined, Validators.required],
       file: [undefined, Validators.required],
     });
@@ -58,7 +58,7 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
     const name = 'name';
     const releaseTime = 'releaseTime';
     const deadline = 'deadline';
-    const readMe = 'readMe';
+    const description = 'description';
     this.assignment.get(name).valueChanges.subscribe(
       () => {
         this.assignment.get(name).valid ? this.showIsValidById(name) : this.hideIsInvalidById(name);
@@ -76,9 +76,9 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
       }
     );
 
-    this.assignment.get(readMe).valueChanges.subscribe(
+    this.assignment.get(description).valueChanges.subscribe(
       val => {
-        val.length !== 0 ? this.showIsValidById(readMe) : this.hideIsInvalidById(readMe);
+        val.length !== 0 ? this.showIsValidById(description) : this.hideIsInvalidById(description);
       }
     );
   }
