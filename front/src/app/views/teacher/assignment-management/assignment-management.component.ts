@@ -119,7 +119,6 @@ export class AssignmentManagementComponent implements OnInit {
   }
 
   setSelectAssignment(assignment) {
-    console.log(assignment);
     this.assignmentName = assignment.name;
     this.assignmentForm.get('readMe').setValue(assignment.description);
   }
