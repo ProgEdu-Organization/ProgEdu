@@ -17,12 +17,6 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
   isDropup: boolean = true;
   autoClose: boolean = false;
   assignment: FormGroup;
-  items: string[] = [
-    'The first choice!',
-    'And another choice for you.',
-    'but wait! A third!'
-  ];
-
   errorMsg: string;
   SERVER_URL: string = environment.SERVER_URL;
 
@@ -54,7 +48,6 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
   }
 
   onChanges(): void {
-    console.log();
     const name = 'name';
     const releaseTime = 'releaseTime';
     const deadline = 'deadline';
@@ -103,7 +96,6 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
 
 
   public submit() {
-    console.log(this.assignment.value);
     if (this.assignment.dirty && this.assignment.valid) {
       this.progressModal.show();
       this.createService.createAssignment(this.assignment).subscribe(

@@ -66,10 +66,7 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
       confirmPassword: ['', [Validators.pattern('^[a-zA-Z0-9-_]{8,20}')]],
       rememberMe: [true]
     });
-    console.log(this.error.length);
-
     this.updateNavData();
-
     this.modifySecretAreaOnchange();
   }
 
@@ -153,7 +150,6 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
         },
         error => {
           this.error = error.error.text;
-          console.log(this.error);
         }
       );
     }
