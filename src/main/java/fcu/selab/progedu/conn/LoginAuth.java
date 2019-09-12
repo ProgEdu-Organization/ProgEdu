@@ -65,12 +65,7 @@ public class LoginAuth extends HttpServlet {
       if (!role.equals("")) {
         ob.put("isLogin", true);
         ob.put("role", role);
-        String name = "";
-        if (!username.equals("root")) {
-          name = UserDbManager.getInstance().getUser(username).getName();
-        } else {
-          name = username;
-        }
+        String name = getNameByUsername(username);
         token = jwt.generateToken(role, username, name);
         ob.put("token", token);
       } else {
@@ -108,14 +103,24 @@ public class LoginAuth extends HttpServlet {
   private RoleEnum getRole(String username) {
     UserDbManager userDb = UserDbManager.getInstance();
     RoleUserDbManager roleUserDb = RoleUserDbManager.getInstance();
-
-    System.out.println("test1");
     int uid = userDb.getUserIdByUsername(username);
-    System.out.println("test2");
     int rid = roleUserDb.getTopRid(uid);
     RoleDbManager roleDb = RoleDbManager.getInstance();
-    System.out.println("rid:" + rid);
     return roleDb.getRoleNameById(rid);
+  }
+
+  private String getNameByUsername(String username) {
+    String name;
+    try {
+      if (!username.equals(gitlabConfig.getGitlabRootUsername())) {
+        name = UserDbManager.getInstance().getUser(username).getName();
+      } else {
+        name = username;
+      }
+    } catch ( LoadConfigFailureException e) {
+      name = username;
+    }
+    return name;
   }
 
 }
