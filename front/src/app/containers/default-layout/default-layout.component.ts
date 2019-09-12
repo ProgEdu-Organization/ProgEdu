@@ -150,6 +150,10 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
         },
         error => {
           this.error = error.error.text;
+<<<<<<< HEAD
+=======
+          console.log(this.error);
+>>>>>>> fcuselab/#71
         }
       );
     }
