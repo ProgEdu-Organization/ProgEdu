@@ -85,6 +85,7 @@ public class UserService {
         }
       }
       csvReader.close();
+      System.out.println("errorMessage: " + errorMessage);
       if (errorMessage == null || errorMessage.isEmpty()) {
         for (User user : users) {
           register(user);
@@ -118,7 +119,6 @@ public class UserService {
       @FormParam("password") String password, @FormParam("role") String role,
       @FormParam("isDisplayed") boolean isDisplayed) {
     Response response = null;
-    System.out.println(name + "  " + username);
     List<RoleEnum> roleList = new ArrayList<>();
 
     RoleEnum roleEnum = RoleEnum.getRoleEnum(role);
@@ -126,7 +126,8 @@ public class UserService {
 
     User user = new User(username, name, email, password, roleList, isDisplayed);
     String errorMessage = getErrorMessage(user);
-    System.out.println(errorMessage);
+    System.out.println("errorMessage: " + errorMessage);
+    System.out.println("email: " + email);
     if (errorMessage.isEmpty()) {
       try {
         register(user);

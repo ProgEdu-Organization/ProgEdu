@@ -117,8 +117,8 @@ export class AssignmentManagementComponent implements OnInit {
     if (assignment) {
       this.assignmentName = assignment.name;
       this.assignmentForm.get('description').setValue(assignment.description);
-      this.assignmentForm.get('releaseTime').setValue(this.getUTCAdjustTime(assignment.releaseTime).toISOString().slice(0, 19));
-      this.assignmentForm.get('deadline').setValue(this.getUTCAdjustTime(assignment.deadline).toISOString().slice(0, 19));
+      this.assignmentForm.get('releaseTime').setValue(this.getUTCAdjustTime(assignment.releaseTime).toISOString().slice(0, 17) + '00');
+      this.assignmentForm.get('deadline').setValue(this.getUTCAdjustTime(assignment.deadline).toISOString().slice(0, 17) + '00');
     }
   }
 

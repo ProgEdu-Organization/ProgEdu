@@ -21,7 +21,7 @@
           <p style="border-bottom: 1rem;margin: 10px;">{{assignment.description}}</p>
           <hr />
           <span class="h2">Deadline</span>
-          <p style="margin: 10px;">{{assignment.deadline}}</p>
+          <p style="margin: 10px;">{{assignment.deadline | date:'short'}}</p>
         </div>
         <div class="col-lg-6" *ngIf="screenshotUrls" [collapse]="isCollapsed" (expanded)='updateScrennshotName()'>
           <span class="h2">Screenshot: {{selectedScreenshotName}}</span>

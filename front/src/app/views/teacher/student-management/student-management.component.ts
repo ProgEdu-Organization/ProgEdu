@@ -13,6 +13,10 @@ export class StudentManagementComponent implements OnInit {
   public mutipleStudentFile: File;
   public SERVER_URL = environment.SERVER_URL;
   public isCollapsed = true;
+  public addOneStudentErrorMsg = '';
+  public addOneStudentSuccessful: boolean = false;
+  public addMutipleStudentErrorMsg = '';
+  public addMutipleStudentSuccessful: boolean = false;
   constructor(private studentService: StudentManagementService, private fb: FormBuilder) { }
 
   async ngOnInit() {
@@ -78,10 +82,10 @@ export class StudentManagementComponent implements OnInit {
       this.studentService.addOneStudent(this.oneStudentForm).subscribe(
         (response) => {
           this.getAllUser();
+          this.addOneStudentSuccessful = true;
         },
         error => {
-          $('#confirmPassword-invalid-feedbacks').show().text(error.error);
-          console.log(error.error);
+          this.addOneStudentErrorMsg = error.error;
         });
     }
   }
@@ -94,9 +98,10 @@ export class StudentManagementComponent implements OnInit {
       this.studentService.addMutipleStudent(this.mutipleStudentFile).subscribe(
         (response) => {
           this.getAllUser();
+          this.addMutipleStudentSuccessful = true;
         },
         error => {
-          console.log(error.error);
+          this.addMutipleStudentErrorMsg = error.error;
         });
     }
   }
