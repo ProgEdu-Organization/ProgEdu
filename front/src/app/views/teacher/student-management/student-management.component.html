@@ -33,7 +33,7 @@
               <label for="password">Password</label>
               <input type="password" class="form-control" id="password" placeholder="Enter your password"
                 formControlName="password">
-              <span *ngIf="!oneStudentForm.get('password').valid" class="invalid-feedback">Your username must be more
+              <span *ngIf="!oneStudentForm.get('password').valid" class="invalid-feedback">Your password must be more
                 than
                 8</span>
             </div>
@@ -41,7 +41,8 @@
               <label for="email">Email</label> <input type="text" class="form-control" id="email"
                 placeholder="Enter your email" formControlName="email">
 
-              <span *ngIf="!oneStudentForm.get('email').valid" class="invalid-feedback">Please enter a valid date</span>
+              <span *ngIf="!oneStudentForm.get('email').valid" class="invalid-feedback">Please enter a valid
+                email</span>
             </div>
 
             <div class="form-group" style="text-align: right;">

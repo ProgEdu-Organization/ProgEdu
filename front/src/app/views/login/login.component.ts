@@ -1,4 +1,4 @@
-import { Component, ViewChild, SystemJsNgModuleLoader } from '@angular/core';
+import { Component, ViewChild, SystemJsNgModuleLoader, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { LoginAuthService } from '../../services/login-auth.service';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
@@ -8,24 +8,54 @@ import { JwtService } from '../../services/jwt.service';
   selector: 'app-dashboard',
   templateUrl: 'login.component.html'
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
 
   private errors;
   public loginForm: FormGroup;
   @ViewChild('dangerModal', { static: false }) public dangerModal: ModalDirective;
 
   constructor(private router: Router, private _loginAuthService: LoginAuthService, private fb: FormBuilder,
-    private jwtService: JwtService) {
+    private jwtService: JwtService) { }
+
+  ngOnInit() {
     this.loginForm = this.fb.group({
-      username: ['', Validators.pattern('^[a-zA-Z0-9-_]{5,20}')],
-      password: ['', Validators.pattern('^[a-zA-Z0-9-_]{5,20}')],
+      username: ['', Validators.pattern('^[a-zA-Z0-9-_]{4,20}')],
+      password: ['', Validators.pattern('^[a-zA-Z0-9-_]{8,20}')],
       rememberMe: [true]
     });
+
+    this.onChanges();
     this.autoLogin();
   }
+  onChanges(): void {
+    console.log();
+    const username = 'username';
+    const password = 'password';
 
-  onInit() {
+    this.loginForm.get(username).valueChanges.subscribe(
+      () => {
+        console.log('test');
+        this.loginForm.get(username).valid ? this.showIsValidById(username) : this.hideIsInvalidById(username);
+      }
+    );
+
+    this.loginForm.get(password).valueChanges.subscribe(
+      val => {
+        this.loginForm.get(password).valid ? this.showIsValidById(password) : this.hideIsInvalidById(password);
+      }
+    );
   }
+
+  showIsValidById(id: string) {
+    $('#' + id).addClass('is-valid');
+    $('#' + id).removeClass('is-invalid');
+  }
+
+  hideIsInvalidById(id: string) {
+    $('#' + id).removeClass('is-valid');
+    $('#' + id).addClass('is-invalid');
+  }
+
   public getUsername() { return this.loginForm.value.username; }
   public getPassword() { return this.loginForm.value.password; }
 

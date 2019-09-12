@@ -13,15 +13,21 @@
                     <div class="input-group-prepend">
                       <span class="input-group-text"><i class="icon-user"></i></span>
                     </div>
-                    <input type="text" matInput class="form-control" placeholder="Username" autocomplete="username"
-                      formControlName="username" required>
+                    <input id='username' type="text" matInput class="form-control" placeholder="Username"
+                      autocomplete="username" formControlName="username">
+                    <span *ngIf="!loginForm.get('username').valid" class="invalid-feedback">Your username must be more
+                      than or equals 4</span>
                   </div>
                   <div class="input-group mb-4">
                     <div class="input-group-prepend">
                       <span class="input-group-text"><i class="icon-lock"></i></span>
                     </div>
-                    <input type="password" matInput class="form-control" placeholder="Password"
-                      autocomplete="current-password" formControlName="password" required>
+                    <input id='password' type="password" matInput class="form-control" placeholder="Password"
+                      autocomplete="current-password" formControlName="password">
+                    <span *ngIf="!loginForm.get('password').valid" class="invalid-feedback">Your password must be
+                      more
+                      than
+                      8</span>
                   </div>
                   <div class="row">
                     <div class="col-6">
