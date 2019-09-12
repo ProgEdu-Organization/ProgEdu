@@ -34,7 +34,6 @@ export class LoginComponent implements OnInit {
 
     this.loginForm.get(username).valueChanges.subscribe(
       () => {
-        console.log('test');
         this.loginForm.get(username).valid ? this.showIsValidById(username) : this.hideIsInvalidById(username);
       }
     );
