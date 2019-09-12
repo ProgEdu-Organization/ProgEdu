@@ -56,7 +56,6 @@ export class StudentManagementService {
   }
 
   updateDisplay(username: string) {
-    console.log(username);
     const params = new HttpParams()
       .append('username', username);
 

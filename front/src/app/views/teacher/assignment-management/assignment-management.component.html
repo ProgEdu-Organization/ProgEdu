@@ -52,11 +52,11 @@
       <!--Delete Assignment Main-->
       <div class="modal-body">
         <p>Do you Want to Delete this "{{assignmentName}}" Assignment&hellip;</p>
-      </div>
-      <div *ngIf='isDeleteProgress'>
-        <progressbar class="progress-bar progress-bar-striped progress-bar-animated" [value]="dynamic" [max]="max"
-          [type]="type">
-        </progressbar>
+        <div *ngIf='isDeleteProgress'>
+          <progressbar class="progress-bar progress-bar-striped progress-bar-animated" [value]="dynamic" [max]="max"
+            [type]="type">
+          </progressbar>
+        </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" (click)="deleteModal.hide()">Close</button>
@@ -100,10 +100,10 @@
             </div>
           </div>
           <div class="form-group row">
-            <label class="col-md-3 col-form-label" for="readMe"> Assignment Description</label>
+            <label class="col-md-3 col-form-label" for="description"> Assignment Description</label>
             <div class="col-md-9">
-              <textarea id="readMe" name="readMe" rows="9" class="form-control" placeholder="Content.."
-                formControlName='readMe'></textarea>
+              <textarea id="description" name="description" rows="9" class="form-control" placeholder="Content.."
+                formControlName='description'></textarea>
             </div>
           </div>
           <div class="form-group row">

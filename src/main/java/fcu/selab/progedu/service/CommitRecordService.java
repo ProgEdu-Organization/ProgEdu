@@ -90,6 +90,7 @@ public class CommitRecordService {
       int auId = auDb.getAuid(assignment.getId(), userId);
       JSONObject ob = new JSONObject();
       ob.put("assignmentName", assignment.getName());
+      ob.put("releaseTime", assignment.getReleaseTime());
       ob.put("commitRecord", db.getLastCommitRecord(auId));
       array.put(ob);
     }

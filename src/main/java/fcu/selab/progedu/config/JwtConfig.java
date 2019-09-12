@@ -18,7 +18,6 @@ public class JwtConfig {
   
   private JwtConfig() {
     key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-    System.out.println("key:" + key.getEncoded());
   }
   
   /**
@@ -36,12 +35,12 @@ public class JwtConfig {
    * create the jwt 
    * @return token
    */
-  public String generateToken(String userRole, String userName) {
+  public String generateToken(String userRole, String userName, String name) {
     
     String jws = Jwts.builder().setIssuer("progedu").setSubject(userRole).setAudience(userName)
+            .claim("name", name)
         .setExpiration(new Date((new Date()).getTime() +  3 * 60 * 60 * 1000))
         .setId(UUID.randomUUID().toString()).signWith(key).compact(); // just an example id
-
     return jws;
   }
   

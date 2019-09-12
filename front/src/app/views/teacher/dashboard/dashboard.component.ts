@@ -10,7 +10,7 @@ import { controllers } from 'chart.js';
 export class DashboardComponent implements OnInit {
   public allStudentDatas = allStudentDatas;
   public data: Array<any> = new Array<any>();
-  public tableHead: Array<any> = new Array<any>();
+  public assignmentTable: Array<any> = new Array<any>();
   public allStudentCommitRecord: JSON;
   public search;
   constructor(private dashboardService: DashboardService) { }
@@ -21,7 +21,7 @@ export class DashboardComponent implements OnInit {
 
   async getAllAssignments() {
     this.dashboardService.getAllAssignments().subscribe(response => {
-      this.tableHead = response.allAssignments;
+      this.assignmentTable = response.allAssignments;
     });
   }
 
@@ -30,7 +30,7 @@ export class DashboardComponent implements OnInit {
     this.dashboardService.getAllStudentCommitRecord().subscribe(response => {
       this.allStudentCommitRecord = response.allUsersCommitRecord;
       if (this.allStudentCommitRecord[0] === undefined) {
-        this.tableHead.length = 0;
+        this.assignmentTable.length = 0;
       }
 
     });

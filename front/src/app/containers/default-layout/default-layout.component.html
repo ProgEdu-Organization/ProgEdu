@@ -17,8 +17,8 @@
           <li role="menuitem"><a class="dropdown-item" href="#/dashboard/groupManagement">Group Management</a></li>
         </ul>
       </li>
-      <li class="nav-item px-3">
-        <a class="nav-link" href="#/dashboard/groupDashboard">Group Dashboard</a>
+      <li class="nav-item px-3" *ngIf="isTeacher">
+        <a class="nav-link" href="#/{{dashboard}}/groupDashboard">Group Dashboard</a>
       </li>
     </div>
   </ul>
@@ -26,6 +26,7 @@
     <li class="nav-item dropdown" dropdown placement="bottom right">
       <a class="nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"
         dropdownToggle (click)="false">
+        Hi, {{user.getName()}}
         <img src="assets/img/avatars/login.png" class="img-avatar" alt="admin@bootstrapmaster.com" />
       </a>
       <div class="dropdown-menu dropdown-menu-right" *dropdownMenu aria-labelledby="simple-dropdown">
@@ -33,7 +34,7 @@
             class="fa fa-lock"></i>
           Modify
           Password</a>
-        <a class="dropdown-item" href (click)="logout()"><i class="fa fa-lock"></i> Logout</a>
+        <a class="dropdown-item" href (click)="logout()"><i class="fa fa-lock"></i>Logout</a>
       </div>
     </li>
   </ul>

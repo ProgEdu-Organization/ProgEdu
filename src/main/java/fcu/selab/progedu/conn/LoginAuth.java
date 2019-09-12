@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import fcu.selab.progedu.data.User;
 import org.json.JSONObject;
 
 import fcu.selab.progedu.config.GitlabConfig;
@@ -60,11 +61,12 @@ public class LoginAuth extends HttpServlet {
     JSONObject ob = new JSONObject();
 
     try {
-      String user = checkPermission(username, password);
-      if (!user.equals("")) {
+      String role = checkPermission(username, password);
+      if (!role.equals("")) {
         ob.put("isLogin", true);
-        ob.put("user", user);
-        token = jwt.generateToken(user, username);
+        ob.put("role", role);
+        String name = getNameByUsername(username);
+        token = jwt.generateToken(role, username, name);
         ob.put("token", token);
       } else {
         ob.put("isLogin", false);
@@ -73,8 +75,6 @@ public class LoginAuth extends HttpServlet {
       ob.put("isLogin", false);
       e.printStackTrace();
     }
-
-    System.out.println(ob.toString());
     response.setStatus(200);
     PrintWriter pw = response.getWriter();
     pw.print(ob);
@@ -103,14 +103,24 @@ public class LoginAuth extends HttpServlet {
   private RoleEnum getRole(String username) {
     UserDbManager userDb = UserDbManager.getInstance();
     RoleUserDbManager roleUserDb = RoleUserDbManager.getInstance();
-
-    System.out.println("test1");
     int uid = userDb.getUserIdByUsername(username);
-    System.out.println("test2");
     int rid = roleUserDb.getTopRid(uid);
     RoleDbManager roleDb = RoleDbManager.getInstance();
-    System.out.println("rid:" + rid);
     return roleDb.getRoleNameById(rid);
+  }
+
+  private String getNameByUsername(String username) {
+    String name;
+    try {
+      if (!username.equals(gitlabConfig.getGitlabRootUsername())) {
+        name = UserDbManager.getInstance().getUser(username).getName();
+      } else {
+        name = username;
+      }
+    } catch ( LoadConfigFailureException e) {
+      name = username;
+    }
+    return name;
   }
 
 }

@@ -20,7 +20,7 @@ export class StudentManagementComponent implements OnInit {
     this.oneStudentForm = this.fb.group({
       role: ['', Validators.required],
       name: ['', Validators.required],
-      username: ['', Validators.pattern('^[a-zA-Z0-9-_]{8,20}')],
+      username: ['', Validators.pattern('^[a-zA-Z0-9-_]{4,20}')],
       password: ['', Validators.pattern('^[a-zA-Z0-9-_]{8,20}')],
       email: ['', [Validators.required, Validators.email]],
       isDisplayed: [true],
@@ -73,7 +73,6 @@ export class StudentManagementComponent implements OnInit {
   }
 
   public addOneStudent() {
-    console.log(this.oneStudentForm.value);
 
     if (this.oneStudentForm.dirty && this.oneStudentForm.valid) {
       this.studentService.addOneStudent(this.oneStudentForm).subscribe(
@@ -88,7 +87,6 @@ export class StudentManagementComponent implements OnInit {
   }
 
   changeFileLister(e: { target: { files: File[]; }; }) {
-    console.log(e.target.files[0]);
     this.mutipleStudentFile = e.target.files[0];
   }
   public addMutipleStudent() {
