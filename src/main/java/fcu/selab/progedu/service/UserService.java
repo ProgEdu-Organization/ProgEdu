@@ -126,8 +126,6 @@ public class UserService {
 
     User user = new User(username, name, email, password, roleList, isDisplayed);
     String errorMessage = getErrorMessage(user);
-    System.out.println("errorMessage: " + errorMessage);
-    System.out.println("email: " + email);
     if (errorMessage.isEmpty()) {
       try {
         register(user);
