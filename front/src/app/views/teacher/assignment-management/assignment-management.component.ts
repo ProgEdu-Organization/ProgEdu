@@ -72,6 +72,7 @@ export class AssignmentManagementComponent implements OnInit {
       this.assignments = response.allAssignments;
       for (const i in this.assignments) {
         if (i) {
+          this.assignments[i].createTime = this.getUTCAdjustTime(this.assignments[i].createTime);
           this.assignments[i].releaseTime = this.getUTCAdjustTime(this.assignments[i].releaseTime);
           this.assignments[i].deadline = this.getUTCAdjustTime(this.assignments[i].deadline);
         }

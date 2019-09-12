@@ -10,7 +10,7 @@ export class AssignmentChoosedComponent implements OnInit {
 
   username: string;
   assignmentName: string;
-  assignment = { type: '' };
+  assignment = { type: '', deadline: new Date() };
   commits: Array<JSON> = [];
   gitlabAssignmentURL: string;
   feedback: string;
@@ -59,7 +59,15 @@ export class AssignmentChoosedComponent implements OnInit {
   getAssignment() {
     this.assignmentService.getAssignment(this.assignmentName).subscribe(response => {
       this.assignment = response;
+      this.assignment.deadline = this.getUTCAdjustTime(this.assignment.deadline);
     });
+  }
+
+  getUTCAdjustTime(time: any): Date {
+    const timeOffset = (new Date().getTimezoneOffset() * 60 * 1000);
+    const assigenmentTime = new Date(time).getTime();
+
+    return new Date(assigenmentTime - timeOffset);
   }
 
   public copyToClipboard() {
