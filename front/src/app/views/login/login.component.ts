@@ -28,7 +28,6 @@ export class LoginComponent implements OnInit {
     this.autoLogin();
   }
   onChanges(): void {
-    console.log();
     const username = 'username';
     const password = 'password';
 

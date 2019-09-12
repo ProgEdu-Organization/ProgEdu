@@ -30,8 +30,8 @@
             <tr>
               <th width="10%" class='text-left'>學生</th>
               <ng-container *ngFor='let col of assignmentTable'>
-                <th width="10%">
-                  <div *ngIf='isRelease(col.releaseTime)'>{{col.name}}</div>
+                <th width="10%" *ngIf='isRelease(col.releaseTime)'>
+                  <div>{{col.name}}</div>
                 </th>
               </ng-container>
               <th class='text-left'></th>
