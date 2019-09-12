@@ -23,7 +23,7 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
   public navDataisload: boolean = false;
   public user: User;
   public isTeacher: boolean = false;
-
+  public error: string = '';
   public modifySecretForm: FormGroup;
 
   dashboard: string;
@@ -60,12 +60,13 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
     }
     /* Modify Secret Area*/
     this.modifySecretForm = this.fb.group({
-      username: [this.user.getUsername(), Validators.pattern('^[a-zA-Z0-9-_]{8,20}')],
-      currentPassword: ['', [Validators.pattern('^[a-zA-Z0-9-_]{8,20}'), Validators.required]],
-      newPassword: ['', [Validators.pattern('^[a-zA-Z0-9-_]{8,20}'), Validators.required]],
-      confirmPassword: ['', [Validators.pattern('^[a-zA-Z0-9-_]{8,20}'), Validators.required]],
+      username: [this.user.getUsername(), Validators.required],
+      currentPassword: ['', [Validators.pattern('^[a-zA-Z0-9-_]{8,20}')]],
+      newPassword: ['', [Validators.pattern('^[a-zA-Z0-9-_]{8,20}')]],
+      confirmPassword: ['', [Validators.pattern('^[a-zA-Z0-9-_]{8,20}')]],
       rememberMe: [true]
     });
+    console.log(this.error.length);
 
     this.updateNavData();
 
@@ -102,11 +103,14 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
         this.showIsValidById(currentPassword) : this.hideIsInvalidById(currentPassword)
     );
     this.modifySecretForm.get(newPassword).valueChanges.subscribe(
-      () => {
+      (value) => {
         this.modifySecretForm.get(newPassword).valid ?
-          this.showIsValidById(newPassword) : this.hideIsInvalidById(newPassword),
-          this.hideIsInvalidById(confirmPassword),
-          this.isConfirm = false;
+          this.showIsValidById(newPassword) : this.hideIsInvalidById(newPassword);
+        if (value !== this.modifySecretForm.get(confirmPassword).value) {
+          this.hideIsInvalidById(confirmPassword);
+        } else {
+          this.isConfirm = true;
+        }
       }
     );
     this.modifySecretForm.get(confirmPassword).valueChanges.subscribe(
@@ -148,6 +152,8 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
           this.router.navigate(['login']);
         },
         error => {
+          this.error = error.error.text;
+          console.log(this.error);
         }
       );
     }

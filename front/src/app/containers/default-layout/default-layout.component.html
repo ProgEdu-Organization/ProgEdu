@@ -82,9 +82,9 @@
             </div>
             <input id='currentPassword' type="password" matInput class="form-control" placeholder="Current Password"
               autocomplete="currentPassword" formControlName="currentPassword">
-            <div id='currentPassword-invalid-feedbacks' class='invalid-feedback'>
-              Please sure the current_password
-            </div>
+            <span *ngIf="!modifySecretForm.get('currentPassword').valid" class="invalid-feedback">Your username must be
+              more
+              than or equals 8</span>
           </div>
 
           <div class="input-group mb-4">
@@ -93,9 +93,8 @@
             </div>
             <input id='newPassword' type="password" matInput class="form-control" placeholder="New Password"
               autocomplete="current-password" formControlName="newPassword">
-            <div id='newPassword-invalid-feedbacks' class='invalid-feedback'>
-              Please sure the confirm password
-            </div>
+            <span *ngIf="!modifySecretForm.get('newPassword').valid" class="invalid-feedback">Your username must be more
+              than or equals 8</span>
           </div>
 
           <div class="input-group mb-4">
@@ -104,19 +103,16 @@
             </div>
             <input id='confirmPassword' type="password" matInput class="form-control" placeholder="Confirm New Password"
               autocomplete="current-password" formControlName="confirmPassword">
-            <div id='confirmPassword-invalid-feedbacks' class='invalid-feedback'>
-              Please sure the confirm password
-            </div>
-          </div>
+            <span *ngIf="!modifySecretForm.get('confirmPassword').valid" class="invalid">Your username must be
+              more
+              than or equals 8</span>
 
-          <div class="row">
-            <div class="col-6">
-              <button type="submit" class="btn btn-primary px-4" [disabled]="!modifySecretForm.valid || !isConfirm">save
-                changes</button>
-            </div>
           </div>
+          <div *ngIf="error.length !== 0" class='alert alert-danger alert-dismissible'>{{error}}</div>
         </div>
         <div class="modal-footer">
+          <button type="submit" class="btn btn-primary px-4" [disabled]="!modifySecretForm.valid || !isConfirm">save
+            changes</button>
           <button type="button" class="btn btn-secondary" (click)="modifySecretModal.hide()">Close</button>
         </div>
       </form>
