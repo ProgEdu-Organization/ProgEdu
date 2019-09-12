@@ -90,10 +90,13 @@ export class StudentManagementComponent implements OnInit {
     }
   }
 
-  changeFileLister(e: { target: { files: File[]; }; }) {
+  changeFileListener(e: { target: { files: File[]; }; }) {
+    this.addMutipleStudentSuccessful = false;
+    this.addMutipleStudentErrorMsg = '';
     this.mutipleStudentFile = e.target.files[0];
   }
   public addMutipleStudent() {
+
     if (this.mutipleStudentFile != null) {
       this.studentService.addMutipleStudent(this.mutipleStudentFile).subscribe(
         (response) => {

@@ -32,11 +32,18 @@ export class StudashboardComponent implements OnInit {
 
   isRelease(release: Date) {
     const now_time = new Date().getTime();
-    const realease_time = new Date(release).getTime();
+    const realease_time = new Date(this.getUTCAdjustTime(release)).getTime();
     if (now_time >= realease_time) {
       return true;
     }
     return false;
+  }
+
+  getUTCAdjustTime(time: any): Date {
+    const timeOffset = (new Date().getTimezoneOffset() * 60 * 1000);
+    const assigenmentTime = new Date(time).getTime();
+
+    return new Date(assigenmentTime - timeOffset);
   }
 
   isNA(commit: any) {
