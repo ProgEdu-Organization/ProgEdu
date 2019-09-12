@@ -70,11 +70,11 @@ export class AssignmentManagementComponent implements OnInit {
   getAllAssignments() {
     this.assignmentService.getAllAssignments().subscribe(response => {
       this.assignments = response.allAssignments;
-      for (const num in this.assignments) {
-        if (num) {
-          this.assignments[num].createTime = this.getUTCAdjustTime(this.assignments[num].createTime);
-          this.assignments[num].releaseTime = this.getUTCAdjustTime(this.assignments[num].releaseTime);
-          this.assignments[num].deadline = this.getUTCAdjustTime(this.assignments[num].deadline);
+      for (const i in this.assignments) {
+        if (i) {
+          this.assignments[i].createTime = this.getUTCAdjustTime(this.assignments[i].createTime);
+          this.assignments[i].releaseTime = this.getUTCAdjustTime(this.assignments[i].releaseTime);
+          this.assignments[i].deadline = this.getUTCAdjustTime(this.assignments[i].deadline);
         }
       }
     });
@@ -123,8 +123,8 @@ export class AssignmentManagementComponent implements OnInit {
     if (assignment) {
       this.assignmentName = assignment.name;
       this.assignmentForm.get('description').setValue(assignment.description);
-      this.assignmentForm.get('releaseTime').setValue(this.getUTCAdjustTime(assignment.releaseTime).toISOString().slice(0, 19));
-      this.assignmentForm.get('deadline').setValue(this.getUTCAdjustTime(assignment.deadline).toISOString().slice(0, 19));
+      this.assignmentForm.get('releaseTime').setValue(this.getUTCAdjustTime(assignment.releaseTime).toISOString().slice(0, 17) + '00');
+      this.assignmentForm.get('deadline').setValue(this.getUTCAdjustTime(assignment.deadline).toISOString().slice(0, 17) + '00');
     }
   }
 

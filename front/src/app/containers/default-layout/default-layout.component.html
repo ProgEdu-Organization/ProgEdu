@@ -27,7 +27,7 @@
       <a class="nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"
         dropdownToggle (click)="false">
         Hi, {{user.getName()}}
-        <img src="assets/img/avatars/login.png" class="img-avatar" alt="admin@bootstrapmaster.com" />
+        <i class='img-avatar icon-user icons font-2xl mt-4'></i>
       </a>
       <div class="dropdown-menu dropdown-menu-right" *dropdownMenu aria-labelledby="simple-dropdown">
         <a class="dropdown-item" href="javascript:void(0);" (click)="modifySecretModal.show();"><i
@@ -103,7 +103,7 @@
             </div>
             <input id='confirmPassword' type="password" matInput class="form-control" placeholder="Confirm New Password"
               autocomplete="current-password" formControlName="confirmPassword">
-            <span *ngIf="!modifySecretForm.get('confirmPassword').valid" class="invalid">Your username must be
+            <span *ngIf="!modifySecretForm.get('confirmPassword').valid" class="invalid-feedback">Your username must be
               more
               than or equals 8</span>
 

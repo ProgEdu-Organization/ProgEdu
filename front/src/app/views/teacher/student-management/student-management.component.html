@@ -26,16 +26,14 @@
               <input type="text" class="form-control" id="username" placeholder="Enter your Username"
                 formControlName="username">
               <span *ngIf="!oneStudentForm.get('username').valid" class="invalid-feedback">Your username must be more
-                than or equals
-                4</span>
+                than or equals 4</span>
             </div>
             <div class="form-group col-sm-6">
               <label for="password">Password</label>
               <input type="password" class="form-control" id="password" placeholder="Enter your password"
                 formControlName="password">
               <span *ngIf="!oneStudentForm.get('password').valid" class="invalid-feedback">Your password must be more
-                than
-                8</span>
+                than 8</span>
             </div>
             <div class="form-group col-sm-6">
               <label for="email">Email</label> <input type="text" class="form-control" id="email"
@@ -44,6 +42,9 @@
               <span *ngIf="!oneStudentForm.get('email').valid" class="invalid-feedback">Please enter a valid
                 email</span>
             </div>
+            <div *ngIf='addOneStudentSuccessful' class='alert alert-success'>Successful</div>
+            <div *ngIf="addOneStudentErrorMsg.length !== 0" class='alert alert-danger alert-dismissible'>
+              Error Massage: {{addOneStudentErrorMsg}}</div>
 
             <div class="form-group" style="text-align: right;">
               <button class="btn btn-primary" [disabled]='!oneStudentForm.valid' type="submit">Add
@@ -71,6 +72,9 @@
                 <input type="file" id="file-input" name="file-input" (change)="changeFileLister($event)">
               </div>
             </div>
+            <div *ngIf='addMutipleStudentSuccessful' class='alert alert-success'>Successful</div>
+            <div *ngIf="addMutipleStudentErrorMsg.length !== 0" class='alert alert-danger alert-dismissible'>
+              Error Massage: {{addMutipleStudentErrorMsg}}</div>
             <div class="form-group" style="text-align: right;">
               <button class="btn btn-primary" [disabled]='!mutipleStudentFile' type="submit">Upload</button>
             </div>
