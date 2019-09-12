@@ -103,7 +103,7 @@
             </div>
             <input id='confirmPassword' type="password" matInput class="form-control" placeholder="Confirm New Password"
               autocomplete="current-password" formControlName="confirmPassword">
-            <span *ngIf="!modifySecretForm.get('confirmPassword').valid" class="invalid">Your username must be
+            <span *ngIf="!modifySecretForm.get('confirmPassword').valid" class="invalid-feedback">Your username must be
               more
               than or equals 8</span>
 
