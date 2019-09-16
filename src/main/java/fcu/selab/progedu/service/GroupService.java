@@ -1,16 +1,27 @@
 package fcu.selab.progedu.service;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import org.gitlab.api.models.GitlabAccessLevel;
 import org.gitlab.api.models.GitlabGroup;
 import org.gitlab.api.models.GitlabUser;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
+
+import com.csvreader.CsvReader;
 
 import fcu.selab.progedu.conn.GitlabService;
 import fcu.selab.progedu.data.Group;
@@ -36,31 +47,45 @@ public class GroupService {
    * @param fileDetail          file information
    * @return Response
    */
-//  @POST
-//  @Path("upload")
-//  @Consumes(MediaType.MULTIPART_FORM_DATA)
-//  public Response createGroup(@FormParam("groupName") String groupName,
-//      @FormParam("projectName") String projectName, @FormParam("leader") String leaderUsername,
-//      @FormParam("member") List<String> member) {
-//    Response response;
-//    Group group;
-//    createGitlabGroup(group);
-////
-////    try {
-////
-////      createGitlabGroupAndProject(group);
-////    } catch (LoadConfigFailureException | IOException e) {
-////      isSuccess = false;
-////      e.printStackTrace();
-////    }
-////
-////    if (isSuccess) {
-////      response = Response.ok().build();
-////    } else {
-////      response = Response.serverError().status(Status.INTERNAL_SERVER_ERROR).build();
-////    }
-//    return response;
-//  }
+  @POST
+  @Path("upload")
+  @Consumes(MediaType.MULTIPART_FORM_DATA)
+  public Response createGroup(@FormDataParam("file") InputStream uploadedInputStream,
+      @FormDataParam("file") FormDataContentDisposition fileDetail) {
+    Response response;
+    boolean isSuccess = true;
+    List<Student> studentList = new ArrayList<>();
+
+    try {
+      CsvReader csvReader = new CsvReader(new InputStreamReader(uploadedInputStream, "UTF-8"));
+      csvReader.readHeaders();
+      while (csvReader.readRecord()) {
+        Student student = new Student();
+        student.setTeam(csvReader.get("Team"));
+        // if teamLeader is not empty , the student is teamLeader.
+        student.setTeamLeader(!csvReader.get("TeamLeader").isEmpty());
+        student.setStudentId(csvReader.get("Student_Id"));
+        student.setName(csvReader.get("name"));
+        studentList.add(student);
+
+      }
+      csvReader.close();
+
+      studentList = sort(studentList);
+      List<Group> groups = group(studentList);
+      createGitlabGroupAndProject(groups);
+    } catch (LoadConfigFailureException | IOException e) {
+      isSuccess = false;
+      e.printStackTrace();
+    }
+
+    if (isSuccess) {
+      response = Response.ok().build();
+    } else {
+      response = Response.serverError().status(Status.INTERNAL_SERVER_ERROR).build();
+    }
+    return response;
+  }
 
   /**
    * group

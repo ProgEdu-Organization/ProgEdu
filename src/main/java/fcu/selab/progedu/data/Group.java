@@ -1,18 +1,15 @@
 package fcu.selab.progedu.data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Group {
   private String groupName;
+  private String projectName;
+
   private int groupId;
-  private int groupGitLabId;
-  private String leaderId;
-
-  public String getGroupName() {
-    return groupName;
-  }
-
-  public void setGroupName(String groupName) {
-    this.groupName = groupName;
-  }
+  private String leaderUsername;
+  private List<String> contributors;
 
   public int getGroupId() {
     return groupId;
@@ -22,19 +19,49 @@ public class Group {
     this.groupId = groupId;
   }
 
-  public int getGroupGitLabId() {
-    return groupGitLabId;
+  public String getGroupName() {
+    return groupName;
   }
 
-  public void setGroupGitLabId(int groupGitLabId) {
-    this.groupGitLabId = groupGitLabId;
+  public void setGroupName(String groupName) {
+    this.groupName = groupName;
   }
 
-  public String getLeaderId() {
-    return leaderId;
+  public String getLeaderUsername() {
+    return leaderUsername;
   }
 
-  public void setLeaderId(String leaderId) {
-    this.leaderId = leaderId;
+  public void setLeaderUsername(String leaderUsername) {
+    this.leaderUsername = leaderUsername;
   }
+
+  public List<String> getContributors() {
+    return contributors;
+  }
+
+  public void setContributors(List<String> contributor) {
+    this.contributors = contributor;
+  }
+
+  public String getProjectName() {
+    return projectName;
+  }
+
+  public void setProjectName(String projectName) {
+    this.projectName = projectName;
+  }
+
+  /**
+   * add contirbutor to list
+   * 
+   * @param contributor contirbutor's username
+   */
+  public void addContributor(String contributor) {
+    if (this.contributors == null) {
+      this.contributors = new ArrayList<>();
+    }
+
+    this.contributors.add(contributor);
+  }
+
 }
