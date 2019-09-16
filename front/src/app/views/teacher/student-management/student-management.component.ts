@@ -10,7 +10,7 @@ import * as $ from 'jquery';
 export class StudentManagementComponent implements OnInit {
   public users: Array<any> = new Array<any>();
   public oneStudentForm: FormGroup;
-  public MultipleStudentFile: File;
+  public multipleStudentFile: File;
   public SERVER_URL = environment.SERVER_URL;
   public isCollapsed = true;
   public addOneStudentErrorMsg = '';
@@ -93,12 +93,12 @@ export class StudentManagementComponent implements OnInit {
   changeFileListener(e: { target: { files: File[]; }; }) {
     this.addMultipleStudentSuccessful = false;
     this.addMultipleStudentErrorMsg = '';
-    this.MultipleStudentFile = e.target.files[0];
+    this.multipleStudentFile = e.target.files[0];
   }
   public addMultipleStudent() {
 
-    if (this.MultipleStudentFile != null) {
-      this.studentService.addMultipleStudent(this.MultipleStudentFile).subscribe(
+    if (this.multipleStudentFile != null) {
+      this.studentService.addMultipleStudent(this.multipleStudentFile).subscribe(
         (response) => {
           this.getAllUser();
           this.addMultipleStudentSuccessful = true;
