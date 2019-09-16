@@ -11,7 +11,7 @@ export class AssignmentChoosedComponent implements OnInit {
   username: string;
   assignmentName: string;
   assignment = { type: '', deadline: new Date() };
-  commits: Array<JSON> = [];
+  commits: Array<any> = [];
   gitlabAssignmentURL: string;
   feedback: string;
   isCollapsed = true;
@@ -51,6 +51,11 @@ export class AssignmentChoosedComponent implements OnInit {
       this.commits = response;
       this.selectedCommitNumber = this.commits.length;
       this.getFeedback();
+      for (const commit in this.commits) {
+        if (commit) {
+          this.commits[commit].time = this.getUTCAdjustTime(this.commits[commit].time);
+        }
+      }
       if (this.assignment.type === 'WEB') {
         this.getScreenshotUrls();
       }

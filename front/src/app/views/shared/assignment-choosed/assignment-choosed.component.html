@@ -73,7 +73,7 @@
                 <td>
                   <p class="circle {{commit.status}}"></p>
                 </td>
-                <td>{{commit.time}}</td>
+                <td>{{commit.time | date:'short'}}</td>
                 <td>{{commit.message}}</td>
               </tr>
             </tbody>
