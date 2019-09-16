@@ -29,3 +29,19 @@ COPY --from=builder /workdir/ProgEduJenkinsPlugin/target/jenkins-progedu.hpi /us
 COPY --from=builder /workdir/screenshotjenkinsplugin/target/screenshot.hpi /usr/share/jenkins/ref/plugins/screenshot.jpi
 COPY --from=builder /workdir/UpdatePngToDBJenkinsPlugin/target/progeduDB.hpi /usr/share/jenkins/ref/plugins/progeduDB.jpi
 
+RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - \
+    && \
+    apt-get update && apt-get install -y --no-install-recommends \
+    nodejs \
+    && \
+    apt-get clean \
+    && \
+    rm -rf /var/lib/apt/lists/*
+
+ARG GRADLE_MAVEN=5.6.2
+ENV PATH=$PATH:/opt/gradle/gradle-$GRADLE_MAVEN/bin
+RUN apt update && apt install -y default-jdk maven && \
+    wget https://services.gradle.org/distributions/gradle-$GRADLE_MAVEN-bin.zip && \
+    mkdir /opt/gradle && \
+    unzip -d /opt/gradle gradle-$GRADLE_MAVEN-bin.zip && \
+    rm gradle-$GRADLE_MAVEN-bin.zip
