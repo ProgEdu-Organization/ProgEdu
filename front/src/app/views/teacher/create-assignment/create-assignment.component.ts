@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { CreateAssignmentService } from './create-assignment.service';
 import { ModalDirective } from 'ngx-bootstrap/modal';
+import { assignmentTypeEnum } from './assignmentTypeEnum';
 
 @Component({
   selector: 'app-create-assignment',
@@ -25,14 +26,9 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
   dynamic: number = 60;
   type: string = 'Waiting';
 
-  stacked: any[] = [];
-
-  timer: any = null;
-  buttonCaption: string = 'Start';
   constructor(private router: Router, private fb: FormBuilder, private createService: CreateAssignmentService) { }
   @ViewChild('myModal', { static: true }) public progressModal: ModalDirective;
   @ViewChild('bsModal', { static: false }) public errorModal: ModalDirective;
-
 
   ngOnInit() {
     const now_time = Date.now() - (new Date().getTimezoneOffset() * 60 * 1000);
@@ -45,6 +41,7 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
       file: [undefined, Validators.required],
     });
     this.onChanges();
+
   }
 
   onChanges(): void {
@@ -74,6 +71,12 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
         val.length !== 0 ? this.showIsValidById(description) : this.hideIsInvalidById(description);
       }
     );
+  }
+
+  selectedAssignmentType(type: string) {
+    if (type !== undefined) {
+      this.assignment.get('type').setValue(assignmentTypeEnum[type]);
+    }
   }
 
   showIsValidById(id: string) {

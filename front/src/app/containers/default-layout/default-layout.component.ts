@@ -16,7 +16,7 @@ import { ɵangular_packages_platform_browser_platform_browser_d } from '@angular
 })
 export class DefaultLayoutComponent implements OnDestroy, OnInit {
   public navData: Array<any> = new Array<any>();
-  public navItems = navItems;
+  public _navItems = navItems;
   public sidebarMinimized = true;
   private changes: MutationObserver;
   public element: HTMLElement;
