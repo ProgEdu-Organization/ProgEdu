@@ -22,7 +22,6 @@ services:
     # image: gitlab/gitlab-ce:10.8.5-ce.0
     # image: gitlab/gitlab-ce:10.0.0-ce.0
     image: gitlab/gitlab-ce:9.5.10-ce.0
-    # image: gitlab/gitlab-ce:9.4.2-ce.0
     ports:
       - "${GITLAB_HTTP_PORT}:80"
       - "${GITLAB_SSH_PORT}:22"
@@ -45,10 +44,6 @@ services:
     # image: hub.ahkui.com/progedu/server:latest
     # image: fcumselab/progedu-server:latest
     # image: fcumselab/progedu-server:dev
-    # build:
-    #   context: ./server
-    #   args:
-    #     - DEBUG=${DEBUG}
     env_file:
       - .env
     ports:
