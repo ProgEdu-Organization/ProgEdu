@@ -10,13 +10,13 @@ import * as $ from 'jquery';
 export class StudentManagementComponent implements OnInit {
   public users: Array<any> = new Array<any>();
   public oneStudentForm: FormGroup;
-  public mutipleStudentFile: File;
+  public MultipleStudentFile: File;
   public SERVER_URL = environment.SERVER_URL;
   public isCollapsed = true;
   public addOneStudentErrorMsg = '';
   public addOneStudentSuccessful: boolean = false;
-  public addMutipleStudentErrorMsg = '';
-  public addMutipleStudentSuccessful: boolean = false;
+  public addMultipleStudentErrorMsg = '';
+  public addMultipleStudentSuccessful: boolean = false;
   constructor(private studentService: StudentManagementService, private fb: FormBuilder) { }
 
   async ngOnInit() {
@@ -91,20 +91,20 @@ export class StudentManagementComponent implements OnInit {
   }
 
   changeFileListener(e: { target: { files: File[]; }; }) {
-    this.addMutipleStudentSuccessful = false;
-    this.addMutipleStudentErrorMsg = '';
-    this.mutipleStudentFile = e.target.files[0];
+    this.addMultipleStudentSuccessful = false;
+    this.addMultipleStudentErrorMsg = '';
+    this.MultipleStudentFile = e.target.files[0];
   }
-  public addMutipleStudent() {
+  public addMultipleStudent() {
 
-    if (this.mutipleStudentFile != null) {
-      this.studentService.addMutipleStudent(this.mutipleStudentFile).subscribe(
+    if (this.MultipleStudentFile != null) {
+      this.studentService.addMultipleStudent(this.MultipleStudentFile).subscribe(
         (response) => {
           this.getAllUser();
-          this.addMutipleStudentSuccessful = true;
+          this.addMultipleStudentSuccessful = true;
         },
         error => {
-          this.addMutipleStudentErrorMsg = error.error;
+          this.addMultipleStudentErrorMsg = error.error;
         });
     }
   }
