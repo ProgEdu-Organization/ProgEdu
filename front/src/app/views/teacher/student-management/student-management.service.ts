@@ -29,7 +29,7 @@ const updateDisplayOptions = ({
 export class StudentManagementService {
   GET_USERS_API = environment.SERVER_URL + '/ProgEdu/webapi/user/getUsers';
   ADD_ONE_USER_API = environment.SERVER_URL + '/ProgEdu/webapi/user/new';
-  ADD_MUTIPLE_USER_API = environment.SERVER_URL + '/ProgEdu/webapi/user/upload';
+  ADD_MULTIPLE_USER_API = environment.SERVER_URL + '/ProgEdu/webapi/user/upload';
   DISPLAY_API = environment.SERVER_URL + '/ProgEdu/webapi/user/display';
   constructor(private http: HttpClient) { }
 
@@ -52,7 +52,7 @@ export class StudentManagementService {
   addMultipleStudent(file: File) {
     const frmData = new FormData();
     frmData.append('file', file);
-    return this.http.post<any>(this.ADD_MUTIPLE_USER_API, frmData, addMultipleStudentOptions);
+    return this.http.post<any>(this.ADD_MULTIPLE_USER_API, frmData, addMultipleStudentOptions);
   }
 
   updateDisplay(username: string) {
