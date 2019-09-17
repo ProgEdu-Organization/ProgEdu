@@ -1,17 +1,18 @@
-<?xml version="1.1" encoding="UTF-8"?><project>
+<?xml version='1.1' encoding='UTF-8'?>
+<project>
   <actions/>
-  <description/>
+  <description></description>
   <keepDependencies>false</keepDependencies>
   <properties>
-    <com.dabsquared.gitlabjenkins.connection.GitLabConnectionProperty plugin="gitlab-plugin@1.5.12">
+    <com.dabsquared.gitlabjenkins.connection.GitLabConnectionProperty plugin="gitlab-plugin@1.5.13">
       <gitLabConnection>gitlab</gitLabConnection>
     </com.dabsquared.gitlabjenkins.connection.GitLabConnectionProperty>
   </properties>
-  <scm class="hudson.plugins.git.GitSCM" plugin="git@3.10.0">
+  <scm class="hudson.plugins.git.GitSCM" plugin="git@3.12.1">
     <configVersion>2</configVersion>
     <userRemoteConfigs>
       <hudson.plugins.git.UserRemoteConfig>
-        <url>http://140.134.26.71:20008/testtest05/WEB-VICTOR.git</url>
+        <url>http://140.134.26.66:37777/test01/web.git</url>
         <credentialsId>gitlab_root</credentialsId>
       </hudson.plugins.git.UserRemoteConfig>
     </userRemoteConfigs>
@@ -29,8 +30,8 @@
   <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
   <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
   <triggers>
-    <com.dabsquared.gitlabjenkins.GitLabPushTrigger plugin="gitlab-plugin@1.5.12">
-      <spec/>
+    <com.dabsquared.gitlabjenkins.GitLabPushTrigger plugin="gitlab-plugin@1.5.13">
+      <spec></spec>
       <triggerOnPush>true</triggerOnPush>
       <triggerOnMergeRequest>true</triggerOnMergeRequest>
       <triggerOnPipelineEvent>false</triggerOnPipelineEvent>
@@ -44,30 +45,31 @@
       <skipWorkInProgressMergeRequest>true</skipWorkInProgressMergeRequest>
       <setBuildDescription>true</setBuildDescription>
       <branchFilterType>All</branchFilterType>
-      <includeBranchesSpec/>
-      <excludeBranchesSpec/>
-      <sourceBranchRegex/>
-      <targetBranchRegex/>
-      <pendingBuildName/>
+      <includeBranchesSpec></includeBranchesSpec>
+      <excludeBranchesSpec></excludeBranchesSpec>
+      <sourceBranchRegex></sourceBranchRegex>
+      <targetBranchRegex></targetBranchRegex>
+      <secretToken>{AQAAABAAAAAQwG0/sMM2eCyRP2hsyC9ZiY1UfY4bJyWLh2K5MP8aaEE=}</secretToken>
+      <pendingBuildName></pendingBuildName>
       <cancelPendingBuildsOnUpdate>false</cancelPendingBuildsOnUpdate>
     </com.dabsquared.gitlabjenkins.GitLabPushTrigger>
   </triggers>
   <concurrentBuild>false</concurrentBuild>
   <builders>
-    <io.jenkins.plugins.screenshot.ScreenShotBuilder plugin="sceenshot@1.0-SNAPSHOT">
-      <seleniumUrl>http://140.134.26.71:3444/wd/hub</seleniumUrl>
+    <io.jenkins.plugins.screenshot.ScreenShotBuilder plugin="screenshot@1.0-SNAPSHOT">
+      <seleniumUrl>http://selenium:4444/wd/hub</seleniumUrl>
     </io.jenkins.plugins.screenshot.ScreenShotBuilder>
     <hudson.plugins.build__timeout.BuildStepWithTimeout plugin="build-timeout@1.19">
       <strategy class="hudson.plugins.build_timeout.impl.AbsoluteTimeOutStrategy">
         <timeoutMinutes>15</timeoutMinutes>
       </strategy>
       <buildStep class="org.jenkinsci.plugins.AssessmentBuilder" plugin="jenkins-progedu@1.0-SNAPSHOT">
-        <jobName>testtest05_WEB-VICTOR</jobName>
-        <testFileName>WEB-VICTOR</testFileName>
-        <proDetailUrl>http://140.134.26.71:33000/ProgEdu/webapi/assignment/checksum?proName=WEB-VICTOR</proDetailUrl>
-        <testFileUrl>http://140.134.26.71:33000/ProgEdu/webapi/assignment/getTestFile?filePath=/usr/local/tomcat/temp/tests/WEB-VICTOR.zip</testFileUrl>
+        <jobName>test01_web</jobName>
+        <testFileName>web</testFileName>
+        <proDetailUrl>http://140.134.26.66:38818/webapi/assignment/checksum?proName=web</proDetailUrl>
+        <testFileUrl>http://140.134.26.66:38818/webapi/assignment/getTestFile?filePath=/usr/local/tomcat/temp/tests/web.zip</testFileUrl>
         <testFileChecksum>2354726748</testFileChecksum>
-        <testFilePath/>
+        <testFilePath></testFilePath>
       </buildStep>
       <operationList>
         <hudson.plugins.build__timeout.operations.FailOperation/>
@@ -99,14 +101,14 @@ npm run eslint</command>
       <caseSensitive>true</caseSensitive>
     </hudson.tasks.ArtifactArchiver>
     <org.jenkinsci.plugins.UpdatingDbPublisher plugin="jenkins-progedu@1.0-SNAPSHOT">
-      <progeduDbUrl>http://140.134.26.71:33000/ProgEdu/webapi/commits/update</progeduDbUrl>
-      <user>testtest05</user>
-      <proName>WEB-VICTOR</proName>
+      <progeduDbUrl>http://140.134.26.66:38818/webapi/commits/update</progeduDbUrl>
+      <user>test01</user>
+      <proName>web</proName>
     </org.jenkinsci.plugins.UpdatingDbPublisher>
-    <io.jenkins.plugins.progupdatetodb.UpdateToDbPublisher plugin="progedDB@1.0-SNAPSHOT">
-      <progeduAPIUrl>http://140.134.26.71:33000/ProgEdu/webapi</progeduAPIUrl>
-      <jenkinsUsername>testtest05</jenkinsUsername>
-      <jenkinsAssignmentName>WEB-VICTOR</jenkinsAssignmentName>
+    <io.jenkins.plugins.progupdatetodb.UpdateToDbPublisher plugin="progeduDB@1.0-SNAPSHOT">
+      <progeduAPIUrl>http://140.134.26.66:38818/webapi</progeduAPIUrl>
+      <jenkinsUsername>test01</jenkinsUsername>
+      <jenkinsAssignmentName>web</jenkinsAssignmentName>
     </io.jenkins.plugins.progupdatetodb.UpdateToDbPublisher>
     <hudson.plugins.ws__cleanup.WsCleanup plugin="ws-cleanup@0.37">
       <patterns class="empty-list"/>
@@ -119,14 +121,9 @@ npm run eslint</command>
       <cleanWhenAborted>true</cleanWhenAborted>
       <notFailBuild>false</notFailBuild>
       <cleanupMatrixParent>false</cleanupMatrixParent>
-      <externalDelete/>
+      <externalDelete></externalDelete>
       <disableDeferredWipeout>false</disableDeferredWipeout>
     </hudson.plugins.ws__cleanup.WsCleanup>
   </publishers>
-  <buildWrappers>
-    <jenkins.plugins.nodejs.NodeJSBuildWrapper plugin="nodejs@1.3.3">
-      <nodeJSInstallationName>Global</nodeJSInstallationName>
-      <cacheLocationStrategy class="jenkins.plugins.nodejs.cache.DefaultCacheLocationLocator"/>
-    </jenkins.plugins.nodejs.NodeJSBuildWrapper>
-  </buildWrappers>
+  <buildWrappers/>
 </project>
