@@ -90,8 +90,8 @@ services:
 
   selenium:
     image: selenium/standalone-chrome
-    # ports:
-    #   - "${SELENIUM_PORT}:4444"
+    ports:
+      - "${SELENIUM_PORT}:4444"
     restart: always
     volumes:
       - ${DATA_PATH_HOST}/jenkins/workspace:/var/lib/workspace
