@@ -1,0 +1,10 @@
+*.js
+*.txt
+*.woff
+*.woff2
+*.css
+*.html
+*.eot
+*.ttf
+*.svg
+assets/

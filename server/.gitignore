@@ -1,0 +1,11 @@
+target/
+.checkstyle
+.classpath
+.project
+.settings/
+.idea/
+.vscode/
+node/
+progedu.iml
+
+docs/
