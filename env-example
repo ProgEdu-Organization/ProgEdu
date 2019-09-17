@@ -41,7 +41,7 @@ WEB_JENKINS_ADMIN_PASSWORD=admin
 
 
 ############################## ProgEdu Selenium Connection Config ##############################
-WEB_SELENIUM_URL=http://selenium:4444
+WEB_SELENIUM_URL=http://example.com:4444
 
 
 ############################## ProgEdu Gitlab Connection Config ##############################
