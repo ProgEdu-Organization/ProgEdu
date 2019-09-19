@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,57 +70,59 @@ public class GroupDbManager {
   }
 
   /**
+   * get gitlab id
+   * 
+   * @param name name
+   */
+  public int getGitlabId(String name) {
+    int id = -1;
+    String statement = "SELECT gitLabId FROM Group WHERE name = ?";
+
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(statement)) {
+      preStmt.setString(1, name);
+      try (ResultSet rs = preStmt.executeQuery()) {
+        if (rs.next()) {
+          id = rs.getInt("gitLabId");
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return id;
+  }
+
+  /**
    * get all groups
    * 
    * @return all group on gitlab
    */
 
-  public List<Group> listGroups() {
-    List<Group> lsGroups = new ArrayList<>();
-    List<String> members = new ArrayList<>();
-    Group group = new Group();
-    String groupName = "";
-    String sql = "SELECT * FROM Team";
-
+  public List<Group> getGroups() {
+    String statement = "SELECT * FROM Group";
+    List<Group> groups = new ArrayList<>();
     try (Connection conn = database.getConnection();
-        Statement stmt = conn.createStatement();
-        ResultSet rs = stmt.executeQuery(sql)) {
+        PreparedStatement preStmt = conn.prepareStatement(statement)) {
+      try (ResultSet rs = preStmt.executeQuery()) {
+        while (rs.next()) {
+          String name = rs.getString("name");
+          int id = rs.getInt("id");
+          int gitlabId = rs.getInt("gitLabId");
+          int leader = rs.getInt("leader");
 
-      while (rs.next()) {
-        if (groupName.equals(rs.getString("name"))) {
-          boolean isLeader = rs.getBoolean("isLeader");
+          Group group = new Group();
+          group.setGitlabId(gitlabId);
+          group.setGroupName(name);
+          group.setId(id);
+          group.setLeader(leader);
 
-          if (isLeader) {
-            int leaderId = rs.getInt("sId");
-            group.setLeaderUsername(udb.getUsername(leaderId));
-          } else {
-            int memberId = rs.getInt("sId");
-            members.add(udb.getUsername(memberId));
-            group.setContributors(members);
-          }
-        } else {
-          group = new Group();
-          members = new ArrayList<>();
-
-          groupName = rs.getString("name");
-          group.setGroupName(groupName);
-          boolean isLeader = rs.getBoolean("isLeader");
-          if (isLeader) {
-            int leaderId = rs.getInt("sId");
-            group.setLeaderUsername(udb.getUsername(leaderId));
-          } else {
-            int memberId = rs.getInt("sId");
-            members.add(udb.getUsername(memberId));
-            group.setContributors(members);
-          }
-          lsGroups.add(group);
+          groups.add(group);
         }
       }
-
     } catch (SQLException e) {
       e.printStackTrace();
     }
-    return lsGroups;
+    return groups;
   }
 
   /**

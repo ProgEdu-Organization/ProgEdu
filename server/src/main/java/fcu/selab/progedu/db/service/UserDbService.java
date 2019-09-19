@@ -14,4 +14,8 @@ public class UserDbService {
   public int getGitLabId(String username) {
     return udb.getGitLabIdByUsername(username);
   }
+
+  public int getId(String username) {
+    return udb.getUserIdByUsername(username);
+  }
 }

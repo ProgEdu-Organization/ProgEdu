@@ -26,17 +26,18 @@ import org.gitlab.api.models.GitlabUser;
 
 import fcu.selab.progedu.config.GitlabConfig;
 import fcu.selab.progedu.config.JenkinsConfig;
-import fcu.selab.progedu.data.Group;
 import fcu.selab.progedu.data.User;
+import fcu.selab.progedu.db.service.GroupDbService;
+import fcu.selab.progedu.db.service.UserDbService;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
-import fcu.selab.progedu.service.GroupService;
 import fcu.selab.progedu.utils.Linux;
 
 public class GitlabService {
   private static GitlabService instance = new GitlabService();
 
   GitlabConfig gitData = GitlabConfig.getInstance();
-
+  UserDbService udb = UserDbService.getInstance();
+  GroupDbService gdb = GroupDbService.getInstance();
   private String hostUrl;
   private String rootUrl;
   private String apiToken;
@@ -438,11 +439,12 @@ public class GitlabService {
    * @param group group
    * @throws IOException IOException
    */
-  public GitlabProject createGroupProject(Group group) throws IOException {
-    GroupService gs = new GroupService();
-    int leaderId = gs.getUserIdByUsername(group.getLeaderUsername());
-    GitlabProject project = createPrivateProject(leaderId, group.getProjectName(), null);
-    transferProjectToGroupProject(getGitlabGroup(group.getGroupName()).getId(), project.getId());
+  public GitlabProject createGroupProject(String groupName, String projectName, String leader)
+      throws IOException {
+    int leaderGitlabId = udb.getGitLabId(leader);
+    int GroupGitlabId = gdb.getGitlabId(groupName);
+    GitlabProject project = createPrivateProject(leaderGitlabId, projectName, null);
+    transferProjectToGroupProject(GroupGitlabId, project.getId());
     return project;
   }
 

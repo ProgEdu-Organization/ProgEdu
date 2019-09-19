@@ -1,12 +1,9 @@
 package fcu.selab.progedu.service;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.Date;
 
 import org.gitlab.api.models.GitlabProject;
 import org.gitlab.api.models.GitlabUser;
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 
 import fcu.selab.progedu.config.CourseConfig;
 import fcu.selab.progedu.config.GitlabConfig;
@@ -14,7 +11,6 @@ import fcu.selab.progedu.config.JenkinsConfig;
 import fcu.selab.progedu.conn.GitlabService;
 import fcu.selab.progedu.conn.JenkinsService;
 import fcu.selab.progedu.conn.TomcatService;
-import fcu.selab.progedu.data.Group;
 import fcu.selab.progedu.data.GroupProject;
 import fcu.selab.progedu.db.ProjectDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
@@ -72,87 +68,44 @@ public class GroupProjectService {
    * @param file        (to do)
    * @param fileDetail  (to do)
    */
-  public void createGroupProject(Group group, Date deadline, String readMe, String projectType,
-      InputStream file, FormDataContentDisposition fileDetail) {
-
-    String folderName = null;
-    String filePath = null;
-
-    final GitlabService gitlabService = GitlabService.getInstance();
+  public void createGroupProject(String groupName, String projectName, String leader,
+      String projectType) {
+    String readMe = "Initialization";
+//    final GitlabService gitlabService = GitlabService.getInstance();
     final GroupProjectType groupProject = GroupProjectFactory.getGroupProjectType(projectType);
     final ProjectTypeEnum projectTypeEnum = ProjectTypeEnum.getProjectTypeEnum(projectType);
     // 1. Create root project and get project id and url
     GitlabProject project = null;
     try {
-      project = gitlabService.createGroupProject(group);
+      project = gitlabService.createGroupProject(groupName, projectName, leader);
     } catch (IOException e) {
       e.printStackTrace();
     }
 
     // 2. Clone the project to C:\\Users\\users\\AppData\\Temp\\uploads
-    String cloneDirectoryPath = gitlabService.cloneProject(group.getGroupName(),
-        group.getProjectName());
+    String cloneDirectoryPath = gitlabService.cloneProject(groupName, projectName);
+    // 3. if README is not null
+    tomcatService.createReadmeFile(readMe, cloneDirectoryPath);
 
-    // 3. Store Zip File to folder if file is not empty
-    filePath = tomcatService.storeFileToServer(file, fileDetail, groupProject);
-
-    // 4. Unzip the uploaded file to uploads folder on tomcat
-
-    /*
-     * TO-DO : unzip
-     * 
-     */
-    zipHandler.unzipFile(filePath, cloneDirectoryPath);
-
-    // 5. Add .gitkeep if folder is empty.
-    tomcatService.findEmptyFolder(cloneDirectoryPath);
-
-    // 6. if README is not null
-    if (!readMe.equals("<br>") || !"".equals(readMe) || !readMe.isEmpty()) {
-      // Add readme to folder
-      tomcatService.createReadmeFile(readMe, cloneDirectoryPath);
-    }
-
-    // 7. git push
+    // 4. git push
     gitlabService.pushProject(cloneDirectoryPath);
 
-    // 8. remove project file in linux
+    // 5. remove project file in linux
     tomcatService.removeFile(uploadDir);
 
-    // 9. import project infomation to database
-    addProject(group.getProjectName(), readMe, deadline, projectTypeEnum);
+    // 6. import project infomation to database
+    addProject(groupName, projectName, readMe, projectTypeEnum);
 
-    // 10. set Gitlab webhook
+    // 7. set Gitlab webhook
     try {
-
       gitlabService.setGitlabWebhook(project);
     } catch (IOException | LoadConfigFailureException e) {
       e.printStackTrace();
     }
 
-    // 11. Create each Jenkins Jobs
-    groupProject.createJenkinsJob(group.getGroupName(), group.getProjectName());
-
+    // 8. Create each Jenkins Jobs
+    groupProject.createJenkinsJob(groupName, projectName);
   }
-//
-//  /**
-//   * 
-//   * @param groupName group name
-//   * @return url gitlab project url
-//   */
-//  public String getGroupProjectUrl(String groupName, String projectName) {
-//    String url = null;
-//    String gitlabUrl = null;
-//    try {
-//      gitlabUrl = gitlabData.getGitlabRootUrl();
-//      url = gitlabUrl + "/" + groupName + "/" + projectName;
-//    } catch (LoadConfigFailureException e) {
-//      e.printStackTrace();
-//    }
-//
-//    return url;
-//
-//  }
 
   /**
    * Add a project to database
@@ -162,11 +115,12 @@ public class GroupProjectService {
    * @param readMe      Project readme
    * @param projectType File type
    */
-  public void addProject(String name, String readMe, Date deadline, ProjectTypeEnum projectType) {
+  public void addProject(String groupName, String projectName, String readMe,
+      ProjectTypeEnum projectType) {
     GroupProject groupProject = new GroupProject();
-    groupProject.setName(name);
-    groupProject.setDeadline(deadline);
+    groupProject.setName(projectName);
     groupProject.setCreateTime(tomcatService.getCurrentTime());
+    groupProject.setDeadline(tomcatService.getCurrentTime());
     groupProject.setDescription(readMe);
     groupProject.setType(projectType);
     ProjectDbManager projectDb = ProjectDbManager.getInstance();
