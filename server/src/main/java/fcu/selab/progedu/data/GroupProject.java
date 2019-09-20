@@ -9,6 +9,8 @@ public class GroupProject {
 
   private String name = "";
 
+  private Date releaseTime = null;
+
   private Date createTime = null;
 
   private Date deadline = null;
@@ -63,6 +65,14 @@ public class GroupProject {
 
   public ProjectTypeEnum setType(ProjectTypeEnum type) {
     return this.type = type;
+  }
+
+  public Date getReleaseTime() {
+    return releaseTime;
+  }
+
+  public void setReleaseTime(Date releaseTime) {
+    this.releaseTime = releaseTime;
   }
 
 }

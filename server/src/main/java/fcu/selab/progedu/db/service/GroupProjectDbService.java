@@ -1,8 +1,18 @@
 package fcu.selab.progedu.db.service;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import fcu.selab.progedu.data.CommitRecord;
+import fcu.selab.progedu.data.GroupProject;
+import fcu.selab.progedu.db.AssignmentTypeDbManager;
 import fcu.selab.progedu.db.GroupDbManager;
-import fcu.selab.progedu.db.GroupUserDbManager;
+import fcu.selab.progedu.db.ProjectCommitRecordDbManager;
 import fcu.selab.progedu.db.ProjectDbManager;
+import fcu.selab.progedu.db.ProjectGroupDbManager;
+import fcu.selab.progedu.project.ProjectTypeEnum;
+import fcu.selab.progedu.status.StatusEnum;
 
 public class GroupProjectDbService {
   private static GroupProjectDbService dbService = new GroupProjectDbService();
@@ -11,7 +21,74 @@ public class GroupProjectDbService {
     return dbService;
   }
 
+  private ProjectDbManager pdb = ProjectDbManager.getInstance();
+  private ProjectCommitRecordDbManager pcrdb = ProjectCommitRecordDbManager.getInstance();
+  private ProjectGroupDbManager pgdb = ProjectGroupDbManager.getInstance();
   private GroupDbManager gdb = GroupDbManager.getInstance();
-  private GroupUserDbManager gudb = GroupUserDbManager.getInstance();
-  private ProjectDbManager udb = ProjectDbManager.getInstance();
+//  private GroupUserDbManager gudb = GroupUserDbManager.getInstance();
+  private AssignmentTypeDbManager atdb = AssignmentTypeDbManager.getInstance();
+
+  public List<String> getProjectNames(String groupName) {
+    List<String> projectNames = new ArrayList<>();
+    int gid = gdb.getId(groupName);
+    List<Integer> pids = pgdb.getPids(gid);
+
+    for (int pid : pids) {
+      String projectName = pdb.getProjectName(pid);
+      projectNames.add(projectName);
+    }
+
+    return projectNames;
+  }
+
+  public CommitRecord getCommitResult(int pgid) {
+    return pcrdb.getLastProjectCommitRecord(pgid);
+  }
+
+  public List<CommitRecord> getCommitRecords(int pgid) {
+    return pcrdb.getProjectCommitRecords(pgid);
+  }
+
+  public GroupProject getProject(int pgid) {
+    int pid = pgdb.getPid(pgid);
+    return pdb.getGroupProject(pid);
+  }
+
+  public int getPgid(String groupName, String projectName) {
+    int gid = gdb.getId(groupName);
+    int pid = pdb.getId(projectName);
+    return pgdb.getId(gid, pid);
+  }
+
+  public List<Integer> getPgids(String groupName) {
+    int gid = gdb.getId(groupName);
+    return getPgids(gid);
+  }
+
+  private List<Integer> getPgids(int gid) {
+    return pgdb.getPgids(gid);
+  }
+
+  public ProjectTypeEnum getProjectType(String projectName) {
+    int typeId = pdb.getProjectType(projectName);
+    return atdb.getTypeNameById(typeId);
+  }
+
+  public void insertProjectCommitRecord(int pgId, int commitNumber, StatusEnum status, Date time,
+      String committer) {
+    pcrdb.insertProjectCommitRecord(pgId, commitNumber, status, time, committer);
+  }
+
+//
+//public List<GroupProject> getProjects(String groupName) {
+//  List<GroupProject> gps = new ArrayList<>();
+//  int gid = gdb.getId(groupName);
+//  List<Integer> pids = pgdb.getPids(gid);
+//
+//  for (int pid : pids) {
+//    pdb.getGroupProject(pid);
+//  }
+//
+//  return null;
+//}
 }

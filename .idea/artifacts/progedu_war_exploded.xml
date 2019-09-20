@@ -1,0 +1,23 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="progedu:war exploded">
+    <output-path>$PROJECT_DIR$/target/ProgEdu</output-path>
+    <properties id="maven-jee-properties">
+      <options>
+        <exploded>true</exploded>
+        <module>progedu</module>
+        <packaging>war</packaging>
+      </options>
+    </properties>
+    <root id="root">
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="progedu" />
+        </element>
+      </element>
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/target/ProgEdu/META-INF/MANIFEST.MF" />
+      </element>
+      <element id="javaee-facet-resources" facet="progedu/web/Web" />
+    </root>
+  </artifact>
+</component>

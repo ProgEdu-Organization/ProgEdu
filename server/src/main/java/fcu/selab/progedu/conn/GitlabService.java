@@ -439,11 +439,9 @@ public class GitlabService {
    * @param group group
    * @throws IOException IOException
    */
-  public GitlabProject createGroupProject(String groupName, String projectName, String leader)
-      throws IOException {
-    int leaderGitlabId = udb.getGitLabId(leader);
+  public GitlabProject createGroupProject(String groupName, String projectName) throws IOException {
     int GroupGitlabId = gdb.getGitlabId(groupName);
-    GitlabProject project = createPrivateProject(leaderGitlabId, projectName, null);
+    GitlabProject project = createRootProject(projectName);
     transferProjectToGroupProject(GroupGitlabId, project.getId());
     return project;
   }
@@ -473,15 +471,14 @@ public class GitlabService {
    * @return true or false
    * @throws IOException on gitlab api call error
    */
-  public boolean createRootProject(String proName) {
-    boolean isSuccess = false;
+  public GitlabProject createRootProject(String proName) {
+    GitlabProject project = null;
     try {
-      gitlab.createUserProject(1, proName);
-      isSuccess = true;
+      project = gitlab.createUserProject(1, proName);
     } catch (IOException e) {
       e.printStackTrace();
     }
-    return isSuccess;
+    return project;
   }
 
   /**
@@ -666,7 +663,7 @@ public class GitlabService {
     HttpClient client = new DefaultHttpClient();
     String url = "";
     try {
-      url = hostUrl + "/api/v3/groups/" + groupId + "/projects/" + projectId + "?private_token="
+      url = hostUrl + "/api/v4/groups/" + groupId + "/projects/" + projectId + "?private_token="
           + apiToken;
       HttpPost post = new HttpPost(url);
 

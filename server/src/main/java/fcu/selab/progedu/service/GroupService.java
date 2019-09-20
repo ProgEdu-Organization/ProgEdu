@@ -39,13 +39,13 @@ public class GroupService {
   @Produces(MediaType.APPLICATION_JSON)
   public Response createGroup(@FormParam("name") String name, @FormParam("leader") String leader,
       @FormParam("member") List<String> members) {
-    final Response response = null;
     GitlabGroup gitlabGroup = gitlabService.createGroup(name);
     int groupGitLabId = gitlabGroup.getId();
     members.remove(leader);
     int leaderGitlabId = udb.getGitLabId(leader);
     gitlabService.addMember(groupGitLabId, leaderGitlabId, GitlabAccessLevel.Owner);
     gdb.addGroup(groupGitLabId, name, leader);
+    gdb.addMember(leader, name);
 
     for (String member : members) {
       int gitlabId = udb.getGitLabId(member);
@@ -53,7 +53,7 @@ public class GroupService {
       gdb.addMember(member, name);
     }
 
-    return response;
+    return Response.ok().build();
   }
 
 }

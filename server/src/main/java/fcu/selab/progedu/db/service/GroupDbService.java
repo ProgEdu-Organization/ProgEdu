@@ -66,4 +66,10 @@ public class GroupDbService {
     return gdb.getGroups();
   }
 
+  public String getLeader(String groupName) {
+    int leaderId = gdb.getLeader(groupName);
+    return udb.getUsername(leaderId);
+
+  }
+
 }

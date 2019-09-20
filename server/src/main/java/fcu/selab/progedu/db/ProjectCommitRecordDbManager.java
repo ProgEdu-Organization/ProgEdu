@@ -5,11 +5,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
+import fcu.selab.progedu.data.CommitRecord;
 import fcu.selab.progedu.status.StatusEnum;
 
 public class ProjectCommitRecordDbManager {
@@ -113,10 +113,9 @@ public class ProjectCommitRecordDbManager {
    * @param pgId pgId
    * @return project commit record details
    */
-  public JSONObject getProjectCommitRecord(int pgId) {
+  public List<CommitRecord> getProjectCommitRecords(int pgId) {
     String sql = "SELECT * FROM Project_Commit_Record WHERE pgId=?";
-    JSONObject ob = new JSONObject();
-    JSONArray array = new JSONArray();
+    List<CommitRecord> crs = new ArrayList<>();
 
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
@@ -127,20 +126,20 @@ public class ProjectCommitRecordDbManager {
           StatusEnum statusEnum = csDb.getStatusNameById(statusId);
           int commitNumber = rs.getInt("commitNumber");
           Date commitTime = rs.getTimestamp("time");
-          String commitStudent = rs.getString("commitStudent");
-          JSONObject eachHw = new JSONObject();
-          eachHw.put("status", statusEnum.getType());
-          eachHw.put("commitNumber", commitNumber);
-          eachHw.put("commitTime", commitTime);
-          eachHw.put("commitStudent", commitStudent);
-          array.put(eachHw);
+          String committer = rs.getString("commitStudent");
+
+          CommitRecord cr = new CommitRecord();
+          cr.setCommitter(committer);
+          cr.setNumber(commitNumber);
+          cr.setStatus(statusEnum);
+          cr.setTime(commitTime);
+          crs.add(cr);
         }
       }
-      ob.put("commits", array);
     } catch (SQLException e) {
       e.printStackTrace();
     }
-    return ob;
+    return crs;
   }
 
   /**
@@ -150,34 +149,33 @@ public class ProjectCommitRecordDbManager {
    * @param pgId pgId
    * @return last project commit record details
    */
-  public JSONObject getLastProjectCommitRecord(int pgId) {
+  public CommitRecord getLastProjectCommitRecord(int pgId) {
     String sql = "SELECT * from Project_Commit_Record a where (a.commitNumber = "
         + "(SELECT max(commitNumber) FROM Project_Commit_Record WHERE pgId = ?));";
-    JSONObject ob = new JSONObject();
-    JSONArray array = new JSONArray();
+    CommitRecord cr = new CommitRecord();
 
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
       preStmt.setInt(1, pgId);
       try (ResultSet rs = preStmt.executeQuery()) {
+        if (rs.next()) {
+          int statusId = rs.getInt("status");
+          StatusEnum statusEnum = csDb.getStatusNameById(statusId);
+          int commitNumber = rs.getInt("commitNumber");
+          Date commitTime = rs.getTimestamp("time");
+          String committer = rs.getString("commitStudent");
 
-        int statusId = rs.getInt("status");
-        StatusEnum statusEnum = csDb.getStatusNameById(statusId);
-        int commitNumber = rs.getInt("commitNumber");
-        Date commitTime = rs.getTimestamp("time");
-        String commitStudent = rs.getString("commitStudent");
-        JSONObject eachHw = new JSONObject();
-        eachHw.put("status", statusEnum.getType());
-        eachHw.put("commitNumber", commitNumber);
-        eachHw.put("commitTime", commitTime);
-        eachHw.put("commitStudent", commitStudent);
-        array.put(eachHw);
+          cr.setStatus(statusEnum);
+          cr.setCommitter(committer);
+          cr.setNumber(commitNumber);
+          cr.setTime(commitTime);
+        }
+
       }
-      ob.put("commits", array);
     } catch (SQLException e) {
       e.printStackTrace();
     }
-    return ob;
+    return cr;
   }
 
   /**

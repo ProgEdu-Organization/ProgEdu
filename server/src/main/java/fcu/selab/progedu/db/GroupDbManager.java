@@ -33,7 +33,7 @@ public class GroupDbManager {
    * @param leaderId  leaderId
    */
   public void addGroup(int gitlabId, String groupName, int leaderId) {
-    String sql = "INSERT INTO Group(gitLabId, name, leaderId) " + "VALUES(?, ?, ?)";
+    String sql = "INSERT INTO ProgEdu.Group(gitLabId, name, leader) " + "VALUES(?, ?, ?)";
 
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
@@ -53,7 +53,7 @@ public class GroupDbManager {
    */
   public int getId(String name) {
     int id = -1;
-    String statement = "SELECT id FROM Group WHERE name = ?";
+    String statement = "SELECT id FROM ProgEdu.Group WHERE name = ?";
 
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(statement)) {
@@ -76,7 +76,7 @@ public class GroupDbManager {
    */
   public int getGitlabId(String name) {
     int id = -1;
-    String statement = "SELECT gitLabId FROM Group WHERE name = ?";
+    String statement = "SELECT gitLabId FROM ProgEdu.Group WHERE name = ?";
 
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(statement)) {
@@ -93,13 +93,36 @@ public class GroupDbManager {
   }
 
   /**
+   * get gitlab id
+   * 
+   * @param name name
+   */
+  public int getLeader(String name) {
+    int id = -1;
+    String statement = "SELECT leader FROM ProgEdu.Group WHERE name = ?";
+
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(statement)) {
+      preStmt.setString(1, name);
+      try (ResultSet rs = preStmt.executeQuery()) {
+        if (rs.next()) {
+          id = rs.getInt("leader");
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return id;
+  }
+
+  /**
    * get all groups
    * 
    * @return all group on gitlab
    */
 
   public List<Group> getGroups() {
-    String statement = "SELECT * FROM Group";
+    String statement = "SELECT * FROM ProgEdu.Group";
     List<Group> groups = new ArrayList<>();
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(statement)) {
@@ -123,31 +146,5 @@ public class GroupDbManager {
       e.printStackTrace();
     }
     return groups;
-  }
-
-  /**
-   * add one or more member into a group
-   * 
-   * @param groupName the group name
-   * @param members   the members will be inserted
-   */
-  public boolean addGroupMember(String groupName, List<String> members) {
-    String sql = "INSERT INTO Team(name, sId, isLeader) VALUES(?, ?, ?)";
-    boolean check = false;
-
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
-      for (String sid : members) {
-        int id = udb.getUser(sid).getId();
-        preStmt.setString(1, groupName);
-        preStmt.setInt(2, id);
-        preStmt.setInt(3, 0);
-        preStmt.executeUpdate();
-      }
-      check = true;
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
-    return check;
   }
 }
