@@ -75,7 +75,7 @@ public class ProjectGroupDbManager {
     String sql = "SELECT id FROM Project_Group WHERE gId=?";
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
-      preStmt.setInt(2, gid);
+      preStmt.setInt(1, gid);
       try (ResultSet rs = preStmt.executeQuery()) {
         while (rs.next()) {
           int pgid = rs.getInt("id");

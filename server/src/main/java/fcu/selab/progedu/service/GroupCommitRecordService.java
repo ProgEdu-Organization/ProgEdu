@@ -58,7 +58,11 @@ public class GroupCommitRecordService {
     List<Group> groups = gdb.getGroups();
     for (Group group : groups) {
       Response response = getResult(group.getGroupName());
-      array.put(response.getEntity());
+      JSONArray result = new JSONArray((String) response.getEntity());
+      JSONObject ob = new JSONObject();
+      ob.put("group", group.getGroupName());
+      ob.put("commitRecord", result);
+      array.put(ob);
     }
     return Response.ok().entity(array.toString()).build();
   }
