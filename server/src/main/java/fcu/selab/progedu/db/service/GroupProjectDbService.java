@@ -7,6 +7,7 @@ import java.util.List;
 import fcu.selab.progedu.data.CommitRecord;
 import fcu.selab.progedu.data.GroupProject;
 import fcu.selab.progedu.db.AssignmentTypeDbManager;
+import fcu.selab.progedu.db.CommitStatusDbManager;
 import fcu.selab.progedu.db.GroupDbManager;
 import fcu.selab.progedu.db.ProjectCommitRecordDbManager;
 import fcu.selab.progedu.db.ProjectDbManager;
@@ -27,6 +28,7 @@ public class GroupProjectDbService {
   private GroupDbManager gdb = GroupDbManager.getInstance();
 //  private GroupUserDbManager gudb = GroupUserDbManager.getInstance();
   private AssignmentTypeDbManager atdb = AssignmentTypeDbManager.getInstance();
+  private CommitStatusDbManager ctdb = CommitStatusDbManager.getInstance();
 
   /**
    * import project info to database
@@ -69,6 +71,17 @@ public class GroupProjectDbService {
    */
   public CommitRecord getCommitResult(int pgid) {
     return pcrdb.getLastProjectCommitRecord(pgid);
+  }
+
+  /**
+   * 
+   * @param pgid Project_Group id
+   * @param num  commit number
+   * @return commitRecord
+   */
+  public StatusEnum getCommitRecordStatus(int pgid, int num) {
+    int statusId = pcrdb.getProjectCommitRecordStatus(pgid, num);
+    return ctdb.getStatusNameById(statusId);
   }
 
   /**

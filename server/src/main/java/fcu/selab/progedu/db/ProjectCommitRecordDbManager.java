@@ -84,18 +84,18 @@ public class ProjectCommitRecordDbManager {
    * @param commitNumber num
    * @return status
    */
-  public String getProjectCommitRecordStatus(int pgId, int commitNumber) {
-    String status = "";
-    String query = "SELECT status FROM Project_Commit_Record where pgId = ? and limit ?,1";
+  public int getProjectCommitRecordStatus(int pgId, int commitNumber) {
+    int status = 0;
+    String query = "SELECT status FROM Project_Commit_Record where pgId = ? and commitNumber = ?";
 
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(query)) {
       preStmt.setInt(1, pgId);
-      preStmt.setInt(2, commitNumber - 1);
+      preStmt.setInt(2, commitNumber);
 
       try (ResultSet rs = preStmt.executeQuery();) {
         if (rs.next()) {
-          status = rs.getString("status");
+          status = rs.getInt("status");
         }
       }
     } catch (SQLException e) {

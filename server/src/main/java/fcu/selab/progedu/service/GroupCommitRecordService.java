@@ -187,6 +187,34 @@ public class GroupCommitRecordService {
 
     return Response.ok().entity(ob.toString()).build();
   }
+
+  /**
+   * update user assignment commit record to DB.
+   * 
+   * @param groupName      username
+   * @param assignmentName assignment name
+   * @throws ParseException (to do)
+   */
+  @GET
+  @Path("feedback")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response getFeedback(@QueryParam("groupName") String groupName,
+      @QueryParam("projectName") String projectName, @QueryParam("number") int number) {
+    JenkinsService js = JenkinsService.getInstance();
+    JSONObject ob = new JSONObject();
+    ProjectTypeEnum projectTypeEnum = gpdb.getProjectType(projectName);
+    GroupProjectType projectType = GroupProjectFactory
+        .getGroupProjectType(projectTypeEnum.getTypeName());
+    String jobName = js.getJobName(groupName, projectName);
+    String console = js.getConsole(jobName, number);
+    int pgid = gpdb.getPgid(groupName, projectName);
+
+    StatusEnum statusType = gpdb.getCommitRecordStatus(pgid, number);
+    String message = projectType.getStatus(statusType.getType()).extractFailureMsg(console);
+    ob.put("message", message);
+
+    return Response.ok().entity(ob.toString()).build();
+  }
 //
 //  /**
 //   * (to do)

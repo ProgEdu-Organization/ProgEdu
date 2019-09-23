@@ -8,7 +8,8 @@ public class GroupCommitRecordTest {
   public static void main(String[] args) {
 //    update();
 //    getResult();
-    getAllGroupCommitRecord();
+//    getAllGroupCommitRecord();
+    getFeedback();
   }
 
   private static void update() {
@@ -22,6 +23,10 @@ public class GroupCommitRecordTest {
 
   private static void getAllGroupCommitRecord() {
     System.out.println(GCR.getAllGroupCommitRecord().getEntity());
+  }
+
+  private static void getFeedback() {
+    System.out.println(GCR.getFeedback(GROUP_NAME, PROJECT_NAME, 7).getEntity());
   }
 
 }
