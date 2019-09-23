@@ -51,7 +51,7 @@ public class WebGroupProject extends GroupProjectType {
           + "/webapi";
       String projectUrl = gitlabConfig.getGitlabHostUrl() + "/" + username + "/" + projectName
           + ".git";
-      String updateDbUrl = progEduApiUrl + "/commits/update";
+      String updateDbUrl = progEduApiUrl + "group/commits/update";
       JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
       String seleniumUrl = jenkinsData.getSeleniumHostUrl() + "/wd/hub";
 
