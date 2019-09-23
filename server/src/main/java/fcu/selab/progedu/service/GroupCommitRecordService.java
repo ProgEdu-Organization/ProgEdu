@@ -191,8 +191,9 @@ public class GroupCommitRecordService {
   /**
    * update user assignment commit record to DB.
    * 
-   * @param groupName      username
-   * @param assignmentName assignment name
+   * @param groupName   username
+   * @param projectName assignment name
+   * @param number      commit number
    * @throws ParseException (to do)
    */
   @GET

@@ -12,7 +12,6 @@ import fcu.selab.progedu.conn.GitlabService;
 import fcu.selab.progedu.conn.JenkinsService;
 import fcu.selab.progedu.conn.TomcatService;
 import fcu.selab.progedu.data.GroupProject;
-import fcu.selab.progedu.db.service.GroupDbService;
 import fcu.selab.progedu.db.service.GroupProjectDbService;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.project.GroupProjectFactory;
@@ -66,14 +65,12 @@ public class GroupProjectService {
    * @param projectType projectType
    */
   public void createGroupProject(String groupName, String projectName, String projectType) {
-    final GroupDbService gdb = GroupDbService.getInstance();
     String readMe = "Initialization";
 //    final GitlabService gitlabService = GitlabService.getInstance();
     final GroupProjectType groupProject = GroupProjectFactory.getGroupProjectType(projectType);
     final ProjectTypeEnum projectTypeEnum = ProjectTypeEnum.getProjectTypeEnum(projectType);
     // 1. Create root project and get project id and url
     GitlabProject project = null;
-//    String leader = gdb.getLeader(groupName);
     try {
       gitlabService.createGroupProject(groupName, projectName);
     } catch (IOException e) {
@@ -85,11 +82,15 @@ public class GroupProjectService {
     // 3. if README is not null
     tomcatService.createReadmeFile(readMe, cloneDirectoryPath);
 
+    // 3.5 create template
+    String filePath = tomcatService.storeFileToServer(null, null, groupProject);
+    zipHandler.unzipFile(filePath, cloneDirectoryPath);
+
     // 4. git push
     gitlabService.pushProject(cloneDirectoryPath);
 
     // 5. remove project file in linux
-//    tomcatService.removeFile(uploadDir);
+    tomcatService.removeFile(uploadDir);
 
     // 6. import project infomation to database
     addProject(groupName, projectName, readMe, projectTypeEnum);

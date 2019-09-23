@@ -2,6 +2,8 @@ package fcu.selab.progedu.conn;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -82,14 +84,20 @@ public class TomcatService {
    */
   public String storeFileToServer(InputStream file, FormDataContentDisposition fileDetail,
       ProjectType project) {
-    String target;
-    if (hasTemplate(fileDetail)) {
-      // store to C://User/AppData/Temp/uploads/
-      target = storeFileToUploadsFolder(file, fileDetail.getFileName());
+    String fileName;
+    if (!hasTemplate(fileDetail)) {
+      fileName = project.getSampleTemplate();
+      String filePath = this.getClass().getResource(fileName).getFile();
+      File sample = new File(filePath);
+      try {
+        file = new FileInputStream(sample);
+      } catch (FileNotFoundException e) {
+        e.printStackTrace();
+      }
     } else {
-      target = this.getClass().getResource(project.getSampleTemplate()).getFile();
+      fileName = fileDetail.getFileName();
     }
-    return target;
+    return storeFileToUploadsFolder(file, fileName);
 
   }
 
@@ -101,7 +109,7 @@ public class TomcatService {
    */
   public boolean hasTemplate(FormDataContentDisposition fileDetail) {
     boolean hasTemplate = false;
-    if (fileDetail != null) {
+    if (fileDetail.getFileName() != null) {
       hasTemplate = true;
     }
     return hasTemplate;

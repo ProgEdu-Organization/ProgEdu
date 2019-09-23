@@ -29,16 +29,20 @@ public class GroupService {
   /**
    * create gitlab group
    *
-   * @param name    group name
-   * @param leader  the username of team leader
-   * @param members the members of group
+   * @param name        group name
+   * @param leader      the username of team leader
+   * @param members     the members of group
+   * @param projectType project type
+   * @param projectName project name
+   * @return response
    */
   @POST
   @Path("create")
   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
   @Produces(MediaType.APPLICATION_JSON)
   public Response createGroup(@FormParam("name") String name, @FormParam("leader") String leader,
-      @FormParam("member") List<String> members) {
+      @FormParam("member") List<String> members, @FormParam("projectType") String projectType,
+      @FormParam("projectName") String projectName) {
     GitlabGroup gitlabGroup = gitlabService.createGroup(name);
     int groupGitLabId = gitlabGroup.getId();
     members.remove(leader);
@@ -49,9 +53,13 @@ public class GroupService {
 
     for (String member : members) {
       int gitlabId = udb.getGitLabId(member);
-      gitlabService.addMember(groupGitLabId, gitlabId, GitlabAccessLevel.Developer);
+      gitlabService.addMember(groupGitLabId, gitlabId, GitlabAccessLevel.Master);
       gdb.addMember(member, name);
     }
+
+    // create project
+    GroupProjectService gps = new GroupProjectService();
+    gps.createGroupProject(name, projectName, projectType);
 
     return Response.ok().build();
   }
