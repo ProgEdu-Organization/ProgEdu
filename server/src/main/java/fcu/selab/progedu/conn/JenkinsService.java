@@ -161,12 +161,13 @@ public class JenkinsService {
 
   /**
    * (to do)
-   * @param jobName (to do)
+   * 
+   * @param jobName      (to do)
    * @param jenkinsCrumb (to do)
    */
   public void buildJob(String jobName, String jenkinsCrumb) {
     try {
-      
+
       String url = jenkinsRootUrl + "/job/" + jobName + "/build";
       HttpPost post = new HttpPost(url);
 
@@ -179,7 +180,7 @@ public class JenkinsService {
       UrlEncodedFormEntity ent = null;
       ent = new UrlEncodedFormEntity(params, HTTP.UTF_8);
       post.setEntity(ent);
-      
+
       HttpClient client = new DefaultHttpClient();
 //      HttpResponse response = 
       client.execute(post);
@@ -195,9 +196,10 @@ public class JenkinsService {
 
   /**
    * (to do)
+   * 
    * @param jobName (to do)
-   * @param num (to do)
-   * @return  message (to do)
+   * @param num     (to do)
+   * @return message (to do)
    */
   public String getCommitMessage(String jobName, int num) {
     String console = getCompleteConsole(jobName, num);
@@ -268,8 +270,9 @@ public class JenkinsService {
 
   /**
    * (to do)
+   * 
    * @param jobName (to do)
-   * @param num (to do)
+   * @param num     (to do)
    * @return consoleUrl (to do)
    */
   public String getConsoleUrl(String jobName, int num) {
@@ -296,5 +299,36 @@ public class JenkinsService {
       e.printStackTrace();
     }
     return sb.toString();
+  }
+
+  /**
+   * get committer
+   * 
+   * @param jobName jenkins jobName
+   * @param num     commit number
+   * @return committer
+   */
+  public String getCommitter(String jobName, int num) {
+    String committer = "";
+    if (num == 1) {
+      committer = "Administrator";
+    } else {
+      String console = getConsole(jobName, num);
+
+      String beginStr = "Started by GitLab push by ";
+      String endStr = "\n";
+      int beginIndex = console.lastIndexOf(beginStr) + beginStr.length();
+      int endIndex = console.indexOf(endStr, beginIndex);
+      // extract committer
+      committer = console.substring(beginIndex, endIndex);
+    }
+
+    return committer;
+
+  }
+
+  public String getJobName(String username, String projectName) {
+    return username + "_" + projectName;
+
   }
 }

@@ -62,10 +62,21 @@ public class GroupDbService {
     return gdb.getId(name);
   }
 
+  /**
+   * get all groups
+   * 
+   * @return all groups
+   */
   public List<Group> getGroups() {
     return gdb.getGroups();
   }
 
+  /**
+   * get team leader username
+   * 
+   * @param groupName group name
+   * @return leader username
+   */
   public String getLeader(String groupName) {
     int leaderId = gdb.getLeader(groupName);
     return udb.getUsername(leaderId);

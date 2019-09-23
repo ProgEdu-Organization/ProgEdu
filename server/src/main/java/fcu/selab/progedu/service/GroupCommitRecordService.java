@@ -39,7 +39,7 @@ public class GroupCommitRecordService {
 //  private AssignmentDbManager assignmentDb = AssignmentDbManager.getInstance();
 //  private AssignmentTypeDbManager atDb = AssignmentTypeDbManager.getInstance();
 //  private CommitStatusDbManager csdb = CommitStatusDbManager.getInstance();
-//  private JenkinsService js = JenkinsService.getInstance();
+  private JenkinsService js = JenkinsService.getInstance();
 //  private GitlabService gs = GitlabService.getInstance();
 
   private GroupDbService gdb = GroupDbService.getInstance();
@@ -57,17 +57,19 @@ public class GroupCommitRecordService {
     JSONArray array = new JSONArray();
     List<Group> groups = gdb.getGroups();
     for (Group group : groups) {
-      Response r = getResult(group.getGroupName());
-      array.put(r.getEntity());
+      Response response = getResult(group.getGroupName());
+      array.put(response.getEntity());
     }
     return Response.ok().entity(array.toString()).build();
   }
 
   /**
    * get all commit record of one student.
-   *
+   * 
+   * @param groupName group name
    * @return homework, commit status, commit number
    */
+
   @GET
   @Path("result")
   @Produces(MediaType.APPLICATION_JSON)
@@ -153,7 +155,7 @@ public class GroupCommitRecordService {
       @FormParam("proName") String projectName) {
 
     JSONObject ob = new JSONObject();
-    ProjectTypeEnum type = gpdb.getProjectType(groupName);
+    ProjectTypeEnum type = gpdb.getProjectType(projectName);
 
     GroupProjectType projectType = GroupProjectFactory.getGroupProjectType(type.getTypeName());
     int pgid = gpdb.getPgid(groupName, projectName);
@@ -168,13 +170,16 @@ public class GroupCommitRecordService {
     }
 
     StatusEnum statusEnum = projectType.checkStatusType(commitNumber, groupName, projectName);
-    String committer = "";
+
+    String jobName = js.getJobName(groupName, projectName);
+    String committer = js.getCommitter(jobName, commitNumber);
     gpdb.insertProjectCommitRecord(pgid, commitNumber, statusEnum, date, committer);
 
     ob.put("pgid", pgid);
     ob.put("commitNumber", commitNumber);
     ob.put("time", time);
     ob.put("status", statusEnum.getType());
+    ob.put("committer", committer);
 
     return Response.ok().entity(ob.toString()).build();
   }

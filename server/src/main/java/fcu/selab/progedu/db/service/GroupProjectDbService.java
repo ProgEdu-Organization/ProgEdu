@@ -28,6 +28,26 @@ public class GroupProjectDbService {
 //  private GroupUserDbManager gudb = GroupUserDbManager.getInstance();
   private AssignmentTypeDbManager atdb = AssignmentTypeDbManager.getInstance();
 
+  /**
+   * import project info to database
+   * 
+   * @param project   group project
+   * @param groupName group name
+   */
+  public void addProject(GroupProject project, String groupName) {
+    pdb.addProject(project);
+
+    int pid = pdb.getId(project.getName());
+    int gid = gdb.getId(groupName);
+    pgdb.addProjectGroup(pid, gid);
+  }
+
+  /**
+   * get all project names
+   * 
+   * @param groupName group name
+   * @return all project names
+   */
   public List<String> getProjectNames(String groupName) {
     List<String> projectNames = new ArrayList<>();
     int gid = gdb.getId(groupName);
@@ -41,25 +61,56 @@ public class GroupProjectDbService {
     return projectNames;
   }
 
+  /**
+   * get last commit record
+   * 
+   * @param pgid project_group id
+   * @return last commit record
+   */
   public CommitRecord getCommitResult(int pgid) {
     return pcrdb.getLastProjectCommitRecord(pgid);
   }
 
+  /**
+   * get commit records
+   * 
+   * @param pgid project_group id
+   * @return commit records
+   */
   public List<CommitRecord> getCommitRecords(int pgid) {
     return pcrdb.getProjectCommitRecords(pgid);
   }
 
+  /**
+   * get group project
+   * 
+   * @param pgid project_group id
+   * @return group project
+   */
   public GroupProject getProject(int pgid) {
     int pid = pgdb.getPid(pgid);
     return pdb.getGroupProject(pid);
   }
 
+  /**
+   * get pgid
+   * 
+   * @param groupName   group name
+   * @param projectName project name
+   * @return project_group id
+   */
   public int getPgid(String groupName, String projectName) {
     int gid = gdb.getId(groupName);
     int pid = pdb.getId(projectName);
     return pgdb.getId(gid, pid);
   }
 
+  /**
+   * get pgids
+   * 
+   * @param groupName group name
+   * @return pgids
+   */
   public List<Integer> getPgids(String groupName) {
     int gid = gdb.getId(groupName);
     return getPgids(gid);
@@ -69,11 +120,26 @@ public class GroupProjectDbService {
     return pgdb.getPgids(gid);
   }
 
+  /**
+   * get project type
+   * 
+   * @param projectName project name
+   * @return project type
+   */
   public ProjectTypeEnum getProjectType(String projectName) {
     int typeId = pdb.getProjectType(projectName);
     return atdb.getTypeNameById(typeId);
   }
 
+  /**
+   * insert project commit record
+   * 
+   * @param pgId         project_group id
+   * @param commitNumber commit number
+   * @param status       status
+   * @param time         time
+   * @param committer    committer
+   */
   public void insertProjectCommitRecord(int pgId, int commitNumber, StatusEnum status, Date time,
       String committer) {
     pcrdb.insertProjectCommitRecord(pgId, commitNumber, status, time, committer);

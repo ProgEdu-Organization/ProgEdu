@@ -18,7 +18,6 @@ import org.xml.sax.SAXException;
 import fcu.selab.progedu.config.CourseConfig;
 import fcu.selab.progedu.config.GitlabConfig;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
-import fcu.selab.progedu.status.StatusEnum;
 
 public class MavenGroupProject extends GroupProjectType {
 
@@ -70,12 +69,6 @@ public class MavenGroupProject extends GroupProjectType {
       e.printStackTrace();
     }
 
-  }
-
-  @Override
-  public StatusEnum checkStatusType(int num, String username, String assignmentName) {
-    MavenAssignment mavenAssignment = new MavenAssignment();
-    return mavenAssignment.checkStatusType(num, username, assignmentName);
   }
 
 }

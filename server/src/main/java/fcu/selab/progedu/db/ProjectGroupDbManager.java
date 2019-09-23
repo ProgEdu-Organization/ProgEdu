@@ -27,7 +27,7 @@ public class ProjectGroupDbManager {
    * @param gid Group Id
    */
   public void addProjectGroup(int pid, int gid) {
-    String sql = "INSERT INTO AssignmentUser(pId, gId)  VALUES(?, ?)";
+    String sql = "INSERT INTO Project_Group(pId, gId)  VALUES(?, ?)";
 
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
@@ -65,11 +65,10 @@ public class ProjectGroupDbManager {
   }
 
   /**
-   * get pgId by project Id and group Id
+   * get pgIds by group Id
    * 
-   * @param pid Project Id
    * @param gid Group Id
-   * @return pgId projectGroup Id
+   * @return pgIds projectGroup Id
    */
   public List<Integer> getPgids(int gid) {
     List<Integer> pgids = new ArrayList<>();
@@ -135,6 +134,12 @@ public class ProjectGroupDbManager {
     return lsGids;
   }
 
+  /**
+   * get pid by id
+   * 
+   * @param id id
+   * @return pid
+   */
   public int getPid(int id) {
     int gid = 0;
     String sql = "SELECT pId FROM Project_Group WHERE id = ?";

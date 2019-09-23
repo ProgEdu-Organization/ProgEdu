@@ -436,14 +436,14 @@ public class GitlabService {
   /**
    * transfer project into group
    * 
-   * @param group group
+   * @param groupName   group name
+   * @param projectName project name
    * @throws IOException IOException
    */
-  public GitlabProject createGroupProject(String groupName, String projectName) throws IOException {
-    int GroupGitlabId = gdb.getGitlabId(groupName);
+  public void createGroupProject(String groupName, String projectName) throws IOException {
+    int groupGitlabId = gdb.getGitlabId(groupName);
     GitlabProject project = createRootProject(projectName);
-    transferProjectToGroupProject(GroupGitlabId, project.getId());
-    return project;
+    transferProjectToGroupProject(groupGitlabId, project.getId());
   }
 
   /**
@@ -636,13 +636,17 @@ public class GitlabService {
    */
   public void setGitlabWebhook(GitlabProject project)
       throws IOException, LoadConfigFailureException {
-    String username = project.getOwner().getUsername();
+    String[] namespace = project.getPathWithNamespace().split("/");
+    String username = namespace[0];
+    String projectName = namespace[1];
+
     JenkinsConfig jenkinsConfig = JenkinsConfig.getInstance();
     // for example,
     // http://localhost:80/api/v4/projects/3149/hooks?url=http://localhost:8888/project/webhook
     String gitlabWebhookApi = hostUrl + "/api/v4/projects/" + project.getId() + "/hooks";
+//    project.getPath()
     String jenkinsJobUrl = jenkinsConfig.getJenkinsHostUrl() + "/project/" + username + "_"
-        + project.getName();
+        + projectName;
     HttpPost post = new HttpPost(gitlabWebhookApi);
     post.addHeader("PRIVATE-TOKEN", apiToken);
     // Request parameters

@@ -1,7 +1,5 @@
 package fcu.selab.progedu.project;
 
-import fcu.selab.progedu.status.StatusEnum;
-
 public class WebGroupProject extends GroupProjectType {
 
   @Override
@@ -23,12 +21,6 @@ public class WebGroupProject extends GroupProjectType {
   public void createJenkinsJobConfig(String username, String projectName) {
     // TODO Auto-generated method stub
 
-  }
-
-  @Override
-  public StatusEnum checkStatusType(int num, String username, String assignmentName) {
-    // TODO Auto-generated method stub
-    return null;
   }
 
 }

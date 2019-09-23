@@ -12,8 +12,8 @@ import fcu.selab.progedu.conn.GitlabService;
 import fcu.selab.progedu.conn.JenkinsService;
 import fcu.selab.progedu.conn.TomcatService;
 import fcu.selab.progedu.data.GroupProject;
-import fcu.selab.progedu.db.ProjectDbManager;
 import fcu.selab.progedu.db.service.GroupDbService;
+import fcu.selab.progedu.db.service.GroupProjectDbService;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.project.GroupProjectFactory;
 import fcu.selab.progedu.project.GroupProjectType;
@@ -60,14 +60,10 @@ public class GroupProjectService {
   }
 
   /**
-   * (to do)
    * 
-   * @param group       (to do)
-   * @param deadline    (to do)
-   * @param readMe      (to do)
-   * @param projectType (to do)
-   * @param file        (to do)
-   * @param fileDetail  (to do)
+   * @param groupName   group name
+   * @param projectName project name
+   * @param projectType projectType
    */
   public void createGroupProject(String groupName, String projectName, String projectType) {
     final GroupDbService gdb = GroupDbService.getInstance();
@@ -79,7 +75,7 @@ public class GroupProjectService {
     GitlabProject project = null;
 //    String leader = gdb.getLeader(groupName);
     try {
-      project = gitlabService.createGroupProject(groupName, projectName);
+      gitlabService.createGroupProject(groupName, projectName);
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -112,10 +108,10 @@ public class GroupProjectService {
   /**
    * Add a project to database
    * 
-   * @param name        Project name
-   * @param deadline    Project deadline
-   * @param readMe      Project readme
-   * @param projectType File type
+   * @param groupName   group name
+   * @param projectName project name
+   * @param readMe      readMe
+   * @param projectType projectType
    */
   public void addProject(String groupName, String projectName, String readMe,
       ProjectTypeEnum projectType) {
@@ -125,8 +121,11 @@ public class GroupProjectService {
     groupProject.setDeadline(tomcatService.getCurrentTime());
     groupProject.setDescription(readMe);
     groupProject.setType(projectType);
-    ProjectDbManager projectDb = ProjectDbManager.getInstance();
-    projectDb.addProject(groupProject);
+//    ProjectDbManager projectDb = ProjectDbManager.getInstance();
+//    projectDb.addProject(groupProject);
+
+    GroupProjectDbService gpdb = GroupProjectDbService.getInstance();
+    gpdb.addProject(groupProject, groupName);
   }
 
 }

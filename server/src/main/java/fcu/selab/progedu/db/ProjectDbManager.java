@@ -92,7 +92,7 @@ public class ProjectDbManager {
   /**
    * get project info by project id
    * 
-   * @param name project name
+   * @param id project id
    * @return project
    */
   public GroupProject getGroupProject(int id) {
