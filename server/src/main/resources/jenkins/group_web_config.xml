@@ -107,10 +107,4 @@ npm run eslint</command>
       <disableDeferredWipeout>false</disableDeferredWipeout>
     </hudson.plugins.ws__cleanup.WsCleanup>
   </publishers>
-  <buildWrappers>
-    <jenkins.plugins.nodejs.NodeJSBuildWrapper plugin="nodejs@1.3.3">
-      <nodeJSInstallationName>Global</nodeJSInstallationName>
-      <cacheLocationStrategy class="jenkins.plugins.nodejs.cache.DefaultCacheLocationLocator"/>
-    </jenkins.plugins.nodejs.NodeJSBuildWrapper>
-  </buildWrappers>
 </project>
