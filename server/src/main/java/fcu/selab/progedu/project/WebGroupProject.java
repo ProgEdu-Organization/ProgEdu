@@ -48,10 +48,10 @@ public class WebGroupProject extends GroupProjectType {
 
       CourseConfig courseConfig = CourseConfig.getInstance();
       String progEduApiUrl = courseConfig.getTomcatServerIp() + courseConfig.getBaseuri()
-          + "/webapi";
+          + "/webapi/group";
       String projectUrl = gitlabConfig.getGitlabHostUrl() + "/" + username + "/" + projectName
           + ".git";
-      String updateDbUrl = progEduApiUrl + "group/commits/update";
+      String updateDbUrl = progEduApiUrl + "/commits/update";
       JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
       String seleniumUrl = jenkinsData.getSeleniumHostUrl() + "/wd/hub";
 
