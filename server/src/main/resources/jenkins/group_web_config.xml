@@ -84,7 +84,7 @@ npm run eslint</command>
       <caseSensitive>true</caseSensitive>
     </hudson.tasks.ArtifactArchiver>
     <io.jenkins.plugins.progupdatetodb.UpdateToDbPublisher plugin="progedDB@1.0-SNAPSHOT">
-      <progeduAPIUrl>http://140.134.26.66:38818/webapi/group</progeduAPIUrl>
+      <progeduAPIUrl>http://140.134.26.66:38818/webapi</progeduAPIUrl>
       <jenkinsJobName></jenkinsJobName>
     </io.jenkins.plugins.progupdatetodb.UpdateToDbPublisher>
     <org.jenkinsci.plugins.UpdatingDbPublisher plugin="jenkins-progedu@1.0-SNAPSHOT">
