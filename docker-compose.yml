@@ -4,7 +4,7 @@ services:
     # image: mysql:latest
     # image: mysql:5.7
     # image: fcumselab/progedu-mysql:latest
-    image: hub.ahkui.com/progedu/mysql:latest
+    image: fcumselab/progedu/mysql:latest
     build: ./mysql
     ports:
       - "${DB_PORT}:3306"
@@ -40,8 +40,8 @@ services:
       - ${DATA_PATH_HOST}/gitlab/data:/var/opt/gitlab
 
   server:
-    image: hub.ahkui.com/progedu/server:dev
-    # image: hub.ahkui.com/progedu/server:latest
+    image: fcumselab/progedu/server:dev
+    # image: fcumselab/progedu/server:latest
     # image: fcumselab/progedu-server:latest
     # image: fcumselab/progedu-server:dev
     env_file:
@@ -57,7 +57,7 @@ services:
 
   server-stable:
     # image: fcumselab/progedu-server:latest
-    image: hub.ahkui.com/progedu/server:latest
+    image: fcumselab/progedu/server:latest
     build:
       context: ./server
       args:
@@ -66,7 +66,7 @@ services:
 
   server-dev:
     # image: fcumselab/progedu-server:dev
-    image: hub.ahkui.com/progedu/server:dev
+    image: fcumselab/progedu/server:dev
     build:
       context: ./server
       args:
@@ -75,7 +75,7 @@ services:
 
   jenkins:
     # image: jenkins/jenkins:lts
-    image: hub.ahkui.com/progedu/jenkins:latest
+    image: fcumselab/progedu/jenkins:latest
     build:
       context: ./jenkins
       args:
