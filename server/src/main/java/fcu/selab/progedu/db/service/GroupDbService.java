@@ -92,9 +92,9 @@ public class GroupDbService {
   }
 
   /**
-   * delete Assignment from Database by name
+   * delete Assignment by name
    * 
-   * @param groupName group name
+   * @param name group name
    */
   public void removeGroup(String name) {
     int gid = gdb.getId(name);

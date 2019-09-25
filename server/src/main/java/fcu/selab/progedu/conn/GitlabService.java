@@ -148,6 +148,12 @@ public class GitlabService {
     return projects;
   }
 
+  /**
+   * get gitlab project by id
+   * 
+   * @param id gitlab project id
+   * @return gitlab project
+   */
   public GitlabProject getProject(int id) {
     GitlabProject project = null;
     try {
@@ -696,10 +702,22 @@ public class GitlabService {
     }
   }
 
+  /**
+   * get gitlab project url
+   * 
+   * @param username    username
+   * @param projectName project name
+   * @return gitlab project url
+   */
   public String getProjectUrl(String username, String projectName) {
     return hostUrl + "/" + username + "/" + projectName + ".git";
   }
 
+  /**
+   * remove gitlab group
+   * 
+   * @param id gitlab group id
+   */
   public void removeGroup(int id) {
     try {
       gitlab.deleteGroup(id);

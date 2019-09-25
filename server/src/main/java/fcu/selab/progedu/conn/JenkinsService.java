@@ -54,6 +54,11 @@ public class JenkinsService {
     return instance;
   }
 
+  /**
+   * get crumb
+   * 
+   * @return crumb
+   */
   public String getCrumb() {
     String jenkinsUserName = "";
     String jenkinsPass = "";
@@ -116,7 +121,6 @@ public class JenkinsService {
    * (to do)
    * 
    * @param jobName    (to do)
-   * @param crumb      (to do)
    * @param configPath (to do)
    */
   public void createJob(String jobName, String configPath) {
@@ -148,7 +152,6 @@ public class JenkinsService {
    * (to do)
    * 
    * @param jobName (to do)
-   * @param crumb   (to do)
    */
   public void deleteJob(String jobName) {
     try {
@@ -177,7 +180,6 @@ public class JenkinsService {
    * (to do)
    * 
    * @param jobName (to do)
-   * @param crumb   (to do)
    */
   public void buildJob(String jobName) {
     try {

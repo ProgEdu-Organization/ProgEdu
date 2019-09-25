@@ -220,9 +220,9 @@ public class ProjectDbManager {
   }
 
   /**
-   * Delete project from database
+   * Delete project
    * 
-   * @param name project name
+   * @param id project id
    */
   public void deleteProject(int id) {
     String sql = "DELETE FROM Project WHERE id=?";

@@ -53,6 +53,7 @@ public class GroupScreenshotRecordService {
   @Produces(MediaType.APPLICATION_JSON)
   public Response updateScreenshotPng(@FormParam("username") String username,
       @FormParam("assignmentName") String assignmentName, @FormParam("url") List<String> urls) {
+    return null;
 //    System.out.println("username: " + username + "jobName: " + assignmentName);
 //    JSONObject ob = new JSONObject();
 //    System.out.println("Png file name " + urls);

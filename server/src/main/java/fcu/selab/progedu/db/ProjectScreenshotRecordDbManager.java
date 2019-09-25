@@ -5,12 +5,12 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class ProjectScreenshotRecordDbManager {
-  private static ProjectScreenshotRecordDbManager dbManager = new ProjectScreenshotRecordDbManager();
+  private static ProjectScreenshotRecordDbManager instance = new ProjectScreenshotRecordDbManager();
 
   private IDatabase database = new MySqlDatabase();
 
   public static ProjectScreenshotRecordDbManager getInstance() {
-    return dbManager;
+    return instance;
   }
 
   /**

@@ -63,6 +63,13 @@ public class GroupService {
     return Response.ok().build();
   }
 
+  /**
+   * add group members
+   * 
+   * @param name    group name
+   * @param members members
+   * @return response
+   */
   @POST
   @Path("members/add")
   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
@@ -79,6 +86,13 @@ public class GroupService {
     return Response.ok().build();
   }
 
+  /**
+   * update team leader
+   * 
+   * @param name   group name
+   * @param leader leader username
+   * @return response
+   */
   @POST
   @Path("leader/update")
   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
@@ -92,6 +106,13 @@ public class GroupService {
     return Response.ok().build();
   }
 
+  /**
+   * remove members
+   * 
+   * @param name    group name
+   * @param members members
+   * @return response
+   */
   @POST
   @Path("members/remove")
   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
@@ -108,6 +129,11 @@ public class GroupService {
     return Response.ok().build();
   }
 
+  /**
+   * remove group
+   * 
+   * @param name group name
+   */
   public void removeGroup(String name) {
 
     // remove gitlab

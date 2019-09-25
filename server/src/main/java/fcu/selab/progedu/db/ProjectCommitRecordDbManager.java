@@ -80,9 +80,8 @@ public class ProjectCommitRecordDbManager {
   /**
    * get each project's CommitRecordId
    *
-   * @param pgId         Project_Commit_Record pgId
-   * @param commitNumber commit number
-   * @return id
+   * @param pgId Project_Commit_Record pgId
+   * @return ids
    */
   public List<Integer> getProjectCommitRecordId(int pgId) {
     String query = "SELECT id FROM Project_Commit_Record where pgId = ?";
