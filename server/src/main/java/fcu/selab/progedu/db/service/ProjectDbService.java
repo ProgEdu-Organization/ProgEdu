@@ -15,10 +15,10 @@ import fcu.selab.progedu.db.ProjectGroupDbManager;
 import fcu.selab.progedu.project.ProjectTypeEnum;
 import fcu.selab.progedu.status.StatusEnum;
 
-public class GroupProjectDbService {
-  private static GroupProjectDbService dbService = new GroupProjectDbService();
+public class ProjectDbService {
+  private static ProjectDbService dbService = new ProjectDbService();
 
-  public static GroupProjectDbService getInstance() {
+  public static ProjectDbService getInstance() {
     return dbService;
   }
 
@@ -42,6 +42,10 @@ public class GroupProjectDbService {
     int pid = pdb.getId(project.getName());
     int gid = gdb.getId(groupName);
     pgdb.addProjectGroup(pid, gid);
+  }
+
+  public void removeProject(int id) {
+    pdb.deleteProject(id);
   }
 
   /**
@@ -92,6 +96,16 @@ public class GroupProjectDbService {
    */
   public List<CommitRecord> getCommitRecords(int pgid) {
     return pcrdb.getProjectCommitRecords(pgid);
+  }
+
+  /**
+   * get last commit record
+   * 
+   * @param pgid project_group id
+   * @return last commit record
+   */
+  public List<Integer> getCommitRecordId(int pgid) {
+    return pcrdb.getProjectCommitRecordId(pgid);
   }
 
   /**

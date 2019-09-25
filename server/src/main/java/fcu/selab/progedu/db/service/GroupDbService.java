@@ -5,6 +5,8 @@ import java.util.List;
 import fcu.selab.progedu.data.Group;
 import fcu.selab.progedu.db.GroupDbManager;
 import fcu.selab.progedu.db.GroupUserDbManager;
+import fcu.selab.progedu.db.ProjectCommitRecordDbManager;
+import fcu.selab.progedu.db.ProjectScreenshotRecordDbManager;
 import fcu.selab.progedu.db.UserDbManager;
 
 public class GroupDbService {
@@ -15,6 +17,12 @@ public class GroupDbService {
   }
 
   private GroupDbManager gdb = GroupDbManager.getInstance();
+
+  private ProjectDbService pdb = ProjectDbService.getInstance();
+  private ProjectGroupDbService pgdb = ProjectGroupDbService.getInstance();
+
+  private ProjectCommitRecordDbManager pcrdb = ProjectCommitRecordDbManager.getInstance();
+  private ProjectScreenshotRecordDbManager psrdb = ProjectScreenshotRecordDbManager.getInstance();
   private GroupUserDbManager gudb = GroupUserDbManager.getInstance();
   private UserDbManager udb = UserDbManager.getInstance();
 
@@ -80,6 +88,33 @@ public class GroupDbService {
   public String getLeader(String groupName) {
     int leaderId = gdb.getLeader(groupName);
     return udb.getUsername(leaderId);
+
+  }
+
+  /**
+   * delete Assignment from Database by name
+   * 
+   * @param groupName group name
+   */
+  public void removeGroup(String name) {
+    int gid = gdb.getId(name);
+    List<Integer> pgids = pgdb.getPgids(gid);
+
+    for (int pgid : pgids) {
+      List<Integer> pcrids = pdb.getCommitRecordId(pgid);
+      for (int pcrid : pcrids) { // Project_ScreenShot
+        psrdb.deleteProjectScreenshot(pcrid);
+      }
+      pcrdb.deleteProjectRecord(pgid);// Project_Commit_Record
+    }
+    List<Integer> pids = pgdb.getPids(gid);
+    pgdb.remove(gid);// Project_Group
+
+    for (int pid : pids) {
+      pdb.removeProject(pid);// Project
+    }
+    gudb.remove(gid);// Group_User
+    gdb.remove(gid);// Group
 
   }
 

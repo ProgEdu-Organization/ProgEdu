@@ -51,7 +51,7 @@ public class ProjectCommitRecordDbManager {
   }
 
   /**
-   * get each project's CommitRecordId
+   * get project's CommitRecordId
    *
    * @param pgId         Project_Commit_Record pgId
    * @param commitNumber commit number
@@ -75,6 +75,34 @@ public class ProjectCommitRecordDbManager {
     }
 
     return id;
+  }
+
+  /**
+   * get each project's CommitRecordId
+   *
+   * @param pgId         Project_Commit_Record pgId
+   * @param commitNumber commit number
+   * @return id
+   */
+  public List<Integer> getProjectCommitRecordId(int pgId) {
+    String query = "SELECT id FROM Project_Commit_Record where pgId = ?";
+    List<Integer> ids = new ArrayList<>();
+
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(query)) {
+      preStmt.setInt(1, pgId);
+
+      try (ResultSet rs = preStmt.executeQuery();) {
+        while (rs.next()) {
+          int id = rs.getInt("id");
+          ids.add(id);
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+
+    return ids;
   }
 
   /**

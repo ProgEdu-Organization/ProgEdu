@@ -147,4 +147,21 @@ public class GroupDbManager {
     }
     return groups;
   }
+
+  /**
+   * remove Group by gid
+   * 
+   * @param id group id
+   */
+  public void remove(int id) {
+    String sql = "DELETE FROM ProgEdu.Group WHERE id=?";
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+      preStmt.setInt(1, id);
+      preStmt.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
+
 }

@@ -1,6 +1,5 @@
 package fcu.selab.progedu.project;
 
-import fcu.selab.progedu.config.JenkinsConfig;
 import fcu.selab.progedu.conn.JenkinsService;
 import fcu.selab.progedu.status.Status;
 import fcu.selab.progedu.status.StatusFactory;
@@ -17,19 +16,14 @@ public abstract class ProjectTypeImp implements ProjectType {
   @Override
   public void createJenkinsJob(String username, String projectName) {
     JenkinsService jenkins = JenkinsService.getInstance();
-    JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
-    try {
-      String jenkinsJobConfigPath = this.getClass()
-          .getResource("/jenkins/" + getJenkinsJobConfigSample()).getPath();
-      String jobName = username + "_" + projectName;
-      String jenkinsCrumb = jenkins.getCrumb(jenkinsData.getJenkinsRootUsername(),
-          jenkinsData.getJenkinsRootPassword());
-      createJenkinsJobConfig(username, projectName);
-      jenkins.createJob(jobName, jenkinsCrumb, jenkinsJobConfigPath);
-      jenkins.buildJob(jobName, jenkinsCrumb);
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
+
+    String jenkinsJobConfigPath = this.getClass()
+        .getResource("/jenkins/" + getJenkinsJobConfigSample()).getPath();
+    String jobName = jenkins.getJobName(username, projectName);
+    createJenkinsJobConfig(username, projectName);
+    jenkins.createJob(jobName, jenkinsJobConfigPath);
+    jenkins.buildJob(jobName);
+
   }
 
   @Override

@@ -54,6 +54,18 @@ public class JenkinsService {
     return instance;
   }
 
+  public String getCrumb() {
+    String jenkinsUserName = "";
+    String jenkinsPass = "";
+    try {
+      jenkinsUserName = JenkinsConfig.getInstance().getJenkinsRootUsername();
+      jenkinsPass = JenkinsConfig.getInstance().getJenkinsRootPassword();
+    } catch (LoadConfigFailureException e) {
+      e.printStackTrace();
+    }
+    return getCrumb(jenkinsUserName, jenkinsPass);
+  }
+
   /**
    * (to do)
    * 
@@ -107,8 +119,10 @@ public class JenkinsService {
    * @param crumb      (to do)
    * @param configPath (to do)
    */
-  public void createJob(String jobName, String crumb, String configPath) {
+  public void createJob(String jobName, String configPath) {
+
     try {
+      String crumb = getCrumb();
       String url = jenkinsRootUrl + "/createItem?name=" + jobName;
       HttpPost post = new HttpPost(url);
 
@@ -136,9 +150,9 @@ public class JenkinsService {
    * @param jobName (to do)
    * @param crumb   (to do)
    */
-  public void deleteJob(String jobName, String crumb) {
-
+  public void deleteJob(String jobName) {
     try {
+      String crumb = getCrumb();
       HttpClient client = new DefaultHttpClient();
       String url = jenkinsRootUrl + "/job/" + jobName + "/doDelete";
       HttpPost post = new HttpPost(url);
@@ -162,17 +176,18 @@ public class JenkinsService {
   /**
    * (to do)
    * 
-   * @param jobName      (to do)
-   * @param jenkinsCrumb (to do)
+   * @param jobName (to do)
+   * @param crumb   (to do)
    */
-  public void buildJob(String jobName, String jenkinsCrumb) {
+  public void buildJob(String jobName) {
     try {
+      String crumb = getCrumb();
 
       String url = jenkinsRootUrl + "/job/" + jobName + "/build";
       HttpPost post = new HttpPost(url);
 
       post.addHeader(contentType, "application/xml");
-      post.addHeader(jenkinsCrumb, jenkinsCrumb);
+      post.addHeader(crumb, crumb);
 
       List<NameValuePair> params = new ArrayList<>();
       params.add((NameValuePair) new BasicNameValuePair("token", jenkinsApiToken));

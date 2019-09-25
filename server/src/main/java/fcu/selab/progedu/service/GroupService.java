@@ -14,17 +14,20 @@ import org.gitlab.api.models.GitlabAccessLevel;
 import org.gitlab.api.models.GitlabGroup;
 
 import fcu.selab.progedu.conn.GitlabService;
+import fcu.selab.progedu.conn.JenkinsService;
 import fcu.selab.progedu.db.service.GroupDbService;
+import fcu.selab.progedu.db.service.ProjectDbService;
 import fcu.selab.progedu.db.service.UserDbService;
 
-@Path("group/")
+@Path("groups/")
 public class GroupService {
 
-  GitlabService gitlabService = GitlabService.getInstance();
-  UserService userService = new UserService();
-  GroupDbService gdb = GroupDbService.getInstance();
-  UserDbService udb = UserDbService.getInstance();
-  AssignmentService projectService = new AssignmentService();
+  private GitlabService gitlabService = GitlabService.getInstance();
+  private UserService userService = new UserService();
+  private GroupDbService gdb = GroupDbService.getInstance();
+  private ProjectDbService pdb = ProjectDbService.getInstance();
+  private UserDbService udb = UserDbService.getInstance();
+  private AssignmentService projectService = new AssignmentService();
 
   /**
    * create gitlab group
@@ -51,11 +54,7 @@ public class GroupService {
     gdb.addGroup(groupGitLabId, name, leader);
     gdb.addMember(leader, name);
 
-    for (String member : members) {
-      int gitlabId = udb.getGitLabId(member);
-      gitlabService.addMember(groupGitLabId, gitlabId, GitlabAccessLevel.Master);
-      gdb.addMember(member, name);
-    }
+    addMembers(name, members);
 
     // create project
     GroupProjectService gps = new GroupProjectService();
@@ -63,5 +62,79 @@ public class GroupService {
 
     return Response.ok().build();
   }
+
+  @POST
+  @Path("members/add")
+  @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response addMembers(@FormParam("name") String name,
+      @FormParam("member") List<String> members) {
+    int groupGitLabId = gdb.getGitlabId(name);
+    for (String member : members) {
+      int gitlabId = udb.getGitLabId(member);
+      gitlabService.addMember(groupGitLabId, gitlabId, GitlabAccessLevel.Master);
+      gdb.addMember(member, name);
+    }
+
+    return Response.ok().build();
+  }
+
+  @POST
+  @Path("leader/update")
+  @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response addMembers(@FormParam("name") String name, @FormParam("leader") String leader) {
+    int groupGitLabId = gdb.getGitlabId(name);
+    int gitlabId = udb.getGitLabId(leader);
+    gitlabService.addMember(groupGitLabId, gitlabId, GitlabAccessLevel.Owner);
+    gdb.addMember(leader, name);
+
+    return Response.ok().build();
+  }
+
+  @POST
+  @Path("members/remove")
+  @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response removeMembers(@FormParam("name") String name,
+      @FormParam("member") List<String> members) {
+    int groupGitLabId = gdb.getGitlabId(name);
+    for (String member : members) {
+      int gitlabId = udb.getGitLabId(member);
+//      gitlabService.addMember(groupGitLabId, gitlabId, GitlabAccessLevel.Master);
+//      gdb.addMember(member, name);
+    }
+
+    return Response.ok().build();
+  }
+
+  public void removeGroup(String name) {
+
+    // remove gitlab
+//    gitlabService.deleteProjects(name);
+    int gitlabId = gdb.getGitlabId(name);
+    gitlabService.removeGroup(gitlabId);
+
+    // remove Jenkins
+    JenkinsService js = JenkinsService.getInstance();
+
+    List<String> projectNames = pdb.getProjectNames(name);
+    for (String projectName : projectNames) {
+      String jobName = js.getJobName(name, projectName);
+      js.deleteJob(jobName);
+    }
+
+    // remove db
+    gdb.removeGroup(name);
+
+  }
+//
+//  private void addMembers(String name, int groupGitLabId, List<String> members) {
+//    for (String member : members) {
+//      int gitlabId = udb.getGitLabId(member);
+//      gitlabService.addMember(groupGitLabId, gitlabId, GitlabAccessLevel.Master);
+//      gdb.addMember(member, name);
+//    }
+//  }
 
 }

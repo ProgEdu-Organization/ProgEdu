@@ -82,16 +82,17 @@ npm run eslint</command>
       <fingerprint>false</fingerprint>
       <defaultExcludes>true</defaultExcludes>
       <caseSensitive>true</caseSensitive>
-    </hudson.tasks.ArtifactArchiver>
-    <io.jenkins.plugins.progupdatetodb.UpdateToDbPublisher plugin="progedDB@1.0-SNAPSHOT">
-      <progeduAPIUrl>http://140.134.26.66:38818/webapi</progeduAPIUrl>
-      <jenkinsJobName></jenkinsJobName>
-    </io.jenkins.plugins.progupdatetodb.UpdateToDbPublisher>
+    </hudson.tasks.ArtifactArchiver>   
     <org.jenkinsci.plugins.UpdatingDbPublisher plugin="jenkins-progedu@1.0-SNAPSHOT">
       <progeduDbUrl>http://140.134.26.71:10008/ProgEdu/webapi/commits/update</progeduDbUrl>
       <user>M1234567</user>
       <proName>WEB-HW999</proName>
     </org.jenkinsci.plugins.UpdatingDbPublisher>
+    <io.jenkins.plugins.progupdatetodb.UpdateToDbPublisher plugin="progeduDB@1.0-SNAPSHOT">
+      <progeduAPIUrl>http://140.134.26.66:38818/webapi</progeduAPIUrl>
+      <jenkinsUsername>test01</jenkinsUsername>
+      <jenkinsAssignmentName>web</jenkinsAssignmentName>
+    </io.jenkins.plugins.progupdatetodb.UpdateToDbPublisher>
     <hudson.plugins.ws__cleanup.WsCleanup plugin="ws-cleanup@0.37">
       <patterns class="empty-list"/>
       <deleteDirs>false</deleteDirs>

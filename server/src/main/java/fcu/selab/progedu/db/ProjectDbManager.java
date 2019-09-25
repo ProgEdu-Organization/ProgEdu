@@ -134,7 +134,7 @@ public class ProjectDbManager {
    * @return assignment name
    */
   public String getProjectName(int pid) {
-    String sql = "SELECT name FROM Project WHERE pId = ?";
+    String sql = "SELECT name FROM Project WHERE id = ?";
     String projectName = "";
     try (Connection conn = database.getConnection();
         PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -224,10 +224,11 @@ public class ProjectDbManager {
    * 
    * @param name project name
    */
-  public void deleteProject(String name) {
-    String sql = "DELETE FROM Project WHERE name='" + name + "'";
+  public void deleteProject(int id) {
+    String sql = "DELETE FROM Project WHERE id=?";
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
+      preStmt.setInt(1, id);
       preStmt.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();

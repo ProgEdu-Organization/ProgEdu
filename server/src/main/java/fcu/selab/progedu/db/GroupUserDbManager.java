@@ -110,4 +110,20 @@ public class GroupUserDbManager {
     return lsUids;
   }
 
+  /**
+   * remove Group_User by gid
+   * 
+   * @param gid group id
+   */
+  public void remove(int gid) {
+    String sql = "DELETE FROM Group_User WHERE gId=?";
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+      preStmt.setInt(1, gid);
+      preStmt.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
+
 }

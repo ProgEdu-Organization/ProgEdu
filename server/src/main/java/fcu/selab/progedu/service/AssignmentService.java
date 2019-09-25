@@ -23,7 +23,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
-import javax.ws.rs.core.Response.Status;
 
 import org.gitlab.api.models.GitlabProject;
 import org.gitlab.api.models.GitlabUser;
@@ -306,30 +305,15 @@ public class AssignmentService {
     gitlabService.deleteProjects(name);
 
     // delete Jenkins
-    String jenkinsUserName = "";
-    String jenkinsPass = "";
-    try {
-      jenkinsUserName = JenkinsConfig.getInstance().getJenkinsRootUsername();
-      jenkinsPass = JenkinsConfig.getInstance().getJenkinsRootPassword();
-    } catch (LoadConfigFailureException e) {
-      isSave = false;
-      e.printStackTrace();
-    }
-    String crumb = jenkins.getCrumb(jenkinsUserName, jenkinsPass);
 
     List<User> users = userService.getStudents();
 
     for (User user : users) {
-      String jobName = user.getUsername() + "_" + name;
-      jenkins.deleteJob(jobName, crumb);
+      String jobName = jenkins.getJobName(user.getUsername(), name);
+      jenkins.deleteJob(jobName);
     }
 
-    Response response = Response.ok().build();
-    if (!isSave) {
-      response = Response.serverError().status(Status.INTERNAL_SERVER_ERROR).build();
-    }
-
-    return response;
+    return Response.ok().build();
   }
 
   /**

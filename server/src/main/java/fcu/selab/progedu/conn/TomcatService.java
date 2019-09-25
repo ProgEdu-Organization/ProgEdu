@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.TimeZone;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 
 import fcu.selab.progedu.project.ProjectType;
@@ -87,7 +88,7 @@ public class TomcatService {
     String fileName;
     if (!hasTemplate(fileDetail)) {
       fileName = project.getSampleTemplate();
-      String filePath = this.getClass().getResource(fileName).getFile();
+      String filePath = this.getClass().getResource("/sample/" + fileName).getFile();
       File sample = new File(filePath);
       try {
         file = new FileInputStream(sample);
@@ -109,7 +110,7 @@ public class TomcatService {
    */
   public boolean hasTemplate(FormDataContentDisposition fileDetail) {
     boolean hasTemplate = false;
-    if (fileDetail.getFileName() != null) {
+    if (fileDetail != null && StringUtils.isNotEmpty(fileDetail.getFileName())) {
       hasTemplate = true;
     }
     return hasTemplate;

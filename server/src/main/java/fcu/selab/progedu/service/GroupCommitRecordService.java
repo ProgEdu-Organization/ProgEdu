@@ -25,13 +25,13 @@ import fcu.selab.progedu.data.CommitRecord;
 import fcu.selab.progedu.data.Group;
 import fcu.selab.progedu.data.GroupProject;
 import fcu.selab.progedu.db.service.GroupDbService;
-import fcu.selab.progedu.db.service.GroupProjectDbService;
+import fcu.selab.progedu.db.service.ProjectDbService;
 import fcu.selab.progedu.project.GroupProjectFactory;
 import fcu.selab.progedu.project.GroupProjectType;
 import fcu.selab.progedu.project.ProjectTypeEnum;
 import fcu.selab.progedu.status.StatusEnum;
 
-@Path("group/commits/")
+@Path("groups/commits/")
 public class GroupCommitRecordService {
 //  private CommitRecordDbManager db = CommitRecordDbManager.getInstance();
 //  private AssignmentUserDbManager auDb = AssignmentUserDbManager.getInstance();
@@ -43,7 +43,7 @@ public class GroupCommitRecordService {
 //  private GitlabService gs = GitlabService.getInstance();
 
   private GroupDbService gdb = GroupDbService.getInstance();
-  private GroupProjectDbService gpdb = GroupProjectDbService.getInstance();
+  private ProjectDbService gpdb = ProjectDbService.getInstance();
 
   /**
    * get all commit result.

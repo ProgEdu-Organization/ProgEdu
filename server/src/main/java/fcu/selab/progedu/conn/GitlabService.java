@@ -148,6 +148,17 @@ public class GitlabService {
     return projects;
   }
 
+  public GitlabProject getProject(int id) {
+    GitlabProject project = null;
+    try {
+      project = gitlab.getProject(id);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    return project;
+  }
+
   /**
    * get project all commit information
    * 
@@ -440,10 +451,12 @@ public class GitlabService {
    * @param projectName project name
    * @throws IOException IOException
    */
-  public void createGroupProject(String groupName, String projectName) throws IOException {
+  public int createGroupProject(String groupName, String projectName) throws IOException {
     int groupGitlabId = gdb.getGitlabId(groupName);
     GitlabProject project = createRootProject(projectName);
-    transferProjectToGroupProject(groupGitlabId, project.getId());
+    int projectId = project.getId();
+    transferProjectToGroupProject(groupGitlabId, projectId);
+    return projectId;
   }
 
   /**
@@ -685,6 +698,15 @@ public class GitlabService {
 
   public String getProjectUrl(String username, String projectName) {
     return hostUrl + "/" + username + "/" + projectName + ".git";
+  }
+
+  public void removeGroup(int id) {
+    try {
+      gitlab.deleteGroup(id);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
   }
 
 }

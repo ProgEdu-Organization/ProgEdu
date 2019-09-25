@@ -12,7 +12,7 @@ import fcu.selab.progedu.conn.GitlabService;
 import fcu.selab.progedu.conn.JenkinsService;
 import fcu.selab.progedu.conn.TomcatService;
 import fcu.selab.progedu.data.GroupProject;
-import fcu.selab.progedu.db.service.GroupProjectDbService;
+import fcu.selab.progedu.db.service.ProjectDbService;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.project.GroupProjectFactory;
 import fcu.selab.progedu.project.GroupProjectType;
@@ -70,9 +70,9 @@ public class GroupProjectService {
     final GroupProjectType groupProject = GroupProjectFactory.getGroupProjectType(projectType);
     final ProjectTypeEnum projectTypeEnum = ProjectTypeEnum.getProjectTypeEnum(projectType);
     // 1. Create root project and get project id and url
-    GitlabProject project = null;
+    int projectId = 0;
     try {
-      gitlabService.createGroupProject(groupName, projectName);
+      projectId = gitlabService.createGroupProject(groupName, projectName);
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -97,6 +97,7 @@ public class GroupProjectService {
 
     // 7. set Gitlab webhook
     try {
+      GitlabProject project = gitlabService.getProject(projectId);
       gitlabService.setGitlabWebhook(project);
     } catch (IOException | LoadConfigFailureException e) {
       e.printStackTrace();
@@ -125,7 +126,7 @@ public class GroupProjectService {
 //    ProjectDbManager projectDb = ProjectDbManager.getInstance();
 //    projectDb.addProject(groupProject);
 
-    GroupProjectDbService gpdb = GroupProjectDbService.getInstance();
+    ProjectDbService gpdb = ProjectDbService.getInstance();
     gpdb.addProject(groupProject, groupName);
   }
 
