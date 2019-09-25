@@ -80,17 +80,17 @@ public class GroupScreenshotRecordService {
   /**
    * update stu project commit record.
    *
-   * @param assignmentName assignment name
+   * @param projectName assignment name
    * @return urls screenshot urls
    * @throws SQLException SQLException
    */
   @GET
   @Path("getScreenshotURL")
   @Produces(MediaType.APPLICATION_JSON)
-  public Response updateScreenshotPng(@QueryParam("username") String username,
-      @QueryParam("assignmentName") String assignmentName, @QueryParam("commitNumber") int number) {
+  public Response getScreenshotPng(@QueryParam("username") String groupName,
+      @QueryParam("assignmentName") String projectName, @QueryParam("commitNumber") int number) {
     JSONObject ob = new JSONObject();
-    int pgid = pgdb.getId(username, assignmentName);
+    int pgid = pgdb.getId(groupName, projectName);
     System.out.println(pgid);
     int pcrid = pdb.getCommitRecordId(pgid, number);
     System.out.println(pcrid);

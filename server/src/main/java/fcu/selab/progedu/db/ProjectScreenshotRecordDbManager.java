@@ -57,7 +57,7 @@ public class ProjectScreenshotRecordDbManager {
    * @param pcrid commitRecord id
    */
   public List<String> getScreenshotUrl(int pcrid) {
-    String sql = "SELECT pngUrl FROM Screenshot_Record WHERE pcrid = ?";
+    String sql = "SELECT pngUrl FROM Project_Screenshot_Record WHERE pcrid = ?";
 
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {

@@ -63,7 +63,7 @@
         <timeoutMinutes>15</timeoutMinutes>
       </strategy>
       <buildStep class="hudson.tasks.Shell">
-        <command>npm install --save selenium-webdriver
+        <command>npm install
 npm run test
 npm run htmlhint
 npm run stylelint
