@@ -99,13 +99,24 @@ public class ProjectDbService {
   }
 
   /**
-   * get last commit record
+   * get all commit record id
    * 
    * @param pgid project_group id
-   * @return last commit record
+   * @return all commit record id
    */
   public List<Integer> getCommitRecordId(int pgid) {
     return pcrdb.getProjectCommitRecordId(pgid);
+  }
+
+  /**
+   * get commit record id
+   * 
+   * @param pgid project_group id
+   * @param num  commit number
+   * @return commit record id
+   */
+  public int getCommitRecordId(int pgid, int num) {
+    return pcrdb.getProjectCommitRecordId(pgid, num);
   }
 
   /**

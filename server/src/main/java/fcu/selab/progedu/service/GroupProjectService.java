@@ -82,20 +82,22 @@ public class GroupProjectService {
     // 3. if README is not null
     tomcatService.createReadmeFile(readMe, cloneDirectoryPath);
 
-    // 3.5 create template
+    // 4 create template
     String filePath = tomcatService.storeFileToServer(null, null, groupProject);
     zipHandler.unzipFile(filePath, cloneDirectoryPath);
 
-    // 4. git push
+    // 5. Add .gitkeep if folder is empty.
+    tomcatService.findEmptyFolder(cloneDirectoryPath);
+    // 6. git push
     gitlabService.pushProject(cloneDirectoryPath);
 
-    // 5. remove project file in linux
+    // 7. remove project file in linux
     tomcatService.removeFile(uploadDir);
 
-    // 6. import project infomation to database
+    // 8. import project infomation to database
     addProject(groupName, projectName, readMe, projectTypeEnum);
 
-    // 7. set Gitlab webhook
+    // 9. set Gitlab webhook
     try {
       GitlabProject project = gitlabService.getProject(projectId);
       gitlabService.setGitlabWebhook(project);
@@ -103,7 +105,7 @@ public class GroupProjectService {
       e.printStackTrace();
     }
 
-    // 8. Create each Jenkins Jobs
+    // 10. Create each Jenkins Jobs
     groupProject.createJenkinsJob(groupName, projectName);
   }
 

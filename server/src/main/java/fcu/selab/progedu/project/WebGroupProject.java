@@ -18,9 +18,7 @@ import org.xml.sax.SAXException;
 import fcu.selab.progedu.config.CourseConfig;
 import fcu.selab.progedu.config.GitlabConfig;
 import fcu.selab.progedu.config.JenkinsConfig;
-import fcu.selab.progedu.db.AssignmentDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
-import fcu.selab.progedu.status.StatusEnum;
 
 public class WebGroupProject extends GroupProjectType {
 
@@ -48,7 +46,7 @@ public class WebGroupProject extends GroupProjectType {
 
       CourseConfig courseConfig = CourseConfig.getInstance();
       String progEduApiUrl = courseConfig.getTomcatServerIp() + courseConfig.getBaseuri()
-          + "/webapi/group";
+          + "/webapi/groups";
       String projectUrl = gitlabConfig.getGitlabHostUrl() + "/" + username + "/" + projectName
           + ".git";
       String updateDbUrl = progEduApiUrl + "/commits/update";

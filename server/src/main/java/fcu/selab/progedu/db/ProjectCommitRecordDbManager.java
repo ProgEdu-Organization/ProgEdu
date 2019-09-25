@@ -191,7 +191,8 @@ public class ProjectCommitRecordDbManager {
           int commitNumber = rs.getInt("commitNumber");
           Date commitTime = rs.getTimestamp("time");
           String committer = rs.getString("commitStudent");
-
+          int id = rs.getInt("id");
+          cr.setId(id);
           cr.setStatus(statusEnum);
           cr.setCommitter(committer);
           cr.setNumber(commitNumber);

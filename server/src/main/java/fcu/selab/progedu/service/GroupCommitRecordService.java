@@ -26,6 +26,7 @@ import fcu.selab.progedu.data.Group;
 import fcu.selab.progedu.data.GroupProject;
 import fcu.selab.progedu.db.service.GroupDbService;
 import fcu.selab.progedu.db.service.ProjectDbService;
+import fcu.selab.progedu.db.service.ProjectGroupDbService;
 import fcu.selab.progedu.project.GroupProjectFactory;
 import fcu.selab.progedu.project.GroupProjectType;
 import fcu.selab.progedu.project.ProjectTypeEnum;
@@ -44,6 +45,7 @@ public class GroupCommitRecordService {
 
   private GroupDbService gdb = GroupDbService.getInstance();
   private ProjectDbService gpdb = ProjectDbService.getInstance();
+  private ProjectGroupDbService pgdb = ProjectGroupDbService.getInstance();
 
   /**
    * get all commit result.
@@ -162,7 +164,7 @@ public class GroupCommitRecordService {
     ProjectTypeEnum type = gpdb.getProjectType(projectName);
 
     GroupProjectType projectType = GroupProjectFactory.getGroupProjectType(type.getTypeName());
-    int pgid = gpdb.getPgid(groupName, projectName);
+    int pgid = pgdb.getId(groupName, projectName);
     int commitNumber = gpdb.getCommitResult(pgid).getNumber() + 1;
 
     Date date = new Date();
@@ -208,7 +210,7 @@ public class GroupCommitRecordService {
         .getGroupProjectType(projectTypeEnum.getTypeName());
     String jobName = js.getJobName(groupName, projectName);
     String console = js.getConsole(jobName, number);
-    int pgid = gpdb.getPgid(groupName, projectName);
+    int pgid = pgdb.getId(groupName, projectName);
 
     StatusEnum statusType = gpdb.getCommitRecordStatus(pgid, number);
     String message = projectType.getStatus(statusType.getType()).extractFailureMsg(console);

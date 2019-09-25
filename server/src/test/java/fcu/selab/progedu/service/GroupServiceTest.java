@@ -7,7 +7,7 @@ import org.junit.Test;
 
 public class GroupServiceTest {
   private GroupService gs = new GroupService();
-  private static final String GROUP_NAME = "group1";
+  private static final String GROUP_NAME = "group4";
 
   @Test
   public void createGroup() {
@@ -19,7 +19,7 @@ public class GroupServiceTest {
     String m3 = "test06";
 
     String projectType = "web";
-    String projectName = "project1";
+    String projectName = "project4";
     members.add(m1);
     members.add(m2);
     members.add(m3);

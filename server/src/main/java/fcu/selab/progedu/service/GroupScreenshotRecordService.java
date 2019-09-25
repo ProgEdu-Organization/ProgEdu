@@ -1,7 +1,6 @@
 package fcu.selab.progedu.service;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -19,21 +18,20 @@ import org.json.JSONObject;
 
 import fcu.selab.progedu.config.JenkinsConfig;
 import fcu.selab.progedu.conn.JenkinsService;
-import fcu.selab.progedu.db.AssignmentDbManager;
-import fcu.selab.progedu.db.AssignmentUserDbManager;
-import fcu.selab.progedu.db.CommitRecordDbManager;
-import fcu.selab.progedu.db.ScreenshotRecordDbManager;
-import fcu.selab.progedu.db.UserDbManager;
+import fcu.selab.progedu.data.CommitRecord;
+import fcu.selab.progedu.db.ProjectScreenshotRecordDbManager;
+import fcu.selab.progedu.db.service.GroupDbService;
+import fcu.selab.progedu.db.service.ProjectDbService;
+import fcu.selab.progedu.db.service.ProjectGroupDbService;
 
 @Path("groups/commits/screenshot/")
 public class GroupScreenshotRecordService {
   JenkinsConfig jenkinsData;
   JenkinsService jenkins;
-  CommitRecordDbManager commitRecordDb = CommitRecordDbManager.getInstance();
-  ScreenshotRecordDbManager db = ScreenshotRecordDbManager.getInstance();
-  UserDbManager userDb = UserDbManager.getInstance();
-  AssignmentUserDbManager auDb = AssignmentUserDbManager.getInstance();
-  AssignmentDbManager assignmentDb = AssignmentDbManager.getInstance();
+  ProjectScreenshotRecordDbManager db = ProjectScreenshotRecordDbManager.getInstance();
+  GroupDbService gdb = GroupDbService.getInstance();
+  ProjectGroupDbService pgdb = ProjectGroupDbService.getInstance();
+  ProjectDbService pdb = ProjectDbService.getInstance();
 
   public GroupScreenshotRecordService() {
     jenkinsData = JenkinsConfig.getInstance();
@@ -43,41 +41,40 @@ public class GroupScreenshotRecordService {
   /**
    * update stu project commit record.
    * 
-   * @param assignmentName assignment name
-   * @param urls           screenshot png file name
+   * @param projectName assignment name
+   * @param urls        screenshot png file name
    * @throws SQLException SQLException
    */
   @POST
   @Path("updateURL")
   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
   @Produces(MediaType.APPLICATION_JSON)
-  public Response updateScreenshotPng(@FormParam("username") String username,
-      @FormParam("assignmentName") String assignmentName, @FormParam("url") List<String> urls) {
-    return null;
-//    System.out.println("username: " + username + "jobName: " + assignmentName);
-//    JSONObject ob = new JSONObject();
-//    System.out.println("Png file name " + urls);
-//    int auid = auDb.getAuid(assignmentDb.getAssignmentIdByName(assignmentName),
-//        userDb.getUserIdByUsername(username));
-//    int lastCommitNum = commitRecordDb.getCommitCount(auid);
-//    int crId = commitRecordDb.getCommitRecordId(auid, lastCommitNum);
-//
-//    try {
-//      for (String url : urls) {
-//        String screenShotUrl = "/job/" + username + "_" + assignmentName + "/" + lastCommitNum
-//            + "/artifact/target/screenshot/" + url + ".png";
-//        db.addScreenshotRecord(crId, screenShotUrl);
-//      }
-//      ob.put("username", username);
-//      ob.put("proName", assignmentName);
-//      ob.put("commitCount", lastCommitNum);
-//      ob.put("url", urls);
-//      return Response.ok().entity(ob.toString()).build();
-//    } catch (Exception e) {
-//      System.out.print("update URL to DB error: ");
-//      e.printStackTrace();
-//    }
-//    return Response.serverError().status(Status.INTERNAL_SERVER_ERROR).build();
+  public Response updateScreenshotPng(@FormParam("username") String groupName,
+      @FormParam("assignmentName") String projectName, @FormParam("url") List<String> urls) {
+    System.out.println("username: " + groupName + "jobName: " + projectName);
+    JSONObject ob = new JSONObject();
+    System.out.println("Png file name " + urls);
+    int pgid = pgdb.getId(groupName, projectName);
+    CommitRecord commitResult = pdb.getCommitResult(pgid);
+    int lastCommitNum = commitResult.getNumber();
+    int pcrid = commitResult.getId();
+
+    try {
+      for (String url : urls) {
+        String screenShotUrl = "/job/" + groupName + "_" + projectName + "/" + lastCommitNum
+            + "/artifact/target/screenshot/" + url + ".png";
+        db.addProjectScreenshotRecord(pcrid, screenShotUrl);
+      }
+      ob.put("groupName", groupName);
+      ob.put("projectName", projectName);
+      ob.put("commitNumber", lastCommitNum);
+      ob.put("url", urls);
+      return Response.ok().entity(ob.toString()).build();
+    } catch (Exception e) {
+      System.out.print("update URL to DB error: ");
+      e.printStackTrace();
+    }
+    return Response.serverError().status(Status.INTERNAL_SERVER_ERROR).build();
   }
 
   /**
@@ -93,13 +90,12 @@ public class GroupScreenshotRecordService {
   public Response updateScreenshotPng(@QueryParam("username") String username,
       @QueryParam("assignmentName") String assignmentName, @QueryParam("commitNumber") int number) {
     JSONObject ob = new JSONObject();
-    int auid = auDb.getAuid(assignmentDb.getAssignmentIdByName(assignmentName),
-        userDb.getUserIdByUsername(username));
-    System.out.println(auid);
-    int crId = commitRecordDb.getCommitRecordId(auid, number);
-    System.out.println(crId);
+    int pgid = pgdb.getId(username, assignmentName);
+    System.out.println(pgid);
+    int pcrid = pdb.getCommitRecordId(pgid, number);
+    System.out.println(pcrid);
     try {
-      ArrayList<String> urls = db.getScreenshotUrl(crId);
+      List<String> urls = db.getScreenshotUrl(pcrid);
       for (String url : urls) {
         urls.set(urls.indexOf(url), jenkinsData.getJenkinsHostUrl() + url);
       }

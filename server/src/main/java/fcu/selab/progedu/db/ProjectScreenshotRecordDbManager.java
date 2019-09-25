@@ -2,7 +2,10 @@ package fcu.selab.progedu.db;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ProjectScreenshotRecordDbManager {
   private static ProjectScreenshotRecordDbManager instance = new ProjectScreenshotRecordDbManager();
@@ -20,7 +23,7 @@ public class ProjectScreenshotRecordDbManager {
    * @param url   ProjectScreenshot url
    */
   public void addProjectScreenshotRecord(int pcrId, String url) {
-    String sql = "INSERT INTO Project_Screenshot_Record(crId, pngUrl)  VALUES(?, ?)";
+    String sql = "INSERT INTO Project_Screenshot_Record(pcrid, pngUrl)  VALUES(?, ?)";
 
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
@@ -35,17 +38,41 @@ public class ProjectScreenshotRecordDbManager {
   /**
    * Delete Project_Screenshot_Record by crid.
    * 
-   * @param crid Project_Commit_Record id
+   * @param pcrid Project_Commit_Record id
    */
-  public void deleteProjectScreenshot(int crid) {
-    String sql = "DELETE FROM Screenshot_Record WHERE crId = ?";
+  public void deleteProjectScreenshot(int pcrid) {
+    String sql = "DELETE FROM Project_Screenshot_Record WHERE pcrid = ?";
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
-      preStmt.setInt(1, crid);
+      preStmt.setInt(1, pcrid);
       preStmt.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();
     }
+  }
+
+  /**
+   * get screenshot url
+   * 
+   * @param pcrid commitRecord id
+   */
+  public List<String> getScreenshotUrl(int pcrid) {
+    String sql = "SELECT pngUrl FROM Screenshot_Record WHERE pcrid = ?";
+
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+      preStmt.setInt(1, pcrid);
+      try (ResultSet rs = preStmt.executeQuery()) {
+        List<String> urls = new ArrayList<>();
+        while (rs.next()) {
+          urls.add(rs.getString("pngUrl"));
+        }
+        return urls;
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return null;
   }
 
 }

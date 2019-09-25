@@ -45,7 +45,7 @@ public class MavenGroupProject extends GroupProjectType {
 
       CourseConfig courseConfig = CourseConfig.getInstance();
       String progEduApiUrl = courseConfig.getTomcatServerIp() + courseConfig.getBaseuri()
-          + "/webapi";
+          + "/webapi/groups";
       String projectUrl = gitlabConfig.getGitlabHostUrl() + "/" + username + "/" + projectName
           + ".git";
       String updateDbUrl = progEduApiUrl + "/commits/update";
