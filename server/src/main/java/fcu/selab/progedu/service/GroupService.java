@@ -126,7 +126,7 @@ public class GroupService {
   @DELETE
   @Path("/{name}/members/{username}")
   @Produces(MediaType.APPLICATION_JSON)
-  public Response removeMembers(@PathParam("name") String name,
+  public Response removeMember(@PathParam("name") String name,
       @PathParam("username") String member) {
     int groupGitLabId = gdb.getGitlabId(name);
     int gitlabId = udb.getGitLabId(member);
@@ -159,7 +159,6 @@ public class GroupService {
       String jobName = js.getJobName(name, projectName);
       js.deleteJob(jobName);
     }
-
     // remove db
     gdb.removeGroup(name);
 

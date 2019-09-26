@@ -12,8 +12,8 @@ import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -32,7 +32,7 @@ import fcu.selab.progedu.project.GroupProjectType;
 import fcu.selab.progedu.project.ProjectTypeEnum;
 import fcu.selab.progedu.status.StatusEnum;
 
-@Path("groups/commits/")
+@Path("groups")
 public class GroupCommitRecordService {
 //  private CommitRecordDbManager db = CommitRecordDbManager.getInstance();
 //  private AssignmentUserDbManager auDb = AssignmentUserDbManager.getInstance();
@@ -53,7 +53,7 @@ public class GroupCommitRecordService {
    * @return hw, color, commit
    */
   @GET
-  @Path("all")
+  @Path("/commits")
   @Produces(MediaType.APPLICATION_JSON)
   public Response getAllGroupCommitRecord() {
     JSONArray array = new JSONArray();
@@ -77,9 +77,9 @@ public class GroupCommitRecordService {
    */
 
   @GET
-  @Path("result")
+  @Path("/{name}/commits/result")
   @Produces(MediaType.APPLICATION_JSON)
-  public Response getResult(@QueryParam("name") String groupName) {
+  public Response getResult(@PathParam("name") String groupName) {
     JSONArray array = new JSONArray();
     JSONObject ob = new JSONObject();
     List<Integer> pgids = gpdb.getPgids(groupName);
@@ -117,10 +117,10 @@ public class GroupCommitRecordService {
    * @return build detail
    */
   @GET
-  @Path("commitRecords")
+  @Path("/{name}/projects/{projectName}/commits")
   @Produces(MediaType.APPLICATION_JSON)
-  public Response getCommitRecord(@QueryParam("groupName") String groupName,
-      @QueryParam("projectName") String projectName) {
+  public Response getCommitRecord(@PathParam("name") String groupName,
+      @PathParam("projectName") String projectName) {
     JenkinsService js = JenkinsService.getInstance();
     JSONArray array = new JSONArray();
     int pgid = gpdb.getPgid(groupName, projectName);
@@ -154,7 +154,7 @@ public class GroupCommitRecordService {
    * @throws ParseException (to do)
    */
   @POST
-  @Path("update")
+  @Path("/update")
   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
   @Produces(MediaType.APPLICATION_JSON)
   public Response updateCommitRecord(@FormParam("user") String groupName,
@@ -199,10 +199,10 @@ public class GroupCommitRecordService {
    * @throws ParseException (to do)
    */
   @GET
-  @Path("feedback")
+  @Path("/{name}/projects/{projectName}/feedback/{num}")
   @Produces(MediaType.APPLICATION_JSON)
-  public Response getFeedback(@QueryParam("groupName") String groupName,
-      @QueryParam("projectName") String projectName, @QueryParam("number") int number) {
+  public Response getFeedback(@PathParam("name") String groupName,
+      @PathParam("projectName") String projectName, @PathParam("num") int number) {
     JenkinsService js = JenkinsService.getInstance();
     JSONObject ob = new JSONObject();
     ProjectTypeEnum projectTypeEnum = gpdb.getProjectType(projectName);
@@ -218,98 +218,5 @@ public class GroupCommitRecordService {
 
     return Response.ok().entity(ob.toString()).build();
   }
-//
-//  /**
-//   * (to do)
-//   * 
-//   * @param assignmentName (to do)
-//   */
-//  public void deleteRecord(String assignmentName) {
-//    int aid = assignmentDb.getAssignmentIdByName(assignmentName);
-//    List<Integer> uids = auDb.getUids(aid);
-//
-//    for (int uid : uids) {
-//      int auId = auDb.getAuid(aid, uid);
-//      db.deleteRecord(auId);
-//    }
-//  }
-//
-//  /**
-//   * update user assignment commit record to DB.
-//   * 
-//   * @param username       username
-//   * @param assignmentName assignment name
-//   * @throws ParseException (to do)
-//   */
-//  @GET
-//  @Path("feedback")
-//  @Produces(MediaType.APPLICATION_JSON)
-//  public Response getFeedback(@QueryParam("username") String username,
-//      @QueryParam("assignmentName") String assignmentName, @QueryParam("number") int number) {
-//    JenkinsService js = JenkinsService.getInstance();
-//    JSONObject ob = new JSONObject();
-//    AssignmentType assignmentType = getAssignmentType(assignmentName);
-//    String jobName = username + "_" + assignmentName;
-//    String console = js.getConsole(jobName, number);
-//    int auId = getAuid(username, assignmentName);
-//    String statusType = getStatusTypeName(auId, number);
-//    String message = assignmentType.getStatus(statusType).extractFailureMsg(console);
-//    ob.put("message", message);
-//
-//    return Response.ok().entity(ob.toString()).build();
-//  }
-//
-//  /**
-//   * get GitLab project url
-//   * 
-//   * @param username       username
-//   * @param assignmentName assignmentName
-//   */
-//  @GET
-//  @Path("gitLab")
-//  @Produces(MediaType.APPLICATION_JSON)
-//  public Response getGitLabProjectUrl(@QueryParam("username") String username,
-//      @QueryParam("assignmentName") String assignmentName) {
-//    JSONObject ob = new JSONObject();
-//    String projectUrl = gs.getProjectUrl(username, assignmentName);
-//    ob.put("url", projectUrl);
-//
-//    return Response.ok().entity(ob.toString()).build();
-//  }
-//
-//  private AssignmentType getAssignmentType(String assignmentName) {
-//    AssignmentDbManager adb = AssignmentDbManager.getInstance();
-//    AssignmentTypeDbManager atdb = AssignmentTypeDbManager.getInstance();
-//    int typeId = adb.getAssignmentTypeId(assignmentName);
-//    ProjectTypeEnum type = atdb.getTypeNameById(typeId);
-//    return AssignmentFactory.getAssignmentType(type.getTypeName());
-//  }
-//
-//  private int getAuid(String username, String assignmentName) {
-//    return auDb.getAuid(assignmentDb.getAssignmentIdByName(assignmentName),
-//        userDb.getUserIdByUsername(username));
-//  }
-//
-//  private String getStatusTypeName(int auId, int number) {
-//    int statusId = db.getCommitRecordStatus(auId, number);
-//    return csdb.getStatusNameById(statusId).getType();
-//  }
-//
-//  /**
-//   * Get all user which role is student
-//   * 
-//   * @return all GitLab users
-//   */
-//  public List<User> getStudents() {
-//    List<User> studentUsers = new ArrayList<>();
-//    List<User> users = userDb.getAllUsers();
-//
-//    for (User user : users) {
-//      if (user.getRole().contains(RoleEnum.STUDENT)) {
-//        studentUsers.add(user);
-//      }
-//    }
-//    return studentUsers;
-//  }
 
 }

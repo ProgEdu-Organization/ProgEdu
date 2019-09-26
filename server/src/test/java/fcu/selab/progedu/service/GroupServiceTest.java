@@ -57,7 +57,7 @@ public class GroupServiceTest {
 
   @Test
   public void removeMember() {
-    gs.removeMembers("group2", "test06");
+    gs.removeMember("group2", "test06");
   }
 
 }
