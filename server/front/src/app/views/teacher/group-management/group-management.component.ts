@@ -32,6 +32,11 @@ export class GroupManagementComponent implements OnInit {
       member: [new Array<string>(), Validators.minLength(3)],
     });
     this.onChanges();
+    this.groupManagementService.getAllGroup().subscribe(
+      response => {
+        console.log(response);
+      }
+    );
   }
   onChanges(): void {
     this.group.get(name).valueChanges.subscribe(

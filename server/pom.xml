@@ -33,7 +33,8 @@
                 4.12
             </version>
             <scope>
-                test</scope>
+                test
+            </scope>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.json/json -->
         <dependency>
@@ -350,14 +351,19 @@
                 runtime
             </scope>
         </dependency>
-        
+
         <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
-		<dependency>
-		    <groupId>org.apache.commons</groupId>
-		    <artifactId>commons-lang3</artifactId>
-		    <version>3.9</version>
-		</dependency>
-		        
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.9</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.6.6</version>
+        </dependency>
     </dependencies>
     <build>
         <finalName>
@@ -414,9 +420,6 @@
                             <failsOnError>
                                 true
                             </failsOnError>
-                            <linkXRef>
-                                false
-                            </linkXRef>
                         </configuration>
                         <goals>
                             <goal>

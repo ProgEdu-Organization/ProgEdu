@@ -1,17 +1,17 @@
 package fcu.selab.progedu.config;
 
+import fcu.selab.progedu.exception.LoadConfigFailureException;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
-
-import fcu.selab.progedu.exception.LoadConfigFailureException;
 
 public class GitlabConfig {
   private static final String PROPERTY_FILE = "/config/gitlab_config.properties";
 
   private static GitlabConfig instance = new GitlabConfig();
-  private static final String EXCEPTION = "Unable to get config of GITLAB"
-      + " connection string from file;";
+  private static final String EXCEPTION =
+      "Unable to get config of GITLAB" + " connection string from file;";
 
   public static GitlabConfig getInstance() {
     return instance;
@@ -55,7 +55,7 @@ public class GitlabConfig {
    */
   public String getGitlabRootUsername() throws LoadConfigFailureException {
     String gitlabAdminUsername = System.getenv("WEB_GITLAB_ADMIN_USERNAME");
-    System.out.println("WEB_GITLAB_ADMIN_USERNAME: " + gitlabAdminUsername);
+
     if (gitlabAdminUsername != null && !gitlabAdminUsername.equals("")) {
       return gitlabAdminUsername;
     }
@@ -129,12 +129,19 @@ public class GitlabConfig {
     String gitlabHost = System.getenv("GITLAB_HOST");
     System.out.println("GITLAB_HOST: " + gitlabHost);
     if (gitlabHost != null && !gitlabHost.equals("")) {
-      System.out.println("GITLAB_LOGIN_URL: "
-          + gitlabHost.substring(0, gitlabHost.indexOf("//") + 2)
-          + getGitlabAdminUsername() + ":" + getGitlabRootPassword() + "@"
-          + gitlabHost.substring(gitlabHost.indexOf("//") + 2, gitlabHost.length()));
+      System.out.println(
+          "GITLAB_LOGIN_URL: "
+              + gitlabHost.substring(0, gitlabHost.indexOf("//") + 2)
+              + getGitlabAdminUsername()
+              + ":"
+              + getGitlabRootPassword()
+              + "@"
+              + gitlabHost.substring(gitlabHost.indexOf("//") + 2, gitlabHost.length()));
       return gitlabHost.substring(0, gitlabHost.indexOf("//") + 2)
-          + getGitlabAdminUsername() + ":" + getGitlabRootPassword() + "@"
+          + getGitlabAdminUsername()
+          + ":"
+          + getGitlabRootPassword()
+          + "@"
           + gitlabHost.substring(gitlabHost.indexOf("//") + 2, gitlabHost.length());
     }
     if (props != null) {
