@@ -116,6 +116,24 @@ public class GroupDbManager {
   }
 
   /**
+   * update leader
+   * 
+   * @param id     group id
+   * @param leader leader uid
+   */
+  public void updateLeader(int id, int leader) {
+    String sql = "UPDATE ProgEdu.Group SET leader = ? WHERE id = ?";
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+      preStmt.setInt(1, leader);
+      preStmt.setInt(2, id);
+      preStmt.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
+
+  /**
    * get all groups
    * 
    * @return all group on gitlab

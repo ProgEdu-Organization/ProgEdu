@@ -1,6 +1,7 @@
 package fcu.selab.progedu.conn;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +11,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
@@ -43,7 +45,7 @@ public class GitlabService {
   private String apiToken;
   private TokenType tokenType = TokenType.PRIVATE_TOKEN;
   private AuthMethod authMethod = AuthMethod.URL_PARAMETER;
-
+  private static final String API_NAMESPACE = "/api/v4";
   private GitlabAPI gitlab;
 
   private GitlabService() {
@@ -468,19 +470,46 @@ public class GitlabService {
   /**
    * Add a member to group
    * 
-   * @param groupId     Group id
-   * @param userId      User id
-   * @param accessLevel User level in group
-   * @return true or false
-   * @throws IOException on gitlab api call error
+   * @param groupId     gitlab group id
+   * @param userId      gitlab user id
+   * @param accessLevel access level in group
    */
-  public boolean addMember(int groupId, int userId, GitlabAccessLevel accessLevel) {
+  public void addMember(int groupId, int userId, GitlabAccessLevel accessLevel) {
     try {
       gitlab.addGroupMember(groupId, userId, accessLevel);
     } catch (IOException e) {
       e.printStackTrace();
     }
-    return true;
+  }
+
+  /**
+   * update member access level
+   * 
+   * @param groupId     Group id
+   * @param userId      User id
+   * @param accessLevel access level in group
+   */
+  public void updateMemberAccessLevel(int groupId, int userId, GitlabAccessLevel accessLevel) {
+    // PUT /groups/:id/members/:user_id
+    // for example,
+    // http://localhost:80/api/v4/groups/38/members/2?access_level=50
+    String api = hostUrl + API_NAMESPACE + "/groups/" + groupId + "/members/" + userId;
+
+    HttpPut put = new HttpPut(api);
+    put.addHeader("PRIVATE-TOKEN", apiToken);
+    // Request parameters
+    List<NameValuePair> params = new ArrayList<>();
+    params.add(new BasicNameValuePair("access_level", Integer.toString(accessLevel.accessValue)));
+    try {
+      put.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
+    } catch (UnsupportedEncodingException e) {
+      e.printStackTrace();
+    }
+    try {
+      HttpClients.createDefault().execute(put);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 
   /**
@@ -721,6 +750,21 @@ public class GitlabService {
   public void removeGroup(int id) {
     try {
       gitlab.deleteGroup(id);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+  }
+
+  /**
+   * remove member from gitlab group
+   * 
+   * @param groupId group gitlab id
+   * @param userId  user gitlab id
+   */
+  public void removeGroupMember(int groupId, int userId) {
+    try {
+      gitlab.deleteGroupMember(groupId, userId);
     } catch (IOException e) {
       e.printStackTrace();
     }
