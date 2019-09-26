@@ -77,7 +77,7 @@ public class GroupService {
   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
   @Produces(MediaType.APPLICATION_JSON)
   public Response addMembers(@PathParam("name") String name,
-      @FormParam("member") List<String> members) {
+      @FormParam("members") List<String> members) {
     int groupGitLabId = gdb.getGitlabId(name);
     for (String member : members) {
       int gitlabId = udb.getGitLabId(member);
