@@ -3,16 +3,23 @@ import * as $ from 'jquery';
 import { GroupManagementService } from './group-management.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
+const name = 'name';
+const projectName = 'projectName';
+const leader = 'leader';
+const member = 'member';
+const projectType = 'projectType';
 @Component({
   selector: 'app-group-management',
   templateUrl: './group-management.component.html'
 })
+
 export class GroupManagementComponent implements OnInit {
   public users: Array<any> = new Array<any>();
   public group: FormGroup;
   public search;
   constructor(private groupManagementService: GroupManagementService, private fb: FormBuilder) { }
 
+  public projectTypes: Array<any> = ['javac', 'maven', 'android', 'web'];
   ngOnInit() {
     console.log($('#multiple-select'));
     this.getAllUser();
@@ -20,16 +27,13 @@ export class GroupManagementComponent implements OnInit {
     this.group = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(10)]],
       projectName: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(10)]],
+      projectType: ['', [Validators.required]],
       leader: ['', [Validators.required, Validators.maxLength(10)]],
       member: [new Array<string>(), Validators.minLength(3)],
     });
     this.onChanges();
   }
   onChanges(): void {
-    const name = 'name';
-    const projectName = 'projectName';
-    const leader = 'leader';
-    const member = 'member';
     this.group.get(name).valueChanges.subscribe(
       () => {
         this.group.get(name).valid ? this.showIsValidById(name) : this.hideIsInvalidById(name);
@@ -44,6 +48,12 @@ export class GroupManagementComponent implements OnInit {
     this.group.get(leader).valueChanges.subscribe(
       val => {
         this.group.get(member).value.includes(val) ? this.showIsValidById(leader) : this.hideIsInvalidById(leader);
+      }
+    );
+
+    this.group.get(projectType).valueChanges.subscribe(
+      val => {
+        this.group.get(projectType).value.includes(val) ? this.showIsValidById(projectType) : this.hideIsInvalidById(projectType);
       }
     );
   }
@@ -93,7 +103,18 @@ export class GroupManagementComponent implements OnInit {
 
   groupSubmit() {
     if (this.group.dirty && this.group.valid) {
-      console.log('test');
+      this.groupManagementService.createProject(this.group.get(name).value,
+        this.group.get(projectName).value,
+        this.group.get(projectType).value,
+        this.group.get(leader).value,
+        this.group.get(member).value).subscribe(
+          (response) => {
+            console.log(response);
+          },
+          error => {
+
+          }
+        );
     }
   }
 }

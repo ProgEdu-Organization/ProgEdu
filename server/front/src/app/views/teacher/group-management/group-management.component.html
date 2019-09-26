@@ -21,6 +21,14 @@
               </div>
             </div>
             <div class="form-group row">
+              <label class="col-md-3 col-form-label" for="projectType">ProjectType</label>
+              <div class="col-md-9">
+                <select class="form-control" id="projectType" formControlName="projectType">
+                  <option [value]="type" *ngFor="let type of projectTypes"> {{type}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group row">
               <label class="col-md-3 col-form-label" for="leader">Leader</label>
               <div class="col-md-9">
                 <input type="text" id="leader" name="leader" class="form-control" formControlName='leader'>
