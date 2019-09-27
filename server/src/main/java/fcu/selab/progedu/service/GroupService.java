@@ -1,5 +1,21 @@
 package fcu.selab.progedu.service;
 
+import java.util.List;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.FormParam;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
+import org.gitlab.api.models.GitlabAccessLevel;
+import org.gitlab.api.models.GitlabGroup;
+
 import fcu.selab.progedu.conn.GitlabService;
 import fcu.selab.progedu.conn.JenkinsService;
 import fcu.selab.progedu.db.service.GroupDbService;
@@ -13,7 +29,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
 
-@Path("groups/")
+@Path("groups")
 public class GroupService {
 
   private GitlabService gitlabService = GitlabService.getInstance();
@@ -34,7 +50,6 @@ public class GroupService {
    * @return response
    */
   @POST
-  @Path("create")
   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
   @Produces(MediaType.APPLICATION_JSON)
   public Response createGroup(
@@ -70,11 +85,11 @@ public class GroupService {
    * @return response
    */
   @POST
-  @Path("members/add")
+  @Path("/{name}/members")
   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
   @Produces(MediaType.APPLICATION_JSON)
-  public Response addMembers(
-      @FormParam("name") String name, @FormParam("member") List<String> members) {
+  public Response addMembers(@PathParam("name") String name,
+      @FormParam("members") List<String> members) {
     int groupGitLabId = gdb.getGitlabId(name);
     for (String member : members) {
       int gitlabId = udb.getGitLabId(member);
@@ -92,38 +107,43 @@ public class GroupService {
    * @param leader leader username
    * @return response
    */
-  @POST
-  @Path("leader/update")
-  @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+  @PUT
+  @Path("/{name}/members/{username}")
   @Produces(MediaType.APPLICATION_JSON)
-  public Response addMembers(@FormParam("name") String name, @FormParam("leader") String leader) {
+  public Response updateLeader(@PathParam("name") String name,
+      @PathParam("username") String leader) {
     int groupGitLabId = gdb.getGitlabId(name);
-    int gitlabId = udb.getGitLabId(leader);
-    gitlabService.addMember(groupGitLabId, gitlabId, GitlabAccessLevel.Owner);
-    gdb.addMember(leader, name);
+    // update newLeader's AccessLevel to owner
+    int leaderGitlabId = udb.getGitLabId(leader);
+    gitlabService.updateMemberAccessLevel(groupGitLabId, leaderGitlabId, GitlabAccessLevel.Owner);
+
+    String currentLeader = gdb.getLeader(name);
+    int currentLeaderGitlabId = udb.getGitLabId(currentLeader);
+    // update currentLeader's AccessLevel to master
+    gitlabService.updateMemberAccessLevel(groupGitLabId, currentLeaderGitlabId,
+        GitlabAccessLevel.Master);
+    // update db.group leader
+    gdb.updateLeader(name, leader);
 
     return Response.ok().build();
   }
 
   /**
    * remove members
-   *
-   * @param name group name
-   * @param members members
+   * 
+   * @param name   group name
+   * @param member member
    * @return response
    */
-  @POST
-  @Path("members/remove")
-  @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+  @DELETE
+  @Path("/{name}/members/{username}")
   @Produces(MediaType.APPLICATION_JSON)
-  public Response removeMembers(
-      @FormParam("name") String name, @FormParam("member") List<String> members) {
+  public Response removeMember(@PathParam("name") String name,
+      @PathParam("username") String member) {
     int groupGitLabId = gdb.getGitlabId(name);
-    for (String member : members) {
-      int gitlabId = udb.getGitLabId(member);
-      //      gitlabService.addMember(groupGitLabId, gitlabId, GitlabAccessLevel.Master);
-      //      gdb.addMember(member, name);
-    }
+    int gitlabId = udb.getGitLabId(member);
+    gitlabService.removeGroupMember(groupGitLabId, gitlabId);
+    gdb.removeMember(name, member);
 
     return Response.ok().build();
   }
@@ -133,7 +153,10 @@ public class GroupService {
    *
    * @param name group name
    */
-  public void removeGroup(String name) {
+  @DELETE
+  @Path("/{name}")
+  @Produces(MediaType.APPLICATION_JSON)
+  public void removeGroup(@PathParam("name") String name) {
 
     // remove gitlab
     //    gitlabService.deleteProjects(name);
@@ -148,7 +171,6 @@ public class GroupService {
       String jobName = js.getJobName(name, projectName);
       js.deleteJob(jobName);
     }
-
     // remove db
     gdb.removeGroup(name);
   }

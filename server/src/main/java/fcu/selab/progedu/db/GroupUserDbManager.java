@@ -126,4 +126,22 @@ public class GroupUserDbManager {
     }
   }
 
+  /**
+   * remove Group_User
+   * 
+   * @param gid group id
+   * @param uid user id
+   */
+  public void remove(int gid, int uid) {
+    String sql = "DELETE FROM Group_User WHERE gId=? AND uId=?";
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+      preStmt.setInt(1, gid);
+      preStmt.setInt(2, uid);
+      preStmt.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
+
 }

@@ -92,7 +92,7 @@ public class GroupDbService {
   }
 
   /**
-   * delete Assignment by name
+   * remove group by name
    * 
    * @param name group name
    */
@@ -115,6 +115,31 @@ public class GroupDbService {
     }
     gudb.remove(gid);// Group_User
     gdb.remove(gid);// Group
+
+  }
+
+  /**
+   * remove member
+   * 
+   * @param name   group name
+   * @param member remove member
+   */
+  public void removeMember(String name, String member) {
+    int gid = gdb.getId(name);
+    int uid = udb.getUserIdByUsername(member);
+    gudb.remove(gid, uid);
+  }
+
+  /**
+   * update leader
+   * 
+   * @param name   group name
+   * @param leader leader username
+   */
+  public void updateLeader(String name, String leader) {
+    int uid = udb.getUserIdByUsername(leader);
+    int gid = gdb.getId(name);
+    gdb.updateLeader(gid, uid);
 
   }
 
