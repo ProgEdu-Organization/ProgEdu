@@ -34,14 +34,7 @@ import fcu.selab.progedu.status.StatusEnum;
 
 @Path("groups")
 public class GroupCommitRecordService {
-//  private CommitRecordDbManager db = CommitRecordDbManager.getInstance();
-//  private AssignmentUserDbManager auDb = AssignmentUserDbManager.getInstance();
-//  private UserDbManager userDb = UserDbManager.getInstance();
-//  private AssignmentDbManager assignmentDb = AssignmentDbManager.getInstance();
-//  private AssignmentTypeDbManager atDb = AssignmentTypeDbManager.getInstance();
-//  private CommitStatusDbManager csdb = CommitStatusDbManager.getInstance();
   private JenkinsService js = JenkinsService.getInstance();
-//  private GitlabService gs = GitlabService.getInstance();
 
   private GroupDbService gdb = GroupDbService.getInstance();
   private ProjectDbService gpdb = ProjectDbService.getInstance();

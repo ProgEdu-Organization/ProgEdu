@@ -1,8 +1,11 @@
 package fcu.selab.progedu.db.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import fcu.selab.progedu.data.Group;
+import fcu.selab.progedu.data.GroupProject;
+import fcu.selab.progedu.data.User;
 import fcu.selab.progedu.db.GroupDbManager;
 import fcu.selab.progedu.db.GroupUserDbManager;
 import fcu.selab.progedu.db.ProjectCommitRecordDbManager;
@@ -77,6 +80,63 @@ public class GroupDbService {
    */
   public List<Group> getGroups() {
     return gdb.getGroups();
+  }
+
+  /**
+   * get groups info by uid
+   * 
+   * @param uid user id
+   * @return groups
+   */
+  public List<Group> getGroups(int uid) {
+    List<Integer> gids = gudb.getGIds(uid);
+    List<Group> groups = new ArrayList<>();
+    for (int gid : gids) {
+      groups.add(gdb.getGroup(gid));
+    }
+    return groups;
+
+  }
+
+  /**
+   * get group
+   * 
+   * @param name group name
+   * @return Group
+   */
+  public Group getGroup(String name) {
+    Group group = gdb.getGroup(name);
+    int gid = group.getId();
+    List<User> members = new ArrayList<>();
+    List<GroupProject> projects = new ArrayList<>();
+    List<Integer> uids = gudb.getUids(gid);
+    List<Integer> pgids = pgdb.getPgids(gid);
+    for (int uid : uids) {
+      members.add(udb.getUser(uid));
+    }
+    for (int pgid : pgids) {
+      projects.add(pdb.getProject(pgid));
+    }
+    group.setMembers(members);
+    group.setProjects(projects);
+    return group;
+  }
+
+  /**
+   * get group names
+   * 
+   * @param uid user id
+   * @return group names
+   */
+  public List<String> getGroupNames(int uid) {
+    List<Integer> gids = gudb.getGIds(uid);
+    List<String> groupNames = new ArrayList<>();
+    for (int gid : gids) {
+      String groupName = gdb.getGroup(gid).getGroupName();
+      groupNames.add(groupName);
+    }
+    return groupNames;
+
   }
 
   /**

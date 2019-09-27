@@ -92,7 +92,7 @@ public class GroupUserDbManager {
    * 
    * @return lsUids User Id
    */
-  public List<Integer> getUIds(int gid) {
+  public List<Integer> getUids(int gid) {
     List<Integer> lsUids = new ArrayList<>();
     String sql = "SELECT uId FROM Group_User WHERE gId = ?";
     try (Connection conn = database.getConnection();

@@ -11,12 +11,14 @@ import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.gitlab.api.models.GitlabUser;
 import org.glassfish.jersey.media.multipart.FormDataParam;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.csvreader.CsvReader;
@@ -27,8 +29,9 @@ import fcu.selab.progedu.data.User;
 import fcu.selab.progedu.db.RoleDbManager;
 import fcu.selab.progedu.db.RoleUserDbManager;
 import fcu.selab.progedu.db.UserDbManager;
+import fcu.selab.progedu.db.service.GroupDbService;
 
-@Path("user/")
+@Path("user")
 public class UserService {
   private static UserService instance = new UserService();
 
@@ -43,6 +46,7 @@ public class UserService {
   private RoleUserDbManager rudb = RoleUserDbManager.getInstance();
   private RoleDbManager rdb = RoleDbManager.getInstance();
   private AssignmentService as = AssignmentService.getInstance();
+  private GroupDbService gdb = GroupDbService.getInstance();
 
   /**
    * Upload a csv file for student batch registration
@@ -51,7 +55,7 @@ public class UserService {
    * @return Response
    */
   @POST
-  @Path("upload")
+  @Path("/upload")
   @Produces(MediaType.APPLICATION_JSON)
   public Response createAccounts(@FormDataParam("file") InputStream uploadedInputStream) {
     Response response = null;
@@ -111,7 +115,7 @@ public class UserService {
    * @return response
    */
   @POST
-  @Path("new")
+  @Path("/new")
   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
   @Produces(MediaType.APPLICATION_JSON)
   public Response createAccount(@FormParam("name") String name,
@@ -178,7 +182,7 @@ public class UserService {
    * @return all GitLab users
    */
   @GET
-  @Path("getUsers")
+  @Path("/getUsers")
   @Produces(MediaType.APPLICATION_JSON)
   public Response getUsers() {
     List<User> users = dbManager.getAllUsers();
@@ -194,13 +198,36 @@ public class UserService {
    * @param username username
    */
   @POST
-  @Path("display")
+  @Path("/display")
   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
   public Response updateStatus(@FormParam("username") String username) {
     System.out.println("username" + username);
     boolean isDisplay = !dbManager.getUserStatus(username);
     dbManager.updateUserStatus(username, isDisplay);
     return Response.ok().build();
+  }
+
+  /**
+   * Display
+   * 
+   * @param username username
+   */
+  @GET
+  @Path("/{username}/groups")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response getGroup(@PathParam("username") String username) {
+    GroupService gs = new GroupService();
+    System.out.println("username" + username);
+    int uid = dbManager.getUserIdByUsername(username);
+    List<String> groupNames = gdb.getGroupNames(uid);
+    JSONArray array = new JSONArray();
+    for (String groupName : groupNames) {
+      String group = gs.getGroup(groupName).getEntity().toString();
+      JSONObject ob = new JSONObject(group);
+      array.put(ob);
+    }
+
+    return Response.ok().entity(array.toString()).build();
   }
 
   /**

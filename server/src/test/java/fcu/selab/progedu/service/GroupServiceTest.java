@@ -3,6 +3,8 @@ package fcu.selab.progedu.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.ws.rs.core.Response;
+
 import org.junit.Test;
 
 import fcu.selab.progedu.data.Group;
@@ -55,9 +57,15 @@ public class GroupServiceTest {
     gs.updateLeader(GROUP_NAME, leader);
   }
 
-  @Test
+//  @Test
   public void removeMember() {
     gs.removeMember("group2", "test06");
+  }
+
+  @Test
+  public void getMembers() {
+    Response a = gs.getGroup(GROUP_NAME);
+    System.out.print(a.getEntity());
   }
 
 }

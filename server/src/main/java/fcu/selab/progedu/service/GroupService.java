@@ -5,6 +5,7 @@ import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -15,9 +16,11 @@ import javax.ws.rs.core.Response;
 
 import org.gitlab.api.models.GitlabAccessLevel;
 import org.gitlab.api.models.GitlabGroup;
+import org.json.JSONObject;
 
 import fcu.selab.progedu.conn.GitlabService;
 import fcu.selab.progedu.conn.JenkinsService;
+import fcu.selab.progedu.data.Group;
 import fcu.selab.progedu.db.service.GroupDbService;
 import fcu.selab.progedu.db.service.ProjectDbService;
 import fcu.selab.progedu.db.service.UserDbService;
@@ -144,7 +147,7 @@ public class GroupService {
   @DELETE
   @Path("/{name}")
   @Produces(MediaType.APPLICATION_JSON)
-  public void removeGroup(@PathParam("name") String name) {
+  public Response removeGroup(@PathParam("name") String name) {
 
     // remove gitlab
 //    gitlabService.deleteProjects(name);
@@ -161,7 +164,26 @@ public class GroupService {
     }
     // remove db
     gdb.removeGroup(name);
+    return Response.ok().build();
+  }
 
+  /**
+   * get group info
+   * 
+   * @param name group name
+   * @return response
+   */
+  @GET
+  @Path("/{name}")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response getGroup(@PathParam("name") String name) {
+    Group group = gdb.getGroup(name);
+    JSONObject ob = new JSONObject();
+    ob.append("name", group.getGroupName());
+    ob.append("leader", group.getLeader());
+    ob.append("members", group.getMembers());
+    ob.append("project", group.getProjects());
+    return Response.ok().entity(ob.toString()).build();
   }
 //
 //  private void addMembers(String name, int groupGitLabId, List<String> members) {
