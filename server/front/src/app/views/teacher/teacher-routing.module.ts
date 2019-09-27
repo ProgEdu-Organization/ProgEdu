@@ -6,22 +6,31 @@ import { CreateAssignmentComponent } from './create-assignment/create-assignment
 import { StudentManagementComponent } from './student-management/student-management.component';
 import { GroupManagementComponent } from './group-management/group-management.component';
 import { ChartComponent } from './chart/chart.component';
-import { GroupDashboardComponent } from './group-dashboard/group-dashboard.component';
+import { GroupDashboardComponent } from '../shared/group-dashboard/group-dashboard.component';
 import { SharedModule } from '../shared/shared.module';
 import { AssignmentChoosedComponent } from '../shared/assignment-choosed/assignment-choosed.component';
+import { ProjectChoosedComponent } from '../shared/project-choosed/project-choosed.component';
+
 const routes: Routes = [
   {
     path: '',
     component: DashboardComponent,
     data: {
       title: 'Dashboard'
-    }
+    },
   },
   {
     path: 'assignmentChoosed',
     component: AssignmentChoosedComponent,
     data: {
-      title: 'Assignment Choose'
+      title: 'Assignment Choosed'
+    }
+  },
+  {
+    path: 'projectChoosed',
+    component: ProjectChoosedComponent,
+    data: {
+      title: 'Project Choosed'
     }
   },
   {
@@ -34,7 +43,7 @@ const routes: Routes = [
         path: '', component: AssignmentManagementComponent,
         data: {
           title: 'Assignment Management'
-        },
+        }
       },
       {
         path: 'create',

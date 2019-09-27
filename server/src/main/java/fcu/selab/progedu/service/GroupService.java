@@ -183,11 +183,4 @@ public class GroupService {
   //    }
   //  }
 
-  @GET
-  @Path("allGroups")
-  @Produces(MediaType.APPLICATION_JSON)
-  public Response getAllGroup() {
-
-    return Response.ok().build();
-  }
 }
