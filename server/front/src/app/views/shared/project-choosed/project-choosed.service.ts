@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 
@@ -7,11 +7,30 @@ import { environment } from '../../../../environments/environment';
   providedIn: 'root'
 })
 export class ProjectChoosedService {
-  GROUP_COMMITS = environment.SERVER_URL + '/webapi/groups/commits';
+  GITLAB_URL_API = environment.SERVER_URL + '/webapi/commits/gitLab';
+
   constructor(private http: HttpClient) { }
 
-  getGroupCommits(): Observable<any> {
-    return this.http.get(this.GROUP_COMMITS);
+  getCommitResult(groupName: string, projectName: string): Observable<any> {
+    const GROUP_COMMITS_RESULT_API: string = environment.SERVER_URL + `/webapi/groups/${groupName}/projects/${projectName}/commits`;
+    return this.http.get<any>(GROUP_COMMITS_RESULT_API);
+  }
+
+  getGroupMembers(groupName): Observable<any> {
+    const GROUP_MEMBER_API: string = environment.SERVER_URL + `/webapi/groups/${groupName}`;
+    return this.http.get<any>(GROUP_MEMBER_API);
+  }
+
+  getFeedback(groupName: string, projectName: string, commitNumber: string): Observable<any> {
+    const GROUP_FEEDBACK_API: string = environment.SERVER_URL + `/webapi/groups/${groupName}/projects/${projectName}/feedback/${commitNumber}`;
+    return this.http.get<any>(GROUP_FEEDBACK_API);
+  }
+
+  getProjectUrl(groupName, projectName): Observable<any> {
+    const params = new HttpParams()
+      .set('username', groupName)
+      .set('assignmentName', projectName);
+    return this.http.get<any>(this.GITLAB_URL_API, { params });
   }
 
 }

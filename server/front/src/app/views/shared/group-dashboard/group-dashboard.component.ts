@@ -1,4 +1,5 @@
 import { Component, OnInit, NgModule } from '@angular/core';
+import { GroupDashboardService } from './group-dashboard.service';
 
 @Component({
   selector: 'app-group-dashboard',
@@ -8,9 +9,23 @@ import { Component, OnInit, NgModule } from '@angular/core';
 export class GroupDashboardComponent implements OnInit {
   isCollapsed = false;
   public search;
-  constructor() { }
+  public groups: Array<any>;
+  constructor(private groupDashboardService: GroupDashboardService) { }
 
   ngOnInit() {
+    this.groupDashboardService.getAllCommits().subscribe(
+      response => {
+        this.groups = response;
+        console.log(response);
+      }
+    );
+  }
+
+  isNA(commitRecord: any) {
+    if (commitRecord.length === 0) {
+      return true;
+    }
+    return false;
   }
 
 }

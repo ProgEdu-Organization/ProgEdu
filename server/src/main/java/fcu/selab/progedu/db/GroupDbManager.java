@@ -167,6 +167,69 @@ public class GroupDbManager {
   }
 
   /**
+   * get group info by group name
+   * 
+   * @param name group name
+   * @return group info
+   */
+  public Group getGroup(String name) {
+    String statement = "SELECT * FROM ProgEdu.Group WHERE name=?";
+    Group group = new Group();
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(statement)) {
+      preStmt.setString(1, name);
+      try (ResultSet rs = preStmt.executeQuery()) {
+        while (rs.next()) {
+          int id = rs.getInt("id");
+          int gitlabId = rs.getInt("gitLabId");
+          int leader = rs.getInt("leader");
+
+          group.setGitlabId(gitlabId);
+          group.setGroupName(name);
+          group.setId(id);
+          group.setLeader(leader);
+
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return group;
+  }
+
+  /**
+   * get group info by id
+   * 
+   * @param id group id
+   * @return group info
+   */
+  public Group getGroup(int id) {
+    String statement = "SELECT * FROM ProgEdu.Group WHERE id=?";
+    Group group = new Group();
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(statement)) {
+
+      preStmt.setInt(1, id);
+      try (ResultSet rs = preStmt.executeQuery()) {
+        while (rs.next()) {
+          String name = rs.getString("name");
+          int gitlabId = rs.getInt("gitLabId");
+          int leader = rs.getInt("leader");
+
+          group.setGitlabId(gitlabId);
+          group.setGroupName(name);
+          group.setId(id);
+          group.setLeader(leader);
+
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return group;
+  }
+
+  /**
    * remove Group by gid
    * 
    * @param id group id

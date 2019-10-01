@@ -1,10 +1,14 @@
 package fcu.selab.progedu.data;
 
+import java.util.List;
+
 public class Group {
   private String groupName;
   private int id;
   private int gitlabId;
   private int leader;
+  private List<User> members;
+  private List<GroupProject> projects;
 
   public int getId() {
     return id;
@@ -36,6 +40,22 @@ public class Group {
 
   public void setGitlabId(int gitlabId) {
     this.gitlabId = gitlabId;
+  }
+
+  public List<User> getMembers() {
+    return members;
+  }
+
+  public void setMembers(List<User> members) {
+    this.members = members;
+  }
+
+  public List<GroupProject> getProjects() {
+    return projects;
+  }
+
+  public void setProjects(List<GroupProject> projects) {
+    this.projects = projects;
   }
 
 }

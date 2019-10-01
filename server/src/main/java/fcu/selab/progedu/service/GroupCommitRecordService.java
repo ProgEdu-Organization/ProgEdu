@@ -34,14 +34,7 @@ import fcu.selab.progedu.status.StatusEnum;
 
 @Path("groups")
 public class GroupCommitRecordService {
-//  private CommitRecordDbManager db = CommitRecordDbManager.getInstance();
-//  private AssignmentUserDbManager auDb = AssignmentUserDbManager.getInstance();
-//  private UserDbManager userDb = UserDbManager.getInstance();
-//  private AssignmentDbManager assignmentDb = AssignmentDbManager.getInstance();
-//  private AssignmentTypeDbManager atDb = AssignmentTypeDbManager.getInstance();
-//  private CommitStatusDbManager csdb = CommitStatusDbManager.getInstance();
   private JenkinsService js = JenkinsService.getInstance();
-//  private GitlabService gs = GitlabService.getInstance();
 
   private GroupDbService gdb = GroupDbService.getInstance();
   private ProjectDbService gpdb = ProjectDbService.getInstance();
@@ -62,7 +55,7 @@ public class GroupCommitRecordService {
       Response response = getResult(group.getGroupName());
       JSONArray result = new JSONArray((String) response.getEntity());
       JSONObject ob = new JSONObject();
-      ob.put("group", group.getGroupName());
+      ob.put("groupName", group.getGroupName());
       ob.put("commitRecord", result);
       array.put(ob);
     }
@@ -71,11 +64,10 @@ public class GroupCommitRecordService {
 
   /**
    * get all commit record of one student.
-   * 
+   *
    * @param groupName group name
    * @return homework, commit status, commit number
    */
-
   @GET
   @Path("/{name}/commits/result")
   @Produces(MediaType.APPLICATION_JSON)
@@ -96,31 +88,31 @@ public class GroupCommitRecordService {
 
     return Response.ok(array.toString()).build();
 
-//    int userId = userDb.getUserIdByUsername(username);
-//    JSONArray array = new JSONArray();
-//    for (Assignment assignment : assignmentDb.getAllAssignment()) {
-//      int auId = auDb.getAuid(assignment.getId(), userId);
-//      JSONObject ob = new JSONObject();
-//      ob.put("assignmentName", assignment.getName());
-//      ob.put("releaseTime", assignment.getReleaseTime());
-//      ob.put("commitRecord", db.getLastCommitRecord(auId));
-//      array.put(ob);
-//    }
-//    return Response.ok(array.toString()).build();
+    //    int userId = userDb.getUserIdByUsername(username);
+    //    JSONArray array = new JSONArray();
+    //    for (Assignment assignment : assignmentDb.getAllAssignment()) {
+    //      int auId = auDb.getAuid(assignment.getId(), userId);
+    //      JSONObject ob = new JSONObject();
+    //      ob.put("assignmentName", assignment.getName());
+    //      ob.put("releaseTime", assignment.getReleaseTime());
+    //      ob.put("commitRecord", db.getLastCommitRecord(auId));
+    //      array.put(ob);
+    //    }
+    //    return Response.ok(array.toString()).build();
   }
 
   /**
    * get student build detail info
-   * 
-   * @param groupName   student id
+   *
+   * @param groupName student id
    * @param projectName assignment name
    * @return build detail
    */
   @GET
   @Path("/{name}/projects/{projectName}/commits")
   @Produces(MediaType.APPLICATION_JSON)
-  public Response getCommitRecord(@PathParam("name") String groupName,
-      @PathParam("projectName") String projectName) {
+  public Response getCommitRecord(
+      @PathParam("name") String groupName, @PathParam("projectName") String projectName) {
     JenkinsService js = JenkinsService.getInstance();
     JSONArray array = new JSONArray();
     int pgid = gpdb.getPgid(groupName, projectName);
@@ -148,8 +140,8 @@ public class GroupCommitRecordService {
 
   /**
    * update user assignment commit record to DB.
-   * 
-   * @param groupName   username
+   *
+   * @param groupName username
    * @param projectName assignment name
    * @throws ParseException (to do)
    */
@@ -157,8 +149,8 @@ public class GroupCommitRecordService {
   @Path("/update")
   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
   @Produces(MediaType.APPLICATION_JSON)
-  public Response updateCommitRecord(@FormParam("user") String groupName,
-      @FormParam("proName") String projectName) {
+  public Response updateCommitRecord(
+      @FormParam("user") String groupName, @FormParam("proName") String projectName) {
 
     JSONObject ob = new JSONObject();
     ProjectTypeEnum type = gpdb.getProjectType(projectName);
@@ -192,22 +184,24 @@ public class GroupCommitRecordService {
 
   /**
    * update user assignment commit record to DB.
-   * 
-   * @param groupName   username
+   *
+   * @param groupName username
    * @param projectName assignment name
-   * @param number      commit number
+   * @param number commit number
    * @throws ParseException (to do)
    */
   @GET
   @Path("/{name}/projects/{projectName}/feedback/{num}")
   @Produces(MediaType.APPLICATION_JSON)
-  public Response getFeedback(@PathParam("name") String groupName,
-      @PathParam("projectName") String projectName, @PathParam("num") int number) {
+  public Response getFeedback(
+      @PathParam("name") String groupName,
+      @PathParam("projectName") String projectName,
+      @PathParam("num") int number) {
     JenkinsService js = JenkinsService.getInstance();
     JSONObject ob = new JSONObject();
     ProjectTypeEnum projectTypeEnum = gpdb.getProjectType(projectName);
-    GroupProjectType projectType = GroupProjectFactory
-        .getGroupProjectType(projectTypeEnum.getTypeName());
+    GroupProjectType projectType =
+        GroupProjectFactory.getGroupProjectType(projectTypeEnum.getTypeName());
     String jobName = js.getJobName(groupName, projectName);
     String console = js.getConsole(jobName, number);
     int pgid = pgdb.getId(groupName, projectName);
@@ -218,5 +212,4 @@ public class GroupCommitRecordService {
 
     return Response.ok().entity(ob.toString()).build();
   }
-
 }

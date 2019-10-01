@@ -1,32 +1,27 @@
 package fcu.selab.progedu.service;
 
-import java.util.List;
-
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
-import org.gitlab.api.models.GitlabAccessLevel;
-import org.gitlab.api.models.GitlabGroup;
-
 import fcu.selab.progedu.conn.GitlabService;
 import fcu.selab.progedu.conn.JenkinsService;
+import fcu.selab.progedu.data.Group;
 import fcu.selab.progedu.db.service.GroupDbService;
 import fcu.selab.progedu.db.service.ProjectDbService;
 import fcu.selab.progedu.db.service.UserDbService;
 import org.gitlab.api.models.GitlabAccessLevel;
 import org.gitlab.api.models.GitlabGroup;
+import org.json.JSONObject;
 
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.Produces;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
 import java.util.List;
 
 @Path("groups")
@@ -88,8 +83,8 @@ public class GroupService {
   @Path("/{name}/members")
   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
   @Produces(MediaType.APPLICATION_JSON)
-  public Response addMembers(@PathParam("name") String name,
-      @FormParam("members") List<String> members) {
+  public Response addMembers(
+      @PathParam("name") String name, @FormParam("members") List<String> members) {
     int groupGitLabId = gdb.getGitlabId(name);
     for (String member : members) {
       int gitlabId = udb.getGitLabId(member);
@@ -110,8 +105,8 @@ public class GroupService {
   @PUT
   @Path("/{name}/members/{username}")
   @Produces(MediaType.APPLICATION_JSON)
-  public Response updateLeader(@PathParam("name") String name,
-      @PathParam("username") String leader) {
+  public Response updateLeader(
+      @PathParam("name") String name, @PathParam("username") String leader) {
     int groupGitLabId = gdb.getGitlabId(name);
     // update newLeader's AccessLevel to owner
     int leaderGitlabId = udb.getGitLabId(leader);
@@ -120,8 +115,8 @@ public class GroupService {
     String currentLeader = gdb.getLeader(name);
     int currentLeaderGitlabId = udb.getGitLabId(currentLeader);
     // update currentLeader's AccessLevel to master
-    gitlabService.updateMemberAccessLevel(groupGitLabId, currentLeaderGitlabId,
-        GitlabAccessLevel.Master);
+    gitlabService.updateMemberAccessLevel(
+        groupGitLabId, currentLeaderGitlabId, GitlabAccessLevel.Master);
     // update db.group leader
     gdb.updateLeader(name, leader);
 
@@ -130,16 +125,16 @@ public class GroupService {
 
   /**
    * remove members
-   * 
-   * @param name   group name
+   *
+   * @param name group name
    * @param member member
    * @return response
    */
   @DELETE
   @Path("/{name}/members/{username}")
   @Produces(MediaType.APPLICATION_JSON)
-  public Response removeMember(@PathParam("name") String name,
-      @PathParam("username") String member) {
+  public Response removeMember(
+      @PathParam("name") String name, @PathParam("username") String member) {
     int groupGitLabId = gdb.getGitlabId(name);
     int gitlabId = udb.getGitLabId(member);
     gitlabService.removeGroupMember(groupGitLabId, gitlabId);
@@ -156,7 +151,7 @@ public class GroupService {
   @DELETE
   @Path("/{name}")
   @Produces(MediaType.APPLICATION_JSON)
-  public void removeGroup(@PathParam("name") String name) {
+  public Response removeGroup(@PathParam("name") String name) {
 
     // remove gitlab
     //    gitlabService.deleteProjects(name);
@@ -173,6 +168,26 @@ public class GroupService {
     }
     // remove db
     gdb.removeGroup(name);
+    return Response.ok().build();
+  }
+
+  /**
+   * get group info
+   *
+   * @param name group name
+   * @return response
+   */
+  @GET
+  @Path("/{name}")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response getGroup(@PathParam("name") String name) {
+    Group group = gdb.getGroup(name);
+    JSONObject ob = new JSONObject();
+    ob.append("name", group.getGroupName());
+    ob.append("leader", group.getLeader());
+    ob.append("members", group.getMembers());
+    ob.append("project", group.getProjects());
+    return Response.ok().entity(ob.toString()).build();
   }
   //
   //  private void addMembers(String name, int groupGitLabId, List<String> members) {
