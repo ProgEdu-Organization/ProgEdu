@@ -2,7 +2,7 @@
   <div class="card">
     <div class="card-header">
       <i class="cui-pencil icons"></i>
-      <label>{{assignmentName}}</label>
+      <label>{{projectName}}</label>
       <button class="btn btn-primary float-right"> <i class="cui-screen-desktop"></i></button>
     </div>
     <div class="card-body">
@@ -17,16 +17,19 @@
           </div>
           <hr />
           <span class="h2">Project Members</span>
-          <table class='table table-bordered' style="text-align:center;">
+          <table class='table table-bordered'>
             <thead>
               <td>Usernamme</td>
               <td>Name</td>
+              <td>Leader</td>
             </thead>
             <tbody>
               <ng-container *ngIf='group'>
                 <tr *ngFor='let member of group.members[0]'>
                   <td>{{member.username}}</td>
                   <td>{{member.name}}</td>
+                  <td *ngIf="member.id === group.leader[0]"><span class="badge badge-success">Leader</span></td>
+                  <td *ngIf="member.id !== group.leader[0]"></td>
                 <tr>
               </ng-container>
             </tbody>

@@ -75,7 +75,7 @@ export class ProjectChoosedComponent implements OnInit {
   getGroupMembers(groupName: string) {
     this.projectService.getGroupMembers(groupName).subscribe(
       response => {
-        console.log(response.members[0]);
+        console.log(response);
         this.group = response;
       }
     );
