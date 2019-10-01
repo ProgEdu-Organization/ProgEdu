@@ -14,8 +14,8 @@ const createProjectOptions = ({
 
 export class GroupManagementService {
   GET_USERS_API = environment.SERVER_URL + '/webapi/user/getUsers';
-  GET_GROUPS_API = environment.SERVER_URL + '/webapi/groups/commits/result';
   CREATE_PROJECT = environment.SERVER_URL + '/webapi/groups/create';
+  GET_GROUP_MEMBER_API = environment.SERVER_URL + '/webapi/groups';
   constructor(private http: HttpClient) { }
 
   getAllUserData(): Observable<any> {
@@ -39,6 +39,6 @@ export class GroupManagementService {
   }
 
   getAllGroup(): Observable<any> {
-    return this.http.get<any>(this.GET_GROUPS_API);
+    return this.http.get<any>(this.GET_GROUP_MEMBER_API);
   }
 }

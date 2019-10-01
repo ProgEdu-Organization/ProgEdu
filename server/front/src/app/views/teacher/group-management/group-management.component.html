@@ -95,10 +95,20 @@
             <thead>
               <tr>
                 <th>Group</th>
-                <th>Username</th>
+                <th>Leader Username</th>
+                <th>Delete Group</th>
               </tr>
             </thead>
             <tbody>
+              <ng-container *ngFor='let g of exitsGroups'>
+                <tr id="feedback-bar" (click)='switchToGroupDetail(g.name)'>
+                  <td>{{g.name}}</td>
+                  <ng-container *ngFor='let member of g.members'>
+                    <td *ngIf="member.id == g.leader">{{member.name}}</td>
+                  </ng-container>
+                  <td>Delete</td>
+                </tr>
+              </ng-container>
             </tbody>
           </table>
         </div>

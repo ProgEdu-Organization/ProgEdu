@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import * as $ from 'jquery';
 import { GroupManagementService } from './group-management.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 
 const name = 'name';
 const projectName = 'projectName';
@@ -17,7 +18,9 @@ export class GroupManagementComponent implements OnInit {
   public users: Array<any> = new Array<any>();
   public group: FormGroup;
   public search;
-  constructor(private groupManagementService: GroupManagementService, private fb: FormBuilder) { }
+  public exitsGroups;
+  constructor(private groupManagementService: GroupManagementService, private fb: FormBuilder,
+    private router: Router) { }
 
   public projectTypes: Array<any> = ['javac', 'maven', 'android', 'web'];
   ngOnInit() {
@@ -32,11 +35,7 @@ export class GroupManagementComponent implements OnInit {
       member: [new Array<string>(), Validators.minLength(3)],
     });
     this.onChanges();
-    this.groupManagementService.getAllGroup().subscribe(
-      response => {
-        console.log(response);
-      }
-    );
+    this.getAllGroups();
   }
   onChanges(): void {
     this.group.get(name).valueChanges.subscribe(
@@ -63,6 +62,16 @@ export class GroupManagementComponent implements OnInit {
     );
   }
 
+  getAllGroups() {
+    this.groupManagementService.getAllGroup().subscribe(
+      response => {
+        console.log('getgetAllGroup');
+        console.log(response);
+        this.exitsGroups = response;
+      }
+    );
+  }
+
   showIsValidById(id: string) {
     $('#' + id).addClass('is-valid');
     $('#' + id).removeClass('is-invalid');
@@ -80,7 +89,6 @@ export class GroupManagementComponent implements OnInit {
       const selectedUsers = this.group.get('member').value;
       for (const i in selectedUsers) {
         if (i) {
-          console.log(i);
           this.users = this.users.filter(item => {
             return item.username !== selectedUsers[i];
           });
@@ -106,6 +114,10 @@ export class GroupManagementComponent implements OnInit {
     this.getAllUser();
   }
 
+  switchToGroupDetail(groupName) {
+    this.router.navigate(['./dashboard/groupManagement/edit']);
+  }
+
   groupSubmit() {
     if (this.group.dirty && this.group.valid) {
       this.groupManagementService.createProject(this.group.get(name).value,
@@ -115,6 +127,7 @@ export class GroupManagementComponent implements OnInit {
         this.group.get(member).value).subscribe(
           (response) => {
             console.log(response);
+            this.getAllGroups();
           },
           error => {
 

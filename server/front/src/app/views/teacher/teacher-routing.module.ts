@@ -10,7 +10,7 @@ import { GroupDashboardComponent } from '../shared/group-dashboard/group-dashboa
 import { SharedModule } from '../shared/shared.module';
 import { AssignmentChoosedComponent } from '../shared/assignment-choosed/assignment-choosed.component';
 import { ProjectChoosedComponent } from '../shared/project-choosed/project-choosed.component';
-
+import { EditGroupManagementComponent } from './edit-group-management/edit-group-management.component';
 const routes: Routes = [
   {
     path: '',
@@ -66,7 +66,16 @@ const routes: Routes = [
     component: GroupManagementComponent,
     data: {
       title: 'Group Management'
-    }
+    },
+    children: [
+      {
+        path: 'edit',
+        component: EditGroupManagementComponent,
+        data: {
+          title: 'Edit Group'
+        }
+      },
+    ]
   },
   {
     path: 'chart',
