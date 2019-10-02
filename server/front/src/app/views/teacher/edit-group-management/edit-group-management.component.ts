@@ -12,6 +12,7 @@ import { HttpResponseBase } from '@angular/common/http';
 export class EditGroupManagementComponent implements OnInit {
   public groupName;
   public group;
+  public users;
   public groupForm: FormGroup;
 
   constructor(private editGroupManagementService: EditGroupManagementService, private activeRoute: ActivatedRoute,
@@ -26,6 +27,7 @@ export class EditGroupManagementComponent implements OnInit {
       leader: [new Array(), [Validators.required, Validators.maxLength(10)]],
       members: [new Array(), Validators.minLength(3)],
     });
+    this.getAllUser();
 
   }
 
@@ -47,13 +49,13 @@ export class EditGroupManagementComponent implements OnInit {
     );
   }
 
-  editGroupSubmit() {
+  editLeaderSubmit() {
     const leader = this.groupForm.get('leader').value;
     const groupName = this.groupForm.get('name').value;
     console.log('leader: ' + leader + ' groupName: ' + groupName);
     this.editGroupManagementService.editGroupLeader(groupName, leader).subscribe(
       response => {
-        console.log('uppdate Leader');
+        this.getGroup(groupName);
       }
     );
   }
@@ -64,8 +66,38 @@ export class EditGroupManagementComponent implements OnInit {
     this.groupForm.get('leader').setValue(member);
   }
 
-  removeGroupMemberByUsername(username) {
-    console.log(username);
+  removeGroupMemberByUsername(groupName: string, member: string) {
+    this.editGroupManagementService.deleteGroupMember(groupName, member).subscribe(
+      () => {
+        this.getGroup(groupName);
+        this.getAllUser();
+      }
+    );
+  }
+
+  getAllUser() {
+    this.editGroupManagementService.getAllUser().subscribe(response => {
+      this.users = response.Users;
+      // reGet the all user data and remove exist in  group merber
+      const selectedUsers = this.groupForm.get('members').value;
+      for (const i of selectedUsers) {
+        if (i) {
+          this.users = this.users.filter(item => {
+            return item.username !== i[0];
+          });
+        }
+      }
+      console.log(this.users);
+    });
+  }
+
+  addGroupMemberByUsername(groupName: string, username: string) {
+    this.editGroupManagementService.addGroupMemeber(groupName, username).subscribe(
+      () => {
+        this.getGroup(groupName);
+        this.getAllUser();
+      }
+    );
   }
 
 }

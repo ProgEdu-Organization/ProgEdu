@@ -12,7 +12,7 @@ const editGroupOptions = ({
   providedIn: 'root'
 })
 export class EditGroupManagementService {
-
+  GET_USERS_API = environment.SERVER_URL + '/webapi/user/getUsers';
   constructor(private http: HttpClient) { }
 
   getGroup(groupName: string): Observable<any> {
@@ -23,5 +23,22 @@ export class EditGroupManagementService {
   editGroupLeader(groupName: string, leader: string) {
     const EDIT_LEADER_API = environment.SERVER_URL + `/webapi/groups/${groupName}/members/${leader[0]}`;
     return this.http.put(EDIT_LEADER_API, editGroupOptions);
+  }
+
+  deleteGroupMember(groupName: string, member: string) {
+    const EDIT_LEADER_API = environment.SERVER_URL + `/webapi/groups/${groupName}/members/${member[0]}`;
+    return this.http.delete(EDIT_LEADER_API);
+  }
+
+  getAllUser() {
+    return this.http.get<any>(this.GET_USERS_API);
+  }
+
+  addGroupMemeber(groupName: string, username: string) {
+    const ADD_MEMBER_API = environment.SERVER_URL + `/webapi/groups/${groupName}/members`;
+    const params = new HttpParams()
+      .append('members', username);
+
+    return this.http.post(ADD_MEMBER_API, params);
   }
 }

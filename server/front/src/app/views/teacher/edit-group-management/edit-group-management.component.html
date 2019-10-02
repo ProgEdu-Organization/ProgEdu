@@ -3,7 +3,7 @@
     <div class='row'>
       <div class="col-md-6">
         <div class='card'>
-          <form [formGroup]="groupForm" (ngSubmit)="editGroupSubmit()">
+          <form [formGroup]="groupForm">
             <div class='card-header'>
             </div>
             <div class='card-body'>
@@ -15,8 +15,11 @@
               </div>
               <div class="form-group row">
                 <label class="col-md-3 col-form-label" for="leader">Leader</label>
-                <div class="col-md-9">
+                <div class="col-md-5">
                   <input type="text" id="leader" name="leader" class="form-control" formControlName='leader'>
+                </div>
+                <div class='col-md-4'>
+                  <button class="btn btn-sm btn-primary" type='button' (click)='editLeaderSubmit()'>Submit</button>
                 </div>
               </div>
               <div class="form-group row">
@@ -29,7 +32,7 @@
                           {{recordIndex+1}}. {{member[0]}} {{member[1]}}</p>
                       </td>
                       <td><button class="badge badge-danger" type='button'
-                          (click)='removeGroupMemberByUsername(member[0]);'>Remove</button>
+                          (click)="removeGroupMemberByUsername(groupForm.get('name').value, member);">Remove</button>
                       </td>
                     </tr>
                   </table>
@@ -37,17 +40,39 @@
                 </div>
               </div>
             </div>
-            <div class="card-footer">
-              <button class="btn btn-sm btn-primary" [disabled]='!groupForm.valid' type='submit'>Submit</button>
-            </div>
           </form>
         </div>
       </div>
       <div class="col-md-6">
-        <div class='card'>
+        <div class="card">
           <div class='card-header'>
+            <div class='input-group'>
+              <span>
+                <button class="btn btn-primary" type="button" [disabled]='true'><i class="fa fa-search"></i>
+                  Search</button></span>
+              <input type='text' class='form-control col-md-6' [(ngModel)]='search'>
+            </div>
           </div>
-          <div class='card-body'>
+          <div class="card-body">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Username</th>
+                  <th>Name</th>
+                  <th [style.text-align]="'center'">Add To Group</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let user of users | filter:search">
+                  <td>{{user.username}}</td>
+                  <td>{{user.name}}</td>
+                  <td [style.text-align]="'center'">
+                    <button class="badge badge-success"
+                      (click)='addGroupMemberByUsername(groupName, user.username);'>Add</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
