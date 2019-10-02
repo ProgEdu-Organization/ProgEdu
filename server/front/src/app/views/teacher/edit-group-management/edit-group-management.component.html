@@ -1,8 +1,56 @@
 <div class="animated fadeIn">
-  <div class='card'>
-    <div class='card-header'>
-    </div>
-    <div class='card-body'>
+  <div class="col-md-10" *ngIf='group && groupForm'>
+    <div class='row'>
+      <div class="col-md-6">
+        <div class='card'>
+          <form [formGroup]="groupForm" (ngSubmit)="editGroupSubmit()">
+            <div class='card-header'>
+            </div>
+            <div class='card-body'>
+              <div class="form-group row">
+                <label class="col-md-3 col-form-label" for="name">Group Name</label>
+                <div class="col-md-9">
+                  <input type="text" id="name" name="name" class="form-control" formControlName='name' readonly>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-md-3 col-form-label" for="leader">Leader</label>
+                <div class="col-md-9">
+                  <input type="text" id="leader" name="leader" class="form-control" formControlName='leader'>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-md-3 col-form-label" for="members">Members</label>
+                <div class="col-md-9">
+                  <table class="table">
+                    <tr *ngFor="let member of groupForm.get('members').value;let recordIndex=index;">
+                      <td>
+                        <p class="col-form-label assigned" (click)="setLeader(member)">
+                          {{recordIndex+1}}. {{member[0]}} {{member[1]}}</p>
+                      </td>
+                      <td><button class="badge badge-danger" type='button'
+                          (click)='removeGroupMemberByUsername(member[0]);'>Remove</button>
+                      </td>
+                    </tr>
+                  </table>
+                  <p class='alert alert-danger' *ngIf="groupForm.get('members').value.length === 0">No member</p>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <button class="btn btn-sm btn-primary" [disabled]='!groupForm.valid' type='submit'>Submit</button>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class='card'>
+          <div class='card-header'>
+          </div>
+          <div class='card-body'>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
