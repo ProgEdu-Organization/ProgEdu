@@ -38,7 +38,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor='let group of groups  | filter:search'>
+            <tr *ngFor='let group of groups  | groupFilter:search'>
               <td width="15%" class='text-left'>{{group.groupName}}</td>
               <ng-container *ngIf="group.commitRecord">
                 <ng-container *ngFor='let project of group.commitRecord'>

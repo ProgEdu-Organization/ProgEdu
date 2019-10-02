@@ -26,6 +26,7 @@ import { CarouselModule } from 'ngx-bootstrap/carousel';
 
 import { SharedModule } from '../shared/shared.module';
 import { EditGroupManagementComponent } from './edit-group-management/edit-group-management.component';
+import { CreateGroupComponent } from './create-group/create-group.component';
 @NgModule({
     imports: [
         FormsModule,
@@ -52,6 +53,7 @@ import { EditGroupManagementComponent } from './edit-group-management/edit-group
         ChartComponent,
         GroupManagementComponent,
         EditGroupManagementComponent,
+        CreateGroupComponent,
     ]
 })
 export class TeacherModule { }

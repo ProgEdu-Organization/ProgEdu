@@ -61,7 +61,6 @@ public class GroupCommitRecordService {
     }
     return Response.ok().entity(array.toString()).build();
   }
-
   /**
    * get all commit record of one student.
    *

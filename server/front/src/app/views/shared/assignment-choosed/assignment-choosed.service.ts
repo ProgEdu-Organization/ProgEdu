@@ -11,7 +11,7 @@ export class AssignmentChoosedService {
   ASSIGNMENT_API = environment.SERVER_URL + '/webapi/assignment/getAssignment';
   GITLAB_URL_API = environment.SERVER_URL + '/webapi/commits/gitLab';
   FEEDBACK_API = environment.SERVER_URL + '/webapi/commits/feedback';
-  SCREENSHOt_API = environment.SERVER_URL + '/webapi/commits/screenshot/getScreenshotURL';
+  SCREENSHOT_API = environment.SERVER_URL + '/webapi/commits/screenshot/getScreenshotURL';
   constructor(private http: HttpClient) { }
 
   getCommitDetail(assignmentName: string, username: string): Observable<any> {
@@ -47,7 +47,7 @@ export class AssignmentChoosedService {
       .set('username', username)
       .set('assignmentName', assignmentName)
       .set('commitNumber', commitNumber.toString());
-    return this.http.get<any>(this.SCREENSHOt_API, { params });
+    return this.http.get<any>(this.SCREENSHOT_API, { params });
   }
 
 }

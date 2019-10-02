@@ -11,6 +11,7 @@ import { SharedModule } from '../shared/shared.module';
 import { AssignmentChoosedComponent } from '../shared/assignment-choosed/assignment-choosed.component';
 import { ProjectChoosedComponent } from '../shared/project-choosed/project-choosed.component';
 import { EditGroupManagementComponent } from './edit-group-management/edit-group-management.component';
+import { CreateGroupComponent } from './create-group/create-group.component';
 const routes: Routes = [
   {
     path: '',
@@ -63,11 +64,14 @@ const routes: Routes = [
   },
   {
     path: 'groupManagement',
-    component: GroupManagementComponent,
     data: {
       title: 'Group Management'
     },
     children: [
+      {
+        path: '',
+        component: GroupManagementComponent,
+      },
       {
         path: 'edit',
         component: EditGroupManagementComponent,
@@ -75,6 +79,13 @@ const routes: Routes = [
           title: 'Edit Group'
         }
       },
+      {
+        path: 'create',
+        component: CreateGroupComponent,
+        data: {
+          title: 'Create Group'
+        }
+      }
     ]
   },
   {

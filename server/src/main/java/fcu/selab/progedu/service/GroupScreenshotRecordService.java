@@ -40,17 +40,19 @@ public class GroupScreenshotRecordService {
 
   /**
    * update stu project commit record.
-   * 
+   *
    * @param projectName assignment name
-   * @param urls        screenshot png file name
+   * @param urls screenshot png file name
    * @throws SQLException SQLException
    */
   @POST
   @Path("updateURL")
   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
   @Produces(MediaType.APPLICATION_JSON)
-  public Response updateScreenshotPng(@FormParam("username") String groupName,
-      @FormParam("assignmentName") String projectName, @FormParam("url") List<String> urls) {
+  public Response updateScreenshotPng(
+      @FormParam("username") String groupName,
+      @FormParam("assignmentName") String projectName,
+      @FormParam("url") List<String> urls) {
     System.out.println("username: " + groupName + "jobName: " + projectName);
     JSONObject ob = new JSONObject();
     System.out.println("Png file name " + urls);
@@ -61,8 +63,16 @@ public class GroupScreenshotRecordService {
 
     try {
       for (String url : urls) {
-        String screenShotUrl = "/job/" + groupName + "_" + projectName + "/" + lastCommitNum
-            + "/artifact/target/screenshot/" + url + ".png";
+        String screenShotUrl =
+            "/job/"
+                + groupName
+                + "_"
+                + projectName
+                + "/"
+                + lastCommitNum
+                + "/artifact/target/screenshot/"
+                + url
+                + ".png";
         db.addProjectScreenshotRecord(pcrid, screenShotUrl);
       }
       ob.put("groupName", groupName);
@@ -87,8 +97,10 @@ public class GroupScreenshotRecordService {
   @GET
   @Path("getScreenshotURL")
   @Produces(MediaType.APPLICATION_JSON)
-  public Response getScreenshotPng(@QueryParam("username") String groupName,
-      @QueryParam("assignmentName") String projectName, @QueryParam("commitNumber") int number) {
+  public Response getScreenshotPng(
+      @QueryParam("groupName") String groupName,
+      @QueryParam("projectName") String projectName,
+      @QueryParam("commitNumber") int number) {
     JSONObject ob = new JSONObject();
     int pgid = pgdb.getId(groupName, projectName);
     System.out.println(pgid);

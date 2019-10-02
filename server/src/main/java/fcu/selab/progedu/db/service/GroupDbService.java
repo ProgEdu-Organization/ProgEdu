@@ -31,9 +31,9 @@ public class GroupDbService {
 
   /**
    * add group information to db
-   * 
-   * @param gitlabId       gitlab id of group
-   * @param groupName      group name
+   *
+   * @param gitlabId gitlab id of group
+   * @param groupName group name
    * @param leaderUsername leader's username
    */
   public void addGroup(int gitlabId, String groupName, String leaderUsername) {
@@ -43,8 +43,8 @@ public class GroupDbService {
 
   /**
    * add member to group
-   * 
-   * @param username  username
+   *
+   * @param username username
    * @param groupName groupName
    */
   public void addMember(String username, String groupName) {
@@ -55,7 +55,7 @@ public class GroupDbService {
 
   /**
    * get gitlab id
-   * 
+   *
    * @param name group name
    * @return gitlab id
    */
@@ -65,7 +65,7 @@ public class GroupDbService {
 
   /**
    * get id
-   * 
+   *
    * @param name group name
    * @return id
    */
@@ -75,7 +75,7 @@ public class GroupDbService {
 
   /**
    * get all groups
-   * 
+   *
    * @return all groups
    */
   public List<Group> getGroups() {
@@ -84,7 +84,7 @@ public class GroupDbService {
 
   /**
    * get groups info by uid
-   * 
+   *
    * @param uid user id
    * @return groups
    */
@@ -95,12 +95,11 @@ public class GroupDbService {
       groups.add(gdb.getGroup(gid));
     }
     return groups;
-
   }
 
   /**
    * get group
-   * 
+   *
    * @param name group name
    * @return Group
    */
@@ -111,6 +110,7 @@ public class GroupDbService {
     List<GroupProject> projects = new ArrayList<>();
     List<Integer> uids = gudb.getUids(gid);
     List<Integer> pgids = pgdb.getPgids(gid);
+
     for (int uid : uids) {
       members.add(udb.getUser(uid));
     }
@@ -124,7 +124,7 @@ public class GroupDbService {
 
   /**
    * get group names
-   * 
+   *
    * @param uid user id
    * @return group names
    */
@@ -136,24 +136,22 @@ public class GroupDbService {
       groupNames.add(groupName);
     }
     return groupNames;
-
   }
 
   /**
    * get team leader username
-   * 
+   *
    * @param groupName group name
    * @return leader username
    */
   public String getLeader(String groupName) {
     int leaderId = gdb.getLeader(groupName);
     return udb.getUsername(leaderId);
-
   }
 
   /**
    * remove group by name
-   * 
+   *
    * @param name group name
    */
   public void removeGroup(String name) {
@@ -165,23 +163,22 @@ public class GroupDbService {
       for (int pcrid : pcrids) { // Project_ScreenShot
         psrdb.deleteProjectScreenshot(pcrid);
       }
-      pcrdb.deleteProjectRecord(pgid);// Project_Commit_Record
+      pcrdb.deleteProjectRecord(pgid); // Project_Commit_Record
     }
     List<Integer> pids = pgdb.getPids(gid);
-    pgdb.remove(gid);// Project_Group
+    pgdb.remove(gid); // Project_Group
 
     for (int pid : pids) {
-      pdb.removeProject(pid);// Project
+      pdb.removeProject(pid); // Project
     }
-    gudb.remove(gid);// Group_User
-    gdb.remove(gid);// Group
-
+    gudb.remove(gid); // Group_User
+    gdb.remove(gid); // Group
   }
 
   /**
    * remove member
-   * 
-   * @param name   group name
+   *
+   * @param name group name
    * @param member remove member
    */
   public void removeMember(String name, String member) {
@@ -192,15 +189,13 @@ public class GroupDbService {
 
   /**
    * update leader
-   * 
-   * @param name   group name
+   *
+   * @param name group name
    * @param leader leader username
    */
   public void updateLeader(String name, String leader) {
     int uid = udb.getUserIdByUsername(leader);
     int gid = gdb.getId(name);
     gdb.updateLeader(gid, uid);
-
   }
-
 }

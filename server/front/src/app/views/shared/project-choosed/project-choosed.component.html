@@ -3,7 +3,8 @@
     <div class="card-header">
       <i class="cui-pencil icons"></i>
       <label>{{projectName}}</label>
-      <button class="btn btn-primary float-right"> <i class="cui-screen-desktop"></i></button>
+      <button class="btn btn-primary float-right" (click)='isCollapsed=!isCollapsed;'> <i
+          class="cui-screen-desktop"></i></button>
     </div>
     <div class="card-body">
       <div class='row'>
@@ -16,24 +17,38 @@
             <button button (click)='copyToClipboard()'><i class="fa fa-copy fa-lg"></i></button>
           </div>
           <hr />
-          <span class="h2">Project Members</span>
-          <table class='table table-bordered'>
-            <thead>
-              <td>Usernamme</td>
-              <td>Name</td>
-              <td>Leader</td>
-            </thead>
-            <tbody>
-              <ng-container *ngIf='group'>
-                <tr *ngFor='let member of group.members[0]'>
-                  <td>{{member.username}}</td>
-                  <td>{{member.name}}</td>
-                  <td *ngIf="member.id === group.leader[0]"><span class="badge badge-success">Leader</span></td>
-                  <td *ngIf="member.id !== group.leader[0]"></td>
-                <tr>
-              </ng-container>
-            </tbody>
-          </table>
+          <span class="h2">Members</span>
+          <div class="col-lg-10">
+            <table class='table table-bordered'>
+              <thead>
+                <td>Leader</td>
+                <td>Username</td>
+                <td>Name</td>
+              </thead>
+              <tbody>
+                <ng-container *ngIf='group'>
+                  <tr *ngFor='let member of group.members'>
+                    <td *ngIf="member.id === group.leader"><span class="badge badge-success">Leader</span></td>
+                    <td *ngIf="member.id !== group.leader"></td>
+                    <td>{{member.username}}</td>
+                    <td>{{member.name}}</td>
+                  <tr>
+                </ng-container>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="col-lg-6" *ngIf="screenshotUrls" [collapse]="isCollapsed" (expanded)='updateScrennshotName()'>
+          <span class="h2">Screenshot: {{selectedScreenshotName}}</span>
+          <div style="border:1px #000000 solid;" (click)="updateScrennshotName()">
+            <carousel [interval]="false" style="background:black">
+              <slide *ngFor='let url of screenshotUrls'>
+                <a *ngIf='url' href='{{url}}' target="_blank">
+                  <img class='screenshot' src="{{url}}" alt="Screenshot" style="display: block;height: 500px;">
+                </a>
+              </slide>
+            </carousel>
+          </div>
         </div>
       </div>
       <hr>

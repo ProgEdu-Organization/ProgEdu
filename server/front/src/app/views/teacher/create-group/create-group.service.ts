@@ -12,7 +12,7 @@ const createProjectOptions = ({
   providedIn: 'root'
 })
 
-export class GroupManagementService {
+export class CreateGroupService {
   GET_USERS_API = environment.SERVER_URL + '/webapi/user/getUsers';
   CREATE_PROJECT = environment.SERVER_URL + '/webapi/groups/create';
   GET_GROUP_MEMBER_API = environment.SERVER_URL + '/webapi/groups';
@@ -40,10 +40,5 @@ export class GroupManagementService {
 
   getAllGroup(): Observable<any> {
     return this.http.get<any>(this.GET_GROUP_MEMBER_API);
-  }
-
-  deleteGroup(groupName: string): Observable<any> {
-    const DELETE_GROUP_API = environment.SERVER_URL + `/webapi/groups/${groupName}`;
-    return this.http.delete<any>(DELETE_GROUP_API);
   }
 }

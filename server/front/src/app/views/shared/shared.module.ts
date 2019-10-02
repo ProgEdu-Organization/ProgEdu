@@ -5,6 +5,7 @@ import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { CarouselModule } from 'ngx-bootstrap/carousel';
 import { FormsModule } from '@angular/forms';
 
+import { GroupFilterPipe } from './../../pipe/group-filter.pipe';
 import { FilterPipe } from './../../pipe/filter.pipe';
 
 import { AssignmentChoosedComponent } from '../shared/assignment-choosed/assignment-choosed.component';
@@ -18,7 +19,7 @@ import { GroupDashboardComponent } from './group-dashboard/group-dashboard.compo
     CollapseModule.forRoot(),
     CarouselModule.forRoot(),
   ],
-  declarations: [AssignmentChoosedComponent, ProjectChoosedComponent, GroupDashboardComponent, FilterPipe],
-  exports: [AssignmentChoosedComponent, GroupDashboardComponent, ProjectChoosedComponent, FilterPipe]
+  declarations: [AssignmentChoosedComponent, ProjectChoosedComponent, GroupDashboardComponent, GroupFilterPipe, FilterPipe],
+  exports: [AssignmentChoosedComponent, GroupDashboardComponent, ProjectChoosedComponent, GroupFilterPipe, FilterPipe]
 })
 export class SharedModule { }

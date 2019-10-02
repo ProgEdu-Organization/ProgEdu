@@ -3,11 +3,15 @@ package fcu.selab.progedu.service;
 import fcu.selab.progedu.conn.GitlabService;
 import fcu.selab.progedu.conn.JenkinsService;
 import fcu.selab.progedu.data.Group;
+import fcu.selab.progedu.data.User;
+import fcu.selab.progedu.db.GroupUserDbManager;
+import fcu.selab.progedu.db.UserDbManager;
 import fcu.selab.progedu.db.service.GroupDbService;
 import fcu.selab.progedu.db.service.ProjectDbService;
 import fcu.selab.progedu.db.service.UserDbService;
 import org.gitlab.api.models.GitlabAccessLevel;
 import org.gitlab.api.models.GitlabGroup;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import javax.ws.rs.Consumes;
@@ -22,6 +26,7 @@ import javax.ws.rs.FormParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Path("groups")
@@ -32,6 +37,7 @@ public class GroupService {
   private GroupDbService gdb = GroupDbService.getInstance();
   private ProjectDbService pdb = ProjectDbService.getInstance();
   private UserDbService udb = UserDbService.getInstance();
+  private GroupUserDbManager gudb = GroupUserDbManager.getInstance();
   private AssignmentService projectService = new AssignmentService();
 
   /**
@@ -182,13 +188,33 @@ public class GroupService {
   @Produces(MediaType.APPLICATION_JSON)
   public Response getGroup(@PathParam("name") String name) {
     Group group = gdb.getGroup(name);
+
     JSONObject ob = new JSONObject();
-    ob.append("name", group.getGroupName());
-    ob.append("leader", group.getLeader());
-    ob.append("members", group.getMembers());
-    ob.append("project", group.getProjects());
+    ob.put("name", group.getGroupName());
+    ob.put("leader", group.getLeader());
+    ob.put("members", group.getMembers());
+    ob.put("project", group.getProjects());
     return Response.ok().entity(ob.toString()).build();
   }
+
+  /**
+   * get all commit result.
+   *
+   * @return hw, color, commit
+   */
+  @GET
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response getAllGroup() {
+    JSONArray array = new JSONArray();
+    List<Group> groups = gdb.getGroups();
+    for (Group group : groups) {
+      Response response = getGroup(group.getGroupName());
+      JSONObject ob = new JSONObject(response.getEntity().toString());
+      array.put(ob);
+    }
+    return Response.ok().entity(array.toString()).build();
+  }
+
   //
   //  private void addMembers(String name, int groupGitLabId, List<String> members) {
   //    for (String member : members) {

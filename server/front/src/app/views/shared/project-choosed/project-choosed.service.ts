@@ -8,6 +8,7 @@ import { environment } from '../../../../environments/environment';
 })
 export class ProjectChoosedService {
   GITLAB_URL_API = environment.SERVER_URL + '/webapi/commits/gitLab';
+  SCREENSHOT_API = environment.SERVER_URL + '/webapi/groups/commits/screenshot/getScreenshotURL';
 
   constructor(private http: HttpClient) { }
 
@@ -31,6 +32,14 @@ export class ProjectChoosedService {
       .set('username', groupName)
       .set('assignmentName', projectName);
     return this.http.get<any>(this.GITLAB_URL_API, { params });
+  }
+
+  getScreenshotUrls(groupName: string, projectName: string, commitNumber: number): Observable<any> {
+    const params = new HttpParams()
+      .set('groupName', groupName)
+      .set('projectName', projectName)
+      .set('commitNumber', commitNumber.toString());
+    return this.http.get<any>(this.SCREENSHOT_API, { params });
   }
 
 }

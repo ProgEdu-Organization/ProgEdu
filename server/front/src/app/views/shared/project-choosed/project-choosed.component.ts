@@ -32,7 +32,9 @@ export class ProjectChoosedComponent implements OnInit {
     this.projectService.getCommitResult(this.groupName, this.projectName).subscribe(
       (resopnse) => {
         this.commits = resopnse;
+        this.selectedCommitNumber = this.commits.length;
         this.getFeedback();
+        this.getScreenshotUrls();
       }
     );
   }
@@ -64,7 +66,7 @@ export class ProjectChoosedComponent implements OnInit {
       response => {
         this.feedback = response.message;
         this.selectedCommitNumber = commitNumber;
-        // this.getScreenshotUrls();
+        this.getScreenshotUrls();
       },
       error => {
         console.log(error);
@@ -75,7 +77,6 @@ export class ProjectChoosedComponent implements OnInit {
   getGroupMembers(groupName: string) {
     this.projectService.getGroupMembers(groupName).subscribe(
       response => {
-        console.log(response);
         this.group = response;
       }
     );
@@ -87,6 +88,21 @@ export class ProjectChoosedComponent implements OnInit {
         this.gitlabprojectUrl = response.url;
       }
     );
+  }
+
+  getScreenshotUrls() {
+    if (this.group) {
+      this.projectService.getScreenshotUrls(this.groupName, this.projectName, this.selectedCommitNumber).subscribe(
+        (resopnse) => {
+          this.screenshotUrls = resopnse.urls;
+        }
+      );
+    }
+  }
+
+  updateScrennshotName() {
+    const url_split = $('.screenshot:visible').attr('src').split('/');
+    this.selectedScreenshotName = url_split[url_split.length - 1];
   }
 
 }

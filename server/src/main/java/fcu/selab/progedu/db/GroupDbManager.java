@@ -19,18 +19,16 @@ public class GroupDbManager {
 
   private IDatabase database = new MySqlDatabase();
 
-  private GroupDbManager() {
-
-  }
-
   private UserDbManager udb = UserDbManager.getInstance();
+
+  private GroupDbManager() {};
 
   /**
    * add groupinto db
-   * 
-   * @param gitlabId  gitlabId
+   *
+   * @param gitlabId gitlabId
    * @param groupName groupName
-   * @param leaderId  leaderId
+   * @param leaderId leaderId
    */
   public void addGroup(int gitlabId, String groupName, int leaderId) {
     String sql = "INSERT INTO ProgEdu.Group(gitLabId, name, leader) " + "VALUES(?, ?, ?)";
@@ -48,7 +46,7 @@ public class GroupDbManager {
 
   /**
    * get id
-   * 
+   *
    * @param name name
    */
   public int getId(String name) {
@@ -71,7 +69,7 @@ public class GroupDbManager {
 
   /**
    * get gitlab id
-   * 
+   *
    * @param name name
    */
   public int getGitlabId(String name) {
@@ -94,7 +92,7 @@ public class GroupDbManager {
 
   /**
    * get gitlab id
-   * 
+   *
    * @param name name
    */
   public int getLeader(String name) {
@@ -117,8 +115,8 @@ public class GroupDbManager {
 
   /**
    * update leader
-   * 
-   * @param id     group id
+   *
+   * @param id group id
    * @param leader leader uid
    */
   public void updateLeader(int id, int leader) {
@@ -135,10 +133,9 @@ public class GroupDbManager {
 
   /**
    * get all groups
-   * 
+   *
    * @return all group on gitlab
    */
-
   public List<Group> getGroups() {
     String statement = "SELECT * FROM ProgEdu.Group";
     List<Group> groups = new ArrayList<>();
@@ -168,7 +165,7 @@ public class GroupDbManager {
 
   /**
    * get group info by group name
-   * 
+   *
    * @param name group name
    * @return group info
    */
@@ -188,7 +185,6 @@ public class GroupDbManager {
           group.setGroupName(name);
           group.setId(id);
           group.setLeader(leader);
-
         }
       }
     } catch (SQLException e) {
@@ -199,7 +195,7 @@ public class GroupDbManager {
 
   /**
    * get group info by id
-   * 
+   *
    * @param id group id
    * @return group info
    */
@@ -220,7 +216,6 @@ public class GroupDbManager {
           group.setGroupName(name);
           group.setId(id);
           group.setLeader(leader);
-
         }
       }
     } catch (SQLException e) {
@@ -231,7 +226,7 @@ public class GroupDbManager {
 
   /**
    * remove Group by gid
-   * 
+   *
    * @param id group id
    */
   public void remove(int id) {
@@ -244,5 +239,4 @@ public class GroupDbManager {
       e.printStackTrace();
     }
   }
-
 }
