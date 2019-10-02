@@ -36,7 +36,7 @@ export class CreateGroupComponent implements OnInit {
       projectName: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(10)]],
       projectType: ['', [Validators.required]],
       leader: ['', [Validators.required, Validators.maxLength(10)]],
-      member: [new Array<string>(), Validators.minLength(3)],
+      member: [new Array(), Validators.minLength(3)],
     });
     this.onChanges();
     this.getAllGroups();
@@ -101,9 +101,9 @@ export class CreateGroupComponent implements OnInit {
     });
   }
 
-  addGroupMemberByUsername(username: string) {
+  addGroupMemberByUsername(username: string, u_name: string) {
     if (!this.group.get('member').value.includes(username)) {
-      this.group.get('member').value.push(username);
+      this.group.get('member').value.push([username, u_name]);
       this.users = this.users.filter(item => item.username !== username);
     }
     console.log(this.group.valid);
@@ -119,7 +119,7 @@ export class CreateGroupComponent implements OnInit {
   }
 
   switchToGroupDetail(groupName) {
-    this.router.navigate(['./dashboard/groupManagement/edit']);
+    this.router.navigate(['./dashboard/groupManagement']);
   }
 
   groupSubmit() {
@@ -127,7 +127,7 @@ export class CreateGroupComponent implements OnInit {
       this.createGroupService.createProject(this.group.get(name).value,
         this.group.get(projectName).value,
         this.group.get(projectType).value,
-        this.group.get(leader).value,
+        this.group.get(leader).value[0],
         this.group.get(member).value).subscribe(
           (response) => {
             console.log(response);

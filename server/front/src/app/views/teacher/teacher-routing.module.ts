@@ -6,7 +6,7 @@ import { CreateAssignmentComponent } from './create-assignment/create-assignment
 import { StudentManagementComponent } from './student-management/student-management.component';
 import { GroupManagementComponent } from './group-management/group-management.component';
 import { ChartComponent } from './chart/chart.component';
-import { GroupDashboardComponent } from '../shared/group-dashboard/group-dashboard.component';
+import { GroupDashboardComponent } from './group-dashboard/group-dashboard.component';
 import { SharedModule } from '../shared/shared.module';
 import { AssignmentChoosedComponent } from '../shared/assignment-choosed/assignment-choosed.component';
 import { ProjectChoosedComponent } from '../shared/project-choosed/project-choosed.component';

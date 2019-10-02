@@ -20,7 +20,6 @@ export class CreateGroupService {
 
   getAllUserData(): Observable<any> {
     return this.http.get<any>(this.GET_USERS_API);
-
   }
 
   createProject(name: string, projectName: string, projectType: string, leader: string, members: Array<string>): Observable<any> {

@@ -21,7 +21,7 @@ public class GroupDbManager {
 
   private UserDbManager udb = UserDbManager.getInstance();
 
-  private GroupDbManager() {};
+  private GroupDbManager() {}
 
   /**
    * add groupinto db

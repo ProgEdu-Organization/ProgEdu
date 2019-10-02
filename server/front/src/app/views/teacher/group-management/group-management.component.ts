@@ -30,7 +30,6 @@ export class GroupManagementComponent implements OnInit {
   getAllGroups() {
     this.groupManagementService.getAllGroup().subscribe(
       response => {
-        console.log(response);
         this.exitsGroups = response;
       }
     );

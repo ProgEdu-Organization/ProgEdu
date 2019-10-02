@@ -41,9 +41,9 @@
                   <tr *ngFor="let member of group.get('member').value;let recordIndex=index;">
                     <td>
                       <p class="col-form-label assigned" (click)="setLeader(member)">
-                        {{recordIndex+1}}. {{member}}</p>
+                        {{recordIndex+1}}. {{member[0]}} {{member[1]}}</p>
                     </td>
-                    <td><button class="badge badge-danger"
+                    <td><button class="badge badge-danger" type='button'
                         (click)='removeGroupMemberByUsername(member);'>Remove</button>
                     </td>
                   </tr>
@@ -73,14 +73,17 @@
             <thead>
               <tr>
                 <th>Username</th>
+                <th>Name</th>
                 <th>Add To Group</th>
               </tr>
             </thead>
             <tbody>
               <tr *ngFor="let user of users | filter:search">
                 <td>{{user.username}}</td>
+                <td>{{user.name}}</td>
                 <td>
-                  <button class="badge badge-success" (click)='addGroupMemberByUsername(user.username);'>Add</button>
+                  <button class="badge badge-success"
+                    (click)='addGroupMemberByUsername(user.username,user.name);'>Add</button>
                 </td>
               </tr>
             </tbody>
@@ -95,8 +98,8 @@
             <thead>
               <tr>
                 <th>Group</th>
-                <th>Leader Username</th>
-                <th>Delete Group</th>
+                <th>Leader</th>
+                <th>Members</th>
               </tr>
             </thead>
             <tbody>
@@ -104,9 +107,13 @@
                 <tr id="feedback-bar" (click)='switchToGroupDetail(g.name)'>
                   <td>{{g.name}}</td>
                   <ng-container *ngFor='let member of g.members'>
-                    <td *ngIf="member.id == g.leader">{{member.name}}</td>
+                    <td *ngIf="member.id === g.leader">{{member.name}}</td>
                   </ng-container>
-                  <td>Delete</td>
+                  <td>
+                    <ng-container *ngFor='let member of g.members'>
+                      <span *ngIf="member.id !== g.leader">{{member.name}}</span>
+                    </ng-container>
+                  </td>
                 </tr>
               </ng-container>
             </tbody>
