@@ -17,6 +17,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import fcu.selab.progedu.db.UserDbManager;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -35,7 +36,7 @@ import fcu.selab.progedu.status.StatusEnum;
 @Path("groups")
 public class GroupCommitRecordService {
   private JenkinsService js = JenkinsService.getInstance();
-
+  private UserDbManager dbManager = UserDbManager.getInstance();
   private GroupDbService gdb = GroupDbService.getInstance();
   private ProjectDbService gpdb = ProjectDbService.getInstance();
   private ProjectGroupDbService pgdb = ProjectGroupDbService.getInstance();
@@ -56,6 +57,31 @@ public class GroupCommitRecordService {
       JSONArray result = new JSONArray((String) response.getEntity());
       JSONObject ob = new JSONObject();
       ob.put("groupName", group.getGroupName());
+      ob.put("commitRecord", result);
+      array.put(ob);
+    }
+    return Response.ok().entity(array.toString()).build();
+  }
+
+  /**
+   * Display
+   *
+   * @param username username
+   */
+  @GET
+  @Path("/{username}/commits")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response getCommitRecordByUsername(@PathParam("username") String username) {
+    GroupService gs = new GroupService();
+    System.out.println("username" + username);
+    int uid = dbManager.getUserIdByUsername(username);
+    List<String> groupNames = gdb.getGroupNames(uid);
+    JSONArray array = new JSONArray();
+    for (String groupName : groupNames) {
+      Response response = getResult(groupName);
+      JSONArray result = new JSONArray((String) response.getEntity());
+      JSONObject ob = new JSONObject();
+      ob.put("groupName", groupName);
       ob.put("commitRecord", result);
       array.put(ob);
     }

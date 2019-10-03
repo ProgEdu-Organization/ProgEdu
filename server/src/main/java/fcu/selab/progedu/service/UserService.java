@@ -23,6 +23,7 @@ import org.json.JSONObject;
 
 import com.csvreader.CsvReader;
 
+import fcu.selab.progedu.service.GroupCommitRecordService;
 import fcu.selab.progedu.config.CourseConfig;
 import fcu.selab.progedu.conn.GitlabService;
 import fcu.selab.progedu.data.User;
@@ -50,7 +51,7 @@ public class UserService {
 
   /**
    * Upload a csv file for student batch registration
-   * 
+   *
    * @param uploadedInputStream file of student list
    * @return Response
    */
@@ -107,10 +108,9 @@ public class UserService {
   }
 
   /**
-   *
-   * @param name     name
+   * @param name name
    * @param username id
-   * @param email    email
+   * @param email email
    * @param password password
    * @return response
    */
@@ -118,9 +118,12 @@ public class UserService {
   @Path("/new")
   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
   @Produces(MediaType.APPLICATION_JSON)
-  public Response createAccount(@FormParam("name") String name,
-      @FormParam("username") String username, @FormParam("email") String email,
-      @FormParam("password") String password, @FormParam("role") String role,
+  public Response createAccount(
+      @FormParam("name") String name,
+      @FormParam("username") String username,
+      @FormParam("email") String email,
+      @FormParam("password") String password,
+      @FormParam("role") String role,
       @FormParam("isDisplayed") boolean isDisplayed) {
     Response response = null;
     List<RoleEnum> roleList = new ArrayList<>();
@@ -148,17 +151,18 @@ public class UserService {
 
   /**
    * (to do )
-   * 
-   * @param username        (to do )
+   *
+   * @param username (to do )
    * @param currentPassword (to do )
-   * @param newPassword     (to do )
+   * @param newPassword (to do )
    * @return response (to do)
    */
   @POST
   @Path("updatePassword")
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   @Produces(MediaType.APPLICATION_JSON)
-  public Response updatePassword(@FormDataParam("username") String username,
+  public Response updatePassword(
+      @FormDataParam("username") String username,
       @FormDataParam("currentPassword") String currentPassword,
       @FormDataParam("newPassword") String newPassword) {
     Response response = null;
@@ -173,12 +177,11 @@ public class UserService {
     }
 
     return response;
-
   }
 
   /**
    * Get all user which role is student
-   * 
+   *
    * @return all GitLab users
    */
   @GET
@@ -194,7 +197,7 @@ public class UserService {
 
   /**
    * Display
-   * 
+   *
    * @param username username
    */
   @POST
@@ -209,7 +212,7 @@ public class UserService {
 
   /**
    * Display
-   * 
+   *
    * @param username username
    */
   @GET
@@ -232,7 +235,7 @@ public class UserService {
 
   /**
    * Get all user which role is student
-   * 
+   *
    * @return all GitLab users
    */
   public List<User> getStudents() {
@@ -249,18 +252,18 @@ public class UserService {
 
   /**
    * Register user
-   * 
+   *
    * @param user user of ProgEdu
    */
   private void register(User user) throws IOException {
-    GitlabUser gitlabUser = gitlabService.createUser(user.getEmail(), user.getPassword(),
-        user.getUsername(), user.getName());
+    GitlabUser gitlabUser =
+        gitlabService.createUser(
+            user.getEmail(), user.getPassword(), user.getUsername(), user.getName());
     user.setGitLabToken(gitlabUser.getPrivateToken());
     user.setGitLabId(gitlabUser.getId());
 
     dbManager.addUser(user);
     rudb.addRoleUser(user);
-
   }
 
   private boolean isPasswordTooShort(String password) {
@@ -343,5 +346,4 @@ public class UserService {
       }
     }
   }
-
 }
