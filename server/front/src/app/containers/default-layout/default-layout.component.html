@@ -20,6 +20,9 @@
       <li class="nav-item px-3" *ngIf="isTeacher">
         <a class="nav-link" href="#/{{dashboard}}/groupDashboard">Group Dashboard</a>
       </li>
+      <li class="nav-item px-3" *ngIf="!isTeacher">
+        <a class="nav-link" href="#/{{dashboard}}/groupStuDashboard?username={{user.getUsername()}}">Group Dashboard</a>
+      </li>
     </div>
   </ul>
   <ul class="nav navbar-nav ml-auto">

@@ -6,6 +6,7 @@ import { StudashboardComponent } from './studashboard/studashboard.component';
 import { FormsModule } from '@angular/forms';
 import { ChartsModule } from 'ng2-charts';
 import { SharedModule } from '../shared/shared.module';
+import { GroupStudashboardComponent } from './group-studashboard/group-studashboard.component';
 
 @NgModule({
   imports: [
@@ -15,6 +16,6 @@ import { SharedModule } from '../shared/shared.module';
     StudentRoutingModule,
     SharedModule,
   ],
-  declarations: [StudashboardComponent],
+  declarations: [StudashboardComponent, GroupStudashboardComponent],
 })
 export class StudentModule { }
