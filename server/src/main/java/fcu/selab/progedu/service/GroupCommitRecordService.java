@@ -146,7 +146,7 @@ public class GroupCommitRecordService {
    * @throws ParseException (to do)
    */
   @POST
-  @Path("/update")
+  @Path("/commits/update")
   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
   @Produces(MediaType.APPLICATION_JSON)
   public Response updateCommitRecord(
