@@ -14,7 +14,7 @@ const createProjectOptions = ({
 
 export class CreateGroupService {
   GET_USERS_API = environment.SERVER_URL + '/webapi/user/getUsers';
-  CREATE_PROJECT = environment.SERVER_URL + '/webapi/groups/create';
+  CREATE_PROJECT = environment.SERVER_URL + '/webapi/groups';
   GET_GROUP_MEMBER_API = environment.SERVER_URL + '/webapi/groups';
   constructor(private http: HttpClient) { }
 
@@ -30,10 +30,10 @@ export class CreateGroupService {
       .append('projectType', projectType)
       .append('leader', leader);
     for (const member of members) {
-      params = params.append('member', member);
+      params = params.append('member', member[0]);
     }
     console.log(params.get('member'));
-
+    console.log(params.get('leader'));
     return this.http.post<any>(this.CREATE_PROJECT, params, createProjectOptions);
   }
 
