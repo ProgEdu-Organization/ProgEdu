@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, NgModule } from '@angular/core';
 import { GroupStudashboardService } from './group-studashboard.service';
 import { ActivatedRoute } from '@angular/router';
 @Component({
@@ -8,6 +8,8 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class GroupStudashboardComponent implements OnInit {
   public username;
+  isCollapsed = false;
+  public search;
   public groups: Array<any>;
   constructor(private groupStudashboardService: GroupStudashboardService, private activatedRoute: ActivatedRoute) { }
 
