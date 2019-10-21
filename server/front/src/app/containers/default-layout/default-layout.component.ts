@@ -23,6 +23,7 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
   public navDataisload: boolean = false;
   public user: User;
   public isTeacher: boolean = false;
+  public isStudent: boolean = false;
   public error: string = '';
   public modifySecretForm: FormGroup;
 
@@ -55,8 +56,9 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
     if (this.user.isTeacher) {
       this.dashboard = '/dashboard';
       this.isTeacher = true;
-    } else {
+    } else if (this.user.isStudent) {
       this.dashboard = '/studashboard';
+      this.isStudent = true;
     }
     /* Modify Secret Area*/
     this.modifySecretForm = this.fb.group({

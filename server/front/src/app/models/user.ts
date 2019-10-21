@@ -2,6 +2,7 @@
 import { JwtService } from '../services/jwt.service';
 export class User {
   public isTeacher: boolean = false;
+  public isStudent: boolean = false;
   private username: string;
   private name: string;
 
@@ -9,7 +10,10 @@ export class User {
     const decodedToken = jwtService.getDecodedToken();
     if (decodedToken.sub === 'teacher') {
       this.isTeacher = true;
+    } else if (decodedToken.sub === 'teacher') {
+      this.isStudent = true;
     }
+
     this.username = decodedToken.aud;
     this.name = decodedToken.name;
   }
