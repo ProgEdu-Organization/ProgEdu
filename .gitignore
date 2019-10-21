@@ -2,4 +2,4 @@ docs/
 .data/
 .env
 *.swp
-.idea
+.idea/
