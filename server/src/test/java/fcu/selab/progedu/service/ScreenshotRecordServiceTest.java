@@ -7,10 +7,10 @@ import org.junit.Test;
 
 public class ScreenshotRecordServiceTest {
   private GroupScreenshotRecordService srs = new GroupScreenshotRecordService();
-  private static String GROUP_NAME = "group2";
-  private static String PROJECT_NAME = "project2";
+  private static String GROUP_NAME = "Moty";
+  private static String PROJECT_NAME = "Moty";
 
-//  @Test
+  //  @Test
   public void update() {
 
     List<String> urls = new ArrayList<>();

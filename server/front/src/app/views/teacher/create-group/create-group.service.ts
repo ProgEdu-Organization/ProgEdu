@@ -32,8 +32,6 @@ export class CreateGroupService {
     for (const member of members) {
       params = params.append('member', member[0]);
     }
-    console.log(params.get('member'));
-    console.log(params.get('leader'));
     return this.http.post<any>(this.CREATE_PROJECT, params, createProjectOptions);
   }
 

@@ -23,7 +23,6 @@ export class GroupManagementComponent implements OnInit {
 
   constructor(private groupManagementService: GroupManagementService, private router: Router) { }
   ngOnInit() {
-    console.log($('#multiple-select'));
     this.getAllGroups();
   }
 
@@ -37,7 +36,6 @@ export class GroupManagementComponent implements OnInit {
 
   setSelectedGroup(groupName: any) {
     if (groupName) {
-      console.log(groupName);
       this.selectedGroupName = groupName;
     }
   }

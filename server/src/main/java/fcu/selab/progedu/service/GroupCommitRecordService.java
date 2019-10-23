@@ -18,6 +18,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import fcu.selab.progedu.db.UserDbManager;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -54,10 +55,10 @@ public class GroupCommitRecordService {
     List<Group> groups = gdb.getGroups();
     for (Group group : groups) {
       Response response = getResult(group.getGroupName());
-      JSONArray result = new JSONArray((String) response.getEntity());
+
       JSONObject ob = new JSONObject();
       ob.put("groupName", group.getGroupName());
-      ob.put("commitRecord", result);
+      ob.put("commitRecord", new JSONArray(response.getEntity().toString()));
       array.put(ob);
     }
     return Response.ok().entity(array.toString()).build();
@@ -73,16 +74,14 @@ public class GroupCommitRecordService {
   @Produces(MediaType.APPLICATION_JSON)
   public Response getCommitRecordByUsername(@PathParam("username") String username) {
     GroupService gs = new GroupService();
-    System.out.println("username" + username);
     int uid = dbManager.getUserIdByUsername(username);
     List<String> groupNames = gdb.getGroupNames(uid);
     JSONArray array = new JSONArray();
     for (String groupName : groupNames) {
       Response response = getResult(groupName);
-      JSONArray result = new JSONArray((String) response.getEntity());
       JSONObject ob = new JSONObject();
       ob.put("groupName", groupName);
-      ob.put("commitRecord", result);
+      ob.put("commitRecord", new JSONArray(response.getEntity().toString()));
       array.put(ob);
     }
     return Response.ok().entity(array.toString()).build();
@@ -106,12 +105,12 @@ public class GroupCommitRecordService {
       CommitRecord cr = gpdb.getCommitResult(pgid);
       ob.put("name", project.getName());
       ob.put("releaseTime", project.getReleaseTime());
-      ob.put("number", cr.getNumber());
-      ob.put("status", cr.getStatus().getType());
-
+      if (cr != null) {
+        ob.put("number", cr.getNumber());
+        ob.put("status", cr.getStatus().getType());
+      }
       array.put(ob);
     }
-
     return Response.ok(array.toString()).build();
 
     //    int userId = userDb.getUserIdByUsername(username);

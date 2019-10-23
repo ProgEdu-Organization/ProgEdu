@@ -48,7 +48,6 @@ public class MySqlDbConfig {
   public String getDbUser() throws LoadConfigFailureException {
     String dbUser = System.getenv("DB_USER");
     if (dbUser != null && !dbUser.equals("")) {
-      System.out.println("DB_USER: " + dbUser);
       return dbUser;
     }
     if (props != null) {
@@ -67,7 +66,6 @@ public class MySqlDbConfig {
   public String getDbPassword() throws LoadConfigFailureException {
     String dbPassword = System.getenv("DB_PASSWORD");
     if (dbPassword != null && !dbPassword.equals("")) {
-      System.out.println("DB_PASSWORD: " + dbPassword);
       return dbPassword;
     }
     if (props != null) {
@@ -85,7 +83,6 @@ public class MySqlDbConfig {
   public String getDbSchema() throws LoadConfigFailureException {
     String dbSchema = System.getenv("DB_DATABASE");
     if (dbSchema != null && !dbSchema.equals("")) {
-      System.out.println("DB_DATABASE: " + dbSchema);
       return dbSchema;
     }
     if (props != null) {
@@ -103,7 +100,6 @@ public class MySqlDbConfig {
   public String getDbHost() throws LoadConfigFailureException {
     String dbHost = System.getenv("DB_HOST");
     if (dbHost != null && !dbHost.equals("")) {
-      System.out.println("DB_HOST: " + dbHost);
       return dbHost;
     }
     if (props != null) {
@@ -121,7 +117,6 @@ public class MySqlDbConfig {
   public String getDbConnectionOption() {
     String dbConnectionOption = System.getenv("DB_CONNECTION_OPTION");
     if (dbConnectionOption != null && !dbConnectionOption.equals("")) {
-      System.out.println("DB_CONNECTION_OPTION: " + dbConnectionOption);
       return dbConnectionOption;
     }
     if (props != null) {

@@ -32,7 +32,6 @@ export class GroupManagementService {
     for (const member of members) {
       params = params.append('member', member);
     }
-    console.log(params.get('member'));
 
     return this.http.post<any>(this.CREATE_PROJECT, params, createProjectOptions);
   }

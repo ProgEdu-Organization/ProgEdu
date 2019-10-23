@@ -110,8 +110,10 @@
                     <td *ngIf="member.id === g.leader">{{member.name}}</td>
                   </ng-container>
                   <td>
-                    <ng-container *ngFor='let member of g.members'>
-                      <span *ngIf="member.id !== g.leader">{{member.name}}</span>
+                    <ng-container *ngFor='let member of g.members;let lastMember = last'>
+                      <span *ngIf="member.id !== g.leader">{{member.name}}
+                        <span *ngIf="!lastMember">,</span>
+                      </span>
                     </ng-container>
                   </td>
                 </tr>
@@ -122,4 +124,45 @@
       </div>
     </div>
   </div>
+
+  <!--  Wating Crete Assignment  -->
+  <div bsModal #myModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Creating Group</h4>
+        </div>
+        <div class="modal-body">
+          <progressbar class="progress-bar progress-bar-striped progress-bar-animated" [value]="dynamic" [max]="max"
+            [type]="type">
+            {{type}}
+          </progressbar>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="switchToGroupDetail()">Back</button>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
+  <!--  Create Assignment Error  -->
+  <div bsModal #dangerModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-danger" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Create Group Error</h4>
+          <button type="button" class="close" (click)="dangerModal.hide()" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>{{errorMsg}}&hellip;</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="dangerModal.hide()">Close</button>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
 </div>

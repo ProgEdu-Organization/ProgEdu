@@ -53,14 +53,12 @@ public class GroupScreenshotRecordService {
       @FormParam("username") String groupName,
       @FormParam("assignmentName") String projectName,
       @FormParam("url") List<String> urls) {
-    System.out.println("username: " + groupName + "jobName: " + projectName);
     JSONObject ob = new JSONObject();
-    System.out.println("Png file name " + urls);
     int pgid = pgdb.getId(groupName, projectName);
     CommitRecord commitResult = pdb.getCommitResult(pgid);
     int lastCommitNum = commitResult.getNumber();
     int pcrid = commitResult.getId();
-
+    System.out.println("pcrid: " + pcrid);
     try {
       for (String url : urls) {
         String screenShotUrl =

@@ -55,11 +55,11 @@
                     <i class="icon-cloud-download"></i><span class="caret"> download</span>
                   </button>
                   <ul *dropdownMenu class="dropdown-menu" role="menu">
-                    <li role="menuitem"><a class="dropdown-item"
-                        href="{{SERVER_URL}}/resources/JavacQuickStart.zip" download>JavacQuickStart.zip</a>
+                    <li role="menuitem"><a class="dropdown-item" href="{{SERVER_URL}}/resources/JavacQuickStart.zip"
+                        download>JavacQuickStart.zip</a>
                     </li>
-                    <li role="menuitem"><a class="dropdown-item"
-                        href="{{SERVER_URL}}/resources/MvnQuickStart.zip" download>MvnQuickStart.zip</a>
+                    <li role="menuitem"><a class="dropdown-item" href="{{SERVER_URL}}/resources/MvnQuickStart.zip"
+                        download>MvnQuickStart.zip</a>
                     </li>
                   </ul>
                 </div>
@@ -98,8 +98,8 @@
                     <i class="icon-cloud-download"></i><span class="caret"> download</span>
                   </button>
                   <ul *dropdownMenu class="dropdown-menu" role="menu">
-                    <li role="menuitem"><a class="dropdown-item"
-                        href="{{SERVER_URL}}/resources/AndroidQuickStart.zip" download>AndroidQuickStart.zip</a>
+                    <li role="menuitem"><a class="dropdown-item" href="{{SERVER_URL}}/resources/AndroidQuickStart.zip"
+                        download>AndroidQuickStart.zip</a>
                     </li>
                   </ul>
                 </div>
@@ -123,8 +123,8 @@
                     <i class="icon-cloud-download"></i><span class="caret"> download</span>
                   </button>
                   <ul *dropdownMenu class="dropdown-menu" role="menu">
-                    <li role="menuitem"><a class="dropdown-item"
-                        href="{{SERVER_URL}}/resources/WebQuickStart.zip" download>WebQuickStart.zip</a>
+                    <li role="menuitem"><a class="dropdown-item" href="{{SERVER_URL}}/resources/WebQuickStart.zip"
+                        download>WebQuickStart.zip</a>
                     </li>
                   </ul>
                 </div>
@@ -147,6 +147,7 @@
       <input type="hidden" name="fileHidden" formControlName="file" />
     </form>
   </div>
+  <!--  Wating Crete Assignment  -->
   <div bsModal #myModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
     aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -166,6 +167,7 @@
       </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
   </div><!-- /.modal -->
+  <!--  Create Assignment Error  -->
   <div bsModal #dangerModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
     aria-hidden="true">
     <div class="modal-dialog modal-danger" role="document">
@@ -180,8 +182,7 @@
           <p>{{errorMsg}}&hellip;</p>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" [disabled]="!assignment.valid"
-            (click)="dangerModal.hide()">Close</button>
+          <button type="button" class="btn btn-secondary" (click)="dangerModal.hide()">Close</button>
         </div>
       </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->

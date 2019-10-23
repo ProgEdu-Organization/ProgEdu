@@ -17,7 +17,6 @@ export class GroupStudashboardComponent implements OnInit {
     this.username = this.activatedRoute.snapshot.queryParamMap.get('username');
     this.groupStudashboardService.getAllCommits(this.username).subscribe(
       (response) => {
-        console.log(response);
         this.groups = response;
       }
     );

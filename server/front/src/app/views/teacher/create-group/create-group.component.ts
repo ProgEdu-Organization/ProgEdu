@@ -1,9 +1,10 @@
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import * as $ from 'jquery';
 import { CreateGroupService } from './create-group.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 
 const name = 'name';
 const projectName = 'projectName';
@@ -23,12 +24,23 @@ export class CreateGroupComponent implements OnInit {
   public group: FormGroup;
   public search;
   public exitsGroups;
+  errorMsg: string;
+
+
+  max: number = 100;
+  showWarning: boolean;
+  dynamic: number = 0;
+  type: string = 'Waiting';
+  isDeleteProgress = false;
+
   constructor(private createGroupService: CreateGroupService, private fb: FormBuilder,
     private router: Router) { }
 
+  @ViewChild('myModal', { static: true }) public progressModal: ModalDirective;
+  @ViewChild('bsModal', { static: false }) public errorModal: ModalDirective;
+
   public projectTypes: Array<any> = ['javac', 'maven', 'android', 'web'];
   ngOnInit() {
-    console.log($('#multiple-select'));
     this.getAllUser();
 
     this.group = this.fb.group({
@@ -69,8 +81,6 @@ export class CreateGroupComponent implements OnInit {
   getAllGroups() {
     this.createGroupService.getAllGroup().subscribe(
       response => {
-        console.log('getgetAllGroup');
-        console.log(response);
         this.exitsGroups = response;
       }
     );
@@ -106,7 +116,6 @@ export class CreateGroupComponent implements OnInit {
       this.group.get('member').value.push([username, u_name]);
       this.users = this.users.filter(item => item.username !== username);
     }
-    console.log(this.group.valid);
   }
 
   setLeader(username: string) {
@@ -118,25 +127,28 @@ export class CreateGroupComponent implements OnInit {
     this.getAllUser();
   }
 
-  switchToGroupDetail(groupName) {
+  switchToGroupDetail() {
     this.router.navigate(['./dashboard/groupManagement']);
   }
 
   groupSubmit() {
     if (this.group.dirty && this.group.valid) {
+      this.progressModal.show();
       this.createGroupService.createProject(this.group.get(name).value,
         this.group.get(projectName).value,
         this.group.get(projectType).value,
         this.group.get(leader).value[0],
         this.group.get(member).value).subscribe(
           (response) => {
-            console.log(response);
-            this.getAllGroups();
+            this.progressModal.hide();
+            window.location.reload();
           },
           error => {
-
-          }
-        );
+            this.errorMsg = error.message;
+            this.progressModal.hide();
+            this.errorModal.show();
+            console.log(error);
+          });
     }
   }
 }

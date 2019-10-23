@@ -39,23 +39,25 @@
           </thead>
           <tbody>
             <tr *ngFor='let group of groups  | groupFilter:search'>
-              <td width="15%" class='text-left'>{{group.groupName}}</td>
-              <ng-container *ngIf="group.commitRecord">
-                <ng-container *ngFor='let project of group.commitRecord'>
-                  <td>{{project.name}}</td>
-                  <td>
-                    <p id="{{project.name}}" class="circle {{project.status}}">
-                      <a
-                        href="#/dashboard/projectChoosed?groupName={{group.groupName}}&&projectName={{project.name}}">{{project.number}}</a>
-                    </p>
-                  </td>
+              <ng-container *ngIf="group">
+                <td width="15%" class='text-left'>{{group.groupName}}</td>
+                <ng-container *ngIf="group.commitRecord">
+                  <ng-container *ngFor='let project of group.commitRecord'>
+                    <td>{{project.name}}</td>
+                    <td>
+                      <p id="{{project.name}}" class="circle {{project.status}}">
+                        <a
+                          href="#/dashboard/projectChoosed?groupName={{group.groupName}}&&projectName={{project.name}}">{{project.number}}</a>
+                      </p>
+                    </td>
+                  </ng-container>
                 </ng-container>
+                <ng-container *ngIf="isNA(group.commitRecord)">
+                  <td>N/A</td>
+                  <td>N/A</td>
+                </ng-container>
+                <td class='text-left'></td>
               </ng-container>
-              <ng-container *ngIf="isNA(group.commitRecord)">
-                <td>N/A</td>
-                <td>N/A</td>
-              </ng-container>
-              <td class='text-left'></td>
             </tr>
           </tbody>
         </table>

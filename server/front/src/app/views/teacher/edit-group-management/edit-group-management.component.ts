@@ -44,7 +44,6 @@ export class EditGroupManagementComponent implements OnInit {
           }
         }
         this.groupForm.get('members').setValue(members);
-        console.log(response);
       }
     );
   }
@@ -52,7 +51,6 @@ export class EditGroupManagementComponent implements OnInit {
   editLeaderSubmit() {
     const leader = this.groupForm.get('leader').value;
     const groupName = this.groupForm.get('name').value;
-    console.log('leader: ' + leader + ' groupName: ' + groupName);
     this.editGroupManagementService.editGroupLeader(groupName, leader).subscribe(
       response => {
         this.getGroup(groupName);
@@ -87,7 +85,6 @@ export class EditGroupManagementComponent implements OnInit {
           });
         }
       }
-      console.log(this.users);
     });
   }
 
