@@ -176,14 +176,13 @@ public class GroupCommitRecordService {
   @Produces(MediaType.APPLICATION_JSON)
   public Response updateCommitRecord(
       @FormParam("user") String groupName, @FormParam("proName") String projectName) {
-
-    JSONObject ob = new JSONObject();
     ProjectTypeEnum type = gpdb.getProjectType(projectName);
-
-    GroupProjectType projectType = GroupProjectFactory.getGroupProjectType(type.getTypeName());
     int pgid = pgdb.getId(groupName, projectName);
-    int commitNumber = gpdb.getCommitResult(pgid).getNumber() + 1;
-
+    CommitRecord cr = gpdb.getCommitResult(pgid);
+    int commitNumber = 1;
+    if (cr != null) {
+      commitNumber = cr.getNumber() + 1;
+    }
     Date date = new Date();
     DateFormat time = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss");
     try {
@@ -191,13 +190,13 @@ public class GroupCommitRecordService {
     } catch (ParseException e) {
       e.printStackTrace();
     }
-
+    GroupProjectType projectType = GroupProjectFactory.getGroupProjectType(type.getTypeName());
     StatusEnum statusEnum = projectType.checkStatusType(commitNumber, groupName, projectName);
 
     String jobName = js.getJobName(groupName, projectName);
     String committer = js.getCommitter(jobName, commitNumber);
     gpdb.insertProjectCommitRecord(pgid, commitNumber, statusEnum, date, committer);
-
+    JSONObject ob = new JSONObject();
     ob.put("pgid", pgid);
     ob.put("commitNumber", commitNumber);
     ob.put("time", time);
