@@ -10,7 +10,7 @@ export class User {
     const decodedToken = jwtService.getDecodedToken();
     if (decodedToken.sub === 'teacher') {
       this.isTeacher = true;
-    } else if (decodedToken.sub === 'teacher') {
+    } else if (decodedToken.sub === 'student') {
       this.isStudent = true;
     }
 

@@ -41,6 +41,7 @@ export class GroupManagementComponent implements OnInit {
   }
 
   deleteGroup() {
+    this.isDeleteProgress = true;
     this.groupManagementService.deleteGroup(this.selectedGroupName).subscribe(
       (response) => {
         this.deleteModal.hide();
