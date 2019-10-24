@@ -47,7 +47,7 @@ export class CreateGroupComponent implements OnInit {
       name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(10)]],
       projectName: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(10)]],
       projectType: ['', [Validators.required]],
-      leader: ['', [Validators.required, Validators.maxLength(10)]],
+      leader: ['Click the Group Member', [Validators.required, Validators.maxLength(10)]],
       member: [new Array(), Validators.minLength(3)],
     });
     this.onChanges();
