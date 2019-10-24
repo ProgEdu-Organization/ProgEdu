@@ -13,6 +13,7 @@ public class WebHtmlFailure implements Status {
     checkstyleInfo = consoleText.substring(start,end);
     checkstyleInfo = checkstyleInfo.replaceAll("[\u001B][\\[][\\d]{0,3}[m]", "");
     checkstyleInfo = checkstyleInfo.replaceAll("\\^", " ^");
+    checkstyleInfo = checkstyleInfo.replaceAll(checkstyleStart, "");
 
     return checkstyleInfo.trim();
   }

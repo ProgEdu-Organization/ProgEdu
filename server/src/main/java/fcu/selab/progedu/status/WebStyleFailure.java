@@ -13,6 +13,7 @@ public class WebStyleFailure implements Status {
     checkstyleInfo = consoleText.substring(start,end);
     int nextrow = checkstyleInfo.indexOf("\n");
     checkstyleInfo = checkstyleInfo.substring(nextrow + 1,end - start);
+    checkstyleInfo = checkstyleInfo.replaceAll("[\n][ ]", "\n L");
 
     return checkstyleInfo.trim();
   }
