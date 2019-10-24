@@ -106,7 +106,7 @@ export class EditGroupManagementComponent implements OnInit {
     } else if (mode === 'remove-member') {
       this.confirmModalMsg = `Do you remove ${this.selectedUser[0]} ${this.selectedUser[1]} from group members`;
     } else if (mode === 'set-leader') {
-      this.confirmModalMsg = `Do you set ${this.selectedUser[0]} ${this.selectedUser[1]} to group members`;
+      this.confirmModalMsg = `Do you set ${this.selectedUser[0]} ${this.selectedUser[1]} to group leader`;
     }
     this.confirmModal.show();
   }
