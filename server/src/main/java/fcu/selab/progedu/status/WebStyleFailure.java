@@ -1,11 +1,11 @@
 package fcu.selab.progedu.status;
 
-public class WebCheckstyleFailure implements Status {
+public class WebStyleFailure implements Status {
 
   @Override
   public String extractFailureMsg(String consoleText) {
     String checkstyleInfo = "WebCheckstyleFailure";
-    String checkstyleStart = "> eslint";
+    String checkstyleStart = "> stylelint";
     String checkstyleEnd = "npm ERR! code ELIFECYCLE";
     int start = consoleText.indexOf(checkstyleStart) + checkstyleStart.length();
     int end = consoleText.lastIndexOf(checkstyleEnd) - 1;
@@ -13,7 +13,7 @@ public class WebCheckstyleFailure implements Status {
     checkstyleInfo = consoleText.substring(start,end);
     int nextrow = checkstyleInfo.indexOf("\n");
     checkstyleInfo = checkstyleInfo.substring(nextrow + 1,end - start);
-    checkstyleInfo = checkstyleInfo.replace("/var/jenkins_home/workspace/","");
+
     return checkstyleInfo.trim();
   }
 }

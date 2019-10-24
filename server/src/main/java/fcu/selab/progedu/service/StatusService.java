@@ -81,22 +81,69 @@ public class StatusService {
     return isUnitTestError;
   }
 
+//  /**
+//   * Check is checkstyle error
+//   *
+//   * @param console
+//   *          jenkins job console text
+//   * @return boolean
+//   */
+//  //Need to Delete in issues#153
+//  public boolean isWebCheckstyleFailure(String console) {
+//    boolean isCheckstyleError = false;
+//    if (console.contains(NPM_ERR) && console.contains("htmlhint script.")) {
+//      isCheckstyleError = true;
+//    } else if (console.contains(NPM_ERR) && console.contains("stylelint script.")) {
+//      isCheckstyleError = true;
+//    } else if (console.contains(NPM_ERR) && console.contains("eslint script.")) {
+//      isCheckstyleError = true;
+//    }
+//    return isCheckstyleError;
+//  }
+//  //Need to Delete in issues#153
+
   /**
-   * Check is checkstyle error
-   * 
+   * Check is html error
+   *
    * @param console
    *          jenkins job console text
    * @return boolean
    */
-  public boolean isWebCheckstyleFailure(String console) {
-    boolean isCheckstyleError = false;
+  public boolean isWebHtmlFailure(String console) {
+    boolean isHtmlError = false;
     if (console.contains(NPM_ERR) && console.contains("htmlhint script.")) {
-      isCheckstyleError = true;
-    } else if (console.contains(NPM_ERR) && console.contains("stylelint script.")) {
-      isCheckstyleError = true;
-    } else if (console.contains(NPM_ERR) && console.contains("eslint script.")) {
-      isCheckstyleError = true;
+      isHtmlError = true;
     }
-    return isCheckstyleError;
+    return isHtmlError;
+  }
+
+  /**
+   * Check is css error
+   *
+   * @param console
+   *          jenkins job console text
+   * @return boolean
+   */
+  public boolean isWebStyleFailure(String console) {
+    boolean isCssError = false;
+    if (console.contains(NPM_ERR) && console.contains("stylelint script.")) {
+      isCssError = true;
+    }
+    return isCssError;
+  }
+
+  /**
+   * Check is es error
+   *
+   * @param console
+   *          jenkins job console text
+   * @return boolean
+   */
+  public boolean isWebEsFailure(String console) {
+    boolean isEsError = false;
+    if (console.contains(NPM_ERR) && console.contains("eslint script.")) {
+      isEsError = true;
+    }
+    return isEsError;
   }
 }
