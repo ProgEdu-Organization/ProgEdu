@@ -26,10 +26,11 @@
 	</welcome-file-list>
 
 	<servlet>
-		<description>Test</description>
+		<description>LoginAuth</description>
 		<display-name>LoginAuth</display-name>
 		<servlet-name>LoginAuth</servlet-name>
 		<servlet-class>fcu.selab.progedu.conn.LoginAuth</servlet-class>
+		<load-on-startup>1</load-on-startup>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>LoginAuth</servlet-name>
