@@ -5,15 +5,15 @@ public class WebCheckstyleFailure implements Status {
   @Override
   public String extractFailureMsg(String consoleText) {
     String checkstyleInfo = "WebCheckstyleFailure";
-    String checkstyleStart = "> eslint";
+    String checkstyleStart = "   /var/jenkins_home/workspace/";
     String checkstyleEnd = "npm ERR! code ELIFECYCLE";
     int start = consoleText.indexOf(checkstyleStart) + checkstyleStart.length();
     int end = consoleText.lastIndexOf(checkstyleEnd) - 1;
 
     checkstyleInfo = consoleText.substring(start,end);
-    int nextrow = checkstyleInfo.indexOf("\n");
-    checkstyleInfo = checkstyleInfo.substring(nextrow + 1,end - start);
-    checkstyleInfo = checkstyleInfo.replace("/var/jenkins_home/workspace/","");
+    checkstyleInfo = checkstyleInfo.replaceAll("[\u001B][\\[][\\d]{0,3}[m]", "");
+    checkstyleInfo = checkstyleInfo.replaceAll("\\^", " ^");
+    checkstyleInfo = checkstyleInfo.replaceAll(checkstyleStart, "");
     return checkstyleInfo.trim();
   }
 }

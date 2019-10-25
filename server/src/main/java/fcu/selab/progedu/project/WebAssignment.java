@@ -136,14 +136,14 @@ public class WebAssignment extends AssignmentType {
 
       if (statusService.isWebUnitTestFailure(console)) {
         status = StatusEnum.UNIT_TEST_FAILURE;
-//      } else if (statusService.isWebCheckstyleFailure(console)) {   //Need to Delete in issues#153
-//        status = StatusEnum.CHECKSTYLE_FAILURE;                     //Need to Delete in issues#153
       } else if (statusService.isWebHtmlFailure(console)) {
         status = StatusEnum.WEBHTML_FAILURE;
       } else if (statusService.isWebStyleFailure(console)) {
         status = StatusEnum.WEBSTYLE_FAILURE;
       } else if (statusService.isWebEsFailure(console)) {
         status = StatusEnum.WEBES_FAILURE;
+      } else if (statusService.isWebCheckstyleFailure(console)) {   //Need to Delete in issues#153
+        status = StatusEnum.CHECKSTYLE_FAILURE;                     //Need to Delete in issues#153
       } else {
         status = StatusEnum.BUILD_SUCCESS;
       }

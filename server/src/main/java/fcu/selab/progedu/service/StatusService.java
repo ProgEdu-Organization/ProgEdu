@@ -81,26 +81,26 @@ public class StatusService {
     return isUnitTestError;
   }
 
-//  /**
-//   * Check is checkstyle error
-//   *
-//   * @param console
-//   *          jenkins job console text
-//   * @return boolean
-//   */
-//  //Need to Delete in issues#153
-//  public boolean isWebCheckstyleFailure(String console) {
-//    boolean isCheckstyleError = false;
-//    if (console.contains(NPM_ERR) && console.contains("htmlhint script.")) {
-//      isCheckstyleError = true;
-//    } else if (console.contains(NPM_ERR) && console.contains("stylelint script.")) {
-//      isCheckstyleError = true;
-//    } else if (console.contains(NPM_ERR) && console.contains("eslint script.")) {
-//      isCheckstyleError = true;
-//    }
-//    return isCheckstyleError;
-//  }
-//  //Need to Delete in issues#153
+  /**
+   * Check is checkstyle error
+   *
+   * @param console
+   *          jenkins job console text
+   * @return boolean
+   */
+  //Need to Delete in issues#153
+  public boolean isWebCheckstyleFailure(String console) {
+    boolean isCheckstyleError = false;
+    if (console.contains(NPM_ERR) && console.contains("htmlhint script.")) {
+      isCheckstyleError = true;
+    } else if (console.contains(NPM_ERR) && console.contains("stylelint script.")) {
+      isCheckstyleError = true;
+    } else if (console.contains(NPM_ERR) && console.contains("eslint script.")) {
+      isCheckstyleError = true;
+    }
+    return isCheckstyleError;
+  }
+  //Need to Delete in issues#153
 
   /**
    * Check is html error
@@ -110,11 +110,10 @@ public class StatusService {
    * @return boolean
    */
   public boolean isWebHtmlFailure(String console) {
-    boolean isHtmlError = false;
     if (console.contains(NPM_ERR) && console.contains("htmlhint script.")) {
-      isHtmlError = true;
+      return true;
     }
-    return isHtmlError;
+    return false;
   }
 
   /**
@@ -125,11 +124,10 @@ public class StatusService {
    * @return boolean
    */
   public boolean isWebStyleFailure(String console) {
-    boolean isCssError = false;
     if (console.contains(NPM_ERR) && console.contains("stylelint script.")) {
-      isCssError = true;
+      return true;
     }
-    return isCssError;
+    return false;
   }
 
   /**
@@ -140,10 +138,9 @@ public class StatusService {
    * @return boolean
    */
   public boolean isWebEsFailure(String console) {
-    boolean isEsError = false;
     if (console.contains(NPM_ERR) && console.contains("eslint script.")) {
-      isEsError = true;
+      return true;
     }
-    return isEsError;
+    return false;
   }
 }
