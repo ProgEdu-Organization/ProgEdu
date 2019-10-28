@@ -28,7 +28,7 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
 
   constructor(private router: Router, private fb: FormBuilder, private createService: CreateAssignmentService) { }
   @ViewChild('myModal', { static: true }) public progressModal: ModalDirective;
-  @ViewChild('bsModal', { static: false }) public errorModal: ModalDirective;
+  @ViewChild('errorModal', { static: false }) public errorModal: ModalDirective;
 
   ngOnInit() {
     const now_time = Date.now() - (new Date().getTimezoneOffset() * 60 * 1000);
