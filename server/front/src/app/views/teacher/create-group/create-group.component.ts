@@ -44,8 +44,8 @@ export class CreateGroupComponent implements OnInit {
     this.getAllUser();
 
     this.group = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(10)]],
-      projectName: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(10)]],
+      name: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9-_]{3,10}')]],
+      projectName: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9-_]{3,10}')]],
       projectType: ['', [Validators.required]],
       leader: ['Click the Group Member', [Validators.required, Validators.maxLength(10)]],
       member: [new Array(), Validators.minLength(3)],
