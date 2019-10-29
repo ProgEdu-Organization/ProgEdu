@@ -17,7 +17,7 @@ export class ProjectChoosedService {
     return this.http.get<any>(GROUP_COMMITS_RESULT_API);
   }
 
-  getGroupMembers(groupName): Observable<any> {
+  getGroup(groupName): Observable<any> {
     const GROUP_MEMBER_API: string = environment.SERVER_URL + `/webapi/groups/${groupName}`;
     return this.http.get<any>(GROUP_MEMBER_API);
   }

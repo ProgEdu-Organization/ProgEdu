@@ -16,6 +16,7 @@ export class GroupDashboardComponent implements OnInit {
     this.groupDashboardService.getAllCommits().subscribe(
       response => {
         this.groups = response;
+        console.log(this.groups);
       }
     );
   }
