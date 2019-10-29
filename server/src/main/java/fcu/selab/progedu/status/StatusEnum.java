@@ -2,8 +2,8 @@ package fcu.selab.progedu.status;
 
 public enum StatusEnum {
   BUILD_SUCCESS("bs"), CHECKSTYLE_FAILURE("csf"), COMPILE_FAILURE("cpf"), INITIALIZATION("ini"),
-  UNIT_TEST_FAILURE("utf"), WEBHTMLHINT_FAILURE("whf"), WEBSTYLELINT_FAILURE("wsf"),
-  WEBESLINT_FAILURE("wef");
+  UNIT_TEST_FAILURE("utf"), WEB_HTMLHINT_FAILURE("whf"), WEB_STYLELINT_FAILURE("wsf"),
+  WEB_ESLINT_FAILURE("wef");
 
   private String type;
 
