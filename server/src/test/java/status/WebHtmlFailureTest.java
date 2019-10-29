@@ -1,10 +1,10 @@
 package status;
 
-import fcu.selab.progedu.status.WebHtmlFailure;
+import fcu.selab.progedu.status.WebHtmlhintFailure;
 
 public class WebHtmlFailureTest {
     public static void main(String[] args) {
-        WebHtmlFailure WH = new WebHtmlFailure();
+        WebHtmlhintFailure WH = new WebHtmlhintFailure();
         String consule = "+ npm run htmlhint\n" +
             "\n" +
             "> node_sample@1.0.0 htmlhint /var/jenkins_home/workspace/STUDENT1_1024WEB3\n" +

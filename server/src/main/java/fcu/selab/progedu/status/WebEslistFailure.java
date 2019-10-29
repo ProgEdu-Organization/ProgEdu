@@ -1,6 +1,6 @@
 package fcu.selab.progedu.status;
 
-public class WebEsFailure implements Status {
+public class WebEslistFailure implements Status {
 
   @Override
   public String extractFailureMsg(String consoleText) {

@@ -1,6 +1,6 @@
 package fcu.selab.progedu.status;
 
-public class WebStyleFailure implements Status {
+public class WebStylelistFailure implements Status {
 
   @Override
   public String extractFailureMsg(String consoleText) {

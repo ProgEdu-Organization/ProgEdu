@@ -1,6 +1,6 @@
 package fcu.selab.progedu.status;
 
-public class WebHtmlFailure implements Status {
+public class WebHtmlhintFailure implements Status {
 
   @Override
   public String extractFailureMsg(String consoleText) {

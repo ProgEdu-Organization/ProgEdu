@@ -14,13 +14,13 @@ public class WebStatusFactory implements StatusFactory {
         return new WebCheckstyleFailure();
       }
       case WEBHTMLHINT_FAILURE: {
-        return new WebHtmlFailure();
+        return new WebHtmlhintFailure();
       }
       case WEBSTYLELIST_FAILURE: {
-        return new WebStyleFailure();
+        return new WebStylelistFailure();
       }
       case WEBESLIST_FAILURE: {
-        return new WebEsFailure();
+        return new WebEslistFailure();
       }
       case UNIT_TEST_FAILURE: {
         return new WebUnitTestFailure();
