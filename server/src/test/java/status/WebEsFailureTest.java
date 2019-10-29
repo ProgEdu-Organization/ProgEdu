@@ -1,10 +1,10 @@
 package status;
 
-import fcu.selab.progedu.status.WebEslistFailure;
+import fcu.selab.progedu.status.WebEslintFailure;
 
 public class WebEsFailureTest {
 	public static void main(String[] args) {
-		WebEslistFailure WE = new WebEslistFailure();
+		WebEslintFailure WE = new WebEslintFailure();
 		String consule = "+ npm run eslint\n" +
 				"\n" +
 				"> node_sample@1.0.0 eslint /var/jenkins_home/workspace/STUDENT3_1024WEB3\n" +

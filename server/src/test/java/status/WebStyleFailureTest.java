@@ -1,10 +1,10 @@
 package status;
 
-import fcu.selab.progedu.status.WebStylelistFailure;
+import fcu.selab.progedu.status.WebStylelintFailure;
 
 public class WebStyleFailureTest {
 	public static void main(String[] args) {
-		WebStylelistFailure WS = new WebStylelistFailure();
+		WebStylelintFailure WS = new WebStylelintFailure();
 		String consule = "Scanned 3 files, no errors found (16 ms).\n" +
 				"+ npm run stylelint\n" +
 				"\n" +

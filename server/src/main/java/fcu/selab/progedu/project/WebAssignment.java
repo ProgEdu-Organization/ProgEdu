@@ -139,9 +139,9 @@ public class WebAssignment extends AssignmentType {
       } else if (statusService.isWebHtmlhintFailure(console)) {
         status = StatusEnum.WEBHTMLHINT_FAILURE;
       } else if (statusService.isWebStylelintFailure(console)) {
-        status = StatusEnum.WEBSTYLELIST_FAILURE;
+        status = StatusEnum.WEBSTYLELINT_FAILURE;
       } else if (statusService.isWebEslintFailure(console)) {
-        status = StatusEnum.WEBESLIST_FAILURE;
+        status = StatusEnum.WEBESLINT_FAILURE;
       } else {
         status = StatusEnum.BUILD_SUCCESS;
       }

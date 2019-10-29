@@ -16,11 +16,11 @@ public class WebStatusFactory implements StatusFactory {
       case WEBHTMLHINT_FAILURE: {
         return new WebHtmlhintFailure();
       }
-      case WEBSTYLELIST_FAILURE: {
-        return new WebStylelistFailure();
+      case WEBSTYLELINT_FAILURE: {
+        return new WebStylelintFailure();
       }
-      case WEBESLIST_FAILURE: {
-        return new WebEslistFailure();
+      case WEBESLINT_FAILURE: {
+        return new WebEslintFailure();
       }
       case UNIT_TEST_FAILURE: {
         return new WebUnitTestFailure();
