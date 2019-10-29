@@ -82,21 +82,44 @@ public class StatusService {
   }
 
   /**
-   * Check is checkstyle error
-   * 
+   * Check is html error
+   *
    * @param console
    *          jenkins job console text
    * @return boolean
    */
-  public boolean isWebCheckstyleFailure(String console) {
-    boolean isCheckstyleError = false;
+  public boolean isWebHtmlhintFailure(String console) {
     if (console.contains(NPM_ERR) && console.contains("htmlhint script.")) {
-      isCheckstyleError = true;
-    } else if (console.contains(NPM_ERR) && console.contains("stylelint script.")) {
-      isCheckstyleError = true;
-    } else if (console.contains(NPM_ERR) && console.contains("eslint script.")) {
-      isCheckstyleError = true;
+      return true;
     }
-    return isCheckstyleError;
+    return false;
+  }
+
+  /**
+   * Check is css error
+   *
+   * @param console
+   *          jenkins job console text
+   * @return boolean
+   */
+  public boolean isWebStylelintFailure(String console) {
+    if (console.contains(NPM_ERR) && console.contains("stylelint script.")) {
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Check is es error
+   *
+   * @param console
+   *          jenkins job console text
+   * @return boolean
+   */
+  public boolean isWebEslintFailure(String console) {
+    if (console.contains(NPM_ERR) && console.contains("eslint script.")) {
+      return true;
+    }
+    return false;
   }
 }

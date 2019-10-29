@@ -4,7 +4,8 @@ import { AssignmentChoosedService } from './assignment-choosed.service';
 
 @Component({
   selector: 'app-assignment-choosed',
-  templateUrl: './assignment-choosed.component.html'
+  templateUrl: './assignment-choosed.component.html',
+  styleUrls: ['./assignment-choosed.component.scss']
 })
 export class AssignmentChoosedComponent implements OnInit {
 
