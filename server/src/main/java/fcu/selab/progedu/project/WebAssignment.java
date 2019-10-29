@@ -61,6 +61,7 @@ public class WebAssignment extends AssignmentType {
       String seleniumUrl = jenkinsData.getSeleniumHostUrl() + "/wd/hub";
       String checksumUrl = progEduApiUrl + "/assignment/checksum?proName=" + projectName;
       String testFileUrl = AssignmentDbManager.getInstance().getTestFileUrl(projectName);
+      String stringEmpty = "";
 
       DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
       DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
@@ -79,6 +80,7 @@ public class WebAssignment extends AssignmentType {
       doc.getElementsByTagName("testFileUrl").item(0).setTextContent(testFileUrl);
       doc.getElementsByTagName("jenkinsUsername").item(0).setTextContent(username);
       doc.getElementsByTagName("jenkinsAssignmentName").item(0).setTextContent(projectName);
+      doc.getElementsByTagName("secretToken").item(0).setTextContent(stringEmpty);
 
       // write the content into xml file
       TransformerFactory transformerFactory = TransformerFactory.newInstance();
