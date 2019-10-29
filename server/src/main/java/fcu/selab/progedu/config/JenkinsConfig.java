@@ -8,11 +8,12 @@ import fcu.selab.progedu.exception.LoadConfigFailureException;
 
 public class JenkinsConfig {
   private static final String PROPERTY_FILE = "/config/jenkins_config.properties";
-  private static final String EXCEPTION = "Unable to get config of JENKINS"
-      + " connection string from file;";
+  private static final String EXCEPTION =
+      "Unable to get config of JENKINS" + " connection string from file;";
   private static JenkinsConfig instance;
 
   /**
+   * Get Instance
    *
    * @return JenkinsConfig
    */
@@ -43,7 +44,6 @@ public class JenkinsConfig {
    */
   public String getJenkinsHostUrl() throws LoadConfigFailureException {
     String jenkinsUrl = System.getenv("WEB_JENKINS_URL");
-    System.out.println("WEB_JENKINS_URL: " + jenkinsUrl);
     if (jenkinsUrl != null && !jenkinsUrl.equals("")) {
       return jenkinsUrl;
     }
@@ -61,7 +61,6 @@ public class JenkinsConfig {
    */
   public String getSeleniumHostUrl() throws LoadConfigFailureException {
     String seleniumUrl = System.getenv("WEB_SELENIUM_URL");
-    System.out.println("WEB_SELENIUM_URL: " + seleniumUrl);
     if (seleniumUrl != null && !seleniumUrl.equals("")) {
       return seleniumUrl;
     }
@@ -79,7 +78,6 @@ public class JenkinsConfig {
    */
   public String getJenkinsRootUsername() throws LoadConfigFailureException {
     String jenkinsAdminUsername = System.getenv("WEB_JENKINS_ADMIN_USERNAME");
-    System.out.println("WEB_JENKINS_ADMIN_USERNAME: " + jenkinsAdminUsername);
     if (jenkinsAdminUsername != null && !jenkinsAdminUsername.equals("")) {
       return jenkinsAdminUsername;
     }
@@ -106,7 +104,6 @@ public class JenkinsConfig {
    */
   public String getJenkinsRootPassword() throws LoadConfigFailureException {
     String jenkinsAdminPassword = System.getenv("WEB_JENKINS_ADMIN_PASSWORD");
-    System.out.println("WEB_JENKINS_ADMIN_PASSWORD: " + jenkinsAdminPassword);
     if (jenkinsAdminPassword != null && !jenkinsAdminPassword.equals("")) {
       return jenkinsAdminPassword;
     }
@@ -133,7 +130,6 @@ public class JenkinsConfig {
    */
   public String getJenkinsApiToken() throws LoadConfigFailureException {
     String jenkinsApiToken = System.getenv("WEB_JENKINS_API_TOKEN");
-    System.out.println("WEB_JENKINS_API_TOKEN: " + jenkinsApiToken);
     if (jenkinsApiToken != null && !jenkinsApiToken.equals("")) {
       return jenkinsApiToken;
     }
@@ -152,12 +148,11 @@ public class JenkinsConfig {
   public String getJenkinsRootUrl() throws LoadConfigFailureException {
     String jenkinsHost = getJenkinsHostUrl();
     if (jenkinsHost != null && !jenkinsHost.equals("")) {
-      System.out.println("JENKINS_LOGIN_URL: "
-          + jenkinsHost.substring(0, jenkinsHost.indexOf("//") + 2)
-          + getJenkinsAdminUsername() + ":" + getJenkinsApiToken() + "@"
-          + jenkinsHost.substring(jenkinsHost.indexOf("//") + 2, jenkinsHost.length()));
       return jenkinsHost.substring(0, jenkinsHost.indexOf("//") + 2)
-          + getJenkinsAdminUsername() + ":" + getJenkinsApiToken() + "@"
+          + getJenkinsAdminUsername()
+          + ":"
+          + getJenkinsApiToken()
+          + "@"
           + jenkinsHost.substring(jenkinsHost.indexOf("//") + 2, jenkinsHost.length());
     }
     if (props != null) {
@@ -174,7 +169,6 @@ public class JenkinsConfig {
    */
   public String getMailUser() throws LoadConfigFailureException {
     String mailUser = System.getenv("MAIL_USER");
-    System.out.println("MAIL_USER: " + mailUser);
     if (mailUser != null && !mailUser.equals("")) {
       return mailUser;
     }
@@ -193,7 +187,6 @@ public class JenkinsConfig {
    */
   public String getMailPassword() throws LoadConfigFailureException {
     String mailPassword = System.getenv("MAIL_PASSWORD");
-    System.out.println("MAIL_PASSWORD: " + mailPassword);
     if (mailPassword != null && !mailPassword.equals("")) {
       return mailPassword;
     }
@@ -203,5 +196,4 @@ public class JenkinsConfig {
     throw new LoadConfigFailureException(
         "Unable to get config of JENKINS connection string from file;" + PROPERTY_FILE);
   }
-
 }

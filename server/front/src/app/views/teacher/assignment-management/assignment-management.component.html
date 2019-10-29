@@ -3,11 +3,12 @@
     <div class="card-header">
       <i class="cui-pencil icons"></i>
       <strong>Assignment List</strong>
-      <div class="card-header-actions"><button class="btn btn-primary" type="button" (click)="changeToCreatePage();">Add
-          more</button></div>
+      <div class="card-header-actions">
+        <a href="#/dashboard/assignmentManagement/create"><button class="btn btn-primary" type="button">Add
+            More</button></a></div>
     </div>
     <div class="card-body">
-      <table class='table table-striped' style="text-align:center;">
+      <table class='table table-striped' [style.text-align]="'center'">
         <thead>
           <tr>
             <th>Name</th>

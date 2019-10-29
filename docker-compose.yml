@@ -85,6 +85,8 @@ services:
       - "${JENKINS_PORT}:8080"
       # - "30000:50000"
     restart: always
+    environment:
+      WEB_SELENIUM_URL: ${WEB_SELENIUM_URL}
     volumes:
       - ${DATA_PATH_HOST}/jenkins:/var/jenkins_home
 

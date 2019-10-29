@@ -11,24 +11,28 @@ import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.gitlab.api.models.GitlabUser;
 import org.glassfish.jersey.media.multipart.FormDataParam;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.csvreader.CsvReader;
 
+import fcu.selab.progedu.service.GroupCommitRecordService;
 import fcu.selab.progedu.config.CourseConfig;
 import fcu.selab.progedu.conn.GitlabService;
 import fcu.selab.progedu.data.User;
 import fcu.selab.progedu.db.RoleDbManager;
 import fcu.selab.progedu.db.RoleUserDbManager;
 import fcu.selab.progedu.db.UserDbManager;
+import fcu.selab.progedu.db.service.GroupDbService;
 
-@Path("user/")
+@Path("user")
 public class UserService {
   private static UserService instance = new UserService();
 
@@ -43,15 +47,16 @@ public class UserService {
   private RoleUserDbManager rudb = RoleUserDbManager.getInstance();
   private RoleDbManager rdb = RoleDbManager.getInstance();
   private AssignmentService as = AssignmentService.getInstance();
+  private GroupDbService gdb = GroupDbService.getInstance();
 
   /**
    * Upload a csv file for student batch registration
-   * 
+   *
    * @param uploadedInputStream file of student list
    * @return Response
    */
   @POST
-  @Path("upload")
+  @Path("/upload")
   @Produces(MediaType.APPLICATION_JSON)
   public Response createAccounts(@FormDataParam("file") InputStream uploadedInputStream) {
     Response response = null;
@@ -103,20 +108,22 @@ public class UserService {
   }
 
   /**
-   *
-   * @param name     name
+   * @param name name
    * @param username id
-   * @param email    email
+   * @param email email
    * @param password password
    * @return response
    */
   @POST
-  @Path("new")
+  @Path("/new")
   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
   @Produces(MediaType.APPLICATION_JSON)
-  public Response createAccount(@FormParam("name") String name,
-      @FormParam("username") String username, @FormParam("email") String email,
-      @FormParam("password") String password, @FormParam("role") String role,
+  public Response createAccount(
+      @FormParam("name") String name,
+      @FormParam("username") String username,
+      @FormParam("email") String email,
+      @FormParam("password") String password,
+      @FormParam("role") String role,
       @FormParam("isDisplayed") boolean isDisplayed) {
     Response response = null;
     List<RoleEnum> roleList = new ArrayList<>();
@@ -144,17 +151,18 @@ public class UserService {
 
   /**
    * (to do )
-   * 
-   * @param username        (to do )
+   *
+   * @param username (to do )
    * @param currentPassword (to do )
-   * @param newPassword     (to do )
+   * @param newPassword (to do )
    * @return response (to do)
    */
   @POST
   @Path("updatePassword")
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   @Produces(MediaType.APPLICATION_JSON)
-  public Response updatePassword(@FormDataParam("username") String username,
+  public Response updatePassword(
+      @FormDataParam("username") String username,
       @FormDataParam("currentPassword") String currentPassword,
       @FormDataParam("newPassword") String newPassword) {
     Response response = null;
@@ -169,16 +177,15 @@ public class UserService {
     }
 
     return response;
-
   }
 
   /**
    * Get all user which role is student
-   * 
+   *
    * @return all GitLab users
    */
   @GET
-  @Path("getUsers")
+  @Path("/getUsers")
   @Produces(MediaType.APPLICATION_JSON)
   public Response getUsers() {
     List<User> users = dbManager.getAllUsers();
@@ -190,11 +197,11 @@ public class UserService {
 
   /**
    * Display
-   * 
+   *
    * @param username username
    */
   @POST
-  @Path("display")
+  @Path("/display")
   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
   public Response updateStatus(@FormParam("username") String username) {
     System.out.println("username" + username);
@@ -204,8 +211,31 @@ public class UserService {
   }
 
   /**
+   * Display
+   *
+   * @param username username
+   */
+  @GET
+  @Path("/{username}/groups")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response getGroup(@PathParam("username") String username) {
+    GroupService gs = new GroupService();
+    System.out.println("username" + username);
+    int uid = dbManager.getUserIdByUsername(username);
+    List<String> groupNames = gdb.getGroupNames(uid);
+    JSONArray array = new JSONArray();
+    for (String groupName : groupNames) {
+      String group = gs.getGroup(groupName).getEntity().toString();
+      JSONObject ob = new JSONObject(group);
+      array.put(ob);
+    }
+
+    return Response.ok().entity(array.toString()).build();
+  }
+
+  /**
    * Get all user which role is student
-   * 
+   *
    * @return all GitLab users
    */
   public List<User> getStudents() {
@@ -222,18 +252,18 @@ public class UserService {
 
   /**
    * Register user
-   * 
+   *
    * @param user user of ProgEdu
    */
   private void register(User user) throws IOException {
-    GitlabUser gitlabUser = gitlabService.createUser(user.getEmail(), user.getPassword(),
-        user.getUsername(), user.getName());
+    GitlabUser gitlabUser =
+        gitlabService.createUser(
+            user.getEmail(), user.getPassword(), user.getUsername(), user.getName());
     user.setGitLabToken(gitlabUser.getPrivateToken());
     user.setGitLabId(gitlabUser.getId());
 
     dbManager.addUser(user);
     rudb.addRoleUser(user);
-
   }
 
   private boolean isPasswordTooShort(String password) {
@@ -316,5 +346,4 @@ public class UserService {
       }
     }
   }
-
 }

@@ -242,6 +242,45 @@ public class UserDbManager {
   }
 
   /**
+   * Get user from database
+   * 
+   * @param id user id
+   * @return user
+   */
+  public User getUser(int id) {
+    User user = new User();
+    String query = "SELECT * FROM User WHERE id = ?";
+
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(query)) {
+      preStmt.setInt(1, id);
+      try (ResultSet rs = preStmt.executeQuery()) {
+        while (rs.next()) {
+          int gitLabId = rs.getInt(GIT_LAB_ID);
+          String username = rs.getString("username");
+          String name = rs.getString(NAME);
+          String password = rs.getString(PASSWORD);
+          String email = rs.getString(EMAIL);
+          String gitLabToken = rs.getString(GIT_LAB_TOKEN);
+          boolean display = rs.getBoolean(DISPLAY);
+
+          user.setGitLabId(gitLabId);
+          user.setId(id);
+          user.setUsername(username);
+          user.setName(name);
+          user.setPassword(password);
+          user.setEmail(email);
+          user.setGitLabToken(gitLabToken);
+          user.setDisplay(display);
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return user;
+  }
+
+  /**
    * Get user status from database
    * 
    * @param username The gitlab user name

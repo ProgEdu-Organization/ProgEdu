@@ -19,13 +19,14 @@ import { StudentManagementComponent } from './student-management/student-managem
 import { GroupManagementComponent } from './group-management/group-management.component';
 // Carousel Component
 import { ChartComponent } from './chart/chart.component';
-import { FilterPipe } from '../../pipe/filter.pipe';
 import { ProgressbarModule } from 'ngx-bootstrap/progressbar';
-import { GroupDashboardComponent } from './group-dashboard/group-dashboard.component';
 
 import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { CarouselModule } from 'ngx-bootstrap/carousel';
+
 import { SharedModule } from '../shared/shared.module';
+import { EditGroupManagementComponent } from './edit-group-management/edit-group-management.component';
+import { CreateGroupComponent } from './create-group/create-group.component';
 @NgModule({
     imports: [
         FormsModule,
@@ -50,8 +51,9 @@ import { SharedModule } from '../shared/shared.module';
         StudentManagementComponent,
         GroupManagementComponent,
         ChartComponent,
-        FilterPipe,
-        GroupDashboardComponent,
+        GroupManagementComponent,
+        EditGroupManagementComponent,
+        CreateGroupComponent,
     ]
 })
 export class TeacherModule { }

@@ -28,12 +28,12 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
 
   constructor(private router: Router, private fb: FormBuilder, private createService: CreateAssignmentService) { }
   @ViewChild('myModal', { static: true }) public progressModal: ModalDirective;
-  @ViewChild('bsModal', { static: false }) public errorModal: ModalDirective;
+  @ViewChild('errorModal', { static: false }) public errorModal: ModalDirective;
 
   ngOnInit() {
     const now_time = Date.now() - (new Date().getTimezoneOffset() * 60 * 1000);
     this.assignment = this.fb.group({
-      name: [undefined, [Validators.required, Validators.pattern('^[a-zA-Z0-9-_]{1,10}')]],
+      name: [undefined, [Validators.required, Validators.pattern('^[a-zA-Z0-9-_]{3,10}')]],
       releaseTime: [new Date(now_time).toISOString().slice(0, 17) + '00', Validators.required],
       deadline: [new Date(now_time).toISOString().slice(0, 17) + '00', Validators.required],
       description: [undefined, Validators.required],

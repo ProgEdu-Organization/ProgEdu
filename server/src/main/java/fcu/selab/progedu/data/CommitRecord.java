@@ -18,6 +18,8 @@ public class CommitRecord {
 
   private Date time;
 
+  private String committer;
+
   public int getNumber() {
     return number;
   }
@@ -65,4 +67,13 @@ public class CommitRecord {
   public void setStatus(StatusEnum status) {
     this.status = status;
   }
+
+  public String getCommitter() {
+    return committer;
+  }
+
+  public void setCommitter(String committer) {
+    this.committer = committer;
+  }
+
 }

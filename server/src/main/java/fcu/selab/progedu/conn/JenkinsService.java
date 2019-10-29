@@ -55,6 +55,23 @@ public class JenkinsService {
   }
 
   /**
+   * get crumb
+   * 
+   * @return crumb
+   */
+  public String getCrumb() {
+    String jenkinsUserName = "";
+    String jenkinsPass = "";
+    try {
+      jenkinsUserName = JenkinsConfig.getInstance().getJenkinsRootUsername();
+      jenkinsPass = JenkinsConfig.getInstance().getJenkinsRootPassword();
+    } catch (LoadConfigFailureException e) {
+      e.printStackTrace();
+    }
+    return getCrumb(jenkinsUserName, jenkinsPass);
+  }
+
+  /**
    * (to do)
    * 
    * @param username (to do)
@@ -104,11 +121,12 @@ public class JenkinsService {
    * (to do)
    * 
    * @param jobName    (to do)
-   * @param crumb      (to do)
    * @param configPath (to do)
    */
-  public void createJob(String jobName, String crumb, String configPath) {
+  public void createJob(String jobName, String configPath) {
+
     try {
+      String crumb = getCrumb();
       String url = jenkinsRootUrl + "/createItem?name=" + jobName;
       HttpPost post = new HttpPost(url);
 
@@ -134,11 +152,10 @@ public class JenkinsService {
    * (to do)
    * 
    * @param jobName (to do)
-   * @param crumb   (to do)
    */
-  public void deleteJob(String jobName, String crumb) {
-
+  public void deleteJob(String jobName) {
     try {
+      String crumb = getCrumb();
       HttpClient client = new DefaultHttpClient();
       String url = jenkinsRootUrl + "/job/" + jobName + "/doDelete";
       HttpPost post = new HttpPost(url);
@@ -161,17 +178,18 @@ public class JenkinsService {
 
   /**
    * (to do)
+   * 
    * @param jobName (to do)
-   * @param jenkinsCrumb (to do)
    */
-  public void buildJob(String jobName, String jenkinsCrumb) {
+  public void buildJob(String jobName) {
     try {
-      
+      String crumb = getCrumb();
+
       String url = jenkinsRootUrl + "/job/" + jobName + "/build";
       HttpPost post = new HttpPost(url);
 
       post.addHeader(contentType, "application/xml");
-      post.addHeader(jenkinsCrumb, jenkinsCrumb);
+      post.addHeader(crumb, crumb);
 
       List<NameValuePair> params = new ArrayList<>();
       params.add((NameValuePair) new BasicNameValuePair("token", jenkinsApiToken));
@@ -179,7 +197,7 @@ public class JenkinsService {
       UrlEncodedFormEntity ent = null;
       ent = new UrlEncodedFormEntity(params, HTTP.UTF_8);
       post.setEntity(ent);
-      
+
       HttpClient client = new DefaultHttpClient();
 //      HttpResponse response = 
       client.execute(post);
@@ -195,9 +213,10 @@ public class JenkinsService {
 
   /**
    * (to do)
+   * 
    * @param jobName (to do)
-   * @param num (to do)
-   * @return  message (to do)
+   * @param num     (to do)
+   * @return message (to do)
    */
   public String getCommitMessage(String jobName, int num) {
     String console = getCompleteConsole(jobName, num);
@@ -268,8 +287,9 @@ public class JenkinsService {
 
   /**
    * (to do)
+   * 
    * @param jobName (to do)
-   * @param num (to do)
+   * @param num     (to do)
    * @return consoleUrl (to do)
    */
   public String getConsoleUrl(String jobName, int num) {
@@ -296,5 +316,36 @@ public class JenkinsService {
       e.printStackTrace();
     }
     return sb.toString();
+  }
+
+  /**
+   * get committer
+   * 
+   * @param jobName jenkins jobName
+   * @param num     commit number
+   * @return committer
+   */
+  public String getCommitter(String jobName, int num) {
+    String committer = "";
+    if (num == 1) {
+      committer = "Administrator";
+    } else {
+      String console = getConsole(jobName, num);
+
+      String beginStr = "Started by GitLab push by ";
+      String endStr = "\n";
+      int beginIndex = console.lastIndexOf(beginStr) + beginStr.length();
+      int endIndex = console.indexOf(endStr, beginIndex);
+      // extract committer
+      committer = console.substring(beginIndex, endIndex);
+    }
+
+    return committer;
+
+  }
+
+  public String getJobName(String username, String projectName) {
+    return username + "_" + projectName;
+
   }
 }

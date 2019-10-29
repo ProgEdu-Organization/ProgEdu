@@ -27,7 +27,7 @@ public class GroupUserDbManager {
    * @param uid User Id
    */
   public void addGroupUser(int gid, int uid) {
-    String sql = "INSERT INTO Group_User(gId, uId)  VALUES(?, ?)";
+    String sql = "INSERT INTO ProgEdu.Group_User(gId, uId) VALUES(?, ?)";
 
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
@@ -92,7 +92,7 @@ public class GroupUserDbManager {
    * 
    * @return lsUids User Id
    */
-  public List<Integer> getUIds(int gid) {
+  public List<Integer> getUids(int gid) {
     List<Integer> lsUids = new ArrayList<>();
     String sql = "SELECT uId FROM Group_User WHERE gId = ?";
     try (Connection conn = database.getConnection();
@@ -108,6 +108,40 @@ public class GroupUserDbManager {
       e.printStackTrace();
     }
     return lsUids;
+  }
+
+  /**
+   * remove Group_User by gid
+   * 
+   * @param gid group id
+   */
+  public void remove(int gid) {
+    String sql = "DELETE FROM Group_User WHERE gId=?";
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+      preStmt.setInt(1, gid);
+      preStmt.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
+
+  /**
+   * remove Group_User
+   * 
+   * @param gid group id
+   * @param uid user id
+   */
+  public void remove(int gid, int uid) {
+    String sql = "DELETE FROM Group_User WHERE gId=? AND uId=?";
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+      preStmt.setInt(1, gid);
+      preStmt.setInt(2, uid);
+      preStmt.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
   }
 
 }

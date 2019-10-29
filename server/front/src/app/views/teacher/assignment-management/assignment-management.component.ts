@@ -101,14 +101,6 @@ export class AssignmentManagementComponent implements OnInit {
       });
   }
 
-  changeToCreatePage() {
-    this.router.navigate(['./dashboard/assignmentManagement/create']);
-  }
-
-  changeToEditPage() {
-    this.router.navigate(['./dashboard/assignmentManagement/edit']);
-  }
-
   showIsValidById(id: string) {
     $('#' + id).addClass('is-valid');
     $('#' + id).removeClass('is-invalid');

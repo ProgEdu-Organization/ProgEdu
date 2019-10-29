@@ -9,19 +9,29 @@ import { ChartComponent } from './chart/chart.component';
 import { GroupDashboardComponent } from './group-dashboard/group-dashboard.component';
 import { SharedModule } from '../shared/shared.module';
 import { AssignmentChoosedComponent } from '../shared/assignment-choosed/assignment-choosed.component';
+import { ProjectChoosedComponent } from '../shared/project-choosed/project-choosed.component';
+import { EditGroupManagementComponent } from './edit-group-management/edit-group-management.component';
+import { CreateGroupComponent } from './create-group/create-group.component';
 const routes: Routes = [
   {
     path: '',
     component: DashboardComponent,
     data: {
       title: 'Dashboard'
-    }
+    },
   },
   {
     path: 'assignmentChoosed',
     component: AssignmentChoosedComponent,
     data: {
-      title: 'Assignment Choose'
+      title: 'Assignment Choosed'
+    }
+  },
+  {
+    path: 'projectChoosed',
+    component: ProjectChoosedComponent,
+    data: {
+      title: 'Project Choosed'
     }
   },
   {
@@ -34,7 +44,7 @@ const routes: Routes = [
         path: '', component: AssignmentManagementComponent,
         data: {
           title: 'Assignment Management'
-        },
+        }
       },
       {
         path: 'create',
@@ -54,10 +64,29 @@ const routes: Routes = [
   },
   {
     path: 'groupManagement',
-    component: GroupManagementComponent,
     data: {
       title: 'Group Management'
-    }
+    },
+    children: [
+      {
+        path: '',
+        component: GroupManagementComponent,
+      },
+      {
+        path: 'edit',
+        component: EditGroupManagementComponent,
+        data: {
+          title: 'Edit Group'
+        }
+      },
+      {
+        path: 'create',
+        component: CreateGroupComponent,
+        data: {
+          title: 'Create Group'
+        }
+      }
+    ]
   },
   {
     path: 'chart',

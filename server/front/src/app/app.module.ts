@@ -50,6 +50,7 @@ import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { CarouselModule } from 'ngx-bootstrap/carousel';
 import { environment } from '../environments/environment';
 
+import { SharedModule } from './views/shared/shared.module';
 @NgModule({
   imports: [
     BrowserModule,
@@ -70,7 +71,8 @@ import { environment } from '../environments/environment';
     FormsModule,
     ReactiveFormsModule,
     CollapseModule.forRoot(),
-    CarouselModule.forRoot()
+    CarouselModule.forRoot(),
+    SharedModule
   ],
   declarations: [
     AppComponent,

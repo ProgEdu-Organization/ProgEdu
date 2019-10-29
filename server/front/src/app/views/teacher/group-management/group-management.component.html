@@ -1,99 +1,72 @@
 <div class="animated fadeIn">
-  <div class="row">
-    <div class="col-md-4">
-      <div class="card">
-        <div class="card-header">
-          <strong>Basic Form</strong> Elements
-        </div>
-        <form [formGroup]="group" (ngSubmit)="groupSubmit()">
-          <div class="card-body">
-            <div class="form-group row">
-              <label class="col-md-3 col-form-label" for="name">Group Name</label>
-              <div class="col-md-9">
-                <input type="text" id="name" name="name" class="form-control" formControlName='name'>
-              </div>
-            </div>
-            <div class="form-group row">
-              <label class="col-md-3 col-form-label" for="projectName">Project Name</label>
-              <div class="col-md-9">
-                <input type="text" id="projectName" name="projectName" class="form-control"
-                  formControlName='projectName'>
-              </div>
-            </div>
-            <div class="form-group row">
-              <label class="col-md-3 col-form-label" for="leader">Leader</label>
-              <div class="col-md-9">
-                <input type="text" id="leader" name="leader" class="form-control" formControlName='leader'>
-              </div>
-            </div>
-            <div class="form-group row">
-              <label class="col-md-3 col-form-label" for="member">Group Member</label>
-              <div class="col-md-9">
-                <table class="table">
-                  <tr *ngFor="let member of group.get('member').value;let recordIndex=index;">
-                    <td>
-                      <p class="col-form-label assigned" (click)="setLeader(member)">
-                        {{recordIndex+1}}. {{member}}</p>
-                    </td>
-                    <td><button class="badge badge-danger"
-                        (click)='removeGroupMemberByUsername(member);'>Remove</button>
-                    </td>
-                  </tr>
-                </table>
-                <p class='alert alert-danger' *ngIf="group.get('member').value.length === 0">No member</p>
-              </div>
-            </div>
-          </div>
-          <div class="card-footer">
-            <button class="btn btn-sm btn-primary" [disabled]='!group.valid' type='submit'>Submit</button>
-          </div>
-        </form>
-      </div>
+  <div class="card">
+    <div class="card-header">
+      <i class="cui-pencil icons"></i>
+      <strong>Group List</strong>
+      <div class="card-header-actions"><a href="#/dashboard/groupManagement/create"><button class="btn btn-primary"
+            type="button">Add More</button></a></div>
     </div>
-    <div class="col-md-3">
-      <div class="card">
-        <div class='card-header'>
-          <div class='input-group'>
-            <span>
-              <button class="btn btn-primary" type="button" [disabled]='true'><i class="fa fa-search"></i>
-                Search</button></span>
-            <input type='text' class='form-control col-md-6' [(ngModel)]='search'>
-          </div>
-        </div>
-        <div class="card-body">
-          <table class="table">
-            <thead>
-              <tr>
-                <th>Username</th>
-                <th>Add To Group</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let user of users | filter:search">
-                <td>{{user.username}}</td>
-                <td>
-                  <button class="badge badge-success" (click)='addGroupMemberByUsername(user.username);'>Add</button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+    <div class="card-body">
+      <table class="table table-striped" [style.text-align]="'center'">
+        <thead>
+          <tr>
+            <th>Group</th>
+            <th>Leader</th>
+            <th>Members</th>
+            <th>Edit</th>
+            <th>Delete</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor='let group of exitsGroups'>
+            <td>{{group.name}}</td>
+            <ng-container *ngFor='let member of group.members'>
+              <td *ngIf="member.id === group.leader">{{member.name}}</td>
+            </ng-container>
+            <td>
+              <ng-container *ngFor='let member of group.members;let lastMember = last'>
+                <span *ngIf="member.id !== group.leader">{{member.name}}
+                  <span *ngIf="!lastMember">,</span>
+                </span>
+              </ng-container>
+            </td>
+            <td>
+              <a href="#/dashboard/groupManagement/edit?groupName={{group.name}}"><button class="btn btn-info"><i
+                    class="cui-pencil icons"></i></button></a>
+            </td>
+            <td>
+              <button id="{{group.name}}" class="btn btn-danger" type="button" data-toggle="modal"
+                (click)='deleteModal.show();setSelectedGroup(group.name)'><i class="cui-trash icons"></i></button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<!--Alert Delete Assignment Modal-->
+<div bsModal #deleteModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="dangerModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-danger" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Delete Group</h4>
+        <button type="button" class="close" (click)="deleteModal.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <!--Delete Assignment Main-->
+      <div class="modal-body">
+        <p>Do you Want to Delete this "{{selectedGroupName}}" Group&hellip;</p>
+        <div *ngIf='isDeleteProgress'>
+          <progressbar class="progress-bar progress-bar-striped progress-bar-animated" [value]="dynamic" [max]="max"
+            [type]="type">
+          </progressbar>
         </div>
       </div>
-    </div>
-    <div class="col-md-5">
-      <div class="card">
-        <div class="card-body">
-          <table class="table">
-            <thead>
-              <tr>
-                <th>Group</th>
-                <th>Username</th>
-              </tr>
-            </thead>
-            <tbody>
-            </tbody>
-          </table>
-        </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="deleteModal.hide()">Close</button>
+        <button type="button" class="btn btn-danger" (click)="deleteGroup()">Delete</button>
       </div>
     </div>
   </div>

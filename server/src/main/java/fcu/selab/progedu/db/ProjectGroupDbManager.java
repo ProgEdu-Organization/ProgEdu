@@ -27,7 +27,7 @@ public class ProjectGroupDbManager {
    * @param gid Group Id
    */
   public void addProjectGroup(int pid, int gid) {
-    String sql = "INSERT INTO AssignmentUser(pId, gId)  VALUES(?, ?)";
+    String sql = "INSERT INTO Project_Group(pId, gId)  VALUES(?, ?)";
 
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
@@ -46,7 +46,7 @@ public class ProjectGroupDbManager {
    * @param gid Group Id
    * @return pgId projectGroup Id
    */
-  public int getPgid(int pid, int gid) {
+  public int getId(int gid, int pid) {
     int pgid = 0;
     String sql = "SELECT id FROM Project_Group WHERE pId=? AND gId=?";
     try (Connection conn = database.getConnection();
@@ -65,11 +65,35 @@ public class ProjectGroupDbManager {
   }
 
   /**
+   * get pgIds by group Id
+   * 
+   * @param gid Group Id
+   * @return pgIds projectGroup Id
+   */
+  public List<Integer> getPgids(int gid) {
+    List<Integer> pgids = new ArrayList<>();
+    String sql = "SELECT id FROM Project_Group WHERE gId=?";
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+      preStmt.setInt(1, gid);
+      try (ResultSet rs = preStmt.executeQuery()) {
+        while (rs.next()) {
+          int pgid = rs.getInt("id");
+          pgids.add(pgid);
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return pgids;
+  }
+
+  /**
    * get pids by Group Id
    * 
    * @return lsPids project Id
    */
-  public List<Integer> getPIds(int gid) {
+  public List<Integer> getPids(int gid) {
     List<Integer> lsPids = new ArrayList<>();
     String sql = "SELECT pId FROM Project_Group WHERE gId = ?";
     try (Connection conn = database.getConnection();
@@ -92,7 +116,7 @@ public class ProjectGroupDbManager {
    *
    * @return lsGids Group Id
    */
-  public List<Integer> getUids(int pid) {
+  public List<Integer> getGids(int pid) {
     List<Integer> lsGids = new ArrayList<>();
     String sql = "SELECT gId FROM Project_Group WHERE pId = ?";
     try (Connection conn = database.getConnection();
@@ -108,6 +132,45 @@ public class ProjectGroupDbManager {
       e.printStackTrace();
     }
     return lsGids;
+  }
+
+  /**
+   * get pid by id
+   * 
+   * @param id id
+   * @return pid
+   */
+  public int getPid(int id) {
+    int gid = 0;
+    String sql = "SELECT pId FROM Project_Group WHERE id = ?";
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+      preStmt.setInt(1, id);
+      try (ResultSet rs = preStmt.executeQuery()) {
+        if (rs.next()) {
+          gid = rs.getInt("pId");
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return gid;
+  }
+
+  /**
+   * remove Project_Group by gid
+   * 
+   * @param gid group id
+   */
+  public void remove(int gid) {
+    String sql = "DELETE FROM Project_Group WHERE gId=?";
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+      preStmt.setInt(1, gid);
+      preStmt.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
   }
 
 }

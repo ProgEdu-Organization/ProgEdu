@@ -1,6 +1,7 @@
 package fcu.selab.progedu.conn;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +11,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
@@ -26,23 +28,24 @@ import org.gitlab.api.models.GitlabUser;
 
 import fcu.selab.progedu.config.GitlabConfig;
 import fcu.selab.progedu.config.JenkinsConfig;
-import fcu.selab.progedu.data.Group;
 import fcu.selab.progedu.data.User;
+import fcu.selab.progedu.db.service.GroupDbService;
+import fcu.selab.progedu.db.service.UserDbService;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
-import fcu.selab.progedu.service.GroupService;
 import fcu.selab.progedu.utils.Linux;
 
 public class GitlabService {
   private static GitlabService instance = new GitlabService();
 
   GitlabConfig gitData = GitlabConfig.getInstance();
-
+  UserDbService udb = UserDbService.getInstance();
+  GroupDbService gdb = GroupDbService.getInstance();
   private String hostUrl;
   private String rootUrl;
   private String apiToken;
   private TokenType tokenType = TokenType.PRIVATE_TOKEN;
   private AuthMethod authMethod = AuthMethod.URL_PARAMETER;
-
+  private static final String API_NAMESPACE = "/api/v4";
   private GitlabAPI gitlab;
 
   private GitlabService() {
@@ -145,6 +148,23 @@ public class GitlabService {
     }
 
     return projects;
+  }
+
+  /**
+   * get gitlab project by id
+   * 
+   * @param id gitlab project id
+   * @return gitlab project
+   */
+  public GitlabProject getProject(int id) {
+    GitlabProject project = null;
+    try {
+      project = gitlab.getProject(id);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    return project;
   }
 
   /**
@@ -435,33 +455,61 @@ public class GitlabService {
   /**
    * transfer project into group
    * 
-   * @param group group
+   * @param groupName   group name
+   * @param projectName project name
    * @throws IOException IOException
    */
-  public GitlabProject createGroupProject(Group group) throws IOException {
-    GroupService gs = new GroupService();
-    int leaderId = gs.getUserIdByUsername(group.getLeaderUsername());
-    GitlabProject project = createPrivateProject(leaderId, group.getProjectName(), null);
-    transferProjectToGroupProject(getGitlabGroup(group.getGroupName()).getId(), project.getId());
-    return project;
+  public int createGroupProject(String groupName, String projectName) throws IOException {
+    int groupGitlabId = gdb.getGitlabId(groupName);
+    GitlabProject project = createRootProject(projectName);
+    int projectId = project.getId();
+    transferProjectToGroupProject(groupGitlabId, projectId);
+    return projectId;
   }
 
   /**
    * Add a member to group
    * 
-   * @param groupId     Group id
-   * @param userId      User id
-   * @param accessLevel User level in group
-   * @return true or false
-   * @throws IOException on gitlab api call error
+   * @param groupId     gitlab group id
+   * @param userId      gitlab user id
+   * @param accessLevel access level in group
    */
-  public boolean addMember(int groupId, int userId, GitlabAccessLevel accessLevel) {
+  public void addMember(int groupId, int userId, GitlabAccessLevel accessLevel) {
     try {
       gitlab.addGroupMember(groupId, userId, accessLevel);
     } catch (IOException e) {
       e.printStackTrace();
     }
-    return true;
+  }
+
+  /**
+   * update member access level
+   * 
+   * @param groupId     Group id
+   * @param userId      User id
+   * @param accessLevel access level in group
+   */
+  public void updateMemberAccessLevel(int groupId, int userId, GitlabAccessLevel accessLevel) {
+    // PUT /groups/:id/members/:user_id
+    // for example,
+    // http://localhost:80/api/v4/groups/38/members/2?access_level=50
+    String api = hostUrl + API_NAMESPACE + "/groups/" + groupId + "/members/" + userId;
+
+    HttpPut put = new HttpPut(api);
+    put.addHeader("PRIVATE-TOKEN", apiToken);
+    // Request parameters
+    List<NameValuePair> params = new ArrayList<>();
+    params.add(new BasicNameValuePair("access_level", Integer.toString(accessLevel.accessValue)));
+    try {
+      put.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
+    } catch (UnsupportedEncodingException e) {
+      e.printStackTrace();
+    }
+    try {
+      HttpClients.createDefault().execute(put);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 
   /**
@@ -471,15 +519,14 @@ public class GitlabService {
    * @return true or false
    * @throws IOException on gitlab api call error
    */
-  public boolean createRootProject(String proName) {
-    boolean isSuccess = false;
+  public GitlabProject createRootProject(String proName) {
+    GitlabProject project = null;
     try {
-      gitlab.createUserProject(1, proName);
-      isSuccess = true;
+      project = gitlab.createUserProject(1, proName);
     } catch (IOException e) {
       e.printStackTrace();
     }
-    return isSuccess;
+    return project;
   }
 
   /**
@@ -637,13 +684,17 @@ public class GitlabService {
    */
   public void setGitlabWebhook(GitlabProject project)
       throws IOException, LoadConfigFailureException {
-    String username = project.getOwner().getUsername();
+    String[] namespace = project.getPathWithNamespace().split("/");
+    String username = namespace[0];
+    String projectName = namespace[1];
+
     JenkinsConfig jenkinsConfig = JenkinsConfig.getInstance();
     // for example,
     // http://localhost:80/api/v4/projects/3149/hooks?url=http://localhost:8888/project/webhook
     String gitlabWebhookApi = hostUrl + "/api/v4/projects/" + project.getId() + "/hooks";
+//    project.getPath()
     String jenkinsJobUrl = jenkinsConfig.getJenkinsHostUrl() + "/project/" + username + "_"
-        + project.getName();
+        + projectName;
     HttpPost post = new HttpPost(gitlabWebhookApi);
     post.addHeader("PRIVATE-TOKEN", apiToken);
     // Request parameters
@@ -664,7 +715,7 @@ public class GitlabService {
     HttpClient client = new DefaultHttpClient();
     String url = "";
     try {
-      url = hostUrl + "/api/v3/groups/" + groupId + "/projects/" + projectId + "?private_token="
+      url = hostUrl + "/api/v4/groups/" + groupId + "/projects/" + projectId + "?private_token="
           + apiToken;
       HttpPost post = new HttpPost(url);
 
@@ -680,8 +731,44 @@ public class GitlabService {
     }
   }
 
+  /**
+   * get gitlab project url
+   * 
+   * @param username    username
+   * @param projectName project name
+   * @return gitlab project url
+   */
   public String getProjectUrl(String username, String projectName) {
     return hostUrl + "/" + username + "/" + projectName + ".git";
+  }
+
+  /**
+   * remove gitlab group
+   * 
+   * @param id gitlab group id
+   */
+  public void removeGroup(int id) {
+    try {
+      gitlab.deleteGroup(id);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+  }
+
+  /**
+   * remove member from gitlab group
+   * 
+   * @param groupId group gitlab id
+   * @param userId  user gitlab id
+   */
+  public void removeGroupMember(int groupId, int userId) {
+    try {
+      gitlab.deleteGroupMember(groupId, userId);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
   }
 
 }

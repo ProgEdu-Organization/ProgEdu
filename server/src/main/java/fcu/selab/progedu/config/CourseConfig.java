@@ -11,12 +11,11 @@ import io.jsonwebtoken.security.Keys;
 
 public class CourseConfig {
   private static final String PROPERTY_FILE = "/config/course_config.properties";
-  private static CourseConfig instance ;
-  private static final String EXCEPTION = "Unable to get config of COURSE"
-      + " connection string from file;";
+  private static CourseConfig instance;
+  private static final String EXCEPTION =
+      "Unable to get config of COURSE" + " connection string from file;";
 
   /**
-   *
    * @return instance.
    * @throws URISyntaxException .
    */
@@ -70,8 +69,7 @@ public class CourseConfig {
    * Get course full name
    *
    * @return course fill name
-   * @throws LoadConfigFailureException when property file is not found, the
-   *                                    exception is thrown
+   * @throws LoadConfigFailureException when property file is not found, the exception is thrown
    */
   public String getCourseFullName() throws LoadConfigFailureException {
     if (props != null) {
@@ -84,13 +82,11 @@ public class CourseConfig {
    * Get tomcat server ip
    *
    * @return tomcat server ip
-   * @throws LoadConfigFailureException when property file is not found, the
-   *                                    exception is thrown
+   * @throws LoadConfigFailureException when property file is not found, the exception is thrown
    */
   public String getTomcatServerIp() throws LoadConfigFailureException {
     String webExternalUrl = System.getenv("WEB_EXTERNAL_URL");
     if (webExternalUrl != null && !webExternalUrl.equals("")) {
-      System.out.println("WEB_EXTERNAL_URL: " + webExternalUrl);
       return webExternalUrl;
     }
     if (props != null) {
@@ -103,8 +99,7 @@ public class CourseConfig {
    * Get Course Key
    *
    * @return courseKey
-   * @throws LoadConfigFailureException when property file is not found, the
-   *                                    exception is thrown
+   * @throws LoadConfigFailureException when property file is not found, the exception is thrown
    */
   public Key getCourseKey() throws LoadConfigFailureException {
     if (props != null) {
@@ -121,7 +116,6 @@ public class CourseConfig {
    */
   public String getBaseuri() {
     String baseuri = System.getenv("WEB_API_BASEURI");
-    System.out.println("WEB_API_BASEURI: " + baseuri);
     if (baseuri != null) {
       return baseuri;
     }

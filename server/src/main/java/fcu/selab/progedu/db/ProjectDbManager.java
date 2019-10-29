@@ -72,8 +72,10 @@ public class ProjectDbManager {
           Date deadline = rs.getTimestamp("deadline");
           String description = rs.getString("description");
           int typeId = rs.getInt("type");
+          int id = rs.getInt("id");
           ProjectTypeEnum typeEnum = atDb.getTypeNameById(typeId);
 
+          project.setId(id);
           project.setName(name);
           project.setCreateTime(createTime);
           project.setDescription(description);
@@ -88,13 +90,51 @@ public class ProjectDbManager {
   }
 
   /**
+   * get project info by project id
+   * 
+   * @param id project id
+   * @return project
+   */
+  public GroupProject getGroupProject(int id) {
+    GroupProject project = new GroupProject();
+    String sql = "SELECT * FROM Project WHERE id = ?";
+
+    try (Connection conn = database.getConnection();
+        PreparedStatement stmt = conn.prepareStatement(sql)) {
+      stmt.setInt(1, id);
+      try (ResultSet rs = stmt.executeQuery();) {
+        while (rs.next()) {
+          String name = rs.getString("name");
+          Date createTime = rs.getTimestamp("createTime");
+          Date deadline = rs.getTimestamp("deadline");
+          Date releaseTime = rs.getTimestamp("releaseTime");
+          String description = rs.getString("description");
+          int typeId = rs.getInt("type");
+          ProjectTypeEnum typeEnum = atDb.getTypeNameById(typeId);
+
+          project.setId(id);
+          project.setName(name);
+          project.setCreateTime(createTime);
+          project.setDescription(description);
+          project.setType(typeEnum);
+          project.setDeadline(deadline);
+          project.setReleaseTime(releaseTime);
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return project;
+  }
+
+  /**
    * get project name by project id
    * 
    * @param pid project id
    * @return assignment name
    */
-  public String getProjectNameById(int pid) {
-    String sql = "SELECT name FROM Project WHERE pId = ?";
+  public String getProjectName(int pid) {
+    String sql = "SELECT name FROM Project WHERE id = ?";
     String projectName = "";
     try (Connection conn = database.getConnection();
         PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -116,7 +156,7 @@ public class ProjectDbManager {
    * @param projectName project name
    * @return id project id
    */
-  public int getProjectIdByName(String projectName) {
+  public int getId(String projectName) {
     String query = "SELECT id FROM Project WHERE name = ?";
     int id = -1;
 
@@ -140,7 +180,7 @@ public class ProjectDbManager {
    * @param projectName project name
    * @return type project type
    */
-  public int getAssignmentType(String projectName) {
+  public int getProjectType(String projectName) {
     int typeId = 0;
     String sql = "SELECT type FROM Project WHERE name=?";
     try (Connection conn = database.getConnection();
@@ -180,14 +220,15 @@ public class ProjectDbManager {
   }
 
   /**
-   * Delete project from database
+   * Delete project
    * 
-   * @param name project name
+   * @param id project id
    */
-  public void deleteProject(String name) {
-    String sql = "DELETE FROM Project WHERE name='" + name + "'";
+  public void deleteProject(int id) {
+    String sql = "DELETE FROM Project WHERE id=?";
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
+      preStmt.setInt(1, id);
       preStmt.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();
