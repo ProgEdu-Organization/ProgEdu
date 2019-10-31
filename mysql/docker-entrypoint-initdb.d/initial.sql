@@ -155,7 +155,7 @@ CREATE TABLE `Commit_Status` (
 
 LOCK TABLES `Commit_Status` WRITE;
 /*!40000 ALTER TABLE `Commit_Status` DISABLE KEYS */;
-INSERT INTO `Commit_Status` VALUES (1,'bs'),(2,'csf'),(3,'cpf'),(4,'ini'),(5,'utf'),(6, 'whf'),(67, 'wsf'),(8, 'wef');
+INSERT INTO `Commit_Status` VALUES (1,'bs'),(2,'csf'),(3,'cpf'),(4,'ini'),(5,'utf'),(6, 'whf'),(7, 'wsf'),(8, 'wef');
 /*!40000 ALTER TABLE `Commit_Status` ENABLE KEYS */;
 UNLOCK TABLES;
 
