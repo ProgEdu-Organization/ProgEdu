@@ -60,17 +60,17 @@
           <span *ngIf="projectType !== 'WEB'" class="ovol CPF">
             Compile Failure
           </span>
-          <span *ngIf="projectType !== 'WEB'" class="ovol CSF">
+          <span class="ovol CSF">
             Checkstyle Failure
           </span>
           <span *ngIf="projectType === 'WEB'" class="ovol WHF">
             HTMLHint Failure
           </span>
-          <span *ngIf="projectType === 'WEB'" class="ovol WEF">
-            ESLint Failure
-          </span>
           <span *ngIf="projectType === 'WEB'" class="ovol WSF">
             StyleLint Failure
+          </span>
+          <span *ngIf="projectType === 'WEB'" class="ovol WEF">
+            ESLint Failure
           </span>
           <!-- <p class="ovol plagirism" style="padding: 5px 10px;"><fmt:message key="dashboard_p_plagiarism"/></p> -->
           <span class="ovol UTF">
