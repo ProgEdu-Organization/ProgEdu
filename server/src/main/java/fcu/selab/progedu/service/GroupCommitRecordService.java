@@ -102,8 +102,8 @@ public class GroupCommitRecordService {
     List<Integer> pgids = gpdb.getPgids(groupName);
     for (int pgid : pgids) {
       GroupProject project = gpdb.getProject(pgid);
-      CommitRecord cr = gpdb.getCommitResult(pgid);
       ob.put("name", project.getName());
+      CommitRecord cr = gpdb.getCommitResult(pgid);
       ob.put("releaseTime", project.getReleaseTime());
       if (cr != null) {
         ob.put("number", cr.getNumber());
