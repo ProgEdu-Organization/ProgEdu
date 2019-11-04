@@ -8,6 +8,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fcu.selab.progedu.config.JwtConfig;
 import fcu.selab.progedu.db.RoleDbManager;
@@ -18,6 +20,7 @@ import io.jsonwebtoken.Claims;
 @Path("auth/")
 public class AuthService {
   JwtConfig jwt = JwtConfig.getInstance();
+  private static final Logger LOGGER = LoggerFactory.getLogger(AuthService.class);
 
   /**
    * @param token test
@@ -38,20 +41,24 @@ public class AuthService {
         case TEACHER: {
           ob.put("isLogin", true);
           ob.put("isTeacher", true);
+          LOGGER.info("AuthService Teacher Login Successed");
           break;
         }
         case STUDENT: {
           ob.put("isLogin", true);
           ob.put("isStudent", true);
+          LOGGER.info("AuthService Student Login Successed");
           break;
         }
         default: {
           ob.put("isLogin", false);
+          LOGGER.info("AuthService Default Login Failed");
         }
       }
 
     } else {
       ob.put("isLogin", false);
+      LOGGER.info("AuthService Else Login Failed");
     }
     return Response.ok().entity(ob.toString()).build();
   }

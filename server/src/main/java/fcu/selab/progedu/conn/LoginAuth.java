@@ -11,6 +11,8 @@ import javax.servlet.http.HttpSession;
 
 import fcu.selab.progedu.data.User;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fcu.selab.progedu.config.GitlabConfig;
 import fcu.selab.progedu.config.JwtConfig;
@@ -30,6 +32,7 @@ public class LoginAuth extends HttpServlet {
   private GitlabService gitlabService = GitlabService.getInstance();
   private GitlabConfig gitlabConfig = GitlabConfig.getInstance();
   JwtConfig jwt = JwtConfig.getInstance();
+  private static final Logger LOGGER = LoggerFactory.getLogger(LoginAuth.class);
 
   /**
    * @throws LoadConfigFailureException .
@@ -59,7 +62,7 @@ public class LoginAuth extends HttpServlet {
     String password = request.getParameter(USER_PASSWORD);
     String token;
     JSONObject ob = new JSONObject();
-
+    System.out.println("-------------------LoginAuth In--------------------");
     try {
       String role = checkPermission(username, password);
       if (!role.equals("")) {
@@ -68,13 +71,18 @@ public class LoginAuth extends HttpServlet {
         String name = getNameByUsername(username);
         token = jwt.generateToken(role, username, name);
         ob.put("token", token);
+        LOGGER.info("LoginAuth try Login Successed");
+        throw new LoadConfigFailureException("----Exception LoginAuth try Login Successed---");
       } else {
         ob.put("isLogin", false);
+        LOGGER.info("LoginAuth try Login Failed");
       }
     } catch (LoadConfigFailureException e) {
       ob.put("isLogin", false);
-      e.printStackTrace();
+      LOGGER.info(e.getMessage());
+//      e.printStackTrace();
     }
+    System.out.println("-------------------LoginAuth Out--------------------");
     response.setStatus(200);
     PrintWriter pw = response.getWriter();
     pw.print(ob);
