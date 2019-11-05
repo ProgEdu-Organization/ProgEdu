@@ -56,7 +56,6 @@ services:
       - db
       - jenkins
       - gitlab
-      - server-stable
 
   jenkins:
     # image: jenkins/jenkins:lts
