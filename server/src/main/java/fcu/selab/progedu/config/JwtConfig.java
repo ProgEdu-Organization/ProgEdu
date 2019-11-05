@@ -4,9 +4,12 @@ import java.security.Key;
 import java.util.Date;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import fcu.selab.progedu.utils.ExceptionUtil;
+
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -15,6 +18,7 @@ import io.jsonwebtoken.security.Keys;
 public class JwtConfig {
   private static Key key = null;
   private static JwtConfig jwtConfig = null;
+  private static final Logger LOGGER = LoggerFactory.getLogger(JwtConfig.class);
   
   private JwtConfig() {
     key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
@@ -53,7 +57,8 @@ public class JwtConfig {
       Jwts.parser().setSigningKey(key).parseClaimsJws(jwsToken);
       isValidate = true;
     } catch (JwtException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     } 
     return isValidate;
   }

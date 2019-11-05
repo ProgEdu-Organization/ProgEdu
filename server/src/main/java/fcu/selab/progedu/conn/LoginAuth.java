@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import fcu.selab.progedu.data.User;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +20,7 @@ import fcu.selab.progedu.db.RoleUserDbManager;
 import fcu.selab.progedu.db.UserDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.service.RoleEnum;
+import fcu.selab.progedu.utils.ExceptionUtil;
 
 /**
  * Servlet implementation class AfterEnter
@@ -62,7 +62,6 @@ public class LoginAuth extends HttpServlet {
     String password = request.getParameter(USER_PASSWORD);
     String token;
     JSONObject ob = new JSONObject();
-    System.out.println("-------------------LoginAuth In--------------------");
     try {
       String role = checkPermission(username, password);
       if (!role.equals("")) {
@@ -71,18 +70,14 @@ public class LoginAuth extends HttpServlet {
         String name = getNameByUsername(username);
         token = jwt.generateToken(role, username, name);
         ob.put("token", token);
-        LOGGER.info("LoginAuth try Login Successed");
-        throw new LoadConfigFailureException("----Exception LoginAuth try Login Successed---");
       } else {
         ob.put("isLogin", false);
-        LOGGER.info("LoginAuth try Login Failed");
       }
     } catch (LoadConfigFailureException e) {
       ob.put("isLogin", false);
-      LOGGER.info(e.getMessage());
-//      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
-    System.out.println("-------------------LoginAuth Out--------------------");
     response.setStatus(200);
     PrintWriter pw = response.getWriter();
     pw.print(ob);

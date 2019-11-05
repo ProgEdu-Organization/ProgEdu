@@ -6,7 +6,11 @@ import java.io.InputStream;
 import java.security.Key;
 import java.util.Properties;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import fcu.selab.progedu.exception.LoadConfigFailureException;
+import fcu.selab.progedu.utils.ExceptionUtil;
 import io.jsonwebtoken.security.Keys;
 
 public class CourseConfig {
@@ -14,6 +18,7 @@ public class CourseConfig {
   private static CourseConfig instance;
   private static final String EXCEPTION =
       "Unable to get config of COURSE" + " connection string from file;";
+  private static final Logger LOGGER = LoggerFactory.getLogger(CourseConfig.class);
 
   /**
    * @return instance.
@@ -35,7 +40,8 @@ public class CourseConfig {
       props.load(is);
 
     } catch (IOException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
   }
 

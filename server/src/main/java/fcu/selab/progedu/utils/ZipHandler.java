@@ -20,20 +20,26 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import fcu.selab.progedu.data.ZipFileInfo;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fcu.selab.progedu.config.CourseConfig;
 import fcu.selab.progedu.config.GitlabConfig;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
+import fcu.selab.progedu.data.ZipFileInfo;
+import fcu.selab.progedu.utils.ExceptionUtil;
+
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 
 public class ZipHandler {
   GitlabConfig gitData = GitlabConfig.getInstance();
   CourseConfig courseData = CourseConfig.getInstance();
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(ZipHandler.class);
 
   public String serverIp;
 
@@ -74,7 +80,8 @@ public class ZipHandler {
   // bos.write(bytesIn, 0, read);
   // }
   // } catch (Exception e) {
-  // e.printStackTrace();
+  //       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+  //      LOGGER.error(e.getMessage());
   // }
   // }
 
@@ -127,7 +134,8 @@ public class ZipHandler {
       StreamResult result = new StreamResult(new File(filePath));
       transformer.transform(source, result);
     } catch (ParserConfigurationException | SAXException | TransformerException | IOException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
   }
 
@@ -164,7 +172,8 @@ public class ZipHandler {
       System.out.println("Checksum : " + cos.getChecksum().getValue());
       setChecksum(cos.getChecksum().getValue());
     } catch (IOException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
   }
 
@@ -213,7 +222,8 @@ public class ZipHandler {
       ZipFile zipFileToTests = new ZipFile(sourceFilePath);
       zipFileToTests.extractAll(targetDirectory);
     } catch (ZipException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
   }
 

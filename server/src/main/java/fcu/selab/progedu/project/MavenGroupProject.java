@@ -14,12 +14,16 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fcu.selab.progedu.config.CourseConfig;
 import fcu.selab.progedu.config.GitlabConfig;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
+import fcu.selab.progedu.utils.ExceptionUtil;
 
 public class MavenGroupProject extends GroupProjectType {
+  private static final Logger LOGGER = LoggerFactory.getLogger(MavenGroupProject.class);
 
   @Override
   public ProjectTypeEnum getProjectType() {
@@ -66,7 +70,8 @@ public class MavenGroupProject extends GroupProjectType {
       transformer.transform(source, result);
     } catch (LoadConfigFailureException | ParserConfigurationException | SAXException | IOException
         | TransformerException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
 
   }
