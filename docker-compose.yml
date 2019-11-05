@@ -4,7 +4,7 @@ services:
     # image: mysql:latest
     # image: mysql:5.7
     # image: fcumselab/progedu-mysql:latest
-    image: fcumselab/progedu/mysql:latest
+    image: fcumselab/progedu-mysql:latest
     build: ./mysql
     ports:
       - "${DB_PORT}:3306"
@@ -40,10 +40,14 @@ services:
       - ${DATA_PATH_HOST}/gitlab/data:/var/opt/gitlab
 
   server:
-    image: fcumselab/progedu/server:dev
-    # image: fcumselab/progedu/server:latest
-    # image: fcumselab/progedu-server:latest
-    # image: fcumselab/progedu-server:dev
+    image: fcumselab/progedu-tomcat:latest
+    # image: fcumselab/progedu-tomcat:latest
+    # image: fcumselab/progedu-tomcat:latest
+    # image: fcumselab/progedu-tomcat:dev
+    build:
+      context: ./server
+      args:
+        - DEBUG=false
     env_file:
       - .env
     ports:
@@ -52,30 +56,11 @@ services:
       - db
       - jenkins
       - gitlab
-      - server-dev
       - server-stable
-
-  server-stable:
-    # image: fcumselab/progedu-server:latest
-    image: fcumselab/progedu/server:latest
-    build:
-      context: ./server
-      args:
-        - DEBUG=false
-    command: echo Build Latest Version Only!
-
-  server-dev:
-    # image: fcumselab/progedu-server:dev
-    image: fcumselab/progedu/server:dev
-    build:
-      context: ./server
-      args:
-        - DEBUG=true
-    command: echo Build Dev Version Only!
 
   jenkins:
     # image: jenkins/jenkins:lts
-    image: fcumselab/progedu/jenkins:latest
+    image: fcumselab/progedu-jenkins:latest
     build:
       context: ./jenkins
       args:
