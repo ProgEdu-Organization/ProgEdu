@@ -14,7 +14,8 @@ SHELL ["/bin/bash", "-c"]
 
 RUN dpkg --add-architecture i386 &&\
 	apt-get update && apt-get install -y --no-install-recommends &&\
-	apt-get install -y libc6-dev-i386 libc6-i386 zlib1g:i386 wget lib32stdc++6 lib32gcc1 lib32ncurses5 lib32z1 python curl libqt5widgets5 libpulse0:i386 pulseaudio libnss3-dev && \
+	apt-get install -y libc6-dev-i386 libc6-i386 zlib1g:i386 libstdc++6:i386  libxcomposite-dev libxcursor-dev:i386 &&\
+	apt-get install -y lib32gcc1 lib32ncurses5 lib32z1 libqt5widgets5 libpulse0:i386 pulseaudio libnss3-dev && \
 	apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
