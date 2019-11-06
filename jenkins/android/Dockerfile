@@ -2,16 +2,14 @@ FROM maven:3-jdk-8 as builder
 
 RUN mkdir /workdir
 
-RUN apt update && apt install -yqq git
+RUN apt-get update && apt-get install -yqq git
 
 WORKDIR /workdir
 
-RUN git clone https://github.com/fcumselab/screenshotjenkinsplugin.git
 RUN git clone https://github.com/fcumselab/UpdatePngToDBJenkinsPlugin.git
 RUN git clone https://github.com/fcumselab/ProgEduJenkinsPlugin.git
 
 RUN cd ProgEduJenkinsPlugin && mvn package
-RUN cd screenshotjenkinsplugin && mvn package
 RUN cd UpdatePngToDBJenkinsPlugin && mvn package
 
 FROM jenkins/jenkins:lts
@@ -23,7 +21,6 @@ COPY plugins.txt /usr/share/jenkins/ref/plugins.txt
 RUN /usr/local/bin/install-plugins.sh < /usr/share/jenkins/ref/plugins.txt
 
 COPY --from=builder /workdir/ProgEduJenkinsPlugin/target/jenkins-progedu.hpi /usr/share/jenkins/ref/plugins/jenkins-progedu.jpi
-COPY --from=builder /workdir/screenshotjenkinsplugin/target/screenshot.hpi /usr/share/jenkins/ref/plugins/screenshot.jpi
 COPY --from=builder /workdir/UpdatePngToDBJenkinsPlugin/target/progeduDB.hpi /usr/share/jenkins/ref/plugins/progeduDB.jpi
 
 SHELL ["/bin/bash", "-c"]
@@ -32,12 +29,17 @@ SHELL ["/bin/bash", "-c"]
 # Install Library:
 ###########################################################################
 
-RUN dpkg --add-architecture i386 &&\
-	apt-get update && apt-get install -y --no-install-recommends &&\
-	apt-get install -y libc6-dev-i386 libc6-i386 zlib1g:i386 libstdc++6:i386  libxcomposite-dev libxcursor-dev:i386 &&\
-	apt-get install -y lib32gcc1 lib32ncurses5 lib32z1 libqt5widgets5 libpulse0:i386 pulseaudio libnss3-dev && \
-	apt-get clean && \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+RUN dpkg --add-architecture i386 \
+		&& \
+	apt-get update && apt-get install -y --no-install-recommends \
+		&& \
+	apt-get install -y libc6-dev-i386 libc6-i386 zlib1g:i386 libstdc++6:i386  libxcomposite-dev libxcursor-dev:i386 \
+		&& \
+	apt-get install -y lib32gcc1 lib32ncurses5 lib32z1 libqt5widgets5 libpulse0:i386 pulseaudio libnss3-dev \
+		&& \
+	apt-get clean \
+		&& \
+  rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 ###########################################################################
 # Install Android SDK:
@@ -57,7 +59,7 @@ RUN cd /usr/local \
 	cd $ANDROID_HOME \
 		&& \
 	wget https://dl.google.com/android/repository/$SDK_NAME.zip -O sdk.zip -q \
-		&&\
+		&& \
 	unzip sdk.zip >> /dev/null \
 		&& \
 	rm sdk.zip \
