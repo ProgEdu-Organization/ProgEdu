@@ -52,7 +52,7 @@ services:
       - "${WEB_PORT}:8080"
     depends_on:
       - db
-      - jenkins
+      - jenkins-android
       - gitlab
 
   # jenkins:
