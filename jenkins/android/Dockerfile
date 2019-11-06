@@ -55,9 +55,11 @@ ARG SDK_PLATFORMS
 ARG SDK_BUILD_TOOLS
 
 RUN if [ ${SDK_SETUP} = true ]; then \
-    yes | $ANDROID_HOME/tools/bin/sdkmanager "platforms;$SDK_PLATFORMS" >> /dev/null \
+  yes | $ANDROID_HOME/tools/bin/sdkmanager "platforms;$SDK_PLATFORMS" >> /dev/null \
 		&& \
 	yes | $ANDROID_HOME/tools/bin/sdkmanager "build-tools;$SDK_BUILD_TOOLS" >> /dev/null \
+		&& \
+	yes | $ANDROID_HOME/tools/bin/sdkmanager "platform-tools" >> /dev/null \
 		&& \
 	yes | $ANDROID_HOME/tools/bin/sdkmanager "emulator" >> /dev/null \
 ;fi

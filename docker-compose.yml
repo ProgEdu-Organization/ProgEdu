@@ -55,22 +55,22 @@ services:
       - jenkins
       - gitlab
 
-  jenkins:
-    # image: jenkins/jenkins:lts
-    image: fcumselab/progedu-jenkins:latest
-    build:
-      context: ./jenkins
-      args:
-        - GITLAB_USER=${JENKINS_PLUGIN_GITLAB_LOGIN_USER}
-        - GITLAB_TOKEN=${JENKINS_PLUGIN_GITLAB_LOGIN_TOKEN}
-    ports:
-      - "${JENKINS_PORT}:8080"
-      # - "30000:50000"
-    restart: always
-    environment:
-      WEB_SELENIUM_URL: ${WEB_SELENIUM_URL}
-    volumes:
-      - ${DATA_PATH_HOST}/jenkins:/var/jenkins_home
+  # jenkins:
+  #   # image: jenkins/jenkins:lts
+  #   image: fcumselab/progedu-jenkins:latest
+  #   build:
+  #     context: ./jenkins
+  #     args:
+  #       - GITLAB_USER=${JENKINS_PLUGIN_GITLAB_LOGIN_USER}
+  #       - GITLAB_TOKEN=${JENKINS_PLUGIN_GITLAB_LOGIN_TOKEN}
+  #   ports:
+  #     - "${JENKINS_PORT}:8080"
+  #     # - "30000:50000"
+  #   restart: always
+  #   environment:
+  #     WEB_SELENIUM_URL: ${WEB_SELENIUM_URL}
+  #   volumes:
+  #     - ${DATA_PATH_HOST}/jenkins:/var/jenkins_home
 
   jenkins-android:
     image: progedu-android-jenkins:latest
@@ -84,7 +84,8 @@ services:
     ports:
       - ${JENKINS_PORT}:8080
     volumes:
-      - ${DATA_PATH_HOST}/jenkins-android:/var/jenkins_home
+      - ${DATA_PATH_HOST}/jenkins-android/jenkins_home:/var/jenkins_home
+      - ${DATA_PATH_HOST}/jenkins-android/android-sdk-linux:/usr/local/android-sdk-linux
       - /dev/kvm:/dev/kvm
     restart: always
 
