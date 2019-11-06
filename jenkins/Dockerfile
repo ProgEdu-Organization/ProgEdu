@@ -6,12 +6,9 @@ RUN apt update && apt install -yqq git
 
 WORKDIR /workdir
 
-ARG GITLAB_USER
-ARG GITLAB_TOKEN
-
-RUN git clone http://$GITLAB_USER:$GITLAB_TOKEN@mselab.iecs.fcu.edu.tw:20080/root/ProgEduJenkinsPlugin.git
-RUN git clone http://$GITLAB_USER:$GITLAB_TOKEN@mselab.iecs.fcu.edu.tw:20080/angus850503/screenshotjenkinsplugin.git
-RUN git clone http://$GITLAB_USER:$GITLAB_TOKEN@mselab.iecs.fcu.edu.tw:20080/angus850503/UpdatePngToDBJenkinsPlugin.git
+RUN git clone https://github.com/fcumselab/screenshotjenkinsplugin.git
+RUN git clone https://github.com/fcumselab/UpdatePngToDBJenkinsPlugin.git
+RUN git clone https://github.com/fcumselab/ProgEduJenkinsPlugin.git
 
 RUN cd ProgEduJenkinsPlugin && mvn package
 RUN cd screenshotjenkinsplugin && mvn package

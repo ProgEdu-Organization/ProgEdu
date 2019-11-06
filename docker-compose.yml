@@ -60,9 +60,6 @@ services:
   #   image: fcumselab/progedu-jenkins:latest
   #   build:
   #     context: ./jenkins
-  #     args:
-  #       - GITLAB_USER=${JENKINS_PLUGIN_GITLAB_LOGIN_USER}
-  #       - GITLAB_TOKEN=${JENKINS_PLUGIN_GITLAB_LOGIN_TOKEN}
   #   ports:
   #     - "${JENKINS_PORT}:8080"
   #     # - "30000:50000"
