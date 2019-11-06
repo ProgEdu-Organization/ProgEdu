@@ -5,14 +5,15 @@
   <keepDependencies>false</keepDependencies>
   <properties>
     <com.dabsquared.gitlabjenkins.connection.GitLabConnectionProperty plugin="gitlab-plugin@1.5.13">
-      <gitLabConnection></gitLabConnection>
+      <gitLabConnection>gitlab</gitLabConnection>
     </com.dabsquared.gitlabjenkins.connection.GitLabConnectionProperty>
   </properties>
-  <scm class="hudson.plugins.git.GitSCM" plugin="git@3.12.1">
+  <scm class="hudson.plugins.git.GitSCM" plugin="git@4.0.0">
     <configVersion>2</configVersion>
     <userRemoteConfigs>
       <hudson.plugins.git.UserRemoteConfig>
-        <url>https://github.com/MomentaryChen/HelloWorld.git</url>
+        <url>http://140.134.26.71:49000/root/ANDROID.git</url>
+        <credentialsId>gitlab</credentialsId>
       </hudson.plugins.git.UserRemoteConfig>
     </userRemoteConfigs>
     <branches>
@@ -36,7 +37,7 @@
       <tasks>clean build test connectedAndroidTest</tasks>
       <rootBuildScriptDir></rootBuildScriptDir>
       <buildFile></buildFile>
-      <gradleName>gradle</gradleName>
+      <gradleName>Default</gradleName>
       <useWrapper>false</useWrapper>
       <makeExecutable>false</makeExecutable>
       <useWorkspaceAsHome>false</useWorkspaceAsHome>
