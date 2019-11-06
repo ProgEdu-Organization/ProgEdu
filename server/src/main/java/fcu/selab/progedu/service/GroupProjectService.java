@@ -4,6 +4,8 @@ import java.io.IOException;
 
 import org.gitlab.api.models.GitlabProject;
 import org.gitlab.api.models.GitlabUser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fcu.selab.progedu.config.CourseConfig;
 import fcu.selab.progedu.config.GitlabConfig;
@@ -18,6 +20,7 @@ import fcu.selab.progedu.project.GroupProjectFactory;
 import fcu.selab.progedu.project.GroupProjectType;
 import fcu.selab.progedu.project.ProjectTypeEnum;
 import fcu.selab.progedu.utils.ZipHandler;
+import fcu.selab.progedu.utils.ExceptionUtil;
 
 public class GroupProjectService {
   private static GroupProjectService instance = new GroupProjectService();
@@ -37,6 +40,7 @@ public class GroupProjectService {
   private final String tempDir = System.getProperty("java.io.tmpdir");
   private final String uploadDir = tempDir + "/uploads/";
   private final String testDir = tempDir + "/tests/";
+  private static final Logger LOGGER = LoggerFactory.getLogger(GroupProjectService.class);
 
   boolean isSave = true;
 
@@ -54,7 +58,8 @@ public class GroupProjectService {
       mailPassword = jenkinsData.getMailPassword();
       gitlabRootUsername = gitlabData.getGitlabRootUsername();
     } catch (LoadConfigFailureException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
   }
 
@@ -74,7 +79,8 @@ public class GroupProjectService {
     try {
       projectId = gitlabService.createGroupProject(groupName, projectName);
     } catch (IOException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
 
     // 2. Clone the project to C:\\Users\\users\\AppData\\Temp\\uploads
@@ -102,7 +108,8 @@ public class GroupProjectService {
       GitlabProject project = gitlabService.getProject(projectId);
       gitlabService.setGitlabWebhook(project);
     } catch (IOException | LoadConfigFailureException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
 
     // 10. Create each Jenkins Jobs

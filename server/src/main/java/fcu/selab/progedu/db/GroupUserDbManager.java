@@ -7,6 +7,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import fcu.selab.progedu.utils.ExceptionUtil;
+
 public class GroupUserDbManager {
   private static GroupUserDbManager dbManager = new GroupUserDbManager();
 
@@ -15,6 +20,8 @@ public class GroupUserDbManager {
   }
 
   private IDatabase database = new MySqlDatabase();
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(GroupUserDbManager.class);
 
   private GroupUserDbManager() {
 
@@ -35,7 +42,8 @@ public class GroupUserDbManager {
       preStmt.setInt(2, uid);
       preStmt.executeUpdate();
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
   }
 
@@ -59,7 +67,8 @@ public class GroupUserDbManager {
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return guid;
   }
@@ -82,7 +91,8 @@ public class GroupUserDbManager {
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return lsGids;
   }
@@ -105,7 +115,8 @@ public class GroupUserDbManager {
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return lsUids;
   }
@@ -122,7 +133,8 @@ public class GroupUserDbManager {
       preStmt.setInt(1, gid);
       preStmt.executeUpdate();
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
   }
 
@@ -140,7 +152,8 @@ public class GroupUserDbManager {
       preStmt.setInt(2, uid);
       preStmt.executeUpdate();
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
   }
 

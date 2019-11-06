@@ -25,6 +25,8 @@ import org.gitlab.api.models.GitlabGroupMember;
 import org.gitlab.api.models.GitlabProject;
 import org.gitlab.api.models.GitlabSession;
 import org.gitlab.api.models.GitlabUser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fcu.selab.progedu.config.GitlabConfig;
 import fcu.selab.progedu.config.JenkinsConfig;
@@ -33,6 +35,7 @@ import fcu.selab.progedu.db.service.GroupDbService;
 import fcu.selab.progedu.db.service.UserDbService;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.utils.Linux;
+import fcu.selab.progedu.utils.ExceptionUtil;
 
 public class GitlabService {
   private static GitlabService instance = new GitlabService();
@@ -47,6 +50,7 @@ public class GitlabService {
   private AuthMethod authMethod = AuthMethod.URL_PARAMETER;
   private static final String API_NAMESPACE = "/api/v4";
   private GitlabAPI gitlab;
+  private static final Logger LOGGER = LoggerFactory.getLogger(GitlabConfig.class);
 
   private GitlabService() {
     try {
@@ -54,7 +58,8 @@ public class GitlabService {
       rootUrl = gitData.getGitlabRootUrl();
       apiToken = gitData.getGitlabApiToken();
     } catch (LoadConfigFailureException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     gitlab = GitlabAPI.connect(hostUrl, apiToken, tokenType, authMethod);
   }
@@ -74,7 +79,8 @@ public class GitlabService {
       rootSession = GitlabAPI.connect(hostUrl, gitData.getGitlabRootUsername(),
           gitData.getGitlabRootPassword());
     } catch (IOException | LoadConfigFailureException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return rootSession;
   }
@@ -92,7 +98,8 @@ public class GitlabService {
     try {
       userSession = GitlabAPI.connect(hostUrl, userName, password);
     } catch (IOException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return userSession;
   }
@@ -127,7 +134,8 @@ public class GitlabService {
       gitlabUser.setId(user.getGitLabId());
       projects = gitlab.getProjectsViaSudo(gitlabUser);
     } catch (IOException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return projects;
   }
@@ -144,7 +152,8 @@ public class GitlabService {
     try {
       projects = gitlab.getProjectsViaSudo(user);
     } catch (IOException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
 
     return projects;
@@ -161,7 +170,8 @@ public class GitlabService {
     try {
       project = gitlab.getProject(id);
     } catch (IOException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
 
     return project;
@@ -178,7 +188,8 @@ public class GitlabService {
     try {
       commits = gitlab.getAllCommits(projectId);
     } catch (IOException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return commits;
   }
@@ -197,7 +208,8 @@ public class GitlabService {
     try {
       commits = gitlab.getAllCommits(project.getId());
     } catch (IOException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return commits;
   }
@@ -212,7 +224,8 @@ public class GitlabService {
     try {
       projects = gitlab.getAllProjects();
     } catch (IOException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return projects;
   }
@@ -227,7 +240,8 @@ public class GitlabService {
     try {
       gitlabUser = gitlab.getUser();
     } catch (IOException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return gitlabUser;
   }
@@ -243,7 +257,8 @@ public class GitlabService {
     try {
       gitlabUser = gitlab.getUser(userId);
     } catch (IOException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return gitlabUser;
   }
@@ -259,7 +274,8 @@ public class GitlabService {
     try {
       users = gitlab.getUsers();
     } catch (IOException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return users;
   }
@@ -275,7 +291,8 @@ public class GitlabService {
     try {
       user = gitlab.getUserViaSudo(userName);
     } catch (IOException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return user;
   }
@@ -307,7 +324,8 @@ public class GitlabService {
     try {
       root = gitlab.getUser(1);
     } catch (IOException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return root;
   }
@@ -323,7 +341,8 @@ public class GitlabService {
     try {
       groups = gitlab.getGroups();
     } catch (IOException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return groups;
   }
@@ -340,7 +359,8 @@ public class GitlabService {
     try {
       projects = gitlab.getGroupProjects(group);
     } catch (IOException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return projects;
   }
@@ -357,7 +377,8 @@ public class GitlabService {
     try {
       groupMembers = gitlab.getGroupMembers(group);
     } catch (IOException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return groupMembers;
   }
@@ -373,7 +394,8 @@ public class GitlabService {
     try {
       group = gitlab.getGroup(groupName);
     } catch (IOException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return group;
   }
@@ -478,7 +500,8 @@ public class GitlabService {
     try {
       gitlab.addGroupMember(groupId, userId, accessLevel);
     } catch (IOException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
   }
 
@@ -503,12 +526,14 @@ public class GitlabService {
     try {
       put.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
     } catch (UnsupportedEncodingException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     try {
       HttpClients.createDefault().execute(put);
     } catch (IOException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
   }
 
@@ -524,7 +549,8 @@ public class GitlabService {
     try {
       project = gitlab.createUserProject(1, proName);
     } catch (IOException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return project;
   }
@@ -547,7 +573,8 @@ public class GitlabService {
         count = 0;
       }
     } catch (IOException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return count;
   }
@@ -563,7 +590,8 @@ public class GitlabService {
     try {
       lsCommits = gitlab.getAllCommits(projectId);
     } catch (IOException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return lsCommits;
   }
@@ -589,7 +617,8 @@ public class GitlabService {
     try {
       gitlab.deleteUser(userId);
     } catch (IOException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
   }
 
@@ -604,7 +633,8 @@ public class GitlabService {
           gitlab.deleteProject(project.getId());
         }
       } catch (IOException e) {
-        e.printStackTrace();
+        LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+        LOGGER.error(e.getMessage());
       }
     }
   }
@@ -621,7 +651,8 @@ public class GitlabService {
       gitlab.updateUser(stuUser.getId(), stuUser.getEmail(), password, stuUser.getUsername(),
           stuUser.getName(), null, null, null, null, 20, null, null, null, false, true);
     } catch (IOException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
   }
 
@@ -639,7 +670,8 @@ public class GitlabService {
         committers.add(commit.getAuthorName());
       }
     } catch (IOException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return committers;
   }
@@ -727,7 +759,8 @@ public class GitlabService {
         System.out.println("httppost build " + groupId + " , result : " + result);
       }
     } catch (IOException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
   }
 
@@ -751,7 +784,8 @@ public class GitlabService {
     try {
       gitlab.deleteGroup(id);
     } catch (IOException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
 
   }
@@ -766,7 +800,8 @@ public class GitlabService {
     try {
       gitlab.deleteGroupMember(groupId, userId);
     } catch (IOException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
 
   }

@@ -7,10 +7,21 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import fcu.selab.progedu.utils.ExceptionUtil;
+
 public class ProjectScreenshotRecordDbManager {
   private static ProjectScreenshotRecordDbManager instance = new ProjectScreenshotRecordDbManager();
 
   private IDatabase database = new MySqlDatabase();
+
+  private static final Logger LOGGER;
+
+  static {
+    LOGGER = LoggerFactory.getLogger(ProjectScreenshotRecordDbManager.class);
+  }
 
   public static ProjectScreenshotRecordDbManager getInstance() {
     return instance;
@@ -31,7 +42,8 @@ public class ProjectScreenshotRecordDbManager {
       preStmt.setString(2, url);
       preStmt.executeUpdate();
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
   }
 
@@ -47,7 +59,8 @@ public class ProjectScreenshotRecordDbManager {
       preStmt.setInt(1, pcrid);
       preStmt.executeUpdate();
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
   }
 
@@ -70,7 +83,8 @@ public class ProjectScreenshotRecordDbManager {
         return urls;
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return null;
   }

@@ -5,7 +5,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import fcu.selab.progedu.status.StatusEnum;
+import fcu.selab.progedu.utils.ExceptionUtil;
 
 public class CommitStatusDbManager {
   private static CommitStatusDbManager dbManager = new CommitStatusDbManager();
@@ -15,6 +19,8 @@ public class CommitStatusDbManager {
   }
 
   private IDatabase database = new MySqlDatabase();
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(CommitStatusDbManager.class);
 
   /**
    * Get CommitStatus status Id by status name
@@ -35,7 +41,8 @@ public class CommitStatusDbManager {
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return statusId;
   }
@@ -59,7 +66,8 @@ public class CommitStatusDbManager {
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     StatusEnum statusEnum = StatusEnum.getStatusEnum(statusName);
     return statusEnum;

@@ -21,6 +21,8 @@ import fcu.selab.progedu.db.UserDbManager;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fcu.selab.progedu.conn.JenkinsService;
 import fcu.selab.progedu.data.CommitRecord;
@@ -33,6 +35,7 @@ import fcu.selab.progedu.project.GroupProjectFactory;
 import fcu.selab.progedu.project.GroupProjectType;
 import fcu.selab.progedu.project.ProjectTypeEnum;
 import fcu.selab.progedu.status.StatusEnum;
+import fcu.selab.progedu.utils.ExceptionUtil;
 
 @Path("groups")
 public class GroupCommitRecordService {
@@ -41,6 +44,7 @@ public class GroupCommitRecordService {
   private GroupDbService gdb = GroupDbService.getInstance();
   private ProjectDbService gpdb = ProjectDbService.getInstance();
   private ProjectGroupDbService pgdb = ProjectGroupDbService.getInstance();
+  private static final Logger LOGGER = LoggerFactory.getLogger(GroupCommitRecordService.class);
 
   /**
    * get all commit result.
@@ -188,7 +192,8 @@ public class GroupCommitRecordService {
     try {
       date = time.parse(time.format(Calendar.getInstance().getTime()));
     } catch (ParseException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     GroupProjectType projectType = GroupProjectFactory.getGroupProjectType(type.getTypeName());
     StatusEnum statusEnum = projectType.checkStatusType(commitNumber, groupName, projectName);

@@ -4,13 +4,18 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import fcu.selab.progedu.exception.LoadConfigFailureException;
+import fcu.selab.progedu.utils.ExceptionUtil;
 
 public class JenkinsConfig {
   private static final String PROPERTY_FILE = "/config/jenkins_config.properties";
   private static final String EXCEPTION =
       "Unable to get config of JENKINS" + " connection string from file;";
   private static JenkinsConfig instance;
+  private static final Logger LOGGER = LoggerFactory.getLogger(JenkinsConfig.class);
 
   /**
    * Get Instance
@@ -32,7 +37,8 @@ public class JenkinsConfig {
       props = new Properties();
       props.load(is);
     } catch (IOException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
   }
 

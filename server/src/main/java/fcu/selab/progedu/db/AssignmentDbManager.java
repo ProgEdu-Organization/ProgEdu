@@ -10,8 +10,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import fcu.selab.progedu.data.Assignment;
 import fcu.selab.progedu.project.ProjectTypeEnum;
+import fcu.selab.progedu.utils.ExceptionUtil;
 
 public class AssignmentDbManager {
   AssignmentTypeDbManager atDb = AssignmentTypeDbManager.getInstance();
@@ -23,6 +27,8 @@ public class AssignmentDbManager {
   }
 
   private IDatabase database = new MySqlDatabase();
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(AssignmentDbManager.class);
 
   private AssignmentDbManager() {
 
@@ -56,7 +62,8 @@ public class AssignmentDbManager {
       preStmt.setBoolean(10, assignment.isDisplay());
       preStmt.executeUpdate();
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
   }
 
@@ -88,7 +95,8 @@ public class AssignmentDbManager {
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return assignment;
   }
@@ -111,7 +119,8 @@ public class AssignmentDbManager {
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     System.out.println(assignmentName);
     return assignmentName;
@@ -136,7 +145,8 @@ public class AssignmentDbManager {
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return id;
   }
@@ -170,7 +180,8 @@ public class AssignmentDbManager {
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return typeId;
   }
@@ -193,7 +204,8 @@ public class AssignmentDbManager {
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return zipUrl;
   }
@@ -222,7 +234,8 @@ public class AssignmentDbManager {
         assignments.add(assignment);
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return assignments;
   }
@@ -244,7 +257,8 @@ public class AssignmentDbManager {
         lsNames.add(name);
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return lsNames;
   }
@@ -260,7 +274,8 @@ public class AssignmentDbManager {
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
       preStmt.executeUpdate();
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
   }
 
@@ -288,7 +303,8 @@ public class AssignmentDbManager {
       preStmt.setInt(5, id);
       preStmt.executeUpdate();
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
   }
 
@@ -313,7 +329,8 @@ public class AssignmentDbManager {
       preStmt.setInt(4, id);
       preStmt.executeUpdate();
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
   }
 
