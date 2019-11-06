@@ -76,3 +76,5 @@ pipeline-stage-tags-metadata:latest
 authentication-tokens:latest
 credentials:latest
 github-branch-source:latest
+android-emulator:latest
+android-lint:latest
