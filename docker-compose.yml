@@ -42,8 +42,6 @@ services:
   server:
     image: fcumselab/progedu-tomcat:latest
     # image: fcumselab/progedu-tomcat:latest
-    # image: fcumselab/progedu-tomcat:latest
-    # image: fcumselab/progedu-tomcat:dev
     build:
       context: ./server
       args:
