@@ -82,6 +82,7 @@ services:
       - ${JENKINS_PORT}:8080
     volumes:
       - ${DATA_PATH_HOST}/jenkins-android/jenkins_home:/var/jenkins_home
+      # - ${DATA_PATH_HOST}/jenkins-android/android-sdk-linux:/usr/local/android-sdk-linux
       - /dev/kvm:/dev/kvm
     restart: always
 

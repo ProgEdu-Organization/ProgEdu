@@ -81,7 +81,7 @@ RUN if [ ${SDK_SETUP} = true ]; then \
 		&& \
 	yes | $ANDROID_HOME/tools/bin/sdkmanager "build-tools;$SDK_BUILD_TOOLS" >> /dev/null \
 		&& \
-	yes | $ANDROID_HOME/tools/bin/sdkmanager "platform-tools" >> /dev/null \
+	yes | $ANDROID_HOME/tools/bin/sdkmanager "platform-tools" "emulator" >> /dev/null \
 		&& \
-	yes | $ANDROID_HOME/tools/bin/sdkmanager "emulator" >> /dev/null \
+	yes | $ANDROID_HOME/tools/bin/sdkmanager --include_obsolete "platforms;android-22" "system-images;android-22;default;x86" >> /dev/null \
 ;fi
