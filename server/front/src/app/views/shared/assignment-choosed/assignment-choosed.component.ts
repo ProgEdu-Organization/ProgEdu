@@ -57,7 +57,7 @@ export class AssignmentChoosedComponent implements OnInit {
           this.commits[commit].time = this.getUTCAdjustTime(this.commits[commit].time);
         }
       }
-      if (this.assignment.type === 'WEB') {
+      if (this.assignment.type === 'WEB' || this.assignment.type === 'ANDROID') {
         this.getScreenshotUrls();
       }
     });
