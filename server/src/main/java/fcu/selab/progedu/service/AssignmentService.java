@@ -142,22 +142,26 @@ public class AssignmentService {
     // 4. Unzip the uploaded file to tests folder and uploads folder on tomcat,
     // extract main method from tests folder, then zip as root project
     String testDirectory = testDir + assignmentName;
-
+    System.out.println("TEST1");
     zipHandler.unzipFile(filePath, cloneDirectoryPath);
     zipHandler.unzipFile(filePath, testDirectory);
+    System.out.println("TEST2");
     assignment.createTemplate(cloneDirectoryPath);
+    System.out.println("TEST3");
     testZipChecksum = assignment.createTestCase(testDirectory).getChecksum();
+    System.out.println("TEST4");
     testZipUrl = assignment.createTestCase(testDirectory).getZipFileUrl();
 
     // 5. Add .gitkeep if folder is empty.
+    System.out.println("TEST5");
     tomcatService.findEmptyFolder(cloneDirectoryPath);
-
+    System.out.println("TEST6");
     // 6. if README is not null
     if (!readMe.equals("<br>") || !"".equals(readMe) || !readMe.isEmpty()) {
       // Add readme to folder
       tomcatService.createReadmeFile(readMe, cloneDirectoryPath);
     }
-
+    System.out.println("TEST7");
     // 7. git push
     gitlabService.pushProject(cloneDirectoryPath);
 

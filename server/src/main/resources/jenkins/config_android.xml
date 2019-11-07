@@ -1,6 +1,6 @@
-<?xml version="1.1" encoding="UTF-8" ?>
+<?xml version='1.1' encoding='UTF-8'?>
 <project>
-  <actions />
+  <actions/>
   <description></description>
   <keepDependencies>false</keepDependencies>
   <properties>
@@ -12,8 +12,8 @@
     <configVersion>2</configVersion>
     <userRemoteConfigs>
       <hudson.plugins.git.UserRemoteConfig>
-        <url>http://140.134.26.71:49000/root/ANDROID.git</url>
-        <credentialsId>gitlab</credentialsId>
+        <url>http://140.134.26.71:49000/M0806615/TEST.git</url>
+        <credentialsId>gitlab_root</credentialsId>
       </hudson.plugins.git.UserRemoteConfig>
     </userRemoteConfigs>
     <branches>
@@ -22,8 +22,8 @@
       </hudson.plugins.git.BranchSpec>
     </branches>
     <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
-    <submoduleCfg class="list" />
-    <extensions />
+    <submoduleCfg class="list"/>
+    <extensions/>
   </scm>
   <canRoam>true</canRoam>
   <disabled>false</disabled>
@@ -49,30 +49,58 @@
       <excludeBranchesSpec></excludeBranchesSpec>
       <sourceBranchRegex></sourceBranchRegex>
       <targetBranchRegex></targetBranchRegex>
-      <secretToken>{AQAAABAAAAAQQfJO7u0RVoq79vaVWLbFZufkk3s3AuAom5np6sqPHng=}</secretToken>
+      <secretToken>{AQAAABAAAAAQxRACvWEbQtjgQM3p0EDLt03++fCQ0JK+lr0I4iGun1Y=}</secretToken>
       <pendingBuildName></pendingBuildName>
       <cancelPendingBuildsOnUpdate>false</cancelPendingBuildsOnUpdate>
     </com.dabsquared.gitlabjenkins.GitLabPushTrigger>
   </triggers>
   <concurrentBuild>false</concurrentBuild>
   <builders>
-    <hudson.plugins.gradle.Gradle plugin="gradle@1.34">
-      <switches></switches>
-      <tasks>clean build test connectedAndroidTest</tasks>
-      <rootBuildScriptDir></rootBuildScriptDir>
-      <buildFile></buildFile>
-      <gradleName>Gradle</gradleName>
-      <useWrapper>false</useWrapper>
-      <makeExecutable>false</makeExecutable>
-      <useWorkspaceAsHome>false</useWorkspaceAsHome>
-      <wrapperLocation></wrapperLocation>
-      <passAllAsSystemProperties>false</passAllAsSystemProperties>
-      <projectProperties></projectProperties>
-      <passAllAsProjectProperties>false</passAllAsProjectProperties>
-    </hudson.plugins.gradle.Gradle>
-    <hudson.tasks.Shell>
-      <command>adb pull /storage/sdcard/app_spoon-screenshots</command>
-    </hudson.tasks.Shell>
+    <hudson.plugins.build__timeout.BuildStepWithTimeout plugin="build-timeout@1.19">
+      <strategy class="hudson.plugins.build_timeout.impl.AbsoluteTimeOutStrategy">
+        <timeoutMinutes>5</timeoutMinutes>
+      </strategy>
+      <buildStep class="org.jenkinsci.plugins.AssessmentBuilder" plugin="jenkins-progedu@1.0-SNAPSHOT">
+        <jobName>M0806615_TEST</jobName>
+        <testFileName>TEST</testFileName>
+        <proDetailUrl>http://140.134.26.71:49999/webapi/assignment/checksum?proName=TEST</proDetailUrl>
+        <testFileUrl>
+          http://140.134.26.71:49999/webapi/assignment/getTestFile?filePath=/usr/local/tomcat/temp/tests/TEST.zip
+        </testFileUrl>
+        <testFileChecksum>943566933</testFileChecksum>
+        <testFilePath></testFilePath>
+      </buildStep>
+      <operationList class="empty-list"/>
+    </hudson.plugins.build__timeout.BuildStepWithTimeout>
+    <hudson.plugins.build__timeout.BuildStepWithTimeout plugin="build-timeout@1.19">
+      <strategy class="hudson.plugins.build_timeout.impl.AbsoluteTimeOutStrategy">
+        <timeoutMinutes>15</timeoutMinutes>
+      </strategy>
+      <buildStep class="hudson.plugins.gradle.Gradle" plugin="gradle@1.34">
+        <switches></switches>
+        <tasks>clean build test connectedAndroidTest</tasks>
+        <rootBuildScriptDir></rootBuildScriptDir>
+        <buildFile></buildFile>
+        <gradleName>Global</gradleName>
+        <useWrapper>false</useWrapper>
+        <makeExecutable>false</makeExecutable>
+        <useWorkspaceAsHome>false</useWorkspaceAsHome>
+        <wrapperLocation></wrapperLocation>
+        <passAllAsSystemProperties>false</passAllAsSystemProperties>
+        <projectProperties></projectProperties>
+        <passAllAsProjectProperties>false</passAllAsProjectProperties>
+      </buildStep>
+      <operationList class="empty-list"/>
+    </hudson.plugins.build__timeout.BuildStepWithTimeout>
+    <hudson.plugins.build__timeout.BuildStepWithTimeout plugin="build-timeout@1.19">
+      <strategy class="hudson.plugins.build_timeout.impl.AbsoluteTimeOutStrategy">
+        <timeoutMinutes>3</timeoutMinutes>
+      </strategy>
+      <buildStep class="hudson.tasks.Shell">
+        <command>adb pull /storage/sdcard/app_spoon-screenshots</command>
+      </buildStep>
+      <operationList class="empty-list"/>
+    </hudson.plugins.build__timeout.BuildStepWithTimeout>
   </builders>
   <publishers>
     <hudson.tasks.ArtifactArchiver>
@@ -84,14 +112,14 @@
       <caseSensitive>true</caseSensitive>
     </hudson.tasks.ArtifactArchiver>
     <org.jenkinsci.plugins.UpdatingDbPublisher plugin="jenkins-progedu@1.0-SNAPSHOT">
-      <progeduDbUrl>http://140.134.26.66:38818/webapi/commits/update</progeduDbUrl>
-      <user>test01</user>
-      <proName>web</proName>
+      <progeduDbUrl>http://140.134.26.71:49999/webapi/commits/update</progeduDbUrl>
+      <user>M0806615</user>
+      <proName>TEST</proName>
     </org.jenkinsci.plugins.UpdatingDbPublisher>
     <io.jenkins.plugins.progupdatetodb.UpdateToDbPublisher plugin="progeduDB@1.0-SNAPSHOT">
-      <progeduAPIUrl>http://140.134.26.66:38818/webapi</progeduAPIUrl>
-      <jenkinsUsername>test01</jenkinsUsername>
-      <jenkinsAssignmentName>web</jenkinsAssignmentName>
+      <progeduAPIUrl>http://140.134.26.71:49999/webapi</progeduAPIUrl>
+      <jenkinsUsername>M0806615</jenkinsUsername>
+      <jenkinsAssignmentName>TEST</jenkinsAssignmentName>
     </io.jenkins.plugins.progupdatetodb.UpdateToDbPublisher>
   </publishers>
   <buildWrappers>
@@ -102,8 +130,8 @@
       <deviceLocale>en_US</deviceLocale>
       <targetAbi>x86</targetAbi>
       <sdCardSize>100M</sdCardSize>
-      <avdNameSuffix>test</avdNameSuffix>
-      <hardwareProperties />
+      <avdNameSuffix>M0806615_TEST</avdNameSuffix>
+      <hardwareProperties/>
       <wipeData>false</wipeData>
       <showWindow>false</showWindow>
       <useSnapshots>false</useSnapshots>

@@ -58,7 +58,6 @@ public class AndroidAssignment extends AssignmentType {
           gitlabConfig.getGitlabHostUrl() + "/" + username + "/" + projectName + ".git";
       String updateDbUrl = progEduApiUrl + "/commits/update";
       JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
-      String seleniumUrl = jenkinsData.getSeleniumHostUrl() + "/wd/hub";
       String checksumUrl = progEduApiUrl + "/assignment/checksum?proName=" + projectName;
       String testFileUrl = AssignmentDbManager.getInstance().getTestFileUrl(projectName);
       String stringEmpty = "";
@@ -68,14 +67,30 @@ public class AndroidAssignment extends AssignmentType {
       Document doc = docBuilder.parse(jenkinsJobConfigPath);
 
       String jobName = username + "_" + projectName;
+      // config_android.xml
+      // UserRemoteConfig
       doc.getElementsByTagName("url").item(0).setTextContent(projectUrl);
+
+      // Test
+      doc.getElementsByTagName("jobName").item(0).setTextContent(jobName);
+      doc.getElementsByTagName("testFileName").item(0).setTextContent(projectName);
+      doc.getElementsByTagName("proDetailUrl").item(0).setTextContent(checksumUrl);
+      doc.getElementsByTagName("progeduDbUrl").item(0).setTextContent(updateDbUrl);
+      doc.getElementsByTagName("testFileUrl").item(0).setTextContent(testFileUrl);
+
+      // UpdatingDbPublisher
       doc.getElementsByTagName("progeduDbUrl").item(0).setTextContent(updateDbUrl);
       doc.getElementsByTagName("user").item(0).setTextContent(username);
       doc.getElementsByTagName("proName").item(0).setTextContent(projectName);
       doc.getElementsByTagName("progeduAPIUrl").item(0).setTextContent(progEduApiUrl);
       doc.getElementsByTagName("jenkinsUsername").item(0).setTextContent(username);
       doc.getElementsByTagName("jenkinsAssignmentName").item(0).setTextContent(projectName);
+
+      // GitLabPushTrigger
       doc.getElementsByTagName("secretToken").item(0).setTextContent(stringEmpty);
+
+      // AndroidEmulator
+      doc.getElementsByTagName("avdNameSuffix").item(0).setTextContent(jobName);
 
       // write the content into xml file
       TransformerFactory transformerFactory = TransformerFactory.newInstance();
@@ -95,7 +110,9 @@ public class AndroidAssignment extends AssignmentType {
   @Override
   public void createTemplate(String uploadDirectory) {
     try {
-      FileUtils.deleteDirectory(new File(uploadDirectory + "/src/test"));
+      System.out.println("uploadDirectory: " + uploadDirectory);
+      FileUtils.deleteDirectory(new File(uploadDirectory + "/app/src/androidTest/java"));
+      FileUtils.deleteDirectory(new File(uploadDirectory + "/app/src/test/java"));
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -107,7 +124,7 @@ public class AndroidAssignment extends AssignmentType {
     ZipFileInfo zipFileInfo = null;
 
     try {
-      FileUtils.deleteDirectory(new File(testDirectory + "/src/web"));
+      FileUtils.deleteDirectory(new File(testDirectory + "/app/src/main/java"));
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -133,14 +150,14 @@ public class AndroidAssignment extends AssignmentType {
       String jobName = username + "_" + assignmentName;
       String console = jenkinsService.getConsole(jobName, num);
 
-      if (statusService.isWebUnitTestFailure(console)) {
+      if (statusService.isAndroidCompileFailure(console)) {
+        status = StatusEnum.COMPILE_FAILURE;
+      } else if (statusService.isAndroidCheckstyleFailure(console)) {
+        status = StatusEnum.CHECKSTYLE_FAILURE;
+      } else if (statusService.isAndroidUnitTestFailure(console)) {
         status = StatusEnum.UNIT_TEST_FAILURE;
-      } else if (statusService.isWebHtmlhintFailure(console)) {
-        status = StatusEnum.WEB_HTMLHINT_FAILURE;
-      } else if (statusService.isWebStylelintFailure(console)) {
-        status = StatusEnum.WEB_STYLELINT_FAILURE;
-      } else if (statusService.isWebEslintFailure(console)) {
-        status = StatusEnum.WEB_ESLINT_FAILURE;
+      } else if (statusService.isAndroidUiTestFailure(console)) {
+        status = StatusEnum.UNIT_TEST_FAILURE;
       } else {
         status = StatusEnum.BUILD_SUCCESS;
       }

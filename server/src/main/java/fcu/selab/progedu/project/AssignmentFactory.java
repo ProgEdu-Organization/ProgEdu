@@ -18,7 +18,7 @@ public class AssignmentFactory {
       case WEB:
         return new WebAssignment();
       case ANDROID:
-        return null;
+        return new AndroidAssignment();
       default:
         return null;
     }

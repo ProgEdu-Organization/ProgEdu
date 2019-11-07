@@ -122,4 +122,57 @@ public class StatusService {
     }
     return false;
   }
+
+  /**
+   * Android is compile error
+   *
+   * @param console jenkins job console text
+   * @return boolean
+   */
+  public boolean isAndroidCompileFailure(String console) {
+    if (console.contains("Task :app:compileDebugJavaWithJavac FAILED")) {
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Android is unit test error
+   *
+   * @param console jenkins job console text
+   * @return boolean
+   */
+  public boolean isAndroidUnitTestFailure(String console) {
+    if (console.contains("Task :app:compileDebugJavaWithJavac FAILED")) {
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Android is Ui test error
+   *
+   * @param console jenkins job console text
+   * @return boolean
+   */
+  public boolean isAndroidUiTestFailure(String console) {
+    if (console.contains("Task :app:compileDebugJavaWithJavac FAILED")) {
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Android is checkstyle error
+   *
+   * @param console jenkins job console text
+   * @return boolean
+   */
+  public boolean isAndroidCheckstyleFailure(String console) {
+    if (console.contains("Task :app:checkStyle FAILED")) {
+      return true;
+    }
+    return false;
+  }
+
 }
