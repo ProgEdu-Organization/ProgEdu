@@ -1,6 +1,6 @@
-<?xml version='1.1' encoding='UTF-8'?>
+<?xml version="1.1" encoding="UTF-8" ?>
 <project>
-  <actions/>
+  <actions />
   <description></description>
   <keepDependencies>false</keepDependencies>
   <properties>
@@ -22,8 +22,8 @@
       </hudson.plugins.git.BranchSpec>
     </branches>
     <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
-    <submoduleCfg class="list"/>
-    <extensions/>
+    <submoduleCfg class="list" />
+    <extensions />
   </scm>
   <canRoam>true</canRoam>
   <disabled>false</disabled>
@@ -72,7 +72,7 @@
         <testFilePath></testFilePath>
       </buildStep>
       <operationList>
-        <hudson.plugins.build__timeout.operations.FailOperation/>
+        <hudson.plugins.build__timeout.operations.FailOperation />
       </operationList>
     </hudson.plugins.build__timeout.BuildStepWithTimeout>
     <hudson.plugins.build__timeout.BuildStepWithTimeout plugin="build-timeout@1.19">
@@ -87,7 +87,7 @@ npm run stylelint
 npm run eslint</command>
       </buildStep>
       <operationList>
-        <hudson.plugins.build__timeout.operations.FailOperation/>
+        <hudson.plugins.build__timeout.operations.FailOperation />
       </operationList>
     </hudson.plugins.build__timeout.BuildStepWithTimeout>
   </builders>
@@ -109,9 +109,10 @@ npm run eslint</command>
       <progeduAPIUrl>http://140.134.26.66:38818/webapi</progeduAPIUrl>
       <jenkinsUsername>test01</jenkinsUsername>
       <jenkinsAssignmentName>web</jenkinsAssignmentName>
+      <pngPath>/target/screenshot</pngPath>
     </io.jenkins.plugins.progupdatetodb.UpdateToDbPublisher>
     <hudson.plugins.ws__cleanup.WsCleanup plugin="ws-cleanup@0.37">
-      <patterns class="empty-list"/>
+      <patterns class="empty-list" />
       <deleteDirs>false</deleteDirs>
       <skipWhenFailed>false</skipWhenFailed>
       <cleanWhenSuccess>true</cleanWhenSuccess>
@@ -125,5 +126,5 @@ npm run eslint</command>
       <disableDeferredWipeout>false</disableDeferredWipeout>
     </hudson.plugins.ws__cleanup.WsCleanup>
   </publishers>
-  <buildWrappers/>
+  <buildWrappers />
 </project>
