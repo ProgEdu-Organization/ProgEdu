@@ -9,6 +9,7 @@ import { ProjectChoosedService } from './project-choosed.service';
 export class ProjectChoosedComponent implements OnInit {
   public groupName;
   public projectName;
+  public projectType;
   public group;
   public commits: Array<any> = [];
   public feedback;
@@ -24,7 +25,7 @@ export class ProjectChoosedComponent implements OnInit {
     this.groupName = this.activeRoute.snapshot.queryParamMap.get('groupName');
     this.projectName = this.activeRoute.snapshot.queryParamMap.get('projectName');
     this.getCommitResult();
-    this.getGroupMembers(this.groupName);
+    this.getGroup(this.groupName);
     this.getProjectUrl(this.groupName, this.projectName);
   }
 
@@ -74,10 +75,11 @@ export class ProjectChoosedComponent implements OnInit {
     );
   }
 
-  getGroupMembers(groupName: string) {
-    this.projectService.getGroupMembers(groupName).subscribe(
+  getGroup(groupName: string) {
+    this.projectService.getGroup(groupName).subscribe(
       response => {
         this.group = response;
+        this.getProjectType(this.projectName);
       }
     );
   }
@@ -88,6 +90,16 @@ export class ProjectChoosedComponent implements OnInit {
         this.gitlabprojectUrl = response.url;
       }
     );
+  }
+
+  getProjectType(projectName: string) {
+    if (this.group.project) {
+      for (const p of this.group.project) {
+        if (p.name === projectName) {
+          this.projectType = p.type.typeName.toUpperCase();
+        }
+      }
+    }
   }
 
   getScreenshotUrls() {
