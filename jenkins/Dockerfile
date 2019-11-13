@@ -54,7 +54,7 @@ RUN apt update && apt install -y default-jdk maven \
       && \
     unzip -d /opt/gradle gradle-$GRADLE_MAVEN-bin.zip \
       && \
-    rm gradle-$GRADLE_MAVEN-bin.zip 
+    rm gradle-$GRADLE_MAVEN-bin.zip \
       && \
     apt-get clean \
 		  && \
