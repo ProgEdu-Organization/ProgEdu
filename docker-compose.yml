@@ -52,39 +52,28 @@ services:
       - "${WEB_PORT}:8080"
     depends_on:
       - db
-      - jenkins-android
+      - jenkins
       - gitlab
 
-  # jenkins:
-  #   # image: jenkins/jenkins:lts
-  #   image: fcumselab/progedu-jenkins:latest
-  #   build:
-  #     context: ./jenkins
-  #   ports:
-  #     - "${JENKINS_PORT}:8080"
-  #     # - "30000:50000"
-  #   restart: always
-  #   environment:
-  #     WEB_SELENIUM_URL: ${WEB_SELENIUM_URL}
-  #   volumes:
-  #     - ${DATA_PATH_HOST}/jenkins:/var/jenkins_home
-
-  jenkins-android:
-    image: progedu-android-jenkins:latest
-    build: 
-      context: ./jenkins/android
+  jenkins:
+    # image: jenkins/jenkins:lts
+    image: fcumselab/progedu-jenkins:latest
+    build:
+      context: ./jenkins
       args:
         - SDK_SETUP=${SDK_SETUP}
         - SDK_PLATFORMS=${SDK_PLATFORMS}
         - SDK_BUILD_TOOLS=${SDK_BUILD_TOOLS}
-    privileged: true
     ports:
-      - ${JENKINS_PORT}:8080
-    volumes:
-      - ${DATA_PATH_HOST}/jenkins-android/jenkins_home:/var/jenkins_home
-      # - ${DATA_PATH_HOST}/jenkins-android/android-sdk-linux:/usr/local/android-sdk-linux
-      - /dev/kvm:/dev/kvm
+      - "${JENKINS_PORT}:8080"
+      # - "30000:50000"
     restart: always
+    privileged: true
+    environment:
+      WEB_SELENIUM_URL: ${WEB_SELENIUM_URL}
+    volumes:
+      - ${DATA_PATH_HOST}/jenkins:/var/jenkins_home
+      - /dev/kvm:/dev/kvm
 
   selenium:
     image: selenium/standalone-chrome
