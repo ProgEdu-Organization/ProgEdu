@@ -12,4 +12,9 @@ public class WebCheckstyleFailure implements Status {
         consoleText.lastIndexOf(checkstyleEnd) - 1);
     return checkstyleInfo.trim();
   }
+
+  @Override
+  public String formatFailureMsg(String consoleText) {
+    return consoleText;
+  }
 }

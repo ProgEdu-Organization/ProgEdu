@@ -14,4 +14,10 @@ public class MavenUnitTestFailure implements Status {
     
     return unitTest.trim();
   }
+
+  @Override
+  public String formatFailureMsg(String consoleText) {
+    return consoleText;
+  }
+
 }

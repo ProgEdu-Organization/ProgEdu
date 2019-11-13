@@ -11,4 +11,9 @@ public class MavenCompileFailure implements Status {
     return feedback.trim();
   }
 
+  @Override
+  public String formatFailureMsg(String consoleText) {
+    return consoleText;
+  }
+
 }

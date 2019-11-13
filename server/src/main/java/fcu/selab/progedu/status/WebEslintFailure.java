@@ -16,4 +16,9 @@ public class WebEslintFailure implements Status {
     checkstyleInfo = checkstyleInfo.replace("/var/jenkins_home/workspace/","");
     return checkstyleInfo.trim();
   }
+
+  @Override
+  public String formatFailureMsg(String consoleText) {
+    return consoleText;
+  }
 }

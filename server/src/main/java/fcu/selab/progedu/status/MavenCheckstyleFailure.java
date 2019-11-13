@@ -19,4 +19,9 @@ public class MavenCheckstyleFailure implements Status {
 
     return checkstyleInfo.trim();
   }
+
+  @Override
+  public String formatFailureMsg(String consoleText) {
+    return consoleText;
+  }
 }

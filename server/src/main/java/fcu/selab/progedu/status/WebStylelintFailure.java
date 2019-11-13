@@ -16,4 +16,9 @@ public class WebStylelintFailure implements Status {
 
     return checkstyleInfo.trim();
   }
+
+  @Override
+  public String formatFailureMsg(String consoleText) {
+    return consoleText;
+  }
 }

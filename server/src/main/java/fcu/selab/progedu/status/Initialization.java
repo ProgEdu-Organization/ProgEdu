@@ -6,4 +6,9 @@ public class Initialization implements Status {
     return "Instructor Commit";
   }
 
+  @Override
+  public String formatFailureMsg(String consoleText) {
+    return "Instructor Commit";
+  }
+
 }
