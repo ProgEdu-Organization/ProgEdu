@@ -46,7 +46,7 @@ RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - \
 
 ARG GRADLE_MAVEN=5.6.2
 ENV PATH=$PATH:/opt/gradle/gradle-$GRADLE_MAVEN/bin
-RUN apt update && apt install -y default-jdk maven \
+RUN apt-get update && apt-get install -y default-jdk maven \
       && \
     wget https://services.gradle.org/distributions/gradle-$GRADLE_MAVEN-bin.zip \
       && \
