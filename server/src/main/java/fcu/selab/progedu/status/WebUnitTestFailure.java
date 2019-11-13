@@ -1,14 +1,20 @@
 package fcu.selab.progedu.status;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.google.gson.Gson;
+
+import fcu.selab.progedu.data.FeedBack;
+
 public class WebUnitTestFailure implements Status {
 
   @Override
   public String extractFailureMsg(String consoleText) {
-    String unitTestInfo = "WebUnitTestFailure";
     String unitTestFailureStart = "npm run test";
     String unitTestFailureEnd = "npm ERR! code ELIFECYCLE";
 
-    unitTestInfo = consoleText.substring(
+    String unitTestInfo = consoleText.substring(
         consoleText.indexOf(unitTestFailureStart) + unitTestFailureStart.length(),
         consoleText.indexOf(unitTestFailureEnd));
 
@@ -17,10 +23,33 @@ public class WebUnitTestFailure implements Status {
 
   @Override
   public String formatFailureMsg(String consoleText) {
-    return consoleText;
+    int consoleStart = consoleText.indexOf("測試");
+    int consoleEnd = consoleText.indexOf("failing");
+    String unitTestInfo = consoleText.substring(consoleStart, consoleEnd);
+    int nextRow = unitTestInfo.indexOf("\n");
+    int endIndex = consoleEnd - consoleStart;
+    unitTestInfo = unitTestInfo.substring(nextRow + 1, endIndex);
+    endIndex = endIndex - nextRow - 1;
+    List<FeedBack> feedbacklist = new ArrayList<>();
+    while (unitTestInfo.indexOf(")") != -1) {
+      int nextparentheses = unitTestInfo.indexOf(")");
+      int nextrow = unitTestInfo.indexOf("\n", nextparentheses);
+      if (nextrow - nextparentheses == 1) { //
+        unitTestInfo = unitTestInfo.substring(nextrow + 1, endIndex);
+        endIndex = endIndex - nextrow - 1;
+      } else {
+        int netspace = unitTestInfo.indexOf("\n", nextparentheses + 1);
+        String massage = unitTestInfo.substring(nextparentheses + 2, netspace);
+        feedbacklist.add(new FeedBack("Unit", "", massage, ""));
+        unitTestInfo = unitTestInfo.substring(netspace + 1, endIndex);
+        endIndex = endIndex - nextrow - 1;
+      }
+    }
+    Gson gson = new Gson();
+    return gson.toJson(feedbacklist).toString();
   }
 
-  public String console(){
+  public String console() {
     String console = "+ npm run test\n"
         + "> node_sample@1.0.0 test /var/jenkins_home/workspace/test11_1024WEB3\n"
         + "> mocha ./src/test/*.js --timeout 100000\n"
@@ -29,9 +58,9 @@ public class WebUnitTestFailure implements Status {
         + "\n"
         + "  測試index.html\n"
         + "    ✓ 開啟作業網頁 (788ms)\n"
-        + "    ✓ 測試input功能 (161ms)\n"
+        + "    1) 測試input功能\n"
         + "    ✓ 測試按鈕功能 (77ms)\n"
-        + "    1) 測試頁面title是否為HelloWorld\n"
+        + "    2) 測試頁面title是否為HelloWorld\n"
         + "\n"
         + "\n"
         + "  3 passing (1s)\n"

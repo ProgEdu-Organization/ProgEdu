@@ -10,6 +10,13 @@ public class FeedBack {
 
   private String suggest;
 
+  public  FeedBack(String style, String line, String massage, String suggest) {
+    this.style = style;
+    this.line = line;
+    this.massage = massage;
+    this.suggest = suggest;
+  }
+
   public String getStyle() {
     return this.style;
   }
