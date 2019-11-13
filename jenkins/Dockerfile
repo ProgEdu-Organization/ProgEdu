@@ -7,7 +7,7 @@ FROM maven:3-jdk-8 as builder
 
 RUN mkdir /workdir
 
-RUN apt update && apt install -yqq git
+RUN apt-get update && apt-get install -yqq git
 
 WORKDIR /workdir
 
