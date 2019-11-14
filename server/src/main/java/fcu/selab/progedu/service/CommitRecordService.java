@@ -202,6 +202,7 @@ public class CommitRecordService {
     int auId = getAuid(username, assignmentName);
     String statusType = getStatusTypeName(auId, number);
     String message = assignmentType.getStatus(statusType).extractFailureMsg(console);
+    message = assignmentType.getStatus(statusType).formatFailureMsg(message);
     ob.put("message", message);
 
     return Response.ok().entity(ob.toString()).build();
