@@ -34,19 +34,11 @@ export const navItems: NavData[] = [
     name: 'Dashboard',
     url: '/dashboard',
     icon: 'icon-speedometer',
-    badge: {
-      variant: 'info',
-      text: 'NEW'
-    }
   },
   {
     name: 'Chart',
     url: '/dashboard/chart',
     icon: 'icon-chart',
-    badge: {
-      variant: 'info',
-      text: 'NEW'
-    }
   }
 ];
 
