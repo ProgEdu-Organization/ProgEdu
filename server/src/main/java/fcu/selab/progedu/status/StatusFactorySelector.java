@@ -19,8 +19,8 @@ public class StatusFactorySelector {
       case WEB: {
         return new WebStatusFactory();
       }
-      case APP: {
-        return null;
+      case ANDROID: {
+        return new AndroidStatusFactory();
       }
       default: {
         return null;

@@ -1,14 +1,13 @@
 package fcu.selab.progedu.status;
 
-public class JavacCompileFailure implements Status {
-
+public class AndroidCheckstyleFailure implements Status {
   @Override
   public String extractFailureMsg(String consoleText) {
     String feedback;
-    String feedbackStart = "+ javac";
-    String feedbackEnd = "Build step 'Execute shell' marked build as failure";
+    String feedbackStart = "Task :app:checkStyle";
+    String feedbackEnd = "> Task :app:checkStyle FAILED";
     feedback = consoleText.substring(consoleText.indexOf(feedbackStart),
-        consoleText.indexOf(feedbackEnd));
+            consoleText.indexOf(feedbackEnd));
     return feedback.trim();
   }
 }

@@ -4,28 +4,23 @@ public class AssignmentFactory {
 
   /**
    * getAssignmentType
-   * 
+   *
    * @param projectType assignmentType
    */
   public static AssignmentType getAssignmentType(String projectType) {
     ProjectTypeEnum projectTypeEnum = ProjectTypeEnum.getProjectTypeEnum(projectType);
 
     switch (projectTypeEnum) {
-      case JAVAC: {
+      case JAVAC:
         return new JavacAssignment();
-      }
-      case MAVEN: {
+      case MAVEN:
         return new MavenAssignment();
-      }
-      case WEB: {
+      case WEB:
         return new WebAssignment();
-      }
-      case APP: {
-        return null;
-      }
+      case ANDROID:
+        return new AndroidAssignment();
       default:
         return null;
     }
-
   }
 }

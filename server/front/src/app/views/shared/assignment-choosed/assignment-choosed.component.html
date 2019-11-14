@@ -3,7 +3,8 @@
     <div class="card-header">
       <i class="cui-pencil icons"></i>
       <label>{{assignmentName}}</label>
-      <button *ngIf="assignment.type === 'WEB'" class="btn btn-primary float-right" (click)='isCollapsed=!isCollapsed;'>
+      <button *ngIf="assignment.type === 'WEB' || assignment.type === 'ANDROID' " class="btn btn-primary float-right"
+        (click)='isCollapsed=!isCollapsed;'>
         <i class="cui-screen-desktop"></i></button>
     </div>
     <div class="card-body">
@@ -60,7 +61,7 @@
         <span class="ovol UTF">
           Unit Test Failure
         </span>
-        <span *ngIf="assignment.type === 'WEB'" class="ovol BS">
+        <span class="ovol BS">
           Build Success
         </span>
       </div>

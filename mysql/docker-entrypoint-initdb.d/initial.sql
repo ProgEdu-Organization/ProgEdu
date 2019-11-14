@@ -73,7 +73,7 @@ CREATE TABLE `Assignment_Type` (
 
 LOCK TABLES `Assignment_Type` WRITE;
 /*!40000 ALTER TABLE `Assignment_Type` DISABLE KEYS */;
-INSERT INTO `Assignment_Type` VALUES (1,'javac'),(2,'maven'),(3,'web'),(4,'app');
+INSERT INTO `Assignment_Type` VALUES (1,'javac'),(2,'maven'),(3,'web'),(4,'android');
 /*!40000 ALTER TABLE `Assignment_Type` ENABLE KEYS */;
 UNLOCK TABLES;
 

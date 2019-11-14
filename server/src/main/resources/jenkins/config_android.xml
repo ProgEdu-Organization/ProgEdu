@@ -8,11 +8,11 @@
       <gitLabConnection>gitlab</gitLabConnection>
     </com.dabsquared.gitlabjenkins.connection.GitLabConnectionProperty>
   </properties>
-  <scm class="hudson.plugins.git.GitSCM" plugin="git@3.12.1">
+  <scm class="hudson.plugins.git.GitSCM" plugin="git@4.0.0">
     <configVersion>2</configVersion>
     <userRemoteConfigs>
       <hudson.plugins.git.UserRemoteConfig>
-        <url>http://140.134.26.66:37777/test01/web.git</url>
+        <url>http://140.134.26.71:49000/M0806615/TEST.git</url>
         <credentialsId>gitlab_root</credentialsId>
       </hudson.plugins.git.UserRemoteConfig>
     </userRemoteConfigs>
@@ -49,51 +49,70 @@
       <excludeBranchesSpec></excludeBranchesSpec>
       <sourceBranchRegex></sourceBranchRegex>
       <targetBranchRegex></targetBranchRegex>
-      <secretToken>{AQAAABAAAAAQwG0/sMM2eCyRP2hsyC9ZiY1UfY4bJyWLh2K5MP8aaEE=}</secretToken>
+      <secretToken>{AQAAABAAAAAQkwwSb4ydiKnvK8yYKsG2nnImKYU7doeja+YXYaKTNyo=}</secretToken>
       <pendingBuildName></pendingBuildName>
       <cancelPendingBuildsOnUpdate>false</cancelPendingBuildsOnUpdate>
     </com.dabsquared.gitlabjenkins.GitLabPushTrigger>
   </triggers>
   <concurrentBuild>false</concurrentBuild>
   <builders>
-    <io.jenkins.plugins.screenshot.ScreenShotBuilder plugin="screenshot@1.0-SNAPSHOT">
-      <seleniumUrl>http://selenium:4444/wd/hub</seleniumUrl>
-    </io.jenkins.plugins.screenshot.ScreenShotBuilder>
     <hudson.plugins.build__timeout.BuildStepWithTimeout plugin="build-timeout@1.19">
       <strategy class="hudson.plugins.build_timeout.impl.AbsoluteTimeOutStrategy">
         <timeoutMinutes>15</timeoutMinutes>
       </strategy>
       <buildStep class="org.jenkinsci.plugins.AssessmentBuilder" plugin="jenkins-progedu@1.0-SNAPSHOT">
-        <jobName>test01_web</jobName>
-        <testFileName>web</testFileName>
-        <proDetailUrl>http://140.134.26.66:38818/webapi/assignment/checksum?proName=web</proDetailUrl>
-        <testFileUrl>http://140.134.26.66:38818/webapi/assignment/getTestFile?filePath=/usr/local/tomcat/temp/tests/web.zip</testFileUrl>
-        <testFileChecksum>2354726748</testFileChecksum>
+        <jobName>M0806615_TEST</jobName>
+        <testFileName>TEST</testFileName>
+        <proDetailUrl>http://140.134.26.71:49999/webapi/assignment/checksum?proName=TEST</proDetailUrl>
+        <testFileUrl>http://140.134.26.71:49999/webapi/assignment/getTestFile?filePath=/usr/local/tomcat/temp/tests/TEST.zip</testFileUrl>
+        <testFileChecksum>943566933</testFileChecksum>
         <testFilePath></testFilePath>
       </buildStep>
-      <operationList>
-        <hudson.plugins.build__timeout.operations.FailOperation />
-      </operationList>
+      <operationList class="empty-list" />
     </hudson.plugins.build__timeout.BuildStepWithTimeout>
     <hudson.plugins.build__timeout.BuildStepWithTimeout plugin="build-timeout@1.19">
       <strategy class="hudson.plugins.build_timeout.impl.AbsoluteTimeOutStrategy">
-        <timeoutMinutes>15</timeoutMinutes>
+        <timeoutMinutes>3</timeoutMinutes>
+      </strategy>
+      <buildStep class="hudson.plugins.gradle.Gradle" plugin="gradle@1.34">
+        <switches></switches>
+        <tasks>clean build test connectedAndroidTest</tasks>
+        <rootBuildScriptDir></rootBuildScriptDir>
+        <buildFile></buildFile>
+        <gradleName>Global</gradleName>
+        <useWrapper>false</useWrapper>
+        <makeExecutable>false</makeExecutable>
+        <useWorkspaceAsHome>false</useWorkspaceAsHome>
+        <wrapperLocation></wrapperLocation>
+        <passAllAsSystemProperties>false</passAllAsSystemProperties>
+        <projectProperties></projectProperties>
+        <passAllAsProjectProperties>false</passAllAsProjectProperties>
+      </buildStep>
+      <operationList class="empty-list" />
+    </hudson.plugins.build__timeout.BuildStepWithTimeout>
+    <hudson.plugins.build__timeout.BuildStepWithTimeout plugin="build-timeout@1.19">
+      <strategy class="hudson.plugins.build_timeout.impl.AbsoluteTimeOutStrategy">
+        <timeoutMinutes>5</timeoutMinutes>
       </strategy>
       <buildStep class="hudson.tasks.Shell">
-        <command>npm i
-npm run test
-npm run htmlhint
-npm run stylelint
-npm run eslint</command>
+        <command>if [ -d &quot;target&quot; ]; then 
+	echo &quot;Foder target exists.&quot;
+else
+    echo &quot;create target foder&quot;
+	mkdir target &amp;&amp; mkdir target/screenshot 
+    echo &quot;create target/screenshot forder&quot;
+fi
+
+adb pull /storage/sdcard/app_spoon-screenshots/ ./target/screenshot/
+find ./target -iname *.png | while read line; do mv $line ./target/screenshot/; done
+</command>
       </buildStep>
-      <operationList>
-        <hudson.plugins.build__timeout.operations.FailOperation />
-      </operationList>
+      <operationList class="empty-list" />
     </hudson.plugins.build__timeout.BuildStepWithTimeout>
   </builders>
   <publishers>
     <hudson.tasks.ArtifactArchiver>
-      <artifacts>target/screenshot/*.png,node_modules/</artifacts>
+      <artifacts>target/screenshot/</artifacts>
       <allowEmptyArchive>true</allowEmptyArchive>
       <onlyIfSuccessful>false</onlyIfSuccessful>
       <fingerprint>false</fingerprint>
@@ -101,14 +120,14 @@ npm run eslint</command>
       <caseSensitive>true</caseSensitive>
     </hudson.tasks.ArtifactArchiver>
     <org.jenkinsci.plugins.UpdatingDbPublisher plugin="jenkins-progedu@1.0-SNAPSHOT">
-      <progeduDbUrl>http://140.134.26.66:38818/webapi/commits/update</progeduDbUrl>
-      <user>test01</user>
-      <proName>web</proName>
+      <progeduDbUrl>http://140.134.26.71:49999/webapi/commits/update</progeduDbUrl>
+      <user>M0806615</user>
+      <proName>TEST</proName>
     </org.jenkinsci.plugins.UpdatingDbPublisher>
     <io.jenkins.plugins.progupdatetodb.UpdateToDbPublisher plugin="progeduDB@1.0-SNAPSHOT">
-      <progeduAPIUrl>http://140.134.26.66:38818/webapi</progeduAPIUrl>
-      <jenkinsUsername>test01</jenkinsUsername>
-      <jenkinsAssignmentName>web</jenkinsAssignmentName>
+      <progeduAPIUrl>http://140.134.26.71:49999/webapi</progeduAPIUrl>
+      <jenkinsUsername>M0806615</jenkinsUsername>
+      <jenkinsAssignmentName>TEST</jenkinsAssignmentName>
       <pngPath>/target/screenshot</pngPath>
     </io.jenkins.plugins.progupdatetodb.UpdateToDbPublisher>
     <hudson.plugins.ws__cleanup.WsCleanup plugin="ws-cleanup@0.37">
@@ -126,5 +145,24 @@ npm run eslint</command>
       <disableDeferredWipeout>false</disableDeferredWipeout>
     </hudson.plugins.ws__cleanup.WsCleanup>
   </publishers>
-  <buildWrappers />
+  <buildWrappers>
+    <hudson.plugins.android__emulator.AndroidEmulator plugin="android-emulator@3.0">
+      <osVersion>android-22</osVersion>
+      <screenDensity>mdpi</screenDensity>
+      <screenResolution>WVGA</screenResolution>
+      <deviceLocale>en_US</deviceLocale>
+      <targetAbi>x86</targetAbi>
+      <sdCardSize>100M</sdCardSize>
+      <avdNameSuffix>M0806615_TEST</avdNameSuffix>
+      <hardwareProperties />
+      <wipeData>false</wipeData>
+      <showWindow>false</showWindow>
+      <useSnapshots>false</useSnapshots>
+      <deleteAfterBuild>true</deleteAfterBuild>
+      <startupDelay>0</startupDelay>
+      <startupTimeout>0</startupTimeout>
+      <commandLineOptions>-no-window -noaudio -no-boot-anim</commandLineOptions>
+      <executable></executable>
+    </hudson.plugins.android__emulator.AndroidEmulator>
+  </buildWrappers>
 </project>
