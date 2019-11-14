@@ -6,14 +6,17 @@ public class FeedBack {
 
   private String line;
 
-  private String massage;
+  private String message;
+
+  private String errorStyle;
 
   private String suggest;
 
-  public  FeedBack(String style, String line, String massage, String suggest) {
+  public  FeedBack(String style, String line, String message, String errorStyle, String suggest) {
     this.style = style;
     this.line = line;
-    this.massage = massage;
+    this.message = message;
+    this.errorStyle = errorStyle;
     this.suggest = suggest;
   }
 
@@ -33,12 +36,20 @@ public class FeedBack {
     this.line = line;
   }
 
-  public String getMassage() {
-    return this.massage;
+  public String getMessage() {
+    return this.message;
   }
 
-  public void setMassage(String massage) {
-    this.massage = massage;
+  public void setMessage(String message) {
+    this.message = message;
+  }
+
+  public String getErrorStyle() {
+    return this.errorStyle;
+  }
+
+  public void setErrorStyle(String errorStyle) {
+    this.errorStyle = errorStyle;
   }
 
   public String getSuggest() {

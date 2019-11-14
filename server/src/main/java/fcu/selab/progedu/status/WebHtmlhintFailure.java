@@ -26,10 +26,9 @@ public class WebHtmlhintFailure implements Status {
 
   @Override
   public String formatFailureMsg(String consoleText) {
-    int consolestart = consoleText.indexOf("\n");
-    int consoleend = consoleText.indexOf("Scanned");
-    int endIndex = consoleend - consolestart;
-    consoleText = consoleText.substring(consolestart, consoleend);
+    consoleText = consoleText.substring(
+        consoleText.indexOf("\n"), consoleText.indexOf("Scanned"));
+    int endIndex = consoleText.length();
     List<FeedBack> feedbacklist = new ArrayList<>();
     while (consoleText.indexOf("L") != -1) {
       int lineIndex = consoleText.indexOf("L");
@@ -37,10 +36,13 @@ public class WebHtmlhintFailure implements Status {
       int arrowIndex = consoleText.indexOf("^");
       int nextlineIndex = consoleText.indexOf("\n", arrowIndex);
       int dotIndex = consoleText.indexOf(".", arrowIndex);
+      String errorStyle = consoleText.substring(dotIndex + 1, nextlineIndex)
+          .replace("(", "").replace(")", "").trim();
       feedbacklist.add(new FeedBack(
-          "Html",
-          consoleText.substring(lineIndex, sparateIndex - 1),
-          consoleText.substring(arrowIndex + 2,dotIndex),
+          "Htmlhint",
+          consoleText.substring(lineIndex, sparateIndex - 1).trim(),
+          consoleText.substring(arrowIndex + 2,dotIndex).trim(),
+          errorStyle,
           ""
       ));
       consoleText = consoleText.substring(nextlineIndex + 1, endIndex);
@@ -60,6 +62,24 @@ public class WebHtmlhintFailure implements Status {
         + "\n"
         + "\n"
         + "   /var/jenkins_home/workspace/STUDENT2_1024WEB/src/web/html/index.html\n"
+        + "\u001B[37m      L2 |\u001B[90m<html>\u001B[39m\n"
+        + "\u001B[37m          ^ \u001B[31mDoctype must be declared first."
+        + " (doctype-first)\u001B[39m\n"
+        + "\u001B[37m      L10 |\u001B[90m        <Input name=\"username\""
+        + " type=\"text\" />\u001B[39m\n"
+        + "\u001B[37m                   ^ \u001B[31mThe html element name of "
+        + "[ Input ] must be in lowercase. (tagname-lowercase)\u001B[39m\n"
+        + "\u001B[37m      L11 |\u001B[90m        <input name='password' "
+        + "type=\"password\" />\u001B[39m\n"
+        + "\u001B[37m                         ^ \u001B[31mThe value of attribute "
+        + "[ name ] must be in double quotes. (attr-value-double-quotes)\u001B[39m\n"
+        + "\u001B[37m      L12 |\u001B[90m...    <input name=\"continue\" "
+        + "type=\"submit\" Value=\"Login\" />\u001B[39m\n"
+        + "\u001B[37m                                                      "
+        + "^ \u001B[31mThe attribute name of [ Value ] must be in lowercase. "
+        + "(attr-lowercase)\u001B[39m\n"
+        + "\n"
+        + "   /var/jenkins_home/workspace/STUDENT2_1024WEB/src/web/html/index2.html\n"
         + "\u001B[37m      L2 |\u001B[90m<html>\u001B[39m\n"
         + "\u001B[37m          ^ \u001B[31mDoctype must be declared first."
         + " (doctype-first)\u001B[39m\n"

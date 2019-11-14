@@ -39,8 +39,12 @@ public class WebUnitTestFailure implements Status {
         endIndex = endIndex - nextrow - 1;
       } else {
         int netspace = unitTestInfo.indexOf("\n", nextparentheses + 1);
-        String massage = unitTestInfo.substring(nextparentheses + 2, netspace);
-        feedbacklist.add(new FeedBack("Unit", "", massage, ""));
+        feedbacklist.add(new FeedBack(
+            "Unit",
+            "",
+            unitTestInfo.substring(nextparentheses + 2, netspace),
+            "",
+            ""));
         unitTestInfo = unitTestInfo.substring(netspace + 1, endIndex);
         endIndex = endIndex - nextrow - 1;
       }
