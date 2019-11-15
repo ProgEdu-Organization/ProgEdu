@@ -12,6 +12,14 @@ public class FeedBack {
 
   private String suggest;
 
+  /**
+   *
+   * @param style (To Do)
+   * @param line  (To Do)
+   * @param message (To Do)
+   * @param errorStyle (To Do)
+   * @param suggest (To Do)
+   */
   public  FeedBack(String style, String line, String message, String errorStyle, String suggest) {
     this.style = style;
     this.line = line;
