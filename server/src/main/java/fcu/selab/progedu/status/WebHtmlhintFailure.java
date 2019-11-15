@@ -1,7 +1,6 @@
 package fcu.selab.progedu.status;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import com.google.gson.Gson;
 
@@ -25,11 +24,11 @@ public class WebHtmlhintFailure implements Status {
   }
 
   @Override
-  public String formatFailureMsg(String consoleText) {
+  public ArrayList<FeedBack> formatExamineMsg(String consoleText) {
     consoleText = consoleText.substring(
         consoleText.indexOf("\n"), consoleText.indexOf("Scanned"));
     int endIndex = consoleText.length();
-    List<FeedBack> feedbacklist = new ArrayList<>();
+    ArrayList<FeedBack> feedbacklist = new ArrayList<>();
     while (consoleText.indexOf("L") != -1) {
       int lineIndex = consoleText.indexOf("L");
       int sparateIndex = consoleText.indexOf("|");
@@ -39,7 +38,7 @@ public class WebHtmlhintFailure implements Status {
       String errorStyle = consoleText.substring(dotIndex + 1, nextlineIndex)
           .replace("(", "").replace(")", "").trim();
       feedbacklist.add(new FeedBack(
-          "Htmlhint",
+          StatusEnum.WEB_HTMLHINT_FAILURE,
           consoleText.substring(lineIndex, sparateIndex - 1).trim(),
           consoleText.substring(arrowIndex + 2,dotIndex).trim(),
           errorStyle,
@@ -48,7 +47,12 @@ public class WebHtmlhintFailure implements Status {
       consoleText = consoleText.substring(nextlineIndex + 1, endIndex);
       endIndex = endIndex - nextlineIndex - 1;
     }
+    return feedbacklist;
+  }
+
+  @Override
+  public String toJson(ArrayList<FeedBack> arrayList) {
     Gson gson = new Gson();
-    return gson.toJson(feedbacklist).toString();
+    return gson.toJson(arrayList).toString();
   }
 }

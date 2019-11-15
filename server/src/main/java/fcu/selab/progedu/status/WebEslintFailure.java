@@ -1,9 +1,8 @@
 package fcu.selab.progedu.status;
 
-import com.google.gson.Gson;
-
 import java.util.ArrayList;
-import java.util.List;
+
+import com.google.gson.Gson;
 
 import fcu.selab.progedu.data.FeedBack;
 
@@ -25,10 +24,10 @@ public class WebEslintFailure implements Status {
   }
 
   @Override
-  public String formatFailureMsg(String consoleText) {
+  public ArrayList<FeedBack> formatExamineMsg(String consoleText) {
     consoleText = consoleText.substring(0, consoleText.indexOf("✖"));
     int endIndex = consoleText.length();
-    List<FeedBack> feedbacklist = new ArrayList<>();
+    ArrayList<FeedBack> feedbacklist = new ArrayList<>();
     while (consoleText.indexOf("error") != -1) {
       int errorIndex = consoleText.indexOf("error");
       int nextrowIndex = consoleText.indexOf("\n");
@@ -38,7 +37,7 @@ public class WebEslintFailure implements Status {
       } else {
         int errorStyleStart = consoleText.indexOf("  ", errorIndex + 6);
         feedbacklist.add(new FeedBack(
-            "Eslint",
+            StatusEnum.WEB_ESLINT_FAILURE,
             consoleText.substring(0, errorIndex).trim(),
             consoleText.substring(errorIndex + 5, errorStyleStart).trim(),
             consoleText.substring(errorStyleStart, nextrowIndex).trim(),
@@ -48,7 +47,12 @@ public class WebEslintFailure implements Status {
         endIndex = endIndex - nextrowIndex - 1;
       }
     }
+    return feedbacklist;
+  }
+
+  @Override
+  public String toJson(ArrayList<FeedBack> arrayList) {
     Gson gson = new Gson();
-    return gson.toJson(feedbacklist).toString();
+    return gson.toJson(arrayList).toString();
   }
 }

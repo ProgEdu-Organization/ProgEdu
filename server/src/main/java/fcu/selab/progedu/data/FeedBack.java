@@ -1,31 +1,33 @@
 package fcu.selab.progedu.data;
 
+import fcu.selab.progedu.status.StatusEnum;
+
 public class FeedBack {
 
-  private String style;
+  private StatusEnum statusEnum;
 
   private String line;
 
   private String message;
 
-  private String errorStyle;
+  private String symptom;
 
   private String suggest;
 
-  public  FeedBack(String style, String line, String message, String errorStyle, String suggest) {
-    this.style = style;
+  public  FeedBack(StatusEnum style, String line, String message, String symptom, String suggest) {
+    this.statusEnum = style;
     this.line = line;
     this.message = message;
-    this.errorStyle = errorStyle;
+    this.symptom = symptom;
     this.suggest = suggest;
   }
 
-  public String getStyle() {
-    return this.style;
+  public StatusEnum getStyle() {
+    return this.statusEnum;
   }
 
-  public void setStyle(String style) {
-    this.style = style;
+  public void setStyle(StatusEnum statusEnum) {
+    this.statusEnum = statusEnum;
   }
 
   public String getLine() {
@@ -44,12 +46,12 @@ public class FeedBack {
     this.message = message;
   }
 
-  public String getErrorStyle() {
-    return this.errorStyle;
+  public String getSymptom() {
+    return this.symptom;
   }
 
-  public void setErrorStyle(String errorStyle) {
-    this.errorStyle = errorStyle;
+  public void setSymptom(String symptom) {
+    this.symptom = symptom;
   }
 
   public String getSuggest() {
