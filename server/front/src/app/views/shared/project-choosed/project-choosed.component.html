@@ -61,22 +61,22 @@
             Compile Failure
           </span>
           <span class="ovol CSF">
-            Checkstyle Failure
+            Coding Style Failure
           </span>
           <span *ngIf="projectType === 'WEB'" class="ovol WHF">
-            HTMLHint Failure
+            HTML Failure
           </span>
           <span *ngIf="projectType === 'WEB'" class="ovol WSF">
-            StyleLint Failure
+            CSS Failure
           </span>
           <span *ngIf="projectType === 'WEB'" class="ovol WEF">
-            ESLint Failure
+            JavaScript Failure
           </span>
           <!-- <p class="ovol plagirism" style="padding: 5px 10px;"><fmt:message key="dashboard_p_plagiarism"/></p> -->
           <span class="ovol UTF">
             Unit Test Failure
           </span>
-          <span *ngIf="projectType === 'WEB'" class="ovol BS">
+          <span class="ovol BS">
             Build Success
           </span>
         </div>
