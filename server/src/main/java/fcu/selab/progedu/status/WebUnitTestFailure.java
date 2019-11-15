@@ -58,7 +58,8 @@ public class WebUnitTestFailure implements Status {
   public String toJson(ArrayList<FeedBack> arrayList) {
     try {
       ObjectMapper objectMapper = new ObjectMapper();
-      String jsonString = objectMapper.writeValueAsString(arrayList);
+      String jsonString = objectMapper.writerWithDefaultPrettyPrinter()
+          .writeValueAsString(arrayList);
       return jsonString;
     } catch (JsonGenerationException e) {
       e.printStackTrace();
