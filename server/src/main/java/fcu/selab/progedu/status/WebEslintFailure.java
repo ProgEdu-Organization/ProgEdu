@@ -1,10 +1,13 @@
 package fcu.selab.progedu.status;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
-import com.google.gson.Gson;
-
 import fcu.selab.progedu.data.FeedBack;
+
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
 
 public class WebEslintFailure implements Status {
 
@@ -52,7 +55,19 @@ public class WebEslintFailure implements Status {
 
   @Override
   public String toJson(ArrayList<FeedBack> arrayList) {
-    Gson gson = new Gson();
-    return gson.toJson(arrayList).toString();
+    try {
+      ObjectMapper objectMapper = new ObjectMapper();
+      String jsonString = objectMapper.writeValueAsString(arrayList);
+      return jsonString;
+    } catch (JsonGenerationException e) {
+      e.printStackTrace();
+      return "JsonGenerationException Error";
+    } catch (JsonMappingException e) {
+      e.printStackTrace();
+      return "JsonMappingException Error";
+    } catch (IOException e) {
+      e.printStackTrace();
+      return "IOException Error";
+    }
   }
 }
