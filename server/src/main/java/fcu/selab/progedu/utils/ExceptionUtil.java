@@ -4,6 +4,9 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 public class ExceptionUtil {
+  /**
+   * transform printStackTrace to String
+   */
   public static String getErrorInfoFromException(Exception exception) {
     try {
       StringWriter stringwiter = new StringWriter();
