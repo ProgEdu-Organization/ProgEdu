@@ -24,6 +24,6 @@ public class WebCheckstyleFailure implements Status {
 
   @Override
   public String toJson(ArrayList<FeedBack> arrayList) {
-    return "Instructor Commit";
+    return "WebCheckstyleFailure";
   }
 }

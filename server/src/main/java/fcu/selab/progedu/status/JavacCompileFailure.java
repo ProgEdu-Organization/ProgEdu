@@ -69,37 +69,4 @@ public class JavacCompileFailure implements Status {
       return "IOException Error";
     }
   }
-
-  public String console() {
-    String test = "using GIT_ASKPASS to set credentials \n"
-        + " > git fetch --tags --progress -- http://140.134.26.62:20100/"
-        + "STUDENT2/JAVA1118.git +refs/heads/*:refs/remotes/origin/*\n"
-        + "skipping resolution of commit remotes/origin/master, since it "
-        + "originates from another repository\n"
-        + " > git rev-parse refs/remotes/origin/master^{commit} # timeout=10\n"
-        + " > git rev-parse refs/remotes/origin/origin/master^{commit} # timeout=10\n"
-        + "Checking out Revision 2fb4ec84ecc73837d38940c88024ed5b1c7c573b"
-        + " (refs/remotes/origin/master)\n"
-        + " > git config core.sparsecheckout # timeout=10\n"
-        + " > git checkout -f 2fb4ec84ecc73837d38940c88024ed5b1c7c573b\n"
-        + "Commit message: \"Update HelloWorld.java\"\n"
-        + " > git rev-list --no-walk 349699222e13fbf9dd7c4a57431efe320e608fa4 # timeout=10\n"
-        + "[STUDENT2_JAVA1118] $ /bin/sh -xe /tmp/jenkins5935095937269347033.sh\n"
-        + "+ javac src/HelloWorld.java\n"
-        + "src/HelloWorld.java:5: error: not a statement\n"
-        + "\t\tcin >> i;\n"
-        + "\t\t    ^\n"
-        + "src/HelloWorld.java:6: error: not a statement\n"
-        + "\t\tcin >> a;\n"
-        + "\t\t    ^\n"
-        + "src/HelloWorld.java:7: error: not a statement\n"
-        + "\t\tcin >> k;\n"
-        + "\t\t    ^\n"
-        + "src/HelloWorld.java:8: error: not a statement\n"
-        + "\t\tcout << j << endl;\n"
-        + "\t\t          ^\n"
-        + "4 errors\n"
-        + "Build step 'Execute shell' marked build as failure";
-    return test;
-  }
 }

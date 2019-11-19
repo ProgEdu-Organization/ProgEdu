@@ -17,6 +17,6 @@ public class WebCompileFailure implements Status {
 
   @Override
   public String toJson(ArrayList<FeedBack> arrayList) {
-    return "Instructor Commit";
+    return "WebCompileFailure";
   }
 }
