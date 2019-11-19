@@ -3,7 +3,7 @@
     <properties>
         <property name="LOG_HOME">${java.io.tmpdir}logs</property>
         <property name="FILE_NAME">mylog</property>
-        <property name="log.sql.level">debug</property>
+        <property name="LOG_LEVEL">debug</property>
     </properties>
 
 

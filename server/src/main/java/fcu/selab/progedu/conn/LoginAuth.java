@@ -70,7 +70,7 @@ public class LoginAuth extends HttpServlet {
         String name = getNameByUsername(username);
         token = jwt.generateToken(role, username, name);
         ob.put("token", token);
-        throw new LoadConfigFailureException(System.getenv("WEB_LOGGER_LEVEL_STATE"));
+        throw new LoadConfigFailureException(System.getenv("LOG_LEVEL"));
       } else {
         ob.put("isLogin", false);
       }
