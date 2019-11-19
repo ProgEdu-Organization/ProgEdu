@@ -1,5 +1,14 @@
 package fcu.selab.progedu.status;
 
+import java.io.IOException;
+import java.util.ArrayList;
+
+import fcu.selab.progedu.data.FeedBack;
+
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
+
 public class JavacCompileFailure implements Status {
 
   @Override
@@ -14,7 +23,50 @@ public class JavacCompileFailure implements Status {
   }
 
   @Override
-  public String formatFailureMsg(String consoleText) {
-    return consoleText;
+  public ArrayList<FeedBack> formatExamineMsg(String consoleText) {
+    int nextRow = consoleText.indexOf("\n");
+    int endIndex = consoleText.length();
+    consoleText = consoleText.substring(nextRow, endIndex);
+    endIndex = endIndex - nextRow - 1;
+    ArrayList<FeedBack> feedbacklist = new ArrayList<>();
+    while (consoleText.indexOf("error:") != -1) {
+      int errorIndex = consoleText.indexOf("error:");
+      nextRow = consoleText.indexOf("\n");
+      if (errorIndex > nextRow) {
+        consoleText = consoleText.substring(nextRow + 1, endIndex);
+        endIndex = endIndex - nextRow - 1;
+      } else {
+        feedbacklist.add(new FeedBack(
+            StatusEnum.COMPILE_FAILURE,
+            consoleText.substring(0, errorIndex)
+                .replace(":", " ").trim(),
+            consoleText.substring(errorIndex + 6, nextRow).trim(),
+            "",
+            ""
+        ));
+        consoleText = consoleText.substring(nextRow + 1, endIndex);
+        endIndex = endIndex - nextRow - 1;
+      }
+    }
+    return feedbacklist;
+  }
+
+  @Override
+  public String toJson(ArrayList<FeedBack> arrayList) {
+    try {
+      ObjectMapper objectMapper = new ObjectMapper();
+      String jsonString = objectMapper.writerWithDefaultPrettyPrinter()
+          .writeValueAsString(arrayList);
+      return jsonString;
+    } catch (JsonGenerationException e) {
+      e.printStackTrace();
+      return "JsonGenerationException Error";
+    } catch (JsonMappingException e) {
+      e.printStackTrace();
+      return "JsonMappingException Error";
+    } catch (IOException e) {
+      e.printStackTrace();
+      return "IOException Error";
+    }
   }
 }
