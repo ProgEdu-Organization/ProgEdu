@@ -52,23 +52,4 @@ public class WebEslintFailure implements Status {
     }
     return feedbacklist;
   }
-
-  @Override
-  public String toJson(ArrayList<FeedBack> arrayList) {
-    try {
-      ObjectMapper objectMapper = new ObjectMapper();
-      String jsonString = objectMapper.writerWithDefaultPrettyPrinter()
-          .writeValueAsString(arrayList);
-      return jsonString;
-    } catch (JsonGenerationException e) {
-      e.printStackTrace();
-      return "JsonGenerationException Error";
-    } catch (JsonMappingException e) {
-      e.printStackTrace();
-      return "JsonMappingException Error";
-    } catch (IOException e) {
-      e.printStackTrace();
-      return "IOException Error";
-    }
-  }
 }

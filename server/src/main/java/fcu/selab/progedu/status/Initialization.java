@@ -1,7 +1,6 @@
 package fcu.selab.progedu.status;
 
 import fcu.selab.progedu.data.FeedBack;
-
 import java.util.ArrayList;
 
 public class Initialization implements Status {
@@ -12,12 +11,8 @@ public class Initialization implements Status {
 
   @Override
   public ArrayList<FeedBack> formatExamineMsg(String consoleText) {
-    return null;
+    ArrayList<FeedBack> feedbacklist = new ArrayList<>();
+    feedbacklist.add(new FeedBack(StatusEnum.INITIALIZATION, consoleText));
+    return feedbacklist;
   }
-
-  @Override
-  public String toJson(ArrayList<FeedBack> arrayList) {
-    return "Instructor Commit";
-  }
-
 }

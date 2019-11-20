@@ -25,9 +25,6 @@ public class WebStatusFactory implements StatusFactory {
       case UNIT_TEST_FAILURE: {
         return new WebUnitTestFailure();
       }
-      case COMPILE_FAILURE: {
-        return new WebCompileFailure();
-      }
       case BUILD_SUCCESS: {
         return new BuildSuccess();
       }

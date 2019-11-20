@@ -21,9 +21,4 @@ public class WebCheckstyleFailure implements Status {
   public ArrayList<FeedBack> formatExamineMsg(String consoleText) {
     return null;
   }
-
-  @Override
-  public String toJson(ArrayList<FeedBack> arrayList) {
-    return "WebCheckstyleFailure";
-  }
 }

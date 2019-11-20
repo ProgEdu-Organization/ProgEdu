@@ -14,7 +14,7 @@ export class AssignmentChoosedComponent implements OnInit {
   assignment = { type: '', deadline: new Date() };
   commits: Array<any> = [];
   gitlabAssignmentURL: string;
-  feedback: string;
+  feedbacks: JSON;
   isCollapsed = true;
   selectedCommitNumber;
   selectedScreenshotName;
@@ -90,7 +90,8 @@ export class AssignmentChoosedComponent implements OnInit {
   getFeedback() {
     this.assignmentService.getFeedback(this.assignmentName, this.username, this.commits.length.toString()).subscribe(
       response => {
-        this.feedback = response.message;
+        console.log(response);
+        this.feedbacks = response;
       },
       error => {
         console.log(error);
@@ -101,7 +102,8 @@ export class AssignmentChoosedComponent implements OnInit {
   updateFeedback(commitNumber: string) {
     this.assignmentService.getFeedback(this.assignmentName, this.username, commitNumber).subscribe(
       response => {
-        this.feedback = response.message;
+        console.log(response);
+        this.feedback = response;
         this.selectedCommitNumber = commitNumber;
         this.getScreenshotUrls();
       },

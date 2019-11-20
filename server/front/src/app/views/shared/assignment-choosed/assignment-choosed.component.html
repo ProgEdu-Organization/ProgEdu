@@ -37,43 +37,43 @@
         </div>
       </div>
       <hr>
-      <div id="inline" class='col-md-12'>
-        <span class="ovol NB">
-          Not Build
-        </span>
-        <span *ngIf="assignment.type !== 'WEB'" class="ovol CPF">
-          Compile Failure
-        </span>
-        <span class="ovol CSF">
-          Checkstyle Failure
-        </span>
-        <span *ngIf="assignment.type === 'WEB'" class="ovol WHF">
-          HTMLHint Failure
-        </span>
-        <span *ngIf="assignment.type === 'WEB'" class="ovol WSF">
-          StyleLint Failure
-        </span>
-        <span *ngIf="assignment.type === 'WEB'" class="ovol WEF">
-          ESLint Failure
-        </span>
-        <!-- <p class="ovol plagirism" style="padding: 5px 10px;"><fmt:message key="dashboard_p_plagiarism"/></p> -->
-        <span class="ovol UTF">
-          Unit Test Failure
-        </span>
-        <span *ngIf="assignment.type === 'WEB'" class="ovol BS">
-          Build Success
-        </span>
-      </div>
-
+      <span class="h2">Display Status</span>
       <div class="card-body">
+        <div id="inline" class='col-md-12'>
+          <span class="ovol NB ">
+            Not Build
+          </span>
+          <span *ngIf="assignment.type !== 'WEB'" class="ovol CPF">
+            Compile Failure
+          </span>
+          <span class="ovol CSF">
+            Coding Style Failure
+          </span>
+          <span *ngIf="assignment.type === 'WEB'" class="ovol WHF">
+            HTML Failure
+          </span>
+          <span *ngIf="assignment.type === 'WEB'" class="ovol WSF">
+            CSS Failure
+          </span>
+          <span *ngIf="assignment.type === 'WEB'" class="ovol WEF">
+            JavaScript Failure
+          </span>
+          <!-- <p class="ovol plagirism" style="padding: 5px 10px;"><fmt:message key="dashboard_p_plagiarism"/></p> -->
+          <span class="ovol UTF">
+            Unit Test Failure
+          </span>
+          <span class="ovol BS">
+            Build Success
+          </span>
+        </div>
         <div class="col-lg-12">
           <table class='table table-striped' style="text-align:center;">
-            <thead>
+            <thead class="thead-light">
               <tr>
-                <td>Commit </td>
-                <td>Light </td>
-                <td>Date</td>
-                <td>Commit Message</td>
+                <th>Commit </th>
+                <th>Light </th>
+                <th>Date</th>
+                <th>Commit Message</th>
               </tr>
             </thead>
             <tbody>
@@ -91,9 +91,25 @@
         <span><a>
             <h3>Feedback Information</h3>
           </a></span>
-        <div id="container">
-          <pre style="overflow: auto;font-size: 1rem">{{feedback}}</pre>
-        </div>
+
+        <table class='table table-responsive-sm table-hover table-outline mb-0' style="text-align:center;">
+          <thead class="thead-light">
+            <tr>
+              <th>Line</th>
+              <th>Message</th>
+              <th>Symptom</th>
+              <th>Status</th>
+              <th>Suggest</th>
+            </tr>
+          </thead>
+          <tr *ngFor="let feedback of feedbacks" id='feedback-bar'>
+            <td>{{feedback.line}}</td>
+            <td>{{feedback.message}}</td>
+            <td>{{feedback.symptom}}</td>
+            <td>{{feedback.status}}</td>
+            <td>{{feedback.suggest}}</td>
+          </tr>
+        </table>
       </div>
     </div>
   </div>

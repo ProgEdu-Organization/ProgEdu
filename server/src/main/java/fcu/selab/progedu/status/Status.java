@@ -1,7 +1,11 @@
 package fcu.selab.progedu.status;
 
 import fcu.selab.progedu.data.FeedBack;
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public interface Status {
@@ -9,6 +13,22 @@ public interface Status {
 
   public ArrayList<FeedBack> formatExamineMsg(String consoleText);
 
-  public String toJson(ArrayList<FeedBack> arrayList);
+  default String toJSONArray(ArrayList<FeedBack> arrayList){
+    try {
+      ObjectMapper objectMapper = new ObjectMapper();
+      String jsonString = objectMapper.writerWithDefaultPrettyPrinter()
+              .writeValueAsString(arrayList);
+      return jsonString;
+    } catch (JsonGenerationException e) {
+      e.printStackTrace();
+      return "JsonGenerationException Error";
+    } catch (JsonMappingException e) {
+      e.printStackTrace();
+      return "JsonMappingException Error";
+    } catch (IOException e) {
+      e.printStackTrace();
+      return "IOException Error";
+    }
+  }
 
 }

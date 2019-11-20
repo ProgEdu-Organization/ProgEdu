@@ -195,7 +195,6 @@ public class CommitRecordService {
   public Response getFeedback(@QueryParam("username") String username,
       @QueryParam("assignmentName") String assignmentName, @QueryParam("number") int number) {
     JenkinsService js = JenkinsService.getInstance();
-    JSONObject ob = new JSONObject();
     AssignmentType assignmentType = getAssignmentType(assignmentName);
     String jobName = username + "_" + assignmentName;
     String console = js.getConsole(jobName, number);
@@ -203,10 +202,9 @@ public class CommitRecordService {
     String statusType = getStatusTypeName(auId, number);
     String message = assignmentType.getStatus(statusType).extractFailureMsg(console);
     ArrayList feedBacks = assignmentType.getStatus(statusType).formatExamineMsg(message);
-    String feedBackMessage = assignmentType.getStatus(statusType).toJson(feedBacks);
-    ob.put("message", feedBackMessage);
+    String feedBackMessage = assignmentType.getStatus(statusType).toJSONArray(feedBacks);
 
-    return Response.ok().entity(ob.toString()).build();
+    return Response.ok().entity(feedBackMessage).build();
   }
 
   /**

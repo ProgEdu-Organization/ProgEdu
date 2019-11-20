@@ -4,7 +4,7 @@ import fcu.selab.progedu.status.StatusEnum;
 
 public class FeedBack {
 
-  private StatusEnum statusEnum;
+  private String status;
 
   private String line;
 
@@ -14,28 +14,41 @@ public class FeedBack {
 
   private String suggest;
 
+  private final String emptyString = "";
+
   /**
+   * Create new FeedBack class
    *
-   * @param style (To Do)
-   * @param line  (To Do)
-   * @param message (To Do)
-   * @param symptom (To Do)
-   * @param suggest (To Do)
+   * @param status type StatusEnum
+   * @param line type occur line
+   * @param message type occur message
+   * @param symptom type occur symptom
+   * @param suggest type giving suggest
    */
-  public  FeedBack(StatusEnum style, String line, String message, String symptom, String suggest) {
-    this.statusEnum = style;
+  public  FeedBack(StatusEnum status, String line, String message, String symptom, String suggest) {
+    this.status = status.getType();
     this.line = line;
     this.message = message;
     this.symptom = symptom;
     this.suggest = suggest;
   }
 
-  public StatusEnum getStyle() {
-    return this.statusEnum;
+  /**
+   * Create new FeedBack class
+   *
+   * @param status type StatusEnum
+   * @param message type occur message
+   */
+  public  FeedBack(StatusEnum status, String message) {
+    new FeedBack(status, emptyString, message, emptyString, emptyString);
+  }
+
+  public String getStatus() {
+    return this.status;
   }
 
   public void setStyle(StatusEnum statusEnum) {
-    this.statusEnum = statusEnum;
+    this.status= statusEnum.getType();
   }
 
   public String getLine() {
