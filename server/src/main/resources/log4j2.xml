@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="debug">
     <properties>
-        <property name="LOG_HOME">${java.io.tmpdir}logs</property>
+        <property name="LOG_HOME">logsFile</property>
         <property name="FILE_NAME">mylog</property>
-        <property name="LOG_LEVEL">debug</property>
+        <property name="log.level">${LOG_LEVEL}</property>
     </properties>
 
 
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT">
             <ThresholdFilter level="debug" onMatch="ACCEPT" onMismatch="DENY"/>
-            <PatternLayout pattern="[%-5level] [%d{yy.MM.dd-HH:mm:ss}] [%l] [%msg]%n" />
+            <PatternLayout pattern="[%-5level] [%d{yy.MM.dd-HH:mm:ss}] [%l] [%msg] [${log.level}]%n"/>
         </Console>
 
         <RollingRandomAccessFile name="RollingRandomAccessFile" fileName="${LOG_HOME}/${FILE_NAME}.log" filePattern=
                 "${LOG_HOME}/$${date:yyyy-MM}/${FILE_NAME}-%d{yyyy-MM-dd HH-mm}-%i.log">
-            <PatternLayout pattern="[%-5level] [%d{yy.MM.dd-HH:mm:ss}] [%l] [%msg]%n"/>
+            <PatternLayout pattern="[%-5level] [%d{yy.MM.dd-HH:mm:ss}] [%l] [%msg] [${log.level}]%n"/>
             <Policies>
                 <TimeBasedTriggeringPolicy interval="1"/>
                 <SizeBasedTriggeringPolicy size="10 MB"/>
