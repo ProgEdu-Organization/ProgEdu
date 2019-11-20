@@ -12,7 +12,7 @@ export class ProjectChoosedComponent implements OnInit {
   public projectType;
   public group;
   public commits: Array<any> = [];
-  public feedback;
+  public feedbacks;
   public isCollapsed = true;
   public selectedCommitNumber;
   public selectedScreenshotName;
@@ -54,7 +54,7 @@ export class ProjectChoosedComponent implements OnInit {
   getFeedback() {
     this.projectService.getFeedback(this.groupName, this.projectName, this.commits.length.toString()).subscribe(
       response => {
-        this.feedback = response.message;
+        this.feedbacks = response;
       },
       error => {
         console.log(error);
@@ -65,7 +65,7 @@ export class ProjectChoosedComponent implements OnInit {
   updateFeedback(commitNumber: string) {
     this.projectService.getFeedback(this.groupName, this.projectName, commitNumber).subscribe(
       response => {
-        this.feedback = response.message;
+        this.feedbacks = response;
         this.selectedCommitNumber = commitNumber;
         this.getScreenshotUrls();
       },

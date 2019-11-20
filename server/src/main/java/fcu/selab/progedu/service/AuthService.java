@@ -27,7 +27,6 @@ public class AuthService {
   @Path("login")
   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
   public Response checkAuth(@FormParam("token") String token) {
-    System.out.println(token);
     JSONObject ob = new JSONObject();
     if (!token.equals("null") && jwt.validateToken(token)) {
       Claims body = jwt.decodeToken(token);

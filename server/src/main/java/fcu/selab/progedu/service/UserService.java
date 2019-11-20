@@ -204,7 +204,6 @@ public class UserService {
   @Path("/display")
   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
   public Response updateStatus(@FormParam("username") String username) {
-    System.out.println("username" + username);
     boolean isDisplay = !dbManager.getUserStatus(username);
     dbManager.updateUserStatus(username, isDisplay);
     return Response.ok().build();
@@ -220,7 +219,6 @@ public class UserService {
   @Produces(MediaType.APPLICATION_JSON)
   public Response getGroup(@PathParam("username") String username) {
     GroupService gs = new GroupService();
-    System.out.println("username" + username);
     int uid = dbManager.getUserIdByUsername(username);
     List<String> groupNames = gdb.getGroupNames(uid);
     JSONArray array = new JSONArray();

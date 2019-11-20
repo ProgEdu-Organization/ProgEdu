@@ -324,11 +324,6 @@ public class AssignmentService {
       @FormDataParam("releaseTime") Date releaseTime, @FormDataParam("deadline") Date deadline,
       @FormDataParam("readMe") String readMe, @FormDataParam("file") InputStream file,
       @FormDataParam("file") FormDataContentDisposition fileDetail) {
-    System.out.println(assignmentName);
-    System.out.println(releaseTime);
-    System.out.println(deadline);
-    System.out.println(readMe);
-    System.out.println(file.toString());
 
     int id = dbManager.getAssignmentIdByName(assignmentName);
     if (fileDetail.getFileName() == null) {

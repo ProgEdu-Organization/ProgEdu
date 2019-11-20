@@ -90,7 +90,6 @@ export class AssignmentChoosedComponent implements OnInit {
   getFeedback() {
     this.assignmentService.getFeedback(this.assignmentName, this.username, this.commits.length.toString()).subscribe(
       response => {
-        console.log(response);
         this.feedbacks = response;
       },
       error => {
@@ -100,10 +99,11 @@ export class AssignmentChoosedComponent implements OnInit {
   }
 
   updateFeedback(commitNumber: string) {
+    console.log(commitNumber);
     this.assignmentService.getFeedback(this.assignmentName, this.username, commitNumber).subscribe(
       response => {
         console.log(response);
-        this.feedback = response;
+        this.feedbacks = response;
         this.selectedCommitNumber = commitNumber;
         this.getScreenshotUrls();
       },

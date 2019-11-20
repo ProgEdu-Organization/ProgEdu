@@ -13,7 +13,7 @@ public class BuildSuccess implements Status {
   @Override
   public ArrayList<FeedBack> formatExamineMsg(String consoleText) {
     ArrayList<FeedBack> feedbacklist = new ArrayList<>();
-    feedbacklist.add(new FeedBack(StatusEnum.INITIALIZATION, consoleText));
+    feedbacklist.add(new FeedBack(StatusEnum.BUILD_SUCCESS, consoleText));
     return feedbacklist;
   }
 }

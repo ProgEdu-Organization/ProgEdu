@@ -40,7 +40,11 @@ public class FeedBack {
    * @param message type occur message
    */
   public  FeedBack(StatusEnum status, String message) {
-    new FeedBack(status, emptyString, message, emptyString, emptyString);
+    this.status = status.getType();
+    this.line = emptyString;
+    this.message = message;
+    this.symptom = emptyString;
+    this.suggest = emptyString;
   }
 
   public String getStatus() {
