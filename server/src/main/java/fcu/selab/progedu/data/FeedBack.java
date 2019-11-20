@@ -14,6 +14,15 @@ public class FeedBack {
 
   private String suggest;
 
+  /**
+   * Create new FeedBack class
+   *
+   * @param style type StatusEnum
+   * @param line type occur line
+   * @param message type occur message
+   * @param symptom type occur symptom
+   * @param suggest type giving suggest
+   */
   public  FeedBack(StatusEnum style, String line, String message, String symptom, String suggest) {
     this.statusEnum = style;
     this.line = line;
