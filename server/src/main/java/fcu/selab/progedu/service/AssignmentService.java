@@ -82,7 +82,6 @@ public class AssignmentService {
   private final String uploadDir = tempDir + "/uploads/";
   private final String testDir = tempDir + "/tests/";
   private static final Logger LOGGER = LoggerFactory.getLogger(AssignmentService.class);
-  private final String logLevel = System.getenv("LOG_LEVEL");
 
   boolean isSave = true;
 

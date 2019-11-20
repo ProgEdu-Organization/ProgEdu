@@ -3,19 +3,19 @@
     <properties>
         <property name="LOG_HOME">logsFile</property>
         <property name="FILE_NAME">mylog</property>
-        <property name="log.level">${LOG_LEVEL}</property>
+        <property name="log.level">${env:LOG_LEVEL}</property>
     </properties>
 
 
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT">
-            <ThresholdFilter level="debug" onMatch="ACCEPT" onMismatch="DENY"/>
-            <PatternLayout pattern="[%-5level] [%d{yy.MM.dd-HH:mm:ss}] [%l] [%msg] [${log.level}]%n"/>
+            <ThresholdFilter level="${log.level}" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="[%-5level] [%d{yy.MM.dd-HH:mm:ss}] [%l] [%msg] %n"/>
         </Console>
 
         <RollingRandomAccessFile name="RollingRandomAccessFile" fileName="${LOG_HOME}/${FILE_NAME}.log" filePattern=
                 "${LOG_HOME}/$${date:yyyy-MM}/${FILE_NAME}-%d{yyyy-MM-dd HH-mm}-%i.log">
-            <PatternLayout pattern="[%-5level] [%d{yy.MM.dd-HH:mm:ss}] [%l] [%msg] [${log.level}]%n"/>
+            <PatternLayout pattern="[%-5level] [%d{yy.MM.dd-HH:mm:ss}] [%l] [%msg] %n"/>
             <Policies>
                 <TimeBasedTriggeringPolicy interval="1"/>
                 <SizeBasedTriggeringPolicy size="10 MB"/>
@@ -25,7 +25,7 @@
     </Appenders>
 
     <Loggers>
-        <Root level="debug">
+        <Root level="${log.level}">
             <AppenderRef ref="Console" />
             <AppenderRef ref="RollingRandomAccessFile" />
         </Root>
