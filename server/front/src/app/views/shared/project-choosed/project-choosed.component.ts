@@ -4,7 +4,7 @@ import { ProjectChoosedService } from './project-choosed.service';
 @Component({
   selector: 'app-project-choosed',
   templateUrl: './project-choosed.component.html',
-  styleUrls: ['./project-choosed.component.scss']
+  styleUrls: []
 })
 export class ProjectChoosedComponent implements OnInit {
   public groupName;

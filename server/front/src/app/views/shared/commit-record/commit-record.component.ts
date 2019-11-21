@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-commit-record',
@@ -6,10 +6,18 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./commit-record.component.scss']
 })
 export class CommitRecordComponent implements OnInit {
+  @Input() type: string;
+  @Input() commits: JSON;
+  @Input() feedbacks: JSON;
+  @Output() messageToEmit = new EventEmitter<string>();
 
   constructor() { }
 
   ngOnInit() {
+  }
+
+  updateFeedback(commitNumber: string) {
+    this.messageToEmit.emit(commitNumber);
   }
 
 }
