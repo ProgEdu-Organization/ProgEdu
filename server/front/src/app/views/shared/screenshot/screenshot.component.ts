@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnChanges } from '@angular/core';
+import { Component, OnInit, Input, OnChanges } from '@angular/core';
 
 @Component({
   selector: 'app-screenshot',
@@ -6,10 +6,10 @@ import { Component, OnInit, Input, Output, EventEmitter, OnChanges } from '@angu
   styleUrls: ['./screenshot.component.scss']
 })
 export class ScreenshotComponent implements OnInit, OnChanges {
-  @Input() isCollapsed;
-  @Input() selectedScreenshotName;
   @Input() screenshotUrls;
-  @Output() messageToEmit = new EventEmitter<string>();
+  selectedScreenshotName: string;
+  isCollapsed = false;
+
   constructor() { }
 
   ngOnInit() {
@@ -27,7 +27,6 @@ export class ScreenshotComponent implements OnInit, OnChanges {
     if (this.screenshotUrls) {
       const url_split = $('.screenshot:visible').attr('src').split('/');
       this.selectedScreenshotName = url_split[url_split.length - 1];
-      this.messageToEmit.emit(this.selectedScreenshotName);
     }
 
   }

@@ -1,22 +1,22 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AssignmentChoosedService } from './assignment-choosed.service';
-
+import { ModalDirective } from 'ngx-bootstrap/modal';
 @Component({
   selector: 'app-assignment-choosed',
   templateUrl: './assignment-choosed.component.html'
 })
 export class AssignmentChoosedComponent implements OnInit {
-
+  @ViewChild('screenshotModal', { static: true }) public screenshotModal: ModalDirective;
   username: string;
   assignmentName: string;
+
   assignment = { type: '', deadline: new Date() };
   commits: Array<any> = [];
   gitlabAssignmentURL: string;
   feedbacks: JSON;
-  isCollapsed = true;
+
   selectedCommitNumber;
-  selectedScreenshotName;
   screenshotUrls: Array<string>;
 
   constructor(private route: ActivatedRoute, private assignmentService: AssignmentChoosedService) { }
@@ -39,11 +39,6 @@ export class AssignmentChoosedComponent implements OnInit {
       error => {
         console.log(error);
       });
-  }
-
-  updateScrennshotName() {
-    const url_split = $('.screenshot:visible').attr('src').split('/');
-    this.selectedScreenshotName = url_split[url_split.length - 1];
   }
 
   getCommitDetail() {
