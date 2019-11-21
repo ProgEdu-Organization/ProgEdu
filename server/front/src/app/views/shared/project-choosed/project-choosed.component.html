@@ -4,7 +4,7 @@
       <div class="card-header">
         <i class="cui-pencil icons"></i>
         <label>{{projectName}}</label>
-        <button class="btn btn-primary float-right" (click)='isCollapsed=!isCollapsed;'> <i
+        <button class="btn btn-primary float-right" (click)='screenshotModal.show();isCollapsed=!isCollapsed;'> <i
             class="cui-screen-desktop"></i></button>
       </div>
       <div class="card-body">
@@ -39,20 +39,6 @@
               </table>
             </div>
           </div>
-
-          <div class="col-lg-6" *ngIf="screenshotUrls" [collapse]="isCollapsed" (expanded)='updateScrennshotName()'>
-            <span class="h2">Screenshot : {{selectedScreenshotName}}</span>
-            <div style="border:1px #000000 solid;" (click)="updateScrennshotName()">
-              <carousel [interval]="false" style="background:black">
-                <slide *ngFor='let url of screenshotUrls'>
-                  <a *ngIf='url' href='{{url}}' target="_blank">
-                    <img class='screenshot rounded' src="{{url}}" alt="Screenshot"
-                      style="display: block;height: 500px;">
-                  </a>
-                </slide>
-              </carousel>
-            </div>
-          </div>
         </div>
         <hr>
         <app-commit-record [type]=projectType [commits]=commits [feedbacks]=feedbacks
@@ -60,3 +46,27 @@
       </div>
     </div>
   </div>
+</div>
+
+<!--Screenshot Modal-->
+<div bsModal #screenshotModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="dangerModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <span class='h2'>{{selectedScreenshotName}}</span>
+        <button type="button" class="close" (click)="screenshotModal.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class='modal-body'>
+        <app-screenshot [isCollapsed]=isCollapsed [screenshotUrls]=screenshotUrls
+          (selectedScreenshotName)=selectedScreenshotName>
+        </app-screenshot>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="screenshotModal.hide()">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

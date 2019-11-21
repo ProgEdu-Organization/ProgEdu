@@ -21,7 +21,6 @@ export class CommitRecordComponent implements OnInit, OnChanges {
     if (this.commits.length > 0) {
       this.changePagination(this.currentPagination);
       this.maxPagination = Math.ceil(this.commits.length / commitRow);
-      console.log(this.maxPagination);
     }
   }
 
