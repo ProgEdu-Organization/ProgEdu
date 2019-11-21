@@ -39,13 +39,15 @@
               </table>
             </div>
           </div>
+
           <div class="col-lg-6" *ngIf="screenshotUrls" [collapse]="isCollapsed" (expanded)='updateScrennshotName()'>
-            <span class="h2">Screenshot: {{selectedScreenshotName}}</span>
+            <span class="h2">Screenshot : {{selectedScreenshotName}}</span>
             <div style="border:1px #000000 solid;" (click)="updateScrennshotName()">
               <carousel [interval]="false" style="background:black">
                 <slide *ngFor='let url of screenshotUrls'>
                   <a *ngIf='url' href='{{url}}' target="_blank">
-                    <img class='screenshot' src="{{url}}" alt="Screenshot" style="display: block;height: 500px;">
+                    <img class='screenshot rounded' src="{{url}}" alt="Screenshot"
+                      style="display: block;height: 500px;">
                   </a>
                 </slide>
               </carousel>
@@ -112,7 +114,8 @@
               <h3>Feedback Information {{selectedCommitNumber}}</h3>
             </a></span>
 
-          <table class='table table-responsive-sm table-hover table-outline mb-0' style="text-align:center;">
+          <table
+            class='table table-responsive-smtable-striped table-sm table-striped table-sm table-bordered table-hover table-outline mb-0 text-center'>
             <thead class="thead-light">
               <tr>
                 <th>Line</th>

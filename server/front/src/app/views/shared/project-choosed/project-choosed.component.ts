@@ -36,9 +36,26 @@ export class ProjectChoosedComponent implements OnInit {
         this.selectedCommitNumber = this.commits.length;
         this.getFeedback();
         this.getScreenshotUrls();
+        if (this.commits) {
+          for (const commit in this.commits) {
+            if (commit) {
+              this.commits[commit].time = this.getUTCAdjustTime(this.commits[commit].time);
+            }
+          }
+
+          this.commits.reverse();
+
+        }
       }
     );
   }
+
+  getUTCAdjustTime(time: any): Date {
+    const timeOffset = (new Date().getTimezoneOffset() * 60 * 1000);
+    const assigenmentTime = new Date(time).getTime();
+    return new Date(assigenmentTime - timeOffset);
+  }
+
 
   public copyToClipboard() {
     const copyBox = document.createElement('textarea');

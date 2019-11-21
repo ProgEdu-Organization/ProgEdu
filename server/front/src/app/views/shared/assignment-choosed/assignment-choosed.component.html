@@ -24,7 +24,7 @@
           <p style="margin: 10px;">{{assignment.deadline | date:'short'}}</p>
         </div>
         <div class="col-lg-6" *ngIf="screenshotUrls" [collapse]="isCollapsed" (expanded)='updateScrennshotName()'>
-          <span class="h2">Screenshot: {{selectedScreenshotName}}</span>
+          <span class="h2">Screenshot : {{selectedScreenshotName}}</span>
           <div style="border:1px #000000 solid;" (click)="updateScrennshotName()">
             <carousel [interval]="false" style="background:black">
               <slide *ngFor='let url of screenshotUrls'>
@@ -92,7 +92,7 @@
             <h3>Feedback Information {{selectedCommitNumber}}</h3>
           </a></span>
 
-        <table class='table table-responsive-sm table-hover table-outline mb-0' style="text-align:center;">
+        <table class='table table-responsive-sm table-bordered table-hover table-outline mb-0 text-center'>
           <thead class="thead-light">
             <tr>
               <th>Line</th>
@@ -112,4 +112,5 @@
         </table>
       </div>
     </div>
+    <app-commit-record></app-commit-record>
   </div>

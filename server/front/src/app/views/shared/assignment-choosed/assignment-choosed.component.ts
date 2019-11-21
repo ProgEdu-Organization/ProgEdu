@@ -52,11 +52,17 @@ export class AssignmentChoosedComponent implements OnInit {
       this.commits = response;
       this.selectedCommitNumber = this.commits.length;
       this.getFeedback();
-      for (const commit in this.commits) {
-        if (commit) {
-          this.commits[commit].time = this.getUTCAdjustTime(this.commits[commit].time);
+      if (this.commits) {
+        for (const commit in this.commits) {
+          if (commit) {
+            this.commits[commit].time = this.getUTCAdjustTime(this.commits[commit].time);
+          }
         }
+
+        this.commits.reverse();
+
       }
+
       if (this.assignment.type === 'WEB') {
         this.getScreenshotUrls();
       }
@@ -99,10 +105,8 @@ export class AssignmentChoosedComponent implements OnInit {
   }
 
   updateFeedback(commitNumber: string) {
-    console.log(commitNumber);
     this.assignmentService.getFeedback(this.assignmentName, this.username, commitNumber).subscribe(
       response => {
-        console.log(response);
         this.feedbacks = response;
         this.selectedCommitNumber = commitNumber;
         this.getScreenshotUrls();
