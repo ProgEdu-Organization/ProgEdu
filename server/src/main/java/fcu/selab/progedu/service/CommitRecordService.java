@@ -202,7 +202,7 @@ public class CommitRecordService {
     String statusType = getStatusTypeName(auId, number);
     String message = assignmentType.getStatus(statusType).extractFailureMsg(console);
     ArrayList feedBacks = assignmentType.getStatus(statusType).formatExamineMsg(message);
-    String feedBackMessage = assignmentType.getStatus(statusType).toJSONArray(feedBacks);
+    String feedBackMessage = assignmentType.getStatus(statusType).tojsonArray(feedBacks);
 
     return Response.ok().entity(feedBackMessage).build();
   }

@@ -13,7 +13,12 @@ public interface Status {
 
   public ArrayList<FeedBack> formatExamineMsg(String consoleText);
 
-  default String toJSONArray(ArrayList<FeedBack> arrayList){
+  /**
+   *
+   * @param arrayList all feedbacks
+   * @return jsonString
+   */
+  default String tojsonArray(ArrayList<FeedBack> arrayList) {
     try {
       ObjectMapper objectMapper = new ObjectMapper();
       String jsonString = objectMapper.writerWithDefaultPrettyPrinter()

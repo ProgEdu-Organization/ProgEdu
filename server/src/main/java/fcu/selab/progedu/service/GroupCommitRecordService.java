@@ -19,7 +19,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import fcu.selab.progedu.db.UserDbManager;
-import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -233,7 +232,7 @@ public class GroupCommitRecordService {
     StatusEnum statusType = gpdb.getCommitRecordStatus(pgid, number);
     String message = projectType.getStatus(statusType.getType()).extractFailureMsg(console);
     ArrayList feedBacks = projectType.getStatus(statusType.getType()).formatExamineMsg(message);
-    String feedBackMessage = projectType.getStatus(statusType.getType()).toJSONArray(feedBacks);
+    String feedBackMessage = projectType.getStatus(statusType.getType()).tojsonArray(feedBacks);
 
     return Response.ok().entity(feedBackMessage).build();
   }

@@ -52,7 +52,7 @@ public class FeedBack {
   }
 
   public void setStyle(StatusEnum statusEnum) {
-    this.status= statusEnum.getType();
+    this.status = statusEnum.getType();
   }
 
   public String getLine() {
