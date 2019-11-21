@@ -1,11 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, SystemJsNgModuleLoader } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AssignmentChoosedService } from './assignment-choosed.service';
 
 @Component({
   selector: 'app-assignment-choosed',
-  templateUrl: './assignment-choosed.component.html',
-  styleUrls: ['./assignment-choosed.component.scss']
+  templateUrl: './assignment-choosed.component.html'
 })
 export class AssignmentChoosedComponent implements OnInit {
 
@@ -14,7 +13,7 @@ export class AssignmentChoosedComponent implements OnInit {
   assignment = { type: '', deadline: new Date() };
   commits: Array<any> = [];
   gitlabAssignmentURL: string;
-  feedback: string;
+  feedbacks: JSON;
   isCollapsed = true;
   selectedCommitNumber;
   selectedScreenshotName;
@@ -52,11 +51,17 @@ export class AssignmentChoosedComponent implements OnInit {
       this.commits = response;
       this.selectedCommitNumber = this.commits.length;
       this.getFeedback();
-      for (const commit in this.commits) {
-        if (commit) {
-          this.commits[commit].time = this.getUTCAdjustTime(this.commits[commit].time);
+      if (this.commits) {
+        for (const commit in this.commits) {
+          if (commit) {
+            this.commits[commit].time = this.getUTCAdjustTime(this.commits[commit].time);
+          }
         }
+
+        this.commits.reverse();
+
       }
+
       if (this.assignment.type === 'WEB') {
         this.getScreenshotUrls();
       }
@@ -90,7 +95,7 @@ export class AssignmentChoosedComponent implements OnInit {
   getFeedback() {
     this.assignmentService.getFeedback(this.assignmentName, this.username, this.commits.length.toString()).subscribe(
       response => {
-        this.feedback = response.message;
+        this.feedbacks = response;
       },
       error => {
         console.log(error);
@@ -101,7 +106,7 @@ export class AssignmentChoosedComponent implements OnInit {
   updateFeedback(commitNumber: string) {
     this.assignmentService.getFeedback(this.assignmentName, this.username, commitNumber).subscribe(
       response => {
-        this.feedback = response.message;
+        this.feedbacks = response;
         this.selectedCommitNumber = commitNumber;
         this.getScreenshotUrls();
       },
