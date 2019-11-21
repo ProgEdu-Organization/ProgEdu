@@ -1,73 +1,84 @@
-<span class="h2">Display Status</span>
-<div class="card-body">
-  <div id="inline" class='col-md-12'>
-    <span class="ovol NB ">
-      Not Build
-    </span>
-    <span *ngIf="type !== 'WEB'" class="ovol CPF">
-      Compile Failure
-    </span>
-    <span class="ovol CSF">
-      Coding Style Failure
-    </span>
-    <span *ngIf="type === 'WEB'" class="ovol WHF">
-      HTML Failure
-    </span>
-    <span *ngIf="type === 'WEB'" class="ovol WSF">
-      CSS Failure
-    </span>
-    <span *ngIf="type === 'WEB'" class="ovol WEF">
-      JavaScript Failure
-    </span>
-    <!-- <p class="ovol plagirism" style="padding: 5px 10px;"><fmt:message key="dashboard_p_plagiarism"/></p> -->
-    <span class="ovol UTF">
-      Unit Test Failure
-    </span>
-    <span class="ovol BS">
-      Build Success
-    </span>
-  </div>
-  <div class="col-lg-12">
-    <table class='table table-striped' style="text-align:center;">
+<div *ngIf='displayCommits'>
+  <span class="h2">Display Status</span>
+  <div class="card-body">
+    <div class='col-md-12 d-flex flex-row'>
+      <span class="ovol NB ">
+        Not Build
+      </span>
+      <span *ngIf="type !== 'WEB'" class="ovol CPF">
+        Compile Failure
+      </span>
+      <span class="ovol CSF">
+        Coding Style Failure
+      </span>
+      <span *ngIf="type === 'WEB'" class="ovol WHF">
+        HTML Failure
+      </span>
+      <span *ngIf="type === 'WEB'" class="ovol WSF">
+        CSS Failure
+      </span>
+      <span *ngIf="type === 'WEB'" class="ovol WEF">
+        JavaScript Failure
+      </span>
+      <!-- <p class="ovol plagirism" style="padding: 5px 10px;"><fmt:message key="dashboard_p_plagiarism"/></p> -->
+      <span class="ovol UTF">
+        Unit Test Failure
+      </span>
+      <span class="ovol BS">
+        Build Success
+      </span>
+    </div>
+    <div class="col-lg-12 h-25 mw-5">
+      <table class='table table-striped table-responsive-sm text-center'>
+        <thead class="thead-light">
+          <tr>
+            <th>Commit </th>
+            <th>Light </th>
+            <th>Date</th>
+            <th>Commit Message</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let commit of displayCommits" id='feedback-bar' (click)='updateFeedback(commit.number)'>
+            <td class='w-10'>{{commit.number}}</td>
+            <td>
+              <p class="circle {{commit.status}}"></p>
+            </td>
+            <td class='w-25'>{{commit.time | date:'short'}}</td>
+            <td class='w-50'>{{commit.message}}</td>
+          </tr>
+        </tbody>
+      </table>
+      <ul class="pagination">
+        <li class="page-item"><a class="page-link" href="javascript:void(0);" (click)="prePage();">Prev</a></li>
+        <li class="page-item active">
+          <a class="page-link" href="javascript:void(0);"
+            (click)="currentPagination = currentPagination">{{currentPagination}}</a>
+        </li>
+        <li class="page-item"><a class="page-link" href="javascript:void(0);" (click)="nextPage();">Next</a></li>
+      </ul>
+    </div>
+    <hr>
+    <span><a>
+        <h3>Feedback Information {{selectedCommitNumber}}</h3>
+      </a></span>
+    <table class='table table-responsive-sm table-bordered table-hover table-outline mb-0 text-center'>
       <thead class="thead-light">
         <tr>
-          <th>Commit </th>
-          <th>Light </th>
-          <th>Date</th>
-          <th>Commit Message</th>
+          <th>Line</th>
+          <th>Message</th>
+          <th>Symptom</th>
+          <th>Status</th>
+          <th>Suggest</th>
         </tr>
       </thead>
-      <tbody>
-        <tr *ngFor="let commit of commits" id='feedback-bar' (click)='updateFeedback(commit.number)'>
-          <td>{{commit.number}}</td>
-          <td>
-            <p class="circle {{commit.status}}"></p>
-          </td>
-          <td>{{commit.time | date:'short'}}</td>
-          <td>{{commit.message}}</td>
-        </tr>
-      </tbody>
+      <tr *ngFor="let feedback of feedbacks" id='feedback-bar'>
+        <td>{{feedback.line}}</td>
+        <td>{{feedback.message}}</td>
+        <td>{{feedback.symptom}}</td>
+        <td>{{feedback.status}}</td>
+        <td>{{feedback.suggest}}</td>
+      </tr>
     </table>
   </div>
-  <span><a>
-      <h3>Feedback Information {{selectedCommitNumber}}</h3>
-    </a></span>
-  <table class='table table-responsive-sm table-bordered table-hover table-outline mb-0 text-center'>
-    <thead class="thead-light">
-      <tr>
-        <th>Line</th>
-        <th>Message</th>
-        <th>Symptom</th>
-        <th>Status</th>
-        <th>Suggest</th>
-      </tr>
-    </thead>
-    <tr *ngFor="let feedback of feedbacks" id='feedback-bar'>
-      <td>{{feedback.line}}</td>
-      <td>{{feedback.message}}</td>
-      <td>{{feedback.symptom}}</td>
-      <td>{{feedback.status}}</td>
-      <td>{{feedback.suggest}}</td>
-    </tr>
-  </table>
 </div>
