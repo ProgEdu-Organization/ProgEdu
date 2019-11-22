@@ -1,13 +1,12 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AssignmentChoosedService } from './assignment-choosed.service';
-import { ModalDirective } from 'ngx-bootstrap/modal';
+
 @Component({
   selector: 'app-assignment-choosed',
   templateUrl: './assignment-choosed.component.html'
 })
 export class AssignmentChoosedComponent implements OnInit {
-  @ViewChild('screenshotModal', { static: true }) public screenshotModal: ModalDirective;
   username: string;
   assignmentName: string;
 
@@ -18,6 +17,7 @@ export class AssignmentChoosedComponent implements OnInit {
 
   selectedCommitNumber;
   screenshotUrls: Array<string>;
+  isScreenshotShow: boolean;
 
   constructor(private route: ActivatedRoute, private assignmentService: AssignmentChoosedService) { }
 
@@ -28,6 +28,7 @@ export class AssignmentChoosedComponent implements OnInit {
     await this.getGitAssignmentURL();
     await this.getCommitDetail();
 
+    this.isScreenshotShow = false;
     // this.selectedScreenshotName = $('#screenshot:visible').attr('src');
     // console.log(this.selectedScreenshotName);
   }
@@ -39,6 +40,10 @@ export class AssignmentChoosedComponent implements OnInit {
       error => {
         console.log(error);
       });
+  }
+
+  test(e) {
+    console.log(e);
   }
 
   getCommitDetail() {

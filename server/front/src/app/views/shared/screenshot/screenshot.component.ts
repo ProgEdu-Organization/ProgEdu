@@ -1,14 +1,17 @@
-import { Component, OnInit, Input, OnChanges } from '@angular/core';
-
+import { Component, OnInit, Input, OnChanges, ViewChild, Output, EventEmitter } from '@angular/core';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 @Component({
   selector: 'app-screenshot',
   templateUrl: './screenshot.component.html',
   styleUrls: ['./screenshot.component.scss']
 })
 export class ScreenshotComponent implements OnInit, OnChanges {
+  @ViewChild('screenshotModal', { static: true }) public screenshotModal: ModalDirective;
   @Input() screenshotUrls;
+  @Input() isScreenshotShow;
+  @Output() screenshotEvent = new EventEmitter<Date>();
+
   selectedScreenshotName: string;
-  isCollapsed = false;
 
   constructor() { }
 
@@ -21,6 +24,12 @@ export class ScreenshotComponent implements OnInit, OnChanges {
       const url_split = this.screenshotUrls[0].split('/');
       this.selectedScreenshotName = url_split[url_split.length - 1];
     }
+    console.log(this.isScreenshotShow);
+    if (this.isScreenshotShow) {
+      this.screenshotModal.show();
+      this.isScreenshotShow = false;
+    }
+
   }
 
   updateScreenshotName() {
