@@ -13,6 +13,7 @@ export class CommitRecordComponent implements OnInit, OnChanges {
   displayCommits: Array<any>;
   currentPagination: number = 1;
   maxPagination: number;
+  commitNumber = 1;
   constructor() { }
 
   ngOnInit() { }
@@ -53,8 +54,9 @@ export class CommitRecordComponent implements OnInit, OnChanges {
   }
 
 
-  updateFeedback(commitNumber: string) {
-    this.messageToEmit.emit(commitNumber);
+  updateFeedback(commitNumber: number) {
+    this.commitNumber = commitNumber;
+    this.messageToEmit.emit(commitNumber.toString());
   }
 
 }

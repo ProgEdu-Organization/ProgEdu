@@ -39,13 +39,13 @@ public class WebEslintFailure implements Status {
         endIndex = endIndex - nextrowIndex - 1;
       } else {
         int errorStyleStart = consoleText.indexOf("  ", errorIndex + 6);
-        feedbacklist.add(new FeedBack(
-            StatusEnum.WEB_ESLINT_FAILURE,
-            consoleText.substring(0, errorIndex).trim(),
-            consoleText.substring(errorIndex + 5, errorStyleStart).trim(),
-            consoleText.substring(errorStyleStart, nextrowIndex).trim(),
-            ""
-        ));
+        feedbacklist.add(
+            new FeedBack(
+                StatusEnum.WEB_ESLINT_FAILURE,
+                consoleText.substring(0, errorIndex).trim(),
+                consoleText.substring(errorIndex + 5, errorStyleStart).trim(),
+                consoleText.substring(errorStyleStart, nextrowIndex).trim(),
+                "https://github.com/airbnb/javascript\n"));
         consoleText = consoleText.substring(nextrowIndex + 1, endIndex);
         endIndex = endIndex - nextrowIndex - 1;
       }

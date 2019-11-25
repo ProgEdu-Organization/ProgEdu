@@ -61,15 +61,14 @@
     </div>
     <hr>
     <span><a>
-        <h3>Feedback Information {{selectedCommitNumber}}</h3>
+        <h3>Feedback Information {{commitNumber}}</h3>
       </a></span>
     <table class='table table-responsive-sm table-bordered table-hover table-outline mb-0 text-center'>
       <thead class="thead-light">
         <tr>
-          <th>Line</th>
-          <th>Message</th>
+          <th class='w-10'>Line</th>
+          <th class='w-50'>Message</th>
           <th>Symptom</th>
-          <th>Status</th>
           <th>Suggest</th>
         </tr>
       </thead>
@@ -77,8 +76,7 @@
         <td>{{feedback.line}}</td>
         <td>{{feedback.message}}</td>
         <td>{{feedback.symptom}}</td>
-        <td>{{feedback.status}}</td>
-        <td>{{feedback.suggest}}</td>
+        <td><a href='{{feedback.suggest}}' target="blank">{{feedback.suggest}}</a></td>
       </tr>
     </table>
   </div>
