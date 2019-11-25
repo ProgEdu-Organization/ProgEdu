@@ -43,7 +43,7 @@ public class WebStylelintFailure implements Status {
                 consoleText.substring(0, crossIndex - 1).trim(),
                 consoleText.substring(crossIndex + 1, errorStyleStart + 1).trim(),
                 consoleText.substring(errorStyleStart, nextrowIndex).trim(),
-                "https://codertw.com/%E5%89%8D%E7%AB%AF%E9%96%8B%E7%99%BC/183114/\n"));
+                "https://codertw.com/%E5%89%8D%E7%AB%AF%E9%96%8B%E7%99%BC/183114/"));
         consoleText = consoleText.substring(nextrowIndex + 1, endIndex);
         endIndex = endIndex - nextrowIndex - 1;
       }

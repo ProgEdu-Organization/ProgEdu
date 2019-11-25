@@ -46,7 +46,7 @@ public class WebHtmlhintFailure implements Status {
               consoleText.substring(lineIndex, sparateIndex - 1).trim(),
               consoleText.substring(arrowIndex + 2, dotIndex).trim(),
               errorStyle,
-              "https://codertw.com/%E5%89%8D%E7%AB%AF%E9%96%8B%E7%99%BC/15355/\n"));
+              "https://codertw.com/%E5%89%8D%E7%AB%AF%E9%96%8B%E7%99%BC/15355/"));
       consoleText = consoleText.substring(nextlineIndex + 1, endIndex);
       endIndex = endIndex - nextlineIndex - 1;
     }

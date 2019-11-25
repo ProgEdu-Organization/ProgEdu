@@ -37,7 +37,7 @@
             <th>Light </th>
             <th>Date</th>
             <th>Commit Message</th>
-            <th>Screenshot</th>
+            <th *ngIf="type === 'WEB'">Screenshot</th>
           </tr>
         </thead>
         <tbody>
@@ -48,7 +48,7 @@
             </td>
             <td class='w-25'>{{commit.time | date:'short'}}</td>
             <td class='w-50'>{{commit.message}}</td>
-            <td><button *ngIf="type === 'WEB'" class="btn btn-primary" (click)='screenshot.screenshotModal.show();'>
+            <td *ngIf="type === 'WEB'"><button class="btn btn-primary" (click)='screenshot.screenshotModal.show();'>
                 <i class="cui-screen-desktop"></i></button></td>
           </tr>
         </tbody>
@@ -84,4 +84,5 @@
     </table>
   </div>
 </div>
-<app-screenshot [screenshotUrls]=screenshotUrls [commitNumber]=commitNumber #screenshot></app-screenshot>
+<app-screenshot [screenshotUrls]=screenshotUrls [commitNumber]=commitNumber #screenshot>
+</app-screenshot>

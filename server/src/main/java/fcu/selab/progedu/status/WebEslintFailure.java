@@ -45,7 +45,7 @@ public class WebEslintFailure implements Status {
                 consoleText.substring(0, errorIndex).trim(),
                 consoleText.substring(errorIndex + 5, errorStyleStart).trim(),
                 consoleText.substring(errorStyleStart, nextrowIndex).trim(),
-                "https://github.com/airbnb/javascript\n"));
+                "https://github.com/airbnb/javascript"));
         consoleText = consoleText.substring(nextrowIndex + 1, endIndex);
         endIndex = endIndex - nextrowIndex - 1;
       }
