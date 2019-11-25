@@ -8,8 +8,8 @@ import { ModalDirective } from 'ngx-bootstrap/modal';
 export class ScreenshotComponent implements OnInit, OnChanges {
   @ViewChild('screenshotModal', { static: true }) public screenshotModal: ModalDirective;
   @Input() screenshotUrls;
-  @Input() isScreenshotShow;
-  @Output() screenshotEvent = new EventEmitter<Date>();
+  @Input() commitNumber;
+  @Output() screenshotEvent = new EventEmitter();
 
   selectedScreenshotName: string;
 
@@ -24,12 +24,6 @@ export class ScreenshotComponent implements OnInit, OnChanges {
       const url_split = this.screenshotUrls[0].split('/');
       this.selectedScreenshotName = url_split[url_split.length - 1];
     }
-    console.log(this.isScreenshotShow);
-    if (this.isScreenshotShow) {
-      this.screenshotModal.show();
-      this.isScreenshotShow = false;
-    }
-
   }
 
   updateScreenshotName() {

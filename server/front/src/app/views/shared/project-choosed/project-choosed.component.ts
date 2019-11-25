@@ -22,7 +22,6 @@ export class ProjectChoosedComponent implements OnInit {
 
   public isCollapsed = true;
   public selectedCommitNumber;
-  public selectedScreenshotName;
   public screenshotUrls: Array<string>;
 
 

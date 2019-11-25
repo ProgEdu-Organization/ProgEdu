@@ -9,6 +9,7 @@ export class CommitRecordComponent implements OnInit, OnChanges {
   @Input() type: string;
   @Input() commits: Array<any>;
   @Input() feedbacks: JSON;
+  @Input() screenshotUrls: Array<any>;
   @Output() messageToEmit = new EventEmitter<string>();
   displayCommits: Array<any>;
   currentPagination: number = 1;

@@ -17,7 +17,6 @@ export class AssignmentChoosedComponent implements OnInit {
 
   selectedCommitNumber;
   screenshotUrls: Array<string>;
-  isScreenshotShow: boolean;
 
   constructor(private route: ActivatedRoute, private assignmentService: AssignmentChoosedService) { }
 
@@ -27,8 +26,6 @@ export class AssignmentChoosedComponent implements OnInit {
     await this.getAssignment();
     await this.getGitAssignmentURL();
     await this.getCommitDetail();
-
-    this.isScreenshotShow = false;
     // this.selectedScreenshotName = $('#screenshot:visible').attr('src');
     // console.log(this.selectedScreenshotName);
   }
@@ -41,11 +38,6 @@ export class AssignmentChoosedComponent implements OnInit {
         console.log(error);
       });
   }
-
-  test(e) {
-    console.log(e);
-  }
-
   getCommitDetail() {
     this.assignmentService.getCommitDetail(this.assignmentName, this.username).subscribe(response => {
       this.commits = response;

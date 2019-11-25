@@ -3,8 +3,6 @@
     <div class="card-header">
       <i class="cui-pencil icons"></i>
       <label>{{assignmentName}}</label>
-      <button *ngIf="assignment.type === 'WEB'" class="btn btn-primary float-right" (click)='isScreenshotShow = true'>
-        <i class="cui-screen-desktop"></i></button>
     </div>
     <div class="card-body">
       <div class='row'>
@@ -25,12 +23,10 @@
         </div>
       </div>
       <hr>
-      <app-commit-record [type]=assignment.type [commits]=commits [feedbacks]=feedbacks
+      <app-commit-record [type]=assignment.type [commits]=commits [feedbacks]=feedbacks [screenshotUrls]=screenshotUrls
         (messageToEmit)="updateFeedback($event)">
+
       </app-commit-record>
     </div>
   </div>
 </div>
-
-<app-screenshot [screenshotUrls]=screenshotUrls [isScreenshotShow]=isScreenshotShow (screenshotEvent)='test(e)'>
-</app-screenshot>

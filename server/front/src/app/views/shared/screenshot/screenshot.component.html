@@ -4,13 +4,11 @@
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class='modal-body'>
-        <button type="button" class="close" (click)="screenshotModal.hide();isScreenshotShow = false;"
-          aria-label="Close">
+        <button type="button" class="close" (click)="screenshotModal.hide();" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
-
         <div *ngIf='screenshotUrls' [collapse]="false">
-          <span class="h2">Screenshot : {{selectedScreenshotName}}</span>
+          <span class="h2">({{commitNumber}})Screenshot : {{selectedScreenshotName}}</span>
           <hr>
           <div style="border:1px #000000 solid;" (click)="updateScreenshotName()">
             <carousel [interval]="false" style="background:black">
@@ -22,7 +20,6 @@
             </carousel>
           </div>
         </div>
-
       </div>
     </div>
   </div>

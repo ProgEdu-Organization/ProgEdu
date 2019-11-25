@@ -51,6 +51,7 @@ public class WebUnitTestFailure implements Status {
         endIndex = endIndex - nextrow - 1;
       }
     }
+    System.out.println("TEST");
     return feedbacklist;
   }
 }

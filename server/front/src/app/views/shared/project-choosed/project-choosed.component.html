@@ -4,8 +4,6 @@
       <div class="card-header">
         <i class="cui-pencil icons"></i>
         <label>{{projectName}}</label>
-        <button class="btn btn-primary float-right" (click)='screenshotModal.show();'> <i
-            class="cui-screen-desktop"></i></button>
       </div>
       <div class="card-body">
         <div class='row'>
@@ -42,26 +40,7 @@
         </div>
         <hr>
         <app-commit-record [type]=projectType [commits]=commits [feedbacks]=feedbacks
-          (messageToEmit)="updateFeedback($event)"></app-commit-record>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!--Screenshot Modal-->
-<div bsModal #screenshotModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
-  aria-labelledby="dangerModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-      <div class='modal-body'>
-        <button type="button" class="close" (click)="screenshotModal.hide()" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-        <app-screenshot [screenshotUrls]=screenshotUrls>
-        </app-screenshot>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" (click)="screenshotModal.hide()">Close</button>
+          (messageToEmit)="updateFeedback($event)" [screenshotUrls]=screenshotUrls></app-commit-record>
       </div>
     </div>
   </div>
