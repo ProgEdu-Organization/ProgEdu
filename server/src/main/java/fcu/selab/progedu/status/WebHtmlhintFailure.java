@@ -40,13 +40,13 @@ public class WebHtmlhintFailure implements Status {
       int dotIndex = consoleText.indexOf(".", arrowIndex);
       String errorStyle = consoleText.substring(dotIndex + 1, nextlineIndex)
           .replace("(", "").replace(")", "").trim();
-      feedbacklist.add(new FeedBack(
-          StatusEnum.WEB_HTMLHINT_FAILURE,
-          consoleText.substring(lineIndex, sparateIndex - 1).trim(),
-          consoleText.substring(arrowIndex + 2,dotIndex).trim(),
-          errorStyle,
-          ""
-      ));
+      feedbacklist.add(
+          new FeedBack(
+              StatusEnum.WEB_HTMLHINT_FAILURE,
+              consoleText.substring(lineIndex, sparateIndex - 1).trim(),
+              consoleText.substring(arrowIndex + 2, dotIndex).trim(),
+              errorStyle,
+              "https://codertw.com/%E5%89%8D%E7%AB%AF%E9%96%8B%E7%99%BC/15355/\n"));
       consoleText = consoleText.substring(nextlineIndex + 1, endIndex);
       endIndex = endIndex - nextlineIndex - 1;
     }
