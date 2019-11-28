@@ -22,28 +22,36 @@ public class MavenCompileFailure implements Status {
 
   @Override
   public ArrayList<FeedBack> formatExamineMsg(String consoleText) {
-    int endIndex = consoleText.length();
-    ArrayList<FeedBack> feedbacklist = new ArrayList<>();
-    while (consoleText.indexOf("[ERROR]") != -1) {
-      int nextrow = consoleText.indexOf("\n");
-      int nexterror = consoleText.indexOf("[ERROR]");
-      if (nexterror > nextrow) {
-        consoleText = consoleText.substring(nextrow + 1, endIndex);
-        endIndex = endIndex - nextrow - 1;
-      } else {
-        int nextbrackets = consoleText.indexOf("]", 7);
-        int lastslash = consoleText.lastIndexOf("/");
-        feedbacklist.add(new FeedBack(
-            StatusEnum.COMPILE_FAILURE,
-            consoleText.substring(lastslash + 1, nextbrackets + 1).trim(),
-            consoleText.substring(nextbrackets + 1, nextrow).trim(),
-            "",
-            ""
-        ));
-        consoleText = consoleText.substring(nextrow + 1, endIndex);
-        endIndex = endIndex - nextrow - 1;
+    try {
+      int endIndex = consoleText.length();
+      ArrayList<FeedBack> feedbacklist = new ArrayList<>();
+      while (consoleText.indexOf("[ERROR]") != -1) {
+        int nextrow = consoleText.indexOf("\n");
+        int nexterror = consoleText.indexOf("[ERROR]");
+        if (nexterror > nextrow) {
+          consoleText = consoleText.substring(nextrow + 1, endIndex);
+          endIndex = endIndex - nextrow - 1;
+        } else {
+          int nextbrackets = consoleText.indexOf("]", 7);
+          int lastslash = consoleText.lastIndexOf("/");
+          feedbacklist.add(new FeedBack(
+              StatusEnum.COMPILE_FAILURE,
+              consoleText.substring(lastslash + 1, nextbrackets + 1).trim(),
+              consoleText.substring(nextbrackets + 1, nextrow).trim(),
+              "",
+              ""
+          ));
+          consoleText = consoleText.substring(nextrow + 1, endIndex);
+          endIndex = endIndex - nextrow - 1;
+        }
       }
+      return feedbacklist;
+    } catch (Exception e) {
+      ArrayList<FeedBack> feedbacklist = new ArrayList<>();
+      feedbacklist.add(
+          new FeedBack(null, "CompileFailure ArrayList error",
+              e.getMessage(), "", ""));
+      return feedbacklist;
     }
-    return feedbacklist;
   }
 }

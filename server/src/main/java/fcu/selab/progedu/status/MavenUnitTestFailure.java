@@ -26,28 +26,36 @@ public class MavenUnitTestFailure implements Status {
 
   @Override
   public ArrayList<FeedBack> formatExamineMsg(String consoleText) {
-    consoleText = consoleText + "\n";
-    int endIndex = consoleText.length();
-    ArrayList<FeedBack> feedbacklist = new ArrayList<>();
-    while (consoleText.indexOf("Failed tests:") != -1) {
-      int nextrow = consoleText.indexOf("\n");
-      int nextfailedtest = consoleText.indexOf("Failed tests:");
-      if (nextfailedtest > nextrow) {
-        consoleText = consoleText.substring(nextrow + 1, endIndex);
-        endIndex = endIndex - nextrow - 1;
-      } else {
-        int nextcolon = consoleText.indexOf(":", 13);
-        feedbacklist.add(new FeedBack(
-            StatusEnum.UNIT_TEST_FAILURE,
-            "",
-            consoleText.substring(nextcolon + 1, nextrow).trim(),
-            "",
-            ""
-        ));
-        consoleText = consoleText.substring(nextrow + 1, endIndex);
-        endIndex = endIndex - nextrow - 1;
+    try {
+      consoleText = consoleText + "\n";
+      int endIndex = consoleText.length();
+      ArrayList<FeedBack> feedbacklist = new ArrayList<>();
+      while (consoleText.indexOf("Failed tests:") != -1) {
+        int nextrow = consoleText.indexOf("\n");
+        int nextfailedtest = consoleText.indexOf("Failed tests:");
+        if (nextfailedtest > nextrow) {
+          consoleText = consoleText.substring(nextrow + 1, endIndex);
+          endIndex = endIndex - nextrow - 1;
+        } else {
+          int nextcolon = consoleText.indexOf(":", 13);
+          feedbacklist.add(new FeedBack(
+              StatusEnum.UNIT_TEST_FAILURE,
+              "",
+              consoleText.substring(nextcolon + 1, nextrow).trim(),
+              "",
+              ""
+          ));
+          consoleText = consoleText.substring(nextrow + 1, endIndex);
+          endIndex = endIndex - nextrow - 1;
+        }
       }
+      return feedbacklist;
+    } catch (Exception e) {
+      ArrayList<FeedBack> feedbacklist = new ArrayList<>();
+      feedbacklist.add(
+          new FeedBack(null, "UnitTest ArrayList error",
+              e.getMessage(), "", ""));
+      return feedbacklist;
     }
-    return feedbacklist;
   }
 }

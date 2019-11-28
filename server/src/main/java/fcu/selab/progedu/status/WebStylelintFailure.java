@@ -27,28 +27,37 @@ public class WebStylelintFailure implements Status {
 
   @Override
   public ArrayList<FeedBack> formatExamineMsg(String consoleText) {
-    int endIndex = consoleText.length();
-    ArrayList<FeedBack> feedbacklist = new ArrayList<>();
-    while (consoleText.indexOf("✖") != -1) {
-      int crossIndex = consoleText.indexOf("✖");
-      int nextrowIndex = consoleText.indexOf("\n");
-      if (crossIndex > nextrowIndex) {
-        consoleText = consoleText.substring(nextrowIndex + 1, endIndex);
-        endIndex = endIndex - nextrowIndex - 1;
-      } else {
-        int errorStyleStart = consoleText.indexOf("  ", crossIndex + 2);
-        feedbacklist.add(
-            new FeedBack(
-                StatusEnum.WEB_STYLELINT_FAILURE,
-                consoleText.substring(0, crossIndex - 1).trim(),
-                consoleText.substring(crossIndex + 1, errorStyleStart + 1).trim(),
-                consoleText.substring(errorStyleStart, nextrowIndex).trim(),
-                "https://codertw.com/%E5%89%8D%E7%AB%AF%E9%96%8B%E7%99%BC/183114/\n"));
-        consoleText = consoleText.substring(nextrowIndex + 1, endIndex);
-        endIndex = endIndex - nextrowIndex - 1;
+    try {
+      int endIndex = consoleText.length();
+      ArrayList<FeedBack> feedbacklist = new ArrayList<>();
+      while (consoleText.indexOf("✖") != -1) {
+        int crossIndex = consoleText.indexOf("✖");
+        int nextrowIndex = consoleText.indexOf("\n");
+        if (crossIndex > nextrowIndex) {
+          consoleText = consoleText.substring(nextrowIndex + 1, endIndex);
+          endIndex = endIndex - nextrowIndex - 1;
+        } else {
+          String errorString = consoleText.substring(crossIndex + 1, nextrowIndex).trim();
+          int errorStyleStart = errorString.indexOf("  ");
+          feedbacklist.add(
+              new FeedBack(
+                  StatusEnum.WEB_STYLELINT_FAILURE,
+                  consoleText.substring(0, crossIndex - 1).trim(),
+                  errorString.substring(0, errorStyleStart + 1).trim(),
+                  errorString.substring(errorStyleStart, errorString.length()).trim(),
+                  "https://codertw.com/%E5%89%8D%E7%AB%AF%E9%96%8B%E7%99%BC/183114/\n"));
+          consoleText = consoleText.substring(nextrowIndex + 1, endIndex);
+          endIndex = endIndex - nextrowIndex - 1;
+        }
       }
+      return feedbacklist;
+    } catch (Exception e) {
+      ArrayList<FeedBack> feedbacklist = new ArrayList<>();
+      feedbacklist.add(
+          new FeedBack(null, "Stylelint ArrayList error",
+              e.getMessage(), "", ""));
+      return feedbacklist;
     }
-    return feedbacklist;
   }
 
 }

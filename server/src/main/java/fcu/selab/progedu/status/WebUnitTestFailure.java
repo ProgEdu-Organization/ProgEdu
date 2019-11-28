@@ -25,32 +25,40 @@ public class WebUnitTestFailure implements Status {
 
   @Override
   public ArrayList<FeedBack> formatExamineMsg(String consoleText) {
-    int consoleStart = consoleText.indexOf("測試");
-    int consoleEnd = consoleText.indexOf("failing");
-    String unitTestInfo = consoleText.substring(consoleStart, consoleEnd);
-    int nextRow = unitTestInfo.indexOf("\n");
-    int endIndex = consoleEnd - consoleStart;
-    unitTestInfo = unitTestInfo.substring(nextRow + 1, endIndex);
-    endIndex = endIndex - nextRow - 1;
-    ArrayList<FeedBack> feedbacklist = new ArrayList<>();
-    while (unitTestInfo.indexOf(")") != -1) {
-      int nextparentheses = unitTestInfo.indexOf(")");
-      int nextrow = unitTestInfo.indexOf("\n", nextparentheses);
-      if (nextrow - nextparentheses == 1) { //
-        unitTestInfo = unitTestInfo.substring(nextrow + 1, endIndex);
-        endIndex = endIndex - nextrow - 1;
-      } else {
-        int netspace = unitTestInfo.indexOf("\n", nextparentheses + 1);
-        feedbacklist.add(new FeedBack(
-            StatusEnum.UNIT_TEST_FAILURE,
-            "",
-            unitTestInfo.substring(nextparentheses + 2, netspace),
-            "",
-            ""));
-        unitTestInfo = unitTestInfo.substring(netspace + 1, endIndex);
-        endIndex = endIndex - nextrow - 1;
+    try {
+      int consoleStart = consoleText.indexOf("測試");
+      int consoleEnd = consoleText.indexOf("failing");
+      String unitTestInfo = consoleText.substring(consoleStart, consoleEnd);
+      int nextRow = unitTestInfo.indexOf("\n");
+      int endIndex = consoleEnd - consoleStart;
+      unitTestInfo = unitTestInfo.substring(nextRow + 1, endIndex);
+      endIndex = endIndex - nextRow - 1;
+      ArrayList<FeedBack> feedbacklist = new ArrayList<>();
+      while (unitTestInfo.indexOf(")") != -1) {
+        int nextparentheses = unitTestInfo.indexOf(")");
+        int nextrow = unitTestInfo.indexOf("\n", nextparentheses);
+        if (nextrow - nextparentheses == 1) { //
+          unitTestInfo = unitTestInfo.substring(nextrow + 1, endIndex);
+          endIndex = endIndex - nextrow - 1;
+        } else {
+          int netspace = unitTestInfo.indexOf("\n", nextparentheses + 1);
+          feedbacklist.add(new FeedBack(
+              StatusEnum.UNIT_TEST_FAILURE,
+              "",
+              unitTestInfo.substring(nextparentheses + 2, netspace),
+              "",
+              ""));
+          unitTestInfo = unitTestInfo.substring(netspace + 1, endIndex);
+          endIndex = endIndex - nextrow - 1;
+        }
       }
+      return feedbacklist;
+    } catch (Exception e) {
+      ArrayList<FeedBack> feedbacklist = new ArrayList<>();
+      feedbacklist.add(
+          new FeedBack(null, "UnitTest ArrayList error",
+              e.getMessage(), "", ""));
+      return feedbacklist;
     }
-    return feedbacklist;
   }
 }

@@ -28,28 +28,37 @@ public class WebEslintFailure implements Status {
 
   @Override
   public ArrayList<FeedBack> formatExamineMsg(String consoleText) {
-    consoleText = consoleText.substring(0, consoleText.indexOf("✖"));
-    int endIndex = consoleText.length();
-    ArrayList<FeedBack> feedbacklist = new ArrayList<>();
-    while (consoleText.indexOf("error") != -1) {
-      int errorIndex = consoleText.indexOf("error");
-      int nextrowIndex = consoleText.indexOf("\n");
-      if (errorIndex > nextrowIndex) {
-        consoleText = consoleText.substring(nextrowIndex + 1, endIndex);
-        endIndex = endIndex - nextrowIndex - 1;
-      } else {
-        int errorStyleStart = consoleText.indexOf("  ", errorIndex + 6);
-        feedbacklist.add(
-            new FeedBack(
-                StatusEnum.WEB_ESLINT_FAILURE,
-                consoleText.substring(0, errorIndex).trim(),
-                consoleText.substring(errorIndex + 5, errorStyleStart).trim(),
-                consoleText.substring(errorStyleStart, nextrowIndex).trim(),
-                "https://github.com/airbnb/javascript\n"));
-        consoleText = consoleText.substring(nextrowIndex + 1, endIndex);
-        endIndex = endIndex - nextrowIndex - 1;
+    try {
+      consoleText = consoleText.substring(0, consoleText.indexOf("✖"));
+      int endIndex = consoleText.length();
+      ArrayList<FeedBack> feedbacklist = new ArrayList<>();
+      while (consoleText.indexOf("error") != -1) {
+        int errorIndex = consoleText.indexOf("error");
+        int nextrowIndex = consoleText.indexOf("\n");
+        if (errorIndex > nextrowIndex) {
+          consoleText = consoleText.substring(nextrowIndex + 1, endIndex);
+          endIndex = endIndex - nextrowIndex - 1;
+        } else {
+          String errorString = consoleText.substring(errorIndex + 6, nextrowIndex).trim();
+          int errorStyleStart = errorString.indexOf("  ");
+          feedbacklist.add(
+              new FeedBack(
+                  StatusEnum.WEB_ESLINT_FAILURE,
+                  consoleText.substring(0, errorIndex).trim(),
+                  errorString.substring(0, errorStyleStart).trim(),
+                  errorString.substring(errorStyleStart, errorString.length()).trim(),
+                  "https://github.com/airbnb/javascript\n"));
+          consoleText = consoleText.substring(nextrowIndex + 1, endIndex);
+          endIndex = endIndex - nextrowIndex - 1;
+        }
       }
+      return feedbacklist;
+    } catch (Exception e) {
+      ArrayList<FeedBack> feedbacklist = new ArrayList<>();
+      feedbacklist.add(
+          new FeedBack(null, "Eslint ArrayList error",
+              e.getMessage(), "", ""));
+      return feedbacklist;
     }
-    return feedbacklist;
   }
 }

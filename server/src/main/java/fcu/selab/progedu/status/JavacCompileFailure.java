@@ -24,31 +24,39 @@ public class JavacCompileFailure implements Status {
 
   @Override
   public ArrayList<FeedBack> formatExamineMsg(String consoleText) {
-    int nextRow = consoleText.indexOf("\n");
-    int endIndex = consoleText.length();
-    consoleText = consoleText.substring(nextRow, endIndex);
-    endIndex = endIndex - nextRow - 1;
-    ArrayList<FeedBack> feedbacklist = new ArrayList<>();
-    while (consoleText.indexOf("error:") != -1) {
-      int errorIndex = consoleText.indexOf("error:");
-      nextRow = consoleText.indexOf("\n");
-      if (errorIndex > nextRow) {
-        consoleText = consoleText.substring(nextRow + 1, endIndex);
-        endIndex = endIndex - nextRow - 1;
-      } else {
-        feedbacklist.add(new FeedBack(
-            StatusEnum.COMPILE_FAILURE,
-            consoleText.substring(0, errorIndex)
-                .replace(":", " ").trim(),
-            consoleText.substring(errorIndex + 6, nextRow).trim(),
-            "",
-            ""
-        ));
-        consoleText = consoleText.substring(nextRow + 1, endIndex);
-        endIndex = endIndex - nextRow - 1;
+    try {
+      int nextRow = consoleText.indexOf("\n");
+      int endIndex = consoleText.length();
+      consoleText = consoleText.substring(nextRow, endIndex);
+      endIndex = endIndex - nextRow - 1;
+      ArrayList<FeedBack> feedbacklist = new ArrayList<>();
+      while (consoleText.indexOf("error:") != -1) {
+        int errorIndex = consoleText.indexOf("error:");
+        nextRow = consoleText.indexOf("\n");
+        if (errorIndex > nextRow) {
+          consoleText = consoleText.substring(nextRow + 1, endIndex);
+          endIndex = endIndex - nextRow - 1;
+        } else {
+          feedbacklist.add(new FeedBack(
+              StatusEnum.COMPILE_FAILURE,
+              consoleText.substring(0, errorIndex)
+                  .replace(":", " ").trim(),
+              consoleText.substring(errorIndex + 6, nextRow).trim(),
+              "",
+              ""
+          ));
+          consoleText = consoleText.substring(nextRow + 1, endIndex);
+          endIndex = endIndex - nextRow - 1;
+        }
       }
+      return feedbacklist;
+    } catch (Exception e) {
+      ArrayList<FeedBack> feedbacklist = new ArrayList<>();
+      feedbacklist.add(
+          new FeedBack(null, "CompileFailure ArrayList error",
+              e.getMessage(), "", ""));
+      return feedbacklist;
     }
-    return feedbacklist;
   }
 }
 
