@@ -112,7 +112,6 @@ public class GroupService {
   @Produces(MediaType.APPLICATION_JSON)
   public Response updateLeader(
       @PathParam("name") String name, @PathParam("username") String leader) {
-    
     int groupGitLabId = gdb.getGitlabId(name);
     // update newLeader's AccessLevel to owner
     int leaderGitlabId = udb.getGitLabId(leader);
@@ -141,7 +140,6 @@ public class GroupService {
   @Produces(MediaType.APPLICATION_JSON)
   public Response removeMember(
       @PathParam("name") String name, @PathParam("username") String member) {
-
     int groupGitLabId = gdb.getGitlabId(name);
     int gitlabId = udb.getGitLabId(member);
     gitlabService.removeGroupMember(groupGitLabId, gitlabId);
