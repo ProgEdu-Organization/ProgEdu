@@ -285,6 +285,7 @@ public class AssignmentService {
   @Path("delete")
   @Produces(MediaType.APPLICATION_JSON)
   public Response deleteProject(@FormDataParam("assignmentName") String name) {
+    /*
     Linux linuxApi = new Linux();
     // delete tomcat test file
 
@@ -306,7 +307,7 @@ public class AssignmentService {
       String jobName = jenkins.getJobName(user.getUsername(), name);
       jenkins.deleteJob(jobName);
     }
-
+*/
     return Response.ok().build();
   }
 
@@ -324,7 +325,6 @@ public class AssignmentService {
       @FormDataParam("releaseTime") Date releaseTime, @FormDataParam("deadline") Date deadline,
       @FormDataParam("readMe") String readMe, @FormDataParam("file") InputStream file,
       @FormDataParam("file") FormDataContentDisposition fileDetail) {
-
     int id = dbManager.getAssignmentIdByName(assignmentName);
     if (fileDetail.getFileName() == null) {
       dbManager.editAssignment(deadline, releaseTime, readMe, id);
