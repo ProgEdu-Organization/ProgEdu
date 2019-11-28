@@ -3,7 +3,7 @@ import { ModalDirective } from 'ngx-bootstrap/modal';
 import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
-  selector: 'app-error-modal',
+  selector: 'progedu-error-modal',
   templateUrl: './error-modal.component.html',
   styleUrls: ['./error-modal.component.scss']
 })
