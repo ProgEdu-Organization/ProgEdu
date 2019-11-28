@@ -101,7 +101,7 @@ export class AssignmentManagementComponent implements OnInit {
         this.isDeleteProgress = false;
       },
       error => {
-        this.errorTitle = 'Delete Error';
+        this.errorTitle = 'Delete Assignment Error';
         this.deleteModal.hide();
         this.errorResponse = error;
       });
@@ -136,7 +136,7 @@ export class AssignmentManagementComponent implements OnInit {
           this.getAllAssignments();
         },
         error => {
-          this.errorTitle = 'Edit Error';
+          this.errorTitle = 'Edit Assignment Error';
           this.editModal.hide();
           this.errorResponse = error;
         });
