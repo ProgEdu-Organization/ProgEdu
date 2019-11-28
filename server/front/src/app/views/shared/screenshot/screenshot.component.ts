@@ -22,16 +22,21 @@ export class ScreenshotComponent implements OnInit, OnChanges {
     // Initial screenshot Name
     if (this.screenshotUrls && this.screenshotUrls.length !== 0 && !this.selectedScreenshotName) {
       const url_split = this.screenshotUrls[0].split('/');
-      this.selectedScreenshotName = url_split[url_split.length - 1];
+      this.selectedScreenshotName = this.rename(url_split);
     }
   }
 
   updateScreenshotName() {
     if (this.screenshotUrls) {
       const url_split = $('.screenshot:visible').attr('src').split('/');
-      this.selectedScreenshotName = url_split[url_split.length - 1];
+      this.selectedScreenshotName = this.rename(url_split);
     }
+  }
 
+  rename(url_split: Array<string>) {
+    const screenshotName = url_split[url_split.length - 1];
+    // Change png to html. Ex: index.png -> index.html
+    return screenshotName.substring(0, screenshotName.indexOf('.png')) + '.html';
   }
 
 }

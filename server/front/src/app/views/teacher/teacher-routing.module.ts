@@ -8,8 +8,8 @@ import { GroupManagementComponent } from './group-management/group-management.co
 import { ChartComponent } from './chart/chart.component';
 import { GroupDashboardComponent } from './group-dashboard/group-dashboard.component';
 import { SharedModule } from '../shared/shared.module';
-import { AssignmentChoosedComponent } from '../shared/assignment-choosed/assignment-choosed.component';
-import { ProjectChoosedComponent } from '../shared/project-choosed/project-choosed.component';
+import { AssignmentChoosedComponent } from '../shared/assignment-choose/assignment-choose.component';
+import { ProjectChoosedComponent } from '../shared/project-choose/project-choose.component';
 import { EditGroupManagementComponent } from './edit-group-management/edit-group-management.component';
 import { CreateGroupComponent } from './create-group/create-group.component';
 const routes: Routes = [

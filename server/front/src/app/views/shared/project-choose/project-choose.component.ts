@@ -1,10 +1,10 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ProjectChoosedService } from './project-choosed.service';
+import { ProjectChoosedService } from './project-choose.service';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 @Component({
-  selector: 'app-project-choosed',
-  templateUrl: './project-choosed.component.html',
+  selector: 'app-project-choose',
+  templateUrl: './project-choose.component.html',
   styleUrls: []
 })
 export class ProjectChoosedComponent implements OnInit {
