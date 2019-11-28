@@ -18,6 +18,7 @@ import { GroupDashboardComponent } from '../teacher/group-dashboard/group-dashbo
 import { CommitRecordComponent } from './commit-record/commit-record.component';
 import { DashboardStatusComponent } from './dashboard-status/dashboard-status.component';
 import { ScreenshotComponent } from './screenshot/screenshot.component';
+import { ErrorModalComponent } from './error-modal/error-modal.component';
 
 @NgModule({
   imports: [
@@ -28,8 +29,8 @@ import { ScreenshotComponent } from './screenshot/screenshot.component';
     CarouselModule.forRoot(),
   ],
   declarations: [AssignmentChoosedComponent, ProjectChoosedComponent, GroupDashboardComponent,
-    GroupFilterPipe, FilterPipe, CommitRecordComponent, DashboardStatusComponent, ScreenshotComponent],
+    GroupFilterPipe, FilterPipe, CommitRecordComponent, DashboardStatusComponent, ScreenshotComponent, ErrorModalComponent],
   exports: [AssignmentChoosedComponent, GroupDashboardComponent, ProjectChoosedComponent, GroupFilterPipe,
-    FilterPipe, DashboardStatusComponent, ScreenshotComponent]
+    FilterPipe, DashboardStatusComponent, ScreenshotComponent, ErrorModalComponent]
 })
 export class SharedModule { }

@@ -39,6 +39,7 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
       description: [undefined, Validators.required],
       type: [undefined, Validators.required],
       file: [undefined, Validators.required],
+      rememberMe: [true]
     });
     this.onChanges();
 
