@@ -54,10 +54,9 @@ export class EditGroupManagementComponent implements OnInit {
     );
   }
 
-  editLeaderSubmit() {
-    const leader = this.groupForm.get('leader').value;
+  updateLeaderSubmit() {
+    const leader = this.selectedUser;
     const groupName = this.groupForm.get('name').value;
-
     this.editGroupManagementService.editGroupLeader(groupName, leader).subscribe(
       (response) => {
         this.getGroup(groupName);
@@ -70,13 +69,6 @@ export class EditGroupManagementComponent implements OnInit {
         this.confirmModal.hide();
       }
     );
-  }
-
-  setLeader() {
-    this.groupForm.get('members').value.push(this.groupForm.get('leader').value);
-    this.groupForm.get('members').setValue(this.groupForm.get('members').value.filter(item => item !== this.selectedUser));
-    this.groupForm.get('leader').setValue(this.selectedUser);
-    this.editLeaderSubmit();
   }
 
   removeGroupMemberByUsername() {
@@ -98,7 +90,6 @@ export class EditGroupManagementComponent implements OnInit {
   getAllUser() {
     this.editGroupManagementService.getAllUser().subscribe(response => {
       this.users = response.Users;
-      console.log(this.users);
       // reGet the all user data and remove exist in  group merber
       const selectedUsers = this.groupForm.get('members').value;
       const selectedLeader = this.groupForm.get('leader').value;
@@ -124,7 +115,6 @@ export class EditGroupManagementComponent implements OnInit {
     }
     this.confirmModal.show();
   }
-  // removeGroupMemberByUsername(groupForm.get('name').value,member);
 
   async addGroupMemberByUsername() {
     await this.editGroupManagementService.addGroupMemeber(this.groupName, this.selectedUser.username).subscribe(
