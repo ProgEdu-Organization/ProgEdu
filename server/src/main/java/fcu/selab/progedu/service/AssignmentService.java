@@ -117,13 +117,7 @@ public class AssignmentService {
       @FormDataParam("readMe") String readMe, @FormDataParam("fileRadio") String assignmentType,
       @FormDataParam("file") InputStream file,
       @FormDataParam("file") FormDataContentDisposition fileDetail) {
-    System.out.println(assignmentName);
-    System.out.println(releaseTime);
-    System.out.println(deadline);
-    System.out.println(readMe);
-    System.out.println(assignmentType);
-    System.out.println(file.toString());
-    System.out.println(fileDetail.getFileName());
+
     String rootProjectUrl = null;
 
     final AssignmentType assignment = AssignmentFactory.getAssignmentType(assignmentType);
@@ -330,11 +324,6 @@ public class AssignmentService {
       @FormDataParam("releaseTime") Date releaseTime, @FormDataParam("deadline") Date deadline,
       @FormDataParam("readMe") String readMe, @FormDataParam("file") InputStream file,
       @FormDataParam("file") FormDataContentDisposition fileDetail) {
-    System.out.println(assignmentName);
-    System.out.println(releaseTime);
-    System.out.println(deadline);
-    System.out.println(readMe);
-    System.out.println(file.toString());
 
     int id = dbManager.getAssignmentIdByName(assignmentName);
     if (fileDetail.getFileName() == null) {
