@@ -19,8 +19,6 @@ export class ProjectChoosedComponent implements OnInit {
 
   public commits: Array<any> = [];
   public feedbacks;
-
-  public isCollapsed = true;
   public selectedCommitNumber;
   public screenshotUrls: Array<string>;
 
