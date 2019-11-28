@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, SystemJsNgModuleLoader } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AssignmentChoosedService } from './assignment-choosed.service';
 
@@ -14,7 +14,6 @@ export class AssignmentChoosedComponent implements OnInit {
   commits: Array<any> = [];
   gitlabAssignmentURL: string;
   feedbacks: JSON;
-
   selectedCommitNumber;
   screenshotUrls: Array<string>;
 
