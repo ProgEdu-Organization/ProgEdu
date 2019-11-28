@@ -83,6 +83,7 @@ export class StudentManagementComponent implements OnInit {
         (response) => {
           this.getAllUser();
           this.addOneStudentSuccessful = true;
+          this.addOneStudentErrorMsg = '';
         },
         error => {
           this.addOneStudentErrorMsg = error.error;
@@ -102,6 +103,7 @@ export class StudentManagementComponent implements OnInit {
         (response) => {
           this.getAllUser();
           this.addMultipleStudentSuccessful = true;
+          this.addMultipleStudentErrorMsg = '';
         },
         error => {
           this.addMultipleStudentErrorMsg = error.error;
