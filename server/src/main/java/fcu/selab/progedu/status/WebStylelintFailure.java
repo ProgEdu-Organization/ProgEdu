@@ -30,7 +30,7 @@ public class WebStylelintFailure implements Status {
     try {
       int endIndex = consoleText.length();
       ArrayList<FeedBack> feedbacklist = new ArrayList<>();
-      while (consoleText.indexOf("✖") != -1) {
+      while (consoleText.contains("✖")) {
         int crossIndex = consoleText.indexOf("✖");
         int nextrowIndex = consoleText.indexOf("\n");
         if (crossIndex > nextrowIndex) {
@@ -54,7 +54,7 @@ public class WebStylelintFailure implements Status {
     } catch (Exception e) {
       ArrayList<FeedBack> feedbacklist = new ArrayList<>();
       feedbacklist.add(
-          new FeedBack(null, "Stylelint ArrayList error",
+          new FeedBack(StatusEnum.WEB_STYLELINT_FAILURE, "Stylelint ArrayList error",
               e.getMessage(), "", ""));
       return feedbacklist;
     }

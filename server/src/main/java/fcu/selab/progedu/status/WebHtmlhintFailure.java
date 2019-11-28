@@ -33,7 +33,7 @@ public class WebHtmlhintFailure implements Status {
           consoleText.indexOf("\n"), consoleText.indexOf("Scanned"));
       int endIndex = consoleText.length();
       ArrayList<FeedBack> feedbacklist = new ArrayList<>();
-      while (consoleText.indexOf("L") != -1) {
+      while (consoleText.contains("L")) {
         int lineIndex = consoleText.indexOf("L");
         int sparateIndex = consoleText.indexOf("|");
         int arrowIndex = consoleText.indexOf("^");
@@ -55,7 +55,7 @@ public class WebHtmlhintFailure implements Status {
     } catch (Exception e) {
       ArrayList<FeedBack> feedbacklist = new ArrayList<>();
       feedbacklist.add(
-          new FeedBack(null, "HtmlHint ArrayList error",
+          new FeedBack(StatusEnum.WEB_HTMLHINT_FAILURE, "HtmlHint ArrayList error",
               e.getMessage(), "", ""));
       return feedbacklist;
     }

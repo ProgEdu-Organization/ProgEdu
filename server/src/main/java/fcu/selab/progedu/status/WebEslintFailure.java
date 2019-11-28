@@ -32,7 +32,7 @@ public class WebEslintFailure implements Status {
       consoleText = consoleText.substring(0, consoleText.indexOf("✖"));
       int endIndex = consoleText.length();
       ArrayList<FeedBack> feedbacklist = new ArrayList<>();
-      while (consoleText.indexOf("error") != -1) {
+      while (consoleText.contains("error")) {
         int errorIndex = consoleText.indexOf("error");
         int nextrowIndex = consoleText.indexOf("\n");
         if (errorIndex > nextrowIndex) {
@@ -56,7 +56,7 @@ public class WebEslintFailure implements Status {
     } catch (Exception e) {
       ArrayList<FeedBack> feedbacklist = new ArrayList<>();
       feedbacklist.add(
-          new FeedBack(null, "Eslint ArrayList error",
+          new FeedBack(StatusEnum.WEB_ESLINT_FAILURE, "Eslint ArrayList error",
               e.getMessage(), "", ""));
       return feedbacklist;
     }
