@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ProjectChoosedService } from './project-choosed.service';
+import { ProjectChoosedService } from './project-choose.service';
 @Component({
-  selector: 'app-project-choosed',
-  templateUrl: './project-choosed.component.html',
+  selector: 'app-project-choose',
+  templateUrl: './project-choose.component.html',
   styleUrls: []
 })
 export class ProjectChoosedComponent implements OnInit {
