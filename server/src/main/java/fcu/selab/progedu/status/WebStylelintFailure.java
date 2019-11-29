@@ -54,8 +54,8 @@ public class WebStylelintFailure implements Status {
     } catch (Exception e) {
       ArrayList<FeedBack> feedbacklist = new ArrayList<>();
       feedbacklist.add(
-          new FeedBack(StatusEnum.WEB_STYLELINT_FAILURE, "Stylelint ArrayList error",
-              e.getMessage(), "", ""));
+          new FeedBack(StatusEnum.WEB_STYLELINT_FAILURE, "",
+              "Stylelint ArrayList error", "", ""));
       return feedbacklist;
     }
   }

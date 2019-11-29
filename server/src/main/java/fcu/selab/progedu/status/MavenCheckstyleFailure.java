@@ -35,7 +35,7 @@ public class MavenCheckstyleFailure implements Status {
       consoleText = consoleText + "\n";
       int endIndex = consoleText.length();
       ArrayList<FeedBack> feedbacklist = new ArrayList<>();
-      while (consoleText.indexOf("error:") != -1) {
+      while (consoleText.contains("error:")) {
         int nextrow = consoleText.indexOf("\n");
         int nexterror = consoleText.indexOf("error:");
         if (nexterror > nextrow) {
@@ -59,8 +59,8 @@ public class MavenCheckstyleFailure implements Status {
     } catch (Exception e) {
       ArrayList<FeedBack> feedbacklist = new ArrayList<>();
       feedbacklist.add(
-          new FeedBack(null, "Checkstyle ArrayList error",
-              e.getMessage(), "", ""));
+          new FeedBack(StatusEnum.CHECKSTYLE_FAILURE, "",
+              "Checkstyle ArrayList error", "", ""));
       return feedbacklist;
     }
   }

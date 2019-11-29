@@ -56,8 +56,8 @@ public class WebEslintFailure implements Status {
     } catch (Exception e) {
       ArrayList<FeedBack> feedbacklist = new ArrayList<>();
       feedbacklist.add(
-          new FeedBack(StatusEnum.WEB_ESLINT_FAILURE, "Eslint ArrayList error",
-              e.getMessage(), "", ""));
+          new FeedBack(StatusEnum.WEB_ESLINT_FAILURE, "",
+              "Eslint ArrayList error", "", ""));
       return feedbacklist;
     }
   }

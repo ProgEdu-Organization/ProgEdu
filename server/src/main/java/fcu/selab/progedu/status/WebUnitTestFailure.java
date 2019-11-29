@@ -34,7 +34,7 @@ public class WebUnitTestFailure implements Status {
       unitTestInfo = unitTestInfo.substring(nextRow + 1, endIndex);
       endIndex = endIndex - nextRow - 1;
       ArrayList<FeedBack> feedbacklist = new ArrayList<>();
-      while (unitTestInfo.indexOf(")") != -1) {
+      while (unitTestInfo.contains(")")) {
         int nextparentheses = unitTestInfo.indexOf(")");
         int nextrow = unitTestInfo.indexOf("\n", nextparentheses);
         if (nextrow - nextparentheses == 1) { //
@@ -56,8 +56,8 @@ public class WebUnitTestFailure implements Status {
     } catch (Exception e) {
       ArrayList<FeedBack> feedbacklist = new ArrayList<>();
       feedbacklist.add(
-          new FeedBack(null, "UnitTest ArrayList error",
-              e.getMessage(), "", ""));
+          new FeedBack(StatusEnum.UNIT_TEST_FAILURE, "",
+              "UnitTest ArrayList error", "", ""));
       return feedbacklist;
     }
   }

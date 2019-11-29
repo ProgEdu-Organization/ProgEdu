@@ -30,7 +30,7 @@ public class MavenUnitTestFailure implements Status {
       consoleText = consoleText + "\n";
       int endIndex = consoleText.length();
       ArrayList<FeedBack> feedbacklist = new ArrayList<>();
-      while (consoleText.indexOf("Failed tests:") != -1) {
+      while (consoleText.contains("Failed tests:")) {
         int nextrow = consoleText.indexOf("\n");
         int nextfailedtest = consoleText.indexOf("Failed tests:");
         if (nextfailedtest > nextrow) {
@@ -53,8 +53,8 @@ public class MavenUnitTestFailure implements Status {
     } catch (Exception e) {
       ArrayList<FeedBack> feedbacklist = new ArrayList<>();
       feedbacklist.add(
-          new FeedBack(null, "UnitTest ArrayList error",
-              e.getMessage(), "", ""));
+          new FeedBack(StatusEnum.UNIT_TEST_FAILURE, "",
+              "UnitTest ArrayList error", "", ""));
       return feedbacklist;
     }
   }

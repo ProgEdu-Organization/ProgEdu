@@ -25,7 +25,7 @@ public class MavenCompileFailure implements Status {
     try {
       int endIndex = consoleText.length();
       ArrayList<FeedBack> feedbacklist = new ArrayList<>();
-      while (consoleText.indexOf("[ERROR]") != -1) {
+      while (consoleText.contains("[ERROR]")) {
         int nextrow = consoleText.indexOf("\n");
         int nexterror = consoleText.indexOf("[ERROR]");
         if (nexterror > nextrow) {
@@ -49,8 +49,8 @@ public class MavenCompileFailure implements Status {
     } catch (Exception e) {
       ArrayList<FeedBack> feedbacklist = new ArrayList<>();
       feedbacklist.add(
-          new FeedBack(null, "CompileFailure ArrayList error",
-              e.getMessage(), "", ""));
+          new FeedBack(StatusEnum.COMPILE_FAILURE, "",
+              "CompileFailure ArrayList error", "", ""));
       return feedbacklist;
     }
   }

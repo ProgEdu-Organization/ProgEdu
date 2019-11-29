@@ -55,8 +55,8 @@ public class WebHtmlhintFailure implements Status {
     } catch (Exception e) {
       ArrayList<FeedBack> feedbacklist = new ArrayList<>();
       feedbacklist.add(
-          new FeedBack(StatusEnum.WEB_HTMLHINT_FAILURE, "HtmlHint ArrayList error",
-              e.getMessage(), "", ""));
+          new FeedBack(StatusEnum.WEB_HTMLHINT_FAILURE, "",
+              "HtmlHint ArrayList error", "", ""));
       return feedbacklist;
     }
   }
