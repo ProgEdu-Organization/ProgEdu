@@ -156,7 +156,7 @@ public class StatusService {
    * @return boolean
    */
   public boolean isAndroidUiTestFailure(String console) {
-    if (console.contains("Task :app:compileDebugJavaWithJavac FAILED")) {
+    if (console.contains("> Task :app:connectedDebugAndroidTest FAILED")) {
       return true;
     }
     return false;

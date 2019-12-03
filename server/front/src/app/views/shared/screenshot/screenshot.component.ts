@@ -20,7 +20,6 @@ export class ScreenshotComponent implements OnInit, OnChanges {
 
   ngOnChanges() {
     // Initial screenshot Name
-    console.log(this.screenshotUrls)
     if (this.screenshotUrls && this.screenshotUrls.length !== 0 && !this.selectedScreenshotName) {
       const url_split = this.screenshotUrls[0].split('/');
       this.selectedScreenshotName = this.rename(url_split);

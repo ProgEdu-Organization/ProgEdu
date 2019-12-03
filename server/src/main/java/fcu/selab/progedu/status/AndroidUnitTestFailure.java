@@ -10,17 +10,38 @@ public class AndroidUnitTestFailure implements Status {
     String feedback;
     String feedbackStart = "> Task :app:testDebugUnitTest FAILED";
     String feedbackEnd = "FAILURE: Build failed with an exception.";
-    feedback = consoleText.substring(consoleText.indexOf(feedbackStart),
+    feedback = consoleText.substring(consoleText.indexOf(feedbackStart) + feedbackStart.length(),
             consoleText.indexOf(feedbackEnd));
     return feedback.trim();
   }
 
   @Override
   public ArrayList<FeedBack> formatExamineMsg(String consoleText) {
-    ArrayList<FeedBack> feedbacklist = new ArrayList<>();
-    feedbacklist.add(
-            new FeedBack(StatusEnum.UNIT_TEST_FAILURE, "",
-                    consoleText, "", ""));
-    return feedbacklist;
+    try{
+      ArrayList<FeedBack> feedbacklist = new ArrayList<>();
+      int endIndex = consoleText.length();
+      while(consoleText.contains("FAILED")){
+        int error = consoleText.indexOf(">") + ">".length() ;
+        int failed = consoleText.indexOf("FAILED");
+        int nextrow = consoleText.indexOf("\n");
+
+        feedbacklist.add(new FeedBack(
+                StatusEnum.CHECKSTYLE_FAILURE,
+                "",
+                consoleText.substring(error , failed).trim(),
+                consoleText.substring(failed, nextrow).trim(),
+                "https://github.com/checkstyle/checkstyle"
+        ));
+        consoleText = consoleText.substring(nextrow + 1, endIndex);
+        endIndex = endIndex - nextrow - 1;
+      }
+      return feedbacklist;
+    }catch (Exception e){
+      ArrayList<FeedBack> feedbacklist = new ArrayList<>();
+      feedbacklist.add(
+              new FeedBack(StatusEnum.UNIT_TEST_FAILURE, "",
+                      consoleText, "", ""));
+      return feedbacklist;
+    }
   }
 }

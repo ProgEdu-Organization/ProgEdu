@@ -8,6 +8,8 @@ public class FeedBack {
 
   private String line;
 
+  private String fileName;
+
   private String message;
 
   private String symptom;
@@ -28,6 +30,13 @@ public class FeedBack {
   public  FeedBack(StatusEnum status, String line, String message, String symptom, String suggest) {
     this.status = status.getType();
     this.line = line;
+    this.message = message;
+    this.symptom = symptom;
+    this.suggest = suggest;
+  }
+  public  FeedBack(StatusEnum status,String line, String fileName, String message, String symptom, String suggest) {
+    this.status = status.getType();
+    this.fileName = fileName;
     this.message = message;
     this.symptom = symptom;
     this.suggest = suggest;
