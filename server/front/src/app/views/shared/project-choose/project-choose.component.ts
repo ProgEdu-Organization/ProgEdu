@@ -1,23 +1,27 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ProjectChoosedService } from './project-choosed.service';
+import { ProjectChoosedService } from './project-choose.service';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 @Component({
-  selector: 'app-project-choosed',
-  templateUrl: './project-choosed.component.html',
-  styleUrls: ['./project-choosed.component.scss']
+  selector: 'app-project-choose',
+  templateUrl: './project-choose.component.html',
+  styleUrls: []
 })
 export class ProjectChoosedComponent implements OnInit {
+  @ViewChild('screenshotModal', { static: true }) public screenshotModal: ModalDirective;
+
+  public group;
   public groupName;
+
   public projectName;
   public projectType;
-  public group;
-  public commits: Array<any> = [];
-  public feedback;
-  public isCollapsed = true;
-  public selectedCommitNumber;
-  public selectedScreenshotName;
-  public screenshotUrls: Array<string>;
   public gitlabprojectUrl: string;
+
+  public commits: Array<any> = [];
+  public feedbacks;
+  public selectedCommitNumber;
+  public screenshotUrls: Array<string>;
+
 
   constructor(private activeRoute: ActivatedRoute, private projectService: ProjectChoosedService) { }
 
@@ -35,10 +39,29 @@ export class ProjectChoosedComponent implements OnInit {
         this.commits = resopnse;
         this.selectedCommitNumber = this.commits.length;
         this.getFeedback();
-        this.getScreenshotUrls();
+        if (this.projectType === 'WEB' || this.projectType === 'ANDROID') {
+          this.getScreenshotUrls();
+        }
+        if (this.commits) {
+          for (const commit in this.commits) {
+            if (commit) {
+              this.commits[commit].time = this.getUTCAdjustTime(this.commits[commit].time);
+            }
+          }
+
+          this.commits.reverse();
+
+        }
       }
     );
   }
+
+  getUTCAdjustTime(time: any): Date {
+    const timeOffset = (new Date().getTimezoneOffset() * 60 * 1000);
+    const assigenmentTime = new Date(time).getTime();
+    return new Date(assigenmentTime - timeOffset);
+  }
+
 
   public copyToClipboard() {
     const copyBox = document.createElement('textarea');
@@ -54,7 +77,7 @@ export class ProjectChoosedComponent implements OnInit {
   getFeedback() {
     this.projectService.getFeedback(this.groupName, this.projectName, this.commits.length.toString()).subscribe(
       response => {
-        this.feedback = response.message;
+        this.feedbacks = response;
       },
       error => {
         console.log(error);
@@ -65,9 +88,11 @@ export class ProjectChoosedComponent implements OnInit {
   updateFeedback(commitNumber: string) {
     this.projectService.getFeedback(this.groupName, this.projectName, commitNumber).subscribe(
       response => {
-        this.feedback = response.message;
+        this.feedbacks = response;
         this.selectedCommitNumber = commitNumber;
-        this.getScreenshotUrls();
+        if (this.projectType === 'WEB' || this.projectType === 'ANDROID') {
+          this.getScreenshotUrls();
+        }
       },
       error => {
         console.log(error);
@@ -111,10 +136,4 @@ export class ProjectChoosedComponent implements OnInit {
       );
     }
   }
-
-  updateScrennshotName() {
-    const url_split = $('.screenshot:visible').attr('src').split('/');
-    this.selectedScreenshotName = url_split[url_split.length - 1];
-  }
-
 }

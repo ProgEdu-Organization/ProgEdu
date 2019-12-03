@@ -1,5 +1,14 @@
 package fcu.selab.progedu.status;
 
+import java.io.IOException;
+import java.util.ArrayList;
+
+import fcu.selab.progedu.data.FeedBack;
+
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
+
 public class WebStylelintFailure implements Status {
 
   @Override
@@ -12,8 +21,44 @@ public class WebStylelintFailure implements Status {
     String checkstyleInfo = consoleText.substring(start,end);
     int nextrow = checkstyleInfo.indexOf("\n");
     checkstyleInfo = checkstyleInfo.substring(nextrow + 1,end - start);
-    checkstyleInfo = checkstyleInfo.replaceAll("[\n][ ]", "\n L");
 
-    return checkstyleInfo.trim();
+    return checkstyleInfo;
   }
+
+  @Override
+  public ArrayList<FeedBack> formatExamineMsg(String consoleText) {
+    try {
+      int endIndex = consoleText.length();
+      ArrayList<FeedBack> feedbacklist = new ArrayList<>();
+      while (consoleText.contains("✖")) {
+        int crossIndex = consoleText.indexOf("✖");
+        int nextrowIndex = consoleText.indexOf("\n");
+        if (crossIndex > nextrowIndex) {
+          consoleText = consoleText.substring(nextrowIndex + 1, endIndex);
+          endIndex = endIndex - nextrowIndex - 1;
+        } else {
+          String errorString = consoleText.substring(crossIndex + 1, nextrowIndex).trim();
+          int errorStyleStart = errorString.indexOf("  ");
+          feedbacklist.add(
+              new FeedBack(
+                  StatusEnum.WEB_STYLELINT_FAILURE,
+                  consoleText.substring(0, crossIndex - 1).trim(),
+                  errorString.substring(0, errorStyleStart + 1).trim(),
+                  errorString.substring(errorStyleStart, errorString.length()).trim(),
+                  "https://codertw.com/%E5%89%8D%E7%AB%AF%E9%96%8B%E7%99%BC/183114/\n"));
+          consoleText = consoleText.substring(nextrowIndex + 1, endIndex);
+          endIndex = endIndex - nextrowIndex - 1;
+        }
+      }
+      return feedbacklist;
+    } catch (Exception e) {
+      ArrayList<FeedBack> feedbacklist = new ArrayList<>();
+      feedbacklist.add(
+          new FeedBack(StatusEnum.WEB_STYLELINT_FAILURE, "",
+              "Stylelint ArrayList error", "", ""));
+      return feedbacklist;
+    }
+  }
+
 }
+

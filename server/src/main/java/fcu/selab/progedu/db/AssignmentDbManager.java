@@ -113,7 +113,6 @@ public class AssignmentDbManager {
     } catch (SQLException e) {
       e.printStackTrace();
     }
-    System.out.println(assignmentName);
     return assignmentName;
   }
 

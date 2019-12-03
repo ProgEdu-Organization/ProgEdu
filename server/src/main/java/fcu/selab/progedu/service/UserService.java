@@ -1,10 +1,17 @@
 package fcu.selab.progedu.service;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
+import com.csvreader.CsvReader;
+import fcu.selab.progedu.config.CourseConfig;
+import fcu.selab.progedu.conn.GitlabService;
+import fcu.selab.progedu.data.User;
+import fcu.selab.progedu.db.RoleDbManager;
+import fcu.selab.progedu.db.RoleUserDbManager;
+import fcu.selab.progedu.db.UserDbManager;
+import fcu.selab.progedu.db.service.GroupDbService;
+import org.gitlab.api.models.GitlabUser;
+import org.glassfish.jersey.media.multipart.FormDataParam;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
@@ -16,21 +23,11 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.gitlab.api.models.GitlabUser;
-import org.glassfish.jersey.media.multipart.FormDataParam;
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import com.csvreader.CsvReader;
-
-import fcu.selab.progedu.service.GroupCommitRecordService;
-import fcu.selab.progedu.config.CourseConfig;
-import fcu.selab.progedu.conn.GitlabService;
-import fcu.selab.progedu.data.User;
-import fcu.selab.progedu.db.RoleDbManager;
-import fcu.selab.progedu.db.RoleUserDbManager;
-import fcu.selab.progedu.db.UserDbManager;
-import fcu.selab.progedu.db.service.GroupDbService;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 @Path("user")
 public class UserService {
@@ -125,6 +122,7 @@ public class UserService {
       @FormParam("password") String password,
       @FormParam("role") String role,
       @FormParam("isDisplayed") boolean isDisplayed) {
+
     Response response = null;
     List<RoleEnum> roleList = new ArrayList<>();
 
@@ -204,7 +202,6 @@ public class UserService {
   @Path("/display")
   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
   public Response updateStatus(@FormParam("username") String username) {
-    System.out.println("username" + username);
     boolean isDisplay = !dbManager.getUserStatus(username);
     dbManager.updateUserStatus(username, isDisplay);
     return Response.ok().build();
@@ -220,7 +217,6 @@ public class UserService {
   @Produces(MediaType.APPLICATION_JSON)
   public Response getGroup(@PathParam("username") String username) {
     GroupService gs = new GroupService();
-    System.out.println("username" + username);
     int uid = dbManager.getUserIdByUsername(username);
     List<String> groupNames = gdb.getGroupNames(uid);
     JSONArray array = new JSONArray();

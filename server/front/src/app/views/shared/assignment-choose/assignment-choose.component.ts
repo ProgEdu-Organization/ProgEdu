@@ -1,23 +1,20 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, SystemJsNgModuleLoader } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { AssignmentChoosedService } from './assignment-choosed.service';
+import { AssignmentChoosedService } from './assignment-choose.service';
 
 @Component({
-  selector: 'app-assignment-choosed',
-  templateUrl: './assignment-choosed.component.html',
-  styleUrls: ['./assignment-choosed.component.scss']
+  selector: 'app-assignment-choose',
+  templateUrl: './assignment-choose.component.html'
 })
 export class AssignmentChoosedComponent implements OnInit {
-
   username: string;
   assignmentName: string;
+
   assignment = { type: '', deadline: new Date() };
   commits: Array<any> = [];
   gitlabAssignmentURL: string;
-  feedback: string;
-  isCollapsed = true;
+  feedbacks: JSON;
   selectedCommitNumber;
-  selectedScreenshotName;
   screenshotUrls: Array<string>;
 
   constructor(private route: ActivatedRoute, private assignmentService: AssignmentChoosedService) { }
@@ -28,7 +25,6 @@ export class AssignmentChoosedComponent implements OnInit {
     await this.getAssignment();
     await this.getGitAssignmentURL();
     await this.getCommitDetail();
-
     // this.selectedScreenshotName = $('#screenshot:visible').attr('src');
     // console.log(this.selectedScreenshotName);
   }
@@ -41,21 +37,20 @@ export class AssignmentChoosedComponent implements OnInit {
         console.log(error);
       });
   }
-
-  updateScrennshotName() {
-    const url_split = $('.screenshot:visible').attr('src').split('/');
-    this.selectedScreenshotName = url_split[url_split.length - 1];
-  }
-
   getCommitDetail() {
     this.assignmentService.getCommitDetail(this.assignmentName, this.username).subscribe(response => {
       this.commits = response;
       this.selectedCommitNumber = this.commits.length;
       this.getFeedback();
-      for (const commit in this.commits) {
-        if (commit) {
-          this.commits[commit].time = this.getUTCAdjustTime(this.commits[commit].time);
+      if (this.commits) {
+        for (const commit in this.commits) {
+          if (commit) {
+            this.commits[commit].time = this.getUTCAdjustTime(this.commits[commit].time);
+          }
         }
+
+        this.commits.reverse();
+
       }
       if (this.assignment.type === 'WEB' || this.assignment.type === 'ANDROID') {
         this.getScreenshotUrls();
@@ -90,7 +85,7 @@ export class AssignmentChoosedComponent implements OnInit {
   getFeedback() {
     this.assignmentService.getFeedback(this.assignmentName, this.username, this.commits.length.toString()).subscribe(
       response => {
-        this.feedback = response.message;
+        this.feedbacks = response;
       },
       error => {
         console.log(error);
@@ -101,9 +96,11 @@ export class AssignmentChoosedComponent implements OnInit {
   updateFeedback(commitNumber: string) {
     this.assignmentService.getFeedback(this.assignmentName, this.username, commitNumber).subscribe(
       response => {
-        this.feedback = response.message;
+        this.feedbacks = response;
         this.selectedCommitNumber = commitNumber;
-        this.getScreenshotUrls();
+        if (this.assignment.type === 'WEB' || this.assignment.type === 'ANDROID') {
+          this.getScreenshotUrls();
+        }
       },
       error => {
         console.log(error);

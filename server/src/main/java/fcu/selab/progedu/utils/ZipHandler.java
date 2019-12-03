@@ -106,19 +106,15 @@ public class ZipHandler {
    */
   public void modifyPomXml(String filePath, String projectName) {
     try {
-      System.out.println("modify filePath : " + filePath);
-      System.out.println("projectName : " + projectName);
       DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
       DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
       Document doc = docBuilder.parse(filePath);
 
       Node ndId = doc.getElementsByTagName("artifactId").item(0);
       ndId.setTextContent(projectName);
-      System.out.println("doc : " + ndId.getTextContent());
 
       Node ndName = doc.getElementsByTagName("name").item(0);
       ndName.setTextContent(projectName);
-      System.out.println("doc : " + doc.getElementsByTagName("name").item(0));
 
       // write the content into xml file
       TransformerFactory transformerFactory = TransformerFactory.newInstance();
@@ -145,7 +141,6 @@ public class ZipHandler {
       // create ZipOutputStream to write to the zip file
 
       for (String filePath : filesListInDir) {
-        System.out.println("Zipping " + filePath);
         // for ZipEntry we need to keep only relative file path, so we used
         // substring on absolute path
         ZipEntry ze = new ZipEntry(
@@ -161,7 +156,6 @@ public class ZipHandler {
           zos.closeEntry();
         }
       }
-      System.out.println("Checksum : " + cos.getChecksum().getValue());
       setChecksum(cos.getChecksum().getValue());
     } catch (IOException e) {
       e.printStackTrace();
@@ -206,8 +200,6 @@ public class ZipHandler {
     File testsDir = new File(targetDirectory);
     if (!testsDir.exists()) {
       testsDir.mkdir();
-    } else {
-      System.out.println(targetDirectory);
     }
     try {
       ZipFile zipFileToTests = new ZipFile(sourceFilePath);
