@@ -27,16 +27,9 @@ public class FeedBack {
    * @param symptom type occur symptom
    * @param suggest type giving suggest
    */
-  public  FeedBack(StatusEnum status, String line, String message, String symptom, String suggest) {
+  public FeedBack(StatusEnum status, String line, String message, String symptom, String suggest) {
     this.status = status.getType();
     this.line = line;
-    this.message = message;
-    this.symptom = symptom;
-    this.suggest = suggest;
-  }
-  public  FeedBack(StatusEnum status,String line, String fileName, String message, String symptom, String suggest) {
-    this.status = status.getType();
-    this.fileName = fileName;
     this.message = message;
     this.symptom = symptom;
     this.suggest = suggest;
@@ -48,7 +41,7 @@ public class FeedBack {
    * @param status type StatusEnum
    * @param message type occur message
    */
-  public  FeedBack(StatusEnum status, String message) {
+  public FeedBack(StatusEnum status, String message) {
     this.status = status.getType();
     this.line = emptyString;
     this.message = message;

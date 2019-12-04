@@ -5,6 +5,7 @@ import fcu.selab.progedu.data.FeedBack;
 import java.util.ArrayList;
 
 public class AndroidCheckstyleFailure implements Status {
+
   @Override
   public String extractFailureMsg(String consoleText) {
     String feedback;
@@ -18,19 +19,20 @@ public class AndroidCheckstyleFailure implements Status {
     feedback = feedback.replaceAll("/var/jenkins_home/workspace/", "");
     return feedback.replaceAll("/var/jenkins_home/workspace/", "").trim();
   }
+
   @Override
   public ArrayList<FeedBack> formatExamineMsg(String consoleText) {
-    try{
+    try {
       ArrayList<FeedBack> feedbacklist = new ArrayList<>();
       int endIndex = consoleText.length();
-      while(consoleText.contains("[ERROR]")){
+      while (consoleText.contains("[ERROR]")) {
         int error = consoleText.indexOf("[ERROR]") + "[ERROR]".length() ;
         int nextrow = consoleText.indexOf("\n");
         int space = consoleText.indexOf(" ", error + 1);
         // Find the last left bracket for Symptom
         int lastLeftBracket = consoleText.indexOf("[", space);
-        while(consoleText.indexOf("[", lastLeftBracket + 1) > 0
-                && consoleText.indexOf("[", lastLeftBracket + 1) < nextrow){
+        while (consoleText.indexOf("[", lastLeftBracket + 1) > 0
+                && consoleText.indexOf("[", lastLeftBracket + 1) < nextrow) {
           lastLeftBracket = consoleText.indexOf("[", lastLeftBracket + 1);
         }
         feedbacklist.add(new FeedBack(
@@ -44,7 +46,7 @@ public class AndroidCheckstyleFailure implements Status {
         endIndex = endIndex - nextrow - 1;
       }
       return feedbacklist;
-    }catch (Exception e){
+    } catch (Exception e) {
       ArrayList<FeedBack> feedbacklist = new ArrayList<>();
       feedbacklist.add(
               new FeedBack(StatusEnum.CHECKSTYLE_FAILURE, "",

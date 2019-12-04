@@ -157,7 +157,7 @@ public class AndroidAssignment extends AssignmentType {
       } else if (statusService.isAndroidUnitTestFailure(console)) {
         status = StatusEnum.UNIT_TEST_FAILURE;
       } else if (statusService.isAndroidUiTestFailure(console)) {
-        status = StatusEnum.UNIT_TEST_FAILURE;
+        status = StatusEnum.UI_TEST_FAILURE;
       } else {
         status = StatusEnum.BUILD_SUCCESS;
       }

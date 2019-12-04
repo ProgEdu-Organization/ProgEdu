@@ -7,6 +7,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class AndroidCompileFailure implements Status {
+
   @Override
   public String extractFailureMsg(String consoleText) {
     String feedback;
@@ -23,21 +24,20 @@ public class AndroidCompileFailure implements Status {
 
   @Override
   public ArrayList<FeedBack> formatExamineMsg(String consoleText) {
-    try{
+    try {
       ArrayList<FeedBack> feedbacklist = new ArrayList<>();
-      Pattern p = Pattern.compile("[0-9]+ error");
-      Matcher m = p.matcher(consoleText);
-      String endStr="";
-      if(m.find()){
-        endStr = m.group(0);
+      Pattern pattern = Pattern.compile("[0-9]+ error");
+      Matcher matcher = pattern.matcher(consoleText);
+      String endStr = "";
+      if (matcher.find()) {
+        endStr = matcher.group(0);
       }
       int endIndex = consoleText.indexOf(endStr);
 
-      while(consoleText.contains(".java")){
+      while (consoleText.contains(".java")) {
         int error = consoleText.indexOf(": error:");
         int symbol = consoleText.indexOf("symbol:");
         int nextrow = consoleText.indexOf("\n", symbol);
-        System.out.print(error + " " + nextrow+ " " + symbol );
         feedbacklist.add(new FeedBack(
                 StatusEnum.CHECKSTYLE_FAILURE,
                 consoleText.substring(0, error).trim(),
