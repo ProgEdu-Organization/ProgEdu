@@ -11,7 +11,7 @@ public class AndroidCompileFailure implements Status {
   @Override
   public String extractFailureMsg(String consoleText) {
     String feedback;
-    String feedbackStart = "> Task :app:compileDebugJavaWithJavac FAILED";
+    String feedbackStart = "compileDebugJavaWithJavac FAILED";
     String feedbackEnd = "FAILURE: Build failed with an exception.";
     feedback = consoleText.substring(consoleText.indexOf(feedbackStart) + feedbackStart.length(),
             consoleText.indexOf(feedbackEnd));
@@ -39,7 +39,7 @@ public class AndroidCompileFailure implements Status {
         int symbol = consoleText.indexOf("symbol:");
         int nextrow = consoleText.indexOf("\n", symbol);
         feedbacklist.add(new FeedBack(
-                StatusEnum.CHECKSTYLE_FAILURE,
+                StatusEnum.COMPILE_FAILURE,
                 consoleText.substring(0, error).trim(),
                 consoleText.substring(error + ": error:".length(), symbol).trim().replace("^",""),
                 consoleText.substring(symbol + "symbol:".length(), nextrow).trim(),

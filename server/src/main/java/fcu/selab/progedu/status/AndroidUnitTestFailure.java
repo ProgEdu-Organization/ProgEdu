@@ -8,7 +8,7 @@ public class AndroidUnitTestFailure implements Status {
   @Override
   public String extractFailureMsg(String consoleText) {
     String feedback;
-    String feedbackStart = "> Task :app:testDebugUnitTest FAILED";
+    String feedbackStart = "testDebugUnitTest FAILED";
     String feedbackEnd = "FAILURE: Build failed with an exception.";
     feedback = consoleText.substring(consoleText.indexOf(feedbackStart) + feedbackStart.length(),
             consoleText.indexOf(feedbackEnd));
@@ -26,7 +26,7 @@ public class AndroidUnitTestFailure implements Status {
         int nextrow = consoleText.indexOf("\n");
 
         feedbacklist.add(new FeedBack(
-                StatusEnum.CHECKSTYLE_FAILURE,
+                StatusEnum.UNIT_TEST_FAILURE,
                 consoleText.substring(0, error).trim(),
                 consoleText.substring(error + ">".length(), failed).trim(),
                 consoleText.substring(failed, nextrow).trim(),

@@ -14,7 +14,7 @@ public class AndroidStatusFactory implements StatusFactory {
       case UNIT_TEST_FAILURE: {
         return new AndroidUnitTestFailure();
       }
-      case UI_TEST_FAILURE:{
+      case UI_TEST_FAILURE: {
         return new AndroidUiTestFailure();
       }
       case CHECKSTYLE_FAILURE: {
