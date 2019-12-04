@@ -13,21 +13,16 @@ public class AndroidUiTestFailure implements Status {
   public String extractFailureMsg(String consoleText) {
     String feedback;
     String feedbackStart = "connectedDebugAndroidTest";
-    String feedbackEnd = "connectedDebugAndroidTest FAILED";
+    String feedbackEnd = "FAILURE: Build failed with an exception.";
     feedback = consoleText.substring(consoleText.indexOf(feedbackStart),
             consoleText.indexOf(feedbackEnd) + feedbackEnd.length());
-    int countMatches = StringUtils.countMatches(feedback, feedbackStart);
-
-    for (int i = 0; i < countMatches - 1; i++) {
-      if (i == (countMatches - 2)) {
-        feedback = feedback.substring(feedback.indexOf(feedbackStart) + feedbackStart.length(),
-                feedback.indexOf(feedbackEnd));
-      } else {
-        feedback = feedback.substring(feedback.indexOf(feedbackStart) + feedbackStart.length(),
-                feedback.indexOf(feedbackEnd) + feedbackEnd.length());
-      }
-    }
+    /* UI Test Failure Will occur to differen place */
     return feedback.trim();
+  }
+
+  public static void main(String []args) {
+    CommitRecordService c = new CommitRecordService();
+    System.out.print(c.getFeedback("M0806615", "HW1", 15).getEntity().toString());
   }
 
   @Override
@@ -35,16 +30,16 @@ public class AndroidUiTestFailure implements Status {
     try {
       ArrayList<FeedBack> feedbacklist = new ArrayList<>();
       int endIndex = consoleText.length();
-      while (consoleText.contains("FAILED")) {
-        int error = consoleText.indexOf(">");
-        int failed = consoleText.indexOf("FAILED");
-        int nextrow = consoleText.indexOf("\n", consoleText.indexOf(".java"));
+      String keyWord = "[31mFAILED \u001B[0m";
+      while (consoleText.contains(keyWord)) {
+        int failure = consoleText.indexOf(keyWord);
+        int nextrow = consoleText.indexOf("\n", failure + keyWord.length() +1);
 
         feedbacklist.add(new FeedBack(
                 StatusEnum.UNIT_TEST_FAILURE,
-                consoleText.substring(0, error).trim(),
-                consoleText.substring(error + ">".length(), failed).trim(),
-                consoleText.substring(failed, nextrow).trim(),
+               "",
+                consoleText.substring(failure + keyWord.length() , nextrow).trim(),
+                "",
                 "https://github.com/checkstyle/checkstyle"
         ));
         consoleText = consoleText.substring(nextrow + 1, endIndex);
