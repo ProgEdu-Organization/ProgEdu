@@ -20,11 +20,6 @@ public class AndroidUiTestFailure implements Status {
     return feedback.trim();
   }
 
-  public static void main(String []args) {
-    CommitRecordService c = new CommitRecordService();
-    System.out.print(c.getFeedback("M0806615", "HW1", 15).getEntity().toString());
-  }
-
   @Override
   public ArrayList<FeedBack> formatExamineMsg(String consoleText) {
     try {
@@ -33,8 +28,7 @@ public class AndroidUiTestFailure implements Status {
       String keyWord = "[31mFAILED \u001B[0m";
       while (consoleText.contains(keyWord)) {
         int failure = consoleText.indexOf(keyWord);
-        int nextrow = consoleText.indexOf("\n", failure + keyWord.length() +1);
-
+        int nextrow = consoleText.indexOf("\n", failure + keyWord.length() + 1);
         feedbacklist.add(new FeedBack(
                 StatusEnum.UNIT_TEST_FAILURE,
                "",
