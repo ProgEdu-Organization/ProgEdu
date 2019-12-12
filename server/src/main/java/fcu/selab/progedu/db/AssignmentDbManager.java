@@ -122,7 +122,6 @@ public class AssignmentDbManager {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
     }
-    System.out.println(assignmentName);
     return assignmentName;
   }
 

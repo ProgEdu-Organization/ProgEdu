@@ -59,8 +59,7 @@ public class GroupService {
       @FormParam("member") List<String> members,
       @FormParam("projectType") String projectType,
       @FormParam("projectName") String projectName) {
-    System.out.println(name);
-    System.out.println(members.toString());
+
     GitlabGroup gitlabGroup = gitlabService.createGroup(name);
     int groupGitLabId = gitlabGroup.getId();
     members.remove(leader);

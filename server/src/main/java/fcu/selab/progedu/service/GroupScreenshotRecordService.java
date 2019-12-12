@@ -62,7 +62,6 @@ public class GroupScreenshotRecordService {
     CommitRecord commitResult = pdb.getCommitResult(pgid);
     int lastCommitNum = commitResult.getNumber();
     int pcrid = commitResult.getId();
-    System.out.println("pcrid: " + pcrid);
     try {
       for (String url : urls) {
         String screenShotUrl =
@@ -106,15 +105,12 @@ public class GroupScreenshotRecordService {
       @QueryParam("commitNumber") int number) {
     JSONObject ob = new JSONObject();
     int pgid = pgdb.getId(groupName, projectName);
-    System.out.println(pgid);
     int pcrid = pdb.getCommitRecordId(pgid, number);
-    System.out.println(pcrid);
     try {
       List<String> urls = db.getScreenshotUrl(pcrid);
       for (String url : urls) {
         urls.set(urls.indexOf(url), jenkinsData.getJenkinsHostUrl() + url);
       }
-      System.out.println(urls);
       ob.put("urls", urls);
       return Response.ok().entity(ob.toString()).build();
     } catch (Exception e) {

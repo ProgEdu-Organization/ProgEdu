@@ -3,6 +3,7 @@ package fcu.selab.progedu.service;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -18,7 +19,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import fcu.selab.progedu.db.UserDbManager;
-import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -227,7 +227,6 @@ public class GroupCommitRecordService {
       @PathParam("projectName") String projectName,
       @PathParam("num") int number) {
     JenkinsService js = JenkinsService.getInstance();
-    JSONObject ob = new JSONObject();
     ProjectTypeEnum projectTypeEnum = gpdb.getProjectType(projectName);
     GroupProjectType projectType =
         GroupProjectFactory.getGroupProjectType(projectTypeEnum.getTypeName());
@@ -237,8 +236,9 @@ public class GroupCommitRecordService {
 
     StatusEnum statusType = gpdb.getCommitRecordStatus(pgid, number);
     String message = projectType.getStatus(statusType.getType()).extractFailureMsg(console);
-    ob.put("message", message);
+    ArrayList feedBacks = projectType.getStatus(statusType.getType()).formatExamineMsg(message);
+    String feedBackMessage = projectType.getStatus(statusType.getType()).tojsonArray(feedBacks);
 
-    return Response.ok().entity(ob.toString()).build();
+    return Response.ok().entity(feedBackMessage).build();
   }
 }

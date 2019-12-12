@@ -37,7 +37,6 @@ public class Linux {
         if (line == null) {
           break;
         }
-        System.out.println(line);
       }
     } catch (IOException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));

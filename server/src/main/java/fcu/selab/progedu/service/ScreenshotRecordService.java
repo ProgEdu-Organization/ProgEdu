@@ -57,9 +57,7 @@ public class ScreenshotRecordService {
   @Produces(MediaType.APPLICATION_JSON)
   public Response updateScreenshotPng(@FormParam("username") String username,
       @FormParam("assignmentName") String assignmentName, @FormParam("url") List<String> urls) {
-    System.out.println("username: " + username + "jobName: " + assignmentName);
     JSONObject ob = new JSONObject();
-    System.out.println("Png file name " + urls);
     int auid = auDb.getAuid(assignmentDb.getAssignmentIdByName(assignmentName),
         userDb.getUserIdByUsername(username));
     int lastCommitNum = commitRecordDb.getCommitCount(auid);
@@ -99,15 +97,12 @@ public class ScreenshotRecordService {
     JSONObject ob = new JSONObject();
     int auid = auDb.getAuid(assignmentDb.getAssignmentIdByName(assignmentName),
             userDb.getUserIdByUsername(username));
-    System.out.println(auid);
     int crId = commitRecordDb.getCommitRecordId(auid, number);
-    System.out.println(crId);
     try {
       ArrayList<String> urls = db.getScreenshotUrl(crId);
       for (String url: urls) {
         urls.set(urls.indexOf(url),jenkinsData.getJenkinsHostUrl() + url);
       }
-      System.out.println(urls);
       ob.put("urls", urls);
       return Response.ok().entity(ob.toString()).build();
     } catch (Exception e) {
