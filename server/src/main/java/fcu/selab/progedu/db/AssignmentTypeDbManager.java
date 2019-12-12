@@ -5,7 +5,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import fcu.selab.progedu.project.ProjectTypeEnum;
+import fcu.selab.progedu.utils.ExceptionUtil;
 
 public class AssignmentTypeDbManager {
 
@@ -16,6 +20,8 @@ public class AssignmentTypeDbManager {
   }
 
   private IDatabase database = new MySqlDatabase();
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(AssignmentTypeDbManager.class);
 
   private AssignmentTypeDbManager() {
 
@@ -40,7 +46,8 @@ public class AssignmentTypeDbManager {
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return typeId;
   }
@@ -64,7 +71,8 @@ public class AssignmentTypeDbManager {
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     ProjectTypeEnum typeEnum = ProjectTypeEnum.getProjectTypeEnum(typeName);
     return typeEnum;

@@ -30,6 +30,7 @@ COPY tomcat-config/tomcat-users.xml /usr/local/tomcat/conf/tomcat-users.xml
 
 ARG DEBUG=false
 ENV DEBUG=$DEBUG
+ENV LOG_LEVEL=$LOG_LEVEL
 
 RUN echo $DEBUG
 

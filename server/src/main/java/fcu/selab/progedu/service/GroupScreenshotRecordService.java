@@ -15,6 +15,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fcu.selab.progedu.config.JenkinsConfig;
 import fcu.selab.progedu.conn.JenkinsService;
@@ -23,6 +25,7 @@ import fcu.selab.progedu.db.ProjectScreenshotRecordDbManager;
 import fcu.selab.progedu.db.service.GroupDbService;
 import fcu.selab.progedu.db.service.ProjectDbService;
 import fcu.selab.progedu.db.service.ProjectGroupDbService;
+import fcu.selab.progedu.utils.ExceptionUtil;
 
 @Path("groups/commits/screenshot/")
 public class GroupScreenshotRecordService {
@@ -32,6 +35,7 @@ public class GroupScreenshotRecordService {
   GroupDbService gdb = GroupDbService.getInstance();
   ProjectGroupDbService pgdb = ProjectGroupDbService.getInstance();
   ProjectDbService pdb = ProjectDbService.getInstance();
+  private static final Logger LOGGER = LoggerFactory.getLogger(GroupScreenshotRecordService.class);
 
   public GroupScreenshotRecordService() {
     jenkinsData = JenkinsConfig.getInstance();
@@ -79,7 +83,8 @@ public class GroupScreenshotRecordService {
       return Response.ok().entity(ob.toString()).build();
     } catch (Exception e) {
       System.out.print("update URL to DB error: ");
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return Response.serverError().status(Status.INTERNAL_SERVER_ERROR).build();
   }
@@ -109,7 +114,8 @@ public class GroupScreenshotRecordService {
       ob.put("urls", urls);
       return Response.ok().entity(ob.toString()).build();
     } catch (Exception e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return Response.serverError().status(Status.INTERNAL_SERVER_ERROR).build();
   }

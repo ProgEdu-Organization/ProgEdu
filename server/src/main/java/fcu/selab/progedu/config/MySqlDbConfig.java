@@ -4,13 +4,19 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import fcu.selab.progedu.exception.LoadConfigFailureException;
+import fcu.selab.progedu.utils.ExceptionUtil;
 
 public class MySqlDbConfig {
 
   private static final String PROPERTY_FILE = "/config/db_config.properties";
 
   private static MySqlDbConfig instance = new MySqlDbConfig();
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(MySqlDbConfig.class);
 
   public static MySqlDbConfig getInstance() {
     return instance;
@@ -25,7 +31,8 @@ public class MySqlDbConfig {
       props = new Properties();
       props.load(is);
     } catch (IOException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
   }
 
