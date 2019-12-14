@@ -41,6 +41,7 @@ public class MavenUnitTestFailure implements Status {
           feedbacklist.add(new FeedBack(
               StatusEnum.UNIT_TEST_FAILURE,
               "",
+              "",
               consoleText.substring(nextcolon + 1, nextrow).trim(),
               "",
               ""
@@ -53,7 +54,7 @@ public class MavenUnitTestFailure implements Status {
     } catch (Exception e) {
       ArrayList<FeedBack> feedbacklist = new ArrayList<>();
       feedbacklist.add(
-          new FeedBack(StatusEnum.UNIT_TEST_FAILURE, "",
+          new FeedBack(StatusEnum.UNIT_TEST_FAILURE, "", "",
               "UnitTest ArrayList error", "", ""));
       return feedbacklist;
     }

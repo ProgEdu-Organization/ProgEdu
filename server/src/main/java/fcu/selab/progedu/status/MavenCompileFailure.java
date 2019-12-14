@@ -34,9 +34,14 @@ public class MavenCompileFailure implements Status {
         } else {
           int nextbrackets = consoleText.indexOf("]", 7);
           int lastslash = consoleText.lastIndexOf("/");
+          String errorfileName = consoleText.substring(lastslash + 1, nextbrackets + 1).trim();
           feedbacklist.add(new FeedBack(
               StatusEnum.COMPILE_FAILURE,
-              consoleText.substring(lastslash + 1, nextbrackets + 1).trim(),
+              errorfileName.substring(0, errorfileName.indexOf(":")).trim(),
+              errorfileName
+                  .substring(errorfileName.indexOf(":") + 1, errorfileName.length())
+                  .replace("[", "").replace("]", "")
+                  .replace(",", ":"),
               consoleText.substring(nextbrackets + 1, nextrow).trim(),
               "",
               ""
@@ -49,7 +54,7 @@ public class MavenCompileFailure implements Status {
     } catch (Exception e) {
       ArrayList<FeedBack> feedbacklist = new ArrayList<>();
       feedbacklist.add(
-          new FeedBack(StatusEnum.COMPILE_FAILURE, "",
+          new FeedBack(StatusEnum.COMPILE_FAILURE, "", "",
               "CompileFailure ArrayList error", "", ""));
       return feedbacklist;
     }
