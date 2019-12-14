@@ -61,11 +61,11 @@ public class FeedBack {
     this.status = statusEnum.getType();
   }
 
-  public String getfileName() {
+  public String getFileName() {
     return this.fileName;
   }
 
-  public void setfileName(String fileName) {
+  public void setFileName(String fileName) {
     this.fileName = fileName;
   }
 

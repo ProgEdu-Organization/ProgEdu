@@ -29,16 +29,20 @@ public class AndroidCheckstyleFailure implements Status {
         int error = consoleText.indexOf("[ERROR]") + "[ERROR]".length() ;
         int nextRow = consoleText.indexOf("\n");
         int space = consoleText.indexOf(" ", error + 1);
+        if (nextRow == -1 || space == -1) {
+          break;
+        }
         // Find the last left bracket for Symptom
         int lastLeftBracket = consoleText.indexOf("[", space);
         while (consoleText.indexOf("[", lastLeftBracket + 1) > 0
                 && consoleText.indexOf("[", lastLeftBracket + 1) < nextRow) {
           lastLeftBracket = consoleText.indexOf("[", lastLeftBracket + 1);
         }
+        String fileNameAndLine = consoleText.substring(error + 1, space - 1).trim();
         feedbackList.add(new FeedBack(
                 StatusEnum.CHECKSTYLE_FAILURE,
-                "",
-                consoleText.substring(error + 1, space - 1).trim(),
+                fileNameAndLine.substring(0, fileNameAndLine.indexOf(":")).trim(),
+                fileNameAndLine.substring(fileNameAndLine.indexOf(":") + 1, fileNameAndLine.length()).trim(),
                 consoleText.substring(space + 1, lastLeftBracket).trim(),
                 consoleText.substring(lastLeftBracket, nextRow).trim(),
                 "https://github.com/checkstyle/checkstyle"
@@ -51,7 +55,7 @@ public class AndroidCheckstyleFailure implements Status {
       ArrayList<FeedBack> feedbackList = new ArrayList<>();
       feedbackList.add(
               new FeedBack(StatusEnum.CHECKSTYLE_FAILURE, "","",
-                      consoleText, "", ""));
+                      "Coding Style ArrayList error", "", ""));
       return feedbackList;
     }
   }

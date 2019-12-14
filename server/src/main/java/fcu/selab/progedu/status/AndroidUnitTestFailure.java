@@ -18,31 +18,31 @@ public class AndroidUnitTestFailure implements Status {
   @Override
   public ArrayList<FeedBack> formatExamineMsg(String consoleText) {
     try {
-      ArrayList<FeedBack> feedbacklist = new ArrayList<>();
+      ArrayList<FeedBack> feedbackList = new ArrayList<>();
       int endIndex = consoleText.length();
       while (consoleText.contains("FAILED")) {
         int error = consoleText.indexOf(">");
         int failed = consoleText.indexOf("FAILED");
-        int nextrow = consoleText.indexOf("\n");
+        int nextRow = consoleText.indexOf("\n");
 
-        feedbacklist.add(new FeedBack(
+        feedbackList.add(new FeedBack(
                 StatusEnum.UNIT_TEST_FAILURE,
-                "",
                 consoleText.substring(0, error).trim(),
+                "",
                 consoleText.substring(error + ">".length(), failed).trim(),
-                consoleText.substring(failed, nextrow).trim(),
+                consoleText.substring(failed, nextRow).trim(),
                 ""
         ));
-        consoleText = consoleText.substring(nextrow + 1, endIndex);
-        endIndex = endIndex - nextrow - 1;
+        consoleText = consoleText.substring(nextRow + 1, endIndex);
+        endIndex = endIndex - nextRow - 1;
       }
-      return feedbacklist;
+      return feedbackList;
     } catch (Exception e) {
-      ArrayList<FeedBack> feedbacklist = new ArrayList<>();
-      feedbacklist.add(
+      ArrayList<FeedBack> feedbackList = new ArrayList<>();
+      feedbackList.add(
               new FeedBack(StatusEnum.UNIT_TEST_FAILURE, "","",
                       consoleText, "", ""));
-      return feedbacklist;
+      return feedbackList;
     }
   }
 }
