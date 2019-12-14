@@ -31,11 +31,15 @@ public class WebEslintFailure implements Status {
     try {
       consoleText = consoleText.substring(0, consoleText.indexOf("✖"));
       int endIndex = consoleText.length();
+      String fileName = "";
       ArrayList<FeedBack> feedbacklist = new ArrayList<>();
       while (consoleText.contains("error")) {
         int errorIndex = consoleText.indexOf("error");
         int nextrowIndex = consoleText.indexOf("\n");
         if (errorIndex > nextrowIndex) {
+          if (consoleText.substring(0, nextrowIndex).contains("/")) {
+            fileName = consoleText.substring(0, nextrowIndex).trim();
+          }
           consoleText = consoleText.substring(nextrowIndex + 1, endIndex);
           endIndex = endIndex - nextrowIndex - 1;
         } else {
@@ -44,6 +48,7 @@ public class WebEslintFailure implements Status {
           feedbacklist.add(
               new FeedBack(
                   StatusEnum.WEB_ESLINT_FAILURE,
+                  fileName,
                   consoleText.substring(0, errorIndex).trim(),
                   errorString.substring(0, errorStyleStart).trim(),
                   errorString.substring(errorStyleStart, errorString.length()).trim(),
@@ -56,7 +61,7 @@ public class WebEslintFailure implements Status {
     } catch (Exception e) {
       ArrayList<FeedBack> feedbacklist = new ArrayList<>();
       feedbacklist.add(
-          new FeedBack(StatusEnum.WEB_ESLINT_FAILURE, "",
+          new FeedBack(StatusEnum.WEB_ESLINT_FAILURE, "", "",
               "Eslint ArrayList error", "", ""));
       return feedbacklist;
     }
