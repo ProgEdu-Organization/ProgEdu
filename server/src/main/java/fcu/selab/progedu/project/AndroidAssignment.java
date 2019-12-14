@@ -124,7 +124,7 @@ public class AndroidAssignment extends AssignmentType {
     ZipFileInfo zipFileInfo = null;
 
     try {
-      FileUtils.deleteDirectory(new File(testDirectory + "/app/src/main/java"));
+      FileUtils.deleteDirectory(new File(testDirectory + "/app/src/main"));
     } catch (IOException e) {
       e.printStackTrace();
     }
