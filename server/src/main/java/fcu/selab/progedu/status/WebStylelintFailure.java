@@ -30,20 +30,24 @@ public class WebStylelintFailure implements Status {
     try {
       int endIndex = consoleText.length();
       String fileName = "";
-      ArrayList<FeedBack> feedbacklist = new ArrayList<>();
+      ArrayList<FeedBack> feedbackList = new ArrayList<>();
       while (consoleText.contains("✖")) {
+        System.out.println("Start");
         int crossIndex = consoleText.indexOf("✖");
-        int nextrowIndex = consoleText.indexOf("\n");
-        if (crossIndex > nextrowIndex) {
-          if (consoleText.substring(0, nextrowIndex).contains("/")) {
-            fileName = consoleText.substring(0, nextrowIndex).trim();
+        int nextRowIndex = consoleText.indexOf("\n");
+        if (nextRowIndex == -1) {
+          break;
+        }
+        if (crossIndex > nextRowIndex) {
+          if (consoleText.substring(0, nextRowIndex).contains("/")) {
+            fileName = consoleText.substring(0, nextRowIndex).trim();
           }
-          consoleText = consoleText.substring(nextrowIndex + 1, endIndex);
-          endIndex = endIndex - nextrowIndex - 1;
+          consoleText = consoleText.substring(nextRowIndex + 1, endIndex);
+          endIndex = endIndex - nextRowIndex - 1;
         } else {
-          String errorString = consoleText.substring(crossIndex + 1, nextrowIndex).trim();
+          String errorString = consoleText.substring(crossIndex + 1, nextRowIndex).trim();
           int errorStyleStart = errorString.indexOf("  ");
-          feedbacklist.add(
+          feedbackList.add(
               new FeedBack(
                   StatusEnum.WEB_STYLELINT_FAILURE,
                   fileName,
@@ -51,11 +55,11 @@ public class WebStylelintFailure implements Status {
                   errorString.substring(0, errorStyleStart + 1).trim(),
                   errorString.substring(errorStyleStart, errorString.length()).trim(),
                   "https://codertw.com/%E5%89%8D%E7%AB%AF%E9%96%8B%E7%99%BC/183114/\n"));
-          consoleText = consoleText.substring(nextrowIndex + 1, endIndex);
-          endIndex = endIndex - nextrowIndex - 1;
+          consoleText = consoleText.substring(nextRowIndex + 1, endIndex);
+          endIndex = endIndex - nextRowIndex - 1;
         }
       }
-      return feedbacklist;
+      return feedbackList;
     } catch (Exception e) {
       ArrayList<FeedBack> feedbacklist = new ArrayList<>();
       feedbacklist.add(

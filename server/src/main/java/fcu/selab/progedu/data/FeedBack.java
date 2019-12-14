@@ -6,7 +6,7 @@ public class FeedBack {
 
   private String status;
 
-  private String filename;
+  private String fileName;
 
   private String line;
 
@@ -21,17 +21,17 @@ public class FeedBack {
   /**
    * Create new FeedBack class
    *
-   * @param filename type occur filename
+   * @param fileName type occur fileName
    * @param status type StatusEnum
    * @param line type occur line
    * @param message type occur message
    * @param symptom type occur symptom
    * @param suggest type giving suggest
    */
-  public  FeedBack(StatusEnum status, String filename, String line, String message,
+  public  FeedBack(StatusEnum status, String fileName, String line, String message,
                    String symptom, String suggest) {
     this.status = status.getType();
-    this.filename = filename;
+    this.fileName = fileName;
     this.line = line;
     this.message = message;
     this.symptom = symptom;
@@ -46,7 +46,7 @@ public class FeedBack {
    */
   public  FeedBack(StatusEnum status, String message) {
     this.status = status.getType();
-    this.filename = emptyString;
+    this.fileName = emptyString;
     this.line = emptyString;
     this.message = message;
     this.symptom = emptyString;
@@ -61,12 +61,12 @@ public class FeedBack {
     this.status = statusEnum.getType();
   }
 
-  public String getFilename() {
-    return this.filename;
+  public String getfileName() {
+    return this.fileName;
   }
 
-  public void setFilename(String filename) {
-    this.filename = filename;
+  public void setfileName(String fileName) {
+    this.fileName = fileName;
   }
 
   public String getLine() {

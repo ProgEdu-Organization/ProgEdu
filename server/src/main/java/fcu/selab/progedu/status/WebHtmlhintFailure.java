@@ -32,16 +32,19 @@ public class WebHtmlhintFailure implements Status {
       consoleText = consoleText.substring(0, consoleText.indexOf("Scanned"));
       int endIndex = consoleText.length();
       String fileName = "";
-      ArrayList<FeedBack> feedbacklist = new ArrayList<>();
+      ArrayList<FeedBack> feedbackList = new ArrayList<>();
       while (consoleText.contains("L")) {
         int lineIndex = consoleText.indexOf("L");
-        int nextrowIndex = consoleText.indexOf("\n");
-        if (lineIndex > nextrowIndex) {
-          if (consoleText.substring(0, nextrowIndex).contains("/")) {
-            fileName = consoleText.substring(0, nextrowIndex).trim();
+        int nextRowIndex = consoleText.indexOf("\n");
+        if (nextRowIndex == -1) {
+          break;
+        }
+        if (lineIndex > nextRowIndex) {
+          if (consoleText.substring(0, nextRowIndex).contains("/")) {
+            fileName = consoleText.substring(0, nextRowIndex).trim();
           }
-          consoleText = consoleText.substring(nextrowIndex + 1, endIndex);
-          endIndex = endIndex - nextrowIndex - 1;
+          consoleText = consoleText.substring(nextRowIndex + 1, endIndex);
+          endIndex = endIndex - nextRowIndex - 1;
         } else {
           int sparateIndex = consoleText.indexOf("|");
           int arrowIndex = consoleText.indexOf("^");
@@ -49,7 +52,7 @@ public class WebHtmlhintFailure implements Status {
           int dotIndex = consoleText.indexOf(".", arrowIndex);
           String errorStyle = consoleText.substring(dotIndex + 1, nextlineIndex)
               .replace("(", "").replace(")", "").trim();
-          feedbacklist.add(
+          feedbackList.add(
               new FeedBack(
                   StatusEnum.WEB_HTMLHINT_FAILURE,
                   fileName,
@@ -61,7 +64,7 @@ public class WebHtmlhintFailure implements Status {
           endIndex = endIndex - nextlineIndex - 1;
         }
       }
-      return feedbacklist;
+      return feedbackList;
     } catch (Exception e) {
       ArrayList<FeedBack> feedbacklist = new ArrayList<>();
       feedbacklist.add(
