@@ -70,6 +70,7 @@
       </buildStep>
       <operationList class="empty-list" />
     </hudson.plugins.build__timeout.BuildStepWithTimeout>
+    <io.jenkins.plugins.screenshot.ScreenShotBuilder plugin="AndroidScreenshotPlugin@1.0"/>
     <hudson.plugins.build__timeout.BuildStepWithTimeout plugin="build-timeout@1.19">
       <strategy class="hudson.plugins.build_timeout.impl.AbsoluteTimeOutStrategy">
         <timeoutMinutes>3</timeoutMinutes>

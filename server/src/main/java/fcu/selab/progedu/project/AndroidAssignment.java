@@ -110,7 +110,6 @@ public class AndroidAssignment extends AssignmentType {
   @Override
   public void createTemplate(String uploadDirectory) {
     try {
-      System.out.println("uploadDirectory: " + uploadDirectory);
       FileUtils.deleteDirectory(new File(uploadDirectory + "/app/src/androidTest/java"));
       FileUtils.deleteDirectory(new File(uploadDirectory + "/app/src/test/java"));
     } catch (IOException e) {

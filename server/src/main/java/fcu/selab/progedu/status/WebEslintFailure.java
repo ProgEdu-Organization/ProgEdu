@@ -31,34 +31,42 @@ public class WebEslintFailure implements Status {
     try {
       consoleText = consoleText.substring(0, consoleText.indexOf("✖"));
       int endIndex = consoleText.length();
-      ArrayList<FeedBack> feedbacklist = new ArrayList<>();
+      String fileName = "";
+      ArrayList<FeedBack> feedbackList = new ArrayList<>();
       while (consoleText.contains("error")) {
         int errorIndex = consoleText.indexOf("error");
-        int nextrowIndex = consoleText.indexOf("\n");
-        if (errorIndex > nextrowIndex) {
-          consoleText = consoleText.substring(nextrowIndex + 1, endIndex);
-          endIndex = endIndex - nextrowIndex - 1;
+        int nextRowIndex = consoleText.indexOf("\n");
+        if (nextRowIndex == -1) {
+          break;
+        }
+        if (errorIndex > nextRowIndex) {
+          if (consoleText.substring(0, nextRowIndex).contains("/")) {
+            fileName = consoleText.substring(0, nextRowIndex).trim();
+          }
+          consoleText = consoleText.substring(nextRowIndex + 1, endIndex);
+          endIndex = endIndex - nextRowIndex - 1;
         } else {
-          String errorString = consoleText.substring(errorIndex + 6, nextrowIndex).trim();
+          String errorString = consoleText.substring(errorIndex + 6, nextRowIndex).trim();
           int errorStyleStart = errorString.indexOf("  ");
-          feedbacklist.add(
+          feedbackList.add(
               new FeedBack(
                   StatusEnum.WEB_ESLINT_FAILURE,
+                  fileName,
                   consoleText.substring(0, errorIndex).trim(),
                   errorString.substring(0, errorStyleStart).trim(),
                   errorString.substring(errorStyleStart, errorString.length()).trim(),
                   "https://github.com/airbnb/javascript\n"));
-          consoleText = consoleText.substring(nextrowIndex + 1, endIndex);
-          endIndex = endIndex - nextrowIndex - 1;
+          consoleText = consoleText.substring(nextRowIndex + 1, endIndex);
+          endIndex = endIndex - nextRowIndex - 1;
         }
       }
-      return feedbacklist;
+      return feedbackList;
     } catch (Exception e) {
-      ArrayList<FeedBack> feedbacklist = new ArrayList<>();
-      feedbacklist.add(
-          new FeedBack(StatusEnum.WEB_ESLINT_FAILURE, "",
+      ArrayList<FeedBack> feedbackList = new ArrayList<>();
+      feedbackList.add(
+          new FeedBack(StatusEnum.WEB_ESLINT_FAILURE, "", "",
               "Eslint ArrayList error", "", ""));
-      return feedbacklist;
+      return feedbackList;
     }
   }
 }

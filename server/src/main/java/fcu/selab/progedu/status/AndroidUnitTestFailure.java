@@ -27,10 +27,11 @@ public class AndroidUnitTestFailure implements Status {
 
         feedbacklist.add(new FeedBack(
                 StatusEnum.UNIT_TEST_FAILURE,
+                "",
                 consoleText.substring(0, error).trim(),
                 consoleText.substring(error + ">".length(), failed).trim(),
                 consoleText.substring(failed, nextrow).trim(),
-                "https://github.com/checkstyle/checkstyle"
+                ""
         ));
         consoleText = consoleText.substring(nextrow + 1, endIndex);
         endIndex = endIndex - nextrow - 1;
@@ -39,7 +40,7 @@ public class AndroidUnitTestFailure implements Status {
     } catch (Exception e) {
       ArrayList<FeedBack> feedbacklist = new ArrayList<>();
       feedbacklist.add(
-              new FeedBack(StatusEnum.UNIT_TEST_FAILURE, "",
+              new FeedBack(StatusEnum.UNIT_TEST_FAILURE, "","",
                       consoleText, "", ""));
       return feedbacklist;
     }

@@ -32,9 +32,10 @@ public class AndroidUiTestFailure implements Status {
         feedbacklist.add(new FeedBack(
                 StatusEnum.UNIT_TEST_FAILURE,
                "",
+                "",
                 consoleText.substring(failure + keyWord.length() , nextrow).trim(),
                 "",
-                "https://github.com/checkstyle/checkstyle"
+                ""
         ));
         consoleText = consoleText.substring(nextrow + 1, endIndex);
         endIndex = endIndex - nextrow - 1;
@@ -43,7 +44,7 @@ public class AndroidUiTestFailure implements Status {
     } catch (Exception e) {
       ArrayList<FeedBack> feedbacklist = new ArrayList<>();
       feedbacklist.add(
-              new FeedBack(StatusEnum.UI_TEST_FAILURE, "",
+              new FeedBack(StatusEnum.UI_TEST_FAILURE, "","",
                       consoleText, "", ""));
       return feedbacklist;
     }

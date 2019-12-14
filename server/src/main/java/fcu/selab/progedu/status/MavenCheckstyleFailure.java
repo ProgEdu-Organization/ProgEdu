@@ -44,9 +44,12 @@ public class MavenCheckstyleFailure implements Status {
         } else {
           String errorRow = consoleText.substring(0, nextrow);
           int lastslash = errorRow.lastIndexOf("/");
+          String errorfileName = errorRow.substring(lastslash + 1, nexterror - 2).trim();
           feedbacklist.add(new FeedBack(
               StatusEnum.CHECKSTYLE_FAILURE,
-              errorRow.substring(lastslash + 1, nexterror - 2).trim(),
+              errorfileName.substring(0, errorfileName.indexOf(":")).trim(),
+              errorfileName.substring(
+                  errorfileName.indexOf(":") + 1, errorfileName.length()),
               errorRow.substring(nexterror + 6, nextrow).trim(),
               "",
               ""
@@ -59,7 +62,7 @@ public class MavenCheckstyleFailure implements Status {
     } catch (Exception e) {
       ArrayList<FeedBack> feedbacklist = new ArrayList<>();
       feedbacklist.add(
-          new FeedBack(StatusEnum.CHECKSTYLE_FAILURE, "",
+          new FeedBack(StatusEnum.CHECKSTYLE_FAILURE, "", "",
               "Checkstyle ArrayList error", "", ""));
       return feedbacklist;
     }

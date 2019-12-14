@@ -25,7 +25,7 @@ public class AndroidCompileFailure implements Status {
   @Override
   public ArrayList<FeedBack> formatExamineMsg(String consoleText) {
     try {
-      ArrayList<FeedBack> feedbacklist = new ArrayList<>();
+      ArrayList<FeedBack> feedbackList = new ArrayList<>();
       Pattern pattern = Pattern.compile("[0-9]+ error");
       Matcher matcher = pattern.matcher(consoleText);
       String endStr = "";
@@ -37,23 +37,26 @@ public class AndroidCompileFailure implements Status {
       while (consoleText.contains(".java")) {
         int error = consoleText.indexOf(": error:");
         int symbol = consoleText.indexOf("symbol:");
-        int nextrow = consoleText.indexOf("\n", symbol);
-        feedbacklist.add(new FeedBack(
+        int nextRow = consoleText.indexOf("\n", symbol);
+        String fileNameAndLine = consoleText.substring(0, error).trim();
+
+        feedbackList.add(new FeedBack(
                 StatusEnum.COMPILE_FAILURE,
-                consoleText.substring(0, error).trim(),
+                fileNameAndLine.substring(0, fileNameAndLine.indexOf(":")).trim(),
+                fileNameAndLine.substring(fileNameAndLine.indexOf(":") + 1, error).trim(),
                 consoleText.substring(error + ": error:".length(), symbol).trim().replace("^",""),
-                consoleText.substring(symbol + "symbol:".length(), nextrow).trim(),
+                consoleText.substring(symbol + "symbol:".length(), nextRow).trim(),
                 "https://developer.android.com/studio/build"
         ));
-        consoleText = consoleText.substring(nextrow + 1, endIndex);
-        endIndex = endIndex - nextrow - 1;
+        consoleText = consoleText.substring(nextRow + 1, endIndex);
+        endIndex = endIndex - nextRow - 1;
       }
 
-      return feedbacklist;
+      return feedbackList;
     } catch (Exception e) {
-      ArrayList<FeedBack> feedbacklist = new ArrayList<>();
-      feedbacklist.add(new FeedBack(StatusEnum.COMPILE_FAILURE, "", consoleText, "", ""));
-      return feedbacklist;
+      ArrayList<FeedBack> feedbackList = new ArrayList<>();
+      feedbackList.add(new FeedBack(StatusEnum.COMPILE_FAILURE,"", "", consoleText, "", ""));
+      return feedbackList;
     }
   }
 }

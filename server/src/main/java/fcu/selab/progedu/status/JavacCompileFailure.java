@@ -36,8 +36,10 @@ public class JavacCompileFailure implements Status {
           consoleText = consoleText.substring(nextRow + 1, endIndex);
           endIndex = endIndex - nextRow - 1;
         } else {
+          int colonIndex = consoleText.indexOf(":");
           feedbacklist.add(new FeedBack(
               StatusEnum.COMPILE_FAILURE,
+              consoleText.substring(0, colonIndex).trim(),
               consoleText.substring(0, errorIndex)
                   .replace(":", " ").trim(),
               consoleText.substring(errorIndex + 6, nextRow).trim(),
@@ -52,7 +54,7 @@ public class JavacCompileFailure implements Status {
     } catch (Exception e) {
       ArrayList<FeedBack> feedbacklist = new ArrayList<>();
       feedbacklist.add(
-          new FeedBack(StatusEnum.COMPILE_FAILURE, "",
+          new FeedBack(StatusEnum.COMPILE_FAILURE, "", "",
               "CompileFailure ArrayList error", "", ""));
       return feedbacklist;
     }
