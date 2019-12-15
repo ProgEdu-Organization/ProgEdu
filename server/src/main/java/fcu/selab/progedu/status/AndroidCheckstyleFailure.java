@@ -40,7 +40,8 @@ public class AndroidCheckstyleFailure implements Status {
         feedbackList.add(new FeedBack(
                 StatusEnum.CHECKSTYLE_FAILURE,
                 fileNameAndLine.substring(0, fileNameAndLine.indexOf(":")).trim(),
-                fileNameAndLine.substring(fileNameAndLine.indexOf(":") + 1, fileNameAndLine.length()).trim(),
+                fileNameAndLine.substring(fileNameAndLine.indexOf(":") + 1,
+                        fileNameAndLine.length()).trim(),
                 consoleText.substring(space + 1, period).trim(),
                 consoleText.substring(period + 1 , nextRow).trim(),
                 "https://github.com/checkstyle/checkstyle"

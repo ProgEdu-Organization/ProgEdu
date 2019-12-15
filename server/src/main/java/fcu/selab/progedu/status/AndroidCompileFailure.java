@@ -44,8 +44,10 @@ public class AndroidCompileFailure implements Status {
         feedbackList.add(new FeedBack(
                 StatusEnum.COMPILE_FAILURE,
                 fileNameAndLine.substring(0, fileNameAndLine.indexOf(":")).trim(),
-                fileNameAndLine.substring(fileNameAndLine.indexOf(":") + 1, fileNameAndLine.length()).trim(),
-                consoleText.substring(error + ": error:".length(), nextRow).trim().replace("^",""),
+                fileNameAndLine.substring(fileNameAndLine.indexOf(":") + 1,
+                        fileNameAndLine.length()).trim(),
+                consoleText.substring(error + ": error:".length(), nextRow).trim()
+                        .replace("^",""),
                 "",
                 "https://developer.android.com/studio/build"
         ));
@@ -56,7 +58,8 @@ public class AndroidCompileFailure implements Status {
       return feedbackList;
     } catch (Exception e) {
       ArrayList<FeedBack> feedbackList = new ArrayList<>();
-      feedbackList.add(new FeedBack(StatusEnum.COMPILE_FAILURE,"", "", "Compile ArrayList error", "", ""));
+      feedbackList.add(new FeedBack(StatusEnum.COMPILE_FAILURE,"", "",
+              "Compile ArrayList error", "", ""));
       return feedbackList;
     }
   }
