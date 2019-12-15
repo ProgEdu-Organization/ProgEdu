@@ -18,12 +18,13 @@ public class AndroidCompileFailure implements Status {
     /**
      * Remove /var/jenkins_home/workspace/
      */
-    feedback = feedback.replaceAll("/var/jenkins_home/workspace/", "");
-    return feedback.trim();
+    feedback = feedback.replaceAll("/var/jenkins_home/workspace", "").trim();
+    return feedback;
   }
 
   @Override
   public ArrayList<FeedBack> formatExamineMsg(String consoleText) {
+    System.out.println(consoleText);
     try {
       ArrayList<FeedBack> feedbackList = new ArrayList<>();
       Pattern pattern = Pattern.compile("[0-9]+ error");
@@ -37,6 +38,7 @@ public class AndroidCompileFailure implements Status {
       while (consoleText.contains(".java")) {
         int error = consoleText.indexOf(": error:");
         int nextRow = consoleText.indexOf("\n", error);
+        int caret = consoleText.indexOf("^", nextRow);
         if (nextRow == -1 ) {
           break;
         }
@@ -46,12 +48,11 @@ public class AndroidCompileFailure implements Status {
                 fileNameAndLine.substring(0, fileNameAndLine.indexOf(":")).trim(),
                 fileNameAndLine.substring(fileNameAndLine.indexOf(":") + 1,
                         fileNameAndLine.length()).trim(),
-                consoleText.substring(error + ": error:".length(), nextRow).trim()
-                        .replace("^",""),
-                "",
+                consoleText.substring(error + ": error:".length(), nextRow).trim(),
+                consoleText.substring(nextRow + 1, caret),
                 "https://developer.android.com/studio/build"
         ));
-        consoleText = consoleText.substring(nextRow + 1, endIndex);
+        consoleText = consoleText.substring(caret + 1, endIndex);
         endIndex = consoleText.length();
       }
 
