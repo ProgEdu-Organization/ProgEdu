@@ -42,7 +42,8 @@ public class AndroidCompileFailure implements Status {
         if (nextRow == -1 ) {
           break;
         }
-        String fileNameAndLine = consoleText.substring(0, error).trim();
+        int fileStart = consoleText.indexOf("/");
+        String fileNameAndLine = consoleText.substring(fileStart, error).trim();
         feedbackList.add(new FeedBack(
                 StatusEnum.COMPILE_FAILURE,
                 fileNameAndLine.substring(0, fileNameAndLine.indexOf(":")).trim(),
