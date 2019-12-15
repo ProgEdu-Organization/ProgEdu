@@ -11,7 +11,7 @@ public class AndroidCompileFailure implements Status {
   @Override
   public String extractFailureMsg(String consoleText) {
     String feedback;
-    String feedbackStart = "compileDebugJavaWithJavac FAILED";
+    String feedbackStart = "> Task :app:compileDebugJavaWithJavac";
     String feedbackEnd = "FAILURE: Build failed with an exception.";
     feedback = consoleText.substring(consoleText.indexOf(feedbackStart) + feedbackStart.length(),
             consoleText.indexOf(feedbackEnd));
@@ -36,22 +36,26 @@ public class AndroidCompileFailure implements Status {
 
       while (consoleText.contains(".java")) {
         int error = consoleText.indexOf(": error:");
-        int symbol = consoleText.indexOf("symbol:");
-        int nextRow = consoleText.indexOf("\n", symbol);
-        if (nextRow == -1) {
+        int nextRow = consoleText.indexOf("\n", error);
+        System.out.println(error + " " + " " + nextRow);
+        if (nextRow == -1 ) {
           break;
         }
         String fileNameAndLine = consoleText.substring(0, error).trim();
+        System.out.println(fileNameAndLine.substring(0, fileNameAndLine.indexOf(":")).trim());
+        System.out.println(fileNameAndLine.substring(fileNameAndLine.indexOf(":") + 1, fileNameAndLine.length()).trim());
+        System.out.println(consoleText.substring(error + ": error:".length(), nextRow).trim().replace("^",""));
+
         feedbackList.add(new FeedBack(
                 StatusEnum.COMPILE_FAILURE,
                 fileNameAndLine.substring(0, fileNameAndLine.indexOf(":")).trim(),
                 fileNameAndLine.substring(fileNameAndLine.indexOf(":") + 1, fileNameAndLine.length()).trim(),
-                consoleText.substring(error + ": error:".length(), symbol).trim().replace("^",""),
-                consoleText.substring(symbol + "symbol:".length(), nextRow).trim(),
+                consoleText.substring(error + ": error:".length(), nextRow).trim().replace("^",""),
+                "",
                 "https://developer.android.com/studio/build"
         ));
         consoleText = consoleText.substring(nextRow + 1, endIndex);
-        endIndex = endIndex - nextRow - 1;
+        endIndex = consoleText.length();
       }
 
       return feedbackList;

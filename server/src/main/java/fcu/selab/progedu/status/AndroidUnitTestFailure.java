@@ -34,7 +34,7 @@ public class AndroidUnitTestFailure implements Status {
                 ""
         ));
         consoleText = consoleText.substring(nextRow + 1, endIndex);
-        endIndex = endIndex - nextRow - 1;
+        endIndex = consoleText.length();
       }
       return feedbackList;
     } catch (Exception e) {
