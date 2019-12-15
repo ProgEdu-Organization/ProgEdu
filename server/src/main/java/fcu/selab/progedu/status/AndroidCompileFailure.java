@@ -37,15 +37,10 @@ public class AndroidCompileFailure implements Status {
       while (consoleText.contains(".java")) {
         int error = consoleText.indexOf(": error:");
         int nextRow = consoleText.indexOf("\n", error);
-        System.out.println(error + " " + " " + nextRow);
         if (nextRow == -1 ) {
           break;
         }
         String fileNameAndLine = consoleText.substring(0, error).trim();
-        System.out.println(fileNameAndLine.substring(0, fileNameAndLine.indexOf(":")).trim());
-        System.out.println(fileNameAndLine.substring(fileNameAndLine.indexOf(":") + 1, fileNameAndLine.length()).trim());
-        System.out.println(consoleText.substring(error + ": error:".length(), nextRow).trim().replace("^",""));
-
         feedbackList.add(new FeedBack(
                 StatusEnum.COMPILE_FAILURE,
                 fileNameAndLine.substring(0, fileNameAndLine.indexOf(":")).trim(),
