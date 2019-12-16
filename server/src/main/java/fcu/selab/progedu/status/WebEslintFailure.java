@@ -13,7 +13,7 @@ public class WebEslintFailure implements Status {
 
   @Override
   public String extractFailureMsg(String consoleText) {
-    String checkstyleStart = "Warning:";
+    String checkstyleStart = "+ npm run eslint";
     String checkstyleEnd = "npm ERR! code ELIFECYCLE";
     int start = consoleText.indexOf(checkstyleStart) + checkstyleStart.length();
     int end = consoleText.lastIndexOf(checkstyleEnd) - 1;

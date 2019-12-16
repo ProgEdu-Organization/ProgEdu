@@ -13,7 +13,7 @@ public class WebStylelintFailure implements Status {
 
   @Override
   public String extractFailureMsg(String consoleText) {
-    String checkstyleStart = "> stylelint";
+    String checkstyleStart = "+ npm run stylelint";
     String checkstyleEnd = "npm ERR! code ELIFECYCLE";
     int start = consoleText.indexOf(checkstyleStart) + checkstyleStart.length();
     int end = consoleText.lastIndexOf(checkstyleEnd) - 1;
@@ -32,7 +32,6 @@ public class WebStylelintFailure implements Status {
       String fileName = "";
       ArrayList<FeedBack> feedbackList = new ArrayList<>();
       while (consoleText.contains("✖")) {
-        System.out.println("Start");
         int crossIndex = consoleText.indexOf("✖");
         int nextRowIndex = consoleText.indexOf("\n");
         if (nextRowIndex == -1) {
