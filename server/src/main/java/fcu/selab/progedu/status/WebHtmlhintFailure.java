@@ -13,7 +13,7 @@ public class WebHtmlhintFailure implements Status {
 
   @Override
   public String extractFailureMsg(String consoleText) {
-    String checkstyleStart = "   /var/jenkins_home/workspace/";
+    String checkstyleStart = "npm run htmlhint";
     String checkstyleEnd = "npm ERR! code ELIFECYCLE";
     int start = consoleText.indexOf(checkstyleStart);
     int end = consoleText.lastIndexOf(checkstyleEnd) - 1;
@@ -41,7 +41,8 @@ public class WebHtmlhintFailure implements Status {
         }
         if (lineIndex > nextRowIndex) {
           if (consoleText.substring(0, nextRowIndex).contains("/")) {
-            fileName = consoleText.substring(0, nextRowIndex).trim();
+            fileName = consoleText.substring(0, nextRowIndex)
+                .replace("/var/jenkins_home/workspace/","").trim();
           }
           consoleText = consoleText.substring(nextRowIndex + 1, endIndex);
           endIndex = endIndex - nextRowIndex - 1;
