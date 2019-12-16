@@ -29,6 +29,7 @@ public class WebEslintFailure implements Status {
   @Override
   public ArrayList<FeedBack> formatExamineMsg(String consoleText) {
     try {
+      System.out.println(consoleText);
       consoleText = consoleText.substring(0, consoleText.indexOf("✖"));
       int endIndex = consoleText.length();
       String fileName = "";
@@ -36,6 +37,7 @@ public class WebEslintFailure implements Status {
       while (consoleText.contains("error")) {
         int errorIndex = consoleText.indexOf("error");
         int nextRowIndex = consoleText.indexOf("\n");
+        System.out.println(errorIndex + " " + nextRowIndex);
         if (nextRowIndex == -1) {
           break;
         }
@@ -43,8 +45,6 @@ public class WebEslintFailure implements Status {
           if (consoleText.substring(0, nextRowIndex).contains("/")) {
             fileName = consoleText.substring(0, nextRowIndex).trim();
           }
-          consoleText = consoleText.substring(nextRowIndex + 1, endIndex);
-          endIndex = endIndex - nextRowIndex - 1;
         } else {
           String errorString = consoleText.substring(errorIndex + 6, nextRowIndex).trim();
           int errorStyleStart = errorString.indexOf("  ");
@@ -56,9 +56,9 @@ public class WebEslintFailure implements Status {
                   errorString.substring(0, errorStyleStart).trim(),
                   errorString.substring(errorStyleStart, errorString.length()).trim(),
                   "https://github.com/airbnb/javascript\n"));
-          consoleText = consoleText.substring(nextRowIndex + 1, endIndex);
-          endIndex = endIndex - nextRowIndex - 1;
         }
+        consoleText = consoleText.substring(nextRowIndex + 1, endIndex);
+        endIndex = endIndex - nextRowIndex - 1;
       }
       return feedbackList;
     } catch (Exception e) {
