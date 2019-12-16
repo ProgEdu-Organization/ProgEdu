@@ -13,7 +13,7 @@ public class WebStylelintFailure implements Status {
 
   @Override
   public String extractFailureMsg(String consoleText) {
-    String checkstyleStart = "+ npm run stylelint";
+    String checkstyleStart = "npm run stylelint";
     String checkstyleEnd = "npm ERR! code ELIFECYCLE";
     int start = consoleText.indexOf(checkstyleStart) + checkstyleStart.length();
     int end = consoleText.lastIndexOf(checkstyleEnd) - 1;
