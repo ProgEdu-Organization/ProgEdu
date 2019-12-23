@@ -28,11 +28,11 @@ public class WebHtmlhintFailure implements Status {
 
   @Override
   public ArrayList<FeedBack> formatExamineMsg(String consoleText) {
+    ArrayList<FeedBack> feedbackList = new ArrayList<>();
     try {
       consoleText = consoleText.substring(0, consoleText.indexOf("Scanned"));
       int endIndex = consoleText.length();
       String fileName = "";
-      ArrayList<FeedBack> feedbackList = new ArrayList<>();
       while (consoleText.contains("L")) {
         int lineIndex = consoleText.indexOf("L");
         int nextRowIndex = consoleText.indexOf("\n");
@@ -47,32 +47,30 @@ public class WebHtmlhintFailure implements Status {
           consoleText = consoleText.substring(nextRowIndex + 1, endIndex);
           endIndex = endIndex - nextRowIndex - 1;
         } else {
-          int sparateIndex = consoleText.indexOf("|");
+          int separatedIndex = consoleText.indexOf("|");
           int arrowIndex = consoleText.indexOf("^");
-          int nextlineIndex = consoleText.indexOf("\n", arrowIndex);
+          int nextLineIndex = consoleText.indexOf("\n", arrowIndex);
           int dotIndex = consoleText.indexOf(".", arrowIndex);
-          String errorStyle = consoleText.substring(dotIndex + 1, nextlineIndex)
+          String errorStyle = consoleText.substring(dotIndex + 1, nextLineIndex)
               .replace("(", "").replace(")", "").trim();
           feedbackList.add(
               new FeedBack(
-                  StatusEnum.WEB_HTMLHINT_FAILURE,
-                  fileName,
-                  consoleText.substring(lineIndex, sparateIndex - 1).trim(),
-                  consoleText.substring(arrowIndex + 2, dotIndex).trim(),
-                  errorStyle,
-                  "https://codertw.com/%E5%89%8D%E7%AB%AF%E9%96%8B%E7%99%BC/15355/\n"));
-          consoleText = consoleText.substring(nextlineIndex + 1, endIndex);
-          endIndex = endIndex - nextlineIndex - 1;
+              StatusEnum.WEB_HTMLHINT_FAILURE,
+              fileName,
+              consoleText.substring(lineIndex, separatedIndex - 1).trim(),
+              consoleText.substring(arrowIndex + 2, dotIndex).trim(),
+              errorStyle,
+              "https://codertw.com/%E5%89%8D%E7%AB%AF%E9%96%8B%E7%99%BC/15355/\n"));
+          consoleText = consoleText.substring(nextLineIndex + 1, endIndex);
+          endIndex = endIndex - nextLineIndex - 1;
         }
       }
-      return feedbackList;
     } catch (Exception e) {
-      ArrayList<FeedBack> feedbacklist = new ArrayList<>();
-      feedbacklist.add(
-          new FeedBack(StatusEnum.WEB_HTMLHINT_FAILURE, "", "",
-              "HtmlHint ArrayList error", e.getMessage(), ""));
-      return feedbacklist;
+      feedbackList.add(
+          new FeedBack(StatusEnum.WEB_HTMLHINT_FAILURE,
+              "HtmlHint ArrayList error", e.getMessage()));
     }
+    return feedbackList;
   }
 }
 

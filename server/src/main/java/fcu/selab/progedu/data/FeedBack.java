@@ -53,6 +53,22 @@ public class FeedBack {
     this.suggest = emptyString;
   }
 
+  /**
+   * Create new FeedBack class
+   *
+   * @param status type StatusEnum
+   * @param message type occur message
+   * @param symptom type occur symptom
+   */
+  public  FeedBack(StatusEnum status, String message, String symptom) {
+    this.status = status.getType();
+    this.fileName = emptyString;
+    this.line = emptyString;
+    this.message = message;
+    this.symptom = symptom;
+    this.suggest = emptyString;
+  }
+
   public String getStatus() {
     return this.status;
   }
@@ -61,11 +77,11 @@ public class FeedBack {
     this.status = statusEnum.getType();
   }
 
-  public String getfileName() {
+  public String getFileName() {
     return this.fileName;
   }
 
-  public void setfileName(String fileName) {
+  public void setFileName(String fileName) {
     this.fileName = fileName;
   }
 
