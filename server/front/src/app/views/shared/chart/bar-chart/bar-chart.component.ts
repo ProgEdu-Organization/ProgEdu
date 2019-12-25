@@ -6,9 +6,8 @@ import { Component, OnInit, Input, OnChanges} from '@angular/core';
   styleUrls: ['./bar-chart.component.scss']
 })
 export class BarChartComponent implements OnInit, OnChanges {
-  @Input() commits: Array<any>;
-  @Input() labels: string[];
-
+  @Input() barChartLabels: string[];
+  @Input() barChartData: any[];
   public barChartType = 'bar';
   public barChartLegend = true;
   public barChartOptions: any = {
@@ -29,40 +28,7 @@ export class BarChartComponent implements OnInit, OnChanges {
     */
   };
 
-  public status = {
-    notBuild: {
-      name: 'notBuild',
-      status: 'INI'
-    },
-    compilerFailure: {
-      name: 'compilerFailure',
-      color: '#ff6284'
-    },
-    checkStyleError: {
-      name: 'checkStyleError',
-      color: '#ffcf57'
-    },
-    testFailure: {
-      name: 'testFailure',
-      color: '#FFFFFF'
-    },
-    success: {
-      name: 'success',
-      color: '#35a2eb'
-    }
-  };
-
-  constructor() { }
-
-  ngOnInit() {
-    
-  }
-
-  ngOnChanges(): void {
-    if(this.commits){
-    }
-  }
-
+  /*
   public barChartData: any[] = [
     {
       data: [18, 48, 87, 31, 22, 27, 40], label: this.status.compilerFailure.name
@@ -79,14 +45,23 @@ export class BarChartComponent implements OnInit, OnChanges {
     {
       data: [65, 59, 80, 81, 56, 55, 40], label: this.status.testFailure.name
     },
-  ];
+  ];*/
+
+  constructor() { }
+
+  ngOnInit() {
+    
+  }
+
+  ngOnChanges(): void {
+  }
   
   public chartClicked(e: any): void {
-    console.log(e);
+   
   }
 
   public chartHovered(e: any): void {
-    console.log(e);
+    
   }
 
 

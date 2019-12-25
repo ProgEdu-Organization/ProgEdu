@@ -21,6 +21,7 @@ import { ChartComponent } from './chart/chart.component';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { BarChartComponent } from './chart/bar-chart/bar-chart.component';
 import { BubbleChartComponent } from './chart/bubble-chart/bubble-chart.component';
+import { MixedChartComponent } from './chart/mixed-chart/mixed-chart.component';
 @NgModule({
   imports: [
     CommonModule,
@@ -31,7 +32,7 @@ import { BubbleChartComponent } from './chart/bubble-chart/bubble-chart.componen
     CarouselModule.forRoot(),
   ],
   declarations: [AssignmentChoosedComponent, ProjectChoosedComponent, GroupDashboardComponent,
-    GroupFilterPipe, FilterPipe, CommitRecordComponent, DashboardStatusComponent, ChartComponent, LineChartComponent, BarChartComponent, BubbleChartComponent],
+    GroupFilterPipe, FilterPipe, CommitRecordComponent, DashboardStatusComponent, ChartComponent, LineChartComponent, BarChartComponent, BubbleChartComponent, MixedChartComponent],
   exports: [AssignmentChoosedComponent, GroupDashboardComponent, ProjectChoosedComponent, GroupFilterPipe,
     FilterPipe, DashboardStatusComponent, ChartComponent]
 })

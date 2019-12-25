@@ -6,7 +6,7 @@ export const Status = {
     compilerFailure: {
       name: 'compilerFailure',
       color: '#ff6284',
-      status: ['INI']
+      status: ['CPF']
     },
     checkStyleError: {
       name: 'checkStyleError',

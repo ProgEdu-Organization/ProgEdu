@@ -1,4 +1,4 @@
-<div *ngIf= 'labels' class="card">
+<div *ngIf= 'barChartData && barChartLabels' class="card">
         <div class="card-header">
             Bar Chart
             <div class="card-header-actions">
@@ -9,7 +9,7 @@
         </div>
         <div class="card-body">
             <div class="chart-wrapper">
-            <canvas baseChart class="chart" [datasets]="barChartData" [labels]="labels"
+            <canvas baseChart class="chart" [datasets]="barChartData" [labels]="barChartLabels"
                 [options]="barChartOptions" [legend]="barChartLegend" [chartType]="barChartType"
                 (chartHover)="chartHovered($event)" (chartClick)="chartClicked($event)"></canvas>
             </div>

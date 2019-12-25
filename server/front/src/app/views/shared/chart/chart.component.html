@@ -3,15 +3,15 @@
   <div class="row">
     <div class="col-md-10">
       <tabset>
-        <tab id="add-one-student">
+        <tab id="bar-chart">
           <ng-template tabHeading><i class="icon-calculator"></i> Compiler Result</ng-template>
-          <app-bar-chart *ngIf='commits' [commits] ='commits' [labels]='labels'></app-bar-chart>
+          <app-bar-chart *ngIf='commits' [barChartLabels]='labels' [barChartData]='barChartData'></app-bar-chart>
         </tab>
-        <tab id="add-muti-student">
+        <tab id="mixed-chart">
           <ng-template tabHeading><i class="icon-basket-loaded"></i>Commit Count And Build Result</ng-template>
-          
+          <app-mixed-chart [mixedChartLabels]='labels' [mixedChartData]='mixedChartData'></app-mixed-chart>
         </tab>
-        <tab id="add-muti-student">
+        <tab id="bubble-chart">
           <ng-template tabHeading><i class="icon-basket-loaded"></i>Commit Record</ng-template>
         </tab>
       </tabset>
