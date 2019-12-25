@@ -46,9 +46,9 @@
           <div class='card-header'>
             <div class='input-group'>
               <span>
-                <button class="btn btn-primary" type="button" [disabled]='true'><i class="fa fa-search"></i>
-                  Search</button></span>
-              <input type='text' class='form-control col-md-6' [(ngModel)]='search'>
+                <button class="btn btn-primary" type="button" [disabled]='true'><i
+                    class="fa fa-search"></i></button></span>
+              <input type='text' placeholder="Search" class='form-control col-md-6' [(ngModel)]='search'>
             </div>
           </div>
           <div class="card-body">
@@ -99,9 +99,11 @@
         <button *ngIf="mode === 'remove-member'" type="button" class="btn btn-primary"
           (click)="removeGroupMemberByUsername();">Update</button>
         <button *ngIf="mode === 'set-leader'" type="button" class="btn btn-primary"
-          (click)="setLeader();">Update</button>
+          (click)="updateLeaderSubmit();">Update</button>
         <button type="button" class="btn btn-secondary" (click)="confirmModal.hide()">Close</button>
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+
+<progedu-error-modal [errorTitle]='errorTitle' [errorResponse]="errorResponse"></progedu-error-modal>
