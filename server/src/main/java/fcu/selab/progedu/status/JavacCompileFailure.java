@@ -24,12 +24,12 @@ public class JavacCompileFailure implements Status {
 
   @Override
   public ArrayList<FeedBack> formatExamineMsg(String consoleText) {
+    ArrayList<FeedBack> feedbackList = new ArrayList<>();
     try {
       int nextRow = consoleText.indexOf("\n");
       int endIndex = consoleText.length();
       consoleText = consoleText.substring(nextRow, endIndex);
       endIndex = endIndex - nextRow - 1;
-      ArrayList<FeedBack> feedbacklist = new ArrayList<>();
       while (consoleText.contains("error:")) {
         int errorIndex = consoleText.indexOf("error:");
         nextRow = consoleText.indexOf("\n");
@@ -38,7 +38,7 @@ public class JavacCompileFailure implements Status {
           endIndex = endIndex - nextRow - 1;
         } else {
           int colonIndex = consoleText.indexOf(":");
-          feedbacklist.add(new FeedBack(
+          feedbackList.add(new FeedBack(
               StatusEnum.COMPILE_FAILURE,
               consoleText.substring(0, colonIndex).trim(),
               consoleText.substring(0, errorIndex)
@@ -51,14 +51,12 @@ public class JavacCompileFailure implements Status {
           endIndex = endIndex - nextRow - 1;
         }
       }
-      return feedbacklist;
     } catch (Exception e) {
-      ArrayList<FeedBack> feedbacklist = new ArrayList<>();
-      feedbacklist.add(
-          new FeedBack(StatusEnum.COMPILE_FAILURE, "", "",
-              "CompileFailure ArrayList error", "", ""));
-      return feedbacklist;
+      feedbackList.add(
+          new FeedBack(StatusEnum.COMPILE_FAILURE,
+              "CompileFailure ArrayList error", e.getMessage()));
     }
+    return feedbackList;
   }
 }
 

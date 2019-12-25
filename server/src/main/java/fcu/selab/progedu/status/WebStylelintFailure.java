@@ -19,18 +19,18 @@ public class WebStylelintFailure implements Status {
     int end = consoleText.lastIndexOf(checkstyleEnd) - 1;
 
     String checkstyleInfo = consoleText.substring(start,end);
-    int nextrow = checkstyleInfo.indexOf("\n");
-    checkstyleInfo = checkstyleInfo.substring(nextrow + 1,end - start);
+    int nextRowIndex = checkstyleInfo.indexOf("\n");
+    checkstyleInfo = checkstyleInfo.substring(nextRowIndex + 1,end - start);
 
     return checkstyleInfo.trim();
   }
 
   @Override
   public ArrayList<FeedBack> formatExamineMsg(String consoleText) {
+    ArrayList<FeedBack> feedbackList = new ArrayList<>();
     try {
       int endIndex = consoleText.length();
       String fileName = "";
-      ArrayList<FeedBack> feedbackList = new ArrayList<>();
       while (consoleText.contains("✖")) {
         int crossIndex = consoleText.indexOf("✖");
         int nextRowIndex = consoleText.indexOf("\n");
@@ -58,14 +58,12 @@ public class WebStylelintFailure implements Status {
           endIndex = endIndex - nextRowIndex - 1;
         }
       }
-      return feedbackList;
     } catch (Exception e) {
-      ArrayList<FeedBack> feedbacklist = new ArrayList<>();
-      feedbacklist.add(
-          new FeedBack(StatusEnum.WEB_STYLELINT_FAILURE, "", "",
-              "Stylelint ArrayList error", "", ""));
-      return feedbacklist;
+      feedbackList.add(
+          new FeedBack(StatusEnum.WEB_STYLELINT_FAILURE,
+              "Stylelint ArrayList error", e.getMessage()));
     }
+    return feedbackList;
   }
 
 }

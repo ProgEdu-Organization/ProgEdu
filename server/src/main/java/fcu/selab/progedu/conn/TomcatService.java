@@ -17,13 +17,18 @@ import java.util.TimeZone;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fcu.selab.progedu.project.ProjectType;
 import fcu.selab.progedu.utils.Linux;
+import fcu.selab.progedu.utils.ExceptionUtil;
 
 public class TomcatService {
 
   private static TomcatService instance = new TomcatService();
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(TomcatService.class);
 
   public static TomcatService getInstance() {
     return instance;
@@ -45,7 +50,8 @@ public class TomcatService {
     try {
       storeFile(file, target);
     } catch (SecurityException | IOException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return target;
   }
@@ -169,7 +175,8 @@ public class TomcatService {
         new OutputStreamWriter(new FileOutputStream(path + "/README.md"), "utf-8"));) {
       writer.write(readMe);
     } catch (IOException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
       // report
     }
   }
@@ -186,7 +193,8 @@ public class TomcatService {
     try {
       date = format.parse(format.format(date));
     } catch (Exception e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return date;
 

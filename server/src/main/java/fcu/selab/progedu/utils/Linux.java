@@ -5,6 +5,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import fcu.selab.progedu.utils.ExceptionUtil;
+
 public class Linux {
 
   private static Linux instance = new Linux();
@@ -12,6 +17,8 @@ public class Linux {
   public static Linux getInstance() {
     return instance;
   }
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(Linux.class);
 
   /**
    * execLinuxCommand
@@ -32,7 +39,8 @@ public class Linux {
         }
       }
     } catch (IOException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
 
   }
@@ -58,7 +66,8 @@ public class Linux {
         }
       }
     } catch (IOException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
   }
 }

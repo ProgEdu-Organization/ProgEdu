@@ -21,9 +21,12 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fcu.selab.progedu.config.JenkinsConfig;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
+import fcu.selab.progedu.utils.ExceptionUtil;
 
 public class JenkinsService {
   private static JenkinsService instance = new JenkinsService();
@@ -34,6 +37,7 @@ public class JenkinsService {
   private String jenkinsApiToken;
   private final String contentType = "Content-Type";
   private final String jenkinsCrumb = "Jenkins-Crumb";
+  private static final Logger LOGGER = LoggerFactory.getLogger(JenkinsService.class);
 
   /**
    * (to do)
@@ -46,7 +50,8 @@ public class JenkinsService {
       jenkinsRootPassword = jenkinsConfig.getJenkinsRootPassword();
       jenkinsApiToken = jenkinsConfig.getJenkinsApiToken();
     } catch (LoadConfigFailureException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
   }
 
@@ -66,7 +71,8 @@ public class JenkinsService {
       jenkinsUserName = JenkinsConfig.getInstance().getJenkinsRootUsername();
       jenkinsPass = JenkinsConfig.getInstance().getJenkinsRootPassword();
     } catch (LoadConfigFailureException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return getCrumb(jenkinsUserName, jenkinsPass);
   }
@@ -108,7 +114,8 @@ public class JenkinsService {
         jenkinsCrumb = jsonObj.getString("crumb");
       }
     } catch (Exception e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     } finally {
       if (conn != null) {
         conn.disconnect();
@@ -144,7 +151,8 @@ public class JenkinsService {
 //      HttpEntity resEntity = response.getEntity();
 
     } catch (IOException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
   }
 
@@ -172,7 +180,8 @@ public class JenkinsService {
 //        System.out.println(jobName + " : " + result2);
 //      }
     } catch (Exception e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
   }
 
@@ -207,7 +216,8 @@ public class JenkinsService {
 //        System.out.println("httppost build " + jobName + " , result : " + result);
 //      }
     } catch (IOException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
   }
 
@@ -265,7 +275,8 @@ public class JenkinsService {
         console = sb.toString();
       }
     } catch (Exception e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     } finally {
       if (conn != null) {
         conn.disconnect();
@@ -313,7 +324,8 @@ public class JenkinsService {
         sb.append("\n");
       }
     } catch (IOException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return sb.toString();
   }

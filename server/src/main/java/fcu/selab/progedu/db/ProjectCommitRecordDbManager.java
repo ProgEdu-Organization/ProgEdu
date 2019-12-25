@@ -9,8 +9,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import fcu.selab.progedu.data.CommitRecord;
 import fcu.selab.progedu.status.StatusEnum;
+import fcu.selab.progedu.utils.ExceptionUtil;
 
 public class ProjectCommitRecordDbManager {
   private static ProjectCommitRecordDbManager dbManager = new ProjectCommitRecordDbManager();
@@ -21,6 +25,8 @@ public class ProjectCommitRecordDbManager {
   }
 
   private IDatabase database = new MySqlDatabase();
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(ProjectCommitRecordDbManager.class);
 
   /**
    * insert project commit records into db
@@ -48,7 +54,8 @@ public class ProjectCommitRecordDbManager {
       preStmt.setString(5, commitStudent);
       preStmt.executeUpdate();
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
   }
 
@@ -73,7 +80,8 @@ public class ProjectCommitRecordDbManager {
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
 
     return id;
@@ -100,7 +108,8 @@ public class ProjectCommitRecordDbManager {
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
 
     return ids;
@@ -128,7 +137,8 @@ public class ProjectCommitRecordDbManager {
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
 
     return status;
@@ -164,7 +174,8 @@ public class ProjectCommitRecordDbManager {
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return crs;
   }
@@ -202,7 +213,8 @@ public class ProjectCommitRecordDbManager {
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return cr;
   }
@@ -227,7 +239,8 @@ public class ProjectCommitRecordDbManager {
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return commitNumber;
   }
@@ -245,7 +258,8 @@ public class ProjectCommitRecordDbManager {
       preStmt.setInt(1, pgId);
       preStmt.executeUpdate();
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
   }
 
@@ -267,7 +281,8 @@ public class ProjectCommitRecordDbManager {
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return status;
   }

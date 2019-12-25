@@ -7,6 +7,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import fcu.selab.progedu.utils.ExceptionUtil;
+
 public class AssignmentUserDbManager {
   private static AssignmentUserDbManager dbManager = new AssignmentUserDbManager();
 
@@ -15,6 +20,8 @@ public class AssignmentUserDbManager {
   }
 
   private IDatabase database = new MySqlDatabase();
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(AssignmentUserDbManager.class);
 
   private AssignmentUserDbManager() {
 
@@ -35,7 +42,8 @@ public class AssignmentUserDbManager {
       preStmt.setInt(2, uid);
       preStmt.executeUpdate();
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
   }
 
@@ -59,7 +67,8 @@ public class AssignmentUserDbManager {
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return auid;
   }
@@ -83,7 +92,8 @@ public class AssignmentUserDbManager {
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return lsAUid;
   }
@@ -106,7 +116,8 @@ public class AssignmentUserDbManager {
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return lsAids;
   }
@@ -129,7 +140,8 @@ public class AssignmentUserDbManager {
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return lsUids;
   }
@@ -145,7 +157,8 @@ public class AssignmentUserDbManager {
       preStmt.setInt(1, aid);
       preStmt.executeUpdate();
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
   }
 }

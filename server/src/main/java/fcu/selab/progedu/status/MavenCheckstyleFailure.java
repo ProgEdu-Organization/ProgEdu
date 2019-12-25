@@ -31,41 +31,39 @@ public class MavenCheckstyleFailure implements Status {
 
   @Override
   public ArrayList<FeedBack> formatExamineMsg(String consoleText) {
+    ArrayList<FeedBack> feedbackList = new ArrayList<>();
     try {
       consoleText = consoleText + "\n";
       int endIndex = consoleText.length();
-      ArrayList<FeedBack> feedbacklist = new ArrayList<>();
       while (consoleText.contains("error:")) {
-        int nextrow = consoleText.indexOf("\n");
-        int nexterror = consoleText.indexOf("error:");
-        if (nexterror > nextrow) {
-          consoleText = consoleText.substring(nextrow + 1, endIndex);
-          endIndex = endIndex - nextrow - 1;
+        int nextRowIndex = consoleText.indexOf("\n");
+        int nextErrorIndex = consoleText.indexOf("error:");
+        if (nextErrorIndex > nextRowIndex) {
+          consoleText = consoleText.substring(nextRowIndex + 1, endIndex);
+          endIndex = endIndex - nextRowIndex - 1;
         } else {
-          String errorRow = consoleText.substring(0, nextrow);
-          int lastslash = errorRow.lastIndexOf("/");
-          String errorfileName = errorRow.substring(lastslash + 1, nexterror - 2).trim();
-          feedbacklist.add(new FeedBack(
+          String errorRow = consoleText.substring(0, nextRowIndex);
+          int lastSlash = errorRow.lastIndexOf("/");
+          String errorFileName = errorRow.substring(lastSlash + 1, nextErrorIndex - 2).trim();
+          feedbackList.add(new FeedBack(
               StatusEnum.CHECKSTYLE_FAILURE,
-              errorfileName.substring(0, errorfileName.indexOf(":")).trim(),
-              errorfileName.substring(
-                  errorfileName.indexOf(":") + 1, errorfileName.length()),
-              errorRow.substring(nexterror + 6, nextrow).trim(),
+              errorFileName.substring(0, errorFileName.indexOf(":")).trim(),
+              errorFileName.substring(
+                  errorFileName.indexOf(":") + 1, errorFileName.length()),
+              errorRow.substring(nextErrorIndex + 6, nextRowIndex).trim(),
               "",
               ""
           ));
-          consoleText = consoleText.substring(nextrow + 1, endIndex);
-          endIndex = endIndex - nextrow - 1;
+          consoleText = consoleText.substring(nextRowIndex + 1, endIndex);
+          endIndex = endIndex - nextRowIndex - 1;
         }
       }
-      return feedbacklist;
     } catch (Exception e) {
-      ArrayList<FeedBack> feedbacklist = new ArrayList<>();
-      feedbacklist.add(
-          new FeedBack(StatusEnum.CHECKSTYLE_FAILURE, "", "",
-              "Checkstyle ArrayList error", "", ""));
-      return feedbacklist;
+      feedbackList.add(
+          new FeedBack(StatusEnum.CHECKSTYLE_FAILURE,
+              "Checkstyle ArrayList error", e.getMessage()));
     }
+    return feedbackList;
   }
 }
 

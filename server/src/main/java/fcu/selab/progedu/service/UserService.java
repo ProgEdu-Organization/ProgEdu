@@ -20,6 +20,8 @@ import org.gitlab.api.models.GitlabUser;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.csvreader.CsvReader;
 
@@ -31,6 +33,7 @@ import fcu.selab.progedu.db.RoleDbManager;
 import fcu.selab.progedu.db.RoleUserDbManager;
 import fcu.selab.progedu.db.UserDbManager;
 import fcu.selab.progedu.db.service.GroupDbService;
+import fcu.selab.progedu.utils.ExceptionUtil;
 
 @Path("user")
 public class UserService {
@@ -48,6 +51,7 @@ public class UserService {
   private RoleDbManager rdb = RoleDbManager.getInstance();
   private AssignmentService as = AssignmentService.getInstance();
   private GroupDbService gdb = GroupDbService.getInstance();
+  private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 
   /**
    * Upload a csv file for student batch registration
@@ -102,7 +106,8 @@ public class UserService {
       }
     } catch (IOException e) {
       response = Response.serverError().entity("failed !").build();
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return response;
   }
@@ -140,7 +145,8 @@ public class UserService {
         response = Response.ok().build();
       } catch (IOException e) {
         response = Response.serverError().entity("Failed !").build();
-        e.printStackTrace();
+        LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+        LOGGER.error(e.getMessage());
       }
     } else {
       response = Response.serverError().entity(errorMessage).build();

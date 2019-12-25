@@ -9,14 +9,18 @@ import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fcu.selab.progedu.config.GitlabConfig;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
+import fcu.selab.progedu.utils.ExceptionUtil;
 
 public class TeacherGetUserHw {
   private static final String ENCODING = "UTF-8";
   private static final String PATH = "/api/v3/projects/owned?private_token=";
   GitlabConfig gitData = GitlabConfig.getInstance();
+  private static final Logger LOGGER = LoggerFactory.getLogger(TeacherGetUserHw.class);
 
   private String hostUrl;
 
@@ -24,7 +28,8 @@ public class TeacherGetUserHw {
     try {
       hostUrl = gitData.getGitlabHostUrl();
     } catch (LoadConfigFailureException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
 
     return hostUrl;
@@ -73,7 +78,8 @@ public class TeacherGetUserHw {
       }
 
     } catch (Exception e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     } finally {
       if (conn != null) {
         conn.disconnect();
@@ -121,7 +127,8 @@ public class TeacherGetUserHw {
       }
 
     } catch (Exception e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     } finally {
       if (conn != null) {
         conn.disconnect();

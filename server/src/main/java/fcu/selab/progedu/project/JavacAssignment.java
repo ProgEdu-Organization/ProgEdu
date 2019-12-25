@@ -23,6 +23,8 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fcu.selab.progedu.config.CourseConfig;
 import fcu.selab.progedu.config.GitlabConfig;
@@ -31,8 +33,10 @@ import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.service.StatusService;
 import fcu.selab.progedu.status.StatusEnum;
 import fcu.selab.progedu.data.ZipFileInfo;
+import fcu.selab.progedu.utils.ExceptionUtil;
 
 public class JavacAssignment extends AssignmentType {
+  private static final Logger LOGGER = LoggerFactory.getLogger(JavacAssignment.class);
 
   @Override
   public ProjectTypeEnum getProjectType() {
@@ -83,7 +87,8 @@ public class JavacAssignment extends AssignmentType {
       transformer.transform(source, result);
     } catch (LoadConfigFailureException | ParserConfigurationException | SAXException | IOException
         | TransformerException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
 
   }
@@ -134,7 +139,8 @@ public class JavacAssignment extends AssignmentType {
     try {
       Files.write(file, lines, StandardCharsets.UTF_8);
     } catch (IOException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
   }
 
@@ -153,7 +159,8 @@ public class JavacAssignment extends AssignmentType {
         sb.append(line).append("\n");
       }
     } catch (IOException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return sb.toString();
   }
@@ -173,7 +180,8 @@ public class JavacAssignment extends AssignmentType {
           .filter(f -> f.endsWith(".java")).collect(Collectors.toList());
 
     } catch (IOException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     System.out.print(getCommand(fileList, assignmentName));
     return getCommand(fileList, assignmentName);
