@@ -35,7 +35,7 @@ public class ZipHandler {
   GitlabConfig gitData = GitlabConfig.getInstance();
   CourseConfig courseData = CourseConfig.getInstance();
 
-  public String serverIp;
+  private String serverIp;
 
   StringBuilder sb = new StringBuilder();
 
