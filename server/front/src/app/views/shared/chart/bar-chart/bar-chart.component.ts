@@ -7,10 +7,10 @@ import { Component, OnInit, Input, OnChanges} from '@angular/core';
 })
 export class BarChartComponent implements OnInit, OnChanges {
   @Input() commits: Array<any>;
+  @Input() labels: string[];
 
   public barChartType = 'bar';
   public barChartLegend = true;
-  public barChartLabels: string[] = ['HW1', 'HW2', 'HW3', 'HW4', 'HW6', 'HW6', 'HW7'];
   public barChartOptions: any = {
     scaleShowVerticalLines: true,
     responsive: true,
@@ -32,6 +32,7 @@ export class BarChartComponent implements OnInit, OnChanges {
   public status = {
     notBuild: {
       name: 'notBuild',
+      status: 'INI'
     },
     compilerFailure: {
       name: 'compilerFailure',
@@ -59,11 +60,6 @@ export class BarChartComponent implements OnInit, OnChanges {
 
   ngOnChanges(): void {
     if(this.commits){
-      console.log(this.commits);
-      this.barChartLabels = [];
-      for(let i=0; i < this.commits.length; i++){
-        this.barChartLabels.push(this.commits[i].name);
-      }
     }
   }
 
