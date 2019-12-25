@@ -8,7 +8,11 @@ export class FilterPipe implements PipeTransform {
   transform(items: Array<any>, args: string): any {
     items = items || [];
     if (args !== undefined && items.length !== 0) {
-      const result = items.filter(item => item.username.includes(args));
+      const result = items.filter(item => {
+        if (item.username.includes(args) || item.name.includes(args)) {
+          return item;
+        }
+      });
       return this.sortByUserName(result);
     }
     // console.log(items.sort((a, b) => a.useruame - b.useruame));

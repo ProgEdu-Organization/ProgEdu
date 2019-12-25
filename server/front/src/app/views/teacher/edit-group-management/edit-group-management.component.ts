@@ -3,6 +3,7 @@ import { ModalDirective } from 'ngx-bootstrap/modal';
 import { EditGroupManagementService } from './edit-group-management.service';
 import { ActivatedRoute } from '@angular/router';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { HttpErrorResponse } from '@angular/common/http';
 @Component({
   selector: 'app-edit-group-management',
   templateUrl: './edit-group-management.component.html',
@@ -17,6 +18,9 @@ export class EditGroupManagementComponent implements OnInit {
   public selectedUser;
   public confirmModalMsg;
   public mode;
+
+  errorResponse: HttpErrorResponse;
+  errorTitle: string;
 
   constructor(private editGroupManagementService: EditGroupManagementService, private activeRoute: ActivatedRoute,
     private fb: FormBuilder) { }
@@ -50,32 +54,34 @@ export class EditGroupManagementComponent implements OnInit {
     );
   }
 
-  editLeaderSubmit() {
-    const leader = this.groupForm.get('leader').value;
+  updateLeaderSubmit() {
+    const leader = this.selectedUser;
     const groupName = this.groupForm.get('name').value;
-
     this.editGroupManagementService.editGroupLeader(groupName, leader).subscribe(
-      response => {
+      (response) => {
         this.getGroup(groupName);
         this.getAllUser();
+        this.confirmModal.hide();
+      },
+      (error) => {
+        this.errorResponse = error;
+        this.errorTitle = 'Edit Leader Error';
         this.confirmModal.hide();
       }
     );
   }
 
-  setLeader() {
-    this.groupForm.get('members').value.push(this.groupForm.get('leader').value);
-    this.groupForm.get('members').setValue(this.groupForm.get('members').value.filter(item => item !== this.selectedUser));
-    this.groupForm.get('leader').setValue(this.selectedUser);
-    this.editLeaderSubmit();
-  }
-
   removeGroupMemberByUsername() {
 
     this.editGroupManagementService.deleteGroupMember(this.groupName, this.selectedUser).subscribe(
-      () => {
+      (response) => {
         this.getGroup(this.groupName);
         this.getAllUser();
+        this.confirmModal.hide();
+      },
+      (error) => {
+        this.errorResponse = error;
+        this.errorTitle = 'Remove Group Member Error';
         this.confirmModal.hide();
       }
     );
@@ -84,7 +90,6 @@ export class EditGroupManagementComponent implements OnInit {
   getAllUser() {
     this.editGroupManagementService.getAllUser().subscribe(response => {
       this.users = response.Users;
-      console.log(this.users);
       // reGet the all user data and remove exist in  group merber
       const selectedUsers = this.groupForm.get('members').value;
       const selectedLeader = this.groupForm.get('leader').value;
@@ -102,21 +107,25 @@ export class EditGroupManagementComponent implements OnInit {
   showConfirmModal(mode: string) {
     this.mode = mode;
     if (mode === 'add-member') {
-      this.confirmModalMsg = `Do you add ${this.selectedUser.username} ${this.selectedUser.name} to group members`;
+      this.confirmModalMsg = `Do you add "${this.selectedUser.username} ${this.selectedUser.name}" to group members`;
     } else if (mode === 'remove-member') {
-      this.confirmModalMsg = `Do you remove ${this.selectedUser[0]} ${this.selectedUser[1]} from group members`;
+      this.confirmModalMsg = `Do you remove "${this.selectedUser[0]} ${this.selectedUser[1]}" from group members`;
     } else if (mode === 'set-leader') {
-      this.confirmModalMsg = `Do you set ${this.selectedUser[0]} ${this.selectedUser[1]} to group leader`;
+      this.confirmModalMsg = `Do you set "${this.selectedUser[0]} ${this.selectedUser[1]}" to group leader`;
     }
     this.confirmModal.show();
   }
-  // removeGroupMemberByUsername(groupForm.get('name').value,member);
 
   async addGroupMemberByUsername() {
     await this.editGroupManagementService.addGroupMemeber(this.groupName, this.selectedUser.username).subscribe(
-      () => {
+      (response) => {
         this.getGroup(this.groupName);
         this.getAllUser();
+        this.confirmModal.hide();
+      },
+      (error) => {
+        this.errorResponse = error;
+        this.errorTitle = 'Add Group Member Error';
         this.confirmModal.hide();
       }
     );

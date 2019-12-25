@@ -3,6 +3,7 @@ import { ModalDirective } from 'ngx-bootstrap/modal';
 import { Router } from '@angular/router';
 import { AssignmentManagementService } from './assignment-management.service';
 import { FormBuilder, Validators, FormGroup } from '@angular/forms';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-assignment-management',
@@ -14,6 +15,9 @@ export class AssignmentManagementComponent implements OnInit {
   assignments: Array<any>;
   assignmentName: string;
   assignmentForm: FormGroup;
+
+  errorResponse: HttpErrorResponse;
+  errorTitle: string;
 
   max: number = 100;
   showWarning: boolean;
@@ -97,7 +101,9 @@ export class AssignmentManagementComponent implements OnInit {
         this.isDeleteProgress = false;
       },
       error => {
-        console.log(error);
+        this.errorTitle = 'Delete Assignment Error';
+        this.deleteModal.hide();
+        this.errorResponse = error;
       });
   }
 
@@ -129,8 +135,10 @@ export class AssignmentManagementComponent implements OnInit {
           this.editModal.hide();
           this.getAllAssignments();
         },
-        errpr => {
-
+        error => {
+          this.errorTitle = 'Edit Assignment Error';
+          this.editModal.hide();
+          this.errorResponse = error;
         });
     }
   }

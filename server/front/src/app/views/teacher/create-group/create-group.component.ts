@@ -5,6 +5,7 @@ import { CreateGroupService } from './create-group.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ModalDirective } from 'ngx-bootstrap/modal';
+import { HttpErrorResponse } from '@angular/common/http';
 
 const name = 'name';
 const projectName = 'projectName';
@@ -20,12 +21,14 @@ const projectType = 'projectType';
 })
 
 export class CreateGroupComponent implements OnInit {
+  @ViewChild('myModal', { static: true }) public progressModal: ModalDirective;
   public users: Array<any> = new Array<any>();
   public group: FormGroup;
   public search;
   public exitsGroups;
-  errorMsg: string;
 
+  errorResponse: HttpErrorResponse;
+  errorTitle: string;
 
   max: number = 100;
   showWarning: boolean;
@@ -35,9 +38,6 @@ export class CreateGroupComponent implements OnInit {
 
   constructor(private createGroupService: CreateGroupService, private fb: FormBuilder,
     private router: Router) { }
-
-  @ViewChild('myModal', { static: true }) public progressModal: ModalDirective;
-  @ViewChild('bsModal', { static: false }) public errorModal: ModalDirective;
 
   public projectTypes: Array<any> = ['javac', 'maven', 'android', 'web'];
   ngOnInit() {
@@ -49,6 +49,7 @@ export class CreateGroupComponent implements OnInit {
       projectType: ['', [Validators.required]],
       leader: ['Click the Group Member', [Validators.required, Validators.maxLength(10)]],
       member: [new Array(), Validators.minLength(3)],
+      rememberMe: [true]
     });
     this.onChanges();
     this.getAllGroups();
@@ -144,10 +145,9 @@ export class CreateGroupComponent implements OnInit {
             window.location.reload();
           },
           error => {
-            this.errorMsg = error.message;
+            this.errorTitle = 'Create Group Error';
+            this.errorResponse = error;
             this.progressModal.hide();
-            this.errorModal.show();
-            console.log(error);
           });
     }
   }

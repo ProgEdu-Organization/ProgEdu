@@ -1,10 +1,17 @@
 package fcu.selab.progedu.service;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
+import com.csvreader.CsvReader;
+import fcu.selab.progedu.config.CourseConfig;
+import fcu.selab.progedu.conn.GitlabService;
+import fcu.selab.progedu.data.User;
+import fcu.selab.progedu.db.RoleDbManager;
+import fcu.selab.progedu.db.RoleUserDbManager;
+import fcu.selab.progedu.db.UserDbManager;
+import fcu.selab.progedu.db.service.GroupDbService;
+import org.gitlab.api.models.GitlabUser;
+import org.glassfish.jersey.media.multipart.FormDataParam;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
@@ -16,6 +23,11 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 import org.gitlab.api.models.GitlabUser;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.json.JSONArray;
@@ -34,6 +46,7 @@ import fcu.selab.progedu.db.RoleUserDbManager;
 import fcu.selab.progedu.db.UserDbManager;
 import fcu.selab.progedu.db.service.GroupDbService;
 import fcu.selab.progedu.utils.ExceptionUtil;
+
 
 @Path("user")
 public class UserService {
@@ -130,6 +143,7 @@ public class UserService {
       @FormParam("password") String password,
       @FormParam("role") String role,
       @FormParam("isDisplayed") boolean isDisplayed) {
+
     Response response = null;
     List<RoleEnum> roleList = new ArrayList<>();
 

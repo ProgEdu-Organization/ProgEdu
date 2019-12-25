@@ -1,23 +1,27 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ProjectChoosedService } from './project-choose.service';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 @Component({
   selector: 'app-project-choose',
   templateUrl: './project-choose.component.html',
   styleUrls: []
 })
 export class ProjectChoosedComponent implements OnInit {
+  @ViewChild('screenshotModal', { static: true }) public screenshotModal: ModalDirective;
+
+  public group;
   public groupName;
+
   public projectName;
   public projectType;
-  public group;
+  public gitlabprojectUrl: string;
+
   public commits: Array<any> = [];
   public feedbacks;
-  public isCollapsed = true;
   public selectedCommitNumber;
-  public selectedScreenshotName;
   public screenshotUrls: Array<string>;
-  public gitlabprojectUrl: string;
+
 
   constructor(private activeRoute: ActivatedRoute, private projectService: ProjectChoosedService) { }
 
@@ -128,10 +132,4 @@ export class ProjectChoosedComponent implements OnInit {
       );
     }
   }
-
-  updateScrennshotName() {
-    const url_split = $('.screenshot:visible').attr('src').split('/');
-    this.selectedScreenshotName = url_split[url_split.length - 1];
-  }
-
 }
