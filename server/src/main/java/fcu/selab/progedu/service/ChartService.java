@@ -39,10 +39,10 @@ public class ChartService {
             List<Integer> assignmentIds = new ArrayList<>();
             assignmentIds.add(assignmentDbManager.getAssignmentIdByName(name));
             assignmentIds.forEach(id ->{
-                List<Integer> auids = assignmentUserDbManager.getAuids(id);
-                auids.forEach(auid->{
-                    List<CommitRecord> commitRecords = commitRecordDbManager.getCommitRecord(auid);
-                    JSONArray array = new JSONArray();
+                List<Integer> auIds = assignmentUserDbManager.getAuids(id);
+                JSONArray array = new JSONArray();
+                auIds.forEach(auId->{
+                    List<CommitRecord> commitRecords = commitRecordDbManager.getCommitRecord(auId);
                     for (CommitRecord commitRecord : commitRecords) {
                         try {
                             int number = commitRecord.getNumber();
@@ -57,9 +57,10 @@ public class ChartService {
                             e.printStackTrace();
                         }
                     }
-                    commits.put("name", name);
-                    commits.put("commits", array);
+                    System.out.println(array.toString());
                 });
+                commits.put("name", name);
+                commits.put("commits", array);
             });
             assignment.put(commits);
         });
