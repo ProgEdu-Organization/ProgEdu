@@ -104,7 +104,7 @@ public class UserDbManager {
    * @return password
    */
   public String getPassword(String username) {
-    String password = "";
+    String token = "";
     String query = "SELECT password FROM User WHERE username = ?";
 
     try (Connection conn = database.getConnection();
@@ -112,13 +112,13 @@ public class UserDbManager {
       preStmt.setString(1, username);
       try (ResultSet rs = preStmt.executeQuery()) {
         while (rs.next()) {
-          password = rs.getString(PASSWORD);
+          token = rs.getString(PASSWORD);
         }
       }
     } catch (SQLException e) {
       e.printStackTrace();
     }
-    return password;
+    return token;
   }
 
   /**
@@ -128,7 +128,7 @@ public class UserDbManager {
    * @param password user new password
    */
   public void modifiedUserPassword(String username, String password) {
-    String query = "UPDATE User SET password=? WHERE username = ?";
+    String query = "UPDATE User SET password = ? WHERE username = ?";
 
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(query)) {
