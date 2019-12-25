@@ -29,6 +29,8 @@ import org.gitlab.api.models.GitlabUser;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fcu.selab.progedu.config.CourseConfig;
 import fcu.selab.progedu.config.GitlabConfig;
@@ -49,6 +51,7 @@ import fcu.selab.progedu.project.AssignmentType;
 import fcu.selab.progedu.project.ProjectTypeEnum;
 import fcu.selab.progedu.utils.Linux;
 import fcu.selab.progedu.utils.ZipHandler;
+import fcu.selab.progedu.utils.ExceptionUtil;
 
 @Path("assignment/")
 public class AssignmentService {
@@ -78,6 +81,7 @@ public class AssignmentService {
   private final String tempDir = System.getProperty("java.io.tmpdir");
   private final String uploadDir = tempDir + "/uploads/";
   private final String testDir = tempDir + "/tests/";
+  private static final Logger LOGGER = LoggerFactory.getLogger(AssignmentService.class);
 
   boolean isSave = true;
 
@@ -94,7 +98,8 @@ public class AssignmentService {
       mailPassword = jenkinsData.getMailPassword();
       gitlabRootUsername = gitlabData.getGitlabRootUsername();
     } catch (LoadConfigFailureException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
   }
 
@@ -189,7 +194,8 @@ public class AssignmentService {
     try {
       gitlabUrl = gitlabData.getGitlabRootUrl();
     } catch (LoadConfigFailureException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     List<GitlabProject> rootProjects = gitlabService.getProject(root);
     for (GitlabProject project : rootProjects) {
@@ -413,7 +419,8 @@ public class AssignmentService {
     try {
       name = courseConfig.getCourseName();
     } catch (LoadConfigFailureException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
 
     return name;
@@ -469,7 +476,8 @@ public class AssignmentService {
       gitlabService.setGitlabWebhook(project);
       assignment.createJenkinsJob(username, assignmentName);
     } catch (IOException | LoadConfigFailureException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
   }
 

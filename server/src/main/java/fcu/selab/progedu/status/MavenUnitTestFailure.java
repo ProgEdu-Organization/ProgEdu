@@ -26,37 +26,35 @@ public class MavenUnitTestFailure implements Status {
 
   @Override
   public ArrayList<FeedBack> formatExamineMsg(String consoleText) {
+    ArrayList<FeedBack> feedbackList = new ArrayList<>();
     try {
       consoleText = consoleText + "\n";
       int endIndex = consoleText.length();
-      ArrayList<FeedBack> feedbacklist = new ArrayList<>();
       while (consoleText.contains("Failed tests:")) {
-        int nextrow = consoleText.indexOf("\n");
-        int nextfailedtest = consoleText.indexOf("Failed tests:");
-        if (nextfailedtest > nextrow) {
-          consoleText = consoleText.substring(nextrow + 1, endIndex);
-          endIndex = endIndex - nextrow - 1;
+        int nextRowIndex = consoleText.indexOf("\n");
+        int nextFailedTest = consoleText.indexOf("Failed tests:");
+        if (nextFailedTest > nextRowIndex) {
+          consoleText = consoleText.substring(nextRowIndex + 1, endIndex);
+          endIndex = endIndex - nextRowIndex - 1;
         } else {
-          int nextcolon = consoleText.indexOf(":", 13);
-          feedbacklist.add(new FeedBack(
+          int nextColonIndex = consoleText.indexOf(":", 13);
+          feedbackList.add(new FeedBack(
               StatusEnum.UNIT_TEST_FAILURE,
               "",
               "",
-              consoleText.substring(nextcolon + 1, nextrow).trim(),
+              consoleText.substring(nextColonIndex + 1, nextRowIndex).trim(),
               "",
               ""
           ));
-          consoleText = consoleText.substring(nextrow + 1, endIndex);
-          endIndex = endIndex - nextrow - 1;
+          consoleText = consoleText.substring(nextRowIndex + 1, endIndex);
+          endIndex = endIndex - nextRowIndex - 1;
         }
       }
-      return feedbacklist;
     } catch (Exception e) {
-      ArrayList<FeedBack> feedbacklist = new ArrayList<>();
-      feedbacklist.add(
-          new FeedBack(StatusEnum.UNIT_TEST_FAILURE, "", "",
-              "UnitTest ArrayList error", "", ""));
-      return feedbacklist;
+      feedbackList.add(
+          new FeedBack(StatusEnum.UNIT_TEST_FAILURE,
+              "UnitTest ArrayList error", e.getMessage()));
     }
+    return feedbackList;
   }
 }

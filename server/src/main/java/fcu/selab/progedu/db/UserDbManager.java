@@ -11,8 +11,12 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import fcu.selab.progedu.data.User;
 import fcu.selab.progedu.service.RoleEnum;
+import fcu.selab.progedu.utils.ExceptionUtil;
 
 public class UserDbManager {
   private static final String GIT_LAB_ID = "gitLabId";
@@ -24,6 +28,7 @@ public class UserDbManager {
   private static final String ROLE = "role";
   private static final String DISPLAY = "display";
   private static UserDbManager dbManager = null;
+  private static final Logger LOGGER = LoggerFactory.getLogger(UserDbManager.class);
 
   /**
    * 
@@ -65,7 +70,8 @@ public class UserDbManager {
       preStmt.setBoolean(7, user.getDisplay());
       preStmt.executeUpdate();
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
   }
 
@@ -91,7 +97,8 @@ public class UserDbManager {
       }
       hashtext = bld.toString() + hashtext;
     } catch (NoSuchAlgorithmException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
 
     return hashtext;
@@ -116,7 +123,8 @@ public class UserDbManager {
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return password;
   }
@@ -137,7 +145,8 @@ public class UserDbManager {
       preStmt.setString(2, username);
       preStmt.executeUpdate();
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
   }
 
@@ -174,7 +183,8 @@ public class UserDbManager {
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return id;
   }
@@ -197,7 +207,8 @@ public class UserDbManager {
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return id;
   }
@@ -236,7 +247,8 @@ public class UserDbManager {
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return user;
   }
@@ -275,7 +287,8 @@ public class UserDbManager {
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return user;
   }
@@ -298,7 +311,8 @@ public class UserDbManager {
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return isDisplay;
   }
@@ -318,7 +332,8 @@ public class UserDbManager {
       preStmt.setString(2, username);
       preStmt.executeUpdate();
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
 
   }
@@ -360,7 +375,8 @@ public class UserDbManager {
       }
 
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return users;
   }
@@ -385,7 +401,8 @@ public class UserDbManager {
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return isExist;
   }
@@ -410,7 +427,8 @@ public class UserDbManager {
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return isExist;
   }
@@ -433,7 +451,8 @@ public class UserDbManager {
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return name;
   }

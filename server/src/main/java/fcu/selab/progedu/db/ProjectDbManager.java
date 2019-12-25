@@ -10,8 +10,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import fcu.selab.progedu.data.GroupProject;
 import fcu.selab.progedu.project.ProjectTypeEnum;
+import fcu.selab.progedu.utils.ExceptionUtil;
 
 public class ProjectDbManager {
   AssignmentTypeDbManager atDb = AssignmentTypeDbManager.getInstance();
@@ -23,6 +27,8 @@ public class ProjectDbManager {
   }
 
   private IDatabase database = new MySqlDatabase();
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(ProjectDbManager.class);
 
   private ProjectDbManager() {
 
@@ -49,7 +55,8 @@ public class ProjectDbManager {
       preStmt.setInt(5, typeId);
       preStmt.executeUpdate();
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
   }
 
@@ -84,7 +91,8 @@ public class ProjectDbManager {
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return project;
   }
@@ -122,7 +130,8 @@ public class ProjectDbManager {
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return project;
   }
@@ -145,7 +154,8 @@ public class ProjectDbManager {
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return projectName;
   }
@@ -169,7 +179,8 @@ public class ProjectDbManager {
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return id;
   }
@@ -192,7 +203,8 @@ public class ProjectDbManager {
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return typeId;
   }
@@ -214,7 +226,8 @@ public class ProjectDbManager {
         lsNames.add(name);
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return lsNames;
   }
@@ -231,7 +244,8 @@ public class ProjectDbManager {
       preStmt.setInt(1, id);
       preStmt.executeUpdate();
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
   }
 

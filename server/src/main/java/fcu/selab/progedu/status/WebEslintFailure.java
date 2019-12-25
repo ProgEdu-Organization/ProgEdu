@@ -18,21 +18,20 @@ public class WebEslintFailure implements Status {
     int start = consoleText.indexOf(checkstyleStart) + checkstyleStart.length();
     int end = consoleText.lastIndexOf(checkstyleEnd) - 1;
     String checkstyleInfo = consoleText.substring(start,end);
-    int nextrow = checkstyleInfo.indexOf("\n");
-    int endrow = checkstyleInfo.indexOf("\n", checkstyleInfo.indexOf("problem"));
-    checkstyleInfo = checkstyleInfo.substring(nextrow + 1,endrow);
+    int nextRowIndex = checkstyleInfo.indexOf("\n");
+    int endRowIndex = checkstyleInfo.indexOf("\n", checkstyleInfo.indexOf("problem"));
+    checkstyleInfo = checkstyleInfo.substring(nextRowIndex + 1,endRowIndex);
     checkstyleInfo = checkstyleInfo.replace("/var/jenkins_home/workspace/","");
     return checkstyleInfo.trim();
   }
 
   @Override
   public ArrayList<FeedBack> formatExamineMsg(String consoleText) {
-
+    ArrayList<FeedBack> feedbackList = new ArrayList<>();
     try {
       consoleText = consoleText.substring(0, consoleText.indexOf("✖"));
       int endIndex = consoleText.length();
       String fileName = "";
-      ArrayList<FeedBack> feedbackList = new ArrayList<>();
       while (consoleText.contains("error")) {
         int errorIndex = consoleText.indexOf("error");
         int nextRowIndex = consoleText.indexOf("\n");
@@ -67,13 +66,11 @@ public class WebEslintFailure implements Status {
           endIndex = endIndex - nextRowIndex - 1;
         }
       }
-      return feedbackList;
     } catch (Exception e) {
-      ArrayList<FeedBack> feedbackList = new ArrayList<>();
       feedbackList.add(
-          new FeedBack(StatusEnum.WEB_ESLINT_FAILURE, "", "",
-              "Eslint ArrayList error", "", ""));
-      return feedbackList;
+          new FeedBack(StatusEnum.WEB_ESLINT_FAILURE,
+              "Eslint ArrayList error", e.getMessage()));
     }
+    return feedbackList;
   }
 }
