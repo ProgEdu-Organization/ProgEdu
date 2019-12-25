@@ -1,10 +1,10 @@
 import { Component, OnInit, SystemJsNgModuleLoader } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { AssignmentChoosedService } from './assignment-choosed.service';
+import { AssignmentChoosedService } from './assignment-choose.service';
 
 @Component({
-  selector: 'app-assignment-choosed',
-  templateUrl: './assignment-choosed.component.html'
+  selector: 'app-assignment-choose',
+  templateUrl: './assignment-choose.component.html'
 })
 export class AssignmentChoosedComponent implements OnInit {
 
