@@ -38,21 +38,21 @@ public class AssignmentDbManager {
         + ", type, zipChecksum, zipUrl, releaseTime, display)  VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?,"
         + "?)";
     int typeId = atDb.getTypeIdByName(assignment.getType().getTypeName());
-    Timestamp createtimes = new Timestamp(assignment.getCreateTime().getTime());
-    Timestamp deadlinetimes = new Timestamp(assignment.getDeadline().getTime());
-    Timestamp releasetimes = new Timestamp(assignment.getReleaseTime().getTime());
+    Timestamp createTimes = new Timestamp(assignment.getCreateTime().getTime());
+    Timestamp deadlineTimes = new Timestamp(assignment.getDeadline().getTime());
+    Timestamp releaseTimes = new Timestamp(assignment.getReleaseTime().getTime());
 
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
       preStmt.setString(1, assignment.getName());
-      preStmt.setTimestamp(2, createtimes);
-      preStmt.setTimestamp(3, deadlinetimes);
+      preStmt.setTimestamp(2, createTimes);
+      preStmt.setTimestamp(3, deadlineTimes);
       preStmt.setString(4, assignment.getDescription());
       preStmt.setBoolean(5, assignment.isHasTemplate());
       preStmt.setInt(6, typeId);
       preStmt.setLong(7, assignment.getTestZipChecksum());
       preStmt.setString(8, assignment.getTestZipUrl());
-      preStmt.setTimestamp(9, releasetimes);
+      preStmt.setTimestamp(9, releaseTimes);
       preStmt.setBoolean(10, assignment.isDisplay());
       preStmt.executeUpdate();
     } catch (SQLException e) {
@@ -254,9 +254,10 @@ public class AssignmentDbManager {
    * @param name assignment name
    */
   public void deleteAssignment(String name) {
-    String sql = "DELETE FROM Assignment WHERE name='" + name + "'";
+    String sql = "DELETE FROM Assignment WHERE name = ?";
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
+      preStmt.setString(1, name);
       preStmt.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();
@@ -267,21 +268,21 @@ public class AssignmentDbManager {
    * edit assignment to database
    * 
    * @param deadline    deadline
-   * @param releaseTime releaseTime
+   * @param release release
    * @param readMe      readMe
    * @param checksum    checksum
    * @param id          id
    */
-  public void editAssignment(Date deadline, Date releaseTime, String readMe, long checksum,
+  public void editAssignment(Date deadline, Date release, String readMe, long checksum,
       int id) {
-    Timestamp deadlinetime = new Timestamp(deadline.getTime());
-    Timestamp releasetime = new Timestamp(releaseTime.getTime());
+    Timestamp deadlineTime = new Timestamp(deadline.getTime());
+    Timestamp releaseTime = new Timestamp(release.getTime());
     String sql = "UPDATE Assignment SET deadline = ?, releaseTime = ?, description = ?,"
         + "zipChecksum = ? WHERE id = ?";
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
-      preStmt.setTimestamp(1, deadlinetime);
-      preStmt.setTimestamp(2, releasetime);
+      preStmt.setTimestamp(1, deadlineTime);
+      preStmt.setTimestamp(2, releaseTime);
       preStmt.setString(3, readMe);
       preStmt.setLong(4, checksum);
       preStmt.setInt(5, id);
@@ -295,19 +296,19 @@ public class AssignmentDbManager {
    * edit assignment
    * 
    * @param deadline    deadline
-   * @param releaseTime releaseTime
+   * @param release release
    * @param readMe      readMe
    * @param id          id
    */
-  public void editAssignment(Date deadline, Date releaseTime, String readMe, int id) {
-    Timestamp deadlinetime = new Timestamp(deadline.getTime());
-    Timestamp releasetime = new Timestamp(releaseTime.getTime());
+  public void editAssignment(Date deadline, Date release, String readMe, int id) {
+    Timestamp deadlineTime = new Timestamp(deadline.getTime());
+    Timestamp releaseTime = new Timestamp(release.getTime());
     String sql = "UPDATE Assignment SET deadline = ?, releaseTime = ?, "
         + "description = ? WHERE id = ?";
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
-      preStmt.setTimestamp(1, deadlinetime);
-      preStmt.setTimestamp(2, releasetime);
+      preStmt.setTimestamp(1, deadlineTime);
+      preStmt.setTimestamp(2, releaseTime);
       preStmt.setString(3, readMe);
       preStmt.setInt(4, id);
       preStmt.executeUpdate();
