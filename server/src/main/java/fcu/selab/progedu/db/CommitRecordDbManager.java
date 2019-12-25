@@ -252,29 +252,4 @@ public class CommitRecordDbManager {
       LOGGER.error(e.getMessage());
     }
   }
-
-  /**
-   * get Commit_Status id by auid
-   * 
-   * @param auid auId
-   * @return status status
-   */
-  public int getCommitStatusbyAuid(int auid) {
-    int status = 0;
-    String sql = "SELECT status FROM Commit_Record WHERE auId=?";
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
-      preStmt.setInt(1, auid);
-      try (ResultSet rs = preStmt.executeQuery()) {
-        while (rs.next()) {
-          status = rs.getInt("status");
-        }
-      }
-    } catch (SQLException e) {
-      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
-      LOGGER.error(e.getMessage());
-    }
-    return status;
-  }
-
 }

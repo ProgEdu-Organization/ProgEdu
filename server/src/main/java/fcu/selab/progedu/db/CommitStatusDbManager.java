@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,5 +73,11 @@ public class CommitStatusDbManager {
     StatusEnum statusEnum = StatusEnum.getStatusEnum(statusName);
     return statusEnum;
   }
+
+
+//  public ArrayList<Integer> getAllStatusCountByAssignmentName(String assignmentName) {
+//    String query = "SELECT status FROM Commit_Status WHERE id = ?";
+//    String statusName = null;
+//  }
 
 }

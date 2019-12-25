@@ -1,15 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 
 @Component({
-  selector: 'app-chart',
-  templateUrl: './chart.component.html'
+  selector: 'app-line-chart',
+  templateUrl: './line-chart.component.html',
+  styleUrls: ['./line-chart.component.scss']
 })
-export class ChartComponent implements OnInit {
+export class LineChartComponent implements OnInit {
+  @Input() assignmentNames: Array<String>;
   // line Chart
   public status = {
-    success: {
-      name: 'success',
-      color: '#35a2eb'
+    notBuild: {
+      name: 'notBuild',
     },
     compilerFailure: {
       name: 'compilerFailure',
@@ -19,12 +20,13 @@ export class ChartComponent implements OnInit {
       name: 'checkStyleError',
       color: '#ffcf57'
     },
-    notBuild: {
-      name: 'notBuild',
-    },
     testFailure: {
       name: 'testFailure',
       color: '#4bc0c0'
+    },
+    success: {
+      name: 'success',
+      color: '#35a2eb'
     }
   };
 
@@ -46,33 +48,28 @@ export class ChartComponent implements OnInit {
     },
     { data: [18, 48, 87, 31, 22, 27, 40], label: 'Count', backgroundColor: 'rgba(0, 0, 0, 0.1)' }
   ];
-  public mixedChartLabels: Array<any> = ['HW1', 'HW2', 'HW3', 'HW4', 'HW5', 'HW6'];
+  public mixedChartLabels: Array<any> = this.assignmentNames;
   public mixedChartOptions: any = {
     animation: true,
     responsive: true,
   };
   public mixedChartLegend = true;
   public mixedChartType = 'bar';
-  // bar Chart ////////////////////////////////////////
-  public barChartOptions: any = {
-    scaleShowVerticalLines: true,
-    responsive: true,
-    /*
-    scales: {
-      xAxes: [{
-        type: 'time',
-        time: {
-          unit: 'month'
-        }
-      }],
 
-    }
-    */
-    scales: {
+  constructor() { }
 
-    }
-  };
-  public barChartLabels: string[] = ['HW1', 'HW2', 'HW3', 'HW4', 'HW6', 'HW6', 'HW7'];
+  ngOnInit() {
+    console.log(this.assignmentNames);
+  }
+
+  public chartClicked(e: any): void {
+    console.log(e);
+  }
+
+  public chartHovered(e: any): void {
+    console.log(e);
+  }
+
   public barChartType = 'bar';
   public barChartLegend = true;
 
@@ -93,22 +90,23 @@ export class ChartComponent implements OnInit {
       data: [65, 59, 80, 81, 56, 55, 40], label: this.status.testFailure.name
     },
   ];
-  // bubble Chart ////////////////////////////////////////
-  public bubbleChartType = 'bar';
-  public bubbleChartData: any[] = [
-    { data: [{ x: 4, y: 4, z: 1 }], label: 'HW1', radius: 20, type: 'bubble' }
-  ];
-  constructor() { }
 
-  ngOnInit() {
-  }
+  public barChartOptions: any = {
+    scaleShowVerticalLines: true,
+    responsive: true,
+    /*
+    scales: {
+      xAxes: [{
+        type: 'time',
+        time: {
+          unit: 'month'
+        }
+      }],
 
-  public chartClicked(e: any): void {
-    console.log(e);
-  }
+    }
+    */
+    scales: {
 
-  public chartHovered(e: any): void {
-    console.log(e);
-  }
-
+    }
+  };
 }

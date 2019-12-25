@@ -1,0 +1,20 @@
+<div class="animated fadeIn">
+  <!-- Nav tabs -->
+  <div class="row">
+    <div class="col-md-10">
+      <tabset>
+        <tab id="add-one-student">
+          <ng-template tabHeading><i class="icon-calculator"></i> Compiler Result</ng-template>
+          <app-bar-chart *ngIf='commits' [commits] ='commits'></app-bar-chart>
+        </tab>
+        <tab id="add-muti-student">
+          <ng-template tabHeading><i class="icon-basket-loaded"></i>Commit Count And Build Result</ng-template>
+          
+        </tab>
+        <tab id="add-muti-student">
+          <ng-template tabHeading><i class="icon-basket-loaded"></i>Commit Record</ng-template>
+        </tab>
+      </tabset>
+    </div>
+  </div>
+</div>
