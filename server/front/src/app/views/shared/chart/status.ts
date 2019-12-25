@@ -1,6 +1,7 @@
 export const Status = {
     notBuild: {
       name: 'notBuild',
+      color: '#878787',
       status: ['INI']
     },
     compilerFailure: {
@@ -10,17 +11,17 @@ export const Status = {
     },
     checkStyleError: {
       name: 'checkStyleError',
-      color: '#ffcf57',
+      color: '#ffc229',
       status: ['CSF','WEF','WHF','WSF']
     },
     testFailure: {
       name: 'testFailure',
-      color: '#FFFFFF',
+      color: '#26cedf',
       status: ["UTF"]
     },
     success: {
       name: 'success',
-      color: '#35a2eb',
+      color: '#1e90ff',
       status: ['BS']
     }
   };

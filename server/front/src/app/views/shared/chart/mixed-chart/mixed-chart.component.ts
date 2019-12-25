@@ -9,33 +9,14 @@ export class MixedChartComponent implements OnInit {
   @Input() mixedChartLabels: Array<String>;
   @Input() mixedChartData: any[];
   public mixedChartOptions: any = {
-    animation: true,
+    animation: false,
     responsive: true,
+    scaleShowVerticalLines: true,
+    scales: {
+    }
   };
   public mixedChartLegend = true;
   public mixedChartType = 'bar';
-  // line Chart
-  public status = {
-    notBuild: {
-      name: 'notBuild',
-    },
-    compilerFailure: {
-      name: 'compilerFailure',
-      color: '#ff6284'
-    },
-    checkStyleError: {
-      name: 'checkStyleError',
-      color: '#ffcf57'
-    },
-    testFailure: {
-      name: 'testFailure',
-      color: '#4bc0c0'
-    },
-    success: {
-      name: 'success',
-      color: '#35a2eb'
-    }
-  };
 /*
   public mixedChartData: Array<any> = [
     {

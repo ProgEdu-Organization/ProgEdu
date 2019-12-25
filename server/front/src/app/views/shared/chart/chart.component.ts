@@ -44,7 +44,7 @@ export class ChartComponent implements OnInit {
     {
       data: [], label: Status.testFailure.name, fill: false, type: 'line',
     },
-    { data: [18, 20, 7, 5, 22, 10, 2], label: 'Count', backgroundColor: 'rgba(0, 0, 0, 0.1)' }
+    { data: [], label: 'Count' }
   ];
 
   constructor(private chartService: ChartService) { }
@@ -62,9 +62,10 @@ export class ChartComponent implements OnInit {
           for(let j = 0; j < this.barChartData.length; j++){
             this.barChartData[j].data.push(statusCount[j]);
             this.mixedChartData[j].data.push(statusCount[j]);
-            
           }
+          this.mixedChartData[this.mixedChartData.length - 1].data.push(this.commits[i].commits.length);
         }
+        console.log(this.mixedChartData);
       },
       (error)=>{
         console.log('get all assignments error');

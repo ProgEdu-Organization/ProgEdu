@@ -14,7 +14,7 @@ export class BarChartComponent implements OnInit, OnChanges {
     scaleShowVerticalLines: true,
     responsive: true,
     scales: {
-    }
+    },
     /*
     scales: {
       xAxes: [{
