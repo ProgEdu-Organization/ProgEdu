@@ -192,15 +192,7 @@ export class ChartComponent implements OnInit {
           this.bubbleChartData.push(chartData);
       }
     }
-    for(let j = 0; j < this.bubbleChartData.length; j++){
-      if(this.bubbleChartData[j].data[0].x ==='10-23' && this.bubbleChartData[j].data[0].y === 15){
-        console.log(this.bubbleChartData[j]);
-      }
-    }
   }
-
-
-
   getIntervalTime(releaseTime: Date, deadline: Date) {
     // ex: 12-12 ~ 12-20 -> return [12-12, 12-13, 12-14 ... 12-20]
     let set: Set<any> = new Set();
