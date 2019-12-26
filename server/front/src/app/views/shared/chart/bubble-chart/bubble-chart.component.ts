@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 
 @Component({
   selector: 'app-bubble-chart',
@@ -6,6 +6,8 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./bubble-chart.component.scss']
 })
 export class BubbleChartComponent implements OnInit {
+  @Input() bubbleChartData: Array<any>;
+  @Input() bubbleChartLabels: string[];
 
   constructor() { }
 
@@ -13,18 +15,25 @@ export class BubbleChartComponent implements OnInit {
   }
 
   // bubble Chart ////////////////////////////////////////
-  public bubbleChartType = 'bar';
+  /*
   public bubbleChartData: any[] = [
     { data: [{ x: 4, y: 4, z: 1 }], label: 'HW1', radius: 20, type: 'bubble' }
   ];
 
+  public bubbleChartLabels: string[] = ['2006', '2007', '2008', '2009', '2010', '2011', '2012'];
+  */
+
+  public bubbleChartType = 'bar';
+  public bubbleChartLegend = true;
+  public bubbleChartOptions: any = {
+    scaleShowVerticalLines: false,
+    responsive: true
+  };
   
   public chartClicked(e: any): void {
-    console.log(e);
   }
 
   public chartHovered(e: any): void {
-    console.log(e);
   }
 
 }

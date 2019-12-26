@@ -1,5 +1,6 @@
 package fcu.selab.progedu.service;
 
+import fcu.selab.progedu.data.Assignment;
 import fcu.selab.progedu.data.CommitRecord;
 import fcu.selab.progedu.db.AssignmentDbManager;
 import fcu.selab.progedu.db.AssignmentUserDbManager;
@@ -33,7 +34,7 @@ public class ChartService {
         List<String> assignmentNames =  assignmentService.getAllAssignmentNames();
         // Step2  find all commitRecord id by using assignment's id.
         JSONObject ob = new JSONObject();
-        JSONArray assignment = new JSONArray();
+        JSONArray assignments = new JSONArray();
         assignmentNames.forEach(name -> {
             JSONObject commits = new JSONObject();
             List<Integer> assignmentIds = new ArrayList<>();
@@ -60,11 +61,13 @@ public class ChartService {
                     System.out.println(array.toString());
                 });
                 commits.put("name", name);
+                commits.put("releaseTime", assignmentDbManager.getAssignmentByName(name).getReleaseTime());
+                commits.put("deadline", assignmentDbManager.getAssignmentByName(name).getDeadline());
                 commits.put("commits", array);
             });
-            assignment.put(commits);
+            assignments.put(commits);
         });
-        ob.put("allCommitRecord", assignment);
+        ob.put("allCommitRecord", assignments);
         return Response.ok().entity(ob.toString()).build();
     }
 }
