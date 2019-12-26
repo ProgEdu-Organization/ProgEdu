@@ -88,11 +88,9 @@ export class ChartComponent implements OnInit {
     }
   ];
 
-  public bubbleChartData: any[] = [
-    { data: [{x: 0, y: 17, z: 5},{x: 0, y: 17, z: 5}], label: 'HW1', radius: 20, type: 'bubble' },
-  ];
+  public bubbleChartData: any[] = [];
   public bubbleChartLabels: Array<any> = [];
-
+  public isbubbleChartReady = false;
   constructor(private chartService: ChartService) { }
 
   ngOnInit() {
@@ -103,7 +101,7 @@ export class ChartComponent implements OnInit {
         this.commits = response.allCommitRecord;
         this.getStatusResultData();
         this.getMixedChartData();
-        this.getBubbleChartData();
+        this.getBubbleChartData(this.commits[0].name);
       },
       (error)=>{
         console.log('get all assignments error');
@@ -154,50 +152,63 @@ export class ChartComponent implements OnInit {
     }
   }
 
-  getBubbleChartData() {
-    let commitTime : Array<any> = [];
-    let map: Array<any> = [];
-    let chartStartTime :Date;
-    let chartFinishTime :Date;
+  getBubbleChartData(assignmentName: string) {
+    let commitRecord : any;
     for(let i=0; i < this.commits.length; i++){
-      this.bubbleChartData[i] = {data: [], label: this.commits[i].name, type: 'bubble'}
-      if(i === 0) {
-        chartStartTime = new Date(this.commits[i].releaseTime);
-        chartFinishTime = new Date(this.commits[i].deadline);
-      } else {
-        if(chartStartTime.getTime() > new Date(this.commits[i].releaseTime).getTime()) {
-          chartStartTime = new Date(this.commits[i].releaseTime);
-        }
-        if(chartFinishTime.getTime() < new Date(this.commits[i].deadline).getTime()) {
-          chartFinishTime = new Date(this.commits[i].deadline);
-        }
+      if(this.commits[i].name === assignmentName){
+        commitRecord = this.commits[i];
+        break;
       }
     }
-    this.bubbleChartLabels = Array.from(this.getCommitTime(chartStartTime, chartFinishTime));
-    for(let i=0; i < this.commits.length; i++){
-        for(let j=0; j < this.commits[i].commits.length; j++){
-          let date = new Date(this.commits[i].commits[j].time);
-          let time = ((date.getMonth() + 1) + '-' + date.getDate());
-          this.bubbleChartData[i].data.push({x: this.bubbleChartLabels.indexOf(time), y: date.getHours(), z: 5});
+    this.bubbleChartLabels = Array.from(this.getIntervalTime(new Date(commitRecord.releaseTime)
+                                        , new Date(commitRecord.deadline)));
+    /////////////////////////////////////////////////////////////////////////////////
+    for(let i=0; i < commitRecord.commits.length; i++) {
+      let date = new Date(commitRecord.commits[i].time);
+      let time = ((date.getMonth() + 1) + '-' + date.getDate());
+      let chartData = {
+        data: [{x: time, y: date.getHours(), z: 5}],
+        radius: 5, type: 'bubble',
+        label: assignmentName,
+        backgroundColor: Status.notBuild.color,
+        borderColor:Status.notBuild.color,
+        hoverBackgroundColor: Status.notBuild.color,
+        hoverBorderColor:Status.notBuild.color,
+      }
+      // Compute the commit times
+      let isDataDuplicate = false;
+      for(let j = 0; j < this.bubbleChartData.length; j++){
+        if(chartData.data[0].x === this.bubbleChartData[j].data[0].x && 
+            chartData.data[0].y === this.bubbleChartData[j].data[0].y) {
+          // limit max radius = 40
+          if(this.bubbleChartData[j].radius !== 40 ) {
+            this.bubbleChartData[j].radius += 1;
+          }
+          isDataDuplicate = true;
+          break;
         }
+      }
+      if(!isDataDuplicate) {
+          this.bubbleChartData.push(chartData);
+      }
     }
-
-    console.log(this.labels);
-    console.log(commitTime);
+    for(let j = 0; j < this.bubbleChartData.length; j++){
+      if(this.bubbleChartData[j].data[0].x ==='10-23' && this.bubbleChartData[j].data[0].y === 15){
+        console.log(this.bubbleChartData[j]);
+      }
+    }
   }
 
 
 
-  getCommitTime(releaseTime: Date, deadline: Date) {
-    //
+  getIntervalTime(releaseTime: Date, deadline: Date) {
+    // ex: 12-12 ~ 12-20 -> return [12-12, 12-13, 12-14 ... 12-20]
     let set: Set<any> = new Set();
     let time_diff: number = deadline.getTime() - releaseTime.getTime();
     for(let i=0; i <= time_diff; i += 86400000){
       var date = new Date(releaseTime.getTime() + i);
       set.add((date.getMonth() + 1) +'-'+ date.getDate());
-      // commitTime.push({x: 4, y: date.getHours(), z: 5});
     }
-
     set.add((releaseTime.getMonth() + 1) +'-'+ releaseTime.getDate());
     set.add((deadline.getMonth() + 1) +'-'+ deadline.getDate());
     return set;

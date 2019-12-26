@@ -58,7 +58,6 @@ public class ChartService {
                             e.printStackTrace();
                         }
                     }
-                    System.out.println(array.toString());
                 });
                 commits.put("name", name);
                 commits.put("releaseTime", assignmentDbManager.getAssignmentByName(name).getReleaseTime());

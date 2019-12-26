@@ -8,7 +8,7 @@ import { Component, OnInit, Input } from '@angular/core';
 export class BubbleChartComponent implements OnInit {
   @Input() bubbleChartData: Array<any>;
   @Input() bubbleChartLabels: string[];
-
+  @Input() bubbleChartLegend: boolean = false;
   constructor() { }
 
   ngOnInit() {
@@ -24,7 +24,6 @@ export class BubbleChartComponent implements OnInit {
   */
 
   public bubbleChartType = 'bar';
-  public bubbleChartLegend = true;
   public bubbleChartOptions: any = {
     scaleShowVerticalLines: false,
     responsive: true
