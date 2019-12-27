@@ -12,7 +12,7 @@
           <app-mixed-chart *ngIf='commits' [mixedChartLabels]='labels' [mixedChartData]='mixedChartData'></app-mixed-chart>
         </tab>
         <tab id="bubble-chart">
-          <ng-template tabHeading><i class=""></i>Commit Record</ng-template>
+          <ng-template tabHeading><i class=""></i>Commit Time</ng-template>
           <app-bubble-chart *ngIf='commits' [bubbleChartData]='bubbleChartData' [bubbleChartLabels]='bubbleChartLabels'></app-bubble-chart>
         </tab>
       </tabset>
