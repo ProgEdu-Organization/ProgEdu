@@ -41,7 +41,7 @@ public class ZipHandler {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ZipHandler.class);
 
-  public String serverIp;
+  private String serverIp;
 
   StringBuilder sb = new StringBuilder();
 
