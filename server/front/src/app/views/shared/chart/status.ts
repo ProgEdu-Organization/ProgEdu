@@ -25,3 +25,6 @@ export const Status = {
       status: ['BS']
     }
   };
+export const Color = {
+  bubble: 'rgba(255, 98, 132, 1)'
+}

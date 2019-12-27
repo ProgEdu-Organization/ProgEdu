@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ChartService } from './chart.service';
-import { Status } from './status';
+import { Status, Color } from './status';
 
 @Component({
   selector: 'app-chart',
@@ -170,10 +170,10 @@ export class ChartComponent implements OnInit {
         data: [{x: time, y: date.getHours(), z: 5}],
         radius: 5, type: 'bubble',
         label: assignmentName,
-        backgroundColor: Status.notBuild.color,
-        borderColor:Status.notBuild.color,
-        hoverBackgroundColor: Status.notBuild.color,
-        hoverBorderColor:Status.notBuild.color,
+        backgroundColor: Color.bubble,
+        borderColor:Color.bubble,
+        hoverBackgroundColor: Color.bubble,
+        hoverBorderColor:Color.bubble,
       }
       // Compute the commit times
       let isDataDuplicate = false;
