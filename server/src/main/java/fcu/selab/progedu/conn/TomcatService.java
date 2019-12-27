@@ -99,7 +99,8 @@ public class TomcatService {
       try {
         file = new FileInputStream(sample);
       } catch (FileNotFoundException e) {
-        e.printStackTrace();
+        LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+        LOGGER.error(e.getMessage());
       }
     } else {
       fileName = fileDetail.getFileName();
@@ -148,7 +149,8 @@ public class TomcatService {
       try {
         gitkeep.createNewFile();
       } catch (IOException e) {
-        e.printStackTrace();
+        LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+        LOGGER.error(e.getMessage());
       }
     }
   }
