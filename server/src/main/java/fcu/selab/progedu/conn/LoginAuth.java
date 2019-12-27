@@ -48,7 +48,12 @@ public class LoginAuth extends HttpServlet {
    */
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
-    doPost(request, response);
+    try {
+      doPost(request, response);
+    } catch (Exception e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    }
   }
 
   /**
@@ -60,29 +65,47 @@ public class LoginAuth extends HttpServlet {
     final HttpSession session = request.getSession();
     String username = request.getParameter(USERNAME);
     String password = request.getParameter(USER_PASSWORD);
-    String token;
+    String token = "";
+    boolean isLogin = false;
+    String permissionRole = "";
     JSONObject ob = new JSONObject();
     try {
       String role = checkPermission(username, password);
       if (!role.equals("")) {
-        ob.put("isLogin", true);
-        ob.put("role", role);
+        isLogin = true;
+        permissionRole = role;
         String name = getNameByUsername(username);
         token = jwt.generateToken(role, username, name);
+      } else {
+        isLogin = false;
+      }
+    } catch (LoadConfigFailureException e) {
+      isLogin = false;
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    }
+    try {
+      if (isLogin) {
+        ob.put("isLogin", true);
+        ob.put("role", permissionRole);
         ob.put("token", token);
       } else {
         ob.put("isLogin", false);
       }
-    } catch (LoadConfigFailureException e) {
-      ob.put("isLogin", false);
+    } catch (Exception e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
     }
     response.setStatus(200);
-    PrintWriter pw = response.getWriter();
-    pw.print(ob);
-    pw.flush();
-    pw.close();
+    try {
+      PrintWriter pw = response.getWriter();
+      pw.print(ob);
+      pw.flush();
+      pw.close();
+    } catch (Exception e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    }
   }
 
   private String checkPermission(String username, String password)
