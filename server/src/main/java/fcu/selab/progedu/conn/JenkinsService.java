@@ -98,8 +98,8 @@ public class JenkinsService {
       conn = (HttpURLConnection) url.openConnection();
       String input = username + ":" + password;
       Base64.Encoder encoder = Base64.getEncoder();
-      String encoding = encoder.encodeToString(input.getBytes());
-      conn.setRequestProperty("Authorization", "Basic " + encoding);
+      String encoding = "Basic " + encoder.encodeToString(input.getBytes());
+      conn.setRequestProperty("Authorization", encoding);
       conn.setReadTimeout(10000);
       conn.setConnectTimeout(15000);
       conn.setRequestMethod("GET");
@@ -255,8 +255,8 @@ public class JenkinsService {
       conn = (HttpURLConnection) url.openConnection();
       String input = jenkinsRootUsername + ":" + jenkinsRootPassword;
       Base64.Encoder encoder = Base64.getEncoder();
-      String encoding = encoder.encodeToString(input.getBytes());
-      conn.setRequestProperty("Authorization", "Basic " + encoding);
+      String encoding = "Basic " + encoder.encodeToString(input.getBytes());
+      conn.setRequestProperty("Authorization", encoding);
       conn.setReadTimeout(10000);
       conn.setConnectTimeout(15000);
       conn.setRequestMethod("GET");
