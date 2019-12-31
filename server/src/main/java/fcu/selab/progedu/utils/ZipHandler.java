@@ -114,6 +114,7 @@ public class ZipHandler {
   public void modifyPomXml(String filePath, String projectName) {
     try {
       DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+      docFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl",true);
       DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
       Document doc = docBuilder.parse(filePath);
 

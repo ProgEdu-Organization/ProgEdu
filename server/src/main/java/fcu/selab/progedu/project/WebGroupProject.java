@@ -53,14 +53,16 @@ public class WebGroupProject extends GroupProjectType {
           + "/webapi/groups";
       String projectUrl = gitlabConfig.getGitlabHostUrl() + "/" + username + "/" + projectName
           + ".git";
+
+      DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+      docFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl",true);
+      DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+
       String updateDbUrl = progEduApiUrl + "/commits/update";
       JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
       String seleniumUrl = jenkinsData.getSeleniumHostUrl() + "/wd/hub";
 
-      DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-      DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
       Document doc = docBuilder.parse(jenkinsJobConfigPath);
-
       doc.getElementsByTagName("url").item(0).setTextContent(projectUrl);
       doc.getElementsByTagName("seleniumUrl").item(0).setTextContent(seleniumUrl);
       doc.getElementsByTagName("progeduDbUrl").item(0).setTextContent(updateDbUrl);

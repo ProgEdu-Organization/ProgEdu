@@ -65,12 +65,13 @@ public class JavacAssignment extends AssignmentType {
           + "/webapi";
       String projectUrl = gitlabConfig.getGitlabHostUrl() + "/" + username + "/" + projectName
           + ".git";
-      String updateDbUrl = progEduApiUrl + "/commits/update";
       // to-do : command
-      String assignmentPath = System.getProperty("java.io.tmpdir") + "/tests/" + projectName;
-      String command = getCommandFromFile(assignmentPath);
       DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+      docFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl",true);
       DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+      String assignmentPath = System.getProperty("java.io.tmpdir") + "/tests/" + projectName;
+      String updateDbUrl = progEduApiUrl + "/commits/update";
+      String command = getCommandFromFile(assignmentPath);
 
       Document doc = docBuilder.parse(jenkinsJobConfigPath);
       doc.getElementsByTagName("command").item(0).setTextContent(command);

@@ -59,14 +59,17 @@ public class MavenAssignment extends AssignmentType {
           + "/webapi";
       String projectUrl = gitlabConfig.getGitlabHostUrl() + "/" + username + "/" + projectName
           + ".git";
+
+      DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+      docFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl",true);
+      DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+
       String updateDbUrl = progEduApiUrl + "/commits/update";
       String checksumUrl = progEduApiUrl + "/assignment/checksum?proName=" + projectName;
       String testFileUrl = AssignmentDbManager.getInstance().getTestFileUrl(projectName);
-      DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-      DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-      Document doc = docBuilder.parse(jenkinsJobConfigPath);
       String jobName = username + "_" + projectName;
 
+      Document doc = docBuilder.parse(jenkinsJobConfigPath);
       doc.getElementsByTagName("url").item(0).setTextContent(projectUrl);
       doc.getElementsByTagName("jobName").item(0).setTextContent(jobName);
       doc.getElementsByTagName("testFileName").item(0).setTextContent(projectName);

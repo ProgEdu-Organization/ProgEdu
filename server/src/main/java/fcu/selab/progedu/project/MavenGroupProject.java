@@ -52,11 +52,14 @@ public class MavenGroupProject extends GroupProjectType {
           + "/webapi/groups";
       String projectUrl = gitlabConfig.getGitlabHostUrl() + "/" + username + "/" + projectName
           + ".git";
-      String updateDbUrl = progEduApiUrl + "/commits/update";
-      DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-      DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-      Document doc = docBuilder.parse(jenkinsJobConfigPath);
 
+      String updateDbUrl = progEduApiUrl + "/commits/update";
+
+      DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+      docFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl",true);
+      DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+
+      Document doc = docBuilder.parse(jenkinsJobConfigPath);
       doc.getElementsByTagName("url").item(0).setTextContent(projectUrl);
       doc.getElementsByTagName("progeduDbUrl").item(0).setTextContent(updateDbUrl);
       doc.getElementsByTagName("user").item(0).setTextContent(username);
