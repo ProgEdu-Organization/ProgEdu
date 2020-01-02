@@ -1,6 +1,7 @@
 import { Component, OnInit, SystemJsNgModuleLoader } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AssignmentChoosedService } from './assignment-choosed.service';
+import { TimeService } from '../../../services/time.service'
 
 @Component({
   selector: 'app-assignment-choosed',
@@ -19,7 +20,8 @@ export class AssignmentChoosedComponent implements OnInit {
   selectedScreenshotName;
   screenshotUrls: Array<string>;
 
-  constructor(private route: ActivatedRoute, private assignmentService: AssignmentChoosedService) { }
+  constructor(private route: ActivatedRoute, private assignmentService: AssignmentChoosedService,
+    private timeService: TimeService) { }
 
   async ngOnInit() {
     this.username = this.route.snapshot.queryParamMap.get('username');
@@ -54,7 +56,7 @@ export class AssignmentChoosedComponent implements OnInit {
       if (this.commits) {
         for (const commit in this.commits) {
           if (commit) {
-            this.commits[commit].time = this.getUTCAdjustTime(this.commits[commit].time);
+            this.commits[commit].time = this.timeService.getUTCTime(this.commits[commit].time);
           }
         }
 
@@ -70,15 +72,8 @@ export class AssignmentChoosedComponent implements OnInit {
   getAssignment() {
     this.assignmentService.getAssignment(this.assignmentName).subscribe(response => {
       this.assignment = response;
-      this.assignment.deadline = this.getUTCAdjustTime(this.assignment.deadline);
+      this.assignment.deadline = this.timeService.getUTCTime(this.assignment.deadline);
     });
-  }
-
-  getUTCAdjustTime(time: any): Date {
-    const timeOffset = (new Date().getTimezoneOffset() * 60 * 1000);
-    const assigenmentTime = new Date(time).getTime();
-
-    return new Date(assigenmentTime - timeOffset);
   }
 
   public copyToClipboard() {

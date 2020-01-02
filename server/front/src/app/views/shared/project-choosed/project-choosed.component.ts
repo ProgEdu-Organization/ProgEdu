@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ProjectChoosedService } from './project-choosed.service';
+import { TimeService } from '../../../services/time.service';
 @Component({
   selector: 'app-project-choosed',
   templateUrl: './project-choosed.component.html',
@@ -19,7 +20,8 @@ export class ProjectChoosedComponent implements OnInit {
   public screenshotUrls: Array<string>;
   public gitlabprojectUrl: string;
 
-  constructor(private activeRoute: ActivatedRoute, private projectService: ProjectChoosedService) { }
+  constructor(private activeRoute: ActivatedRoute, private projectService: ProjectChoosedService,
+    private timeService: TimeService) { }
 
   ngOnInit() {
     this.groupName = this.activeRoute.snapshot.queryParamMap.get('groupName');
@@ -39,7 +41,7 @@ export class ProjectChoosedComponent implements OnInit {
         if (this.commits) {
           for (const commit in this.commits) {
             if (commit) {
-              this.commits[commit].time = this.getUTCAdjustTime(this.commits[commit].time);
+              this.commits[commit].time = this.timeService.getUTCTime(this.commits[commit].time);
             }
           }
 
@@ -49,13 +51,6 @@ export class ProjectChoosedComponent implements OnInit {
       }
     );
   }
-
-  getUTCAdjustTime(time: any): Date {
-    const timeOffset = (new Date().getTimezoneOffset() * 60 * 1000);
-    const assigenmentTime = new Date(time).getTime();
-    return new Date(assigenmentTime - timeOffset);
-  }
-
 
   public copyToClipboard() {
     const copyBox = document.createElement('textarea');
