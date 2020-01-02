@@ -26,5 +26,5 @@ export const Status = {
     }
   };
 export const Color = {
-  bubble: 'rgba(255, 98, 132, 1)'
+  bubble: 'rgba(30, 144, 255, 1)'
 }

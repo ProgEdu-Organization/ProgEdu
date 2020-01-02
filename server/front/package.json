@@ -39,6 +39,7 @@
     "mutationobserver-shim": "^0.3.3",
     "ng2-charts": "^2.3.0",
     "ngx-bootstrap": "^5.2.0",
+    "ngx-loading": "^8.0.0",
     "ngx-perfect-scrollbar": "^8.0.0",
     "rxjs": "^6.5.2",
     "simple-line-icons": "^2.4.1",
