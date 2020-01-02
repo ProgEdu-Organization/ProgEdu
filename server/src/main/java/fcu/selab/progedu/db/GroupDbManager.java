@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fcu.selab.progedu.data.Group;
+import fcu.selab.progedu.data.GroupProject;
+import fcu.selab.progedu.data.User;
 
 public class GroupDbManager {
 
@@ -65,6 +67,29 @@ public class GroupDbManager {
       e.printStackTrace();
     }
     return id;
+  }
+
+  /**
+   * get group name
+   *
+   * @param id group id
+   */
+  public String getId(int id) { // Bug getName not Id
+    String groupName =  "";
+    String statement = "SELECT name FROM ProgEdu.Group WHERE id = ?";
+
+    try (Connection conn = database.getConnection();
+         PreparedStatement preStmt = conn.prepareStatement(statement)) {
+      preStmt.setInt(1, id);
+      try (ResultSet rs = preStmt.executeQuery()) {
+        if (rs.next()) {
+          groupName = rs.getString("name");
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return groupName;
   }
 
   /**
@@ -177,15 +202,28 @@ public class GroupDbManager {
       preStmt.setString(1, name);
       try (ResultSet rs = preStmt.executeQuery()) {
         while (rs.next()) {
-          int id = rs.getInt("id");
-          int gitlabId = rs.getInt("gitLabId");
-          int leader = rs.getInt("leader");
-
-          group.setGitlabId(gitlabId);
-          group.setGroupName(name);
-          group.setId(id);
-          group.setLeader(leader);
+          group.setGroupName( rs.getString("name") );
+          group.setId( rs.getInt("id") );
+          group.setGitlabId( rs.getInt("gitLabId") );
+          group.setLeader( rs.getInt("leader") );
         }
+
+        // setMembers
+        List<User> members = new ArrayList<>();
+        List<Integer> userIds = GroupUserDbManager.getInstance().getUids( group.getId() );
+        for (int userId:userIds) {
+          members.add( UserDbManager.getInstance().getUser(userId) );
+        }
+        group.setMembers(members);
+
+        // setProjects
+        List<GroupProject> groupProjectList = new ArrayList<>();
+        List<Integer> projectIds = ProjectGroupDbManager.getInstance().getPids( group.getId() );
+        for (int projectId:projectIds) {
+          groupProjectList.add( ProjectDbManager.getInstance().getGroupProjectById(projectId) );
+        }
+        group.setProjects(groupProjectList);
+
       }
     } catch (SQLException e) {
       e.printStackTrace();
@@ -200,28 +238,7 @@ public class GroupDbManager {
    * @return group info
    */
   public Group getGroup(int id) {
-    String statement = "SELECT * FROM ProgEdu.Group WHERE id=?";
-    Group group = new Group();
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(statement)) {
-
-      preStmt.setInt(1, id);
-      try (ResultSet rs = preStmt.executeQuery()) {
-        while (rs.next()) {
-          String name = rs.getString("name");
-          int gitlabId = rs.getInt("gitLabId");
-          int leader = rs.getInt("leader");
-
-          group.setGitlabId(gitlabId);
-          group.setGroupName(name);
-          group.setId(id);
-          group.setLeader(leader);
-        }
-      }
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
-    return group;
+    return getGroup( getId(id) );
   }
 
   /**

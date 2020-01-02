@@ -89,6 +89,31 @@ public class AssignmentUserDbManager {
   }
 
   /**
+   * get auIds by assignment uid(user_id)
+   *
+   * @param userId User Id
+   * @return auId assignmentUser Id
+   */
+  public List<Integer> getIdListByUid(int userId) {
+    List<Integer> auIds = new ArrayList<>();
+    String sql = "SELECT id FROM Assignment_User WHERE uId = ?";
+    try (Connection conn = database.getConnection();
+         PreparedStatement preStmt = conn.prepareStatement(sql)) {
+      preStmt.setInt(1, userId);
+      try (ResultSet rs = preStmt.executeQuery()) {
+        while (rs.next()) {
+          int auid = rs.getInt("id");
+          auIds.add(auid);
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return auIds;
+  }
+
+
+  /**
    * get aids by User Id
    * 
    * @return lsAids assignment id
@@ -148,4 +173,20 @@ public class AssignmentUserDbManager {
       e.printStackTrace();
     }
   }
+
+  /**
+   * Delete assignment_user from database by Uid(user_id)
+   *
+   */
+  public void deleteAssignmentUserByUid(int userId) {
+    String sql = "DELETE FROM Assignment_User WHERE uId = ?";
+    try (Connection conn = database.getConnection();
+         PreparedStatement preStmt = conn.prepareStatement(sql)) {
+      preStmt.setInt(1, userId);
+      preStmt.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
+
 }
