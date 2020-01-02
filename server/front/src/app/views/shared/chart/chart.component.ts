@@ -69,6 +69,7 @@ export class ChartComponent implements OnInit {
       hoverBorderColor: Status.success.color,
     },
   ];
+  public isBarChartReady: boolean = false;
 
   public mixedChartData: Array<any> = [
     {
@@ -110,6 +111,7 @@ export class ChartComponent implements OnInit {
       borderColor: '#ced2d8'
     }
   ];
+  public isMixedChartReady: boolean = false;
 
   public bubbleChartData: any[] = [];
   public bubbleChartLabels: Array<any> = [];
@@ -123,18 +125,17 @@ export class ChartComponent implements OnInit {
       (response) => {
         this.commits = response.allCommitRecord;
         this.getStatusResultData();
-        this.getMixedChartData();
-        this.getBubbleChartData(this.commits[0].name);
-        console.log(this.bubbleChartData);
+        this.selectedAssignment = this.commits[0].name;
       },
       (error) => {
-        console.log('get all assignments error');
+        console.log('Get all assignments error');
       }
     );
   }
 
   computeStatus(commits: any) {
     let statusCount = [0, 0, 0, 0, 0];
+
     if (commits) {
       for (let i = 0; i < commits.length; i++) {
         if (Status.notBuild.status.includes(commits[i].status)) {
@@ -155,6 +156,7 @@ export class ChartComponent implements OnInit {
 
   getStatusResultData() {
     this.labels = [];
+    this.isBarChartReady = false;
     for (let i = 0; i < this.commits.length; i++) {
       this.labels.push(this.commits[i].name);
       let statusCount = this.computeStatus(this.commits[i].commits);
@@ -162,10 +164,12 @@ export class ChartComponent implements OnInit {
         this.barChartData[j].data.push(statusCount[j]);
       }
     }
+    this.isBarChartReady = true;
   }
 
   getMixedChartData() {
     this.labels = [];
+    this.isMixedChartReady = false;
     for (let i = 0; i < this.commits.length; i++) {
       this.labels.push(this.commits[i].name);
       let statusCount = this.computeStatus(this.commits[i].commits);
@@ -174,9 +178,11 @@ export class ChartComponent implements OnInit {
       }
       this.mixedChartData[this.mixedChartData.length - 1].data.push(this.commits[i].commits.length);
     }
+    this.isMixedChartReady = true;
   }
 
   getBubbleChartData(assignmentName: string) {
+    this.isbubbleChartReady = false;
     this.bubbleChartData = [];
     this.bubbleChartLabels = [];
     let commitRecord: any;
@@ -220,5 +226,10 @@ export class ChartComponent implements OnInit {
         this.bubbleChartData.push(chartData);
       }
     }
+    this.isbubbleChartReady = true;
+  }
+
+  test($event) {
+    console.log($event);
   }
 }
