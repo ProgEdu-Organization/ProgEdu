@@ -11,11 +11,13 @@ import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import fcu.selab.progedu.data.Group;
 import org.gitlab.api.models.GitlabUser;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.json.JSONArray;
@@ -26,11 +28,14 @@ import com.csvreader.CsvReader;
 import fcu.selab.progedu.service.GroupCommitRecordService;
 import fcu.selab.progedu.config.CourseConfig;
 import fcu.selab.progedu.conn.GitlabService;
+import fcu.selab.progedu.conn.JenkinsService;
 import fcu.selab.progedu.data.User;
 import fcu.selab.progedu.db.RoleDbManager;
 import fcu.selab.progedu.db.RoleUserDbManager;
 import fcu.selab.progedu.db.UserDbManager;
 import fcu.selab.progedu.db.service.GroupDbService;
+import fcu.selab.progedu.db.service.UserDbService;
+import fcu.selab.progedu.service.GroupService;
 
 @Path("user")
 public class UserService {
@@ -248,6 +253,71 @@ public class UserService {
       }
     }
     return studentUsers;
+  }
+
+  /**
+   * Delete user but gitlab repository not delete so you need manual delete
+   *
+   * @param userName user name
+   */
+  @DELETE
+  @Path("/{userName}")
+  public Response deleteUser(@PathParam("userName") String userName) {
+    UserDbService userDbService = UserDbService.getInstance();
+    int userId = userDbService.getId(userName);
+    return deleteUser(userId);
+  }
+
+  /**
+   * Delete user
+   *
+   * @param userId user id
+   */
+  public Response deleteUser(int userId) {
+    UserDbService userDbService = UserDbService.getInstance();
+
+    ////delete Gitlab
+    //but gitlab repository not delete so you need manual delete
+    gitlabService.deleteUser( userDbService.getGitLabId(userId) );
+
+    // if user's group has one user delete group
+    GroupService groupService = new GroupService();
+    List<Group> groups = gdb.getGroups(userId);
+    for (Group group : groups) {
+
+      if ( group.isNotMoreThanOneUser() ) { // delete Group
+        groupService.removeGroup( group.getGroupName() );
+        
+      } else if (group.getLeader() == userId) { // change Group Leader
+
+        List<User> groupUsers = group.getMembers();
+        for (User groupUser:groupUsers) {
+          if (groupUser.getId() != userId) {
+            group.setLeader( groupUser.getId() );
+            break;
+          }
+        }
+
+      }
+
+    }
+    groupService = null; // delete groupService
+
+
+    ////remove jenkins
+    JenkinsService jenkinsService = JenkinsService.getInstance();
+    List<String> assignmentNames = userDbService.getUserAssignmentNames(userId);
+    String userName = userDbService.getName(userId);
+    for (String assignmentName : assignmentNames) {
+      String jobName = jenkinsService.getJobName(userName, assignmentName);
+      jenkinsService.deleteJob(jobName);
+    }
+
+
+    //remove db
+    userDbService.deleteUser(userId);
+
+    return Response.ok().build();
   }
 
   /**
