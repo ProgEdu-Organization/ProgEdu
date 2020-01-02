@@ -1,23 +1,21 @@
 import { Component, OnInit, SystemJsNgModuleLoader } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { AssignmentChoosedService } from './assignment-choosed.service';
 import { TimeService } from '../../../services/time.service'
+import { AssignmentChoosedService } from './assignment-choose.service';
 
 @Component({
-  selector: 'app-assignment-choosed',
-  templateUrl: './assignment-choosed.component.html'
+  selector: 'app-assignment-choose',
+  templateUrl: './assignment-choose.component.html'
 })
 export class AssignmentChoosedComponent implements OnInit {
-
   username: string;
   assignmentName: string;
+
   assignment = { type: '', deadline: new Date() };
   commits: Array<any> = [];
   gitlabAssignmentURL: string;
   feedbacks: JSON;
-  isCollapsed = true;
   selectedCommitNumber;
-  selectedScreenshotName;
   screenshotUrls: Array<string>;
 
   constructor(private route: ActivatedRoute, private assignmentService: AssignmentChoosedService,
@@ -29,7 +27,6 @@ export class AssignmentChoosedComponent implements OnInit {
     await this.getAssignment();
     await this.getGitAssignmentURL();
     await this.getCommitDetail();
-
     // this.selectedScreenshotName = $('#screenshot:visible').attr('src');
     // console.log(this.selectedScreenshotName);
   }
@@ -42,12 +39,6 @@ export class AssignmentChoosedComponent implements OnInit {
         console.log(error);
       });
   }
-
-  updateScrennshotName() {
-    const url_split = $('.screenshot:visible').attr('src').split('/');
-    this.selectedScreenshotName = url_split[url_split.length - 1];
-  }
-
   getCommitDetail() {
     this.assignmentService.getCommitDetail(this.assignmentName, this.username).subscribe(response => {
       this.commits = response;

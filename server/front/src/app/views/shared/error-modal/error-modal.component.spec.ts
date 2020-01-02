@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AssignmentChoosedComponent } from './assignment-choosed.component';
+import { ErrorModalComponent } from './error-modal.component';
 
-describe('AssignmentChoosedComponent', () => {
-  let component: AssignmentChoosedComponent;
-  let fixture: ComponentFixture<AssignmentChoosedComponent>;
+describe('ErrorModalComponent', () => {
+  let component: ErrorModalComponent;
+  let fixture: ComponentFixture<ErrorModalComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AssignmentChoosedComponent ]
+      declarations: [ ErrorModalComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(AssignmentChoosedComponent);
+    fixture = TestBed.createComponent(ErrorModalComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { AssignmentManagementService } from './assignment-management.service';
 import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { TimeService } from '../../../services/time.service'
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-assignment-management',
@@ -16,6 +17,9 @@ export class AssignmentManagementComponent implements OnInit {
   assignmentName: string;
   assignmentForm: FormGroup;
 
+  errorResponse: HttpErrorResponse;
+  errorTitle: string;
+
   max: number = 100;
   showWarning: boolean;
   dynamic: number = 0;
@@ -23,7 +27,7 @@ export class AssignmentManagementComponent implements OnInit {
   isDeleteProgress = false;
 
   constructor(private assignmentService: AssignmentManagementService, private router: Router,
-     private fb: FormBuilder, private timeService: TimeService) { }
+    private fb: FormBuilder, private timeService: TimeService) { }
 
   ngOnInit() {
     this.getAllAssignments();
@@ -74,7 +78,7 @@ export class AssignmentManagementComponent implements OnInit {
       this.assignments = response.allAssignments;
       for (const i in this.assignments) {
         if (i) {
-          this.assignments[i].createTime =this.timeService.getUTCTime(this.assignments[i].createTime);
+          this.assignments[i].createTime = this.timeService.getUTCTime(this.assignments[i].createTime);
           this.assignments[i].releaseTime = this.timeService.getUTCTime(this.assignments[i].releaseTime);
           this.assignments[i].deadline = this.timeService.getUTCTime(this.assignments[i].deadline);
         }
@@ -92,7 +96,9 @@ export class AssignmentManagementComponent implements OnInit {
         this.isDeleteProgress = false;
       },
       error => {
-        console.log(error);
+        this.errorTitle = 'Delete Assignment Error';
+        this.deleteModal.hide();
+        this.errorResponse = error;
       });
   }
 
@@ -124,8 +130,10 @@ export class AssignmentManagementComponent implements OnInit {
           this.editModal.hide();
           this.getAllAssignments();
         },
-        errpr => {
-
+        error => {
+          this.errorTitle = 'Edit Assignment Error';
+          this.editModal.hide();
+          this.errorResponse = error;
         });
     }
   }

@@ -26,28 +26,35 @@ public class MavenUnitTestFailure implements Status {
 
   @Override
   public ArrayList<FeedBack> formatExamineMsg(String consoleText) {
-    consoleText = consoleText + "\n";
-    int endIndex = consoleText.length();
-    ArrayList<FeedBack> feedbacklist = new ArrayList<>();
-    while (consoleText.indexOf("Failed tests:") != -1) {
-      int nextrow = consoleText.indexOf("\n");
-      int nextfailedtest = consoleText.indexOf("Failed tests:");
-      if (nextfailedtest > nextrow) {
-        consoleText = consoleText.substring(nextrow + 1, endIndex);
-        endIndex = endIndex - nextrow - 1;
-      } else {
-        int nextcolon = consoleText.indexOf(":", 13);
-        feedbacklist.add(new FeedBack(
-            StatusEnum.UNIT_TEST_FAILURE,
-            "",
-            consoleText.substring(nextcolon + 1, nextrow).trim(),
-            "",
-            ""
-        ));
-        consoleText = consoleText.substring(nextrow + 1, endIndex);
-        endIndex = endIndex - nextrow - 1;
+    ArrayList<FeedBack> feedbackList = new ArrayList<>();
+    try {
+      consoleText = consoleText + "\n";
+      int endIndex = consoleText.length();
+      while (consoleText.contains("Failed tests:")) {
+        int nextRowIndex = consoleText.indexOf("\n");
+        int nextFailedTest = consoleText.indexOf("Failed tests:");
+        if (nextFailedTest > nextRowIndex) {
+          consoleText = consoleText.substring(nextRowIndex + 1, endIndex);
+          endIndex = endIndex - nextRowIndex - 1;
+        } else {
+          int nextColonIndex = consoleText.indexOf(":", 13);
+          feedbackList.add(new FeedBack(
+              StatusEnum.UNIT_TEST_FAILURE,
+              "",
+              "",
+              consoleText.substring(nextColonIndex + 1, nextRowIndex).trim(),
+              "",
+              ""
+          ));
+          consoleText = consoleText.substring(nextRowIndex + 1, endIndex);
+          endIndex = endIndex - nextRowIndex - 1;
+        }
       }
+    } catch (Exception e) {
+      feedbackList.add(
+          new FeedBack(StatusEnum.UNIT_TEST_FAILURE,
+              "UnitTest ArrayList error", e.getMessage()));
     }
-    return feedbacklist;
+    return feedbackList;
   }
 }

@@ -5,6 +5,7 @@ import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms'
 import { CreateAssignmentService } from './create-assignment.service';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { assignmentTypeEnum } from './assignmentTypeEnum';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-create-assignment',
@@ -18,8 +19,10 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
   isDropup: boolean = true;
   autoClose: boolean = false;
   assignment: FormGroup;
-  errorMsg: string;
   SERVER_URL: string = environment.SERVER_URL;
+
+  errorResponse: HttpErrorResponse;
+  errorTitle: string;
 
   max: number = 100;
   showWarning: boolean;
@@ -39,6 +42,7 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
       description: [undefined, Validators.required],
       type: [undefined, Validators.required],
       file: [undefined, Validators.required],
+      rememberMe: [true]
     });
     this.onChanges();
 
@@ -97,7 +101,6 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
     this.assignment.controls['file'].setValue($event.target.files[0]);
   }
 
-
   public submit() {
     if (this.assignment.dirty && this.assignment.valid) {
       this.progressModal.show();
@@ -106,10 +109,9 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
           this.router.navigate(['./dashboard/assignmentManagement']);
         },
         error => {
-          this.errorMsg = error.message;
+          this.errorResponse = error;
+          this.errorTitle = 'Create Assignment Error';
           this.progressModal.hide();
-          this.errorModal.show();
-          console.log(error);
         });
     } else {
       return;

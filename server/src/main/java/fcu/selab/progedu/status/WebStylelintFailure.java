@@ -13,42 +13,57 @@ public class WebStylelintFailure implements Status {
 
   @Override
   public String extractFailureMsg(String consoleText) {
-    String checkstyleStart = "> stylelint";
+    String checkstyleStart = "npm run stylelint";
     String checkstyleEnd = "npm ERR! code ELIFECYCLE";
     int start = consoleText.indexOf(checkstyleStart) + checkstyleStart.length();
     int end = consoleText.lastIndexOf(checkstyleEnd) - 1;
 
     String checkstyleInfo = consoleText.substring(start,end);
-    int nextrow = checkstyleInfo.indexOf("\n");
-    checkstyleInfo = checkstyleInfo.substring(nextrow + 1,end - start);
+    int nextRowIndex = checkstyleInfo.indexOf("\n");
+    checkstyleInfo = checkstyleInfo.substring(nextRowIndex + 1,end - start);
 
-    return checkstyleInfo;
+    return checkstyleInfo.trim();
   }
 
   @Override
   public ArrayList<FeedBack> formatExamineMsg(String consoleText) {
-    int endIndex = consoleText.length();
-    ArrayList<FeedBack> feedbacklist = new ArrayList<>();
-    while (consoleText.indexOf("✖") != -1) {
-      int crossIndex = consoleText.indexOf("✖");
-      int nextrowIndex = consoleText.indexOf("\n");
-      if (crossIndex > nextrowIndex) {
-        consoleText = consoleText.substring(nextrowIndex + 1, endIndex);
-        endIndex = endIndex - nextrowIndex - 1;
-      } else {
-        int errorStyleStart = consoleText.indexOf("  ", crossIndex + 2);
-        feedbacklist.add(
-            new FeedBack(
-                StatusEnum.WEB_STYLELINT_FAILURE,
-                consoleText.substring(0, crossIndex - 1).trim(),
-                consoleText.substring(crossIndex + 1, errorStyleStart + 1).trim(),
-                consoleText.substring(errorStyleStart, nextrowIndex).trim(),
-                "https://codertw.com/%E5%89%8D%E7%AB%AF%E9%96%8B%E7%99%BC/183114/\n"));
-        consoleText = consoleText.substring(nextrowIndex + 1, endIndex);
-        endIndex = endIndex - nextrowIndex - 1;
+    ArrayList<FeedBack> feedbackList = new ArrayList<>();
+    try {
+      int endIndex = consoleText.length();
+      String fileName = "";
+      while (consoleText.contains("✖")) {
+        int crossIndex = consoleText.indexOf("✖");
+        int nextRowIndex = consoleText.indexOf("\n");
+        if (nextRowIndex == -1) {
+          break;
+        }
+        if (crossIndex > nextRowIndex) {
+          if (consoleText.substring(0, nextRowIndex).contains("/")) {
+            fileName = consoleText.substring(0, nextRowIndex).trim();
+          }
+          consoleText = consoleText.substring(nextRowIndex + 1, endIndex);
+          endIndex = endIndex - nextRowIndex - 1;
+        } else {
+          String errorString = consoleText.substring(crossIndex + 1, nextRowIndex).trim();
+          int errorStyleStart = errorString.indexOf("  ");
+          feedbackList.add(
+              new FeedBack(
+                  StatusEnum.WEB_STYLELINT_FAILURE,
+                  fileName,
+                  consoleText.substring(0, crossIndex - 1).trim(),
+                  errorString.substring(0, errorStyleStart + 1).trim(),
+                  errorString.substring(errorStyleStart, errorString.length()).trim(),
+                  "https://codertw.com/%E5%89%8D%E7%AB%AF%E9%96%8B%E7%99%BC/183114/\n"));
+          consoleText = consoleText.substring(nextRowIndex + 1, endIndex);
+          endIndex = endIndex - nextRowIndex - 1;
+        }
       }
+    } catch (Exception e) {
+      feedbackList.add(
+          new FeedBack(StatusEnum.WEB_STYLELINT_FAILURE,
+              "Stylelint ArrayList error", e.getMessage()));
     }
-    return feedbacklist;
+    return feedbackList;
   }
 
 }

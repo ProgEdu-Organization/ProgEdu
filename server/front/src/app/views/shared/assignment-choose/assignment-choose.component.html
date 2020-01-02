@@ -1,0 +1,30 @@
+<div class="animated fadeIn">
+  <div *ngIf='assignment' class="card">
+    <div class="card-header">
+      <i class="cui-pencil icons"></i>
+      <label>{{assignmentName}}</label>
+    </div>
+    <div class="card-body">
+      <div class='row'>
+        <div class="col-lg-6">
+          <span class="h2">Git Project</span>
+          <div class='row'>
+            <div class="col-md-8">
+              <input type="text" class="form-control" value="{{gitlabAssignmentURL}}" readonly>
+            </div>
+            <button button (click)='copyToClipboard()'><i class="fa fa-copy fa-lg"></i></button>
+          </div>
+          <hr />
+          <span class="h2">Assignment Description</span>
+          <p style="border-bottom: 1rem;margin: 10px;">{{assignment.description}}</p>
+          <hr />
+          <span class="h2">Deadline</span>
+          <p style="margin: 10px;">{{assignment.deadline | date:'short'}}</p>
+        </div>
+      </div>
+      <hr>
+      <app-commit-record [type]=assignment.type [commits]=commits [feedbacks]=feedbacks [screenshotUrls]=screenshotUrls
+        (messageToEmit)="updateFeedback($event)"></app-commit-record>
+    </div>
+  </div>
+</div>

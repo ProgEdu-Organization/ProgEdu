@@ -1,8 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 
-import { AssignmentChoosedService } from './assignment-choosed.service';
+import { AssignmentChoosedService } from './assignment-choose.service';
 
-describe('AssignmentChoosedService', () => {
+describe('AssignmentChooseService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {

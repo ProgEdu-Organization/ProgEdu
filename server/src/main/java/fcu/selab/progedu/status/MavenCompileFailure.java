@@ -22,28 +22,40 @@ public class MavenCompileFailure implements Status {
 
   @Override
   public ArrayList<FeedBack> formatExamineMsg(String consoleText) {
-    int endIndex = consoleText.length();
-    ArrayList<FeedBack> feedbacklist = new ArrayList<>();
-    while (consoleText.indexOf("[ERROR]") != -1) {
-      int nextrow = consoleText.indexOf("\n");
-      int nexterror = consoleText.indexOf("[ERROR]");
-      if (nexterror > nextrow) {
-        consoleText = consoleText.substring(nextrow + 1, endIndex);
-        endIndex = endIndex - nextrow - 1;
-      } else {
-        int nextbrackets = consoleText.indexOf("]", 7);
-        int lastslash = consoleText.lastIndexOf("/");
-        feedbacklist.add(new FeedBack(
-            StatusEnum.COMPILE_FAILURE,
-            consoleText.substring(lastslash + 1, nextbrackets + 1).trim(),
-            consoleText.substring(nextbrackets + 1, nextrow).trim(),
-            "",
-            ""
-        ));
-        consoleText = consoleText.substring(nextrow + 1, endIndex);
-        endIndex = endIndex - nextrow - 1;
+    ArrayList<FeedBack> feedbackList = new ArrayList<>();
+    try {
+      int endIndex = consoleText.length();
+      while (consoleText.contains("[ERROR]")) {
+        int nextRowIndex = consoleText.indexOf("\n");
+        int nextErrorIndex = consoleText.indexOf("[ERROR]");
+        if (nextErrorIndex > nextRowIndex) {
+          consoleText = consoleText.substring(nextRowIndex + 1, endIndex);
+          endIndex = endIndex - nextRowIndex - 1;
+        } else {
+          int nextBracketsIndex = consoleText.indexOf("]", 7);
+          int lastSlashIndex = consoleText.lastIndexOf("/");
+          String errorFileName = consoleText
+              .substring(lastSlashIndex + 1, nextBracketsIndex + 1).trim();
+          feedbackList.add(new FeedBack(
+              StatusEnum.COMPILE_FAILURE,
+              errorFileName.substring(0, errorFileName.indexOf(":")).trim(),
+              errorFileName
+                  .substring(errorFileName.indexOf(":") + 1, errorFileName.length())
+                  .replace("[", "").replace("]", "")
+                  .replace(",", ":"),
+              consoleText.substring(nextBracketsIndex + 1, nextRowIndex).trim(),
+              "",
+              ""
+          ));
+          consoleText = consoleText.substring(nextRowIndex + 1, endIndex);
+          endIndex = endIndex - nextRowIndex - 1;
+        }
       }
+    } catch (Exception e) {
+      feedbackList.add(
+          new FeedBack(StatusEnum.COMPILE_FAILURE,
+              "CompileFailure ArrayList error", e.getMessage()));
     }
-    return feedbacklist;
+    return feedbackList;
   }
 }

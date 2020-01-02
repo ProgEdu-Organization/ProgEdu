@@ -4,6 +4,7 @@ import { GroupManagementService } from './group-management.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ModalDirective } from 'ngx-bootstrap/modal';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-group-management',
@@ -20,6 +21,9 @@ export class GroupManagementComponent implements OnInit {
   dynamic: number = 0;
   type: string = 'Waiting';
   isDeleteProgress = false;
+
+  errorResponse: HttpErrorResponse;
+  errorTitle: string;
 
   constructor(private groupManagementService: GroupManagementService, private router: Router) { }
   ngOnInit() {
@@ -47,6 +51,11 @@ export class GroupManagementComponent implements OnInit {
         this.deleteModal.hide();
         this.getAllGroups();
         this.isDeleteProgress = false;
+      },
+      (error) => {
+        this.deleteModal.hide();
+        this.errorResponse = error;
+        this.errorTitle = 'Delete Group Error';
       }
     );
   }
