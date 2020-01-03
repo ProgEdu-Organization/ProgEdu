@@ -221,12 +221,7 @@ public class GitlabService {
    */
   public List<GitlabProject> getAllProjects() {
     List<GitlabProject> projects = new ArrayList<>();
-    try {
-      projects = gitlab.getAllProjects();
-    } catch (IOException e) {
-      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
-      LOGGER.error(e.getMessage());
-    }
+    projects = gitlab.getAllProjects();
     return projects;
   }
 
@@ -271,12 +266,7 @@ public class GitlabService {
    */
   public List<GitlabUser> getUsers() {
     List<GitlabUser> users = new ArrayList<>();
-    try {
-      users = gitlab.getUsers();
-    } catch (IOException e) {
-      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
-      LOGGER.error(e.getMessage());
-    }
+    users = gitlab.getUsers();
     return users;
   }
 
@@ -356,12 +346,7 @@ public class GitlabService {
    */
   public List<GitlabProject> getGroupProject(GitlabGroup group) {
     List<GitlabProject> projects = new ArrayList<>();
-    try {
-      projects = gitlab.getGroupProjects(group);
-    } catch (IOException e) {
-      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
-      LOGGER.error(e.getMessage());
-    }
+    projects = gitlab.getGroupProjects(group);
     return projects;
   }
 
@@ -374,12 +359,7 @@ public class GitlabService {
    */
   public List<GitlabGroupMember> getGroupMembers(GitlabGroup group) {
     List<GitlabGroupMember> groupMembers = new ArrayList<>();
-    try {
-      groupMembers = gitlab.getGroupMembers(group);
-    } catch (IOException e) {
-      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
-      LOGGER.error(e.getMessage());
-    }
+    groupMembers = gitlab.getGroupMembers(group);
     return groupMembers;
   }
 
@@ -415,7 +395,7 @@ public class GitlabService {
   public GitlabProject createPrivateProject(int userId, String proName, String proUrl)
       throws IOException {
     GitlabProject project = gitlab.createUserProject(userId, proName, null, null, null, null, null,
-        null, null, null, null, proUrl);
+        null, null, null, proUrl);
     return project;
   }
 
@@ -433,7 +413,7 @@ public class GitlabService {
       throws IOException {
     GitlabUser user = new GitlabUser();
     user = gitlab.createUser(email, password, username, name, "", "", "", "", 10, null, null, "",
-        false, true, null);
+        false, true, null, false);
 
     String privateToken = instance.getSession(username, password).getPrivateToken();
     user.setPrivateToken(privateToken);
@@ -649,7 +629,8 @@ public class GitlabService {
     try {
       stuUser = gitlab.getUser(userId);
       gitlab.updateUser(stuUser.getId(), stuUser.getEmail(), password, stuUser.getUsername(),
-          stuUser.getName(), null, null, null, null, 20, null, null, null, false, true);
+          stuUser.getName(), null, null, null, null, 20, null, null,
+              null, false, true, false);
     } catch (IOException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
