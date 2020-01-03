@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,8 +56,7 @@ public class LoginAuth extends HttpServlet {
    * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
    *      response)
    */
-  protected void doPost(HttpServletRequest request, HttpServletResponse response)
-      throws ServletException, IOException {
+  protected void doPost(HttpServletRequest request, HttpServletResponse response) {
     final HttpSession session = request.getSession();
     String username = request.getParameter(USERNAME);
     String password = request.getParameter(USER_PASSWORD);
@@ -73,16 +73,28 @@ public class LoginAuth extends HttpServlet {
       } else {
         ob.put("isLogin", false);
       }
-    } catch (LoadConfigFailureException e) {
-      ob.put("isLogin", false);
+    } catch (LoadConfigFailureException | JSONException e) {
+      try {
+        ob.put("isLogin", false);
+      } catch (JSONException ex) {
+        LOGGER.debug(ExceptionUtil.getErrorInfoFromException(ex));
+        LOGGER.error(ex.getMessage());
+      }
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
     }
+
     response.setStatus(200);
-    PrintWriter pw = response.getWriter();
-    pw.print(ob);
-    pw.flush();
-    pw.close();
+    
+    try {
+      PrintWriter pw = response.getWriter();
+      pw.print(ob);
+      pw.flush();
+      pw.close();
+    } catch (IOException e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    }
   }
 
   private String checkPermission(String username, String password)
