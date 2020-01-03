@@ -29,7 +29,7 @@ import fcu.selab.progedu.utils.ExceptionUtil;
 public class LoginAuth extends HttpServlet {
   private static final long serialVersionUID = 1L;
   private static final String USERNAME = "username";
-  private static final String USER_PASSWORD = "password";
+  private static final String USER_TOKEN = "password";
   private GitlabService gitlabService = GitlabService.getInstance();
   private GitlabConfig gitlabConfig = GitlabConfig.getInstance();
   JwtConfig jwt = JwtConfig.getInstance();
@@ -59,7 +59,7 @@ public class LoginAuth extends HttpServlet {
   protected void doPost(HttpServletRequest request, HttpServletResponse response) {
     final HttpSession session = request.getSession();
     String username = request.getParameter(USERNAME);
-    String password = request.getParameter(USER_PASSWORD);
+    String password = request.getParameter(USER_TOKEN);
     String token;
     JSONObject ob = new JSONObject();
     try {
