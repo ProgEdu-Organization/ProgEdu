@@ -18,7 +18,7 @@ import fcu.selab.progedu.utils.ExceptionUtil;
 
 public class TeacherGetUserHw {
   private static final String ENCODING = "UTF-8";
-  private static final String PATH = "/api/v3/projects/owned?private_token=";
+  private static final String PATH = "/api/v4/projects/owned?private_token=";
   GitlabConfig gitData = GitlabConfig.getInstance();
   private static final Logger LOGGER = LoggerFactory.getLogger(TeacherGetUserHw.class);
 

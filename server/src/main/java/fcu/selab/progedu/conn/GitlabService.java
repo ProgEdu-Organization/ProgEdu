@@ -1,10 +1,12 @@
 package fcu.selab.progedu.conn;
 
+
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -13,6 +15,7 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.gitlab.api.AuthMethod;
@@ -23,8 +26,9 @@ import org.gitlab.api.models.GitlabCommit;
 import org.gitlab.api.models.GitlabGroup;
 import org.gitlab.api.models.GitlabGroupMember;
 import org.gitlab.api.models.GitlabProject;
-import org.gitlab.api.models.GitlabSession;
 import org.gitlab.api.models.GitlabUser;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,42 +74,37 @@ public class GitlabService {
 
   /**
    * Get root session from Gitlab
-   * 
-   * @return root's session from Gitlab
+   * @param userGitlabId user Gitlab Id
+   * @return token
    */
-  public GitlabSession getRootSession() {
-    GitlabSession rootSession = null;
-    try {
-      rootSession = GitlabAPI.connect(hostUrl, gitData.getGitlabRootUsername(),
-          gitData.getGitlabRootPassword());
-    } catch (IOException | LoadConfigFailureException e) {
-      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
-      LOGGER.error(e.getMessage());
-    }
-    return rootSession;
-  }
+  public String getToken(int userGitlabId) {
 
-  /**
-   * Get user session by username and password
-   * 
-   * @param userName Gitlab username
-   * @param password Gitlab password
-   * @return User's Session
-   * @throws IOException on gitlab api call error
-   */
-  public GitlabSession getSession(String userName, String password) {
-    GitlabSession userSession = null;
+    String tokenRestfulApi = hostUrl + API_NAMESPACE
+            + "/users/" + Integer.toString(userGitlabId) + "/impersonation_tokens"
+            + "?private_token=" + apiToken
+            + "&name=theToken&scopes[]=api"
+            + "&scopes[]=read_user"
+            + "&scopes[]=read_repository"
+            + "&scopes[]=write_repository";
+//            + "&scopes[]=sudo";
+
+    HttpPost post = new HttpPost(tokenRestfulApi);
+
+    HttpClient httpclient = HttpClientBuilder.create().build();
+    HttpResponse response = null ;
     try {
-      userSession = GitlabAPI.connect(hostUrl, userName, password);
+      response = httpclient.execute(post);
+      JSONTokener tokener = new JSONTokener(IOUtils.toString(response.getEntity().getContent()) );
+      JSONObject finalResult = new JSONObject(tokener);
+
+      return finalResult.getString("token");
+
     } catch (IOException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
     }
-    return userSession;
-  }
+    return "";//if have ERROR
 
-  public String getToken(GitlabSession session) {
-    return session.getPrivateToken();
   }
 
   /**
@@ -125,7 +124,6 @@ public class GitlabService {
    * 
    * @param user A user from database
    * @return The project list of user
-   * @throws IOException on gitlab api call error
    */
   public List<GitlabProject> getProject(User user) {
     GitlabUser gitlabUser = new GitlabUser();
@@ -145,7 +143,6 @@ public class GitlabService {
    * 
    * @param user of gitlab
    * @return The project list of user
-   * @throws IOException on gitlab api call error
    */
   public List<GitlabProject> getProject(GitlabUser user) {
     List<GitlabProject> projects = new ArrayList<>();
@@ -216,8 +213,7 @@ public class GitlabService {
 
   /**
    * Get all user's list of projects
-   * 
-   * @throws IOException on gitlab api call error
+   * @return projects
    */
   public List<GitlabProject> getAllProjects() {
     List<GitlabProject> projects = new ArrayList<>();
@@ -228,7 +224,7 @@ public class GitlabService {
   /**
    * Get a gitlab user
    * 
-   * @throws IOException on gitlab api call error
+   * @return gitlabUser
    */
   public GitlabUser getUser() {
     GitlabUser gitlabUser = new GitlabUser();
@@ -260,9 +256,7 @@ public class GitlabService {
 
   /**
    * Get all user from Gitlab
-   * 
    * @return a list of users
-   * @throws IOException on gitlab api call error
    */
   public List<GitlabUser> getUsers() {
     List<GitlabUser> users = new ArrayList<>();
@@ -307,7 +301,6 @@ public class GitlabService {
    * Get GitlabUser of Root
    * 
    * @return GitlabUser of Root
-   * @throws IOException on gitlab api call error
    */
   public GitlabUser getRoot() {
     GitlabUser root = new GitlabUser();
@@ -324,7 +317,6 @@ public class GitlabService {
    * Get all groups of Gitlab
    * 
    * @return a list of groups from Gitlab
-   * @throws IOException on gitlab api call error
    */
   public List<GitlabGroup> getGroups() {
     List<GitlabGroup> groups = new ArrayList<>();
@@ -342,7 +334,6 @@ public class GitlabService {
    * 
    * @param group A group form Gitlab
    * @return a list of project from group
-   * @throws IOException on gitlab api call error
    */
   public List<GitlabProject> getGroupProject(GitlabGroup group) {
     List<GitlabProject> projects = new ArrayList<>();
@@ -355,7 +346,6 @@ public class GitlabService {
    * 
    * @param group a group from Gitlab
    * @return a list of group's member
-   * @throws IOException on gitlab api call error
    */
   public List<GitlabGroupMember> getGroupMembers(GitlabGroup group) {
     List<GitlabGroupMember> groupMembers = new ArrayList<>();
@@ -381,22 +371,40 @@ public class GitlabService {
   }
 
   public String getGroupUrl(GitlabGroup group) {
-    return hostUrl + "/groups/" + group.getName();
+    return hostUrl + API_NAMESPACE + "/groups/" + group.getName();
   }
 
   /**
-   * createUserProject(Integer userId, String name, String description, String
-   * defaultBranch, Boolean issuesEnabled, Boolean wallEnabled, Boolean
-   * mergeRequestsEnabled, Boolean wikiEnabled, Boolean snippetsEnabled, Boolean
-   * publik, Integer visibilityLevel, String importUrl)
-   * 
+   * @param userName userName
+   * @param proName proName
+   * @return project
    * @throws IOException on gitlab api call error
    */
-  public GitlabProject createPrivateProject(int userId, String proName, String proUrl)
-      throws IOException {
-    GitlabProject project = gitlab.createUserProject(userId, proName, null, null, null, null, null,
-        null, null, null, proUrl);
-    return project;
+  public GitlabProject createPrivateProject(String userName, String proName) {
+
+    String forkApi = hostUrl + API_NAMESPACE
+            + "/projects/" + "root" + "%2F" + proName + "/fork" // {%2f} = {/}
+            + "?private_token=" + apiToken
+            + "&name=" + proName
+            + "&path=" + proName
+            + "&namespace=" + userName;
+
+    HttpPost post = new HttpPost(forkApi);
+    HttpClient httpclient = HttpClientBuilder.create().build();
+    HttpResponse response = null ;
+    try {
+      response = httpclient.execute(post);
+      JSONTokener tokener = new JSONTokener(IOUtils.toString(response.getEntity().getContent()) );
+      JSONObject finalResult = new JSONObject(tokener);
+
+      int projectId = finalResult.getInt("id");
+      return gitlab.getProject(projectId);
+
+    } catch (IOException e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    }
+    return new GitlabProject();//empty GitlabProject()
   }
 
   /**
@@ -415,28 +423,10 @@ public class GitlabService {
     user = gitlab.createUser(email, password, username, name, "", "", "", "", 10, null, null, "",
         false, true, null, false);
 
-    String privateToken = instance.getSession(username, password).getPrivateToken();
+    String privateToken = getToken(user.getId());
     user.setPrivateToken(privateToken);
-//    dbManager.addUser(user);
     return user;
   }
-
-//  /**
-//   * Creates a Group
-//   *
-//   * @param groupName The name of the group. The name will also be used as the
-//   *          path of the group.
-//   * @param owner the owner of the group.
-//   * @return The GitLab Group
-//   */
-//  public GitlabGroup createGroup(String groupName, GitlabUser owner) {
-//    try {
-//      return gitlab.createGroupViaSudo(groupName, groupName, owner);
-//    } catch (IOException e) {
-//      System.out.println(e);
-//    }
-//    return null;
-//  }
 
   /**
    * Creates a Group
@@ -459,6 +449,7 @@ public class GitlabService {
    * 
    * @param groupName   group name
    * @param projectName project name
+   * @return projectId
    * @throws IOException IOException
    */
   public int createGroupProject(String groupName, String projectName) throws IOException {
@@ -522,7 +513,6 @@ public class GitlabService {
    * 
    * @param proName Project name
    * @return true or false
-   * @throws IOException on gitlab api call error
    */
   public GitlabProject createRootProject(String proName) {
     GitlabProject project = null;
@@ -540,7 +530,6 @@ public class GitlabService {
    * 
    * @param projectId Project id
    * @return a count of commit
-   * @throws IOException on gitlab api call error
    */
   public int getAllCommitsCounts(int projectId) {
     int count = 0;
@@ -604,6 +593,7 @@ public class GitlabService {
 
   /**
    * delete all gitlab projects
+   * @param name name
    */
   public void deleteProjects(String name) {
     List<GitlabProject> projects = getAllProjects();
@@ -621,7 +611,7 @@ public class GitlabService {
 
   /**
    * Update user password
-   * 
+   * @param userId user id
    * @param password user new password
    */
   public void updateUserPassword(int userId, String password) {
@@ -641,6 +631,7 @@ public class GitlabService {
    * get commits from gitlab project.
    * 
    * @param name project's name
+   * @return committers
    */
   public List<String> getAllCommitters(String name) {
     List<String> committers = new ArrayList<>();
@@ -661,6 +652,8 @@ public class GitlabService {
    * get commits from gitlab project. (to do)
    * 
    * @param username project's (to do)
+   * @param projectName project name
+   * @return target
    */
   public String cloneProject(String username, String projectName) {
     String repoUrl = rootUrl + "/" + username + "/" + projectName + ".git";
@@ -704,7 +697,7 @@ public class GitlabService {
     JenkinsConfig jenkinsConfig = JenkinsConfig.getInstance();
     // for example,
     // http://localhost:80/api/v4/projects/3149/hooks?url=http://localhost:8888/project/webhook
-    String gitlabWebhookApi = hostUrl + "/api/v4/projects/" + project.getId() + "/hooks";
+    String gitlabWebhookApi = hostUrl + API_NAMESPACE + "/projects/" + project.getId() + "/hooks";
 //    project.getPath()
     String jenkinsJobUrl = jenkinsConfig.getJenkinsHostUrl() + "/project/" + username + "_"
         + projectName;
@@ -728,8 +721,8 @@ public class GitlabService {
     HttpClient client = new DefaultHttpClient();
     String url = "";
     try {
-      url = hostUrl + "/api/v4/groups/" + groupId + "/projects/" + projectId + "?private_token="
-          + apiToken;
+      url = hostUrl + API_NAMESPACE + "/groups/" + groupId + "/projects/"
+              + projectId + "?private_token=" + apiToken;
       HttpPost post = new HttpPost(url);
 
       HttpResponse response = client.execute(post);
