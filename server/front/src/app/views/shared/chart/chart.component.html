@@ -1,0 +1,37 @@
+<div class="animated fadeIn">
+  <!-- Nav tabs -->
+  <div class="row">
+    <div class="col-md-10">
+      <tabset>
+        <tab id="bar-chart" (selectTab)="getStatusResultData()">
+          <ng-template tabHeading><i class="cil-chart"></i> Commit Result</ng-template>
+          <app-bar-chart *ngIf='isBarChartReady' [barChartLabels]='labels' [barChartData]='barChartData'>
+          </app-bar-chart>
+        </tab>
+        <tab id="mixed-chart" (selectTab)="getMixedChartData();">
+          <ng-template tabHeading><i class="cil-chart-line"></i>Commit Count and Build Result</ng-template>
+          <app-mixed-chart *ngIf='isMixedChartReady' [mixedChartLabels]='labels' [mixedChartData]='mixedChartData'>
+          </app-mixed-chart>
+        </tab>
+        <tab id="bubble-chart" (selectTab)="getBubbleChartData(selectedAssignment)">
+          <ng-template tabHeading><i class=""></i>Commit Time</ng-template>
+          <div class="btn-group" dropdown>
+            <button dropdownToggle type="button" class="btn btn-primary dropdown-toggle">
+              {{selectedAssignment}} <span class="caret"></span>
+            </button>
+            <ul *dropdownMenu class="dropdown-menu" role="menu">
+              <li *ngFor='let commit of commits' role="menuitem">
+                <a class="dropdown-item" href="javascript:void(0);"
+                  (click)='getBubbleChartData(commit.name)'>{{commit.name}}</a>
+              </li>
+            </ul>
+          </div>
+          <hr />
+          <app-bubble-chart *ngIf='isbubbleChartReady' [title]='selectedAssignment' [bubbleChartData]='bubbleChartData'
+            [bubbleChartLabels]='bubbleChartLabels'>
+          </app-bubble-chart>
+        </tab>
+      </tabset>
+    </div>
+  </div>
+</div>
