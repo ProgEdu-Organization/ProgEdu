@@ -3,3 +3,4 @@ docs/
 .env
 *.swp
 .idea/
+*.iml
