@@ -54,6 +54,7 @@ public class MavenGroupProject extends GroupProjectType {
           + ".git";
       String updateDbUrl = progEduApiUrl + "/commits/update";
       DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+      docFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl",true);
       DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
       Document doc = docBuilder.parse(jenkinsJobConfigPath);
 
