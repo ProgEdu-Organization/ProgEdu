@@ -58,4 +58,12 @@ public class Group {
     this.projects = projects;
   }
 
+  public int getNumberOfUsers() {
+    return members.size();
+  }
+
+  public boolean isNotMoreThanOneUser() {
+    return (getNumberOfUsers() <= 1);
+  }
+
 }
