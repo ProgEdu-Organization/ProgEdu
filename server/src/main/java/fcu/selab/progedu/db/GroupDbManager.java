@@ -174,23 +174,14 @@ public class GroupDbManager {
    * @return all group on gitlab
    */
   public List<Group> getGroups() {
-    String statement = "SELECT * FROM ProgEdu.Group";
+    String statement = "SELECT name FROM ProgEdu.Group";
     List<Group> groups = new ArrayList<>();
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(statement)) {
       try (ResultSet rs = preStmt.executeQuery()) {
         while (rs.next()) {
           String name = rs.getString("name");
-          int id = rs.getInt("id");
-          int gitlabId = rs.getInt("gitLabId");
-          int leader = rs.getInt("leader");
-
-          Group group = new Group();
-          group.setGitlabId(gitlabId);
-          group.setGroupName(name);
-          group.setId(id);
-          group.setLeader(leader);
-
+          Group group = getGroup(name);
           groups.add(group);
         }
       }
@@ -218,7 +209,7 @@ public class GroupDbManager {
           group.setGroupName( rs.getString("name") );
           group.setId( rs.getInt("id") );
           group.setGitlabId( rs.getInt("gitLabId") );
-          group.setLeader( rs.getInt("leader") );
+          group.setLeader( Integer.parseInt( rs.getString("leader") ) );
         }
 
         // setMembers

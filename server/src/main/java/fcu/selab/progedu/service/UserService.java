@@ -296,6 +296,7 @@ public class UserService {
   public Response deleteUser(int userId) {
     UserDbService userDbService = UserDbService.getInstance();
 
+
     ////delete Gitlab
     //but gitlab repository not delete so you need manual delete
     gitlabService.deleteUser( userDbService.getGitLabId(userId) );
@@ -308,12 +309,12 @@ public class UserService {
       if ( group.isNotMoreThanOneUser() ) { // delete Group
         groupService.removeGroup( group.getGroupName() );
         
-      } else if (group.getLeader() == userId) { // change Group Leader
-
+      } else if (group.getLeader() == userId) { // change Group Leader and update DB
         List<User> groupUsers = group.getMembers();
         for (User groupUser:groupUsers) {
           if (groupUser.getId() != userId) {
             group.setLeader( groupUser.getId() );
+            gdb.updateLeader( group );
             break;
           }
         }

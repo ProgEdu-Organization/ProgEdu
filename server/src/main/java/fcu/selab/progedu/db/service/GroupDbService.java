@@ -219,4 +219,14 @@ public class GroupDbService {
     int gid = gdb.getId(name);
     gdb.updateLeader(gid, uid);
   }
+
+  /**
+   * update leader
+   *
+   * @param group group
+   */
+  public void updateLeader(Group group) {
+    gdb.updateLeader(group.getId(), group.getLeader());
+  }
+
 }
