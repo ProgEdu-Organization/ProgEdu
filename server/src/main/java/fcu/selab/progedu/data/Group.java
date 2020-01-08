@@ -63,7 +63,7 @@ public class Group {
   }
 
   public boolean isNotMoreThanOneUser() {
-    return (getNumberOfUsers() <= 1);
+    return (getNumberOfUsers() == 1);
   }
 
 }

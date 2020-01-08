@@ -62,39 +62,22 @@ public class ProjectDbManager {
 
   /**
    * get project info by project name
-   * 
-   * @param name project name
+   *
+   * @param id project id
    * @return project
    */
-  public GroupProject getGroupProjectByName(String name) {
-    GroupProject project = new GroupProject();
-    String sql = "SELECT * FROM Project WHERE name = ?";
+  public GroupProject getGroupProjectById(int id) {
+    return getGroupProjectByName( getProjectName(id) );
+  }
 
-    try (Connection conn = database.getConnection();
-        PreparedStatement stmt = conn.prepareStatement(sql)) {
-      stmt.setString(1, name);
-      try (ResultSet rs = stmt.executeQuery();) {
-        while (rs.next()) {
-          Date createTime = rs.getTimestamp("createTime");
-          Date deadline = rs.getTimestamp("deadline");
-          String description = rs.getString("description");
-          int typeId = rs.getInt("type");
-          int id = rs.getInt("id");
-          ProjectTypeEnum typeEnum = atDb.getTypeNameById(typeId);
-
-          project.setId(id);
-          project.setName(name);
-          project.setCreateTime(createTime);
-          project.setDescription(description);
-          project.setType(typeEnum);
-          project.setDeadline(deadline);
-        }
-      }
-    } catch (SQLException e) {
-      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
-      LOGGER.error(e.getMessage());
-    }
-    return project;
+  /**
+   * get project info by project name
+   * 
+   * @param projectName project name
+   * @return project
+   */
+  public GroupProject getGroupProjectByName(String projectName) {
+    return getGroupProject( getId(projectName) );
   }
 
   /**

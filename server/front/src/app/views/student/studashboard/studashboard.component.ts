@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { StudashboardService } from './studashboard.service';
 import { JwtService } from '../../../services/jwt.service';
 import { User } from '../../../models/user';
+import { TimeService } from '../../../services/time.service';
 @Component({
   selector: 'app-studashboard',
   templateUrl: './studashboard.component.html'
@@ -10,7 +11,9 @@ export class StudashboardComponent implements OnInit {
   public assignmentTable: Array<any> = new Array<any>();
   public studentCommitRecord: JSON;
   public username: string;
-  constructor(private studashboardService: StudashboardService, private jwtService?: JwtService) { }
+  constructor(private studashboardService: StudashboardService,private timeService: TimeService,
+     private jwtService?: JwtService) { }
+     
   async ngOnInit() {
     this.username = new User(this.jwtService).getUsername();
     await this.getAllAssignments();
@@ -32,18 +35,11 @@ export class StudashboardComponent implements OnInit {
 
   isRelease(release: Date) {
     const now_time = new Date().getTime();
-    const realease_time = new Date(this.getUTCAdjustTime(release)).getTime();
+    const realease_time = new Date(this.timeService.getUTCTime(release)).getTime();
     if (now_time >= realease_time) {
       return true;
     }
     return false;
-  }
-
-  getUTCAdjustTime(time: any): Date {
-    const timeOffset = (new Date().getTimezoneOffset() * 60 * 1000);
-    const assigenmentTime = new Date(time).getTime();
-
-    return new Date(assigenmentTime - timeOffset);
   }
 
   isNA(commit: any) {

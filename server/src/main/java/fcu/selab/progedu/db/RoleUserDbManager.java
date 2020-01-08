@@ -168,4 +168,23 @@ public class RoleUserDbManager {
     return lsUids;
   }
 
+  /**
+   * delete Role_User by uid
+   *
+   * @param userId The user id
+   *
+   */
+  public void deleteRoleUserByUserId(int userId) {
+    String query = "DELETE FROM Role_User WHERE uid = ?";
+    try (Connection conn = database.getConnection();
+         PreparedStatement preStmt = conn.prepareStatement(query)) {
+
+      preStmt.setInt(1, userId);
+      preStmt.executeUpdate();
+
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
+
 }

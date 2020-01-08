@@ -278,13 +278,13 @@ public class UserService {
   /**
    * Delete user but gitlab repository not delete so you need manual delete
    *
-   * @param userName user name
+   * @param username user name
    */
   @DELETE
-  @Path("/{userName}")
-  public Response deleteUser(@PathParam("userName") String userName) {
+  @Path("/{username}")
+  public Response deleteUser(@PathParam("username") String username) {
     UserDbService userDbService = UserDbService.getInstance();
-    int userId = userDbService.getId(userName);
+    int userId = userDbService.getId(username);
     return deleteUser(userId);
   }
 
@@ -297,11 +297,10 @@ public class UserService {
     UserDbService userDbService = UserDbService.getInstance();
 
     ////delete Gitlab
-    //but gitlab repository not delete so you need manual delete
     gitlabService.deleteUser( userDbService.getGitLabId(userId) );
 
     // if user's group has one user delete group
-    GroupService groupService = new GroupService();
+    GroupService groupService = GroupService.getInstance();
     List<Group> groups = gdb.getGroups(userId);
     for (Group group : groups) {
 
@@ -321,8 +320,6 @@ public class UserService {
       }
 
     }
-    groupService = null; // delete groupService
-
 
     ////remove jenkins
     JenkinsService jenkinsService = JenkinsService.getInstance();

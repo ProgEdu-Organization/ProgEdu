@@ -32,6 +32,12 @@ import java.util.List;
 @Path("groups")
 public class GroupService {
 
+  private static GroupService instance = new GroupService();
+
+  public static GroupService getInstance() {
+    return instance;
+  }
+
   private GitlabService gitlabService = GitlabService.getInstance();
   private UserService userService = new UserService();
   private GroupDbService gdb = GroupDbService.getInstance();

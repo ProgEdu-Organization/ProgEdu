@@ -59,7 +59,7 @@
                 java-gitlab-api
             </artifactId>
             <version>
-                1.2.7
+                4.1.1
             </version>
         </dependency>
         <!-- java Http Client -->
