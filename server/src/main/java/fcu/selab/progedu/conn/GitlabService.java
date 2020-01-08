@@ -346,8 +346,7 @@ public class GitlabService {
    */
   public List<GitlabProject> getGroupProject(GitlabGroup group) {
     List<GitlabProject> projects = new ArrayList<>();
-    projects = gitlab.getGroupProjects(group);
-    return projects;
+    return gitlab.getGroupProjects(group);
   }
 
   /**
@@ -359,8 +358,7 @@ public class GitlabService {
    */
   public List<GitlabGroupMember> getGroupMembers(GitlabGroup group) {
     List<GitlabGroupMember> groupMembers = new ArrayList<>();
-    groupMembers = gitlab.getGroupMembers(group);
-    return groupMembers;
+    return gitlab.getGroupMembers(group);
   }
 
   /**
@@ -625,11 +623,11 @@ public class GitlabService {
    * @param password user new password
    */
   public void updateUserPassword(int userId, String password) {
-    GitlabUser stuUser = new GitlabUser();
+    GitlabUser user = new GitlabUser();
     try {
-      stuUser = gitlab.getUser(userId);
-      gitlab.updateUser(stuUser.getId(), stuUser.getEmail(), password, stuUser.getUsername(),
-          stuUser.getName(), null, null, null, null, 20, null, null,
+      user = gitlab.getUser(userId);
+      gitlab.updateUser(user.getId(), user.getEmail(), password, user.getUsername(),
+              user.getName(), null, null, null, null, 20, null, null,
               null, false, true, false);
     } catch (IOException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
