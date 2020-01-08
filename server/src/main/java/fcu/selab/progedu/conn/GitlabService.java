@@ -8,13 +8,16 @@ import java.util.List;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 import org.gitlab.api.AuthMethod;
 import org.gitlab.api.GitlabAPI;
 import org.gitlab.api.TokenType;
@@ -25,6 +28,7 @@ import org.gitlab.api.models.GitlabGroupMember;
 import org.gitlab.api.models.GitlabProject;
 import org.gitlab.api.models.GitlabSession;
 import org.gitlab.api.models.GitlabUser;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,8 +38,8 @@ import fcu.selab.progedu.data.User;
 import fcu.selab.progedu.db.service.GroupDbService;
 import fcu.selab.progedu.db.service.UserDbService;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
-import fcu.selab.progedu.utils.Linux;
 import fcu.selab.progedu.utils.ExceptionUtil;
+import fcu.selab.progedu.utils.Linux;
 
 public class GitlabService {
   private static GitlabService instance = new GitlabService();
@@ -221,12 +225,7 @@ public class GitlabService {
    */
   public List<GitlabProject> getAllProjects() {
     List<GitlabProject> projects = new ArrayList<>();
-    try {
-      projects = gitlab.getAllProjects();
-    } catch (IOException e) {
-      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
-      LOGGER.error(e.getMessage());
-    }
+    projects = gitlab.getAllProjects();
     return projects;
   }
 
@@ -271,12 +270,7 @@ public class GitlabService {
    */
   public List<GitlabUser> getUsers() {
     List<GitlabUser> users = new ArrayList<>();
-    try {
-      users = gitlab.getUsers();
-    } catch (IOException e) {
-      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
-      LOGGER.error(e.getMessage());
-    }
+    users = gitlab.getUsers();
     return users;
   }
 
@@ -356,12 +350,7 @@ public class GitlabService {
    */
   public List<GitlabProject> getGroupProject(GitlabGroup group) {
     List<GitlabProject> projects = new ArrayList<>();
-    try {
-      projects = gitlab.getGroupProjects(group);
-    } catch (IOException e) {
-      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
-      LOGGER.error(e.getMessage());
-    }
+    projects = gitlab.getGroupProjects(group);
     return projects;
   }
 
@@ -374,12 +363,7 @@ public class GitlabService {
    */
   public List<GitlabGroupMember> getGroupMembers(GitlabGroup group) {
     List<GitlabGroupMember> groupMembers = new ArrayList<>();
-    try {
-      groupMembers = gitlab.getGroupMembers(group);
-    } catch (IOException e) {
-      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
-      LOGGER.error(e.getMessage());
-    }
+    groupMembers = gitlab.getGroupMembers(group);
     return groupMembers;
   }
 
@@ -415,7 +399,7 @@ public class GitlabService {
   public GitlabProject createPrivateProject(int userId, String proName, String proUrl)
       throws IOException {
     GitlabProject project = gitlab.createUserProject(userId, proName, null, null, null, null, null,
-        null, null, null, null, proUrl);
+        null, null, null, proUrl);
     return project;
   }
 
@@ -433,7 +417,7 @@ public class GitlabService {
       throws IOException {
     GitlabUser user = new GitlabUser();
     user = gitlab.createUser(email, password, username, name, "", "", "", "", 10, null, null, "",
-        false, true, null);
+        false, true, null, null);
 
     String privateToken = instance.getSession(username, password).getPrivateToken();
     user.setPrivateToken(privateToken);
@@ -649,7 +633,7 @@ public class GitlabService {
     try {
       stuUser = gitlab.getUser(userId);
       gitlab.updateUser(stuUser.getId(), stuUser.getEmail(), password, stuUser.getUsername(),
-          stuUser.getName(), null, null, null, null, 20, null, null, null, false, true);
+          stuUser.getName(), null, null, null, null, 20, null, null, null, false, true, null);
     } catch (IOException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
@@ -765,6 +749,33 @@ public class GitlabService {
   }
 
   /**
+   * (to do)
+   * 
+   * @param project (to do)
+   * @throws ClientProtocolException
+   * @throws IOException                (to do)
+   * @throws LoadConfigFailureException (to do)
+   */
+  public JSONObject getCommit(int projectId, String commitHash)
+      throws ClientProtocolException, IOException {
+    // for example,
+    // http://localhost:80/api/v4/projects/275/repository/commits/6de204c6402ff6d26473194ee6867765d0ea911d
+    String getCommitAPI = hostUrl + API_NAMESPACE + "/projects/" + projectId
+        + "/repository/commits/" + commitHash;
+
+    HttpGet get = new HttpGet(getCommitAPI);
+    get.addHeader("PRIVATE-TOKEN", apiToken);
+    // Request parameters
+//    List<NameValuePair> params = new ArrayList<>();
+//    params.add(new BasicNameValuePair("url", jenkinsJobUrl));
+//    post.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
+
+    HttpResponse response = HttpClients.createDefault().execute(get);
+    String entity = EntityUtils.toString(response.getEntity());
+    return new JSONObject(entity);
+  }
+
+  /**
    * get gitlab project url
    * 
    * @param username    username
@@ -804,6 +815,10 @@ public class GitlabService {
       LOGGER.error(e.getMessage());
     }
 
+  }
+
+  public GitlabAPI getGitlabAPI() {
+    return gitlab;
   }
 
 }
