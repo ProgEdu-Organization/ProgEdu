@@ -1,0 +1,16 @@
+<div *ngIf='mixedChartLabels' class="card">
+    <div class="card-header">
+        <div class="card-header-actions">
+            <a href="http://www.chartjs.org">
+            <small class="text-muted">docs</small>
+            </a>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="chart-wrapper">
+            <canvas baseChart class="chart" [datasets]="mixedChartData" [labels]="mixedChartLabels"
+            [options]="mixedChartOptions" [legend]="mixedChartLegend" [chartType]="mixedChartType"
+            (chartHover)="chartHovered($event)" (chartClick)="chartClicked($event)"></canvas>
+        </div>
+    </div>
+</div>

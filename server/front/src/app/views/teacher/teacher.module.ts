@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ChartsModule } from 'ng2-charts';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { ButtonsModule } from 'ngx-bootstrap/buttons';
 import { CommonModule } from '@angular/common';
@@ -18,7 +17,6 @@ import { TabsModule } from 'ngx-bootstrap/tabs';
 import { StudentManagementComponent } from './student-management/student-management.component';
 import { GroupManagementComponent } from './group-management/group-management.component';
 // Carousel Component
-import { ChartComponent } from './chart/chart.component';
 import { ProgressbarModule } from 'ngx-bootstrap/progressbar';
 
 import { CollapseModule } from 'ngx-bootstrap/collapse';
@@ -31,7 +29,6 @@ import { CreateGroupComponent } from './create-group/create-group.component';
     imports: [
         FormsModule,
         CommonModule,
-        ChartsModule,
         BsDropdownModule,
         TeacherRoutingModule,
         ReactiveFormsModule,
@@ -39,10 +36,10 @@ import { CreateGroupComponent } from './create-group/create-group.component';
         ButtonsModule.forRoot(),
         AlertModule.forRoot(),
         ModalModule.forRoot(),
-        TabsModule.forRoot(),
         CollapseModule,
         CarouselModule,
-        SharedModule
+        SharedModule,
+        TabsModule.forRoot()
     ],
     declarations: [
         DashboardComponent,
@@ -50,7 +47,6 @@ import { CreateGroupComponent } from './create-group/create-group.component';
         CreateAssignmentComponent,
         StudentManagementComponent,
         GroupManagementComponent,
-        ChartComponent,
         GroupManagementComponent,
         EditGroupManagementComponent,
         CreateGroupComponent,
