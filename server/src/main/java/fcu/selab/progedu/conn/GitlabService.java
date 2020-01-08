@@ -34,8 +34,8 @@ import fcu.selab.progedu.data.User;
 import fcu.selab.progedu.db.service.GroupDbService;
 import fcu.selab.progedu.db.service.UserDbService;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
-import fcu.selab.progedu.utils.Linux;
 import fcu.selab.progedu.utils.ExceptionUtil;
+import fcu.selab.progedu.utils.Linux;
 
 public class GitlabService {
   private static GitlabService instance = new GitlabService();
@@ -400,9 +400,8 @@ public class GitlabService {
    */
   public GitlabUser createUser(String email, String password, String username, String name)
       throws IOException {
-    GitlabUser user = gitlab.createUser(email, password, username, name, "", "", "", "", 10, null, null, "",
-        false, true, null, false);
-
+    GitlabUser user = gitlab.createUser(email, password, username, name, "", "", "", "", 10, null,
+        null, "", false, true, null, false);
     String privateToken = instance.getSession(username, password).getPrivateToken();
     user.setPrivateToken(privateToken);
 //    dbManager.addUser(user);
