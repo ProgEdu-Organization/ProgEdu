@@ -220,37 +220,7 @@ public class UserDbManager {
    * @return user
    */
   public User getUser(String username) {
-    User user = new User();
-    String query = "SELECT * FROM User WHERE username = ?";
-
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(query)) {
-      preStmt.setString(1, username);
-      try (ResultSet rs = preStmt.executeQuery()) {
-        while (rs.next()) {
-          int gitLabId = rs.getInt(GIT_LAB_ID);
-          int id = rs.getInt("id");
-          String name = rs.getString(NAME);
-          String password = rs.getString(PASSWORD);
-          String email = rs.getString(EMAIL);
-          String gitLabToken = rs.getString(GIT_LAB_TOKEN);
-          boolean display = rs.getBoolean(DISPLAY);
-
-          user.setGitLabId(gitLabId);
-          user.setId(id);
-          user.setUsername(username);
-          user.setName(name);
-          user.setPassword(password);
-          user.setEmail(email);
-          user.setGitLabToken(gitLabToken);
-          user.setDisplay(display);
-        }
-      }
-    } catch (SQLException e) {
-      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
-      LOGGER.error(e.getMessage());
-    }
-    return user;
+    return getUser( getUserIdByUsername(username) );
   }
 
   /**
@@ -284,6 +254,7 @@ public class UserDbManager {
           user.setEmail(email);
           user.setGitLabToken(gitLabToken);
           user.setDisplay(display);
+          //not set Role
         }
       }
     } catch (SQLException e) {
@@ -456,4 +427,24 @@ public class UserDbManager {
     }
     return name;
   }
+
+  /**
+   * delete User from id
+   *
+   * @param id The user id
+   *
+   */
+  public void deleteUser(int id) {
+    String query = "DELETE FROM ProgEdu.User WHERE id = ?";
+    try (Connection conn = database.getConnection();
+         PreparedStatement preStmt = conn.prepareStatement(query)) {
+
+      preStmt.setInt(1, id);
+      preStmt.executeUpdate();
+
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
+
 }

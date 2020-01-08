@@ -384,8 +384,8 @@ public class GitlabService {
    */
   public GitlabProject createPrivateProject(int userId, String proName, String proUrl)
       throws IOException {
-    return gitlab.createUserProject(userId, proName, null, null, null, null, null, null, null, null,
-        proUrl);
+    return gitlab.createUserProject(userId, proName, null, null, null, null, null,
+        null, null, null, proUrl);
   }
 
   /**
@@ -402,7 +402,6 @@ public class GitlabService {
       throws IOException {
     GitlabUser user = gitlab.createUser(email, password, username, name, "", "", "", "", 10, null,
         null, "", false, true, null, false);
-
     String privateToken = instance.getSession(username, password).getPrivateToken();
     user.setPrivateToken(privateToken);
 //    dbManager.addUser(user);
@@ -616,8 +615,9 @@ public class GitlabService {
     GitlabUser user = new GitlabUser();
     try {
       user = gitlab.getUser(userId);
-      gitlab.updateUser(user.getId(), user.getEmail(), password, user.getUsername(), user.getName(),
-          null, null, null, null, 20, null, null, null, false, true, false);
+      gitlab.updateUser(user.getId(), user.getEmail(), password, user.getUsername(),
+              user.getName(), null, null, null, null, 20, null, null,
+              null, false, true, false);
     } catch (IOException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
