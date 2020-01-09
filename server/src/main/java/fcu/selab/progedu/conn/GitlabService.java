@@ -8,7 +8,7 @@ import java.util.List;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
+import org.apache.http.ParseException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
@@ -142,6 +142,23 @@ public class GitlabService {
       LOGGER.error(e.getMessage());
     }
     return projects;
+  }
+
+  /**
+   * Get project
+   * 
+   * @param namespace   username or group name
+   * @param projectName project name
+   * @return project
+   */
+  public GitlabProject getProject(String namespace, String projectName) {
+    try {
+      return gitlab.getProject(namespace, projectName);
+    } catch (IOException e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    }
+    return null;
   }
 
   /**
@@ -388,8 +405,8 @@ public class GitlabService {
    */
   public GitlabProject createPrivateProject(int userId, String proName, String proUrl)
       throws IOException {
-    return gitlab.createUserProject(userId, proName, null, null, null, null, null,
-        null, null, null, proUrl);
+    return gitlab.createUserProject(userId, proName, null, null, null, null, null, null, null, null,
+        proUrl);
   }
 
   /**
@@ -619,9 +636,8 @@ public class GitlabService {
     GitlabUser user = new GitlabUser();
     try {
       user = gitlab.getUser(userId);
-      gitlab.updateUser(user.getId(), user.getEmail(), password, user.getUsername(),
-              user.getName(), null, null, null, null, 20, null, null,
-              null, false, true, false);
+      gitlab.updateUser(user.getId(), user.getEmail(), password, user.getUsername(), user.getName(),
+          null, null, null, null, 20, null, null, null, false, true, false);
     } catch (IOException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
@@ -737,30 +753,30 @@ public class GitlabService {
   }
 
   /**
-   * (to do)
+   * get git commit info
    * 
-   * @param project (to do)
-   * @throws ClientProtocolException
-   * @throws IOException                (to do)
-   * @throws LoadConfigFailureException (to do)
+   * @param projectId  gitlab project id
+   * @param commitHash commit hash
+   * @return gitlab commit
    */
-  public JSONObject getCommit(int projectId, String commitHash)
-      throws ClientProtocolException, IOException {
+  public JSONObject getCommit(int projectId, String commitHash) {
     // for example,
     // http://localhost:80/api/v4/projects/275/repository/commits/6de204c6402ff6d26473194ee6867765d0ea911d
-    String getCommitAPI = hostUrl + API_NAMESPACE + "/projects/" + projectId
+    String getCommitApi = hostUrl + API_NAMESPACE + "/projects/" + projectId
         + "/repository/commits/" + commitHash;
 
-    HttpGet get = new HttpGet(getCommitAPI);
+    HttpGet get = new HttpGet(getCommitApi);
     get.addHeader("PRIVATE-TOKEN", apiToken);
-    // Request parameters
-//    List<NameValuePair> params = new ArrayList<>();
-//    params.add(new BasicNameValuePair("url", jenkinsJobUrl));
-//    post.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 
-    HttpResponse response = HttpClients.createDefault().execute(get);
-    String entity = EntityUtils.toString(response.getEntity());
-    return new JSONObject(entity);
+    try {
+      HttpResponse response = HttpClients.createDefault().execute(get);
+      String entity = EntityUtils.toString(response.getEntity());
+      return new JSONObject(entity);
+    } catch (ParseException | IOException e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    }
+    return null;
   }
 
   /**
@@ -803,10 +819,6 @@ public class GitlabService {
       LOGGER.error(e.getMessage());
     }
 
-  }
-
-  public GitlabAPI getGitlabAPI() {
-    return gitlab;
   }
 
 }

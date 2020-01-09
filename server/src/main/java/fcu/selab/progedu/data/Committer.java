@@ -6,29 +6,39 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-public class Commit {
-  private String committer;
+public class Committer {
+  private String name;
   private List<CommitStats> commits;
 
-  public Commit(String committer) {
+  /**
+   * constructor
+   * 
+   * @param name committer's name
+   */
+  public Committer(String name) {
     this.commits = new ArrayList<CommitStats>();
-    this.committer = committer;
+    this.name = name;
   }
 
-  public JSONObject toJSON() {
+  /**
+   * transform java object to JSON
+   * 
+   * @return JSON
+   */
+  public JSONObject toJson() {
     JSONArray array = new JSONArray();
     JSONObject object = new JSONObject();
     for (CommitStats commit : commits) {
-      array.put(commit.toJSON());
+      array.put(commit.toJson());
     }
-    object.put("committer", committer);
+    object.put("committer", name);
     object.put("commits", array);
 
     return object;
   }
 
   public String getCommitter() {
-    return this.committer;
+    return this.name;
   }
 
   public void addCommitStats(CommitStats commitStats) {
