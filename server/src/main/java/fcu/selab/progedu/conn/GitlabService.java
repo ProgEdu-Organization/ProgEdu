@@ -224,9 +224,7 @@ public class GitlabService {
    * @throws IOException on gitlab api call error
    */
   public List<GitlabProject> getAllProjects() {
-    List<GitlabProject> projects = new ArrayList<>();
-    projects = gitlab.getAllProjects();
-    return projects;
+    return gitlab.getAllProjects();
   }
 
   /**
@@ -269,9 +267,7 @@ public class GitlabService {
    * @throws IOException on gitlab api call error
    */
   public List<GitlabUser> getUsers() {
-    List<GitlabUser> users = new ArrayList<>();
-    users = gitlab.getUsers();
-    return users;
+    return gitlab.getUsers();
   }
 
   /**
@@ -346,12 +342,9 @@ public class GitlabService {
    * 
    * @param group A group form Gitlab
    * @return a list of project from group
-   * @throws IOException on gitlab api call error
    */
   public List<GitlabProject> getGroupProject(GitlabGroup group) {
-    List<GitlabProject> projects = new ArrayList<>();
-    projects = gitlab.getGroupProjects(group);
-    return projects;
+    return gitlab.getGroupProjects(group);
   }
 
   /**
@@ -359,12 +352,9 @@ public class GitlabService {
    * 
    * @param group a group from Gitlab
    * @return a list of group's member
-   * @throws IOException on gitlab api call error
    */
   public List<GitlabGroupMember> getGroupMembers(GitlabGroup group) {
-    List<GitlabGroupMember> groupMembers = new ArrayList<>();
-    groupMembers = gitlab.getGroupMembers(group);
-    return groupMembers;
+    return gitlab.getGroupMembers(group);
   }
 
   /**
@@ -398,9 +388,8 @@ public class GitlabService {
    */
   public GitlabProject createPrivateProject(int userId, String proName, String proUrl)
       throws IOException {
-    GitlabProject project = gitlab.createUserProject(userId, proName, null, null, null, null, null,
+    return gitlab.createUserProject(userId, proName, null, null, null, null, null,
         null, null, null, proUrl);
-    return project;
   }
 
   /**
@@ -415,10 +404,8 @@ public class GitlabService {
    */
   public GitlabUser createUser(String email, String password, String username, String name)
       throws IOException {
-    GitlabUser user = new GitlabUser();
-    user = gitlab.createUser(email, password, username, name, "", "", "", "", 10, null, null, "",
-        false, true, null, null);
-
+    GitlabUser user = gitlab.createUser(email, password, username, name, "", "", "", "", 10, null,
+        null, "", false, true, null, false);
     String privateToken = instance.getSession(username, password).getPrivateToken();
     user.setPrivateToken(privateToken);
 //    dbManager.addUser(user);
@@ -629,11 +616,12 @@ public class GitlabService {
    * @param password user new password
    */
   public void updateUserPassword(int userId, String password) {
-    GitlabUser stuUser = new GitlabUser();
+    GitlabUser user = new GitlabUser();
     try {
-      stuUser = gitlab.getUser(userId);
-      gitlab.updateUser(stuUser.getId(), stuUser.getEmail(), password, stuUser.getUsername(),
-          stuUser.getName(), null, null, null, null, 20, null, null, null, false, true, null);
+      user = gitlab.getUser(userId);
+      gitlab.updateUser(user.getId(), user.getEmail(), password, user.getUsername(),
+              user.getName(), null, null, null, null, 20, null, null,
+              null, false, true, false);
     } catch (IOException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
