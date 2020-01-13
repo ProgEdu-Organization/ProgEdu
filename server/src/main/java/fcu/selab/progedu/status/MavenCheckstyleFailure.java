@@ -5,11 +5,16 @@ import java.util.ArrayList;
 
 import fcu.selab.progedu.data.FeedBack;
 
+import fcu.selab.progedu.utils.ExceptionUtil;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MavenCheckstyleFailure implements Status {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(MavenCheckstyleFailure.class);
 
   /**
    * get checkstyle information
@@ -19,14 +24,20 @@ public class MavenCheckstyleFailure implements Status {
    */
   @Override
   public String extractFailureMsg(String consoleText) {
-    String checkstyleInfo;
-    String checkstyleStart = "Starting audit...";
-    String checkstyleEnd = "Audit done.";
-    checkstyleInfo = consoleText.substring(
-        consoleText.indexOf(checkstyleStart) + checkstyleStart.length(),
-        consoleText.indexOf(checkstyleEnd));
+    try {
+      String checkstyleInfo;
+      String checkstyleStart = "Starting audit...";
+      String checkstyleEnd = "Audit done.";
+      checkstyleInfo = consoleText.substring(
+          consoleText.indexOf(checkstyleStart) + checkstyleStart.length(),
+          consoleText.indexOf(checkstyleEnd));
 
-    return checkstyleInfo.trim();
+      return checkstyleInfo.trim();
+    } catch (Exception e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+      return "ExtractFailureMsg Method Error";
+    }
   }
 
   @Override
@@ -57,6 +68,11 @@ public class MavenCheckstyleFailure implements Status {
           consoleText = consoleText.substring(nextRowIndex + 1, endIndex);
           endIndex = endIndex - nextRowIndex - 1;
         }
+      }
+      if (feedbackList.isEmpty()) {
+        feedbackList.add(
+            new FeedBack(StatusEnum.CHECKSTYLE_FAILURE,
+                "Please notify teacher or assistant this situation, thank you!", ""));
       }
     } catch (Exception e) {
       feedbackList.add(

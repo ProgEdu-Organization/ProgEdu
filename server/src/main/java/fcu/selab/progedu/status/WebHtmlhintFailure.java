@@ -5,25 +5,36 @@ import java.util.ArrayList;
 
 import fcu.selab.progedu.data.FeedBack;
 
+import fcu.selab.progedu.utils.ExceptionUtil;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class WebHtmlhintFailure implements Status {
 
+  private static final Logger LOGGER = LoggerFactory.getLogger(WebHtmlhintFailure.class);
+
   @Override
   public String extractFailureMsg(String consoleText) {
-    String checkstyleStart = "npm run htmlhint";
-    String checkstyleEnd = "npm ERR! code ELIFECYCLE";
-    int start = consoleText.indexOf(checkstyleStart);
-    int end = consoleText.lastIndexOf(checkstyleEnd) - 1;
+    try {
+      String checkstyleStart = "npm run htmlhint";
+      String checkstyleEnd = "npm ERR! code ELIFECYCLE";
+      int start = consoleText.indexOf(checkstyleStart);
+      int end = consoleText.lastIndexOf(checkstyleEnd) - 1;
 
-    String checkstyleInfo = consoleText.substring(start,end);
-    checkstyleInfo = checkstyleInfo.replaceAll("[\u001B][\\[][\\d]{0,3}[m]", "");
-    checkstyleInfo = checkstyleInfo.replaceAll("\\^", " ^");
-    checkstyleInfo = checkstyleInfo.replaceAll(checkstyleStart, "");
+      String checkstyleInfo = consoleText.substring(start, end);
+      checkstyleInfo = checkstyleInfo.replaceAll("[\u001B][\\[][\\d]{0,3}[m]", "");
+      checkstyleInfo = checkstyleInfo.replaceAll("\\^", " ^");
+      checkstyleInfo = checkstyleInfo.replaceAll(checkstyleStart, "");
 
-    return checkstyleInfo.trim();
+      return checkstyleInfo.trim();
+    } catch (Exception e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+      return "ExtractFailureMsg Method Error";
+    }
   }
 
   @Override
@@ -64,6 +75,11 @@ public class WebHtmlhintFailure implements Status {
           consoleText = consoleText.substring(nextLineIndex + 1, endIndex);
           endIndex = endIndex - nextLineIndex - 1;
         }
+      }
+      if (feedbackList.isEmpty()) {
+        feedbackList.add(
+            new FeedBack(StatusEnum.WEB_HTMLHINT_FAILURE,
+                "Please notify teacher or assistant this situation, thank you!", ""));
       }
     } catch (Exception e) {
       feedbackList.add(
