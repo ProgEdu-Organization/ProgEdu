@@ -50,16 +50,16 @@ public class WebHtmlhintFailure implements Status {
           int separatedIndex = consoleText.indexOf("|");
           int arrowIndex = consoleText.indexOf("^");
           int nextLineIndex = consoleText.indexOf("\n", arrowIndex);
-          int dotIndex = consoleText.indexOf(".", arrowIndex);
-          String errorStyle = consoleText.substring(dotIndex + 1, nextLineIndex)
-              .replace("(", "").replace(")", "").trim();
+          String errorMessage = consoleText.substring(arrowIndex, nextLineIndex);
+          int lastParentheses = errorMessage.lastIndexOf("(");
           feedbackList.add(
               new FeedBack(
               StatusEnum.WEB_HTMLHINT_FAILURE,
               fileName,
               consoleText.substring(lineIndex, separatedIndex - 1).trim(),
-              consoleText.substring(arrowIndex + 2, dotIndex).trim(),
-              errorStyle,
+              errorMessage.substring(errorMessage.indexOf("^") + 1, lastParentheses - 1).trim(),
+              errorMessage.substring(lastParentheses, errorMessage.length())
+                  .replace("(","").replace(")","").trim(),
               "https://codertw.com/%E5%89%8D%E7%AB%AF%E9%96%8B%E7%99%BC/15355/\n"));
           consoleText = consoleText.substring(nextLineIndex + 1, endIndex);
           endIndex = endIndex - nextLineIndex - 1;
