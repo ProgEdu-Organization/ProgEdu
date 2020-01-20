@@ -9,6 +9,7 @@ import org.json.JSONObject;
 public class Committer {
   private String name;
   private List<CommitStats> commits;
+  private List<String> status;
 
   /**
    * constructor
@@ -43,5 +44,9 @@ public class Committer {
 
   public void addCommitStats(CommitStats commitStats) {
     this.commits.add(commitStats);
+  }
+
+  public void addStatus(String status) {
+    this.status.add(status);
   }
 }

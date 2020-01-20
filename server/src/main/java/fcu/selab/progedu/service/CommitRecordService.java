@@ -39,6 +39,7 @@ import fcu.selab.progedu.status.StatusEnum;
 
 @Path("commits/")
 public class CommitRecordService {
+  private static CommitRecordService instance = new CommitRecordService();
   private CommitRecordDbManager db = CommitRecordDbManager.getInstance();
   private AssignmentUserDbManager auDb = AssignmentUserDbManager.getInstance();
   private UserDbManager userDb = UserDbManager.getInstance();
@@ -47,6 +48,10 @@ public class CommitRecordService {
   private CommitStatusDbManager csdb = CommitStatusDbManager.getInstance();
   private JenkinsService js = JenkinsService.getInstance();
   private GitlabService gs = GitlabService.getInstance();
+
+  public static CommitRecordService getInstance() {
+    return instance;
+  }
 
   /**
    * get all commit result.

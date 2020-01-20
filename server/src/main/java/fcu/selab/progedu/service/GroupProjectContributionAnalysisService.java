@@ -25,7 +25,7 @@ import fcu.selab.progedu.db.service.GroupDbService;
 import fcu.selab.progedu.db.service.ProjectDbService;
 
 @Path("groups/{groupName}/projects/{projectName}/contribution")
-public class GroupProjectContributionService {
+public class GroupProjectContributionAnalysisService {
   private GitlabService gitlab = GitlabService.getInstance();
   private ProjectDbService pdb = ProjectDbService.getInstance();
   private GroupDbService gdb = GroupDbService.getInstance();

@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import fcu.selab.progedu.db.service.GroupDbService;
 import fcu.selab.progedu.db.service.ProjectDbService;
-import fcu.selab.progedu.service.GroupProjectContributionService;
+import fcu.selab.progedu.service.GroupProjectContributionAnalysisService;
 
 public class GroupProjectDbTest {
   ProjectDbService pdb = ProjectDbService.getInstance();
@@ -16,7 +16,7 @@ public class GroupProjectDbTest {
 
   @Test
   public void m1() {
-    GroupProjectContributionService gpcs = new GroupProjectContributionService();
+    GroupProjectContributionAnalysisService gpcs = new GroupProjectContributionAnalysisService();
 
     Response r = gpcs.getCommitStatus(groupName, projectName);
     System.out.println(r.getEntity());

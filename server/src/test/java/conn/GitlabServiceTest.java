@@ -5,7 +5,7 @@ import javax.ws.rs.core.Response;
 import org.junit.Test;
 
 import fcu.selab.progedu.conn.GitlabService;
-import fcu.selab.progedu.service.GroupProjectContributionService;
+import fcu.selab.progedu.service.GroupProjectContributionAnalysisService;
 
 public class GitlabServiceTest {
   GitlabService gitlab = GitlabService.getInstance();
@@ -14,7 +14,7 @@ public class GitlabServiceTest {
 
   @Test
   public void m1() {
-    GroupProjectContributionService gpcs = new GroupProjectContributionService();
+    GroupProjectContributionAnalysisService gpcs = new GroupProjectContributionAnalysisService();
     Response r = gpcs.getLineOfCode(groupName, projectName);
     System.out.println(r.getEntity());
 

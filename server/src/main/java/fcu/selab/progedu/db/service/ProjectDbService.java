@@ -99,6 +99,17 @@ public class ProjectDbService {
   }
 
   /**
+   * get commit records
+   * 
+   * @param pgid project_group id
+   * @return commit records
+   */
+  public List<CommitRecord> getCommitRecords(String groupName, String projectName) {
+    int pgid = getPgid(groupName, projectName);
+    return pcrdb.getProjectCommitRecords(pgid);
+  }
+
+  /**
    * get all commit record id
    * 
    * @param pgid project_group id
