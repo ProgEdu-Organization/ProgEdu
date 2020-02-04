@@ -40,7 +40,7 @@ export class ProjectChoosedComponent implements OnInit {
         this.commits = resopnse;
         this.selectedCommitNumber = this.commits.length;
         this.getFeedback();
-        if (this.projectType === 'WEB' || this.projectType === 'ANDROID') {
+        if (this.isShowScreenshot()) {
           this.getScreenshotUrls();
         }
         if (this.commits) {
@@ -84,7 +84,7 @@ export class ProjectChoosedComponent implements OnInit {
       response => {
         this.feedbacks = response;
         this.selectedCommitNumber = commitNumber;
-        if (this.projectType === 'WEB' || this.projectType === 'ANDROID') {
+        if () {
           this.getScreenshotUrls();
         }
       },
@@ -129,5 +129,9 @@ export class ProjectChoosedComponent implements OnInit {
         }
       );
     }
+  }
+
+  isShowScreenshot(): Boolean {
+    return this.projectType === 'WEB' || this.projectType === 'ANDROID';
   }
 }
