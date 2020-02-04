@@ -78,33 +78,7 @@ public class GitlabService {
    * @return token
    */
   public String getToken(int userGitlabId) {
-
-    String tokenRestfulApi = hostUrl + API_NAMESPACE
-            + "/users/" + Integer.toString(userGitlabId) + "/impersonation_tokens"
-            + "?private_token=" + apiToken
-            + "&name=theToken&scopes[]=api"
-            + "&scopes[]=read_user"
-            + "&scopes[]=read_repository"
-            + "&scopes[]=write_repository";
-//            + "&scopes[]=sudo";
-
-    HttpPost post = new HttpPost(tokenRestfulApi);
-
-    HttpClient httpclient = HttpClientBuilder.create().build();
-    HttpResponse response = null ;
-    try {
-      response = httpclient.execute(post);
-      JSONTokener tokener = new JSONTokener(IOUtils.toString(response.getEntity().getContent()) );
-      JSONObject finalResult = new JSONObject(tokener);
-
-      return finalResult.getString("token");
-
-    } catch (IOException e) {
-      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
-      LOGGER.error(e.getMessage());
-    }
-    return "";//if have ERROR
-
+    return getUserById(userGitlabId).getPrivateToken();
   }
 
   /**
@@ -172,6 +146,24 @@ public class GitlabService {
     }
 
     return project;
+  }
+
+  /**
+   * get gitlab project by username and projectName
+   *
+   * @param username username
+   * @param proName proName
+   * @return gitlabProject
+   */
+  public GitlabProject getProject(String username, String proName) {
+    GitlabProject gitlabProject = new GitlabProject();
+    try {
+      gitlabProject = gitlab.getProject(username, proName);
+    } catch (IOException e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    }
+    return gitlabProject;
   }
 
   /**
@@ -367,36 +359,20 @@ public class GitlabService {
   }
 
   /**
-   * @param userName userName
+   * @param username username
    * @param proName proName
    * @return project
    * @throws IOException on gitlab api call error
    */
-  public GitlabProject createPrivateProject(String userName, String proName) {
-
-    String forkApi = hostUrl + API_NAMESPACE
-            + "/projects/" + "root" + "%2F" + proName + "/fork" // {%2f} = {/}
-            + "?private_token=" + apiToken
-            + "&name=" + proName
-            + "&path=" + proName
-            + "&namespace=" + userName;
-
-    HttpPost post = new HttpPost(forkApi);
-    HttpClient httpclient = HttpClientBuilder.create().build();
-    HttpResponse response = null ;
+  public GitlabProject createPrivateProject(String username, String proName) {
+    GitlabProject gitlabProject = new GitlabProject();
     try {
-      response = httpclient.execute(post);
-      JSONTokener tokener = new JSONTokener(IOUtils.toString(response.getEntity().getContent()) );
-      JSONObject finalResult = new JSONObject(tokener);
-
-      int projectId = finalResult.getInt("id");
-      return gitlab.getProject(projectId);
-
+      gitlabProject = gitlab.createFork(username, getProject(username, proName));
     } catch (IOException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
     }
-    return new GitlabProject();//empty GitlabProject()
+    return gitlabProject;
   }
 
   /**

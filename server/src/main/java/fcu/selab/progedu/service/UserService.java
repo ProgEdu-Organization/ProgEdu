@@ -278,13 +278,13 @@ public class UserService {
   /**
    * Delete user but gitlab repository not delete so you need manual delete
    *
-   * @param userName user name
+   * @param username user name
    */
   @DELETE
-  @Path("/{userName}")
-  public Response deleteUser(@PathParam("userName") String userName) {
+  @Path("/{username}")
+  public Response deleteUser(@PathParam("username") String username) {
     UserDbService userDbService = UserDbService.getInstance();
-    int userId = userDbService.getId(userName);
+    int userId = userDbService.getId(username);
     return deleteUser(userId);
   }
 
@@ -325,9 +325,9 @@ public class UserService {
     ////remove jenkins
     JenkinsService jenkinsService = JenkinsService.getInstance();
     List<String> assignmentNames = userDbService.getUserAssignmentNames(userId);
-    String userName = userDbService.getName(userId);
+    String username = userDbService.getName(userId);
     for (String assignmentName : assignmentNames) {
-      String jobName = jenkinsService.getJobName(userName, assignmentName);
+      String jobName = jenkinsService.getJobName(username, assignmentName);
       jenkinsService.deleteJob(jobName);
     }
 
