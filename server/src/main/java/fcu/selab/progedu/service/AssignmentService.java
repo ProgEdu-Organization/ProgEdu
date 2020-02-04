@@ -117,13 +117,12 @@ public class AssignmentService {
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   @Produces(MediaType.APPLICATION_JSON)
   public Response createAssignment(@FormDataParam("assignmentName") String assignmentName,
-                                   @FormDataParam("releaseTime") Date releaseTime, @FormDataParam("deadline") Date deadline,
-                                   @FormDataParam("readMe") String readMe, @FormDataParam("fileRadio") String assignmentType,
-                                   @FormDataParam("file") InputStream file,
-                                   @FormDataParam("file") FormDataContentDisposition fileDetail) {
+      @FormDataParam("releaseTime") Date releaseTime, @FormDataParam("deadline") Date deadline,
+      @FormDataParam("readMe") String readMe, @FormDataParam("fileRadio") String assignmentType,
+      @FormDataParam("file") InputStream file,
+      @FormDataParam("file") FormDataContentDisposition fileDetail) {
 
     String rootProjectUrl = null;
-
     final AssignmentType assignment = AssignmentFactory.getAssignmentType(assignmentType);
     final ProjectTypeEnum projectTypeEnum = ProjectTypeEnum.getProjectTypeEnum(assignmentType);
     // 1. Create root project and get project id and url
@@ -247,7 +246,7 @@ public class AssignmentService {
    * @param hasTemplate Has template
    */
   public void addProject(String name, Date releaseTime, Date deadline, String readMe,
-                         ProjectTypeEnum projectType, boolean hasTemplate, long testZipChecksum, String testZipUrl) {
+      ProjectTypeEnum projectType, boolean hasTemplate, long testZipChecksum, String testZipUrl) {
     Assignment assignment = new Assignment();
     Date date = tomcatService.getCurrentTime();
     assignment.setName(name);
@@ -321,9 +320,9 @@ public class AssignmentService {
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   @Produces(MediaType.APPLICATION_JSON)
   public Response editProject(@FormDataParam("assignmentName") String assignmentName,
-                              @FormDataParam("releaseTime") Date releaseTime, @FormDataParam("deadline") Date deadline,
-                              @FormDataParam("readMe") String readMe, @FormDataParam("file") InputStream file,
-                              @FormDataParam("file") FormDataContentDisposition fileDetail) {
+      @FormDataParam("releaseTime") Date releaseTime, @FormDataParam("deadline") Date deadline,
+      @FormDataParam("readMe") String readMe, @FormDataParam("file") InputStream file,
+      @FormDataParam("file") FormDataContentDisposition fileDetail) {
     int id = dbManager.getAssignmentIdByName(assignmentName);
     if (fileDetail.getFileName() == null) {
       dbManager.editAssignment(deadline, releaseTime, readMe, id);
