@@ -5,24 +5,35 @@ import java.util.ArrayList;
 
 import fcu.selab.progedu.data.FeedBack;
 
+import fcu.selab.progedu.utils.ExceptionUtil;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class WebEslintFailure implements Status {
 
+  private static final Logger LOGGER = LoggerFactory.getLogger(WebEslintFailure.class);
+
   @Override
   public String extractFailureMsg(String consoleText) {
-    String checkstyleStart = "npm run eslint";
-    String checkstyleEnd = "npm ERR! code ELIFECYCLE";
-    int start = consoleText.indexOf(checkstyleStart) + checkstyleStart.length();
-    int end = consoleText.lastIndexOf(checkstyleEnd) - 1;
-    String checkstyleInfo = consoleText.substring(start,end);
-    int nextRowIndex = checkstyleInfo.indexOf("\n");
-    int endRowIndex = checkstyleInfo.indexOf("\n", checkstyleInfo.indexOf("problem"));
-    checkstyleInfo = checkstyleInfo.substring(nextRowIndex + 1,endRowIndex);
-    checkstyleInfo = checkstyleInfo.replace("/var/jenkins_home/workspace/","");
-    return checkstyleInfo.trim();
+    try {
+      String checkstyleStart = "npm run eslint";
+      String checkstyleEnd = "npm ERR! code ELIFECYCLE";
+      int start = consoleText.indexOf(checkstyleStart) + checkstyleStart.length();
+      int end = consoleText.lastIndexOf(checkstyleEnd) - 1;
+      String checkstyleInfo = consoleText.substring(start, end);
+      int nextRowIndex = checkstyleInfo.indexOf("\n");
+      int endRowIndex = checkstyleInfo.indexOf("\n", checkstyleInfo.indexOf("problem"));
+      checkstyleInfo = checkstyleInfo.substring(nextRowIndex + 1, endRowIndex);
+      checkstyleInfo = checkstyleInfo.replace("/var/jenkins_home/workspace/", "");
+      return checkstyleInfo.trim();
+    } catch (Exception e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+      return "ExtractFailureMsg Method Error";
+    }
   }
 
   @Override
@@ -65,6 +76,11 @@ public class WebEslintFailure implements Status {
           consoleText = consoleText.substring(nextRowIndex + 1, endIndex);
           endIndex = endIndex - nextRowIndex - 1;
         }
+      }
+      if (feedbackList.isEmpty()) {
+        feedbackList.add(
+            new FeedBack(StatusEnum.WEB_ESLINT_FAILURE,
+                "Please notify teacher or assistant this situation, thank you!", ""));
       }
     } catch (Exception e) {
       feedbackList.add(
