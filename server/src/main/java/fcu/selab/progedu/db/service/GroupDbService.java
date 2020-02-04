@@ -74,6 +74,16 @@ public class GroupDbService {
   }
 
   /**
+   * get group name
+   *
+   * @param id group id
+   * @return name
+   */
+  public String getName(int id) {
+    return gdb.getId(id);
+  }
+
+  /**
    * get all groups
    *
    * @return all groups
@@ -155,7 +165,7 @@ public class GroupDbService {
    * @param name group name
    */
   public void removeGroup(String name) {
-    int gid = gdb.getId(name);
+    int gid = getId(name);
     List<Integer> pgids = pgdb.getPgids(gid);
 
     for (int pgid : pgids) {
@@ -174,6 +184,17 @@ public class GroupDbService {
     gudb.remove(gid); // Group_User
     gdb.remove(gid); // Group
   }
+
+  /**
+   * remove group by group id
+   *
+   * @param groupId group id
+   */
+  public void removeGroup(int groupId) {
+    String groupName = getName(groupId);
+    removeGroup(groupName);
+  }
+
 
   /**
    * remove member
