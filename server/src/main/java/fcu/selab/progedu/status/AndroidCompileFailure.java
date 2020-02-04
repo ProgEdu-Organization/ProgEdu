@@ -14,12 +14,11 @@ public class AndroidCompileFailure implements Status {
     String feedbackStart = "> Task :app:compileDebugJavaWithJavac";
     String feedbackEnd = "FAILURE: Build failed with an exception.";
     feedback = consoleText.substring(consoleText.indexOf(feedbackStart) + feedbackStart.length(),
-            consoleText.indexOf(feedbackEnd));
+        consoleText.indexOf(feedbackEnd));
     /**
      * Remove /var/jenkins_home/workspace/
      */
-    feedback = feedback.replaceAll("/var/jenkins_home/workspace", "").trim();
-    return feedback;
+    return feedback.replaceAll("/var/jenkins_home/workspace", "").trim();
   }
 
   @Override
@@ -39,19 +38,19 @@ public class AndroidCompileFailure implements Status {
         int error = consoleText.indexOf(": error:");
         int nextRow = consoleText.indexOf("\n", error);
         int caret = consoleText.indexOf("^", nextRow);
-        if (nextRow == -1 ) {
+        if (nextRow == -1) {
           break;
         }
         int fileStart = consoleText.indexOf("/");
         String fileNameAndLine = consoleText.substring(fileStart, error).trim();
         feedbackList.add(new FeedBack(
-                StatusEnum.COMPILE_FAILURE,
-                fileNameAndLine.substring(0, fileNameAndLine.indexOf(":")).trim(),
-                fileNameAndLine.substring(fileNameAndLine.indexOf(":") + 1,
-                        fileNameAndLine.length()).trim(),
-                consoleText.substring(error + ": error:".length(), nextRow).trim(),
-                consoleText.substring(nextRow + 1, caret),
-                "https://developer.android.com/studio/build"
+            StatusEnum.COMPILE_FAILURE,
+            fileNameAndLine.substring(0, fileNameAndLine.indexOf(":")).trim(),
+            fileNameAndLine.substring(fileNameAndLine.indexOf(":") + 1,
+                fileNameAndLine.length()).trim(),
+            consoleText.substring(error + ": error:".length(), nextRow).trim(),
+            consoleText.substring(nextRow + 1, caret),
+            "https://developer.android.com/studio/build"
         ));
         consoleText = consoleText.substring(caret + 1, endIndex);
         endIndex = consoleText.length();
@@ -60,8 +59,8 @@ public class AndroidCompileFailure implements Status {
       return feedbackList;
     } catch (Exception e) {
       ArrayList<FeedBack> feedbackList = new ArrayList<>();
-      feedbackList.add(new FeedBack(StatusEnum.COMPILE_FAILURE,"", "",
-              "Compile ArrayList error", "", ""));
+      feedbackList.add(new FeedBack(StatusEnum.COMPILE_FAILURE, "", "",
+          "Compile ArrayList error", "", ""));
       return feedbackList;
     }
   }

@@ -104,7 +104,6 @@ public class AssignmentService {
   }
 
   /**
-   * 
    * @param assignmentName abc
    * @param readMe         abc
    * @param assignmentType abc
@@ -118,10 +117,10 @@ public class AssignmentService {
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   @Produces(MediaType.APPLICATION_JSON)
   public Response createAssignment(@FormDataParam("assignmentName") String assignmentName,
-      @FormDataParam("releaseTime") Date releaseTime, @FormDataParam("deadline") Date deadline,
-      @FormDataParam("readMe") String readMe, @FormDataParam("fileRadio") String assignmentType,
-      @FormDataParam("file") InputStream file,
-      @FormDataParam("file") FormDataContentDisposition fileDetail) {
+                                   @FormDataParam("releaseTime") Date releaseTime, @FormDataParam("deadline") Date deadline,
+                                   @FormDataParam("readMe") String readMe, @FormDataParam("fileRadio") String assignmentType,
+                                   @FormDataParam("file") InputStream file,
+                                   @FormDataParam("file") FormDataContentDisposition fileDetail) {
 
     String rootProjectUrl = null;
 
@@ -141,26 +140,19 @@ public class AssignmentService {
     // 4. Unzip the uploaded file to tests folder and uploads folder on tomcat,
     // extract main method from tests folder, then zip as root project
     String testDirectory = testDir + assignmentName;
-    System.out.println("TEST1");
     zipHandler.unzipFile(filePath, cloneDirectoryPath);
     zipHandler.unzipFile(filePath, testDirectory);
-    System.out.println("TEST2");
     assignment.createTemplate(cloneDirectoryPath);
-    System.out.println("TEST3");
     testZipChecksum = assignment.createTestCase(testDirectory).getChecksum();
-    System.out.println("TEST4");
     testZipUrl = assignment.createTestCase(testDirectory).getZipFileUrl();
 
     // 5. Add .gitkeep if folder is empty.
-    System.out.println("TEST5");
     tomcatService.findEmptyFolder(cloneDirectoryPath);
-    System.out.println("TEST6");
     // 6. if README is not null
     if (!readMe.equals("<br>") || !"".equals(readMe) || !readMe.isEmpty()) {
       // Add readme to folder
       tomcatService.createReadmeFile(readMe, cloneDirectoryPath);
     }
-    System.out.println("TEST7");
     // 7. git push
     gitlabService.pushProject(cloneDirectoryPath);
 
@@ -213,7 +205,6 @@ public class AssignmentService {
 
   /**
    * Send the notification email to student
-   *
    */
   public void sendEmail(String email, String name) {
     final String username = mailUsername;
@@ -248,7 +239,7 @@ public class AssignmentService {
 
   /**
    * Add a project to database
-   * 
+   *
    * @param name        Project name
    * @param deadline    Project deadline
    * @param readMe      Project readme
@@ -256,7 +247,7 @@ public class AssignmentService {
    * @param hasTemplate Has template
    */
   public void addProject(String name, Date releaseTime, Date deadline, String readMe,
-      ProjectTypeEnum projectType, boolean hasTemplate, long testZipChecksum, String testZipUrl) {
+                         ProjectTypeEnum projectType, boolean hasTemplate, long testZipChecksum, String testZipUrl) {
     Assignment assignment = new Assignment();
     Date date = tomcatService.getCurrentTime();
     assignment.setName(name);
@@ -274,7 +265,7 @@ public class AssignmentService {
 
   /**
    * Add auid to database
-   * 
+   *
    * @param username       username
    * @param assignmentName assignment name
    */
@@ -287,7 +278,7 @@ public class AssignmentService {
 
   /**
    * delete projects
-   * 
+   *
    * @param name project name
    * @return response
    */
@@ -321,7 +312,7 @@ public class AssignmentService {
 
   /**
    * edit projects
-   * 
+   *
    * @param assignmentName project name
    * @return response
    */
@@ -330,9 +321,9 @@ public class AssignmentService {
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   @Produces(MediaType.APPLICATION_JSON)
   public Response editProject(@FormDataParam("assignmentName") String assignmentName,
-      @FormDataParam("releaseTime") Date releaseTime, @FormDataParam("deadline") Date deadline,
-      @FormDataParam("readMe") String readMe, @FormDataParam("file") InputStream file,
-      @FormDataParam("file") FormDataContentDisposition fileDetail) {
+                              @FormDataParam("releaseTime") Date releaseTime, @FormDataParam("deadline") Date deadline,
+                              @FormDataParam("readMe") String readMe, @FormDataParam("file") InputStream file,
+                              @FormDataParam("file") FormDataContentDisposition fileDetail) {
     int id = dbManager.getAssignmentIdByName(assignmentName);
     if (fileDetail.getFileName() == null) {
       dbManager.editAssignment(deadline, releaseTime, readMe, id);
@@ -362,7 +353,7 @@ public class AssignmentService {
 
   /**
    * get project checksum
-   * 
+   *
    * @param assignmentName assignment name
    * @return checksum
    */
@@ -381,7 +372,7 @@ public class AssignmentService {
 
   /**
    * get project checksum
-   * 
+   *
    * @param assignmentName assignment name
    * @return checksum
    */
@@ -398,7 +389,6 @@ public class AssignmentService {
   }
 
   /**
-   * 
    * @return AllAssignments
    */
   @GET
@@ -413,7 +403,7 @@ public class AssignmentService {
 
   /**
    * get course name
-   * 
+   *
    * @return course name
    */
   public String getCourseName() {
@@ -430,7 +420,7 @@ public class AssignmentService {
 
   /**
    * get test folder
-   * 
+   *
    * @param filePath folder directory
    * @return zip file
    */
@@ -446,7 +436,6 @@ public class AssignmentService {
 
   /**
    * delete Assignment from Database by name
-   * 
    */
   public void deleteAssignmentDatabase(String name) {
 
@@ -482,7 +471,7 @@ public class AssignmentService {
 
   /**
    * create previous Assignemnt
-   * 
+   *
    * @param username username
    */
   public void createPreviousAssignment(String username) {

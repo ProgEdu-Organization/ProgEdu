@@ -12,12 +12,11 @@ public class AndroidCheckstyleFailure implements Status {
     String feedbackStart = "Task :app:checkStyle";
     String feedbackEnd = "FAILURE: Build failed with an exception.";
     feedback = consoleText.substring(consoleText.indexOf(feedbackStart) + feedbackStart.length(),
-            consoleText.indexOf(feedbackEnd));
+        consoleText.indexOf(feedbackEnd));
     /**
      * Remove /var/jenkins_home/workspace/
      */
-    feedback = feedback.replaceAll("/var/jenkins_home/workspace", "").trim();
-    return feedback;
+    return feedback.replaceAll("/var/jenkins_home/workspace", "").trim();
   }
 
   @Override
@@ -26,7 +25,7 @@ public class AndroidCheckstyleFailure implements Status {
       ArrayList<FeedBack> feedbackList = new ArrayList<>();
       int endIndex = consoleText.length();
       while (consoleText.contains("[ERROR]")) {
-        int error = consoleText.indexOf("[ERROR]") + "[ERROR]".length() ;
+        int error = consoleText.indexOf("[ERROR]") + "[ERROR]".length();
         int nextRow = consoleText.indexOf("\n", error);
         int space = consoleText.indexOf(" ", error + 1);
         if (nextRow == -1 || space == -1) {
@@ -35,16 +34,16 @@ public class AndroidCheckstyleFailure implements Status {
         // Find the last left bracket for Symptom
         int lastLeftBracket = consoleText.indexOf(" [", space);
         int lastRightBracket = consoleText.indexOf(" ]", lastLeftBracket);
-        int period =  consoleText.indexOf(".", space);
+        int period = consoleText.indexOf(".", space);
         String fileNameAndLine = consoleText.substring(error + 1, space - 1).trim();
         feedbackList.add(new FeedBack(
-                StatusEnum.CHECKSTYLE_FAILURE,
-                fileNameAndLine.substring(0, fileNameAndLine.indexOf(":")).trim(),
-                fileNameAndLine.substring(fileNameAndLine.indexOf(":") + 1,
-                        fileNameAndLine.length()).trim(),
-                consoleText.substring(space + 1, period).trim(),
-                consoleText.substring(period + 1 , nextRow).trim(),
-                "https://github.com/checkstyle/checkstyle"
+            StatusEnum.CHECKSTYLE_FAILURE,
+            fileNameAndLine.substring(0, fileNameAndLine.indexOf(":")).trim(),
+            fileNameAndLine.substring(fileNameAndLine.indexOf(":") + 1,
+                fileNameAndLine.length()).trim(),
+            consoleText.substring(space + 1, period).trim(),
+            consoleText.substring(period + 1, nextRow).trim(),
+            "https://github.com/checkstyle/checkstyle"
         ));
 
         consoleText = consoleText.substring(nextRow + 1, endIndex);
@@ -55,8 +54,8 @@ public class AndroidCheckstyleFailure implements Status {
     } catch (Exception e) {
       ArrayList<FeedBack> feedbackList = new ArrayList<>();
       feedbackList.add(
-              new FeedBack(StatusEnum.CHECKSTYLE_FAILURE, "","",
-                      "Coding Style ArrayList error", "", ""));
+          new FeedBack(StatusEnum.CHECKSTYLE_FAILURE, "", "",
+              "Coding Style ArrayList error", "", ""));
       return feedbackList;
     }
   }

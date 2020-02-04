@@ -10,9 +10,8 @@ public class AndroidUnitTestFailure implements Status {
     String feedback;
     String feedbackStart = "testDebugUnitTest FAILED";
     String feedbackEnd = "FAILURE: Build failed with an exception.";
-    feedback = consoleText.substring(consoleText.indexOf(feedbackStart) + feedbackStart.length(),
-            consoleText.indexOf(feedbackEnd));
-    return feedback.trim();
+    return (consoleText.substring(consoleText.indexOf(feedbackStart) + feedbackStart.length(),
+        consoleText.indexOf(feedbackEnd))).trim();
   }
 
   @Override
@@ -26,12 +25,12 @@ public class AndroidUnitTestFailure implements Status {
         int nextRow = consoleText.indexOf("\n");
 
         feedbackList.add(new FeedBack(
-                StatusEnum.UNIT_TEST_FAILURE,
-                consoleText.substring(0, error).trim(),
-                "",
-                consoleText.substring(error + ">".length(), failed).trim(),
-                consoleText.substring(failed, nextRow).trim(),
-                ""
+            StatusEnum.UNIT_TEST_FAILURE,
+            consoleText.substring(0, error).trim(),
+            "",
+            consoleText.substring(error + ">".length(), failed).trim(),
+            consoleText.substring(failed, nextRow).trim(),
+            ""
         ));
         consoleText = consoleText.substring(nextRow + 1, endIndex);
         endIndex = consoleText.length();
@@ -40,8 +39,8 @@ public class AndroidUnitTestFailure implements Status {
     } catch (Exception e) {
       ArrayList<FeedBack> feedbackList = new ArrayList<>();
       feedbackList.add(
-              new FeedBack(StatusEnum.UNIT_TEST_FAILURE, "","",
-                      consoleText, "", ""));
+          new FeedBack(StatusEnum.UNIT_TEST_FAILURE, "", "",
+              consoleText, "", ""));
       return feedbackList;
     }
   }
