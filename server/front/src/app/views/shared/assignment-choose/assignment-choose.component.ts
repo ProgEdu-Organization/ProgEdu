@@ -54,7 +54,7 @@ export class AssignmentChoosedComponent implements OnInit {
         this.commits.reverse();
 
       }
-      if (this.assignment.type === 'WEB' || this.assignment.type === 'ANDROID') {
+      if (this.isWebOrAndroid()) {
         this.getScreenshotUrls();
       }
     });
