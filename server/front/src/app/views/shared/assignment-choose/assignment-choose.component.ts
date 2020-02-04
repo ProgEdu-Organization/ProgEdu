@@ -54,8 +54,7 @@ export class AssignmentChoosedComponent implements OnInit {
         this.commits.reverse();
 
       }
-
-      if (this.assignment.type === 'WEB') {
+      if (this.isWebOrAndroid()) {
         this.getScreenshotUrls();
       }
     });
@@ -89,12 +88,18 @@ export class AssignmentChoosedComponent implements OnInit {
     );
   }
 
+  isWebOrAndroid(): Boolean {
+    return this.assignment.type === 'WEB' || this.assignment.type === 'ANDROID';
+  }
+
   updateFeedback(commitNumber: string) {
     this.assignmentService.getFeedback(this.assignmentName, this.username, commitNumber).subscribe(
       response => {
         this.feedbacks = response;
         this.selectedCommitNumber = commitNumber;
-        this.getScreenshotUrls();
+        if (this.isWebOrAndroid()) {
+          this.getScreenshotUrls();
+        }
       },
       error => {
         console.log(error);

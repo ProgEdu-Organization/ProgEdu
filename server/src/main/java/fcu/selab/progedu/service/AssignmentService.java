@@ -104,7 +104,6 @@ public class AssignmentService {
   }
 
   /**
-   * 
    * @param assignmentName abc
    * @param readMe         abc
    * @param assignmentType abc
@@ -124,7 +123,6 @@ public class AssignmentService {
       @FormDataParam("file") FormDataContentDisposition fileDetail) {
 
     String rootProjectUrl = null;
-
     final AssignmentType assignment = AssignmentFactory.getAssignmentType(assignmentType);
     final ProjectTypeEnum projectTypeEnum = ProjectTypeEnum.getProjectTypeEnum(assignmentType);
     // 1. Create root project and get project id and url
@@ -141,7 +139,6 @@ public class AssignmentService {
     // 4. Unzip the uploaded file to tests folder and uploads folder on tomcat,
     // extract main method from tests folder, then zip as root project
     String testDirectory = testDir + assignmentName;
-
     zipHandler.unzipFile(filePath, cloneDirectoryPath);
     zipHandler.unzipFile(filePath, testDirectory);
     assignment.createTemplate(cloneDirectoryPath);
@@ -150,13 +147,11 @@ public class AssignmentService {
 
     // 5. Add .gitkeep if folder is empty.
     tomcatService.findEmptyFolder(cloneDirectoryPath);
-
     // 6. if README is not null
     if (!readMe.equals("<br>") || !"".equals(readMe) || !readMe.isEmpty()) {
       // Add readme to folder
       tomcatService.createReadmeFile(readMe, cloneDirectoryPath);
     }
-
     // 7. git push
     gitlabService.pushProject(cloneDirectoryPath);
 
@@ -209,7 +204,6 @@ public class AssignmentService {
 
   /**
    * Send the notification email to student
-   *
    */
   public void sendEmail(String email, String name) {
     final String username = mailUsername;
@@ -244,7 +238,7 @@ public class AssignmentService {
 
   /**
    * Add a project to database
-   * 
+   *
    * @param name        Project name
    * @param deadline    Project deadline
    * @param readMe      Project readme
@@ -270,7 +264,7 @@ public class AssignmentService {
 
   /**
    * Add auid to database
-   * 
+   *
    * @param username       username
    * @param assignmentName assignment name
    */
@@ -283,7 +277,7 @@ public class AssignmentService {
 
   /**
    * delete projects
-   * 
+   *
    * @param name project name
    * @return response
    */
@@ -317,7 +311,7 @@ public class AssignmentService {
 
   /**
    * edit projects
-   * 
+   *
    * @param assignmentName project name
    * @return response
    */
@@ -358,7 +352,7 @@ public class AssignmentService {
 
   /**
    * get project checksum
-   * 
+   *
    * @param assignmentName assignment name
    * @return checksum
    */
@@ -377,7 +371,7 @@ public class AssignmentService {
 
   /**
    * get project checksum
-   * 
+   *
    * @param assignmentName assignment name
    * @return checksum
    */
@@ -394,7 +388,6 @@ public class AssignmentService {
   }
 
   /**
-   * 
    * @return AllAssignments
    */
   @GET
@@ -409,7 +402,7 @@ public class AssignmentService {
 
   /**
    * get course name
-   * 
+   *
    * @return course name
    */
   public String getCourseName() {
@@ -426,7 +419,7 @@ public class AssignmentService {
 
   /**
    * get test folder
-   * 
+   *
    * @param filePath folder directory
    * @return zip file
    */
@@ -442,7 +435,6 @@ public class AssignmentService {
 
   /**
    * delete Assignment from Database by name
-   * 
    */
   public void deleteAssignmentDatabase(String name) {
 
@@ -478,7 +470,7 @@ public class AssignmentService {
 
   /**
    * create previous Assignemnt
-   * 
+   *
    * @param username username
    */
   public void createPreviousAssignment(String username) {

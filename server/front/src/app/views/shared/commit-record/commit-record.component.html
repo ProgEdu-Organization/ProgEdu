@@ -24,6 +24,9 @@
       <span class="ovol UTF">
         Unit Test Failure
       </span>
+      <span *ngIf="type === 'ANDROID'" class="ovol UITF">
+        UI Test Failure
+      </span>
       <span class="ovol BS">
         Build Success
       </span>
@@ -37,7 +40,7 @@
             <th>Light </th>
             <th>Date</th>
             <th>Commit Message</th>
-            <th *ngIf="type === 'WEB'">Screenshot</th>
+            <th *ngIf="isShowScreenshot()">Screenshot</th>
           </tr>
         </thead>
         <tbody>
@@ -48,7 +51,7 @@
             </td>
             <td class='w-25'>{{commit.time | date:'short'}}</td>
             <td class='w-50'>{{commit.message}}</td>
-            <td *ngIf="type === 'WEB'"><button class="btn btn-primary" (click)='screenshot.screenshotModal.show();'>
+            <td *ngIf="isShowScreenshot()"><button class="btn btn-primary" (click)='screenshot.screenshotModal.show();'>
                 <i class="cui-screen-desktop"></i></button></td>
           </tr>
         </tbody>
@@ -86,5 +89,5 @@
     </table>
   </div>
 </div>
-<app-screenshot [screenshotUrls]=screenshotUrls [commitNumber]=commitNumber #screenshot>
+<app-screenshot [screenshotUrls]=screenshotUrls [commitNumber]=commitNumber [type]=type #screenshot>
 </app-screenshot>

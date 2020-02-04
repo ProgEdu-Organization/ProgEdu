@@ -44,7 +44,7 @@ public class FeedBack {
    * @param status type StatusEnum
    * @param message type occur message
    */
-  public  FeedBack(StatusEnum status, String message) {
+  public FeedBack(StatusEnum status, String message) {
     this.status = status.getType();
     this.fileName = emptyString;
     this.line = emptyString;

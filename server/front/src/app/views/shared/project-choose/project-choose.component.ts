@@ -1,6 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-
 import { TimeService } from '../../../services/time.service';
 import { ProjectChoosedService } from './project-choose.service';
 import { ModalDirective } from 'ngx-bootstrap/modal';
@@ -24,7 +23,6 @@ export class ProjectChoosedComponent implements OnInit {
   public selectedCommitNumber;
   public screenshotUrls: Array<string>;
 
-
   constructor(private activeRoute: ActivatedRoute, private projectService: ProjectChoosedService,
     private timeService: TimeService) { }
 
@@ -42,7 +40,9 @@ export class ProjectChoosedComponent implements OnInit {
         this.commits = resopnse;
         this.selectedCommitNumber = this.commits.length;
         this.getFeedback();
-        this.getScreenshotUrls();
+        if (this.isShowScreenshot()) {
+          this.getScreenshotUrls();
+        }
         if (this.commits) {
           for (const commit in this.commits) {
             if (commit) {
@@ -84,7 +84,9 @@ export class ProjectChoosedComponent implements OnInit {
       response => {
         this.feedbacks = response;
         this.selectedCommitNumber = commitNumber;
-        this.getScreenshotUrls();
+        if () {
+          this.getScreenshotUrls();
+        }
       },
       error => {
         console.log(error);
@@ -127,5 +129,9 @@ export class ProjectChoosedComponent implements OnInit {
         }
       );
     }
+  }
+
+  isShowScreenshot(): Boolean {
+    return this.projectType === 'WEB' || this.projectType === 'ANDROID';
   }
 }

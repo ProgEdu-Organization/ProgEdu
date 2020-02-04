@@ -14,11 +14,10 @@ import { ProjectChoosedComponent } from './project-choose/project-choose.compone
 import { GroupDashboardComponent } from '../teacher/group-dashboard/group-dashboard.component';
 import { CommitRecordComponent } from './commit-record/commit-record.component';
 import { DashboardStatusComponent } from './dashboard-status/dashboard-status.component';
-
-import { ChartComponent } from './chart/chart.component';
 import { ScreenshotComponent } from './screenshot/screenshot.component';
 import { ErrorModalComponent } from './error-modal/error-modal.component';
 import { ModalModule } from 'ngx-bootstrap';
+import { ChartComponent } from './chart/chart.component';
 
 // Tabs Component
 import { TabsModule } from 'ngx-bootstrap/tabs';
@@ -44,8 +43,8 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
     BsDropdownModule.forRoot(),
   ],
   declarations: [AssignmentChoosedComponent, ProjectChoosedComponent, GroupDashboardComponent,
-    GroupFilterPipe, FilterPipe, CommitRecordComponent, DashboardStatusComponent, ScreenshotComponent,
-    ErrorModalComponent, BarChartComponent, BubbleChartComponent, MixedChartComponent, ChartComponent],
+    GroupFilterPipe, FilterPipe, CommitRecordComponent, DashboardStatusComponent, ScreenshotComponent, ErrorModalComponent,
+    BarChartComponent, BubbleChartComponent, MixedChartComponent, ChartComponent],
   exports: [AssignmentChoosedComponent, GroupDashboardComponent, ProjectChoosedComponent, GroupFilterPipe,
     FilterPipe, DashboardStatusComponent, ScreenshotComponent, ErrorModalComponent]
 })

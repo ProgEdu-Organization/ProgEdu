@@ -9,6 +9,7 @@ export class ScreenshotComponent implements OnInit, OnChanges {
   @ViewChild('screenshotModal', { static: true }) public screenshotModal: ModalDirective;
   @Input() screenshotUrls;
   @Input() commitNumber;
+  @Input() type;
   @Output() screenshotEvent = new EventEmitter();
 
   selectedScreenshotName: string;
@@ -27,7 +28,7 @@ export class ScreenshotComponent implements OnInit, OnChanges {
   }
 
   updateScreenshotName() {
-    if (this.screenshotUrls) {
+    if (this.screenshotUrls && this.screenshotUrls.length !== 0) {
       const url_split = $('.screenshot:visible').attr('src').split('/');
       this.selectedScreenshotName = this.rename(url_split);
     }
@@ -35,8 +36,17 @@ export class ScreenshotComponent implements OnInit, OnChanges {
 
   rename(url_split: Array<string>) {
     const screenshotName = url_split[url_split.length - 1];
+    let name = '';
     // Change png to html. Ex: index.png -> index.html
-    return screenshotName.substring(0, screenshotName.indexOf('.png')) + '.html';
+    console.log(this.type);
+    if (this.type === 'WEB') {
+      name = screenshotName.substring(0, screenshotName.indexOf('.png')) + '.html';
+    } else if (this.type === 'ANDROID') {
+      name = screenshotName.substring(screenshotName.indexOf('_') + 1
+        , screenshotName.indexOf('.png')) + '.java';
+    }
+    return name;
+
   }
 
 }

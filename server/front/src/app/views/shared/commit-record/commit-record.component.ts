@@ -60,4 +60,8 @@ export class CommitRecordComponent implements OnInit, OnChanges {
     this.messageToEmit.emit(commitNumber.toString());
   }
 
+  isShowScreenshot(): Boolean {
+    return (this.type === 'WEB' || this.type === 'ANDROID');
+  }
+
 }

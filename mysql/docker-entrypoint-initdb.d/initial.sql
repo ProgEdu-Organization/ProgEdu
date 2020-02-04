@@ -73,7 +73,7 @@ CREATE TABLE `Assignment_Type` (
 
 LOCK TABLES `Assignment_Type` WRITE;
 /*!40000 ALTER TABLE `Assignment_Type` DISABLE KEYS */;
-INSERT INTO `Assignment_Type` VALUES (1,'javac'),(2,'maven'),(3,'web'),(4,'app');
+INSERT INTO `Assignment_Type` VALUES (1,'javac'),(2,'maven'),(3,'web'),(4,'android');
 /*!40000 ALTER TABLE `Assignment_Type` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -155,7 +155,7 @@ CREATE TABLE `Commit_Status` (
 
 LOCK TABLES `Commit_Status` WRITE;
 /*!40000 ALTER TABLE `Commit_Status` DISABLE KEYS */;
-INSERT INTO `Commit_Status` VALUES (1,'bs'),(2,'csf'),(3,'cpf'),(4,'ini'),(5,'utf'),(6, 'whf'),(7, 'wsf'),(8, 'wef');
+INSERT INTO `Commit_Status` VALUES (1,'bs'),(2,'csf'),(3,'cpf'),(4,'ini'),(5,'utf'),(6, 'whf'),(7, 'wsf'),(8, 'wef')(9, 'uitf');
 /*!40000 ALTER TABLE `Commit_Status` ENABLE KEYS */;
 UNLOCK TABLES;
 

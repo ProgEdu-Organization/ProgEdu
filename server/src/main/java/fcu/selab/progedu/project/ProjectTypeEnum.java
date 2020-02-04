@@ -1,7 +1,10 @@
 package fcu.selab.progedu.project;
 
 public enum ProjectTypeEnum {
-  JAVAC("javac"), MAVEN("maven"), WEB("web"), APP("app");
+  JAVAC("javac"),
+  MAVEN("maven"),
+  WEB("web"),
+  ANDROID("android");
 
   private String type;
 
@@ -10,7 +13,6 @@ public enum ProjectTypeEnum {
   }
 
   /**
-   * 
    * @param type is proJectStatus String
    * @return status is getStatusProjecTypeEnum object
    */

@@ -19,7 +19,7 @@ public class GroupProjectFactory {
       case WEB: {
         return new WebGroupProject();
       }
-      case APP: {
+      case ANDROID: {
         return null;
       }
       default:

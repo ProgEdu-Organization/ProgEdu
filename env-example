@@ -58,7 +58,4 @@ MAIL_PASSWORD=example-password
 WEB_API_BASEURI=
 # WEB_API_BASEURI=/ProgEdu
 
-JENKINS_PLUGIN_GITLAB_LOGIN_USER={change plugin user name}
-JENKINS_PLUGIN_GITLAB_LOGIN_TOKEN={change plugin user token}
-
 LOG_LEVEL=error

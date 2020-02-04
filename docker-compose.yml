@@ -62,16 +62,19 @@ services:
     build:
       context: ./jenkins
       args:
-        - GITLAB_USER=${JENKINS_PLUGIN_GITLAB_LOGIN_USER}
-        - GITLAB_TOKEN=${JENKINS_PLUGIN_GITLAB_LOGIN_TOKEN}
+        - SDK_SETUP=${SDK_SETUP}
+        - SDK_PLATFORMS=${SDK_PLATFORMS}
+        - SDK_BUILD_TOOLS=${SDK_BUILD_TOOLS}
     ports:
       - "${JENKINS_PORT}:8080"
       # - "30000:50000"
     restart: always
+    privileged: true
     environment:
       WEB_SELENIUM_URL: ${WEB_SELENIUM_URL}
     volumes:
       - ${DATA_PATH_HOST}/jenkins:/var/jenkins_home
+      - /dev/kvm:/dev/kvm
 
   selenium:
     image: selenium/standalone-chrome

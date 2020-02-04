@@ -7,10 +7,10 @@
         <button type="button" class="close" (click)="screenshotModal.hide();" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
-        <div *ngIf='screenshotUrls' [collapse]="false">
-          <span class="h2">({{commitNumber}})Screenshot : {{selectedScreenshotName}}</span>
+        <div *ngIf='screenshotUrls && screenshotUrls.length !== 0' [collapse]="false">
+          <span class="h2">#{{commitNumber}} {{selectedScreenshotName}}</span>
           <hr>
-          <div style="border:1px #000000 solid;" (click)="updateScreenshotName()">
+          <div style="border:2px #000000 solid;" (click)="updateScreenshotName()">
             <carousel [interval]="false" style="background:black">
               <slide *ngFor='let url of screenshotUrls'>
                 <a *ngIf='url' href='{{url}}' target="_blank">
@@ -20,8 +20,8 @@
             </carousel>
           </div>
         </div>
-        <div *ngIf='!screenshotUrls'>
-          <span class="h1">Screenshot Failed</span>
+        <div *ngIf='screenshotUrls && screenshotUrls.length === 0' class='text-center'>
+          <span class="h1">No Screenshot</span>
         </div>
       </div>
     </div>

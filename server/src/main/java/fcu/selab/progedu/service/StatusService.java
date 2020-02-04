@@ -10,9 +10,8 @@ public class StatusService {
 
   /**
    * Check is Initialization
-   * 
-   * @param num
-   *          num
+   *
+   * @param num num
    * @return boolean
    */
   public boolean isInitialization(int num) {
@@ -25,7 +24,7 @@ public class StatusService {
 
   /**
    * Check is build success
-   * 
+   *
    * @param console console
    * @return boolean
    */
@@ -39,9 +38,8 @@ public class StatusService {
 
   /**
    * Check is checkstyle error
-   * 
-   * @param console
-   *          jenkins job console text
+   *
+   * @param console jenkins job console text
    * @return boolean
    */
   public boolean isMavenCheckstyleFailure(String console) {
@@ -54,8 +52,7 @@ public class StatusService {
   /**
    * Check is JUnit error
    *
-   * @param console
-   *          jenkins job build console
+   * @param console jenkins job build console
    * @return boolean
    */
   public boolean isMavenUnitTestFailure(String console) {
@@ -69,8 +66,7 @@ public class StatusService {
   /**
    * Check is JUnit error
    *
-   * @param console
-   *          jenkins job build console
+   * @param console jenkins job build console
    * @return boolean
    */
   public boolean isWebUnitTestFailure(String console) {
@@ -84,8 +80,7 @@ public class StatusService {
   /**
    * Check is html error
    *
-   * @param console
-   *          jenkins job console text
+   * @param console jenkins job console text
    * @return boolean
    */
   public boolean isWebHtmlhintFailure(String console) {
@@ -98,8 +93,7 @@ public class StatusService {
   /**
    * Check is css error
    *
-   * @param console
-   *          jenkins job console text
+   * @param console jenkins job console text
    * @return boolean
    */
   public boolean isWebStylelintFailure(String console) {
@@ -112,8 +106,7 @@ public class StatusService {
   /**
    * Check is es error
    *
-   * @param console
-   *          jenkins job console text
+   * @param console jenkins job console text
    * @return boolean
    */
   public boolean isWebEslintFailure(String console) {
@@ -121,5 +114,45 @@ public class StatusService {
       return true;
     }
     return false;
+  }
+
+  /**
+   * Android is compile error
+   *
+   * @param console jenkins job console text
+   * @return boolean
+   */
+  public boolean isAndroidCompileFailure(String console) {
+    return console.contains("Task :app:compileDebugJavaWithJavac FAILED");
+  }
+
+  /**
+   * Android is unit test error
+   *
+   * @param console jenkins job console text
+   * @return boolean
+   */
+  public boolean isAndroidUnitTestFailure(String console) {
+    return console.contains("Task :app:testDebugUnitTest FAILED");
+  }
+
+  /**
+   * Android is Ui test error
+   *
+   * @param console jenkins job console text
+   * @return boolean
+   */
+  public boolean isAndroidUiTestFailure(String console) {
+    return console.contains("Task :app:connectedDebugAndroidTest FAILED");
+  }
+
+  /**
+   * Android is checkstyle error
+   *
+   * @param console jenkins job console text
+   * @return boolean
+   */
+  public boolean isAndroidCheckstyleFailure(String console) {
+    return console.contains("Task :app:checkStyle FAILED");
   }
 }
