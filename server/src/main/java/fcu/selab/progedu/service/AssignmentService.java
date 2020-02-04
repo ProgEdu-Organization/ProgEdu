@@ -49,9 +49,9 @@ import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.project.AssignmentFactory;
 import fcu.selab.progedu.project.AssignmentType;
 import fcu.selab.progedu.project.ProjectTypeEnum;
+import fcu.selab.progedu.utils.ExceptionUtil;
 import fcu.selab.progedu.utils.Linux;
 import fcu.selab.progedu.utils.ZipHandler;
-import fcu.selab.progedu.utils.ExceptionUtil;
 
 @Path("assignment/")
 public class AssignmentService {
@@ -291,7 +291,6 @@ public class AssignmentService {
   @Path("delete")
   @Produces(MediaType.APPLICATION_JSON)
   public Response deleteProject(@FormDataParam("assignmentName") String name) {
-    /*
     Linux linuxApi = new Linux();
     // delete tomcat test file
 
@@ -313,7 +312,6 @@ public class AssignmentService {
       String jobName = jenkins.getJobName(user.getUsername(), name);
       jenkins.deleteJob(jobName);
     }
-*/
     return Response.ok().build();
   }
 

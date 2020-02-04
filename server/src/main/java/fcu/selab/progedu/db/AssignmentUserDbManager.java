@@ -105,7 +105,7 @@ public class AssignmentUserDbManager {
    * @return auId assignmentUser Id
    */
   public List<Integer> getIdListByUid(int userId) {
-    List<Integer> auIds = new ArrayList<>();
+    List<Integer> auids = new ArrayList<>();
     String sql = "SELECT id FROM Assignment_User WHERE uId = ?";
     try (Connection conn = database.getConnection();
          PreparedStatement preStmt = conn.prepareStatement(sql)) {
@@ -113,13 +113,14 @@ public class AssignmentUserDbManager {
       try (ResultSet rs = preStmt.executeQuery()) {
         while (rs.next()) {
           int auid = rs.getInt("id");
-          auIds.add(auid);
+
+          auids.add(auid);
         }
       }
     } catch (SQLException e) {
       e.printStackTrace();
     }
-    return auIds;
+    return auids;
   }
 
 

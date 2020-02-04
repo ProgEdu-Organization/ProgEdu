@@ -80,7 +80,7 @@ public class GroupDbService {
    * @return name
    */
   public String getName(int id) {
-    return gdb.getId(id);
+    return gdb.getName(id);
   }
 
   /**

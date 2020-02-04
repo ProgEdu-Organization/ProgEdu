@@ -83,7 +83,7 @@ public class GroupDbManager {
    *
    * @param id group id
    */
-  public String getId(int id) { // Bug getName not Id
+  public String getName(int id) {
     String groupName =  "";
     String statement = "SELECT name FROM ProgEdu.Group WHERE id = ?";
 
@@ -252,7 +252,7 @@ public class GroupDbManager {
    * @return group info
    */
   public Group getGroup(int id) {
-    return getGroup( getId(id) );
+    return getGroup( getName(id) );
   }
 
   /**

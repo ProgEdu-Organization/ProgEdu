@@ -100,7 +100,8 @@ public class TomcatService {
       try {
         file = new FileInputStream(sample);
       } catch (FileNotFoundException e) {
-        e.printStackTrace();
+        LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+        LOGGER.error(e.getMessage());
       }
     } else {
       fileName = fileDetail.getFileName();
@@ -147,9 +148,13 @@ public class TomcatService {
     File gitkeep = new File(path + "/.gitkeep");
     if (!gitkeep.exists()) {
       try {
-        gitkeep.createNewFile();
+        if (!gitkeep.createNewFile()) {
+          LOGGER.debug("gitkeep had existed in path : " + path);
+          LOGGER.error("gitkeep had existed in path : " + path);
+        }
       } catch (IOException e) {
-        e.printStackTrace();
+        LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+        LOGGER.error(e.getMessage());
       }
     }
   }
