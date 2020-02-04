@@ -18,10 +18,11 @@ services:
       - ${DATA_PATH_HOST}/mysql:/var/lib/mysql
 
   gitlab:
-    # image: gitlab/gitlab-ce
-    # image: gitlab/gitlab-ce:10.8.5-ce.0
-    # image: gitlab/gitlab-ce:10.0.0-ce.0
-    image: gitlab/gitlab-ce:9.5.10-ce.0
+    # NOTE [gitlab-ce:9.5...] can't change to [gitlab-ce:latest] directly 
+    # so you need follow below step
+    # step1. change [gitlab/gitlab-ce:11.11.0-ce.0] and run [docker-compose up ..]
+    # step2. change [gitlab/gitlab-ce:12.5.6-ce.0] and run [docker-compose up ..]
+    image: gitlab/gitlab-ce:12.5.6-ce.0
     ports:
       - "${GITLAB_HTTP_PORT}:80"
       - "${GITLAB_SSH_PORT}:22"

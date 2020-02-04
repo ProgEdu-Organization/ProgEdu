@@ -21,8 +21,8 @@ public class CourseConfig {
   private static final Logger LOGGER = LoggerFactory.getLogger(CourseConfig.class);
 
   /**
+   *
    * @return instance.
-   * @throws URISyntaxException .
    */
   public static CourseConfig getInstance() {
     if (instance == null) {

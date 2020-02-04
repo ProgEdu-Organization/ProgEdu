@@ -80,7 +80,7 @@ public class GroupDbService {
    * @return name
    */
   public String getName(int id) {
-    return gdb.getId(id);
+    return gdb.getName(id);
   }
 
   /**
@@ -219,4 +219,14 @@ public class GroupDbService {
     int gid = gdb.getId(name);
     gdb.updateLeader(gid, uid);
   }
+
+  /**
+   * update leader
+   *
+   * @param group group
+   */
+  public void updateLeader(Group group) {
+    gdb.updateLeader(group.getId(), group.getLeader());
+  }
+
 }

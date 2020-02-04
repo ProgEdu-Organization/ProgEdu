@@ -296,6 +296,7 @@ public class UserService {
   public Response deleteUser(int userId) {
     UserDbService userDbService = UserDbService.getInstance();
 
+
     ////delete Gitlab
     gitlabService.deleteUser( userDbService.getGitLabId(userId) );
 
@@ -307,12 +308,12 @@ public class UserService {
       if ( group.isNotMoreThanOneUser() ) { // delete Group
         groupService.removeGroup( group.getGroupName() );
         
-      } else if (group.getLeader() == userId) { // change Group Leader
-
+      } else if (group.getLeader() == userId) { // change Group Leader and update DB
         List<User> groupUsers = group.getMembers();
         for (User groupUser:groupUsers) {
           if (groupUser.getId() != userId) {
             group.setLeader( groupUser.getId() );
+            gdb.updateLeader( group );
             break;
           }
         }
@@ -324,9 +325,9 @@ public class UserService {
     ////remove jenkins
     JenkinsService jenkinsService = JenkinsService.getInstance();
     List<String> assignmentNames = userDbService.getUserAssignmentNames(userId);
-    String userName = userDbService.getName(userId);
+    String username = userDbService.getName(userId);
     for (String assignmentName : assignmentNames) {
-      String jobName = jenkinsService.getJobName(userName, assignmentName);
+      String jobName = jenkinsService.getJobName(username, assignmentName);
       jenkinsService.deleteJob(jobName);
     }
 
