@@ -467,7 +467,7 @@ public class AssignmentService {
         .getAssignmentType(assignmentTypeEnum.getTypeName());
     addAuid(username, assignmentName);
     try {
-      GitlabProject project = gitlabService.createPrivateProject(username, assignmentName);
+      GitlabProject project = gitlabService.createPrivateProject(username, assignmentName, "root");
       gitlabService.setGitlabWebhook(project);
       assignment.createJenkinsJob(username, assignmentName);
     } catch (IOException | LoadConfigFailureException e) {

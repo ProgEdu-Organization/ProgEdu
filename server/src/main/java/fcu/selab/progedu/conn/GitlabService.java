@@ -361,13 +361,14 @@ public class GitlabService {
   /**
    * @param username username
    * @param proName proName
+   * @param projectOwner project owner name
    * @return project
    * @throws IOException on gitlab api call error
    */
-  public GitlabProject createPrivateProject(String username, String proName) {
+  public GitlabProject createPrivateProject(String username, String proName, String projectOwner) {
     GitlabProject gitlabProject = new GitlabProject();
     try {
-      gitlabProject = gitlab.createFork(username, getProject(username, proName));
+      gitlabProject = gitlab.createFork(username, getProject(projectOwner, proName));
     } catch (IOException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
