@@ -41,7 +41,7 @@ public class ZipHandler {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ZipHandler.class);
 
-  public String serverIp;
+  private String serverIp;
 
   StringBuilder sb = new StringBuilder();
 
@@ -105,35 +105,35 @@ public class ZipHandler {
     return dir;
   }
 
-  /**
-   * modifyPomXml
-   *
-   * @param filePath The file path
-   * @throws projectName projectName
-   */
-  public void modifyPomXml(String filePath, String projectName) {
-    try {
-      DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-      DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-      Document doc = docBuilder.parse(filePath);
-
-      Node ndId = doc.getElementsByTagName("artifactId").item(0);
-      ndId.setTextContent(projectName);
-
-      Node ndName = doc.getElementsByTagName("name").item(0);
-      ndName.setTextContent(projectName);
-
-      // write the content into xml file
-      TransformerFactory transformerFactory = TransformerFactory.newInstance();
-      Transformer transformer = transformerFactory.newTransformer();
-      DOMSource source = new DOMSource(doc);
-      StreamResult result = new StreamResult(new File(filePath));
-      transformer.transform(source, result);
-    } catch (ParserConfigurationException | SAXException | TransformerException | IOException e) {
-      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
-      LOGGER.error(e.getMessage());
-    }
-  }
+//  /**
+//   * modifyPomXml
+//   *
+//   * @param filePath The file path
+//   * @throws projectName projectName
+//   */
+//  public void modifyPomXml(String filePath, String projectName) {
+//    try {
+//      DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+//      DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+//      Document doc = docBuilder.parse(filePath);
+//
+//      Node ndId = doc.getElementsByTagName("artifactId").item(0);
+//      ndId.setTextContent(projectName);
+//
+//      Node ndName = doc.getElementsByTagName("name").item(0);
+//      ndName.setTextContent(projectName);
+//
+//      // write the content into xml file
+//      TransformerFactory transformerFactory = TransformerFactory.newInstance();
+//      Transformer transformer = transformerFactory.newTransformer();
+//      DOMSource source = new DOMSource(doc);
+//      StreamResult result = new StreamResult(new File(filePath));
+//      transformer.transform(source, result);
+//    } catch (ParserConfigurationException | SAXException | TransformerException | IOException e) {
+//      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+//      LOGGER.error(e.getMessage());
+//    }
+//  }
 
   public void zipTestFolder(String testFilePath) {
     File testFile = new File(testFilePath);

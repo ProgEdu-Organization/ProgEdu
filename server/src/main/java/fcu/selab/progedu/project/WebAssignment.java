@@ -3,6 +3,7 @@ package fcu.selab.progedu.project;
 import java.io.File;
 import java.io.IOException;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -60,6 +61,11 @@ public class WebAssignment extends AssignmentType {
           + "/webapi";
       String projectUrl = gitlabConfig.getGitlabHostUrl() + "/" + username + "/" + projectName
           + ".git";
+
+      DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+      docFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl",true);
+      DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+
       String updateDbUrl = progEduApiUrl + "/commits/update";
       JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
       String seleniumUrl = jenkinsData.getSeleniumHostUrl() + "/wd/hub";
@@ -67,8 +73,6 @@ public class WebAssignment extends AssignmentType {
       String testFileUrl = AssignmentDbManager.getInstance().getTestFileUrl(projectName);
       String stringEmpty = "";
 
-      DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-      DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
       Document doc = docBuilder.parse(jenkinsJobConfigPath);
 
       String jobName = username + "_" + projectName;
@@ -88,6 +92,7 @@ public class WebAssignment extends AssignmentType {
 
       // write the content into xml file
       TransformerFactory transformerFactory = TransformerFactory.newInstance();
+      transformerFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
       Transformer transformer = transformerFactory.newTransformer();
       DOMSource source = new DOMSource(doc);
       StreamResult result = new StreamResult(new File(jenkinsJobConfigPath));

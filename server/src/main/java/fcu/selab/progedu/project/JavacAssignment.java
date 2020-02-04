@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -65,12 +66,15 @@ public class JavacAssignment extends AssignmentType {
           + "/webapi";
       String projectUrl = gitlabConfig.getGitlabHostUrl() + "/" + username + "/" + projectName
           + ".git";
+
+      DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+      docFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl",true);
+      DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+
       String updateDbUrl = progEduApiUrl + "/commits/update";
       // to-do : command
       String assignmentPath = System.getProperty("java.io.tmpdir") + "/tests/" + projectName;
       String command = getCommandFromFile(assignmentPath);
-      DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-      DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 
       Document doc = docBuilder.parse(jenkinsJobConfigPath);
       doc.getElementsByTagName("command").item(0).setTextContent(command);
@@ -81,6 +85,7 @@ public class JavacAssignment extends AssignmentType {
 
       // write the content into xml file
       TransformerFactory transformerFactory = TransformerFactory.newInstance();
+      transformerFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
       Transformer transformer = transformerFactory.newTransformer();
       DOMSource source = new DOMSource(doc);
       StreamResult result = new StreamResult(new File(jenkinsJobConfigPath));

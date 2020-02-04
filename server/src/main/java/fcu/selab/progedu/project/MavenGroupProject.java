@@ -3,6 +3,7 @@ package fcu.selab.progedu.project;
 import java.io.File;
 import java.io.IOException;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -54,6 +55,7 @@ public class MavenGroupProject extends GroupProjectType {
           + ".git";
       String updateDbUrl = progEduApiUrl + "/commits/update";
       DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+      docFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl",true);
       DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
       Document doc = docBuilder.parse(jenkinsJobConfigPath);
 
@@ -64,6 +66,7 @@ public class MavenGroupProject extends GroupProjectType {
 
       // write the content into xml file
       TransformerFactory transformerFactory = TransformerFactory.newInstance();
+      transformerFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
       Transformer transformer = transformerFactory.newTransformer();
       DOMSource source = new DOMSource(doc);
       StreamResult result = new StreamResult(new File(jenkinsJobConfigPath));

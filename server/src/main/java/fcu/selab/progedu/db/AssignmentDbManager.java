@@ -268,9 +268,10 @@ public class AssignmentDbManager {
    * @param name assignment name
    */
   public void deleteAssignment(String name) {
-    String sql = "DELETE FROM Assignment WHERE name='" + name + "'";
+    String sql = "DELETE FROM Assignment WHERE name = ?";
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
+      preStmt.setString(1, name);
       preStmt.executeUpdate();
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
