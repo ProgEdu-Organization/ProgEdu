@@ -113,6 +113,7 @@ public class AssignmentUserDbManager {
       try (ResultSet rs = preStmt.executeQuery()) {
         while (rs.next()) {
           int auid = rs.getInt("id");
+
           auids.add(auid);
         }
       }

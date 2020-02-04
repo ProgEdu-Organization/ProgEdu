@@ -175,7 +175,7 @@ public class AssignmentService {
 
     List<User> users = userService.getStudents();
     for (User user : users) {
-      createAssignmentSettings(user.getUsername(), assignmentName, rootProjectUrl);
+      createAssignmentSettings(user.getUsername(), assignmentName);
     }
 
     // 12. remove project file in linux
@@ -465,16 +465,13 @@ public class AssignmentService {
 
   }
 
-  private void createAssignmentSettings(String username, String assignmentName,
-      String rootProjectUrl) {
+  private void createAssignmentSettings(String username, String assignmentName) {
     ProjectTypeEnum assignmentTypeEnum = dbManager.getAssignmentType(assignmentName);
     AssignmentType assignment = AssignmentFactory
         .getAssignmentType(assignmentTypeEnum.getTypeName());
     addAuid(username, assignmentName);
     try {
-      int gitLabId = userDbManager.getGitLabIdByUsername(username);
-      GitlabProject project = gitlabService.createPrivateProject(gitLabId, assignmentName,
-          rootProjectUrl);
+      GitlabProject project = gitlabService.createPrivateProject(username, assignmentName, "root");
       gitlabService.setGitlabWebhook(project);
       assignment.createJenkinsJob(username, assignmentName);
     } catch (IOException | LoadConfigFailureException e) {
@@ -492,8 +489,7 @@ public class AssignmentService {
     List<String> assignmentNames = dbManager.getAllAssignmentNames();
 
     for (String assignmentName : assignmentNames) {
-      String rootProjectUrl = getRootProjectUrl(assignmentName);
-      createAssignmentSettings(username, assignmentName, rootProjectUrl);
+      createAssignmentSettings(username, assignmentName);
     }
 
   }
