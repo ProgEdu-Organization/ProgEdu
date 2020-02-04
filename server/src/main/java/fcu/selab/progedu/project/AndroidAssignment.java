@@ -12,7 +12,10 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import fcu.selab.progedu.utils.ExceptionUtil;
 import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -28,6 +31,7 @@ import fcu.selab.progedu.data.ZipFileInfo;
 import fcu.selab.progedu.utils.ZipHandler;
 
 public class AndroidAssignment extends AssignmentType {
+  private static final Logger LOGGER = LoggerFactory.getLogger(WebAssignment.class);
 
   @Override
   public ProjectTypeEnum getProjectType() {
@@ -103,7 +107,8 @@ public class AndroidAssignment extends AssignmentType {
         | SAXException
         | IOException
         | TransformerException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
   }
 
@@ -113,7 +118,8 @@ public class AndroidAssignment extends AssignmentType {
       FileUtils.deleteDirectory(new File(uploadDirectory + "/app/src/androidTest/java"));
       FileUtils.deleteDirectory(new File(uploadDirectory + "/app/src/test/java"));
     } catch (IOException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
   }
 
@@ -125,14 +131,16 @@ public class AndroidAssignment extends AssignmentType {
     try {
       FileUtils.deleteDirectory(new File(testDirectory + "/app/src/main"));
     } catch (IOException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
 
     try {
       zipHandler = new ZipHandler();
       zipFileInfo = zipHandler.getZipInfo(testDirectory);
     } catch (LoadConfigFailureException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
 
     return zipFileInfo;
