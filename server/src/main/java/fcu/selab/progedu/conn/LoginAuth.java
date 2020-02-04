@@ -9,8 +9,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import fcu.selab.progedu.data.User;
+import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fcu.selab.progedu.config.GitlabConfig;
 import fcu.selab.progedu.config.JwtConfig;
@@ -19,6 +21,7 @@ import fcu.selab.progedu.db.RoleUserDbManager;
 import fcu.selab.progedu.db.UserDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.service.RoleEnum;
+import fcu.selab.progedu.utils.ExceptionUtil;
 
 /**
  * Servlet implementation class AfterEnter
@@ -26,10 +29,11 @@ import fcu.selab.progedu.service.RoleEnum;
 public class LoginAuth extends HttpServlet {
   private static final long serialVersionUID = 1L;
   private static final String USERNAME = "username";
-  private static final String USER_PASSWORD = "password";
+  private static final String USER_TOKEN = "password";
   private GitlabService gitlabService = GitlabService.getInstance();
   private GitlabConfig gitlabConfig = GitlabConfig.getInstance();
   JwtConfig jwt = JwtConfig.getInstance();
+  private static final Logger LOGGER = LoggerFactory.getLogger(LoginAuth.class);
 
   /**
    * @throws LoadConfigFailureException .
@@ -52,14 +56,12 @@ public class LoginAuth extends HttpServlet {
    * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
    *      response)
    */
-  protected void doPost(HttpServletRequest request, HttpServletResponse response)
-      throws ServletException, IOException {
+  protected void doPost(HttpServletRequest request, HttpServletResponse response) {
     final HttpSession session = request.getSession();
     String username = request.getParameter(USERNAME);
-    String password = request.getParameter(USER_PASSWORD);
+    String password = request.getParameter(USER_TOKEN);
     String token;
     JSONObject ob = new JSONObject();
-
     try {
       String role = checkPermission(username, password);
       if (!role.equals("")) {
@@ -71,15 +73,28 @@ public class LoginAuth extends HttpServlet {
       } else {
         ob.put("isLogin", false);
       }
-    } catch (LoadConfigFailureException e) {
-      ob.put("isLogin", false);
-      e.printStackTrace();
+    } catch (LoadConfigFailureException | JSONException e) {
+      try {
+        ob.put("isLogin", false);
+      } catch (JSONException ex) {
+        LOGGER.debug(ExceptionUtil.getErrorInfoFromException(ex));
+        LOGGER.error(ex.getMessage());
+      }
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
+
     response.setStatus(200);
-    PrintWriter pw = response.getWriter();
-    pw.print(ob);
-    pw.flush();
-    pw.close();
+    
+    try {
+      PrintWriter pw = response.getWriter();
+      pw.print(ob);
+      pw.flush();
+      pw.close();
+    } catch (IOException e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    }
   }
 
   private String checkPermission(String username, String password)

@@ -5,11 +5,16 @@ import java.util.ArrayList;
 
 import fcu.selab.progedu.data.FeedBack;
 
+import fcu.selab.progedu.utils.ExceptionUtil;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MavenCheckstyleFailure implements Status {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(MavenCheckstyleFailure.class);
 
   /**
    * get checkstyle information
@@ -19,53 +24,62 @@ public class MavenCheckstyleFailure implements Status {
    */
   @Override
   public String extractFailureMsg(String consoleText) {
-    String checkstyleInfo;
-    String checkstyleStart = "Starting audit...";
-    String checkstyleEnd = "Audit done.";
-    checkstyleInfo = consoleText.substring(
-        consoleText.indexOf(checkstyleStart) + checkstyleStart.length(),
-        consoleText.indexOf(checkstyleEnd));
+    try {
+      String checkstyleInfo;
+      String checkstyleStart = "Starting audit...";
+      String checkstyleEnd = "Audit done.";
+      checkstyleInfo = consoleText.substring(
+          consoleText.indexOf(checkstyleStart) + checkstyleStart.length(),
+          consoleText.indexOf(checkstyleEnd));
 
-    return checkstyleInfo.trim();
+      return checkstyleInfo.trim();
+    } catch (Exception e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+      return "ExtractFailureMsg Method Error";
+    }
   }
 
   @Override
   public ArrayList<FeedBack> formatExamineMsg(String consoleText) {
+    ArrayList<FeedBack> feedbackList = new ArrayList<>();
     try {
       consoleText = consoleText + "\n";
       int endIndex = consoleText.length();
-      ArrayList<FeedBack> feedbacklist = new ArrayList<>();
       while (consoleText.contains("error:")) {
-        int nextrow = consoleText.indexOf("\n");
-        int nexterror = consoleText.indexOf("error:");
-        if (nexterror > nextrow) {
-          consoleText = consoleText.substring(nextrow + 1, endIndex);
-          endIndex = endIndex - nextrow - 1;
+        int nextRowIndex = consoleText.indexOf("\n");
+        int nextErrorIndex = consoleText.indexOf("error:");
+        if (nextErrorIndex > nextRowIndex) {
+          consoleText = consoleText.substring(nextRowIndex + 1, endIndex);
+          endIndex = endIndex - nextRowIndex - 1;
         } else {
-          String errorRow = consoleText.substring(0, nextrow);
-          int lastslash = errorRow.lastIndexOf("/");
-          String errorfileName = errorRow.substring(lastslash + 1, nexterror - 2).trim();
-          feedbacklist.add(new FeedBack(
+          String errorRow = consoleText.substring(0, nextRowIndex);
+          int lastSlash = errorRow.lastIndexOf("/");
+          String errorFileName = errorRow.substring(lastSlash + 1, nextErrorIndex - 2).trim();
+          feedbackList.add(new FeedBack(
               StatusEnum.CHECKSTYLE_FAILURE,
-              errorfileName.substring(0, errorfileName.indexOf(":")).trim(),
-              errorfileName.substring(
-                  errorfileName.indexOf(":") + 1, errorfileName.length()),
-              errorRow.substring(nexterror + 6, nextrow).trim(),
+              errorFileName.substring(0, errorFileName.indexOf(":")).trim(),
+              errorFileName.substring(
+                  errorFileName.indexOf(":") + 1, errorFileName.length()),
+              errorRow.substring(nextErrorIndex + 6, nextRowIndex).trim(),
               "",
               ""
           ));
-          consoleText = consoleText.substring(nextrow + 1, endIndex);
-          endIndex = endIndex - nextrow - 1;
+          consoleText = consoleText.substring(nextRowIndex + 1, endIndex);
+          endIndex = endIndex - nextRowIndex - 1;
         }
       }
-      return feedbacklist;
+      if (feedbackList.isEmpty()) {
+        feedbackList.add(
+            new FeedBack(StatusEnum.CHECKSTYLE_FAILURE,
+                "Please notify teacher or assistant this situation, thank you!", ""));
+      }
     } catch (Exception e) {
-      ArrayList<FeedBack> feedbacklist = new ArrayList<>();
-      feedbacklist.add(
-          new FeedBack(StatusEnum.CHECKSTYLE_FAILURE, "", "",
-              "Checkstyle ArrayList error", "", ""));
-      return feedbacklist;
+      feedbackList.add(
+          new FeedBack(StatusEnum.CHECKSTYLE_FAILURE,
+              "Checkstyle ArrayList error", e.getMessage()));
     }
+    return feedbackList;
   }
 }
 

@@ -10,8 +10,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import fcu.selab.progedu.data.GroupProject;
 import fcu.selab.progedu.project.ProjectTypeEnum;
+import fcu.selab.progedu.utils.ExceptionUtil;
 
 public class ProjectDbManager {
   AssignmentTypeDbManager atDb = AssignmentTypeDbManager.getInstance();
@@ -23,6 +27,8 @@ public class ProjectDbManager {
   }
 
   private IDatabase database = new MySqlDatabase();
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(ProjectDbManager.class);
 
   private ProjectDbManager() {
 
@@ -49,44 +55,29 @@ public class ProjectDbManager {
       preStmt.setInt(5, typeId);
       preStmt.executeUpdate();
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
   }
 
   /**
    * get project info by project name
-   * 
-   * @param name project name
+   *
+   * @param id project id
    * @return project
    */
-  public GroupProject getGroupProjectByName(String name) {
-    GroupProject project = new GroupProject();
-    String sql = "SELECT * FROM Project WHERE name = ?";
+  public GroupProject getGroupProjectById(int id) {
+    return getGroupProjectByName( getProjectName(id) );
+  }
 
-    try (Connection conn = database.getConnection();
-        PreparedStatement stmt = conn.prepareStatement(sql)) {
-      stmt.setString(1, name);
-      try (ResultSet rs = stmt.executeQuery();) {
-        while (rs.next()) {
-          Date createTime = rs.getTimestamp("createTime");
-          Date deadline = rs.getTimestamp("deadline");
-          String description = rs.getString("description");
-          int typeId = rs.getInt("type");
-          int id = rs.getInt("id");
-          ProjectTypeEnum typeEnum = atDb.getTypeNameById(typeId);
-
-          project.setId(id);
-          project.setName(name);
-          project.setCreateTime(createTime);
-          project.setDescription(description);
-          project.setType(typeEnum);
-          project.setDeadline(deadline);
-        }
-      }
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
-    return project;
+  /**
+   * get project info by project name
+   * 
+   * @param projectName project name
+   * @return project
+   */
+  public GroupProject getGroupProjectByName(String projectName) {
+    return getGroupProject( getId(projectName) );
   }
 
   /**
@@ -122,7 +113,8 @@ public class ProjectDbManager {
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return project;
   }
@@ -145,7 +137,8 @@ public class ProjectDbManager {
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return projectName;
   }
@@ -169,7 +162,8 @@ public class ProjectDbManager {
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return id;
   }
@@ -192,7 +186,8 @@ public class ProjectDbManager {
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return typeId;
   }
@@ -214,7 +209,8 @@ public class ProjectDbManager {
         lsNames.add(name);
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return lsNames;
   }
@@ -231,7 +227,8 @@ public class ProjectDbManager {
       preStmt.setInt(1, id);
       preStmt.executeUpdate();
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
   }
 

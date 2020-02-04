@@ -5,39 +5,47 @@ import java.util.ArrayList;
 
 import fcu.selab.progedu.data.FeedBack;
 
+import fcu.selab.progedu.utils.ExceptionUtil;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class WebEslintFailure implements Status {
 
+  private static final Logger LOGGER = LoggerFactory.getLogger(WebEslintFailure.class);
+
   @Override
   public String extractFailureMsg(String consoleText) {
-    String checkstyleStart = "npm run eslint";
-    String checkstyleEnd = "npm ERR! code ELIFECYCLE";
-    int start = consoleText.indexOf(checkstyleStart) + checkstyleStart.length();
-    int end = consoleText.lastIndexOf(checkstyleEnd) - 1;
-    String checkstyleInfo = consoleText.substring(start,end);
-    int nextrow = checkstyleInfo.indexOf("\n");
-    int endrow = checkstyleInfo.indexOf("\n", checkstyleInfo.indexOf("problem"));
-    checkstyleInfo = checkstyleInfo.substring(nextrow + 1,endrow);
-    checkstyleInfo = checkstyleInfo.replace("/var/jenkins_home/workspace/","");
-    return checkstyleInfo.trim();
+    try {
+      String checkstyleStart = "npm run eslint";
+      String checkstyleEnd = "npm ERR! code ELIFECYCLE";
+      int start = consoleText.indexOf(checkstyleStart) + checkstyleStart.length();
+      int end = consoleText.lastIndexOf(checkstyleEnd) - 1;
+      String checkstyleInfo = consoleText.substring(start, end);
+      int nextRowIndex = checkstyleInfo.indexOf("\n");
+      int endRowIndex = checkstyleInfo.indexOf("\n", checkstyleInfo.indexOf("problem"));
+      checkstyleInfo = checkstyleInfo.substring(nextRowIndex + 1, endRowIndex);
+      checkstyleInfo = checkstyleInfo.replace("/var/jenkins_home/workspace/", "");
+      return checkstyleInfo.trim();
+    } catch (Exception e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+      return "ExtractFailureMsg Method Error";
+    }
   }
 
   @Override
   public ArrayList<FeedBack> formatExamineMsg(String consoleText) {
-
+    ArrayList<FeedBack> feedbackList = new ArrayList<>();
     try {
-      System.out.println(consoleText);
       consoleText = consoleText.substring(0, consoleText.indexOf("✖"));
       int endIndex = consoleText.length();
       String fileName = "";
-      ArrayList<FeedBack> feedbackList = new ArrayList<>();
       while (consoleText.contains("error")) {
         int errorIndex = consoleText.indexOf("error");
         int nextRowIndex = consoleText.indexOf("\n");
-        System.out.println(errorIndex + " " + nextRowIndex);
         if (nextRowIndex == -1) {
           break;
         }
@@ -45,6 +53,8 @@ public class WebEslintFailure implements Status {
           if (consoleText.substring(0, nextRowIndex).contains("/")) {
             fileName = consoleText.substring(0, nextRowIndex).trim();
           }
+          consoleText = consoleText.substring(nextRowIndex + 1, endIndex);
+          endIndex = endIndex - nextRowIndex - 1;
         } else {
           String errorString = consoleText.substring(errorIndex + 6, nextRowIndex);
           // Sometimes, eslint did not provide suggest, we need to ignore it.
@@ -63,17 +73,20 @@ public class WebEslintFailure implements Status {
                   fileName,
                   consoleText.substring(0, errorIndex).trim(), message, symptom,
                   "https://github.com/airbnb/javascript\n"));
+          consoleText = consoleText.substring(nextRowIndex + 1, endIndex);
+          endIndex = endIndex - nextRowIndex - 1;
         }
-        consoleText = consoleText.substring(nextRowIndex + 1, endIndex);
-        endIndex = endIndex - nextRowIndex - 1;
       }
-      return feedbackList;
+      if (feedbackList.isEmpty()) {
+        feedbackList.add(
+            new FeedBack(StatusEnum.WEB_ESLINT_FAILURE,
+                "Please notify teacher or assistant this situation, thank you!", ""));
+      }
     } catch (Exception e) {
-      ArrayList<FeedBack> feedbackList = new ArrayList<>();
       feedbackList.add(
-          new FeedBack(StatusEnum.WEB_ESLINT_FAILURE, "", "",
-              "Eslint ArrayList error", "", ""));
-      return feedbackList;
+          new FeedBack(StatusEnum.WEB_ESLINT_FAILURE,
+              "Eslint ArrayList error", e.getMessage()));
     }
+    return feedbackList;
   }
 }

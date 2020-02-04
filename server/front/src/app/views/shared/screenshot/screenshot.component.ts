@@ -41,9 +41,9 @@ export class ScreenshotComponent implements OnInit, OnChanges {
     console.log(this.type);
     if (this.type === 'WEB') {
       name = screenshotName.substring(0, screenshotName.indexOf('.png')) + '.html';
-    } else if(this.type === 'ANDROID') {
+    } else if (this.type === 'ANDROID') {
       name = screenshotName.substring(screenshotName.indexOf('_') + 1
-          , screenshotName.indexOf('.png')) + '.java';
+        , screenshotName.indexOf('.png')) + '.java';
     }
     return name;
 

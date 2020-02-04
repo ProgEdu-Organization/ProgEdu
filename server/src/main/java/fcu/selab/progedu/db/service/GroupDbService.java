@@ -32,8 +32,8 @@ public class GroupDbService {
   /**
    * add group information to db
    *
-   * @param gitlabId gitlab id of group
-   * @param groupName group name
+   * @param gitlabId       gitlab id of group
+   * @param groupName      group name
    * @param leaderUsername leader's username
    */
   public void addGroup(int gitlabId, String groupName, String leaderUsername) {
@@ -44,7 +44,7 @@ public class GroupDbService {
   /**
    * add member to group
    *
-   * @param username username
+   * @param username  username
    * @param groupName groupName
    */
   public void addMember(String username, String groupName) {
@@ -71,6 +71,16 @@ public class GroupDbService {
    */
   public int getId(String name) {
     return gdb.getId(name);
+  }
+
+  /**
+   * get group name
+   *
+   * @param id group id
+   * @return name
+   */
+  public String getName(int id) {
+    return gdb.getName(id);
   }
 
   /**
@@ -155,7 +165,7 @@ public class GroupDbService {
    * @param name group name
    */
   public void removeGroup(String name) {
-    int gid = gdb.getId(name);
+    int gid = getId(name);
     List<Integer> pgids = pgdb.getPgids(gid);
 
     for (int pgid : pgids) {
@@ -176,9 +186,20 @@ public class GroupDbService {
   }
 
   /**
+   * remove group by group id
+   *
+   * @param groupId group id
+   */
+  public void removeGroup(int groupId) {
+    String groupName = getName(groupId);
+    removeGroup(groupName);
+  }
+
+
+  /**
    * remove member
    *
-   * @param name group name
+   * @param name   group name
    * @param member remove member
    */
   public void removeMember(String name, String member) {
@@ -190,7 +211,7 @@ public class GroupDbService {
   /**
    * update leader
    *
-   * @param name group name
+   * @param name   group name
    * @param leader leader username
    */
   public void updateLeader(String name, String leader) {

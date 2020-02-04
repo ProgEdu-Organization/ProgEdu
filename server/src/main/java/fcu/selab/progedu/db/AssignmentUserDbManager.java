@@ -7,6 +7,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import fcu.selab.progedu.utils.ExceptionUtil;
+
 public class AssignmentUserDbManager {
   private static AssignmentUserDbManager dbManager = new AssignmentUserDbManager();
 
@@ -15,6 +20,8 @@ public class AssignmentUserDbManager {
   }
 
   private IDatabase database = new MySqlDatabase();
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(AssignmentUserDbManager.class);
 
   private AssignmentUserDbManager() {
 
@@ -35,7 +42,8 @@ public class AssignmentUserDbManager {
       preStmt.setInt(2, uid);
       preStmt.executeUpdate();
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
   }
 
@@ -59,7 +67,8 @@ public class AssignmentUserDbManager {
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return auid;
   }
@@ -83,10 +92,36 @@ public class AssignmentUserDbManager {
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return lsAUid;
   }
+
+  /**
+   * get auIds by assignment uid(user_id)
+   *
+   * @param userId User Id
+   * @return auId assignmentUser Id
+   */
+  public List<Integer> getIdListByUid(int userId) {
+    List<Integer> auids = new ArrayList<>();
+    String sql = "SELECT id FROM Assignment_User WHERE uId = ?";
+    try (Connection conn = database.getConnection();
+         PreparedStatement preStmt = conn.prepareStatement(sql)) {
+      preStmt.setInt(1, userId);
+      try (ResultSet rs = preStmt.executeQuery()) {
+        while (rs.next()) {
+          int auid = rs.getInt("id");
+          auids.add(auid);
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return auids;
+  }
+
 
   /**
    * get aids by User Id
@@ -106,7 +141,8 @@ public class AssignmentUserDbManager {
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return lsAids;
   }
@@ -129,7 +165,8 @@ public class AssignmentUserDbManager {
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return lsUids;
   }
@@ -145,7 +182,24 @@ public class AssignmentUserDbManager {
       preStmt.setInt(1, aid);
       preStmt.executeUpdate();
     } catch (SQLException e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    }
+  }
+
+  /**
+   * Delete assignment_user from database by Uid(user_id)
+   *
+   */
+  public void deleteAssignmentUserByUid(int userId) {
+    String sql = "DELETE FROM Assignment_User WHERE uId = ?";
+    try (Connection conn = database.getConnection();
+         PreparedStatement preStmt = conn.prepareStatement(sql)) {
+      preStmt.setInt(1, userId);
+      preStmt.executeUpdate();
+    } catch (SQLException e) {
       e.printStackTrace();
     }
   }
+
 }

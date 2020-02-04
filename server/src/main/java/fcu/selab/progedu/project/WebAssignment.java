@@ -3,6 +3,7 @@ package fcu.selab.progedu.project;
 import java.io.File;
 import java.io.IOException;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -15,6 +16,8 @@ import javax.xml.transform.stream.StreamResult;
 import org.apache.commons.io.FileUtils;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fcu.selab.progedu.config.CourseConfig;
 import fcu.selab.progedu.config.GitlabConfig;
@@ -26,8 +29,10 @@ import fcu.selab.progedu.service.StatusService;
 import fcu.selab.progedu.status.StatusEnum;
 import fcu.selab.progedu.data.ZipFileInfo;
 import fcu.selab.progedu.utils.ZipHandler;
+import fcu.selab.progedu.utils.ExceptionUtil;
 
 public class WebAssignment extends AssignmentType {
+  private static final Logger LOGGER = LoggerFactory.getLogger(WebAssignment.class);
 
   @Override
   public ProjectTypeEnum getProjectType() {
@@ -56,6 +61,11 @@ public class WebAssignment extends AssignmentType {
           + "/webapi";
       String projectUrl = gitlabConfig.getGitlabHostUrl() + "/" + username + "/" + projectName
           + ".git";
+
+      DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+      docFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl",true);
+      DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+
       String updateDbUrl = progEduApiUrl + "/commits/update";
       JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
       String seleniumUrl = jenkinsData.getSeleniumHostUrl() + "/wd/hub";
@@ -63,8 +73,6 @@ public class WebAssignment extends AssignmentType {
       String testFileUrl = AssignmentDbManager.getInstance().getTestFileUrl(projectName);
       String stringEmpty = "";
 
-      DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-      DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
       Document doc = docBuilder.parse(jenkinsJobConfigPath);
 
       String jobName = username + "_" + projectName;
@@ -84,13 +92,15 @@ public class WebAssignment extends AssignmentType {
 
       // write the content into xml file
       TransformerFactory transformerFactory = TransformerFactory.newInstance();
+      transformerFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
       Transformer transformer = transformerFactory.newTransformer();
       DOMSource source = new DOMSource(doc);
       StreamResult result = new StreamResult(new File(jenkinsJobConfigPath));
       transformer.transform(source, result);
     } catch (LoadConfigFailureException | ParserConfigurationException | SAXException | IOException
         | TransformerException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
 
   }
@@ -100,7 +110,8 @@ public class WebAssignment extends AssignmentType {
     try {
       FileUtils.deleteDirectory(new File(uploadDirectory + "/src/test"));
     } catch (IOException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
   }
 
@@ -112,14 +123,16 @@ public class WebAssignment extends AssignmentType {
     try {
       FileUtils.deleteDirectory(new File(testDirectory + "/src/web"));
     } catch (IOException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
 
     try {
       zipHandler = new ZipHandler();
       zipFileInfo = zipHandler.getZipInfo(testDirectory);
     } catch (LoadConfigFailureException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
 
     return zipFileInfo;

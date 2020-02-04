@@ -7,8 +7,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import fcu.selab.progedu.data.User;
 import fcu.selab.progedu.service.RoleEnum;
+import fcu.selab.progedu.utils.ExceptionUtil;
 
 public class RoleUserDbManager {
   private static RoleUserDbManager dbManager = new RoleUserDbManager();
@@ -20,6 +24,8 @@ public class RoleUserDbManager {
   private IDatabase database = new MySqlDatabase();
   RoleDbManager rdb = RoleDbManager.getInstance();
   UserDbManager udb = UserDbManager.getInstance();
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(RoleUserDbManager.class);
 
   /**
    * Add RoleUser to database by User
@@ -35,7 +41,8 @@ public class RoleUserDbManager {
         addRoleUser(rid, uid);
       }
     } catch (Exception e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
 
   }
@@ -55,7 +62,8 @@ public class RoleUserDbManager {
       preStmt.setInt(2, uid);
       preStmt.executeUpdate();
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
   }
 
@@ -79,7 +87,8 @@ public class RoleUserDbManager {
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return topRid;
   }
@@ -104,7 +113,8 @@ public class RoleUserDbManager {
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return ruid;
   }
@@ -128,7 +138,8 @@ public class RoleUserDbManager {
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return lsRole;
   }
@@ -151,9 +162,29 @@ public class RoleUserDbManager {
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return lsUids;
+  }
+
+  /**
+   * delete Role_User by uid
+   *
+   * @param userId The user id
+   *
+   */
+  public void deleteRoleUserByUserId(int userId) {
+    String query = "DELETE FROM Role_User WHERE uid = ?";
+    try (Connection conn = database.getConnection();
+         PreparedStatement preStmt = conn.prepareStatement(query)) {
+
+      preStmt.setInt(1, userId);
+      preStmt.executeUpdate();
+
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
   }
 
 }

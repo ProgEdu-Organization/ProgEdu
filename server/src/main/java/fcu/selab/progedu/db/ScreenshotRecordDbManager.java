@@ -6,9 +6,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import fcu.selab.progedu.utils.ExceptionUtil;
+
 public class ScreenshotRecordDbManager {
   private static ScreenshotRecordDbManager dbManager = new ScreenshotRecordDbManager();
   private IDatabase database = new MySqlDatabase();
+  private static final Logger LOGGER = LoggerFactory.getLogger(ScreenshotRecordDbManager.class);
 
   public static ScreenshotRecordDbManager getInstance() {
     return dbManager;
@@ -29,7 +35,8 @@ public class ScreenshotRecordDbManager {
       preStmt.setString(2, url);
       preStmt.executeUpdate();
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
   }
 
@@ -52,7 +59,8 @@ public class ScreenshotRecordDbManager {
         return urls;
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return null;
   }
@@ -69,7 +77,8 @@ public class ScreenshotRecordDbManager {
       preStmt.setInt(1, crid);
       preStmt.executeUpdate();
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
   }
 

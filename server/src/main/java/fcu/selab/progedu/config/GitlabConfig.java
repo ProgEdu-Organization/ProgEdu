@@ -1,6 +1,10 @@
 package fcu.selab.progedu.config;
 
 import fcu.selab.progedu.exception.LoadConfigFailureException;
+import fcu.selab.progedu.utils.ExceptionUtil;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,6 +16,7 @@ public class GitlabConfig {
   private static GitlabConfig instance = new GitlabConfig();
   private static final String EXCEPTION =
       "Unable to get config of GITLAB" + " connection string from file;";
+  private static final Logger LOGGER = LoggerFactory.getLogger(GitlabConfig.class);
 
   public static GitlabConfig getInstance() {
     return instance;
@@ -25,7 +30,8 @@ public class GitlabConfig {
       props = new Properties();
       props.load(is);
     } catch (IOException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
   }
 

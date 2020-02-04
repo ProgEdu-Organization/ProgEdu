@@ -51,6 +51,9 @@ import { CarouselModule } from 'ngx-bootstrap/carousel';
 import { environment } from '../environments/environment';
 
 import { SharedModule } from './views/shared/shared.module';
+
+// Loading Component
+import { NgxLoadingModule, ngxLoadingAnimationTypes } from 'ngx-loading';
 @NgModule({
   imports: [
     BrowserModule,

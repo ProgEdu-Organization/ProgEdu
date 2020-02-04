@@ -10,9 +10,12 @@ import java.util.Date;
 import java.util.List;
 
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fcu.selab.progedu.data.CommitRecord;
 import fcu.selab.progedu.status.StatusEnum;
+import fcu.selab.progedu.utils.ExceptionUtil;
 
 public class CommitRecordDbManager {
   UserDbManager userDbManager = UserDbManager.getInstance();
@@ -25,6 +28,8 @@ public class CommitRecordDbManager {
   }
 
   private IDatabase database = new MySqlDatabase();
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(CommitRecordDbManager.class);
 
   /**
    * insert student commit records into db
@@ -47,7 +52,8 @@ public class CommitRecordDbManager {
       preStmt.setTimestamp(4, date);
       preStmt.executeUpdate();
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
   }
 
@@ -72,7 +78,8 @@ public class CommitRecordDbManager {
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
 
     return id;
@@ -98,7 +105,8 @@ public class CommitRecordDbManager {
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
 
     return lsCRid;
@@ -126,7 +134,8 @@ public class CommitRecordDbManager {
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
 
     return status;
@@ -160,7 +169,8 @@ public class CommitRecordDbManager {
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return commitRecords;
   }
@@ -193,7 +203,8 @@ public class CommitRecordDbManager {
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return ob;
   }
@@ -218,7 +229,8 @@ public class CommitRecordDbManager {
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return commitNumber;
   }
@@ -236,31 +248,8 @@ public class CommitRecordDbManager {
       preStmt.setInt(1, auId);
       preStmt.executeUpdate();
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
   }
-
-  /**
-   * get Commit_Status id by auid
-   * 
-   * @param auid auId
-   * @return status status
-   */
-  public int getCommitStatusbyAuid(int auid) {
-    int status = 0;
-    String sql = "SELECT status FROM Commit_Record WHERE auId=?";
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
-      preStmt.setInt(1, auid);
-      try (ResultSet rs = preStmt.executeQuery()) {
-        while (rs.next()) {
-          status = rs.getInt("status");
-        }
-      }
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
-    return status;
-  }
-
 }

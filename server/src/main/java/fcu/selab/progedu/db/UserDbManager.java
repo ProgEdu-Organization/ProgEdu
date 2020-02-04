@@ -11,19 +11,24 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import fcu.selab.progedu.data.User;
 import fcu.selab.progedu.service.RoleEnum;
+import fcu.selab.progedu.utils.ExceptionUtil;
 
 public class UserDbManager {
   private static final String GIT_LAB_ID = "gitLabId";
   private static final String USERNAME = "username";
   private static final String NAME = "name";
-  private static final String PASSWORD = "password";
+  private static final String TOKEN = "password";
   private static final String EMAIL = "email";
   private static final String GIT_LAB_TOKEN = "gitLabToken";
   private static final String ROLE = "role";
   private static final String DISPLAY = "display";
   private static UserDbManager dbManager = null;
+  private static final Logger LOGGER = LoggerFactory.getLogger(UserDbManager.class);
 
   /**
    * 
@@ -51,7 +56,7 @@ public class UserDbManager {
    */
   public void addUser(User user) {
     String sql = "INSERT INTO " + "User(" + GIT_LAB_ID + "," + USERNAME + "," + NAME + ","
-        + PASSWORD + "," + EMAIL + "," + GIT_LAB_TOKEN + "," + DISPLAY + ")"
+        + TOKEN + "," + EMAIL + "," + GIT_LAB_TOKEN + "," + DISPLAY + ")"
         + "VALUES(?, ?, ?, ?, ?, ?, ?)";
 
     try (Connection conn = database.getConnection();
@@ -65,7 +70,8 @@ public class UserDbManager {
       preStmt.setBoolean(7, user.getDisplay());
       preStmt.executeUpdate();
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
   }
 
@@ -91,7 +97,8 @@ public class UserDbManager {
       }
       hashtext = bld.toString() + hashtext;
     } catch (NoSuchAlgorithmException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
 
     return hashtext;
@@ -104,7 +111,7 @@ public class UserDbManager {
    * @return password
    */
   public String getPassword(String username) {
-    String password = "";
+    String token = "";
     String query = "SELECT password FROM User WHERE username = ?";
 
     try (Connection conn = database.getConnection();
@@ -112,13 +119,14 @@ public class UserDbManager {
       preStmt.setString(1, username);
       try (ResultSet rs = preStmt.executeQuery()) {
         while (rs.next()) {
-          password = rs.getString(PASSWORD);
+          token = rs.getString(TOKEN);
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
-    return password;
+    return token;
   }
 
   /**
@@ -137,7 +145,8 @@ public class UserDbManager {
       preStmt.setString(2, username);
       preStmt.executeUpdate();
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
   }
 
@@ -174,7 +183,8 @@ public class UserDbManager {
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return id;
   }
@@ -197,7 +207,8 @@ public class UserDbManager {
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return id;
   }
@@ -209,36 +220,7 @@ public class UserDbManager {
    * @return user
    */
   public User getUser(String username) {
-    User user = new User();
-    String query = "SELECT * FROM User WHERE username = ?";
-
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(query)) {
-      preStmt.setString(1, username);
-      try (ResultSet rs = preStmt.executeQuery()) {
-        while (rs.next()) {
-          int gitLabId = rs.getInt(GIT_LAB_ID);
-          int id = rs.getInt("id");
-          String name = rs.getString(NAME);
-          String password = rs.getString(PASSWORD);
-          String email = rs.getString(EMAIL);
-          String gitLabToken = rs.getString(GIT_LAB_TOKEN);
-          boolean display = rs.getBoolean(DISPLAY);
-
-          user.setGitLabId(gitLabId);
-          user.setId(id);
-          user.setUsername(username);
-          user.setName(name);
-          user.setPassword(password);
-          user.setEmail(email);
-          user.setGitLabToken(gitLabToken);
-          user.setDisplay(display);
-        }
-      }
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
-    return user;
+    return getUser( getUserIdByUsername(username) );
   }
 
   /**
@@ -259,7 +241,7 @@ public class UserDbManager {
           int gitLabId = rs.getInt(GIT_LAB_ID);
           String username = rs.getString("username");
           String name = rs.getString(NAME);
-          String password = rs.getString(PASSWORD);
+          String password = rs.getString(TOKEN);
           String email = rs.getString(EMAIL);
           String gitLabToken = rs.getString(GIT_LAB_TOKEN);
           boolean display = rs.getBoolean(DISPLAY);
@@ -272,10 +254,12 @@ public class UserDbManager {
           user.setEmail(email);
           user.setGitLabToken(gitLabToken);
           user.setDisplay(display);
+          //not set Role
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return user;
   }
@@ -298,7 +282,8 @@ public class UserDbManager {
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return isDisplay;
   }
@@ -318,7 +303,8 @@ public class UserDbManager {
       preStmt.setString(2, username);
       preStmt.executeUpdate();
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
 
   }
@@ -339,7 +325,7 @@ public class UserDbManager {
           int gitLabId = rs.getInt(GIT_LAB_ID);
           String username = rs.getString(USERNAME);
           String name = rs.getString(NAME);
-          String password = rs.getString(PASSWORD);
+          String password = rs.getString(TOKEN);
           String email = rs.getString(EMAIL);
           String gitLabToken = rs.getString(GIT_LAB_ID);
           boolean display = rs.getBoolean(DISPLAY);
@@ -360,7 +346,8 @@ public class UserDbManager {
       }
 
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return users;
   }
@@ -385,7 +372,8 @@ public class UserDbManager {
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return isExist;
   }
@@ -410,7 +398,8 @@ public class UserDbManager {
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return isExist;
   }
@@ -433,8 +422,29 @@ public class UserDbManager {
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return name;
   }
+
+  /**
+   * delete User from id
+   *
+   * @param id The user id
+   *
+   */
+  public void deleteUser(int id) {
+    String query = "DELETE FROM ProgEdu.User WHERE id = ?";
+    try (Connection conn = database.getConnection();
+         PreparedStatement preStmt = conn.prepareStatement(query)) {
+
+      preStmt.setInt(1, id);
+      preStmt.executeUpdate();
+
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
+
 }

@@ -18,6 +18,7 @@ import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
@@ -28,6 +29,30 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+
+import fcu.selab.progedu.data.Group;
+import org.gitlab.api.models.GitlabUser;
+import org.glassfish.jersey.media.multipart.FormDataParam;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.csvreader.CsvReader;
+
+import fcu.selab.progedu.service.GroupCommitRecordService;
+import fcu.selab.progedu.config.CourseConfig;
+import fcu.selab.progedu.conn.GitlabService;
+import fcu.selab.progedu.conn.JenkinsService;
+import fcu.selab.progedu.data.User;
+import fcu.selab.progedu.db.RoleDbManager;
+import fcu.selab.progedu.db.RoleUserDbManager;
+import fcu.selab.progedu.db.UserDbManager;
+import fcu.selab.progedu.db.service.GroupDbService;
+import fcu.selab.progedu.utils.ExceptionUtil;
+import fcu.selab.progedu.db.service.UserDbService;
+import fcu.selab.progedu.service.GroupService;
+
 
 @Path("user")
 public class UserService {
@@ -45,6 +70,7 @@ public class UserService {
   private RoleDbManager rdb = RoleDbManager.getInstance();
   private AssignmentService as = AssignmentService.getInstance();
   private GroupDbService gdb = GroupDbService.getInstance();
+  private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 
   /**
    * Upload a csv file for student batch registration
@@ -99,7 +125,8 @@ public class UserService {
       }
     } catch (IOException e) {
       response = Response.serverError().entity("failed !").build();
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return response;
   }
@@ -138,7 +165,8 @@ public class UserService {
         response = Response.ok().build();
       } catch (IOException e) {
         response = Response.serverError().entity("Failed !").build();
-        e.printStackTrace();
+        LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+        LOGGER.error(e.getMessage());
       }
     } else {
       response = Response.serverError().entity(errorMessage).build();
@@ -244,6 +272,68 @@ public class UserService {
       }
     }
     return studentUsers;
+  }
+
+  /**
+   * Delete user but gitlab repository not delete so you need manual delete
+   *
+   * @param username user name
+   */
+  @DELETE
+  @Path("/{username}")
+  public Response deleteUser(@PathParam("username") String username) {
+    UserDbService userDbService = UserDbService.getInstance();
+    int userId = userDbService.getId(username);
+    return deleteUser(userId);
+  }
+
+  /**
+   * Delete user
+   *
+   * @param userId user id
+   */
+  public Response deleteUser(int userId) {
+    UserDbService userDbService = UserDbService.getInstance();
+
+    ////delete Gitlab
+    gitlabService.deleteUser( userDbService.getGitLabId(userId) );
+
+    // if user's group has one user delete group
+    GroupService groupService = GroupService.getInstance();
+    List<Group> groups = gdb.getGroups(userId);
+    for (Group group : groups) {
+
+      if ( group.isNotMoreThanOneUser() ) { // delete Group
+        groupService.removeGroup( group.getGroupName() );
+        
+      } else if (group.getLeader() == userId) { // change Group Leader
+
+        List<User> groupUsers = group.getMembers();
+        for (User groupUser:groupUsers) {
+          if (groupUser.getId() != userId) {
+            group.setLeader( groupUser.getId() );
+            break;
+          }
+        }
+
+      }
+
+    }
+
+    ////remove jenkins
+    JenkinsService jenkinsService = JenkinsService.getInstance();
+    List<String> assignmentNames = userDbService.getUserAssignmentNames(userId);
+    String userName = userDbService.getName(userId);
+    for (String assignmentName : assignmentNames) {
+      String jobName = jenkinsService.getJobName(userName, assignmentName);
+      jenkinsService.deleteJob(jobName);
+    }
+
+
+    //remove db
+    userDbService.deleteUser(userId);
+
+    return Response.ok().build();
   }
 
   /**

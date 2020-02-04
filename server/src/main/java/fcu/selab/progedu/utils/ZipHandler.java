@@ -20,14 +20,18 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import fcu.selab.progedu.data.ZipFileInfo;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fcu.selab.progedu.config.CourseConfig;
 import fcu.selab.progedu.config.GitlabConfig;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
+import fcu.selab.progedu.data.ZipFileInfo;
+import fcu.selab.progedu.utils.ExceptionUtil;
+
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 
@@ -35,7 +39,9 @@ public class ZipHandler {
   GitlabConfig gitData = GitlabConfig.getInstance();
   CourseConfig courseData = CourseConfig.getInstance();
 
-  public String serverIp;
+  private static final Logger LOGGER = LoggerFactory.getLogger(ZipHandler.class);
+
+  private String serverIp;
 
   StringBuilder sb = new StringBuilder();
 
@@ -74,7 +80,8 @@ public class ZipHandler {
   // bos.write(bytesIn, 0, read);
   // }
   // } catch (Exception e) {
-  // e.printStackTrace();
+  //       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+  //      LOGGER.error(e.getMessage());
   // }
   // }
 
@@ -98,34 +105,35 @@ public class ZipHandler {
     return dir;
   }
 
-  /**
-   * modifyPomXml
-   *
-   * @param filePath The file path
-   * @throws projectName projectName
-   */
-  public void modifyPomXml(String filePath, String projectName) {
-    try {
-      DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-      DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-      Document doc = docBuilder.parse(filePath);
-
-      Node ndId = doc.getElementsByTagName("artifactId").item(0);
-      ndId.setTextContent(projectName);
-
-      Node ndName = doc.getElementsByTagName("name").item(0);
-      ndName.setTextContent(projectName);
-
-      // write the content into xml file
-      TransformerFactory transformerFactory = TransformerFactory.newInstance();
-      Transformer transformer = transformerFactory.newTransformer();
-      DOMSource source = new DOMSource(doc);
-      StreamResult result = new StreamResult(new File(filePath));
-      transformer.transform(source, result);
-    } catch (ParserConfigurationException | SAXException | TransformerException | IOException e) {
-      e.printStackTrace();
-    }
-  }
+//  /**
+//   * modifyPomXml
+//   *
+//   * @param filePath The file path
+//   * @throws projectName projectName
+//   */
+//  public void modifyPomXml(String filePath, String projectName) {
+//    try {
+//      DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+//      DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+//      Document doc = docBuilder.parse(filePath);
+//
+//      Node ndId = doc.getElementsByTagName("artifactId").item(0);
+//      ndId.setTextContent(projectName);
+//
+//      Node ndName = doc.getElementsByTagName("name").item(0);
+//      ndName.setTextContent(projectName);
+//
+//      // write the content into xml file
+//      TransformerFactory transformerFactory = TransformerFactory.newInstance();
+//      Transformer transformer = transformerFactory.newTransformer();
+//      DOMSource source = new DOMSource(doc);
+//      StreamResult result = new StreamResult(new File(filePath));
+//      transformer.transform(source, result);
+//    } catch (ParserConfigurationException | SAXException | TransformerException | IOException e) {
+//      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+//      LOGGER.error(e.getMessage());
+//    }
+//  }
 
   public void zipTestFolder(String testFilePath) {
     File testFile = new File(testFilePath);
@@ -158,7 +166,8 @@ public class ZipHandler {
       }
       setChecksum(cos.getChecksum().getValue());
     } catch (IOException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
   }
 
@@ -205,7 +214,8 @@ public class ZipHandler {
       ZipFile zipFileToTests = new ZipFile(sourceFilePath);
       zipFileToTests.extractAll(targetDirectory);
     } catch (ZipException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
   }
 

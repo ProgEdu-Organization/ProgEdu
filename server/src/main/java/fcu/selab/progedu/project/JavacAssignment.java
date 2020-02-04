@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -23,6 +24,8 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fcu.selab.progedu.config.CourseConfig;
 import fcu.selab.progedu.config.GitlabConfig;
@@ -31,8 +34,10 @@ import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.service.StatusService;
 import fcu.selab.progedu.status.StatusEnum;
 import fcu.selab.progedu.data.ZipFileInfo;
+import fcu.selab.progedu.utils.ExceptionUtil;
 
 public class JavacAssignment extends AssignmentType {
+  private static final Logger LOGGER = LoggerFactory.getLogger(JavacAssignment.class);
 
   @Override
   public ProjectTypeEnum getProjectType() {
@@ -61,12 +66,15 @@ public class JavacAssignment extends AssignmentType {
           + "/webapi";
       String projectUrl = gitlabConfig.getGitlabHostUrl() + "/" + username + "/" + projectName
           + ".git";
+
+      DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+      docFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl",true);
+      DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+
       String updateDbUrl = progEduApiUrl + "/commits/update";
       // to-do : command
       String assignmentPath = System.getProperty("java.io.tmpdir") + "/tests/" + projectName;
       String command = getCommandFromFile(assignmentPath);
-      DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-      DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 
       Document doc = docBuilder.parse(jenkinsJobConfigPath);
       doc.getElementsByTagName("command").item(0).setTextContent(command);
@@ -77,13 +85,15 @@ public class JavacAssignment extends AssignmentType {
 
       // write the content into xml file
       TransformerFactory transformerFactory = TransformerFactory.newInstance();
+      transformerFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
       Transformer transformer = transformerFactory.newTransformer();
       DOMSource source = new DOMSource(doc);
       StreamResult result = new StreamResult(new File(jenkinsJobConfigPath));
       transformer.transform(source, result);
     } catch (LoadConfigFailureException | ParserConfigurationException | SAXException | IOException
         | TransformerException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
 
   }
@@ -134,7 +144,8 @@ public class JavacAssignment extends AssignmentType {
     try {
       Files.write(file, lines, StandardCharsets.UTF_8);
     } catch (IOException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
   }
 
@@ -153,7 +164,8 @@ public class JavacAssignment extends AssignmentType {
         sb.append(line).append("\n");
       }
     } catch (IOException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return sb.toString();
   }
@@ -173,7 +185,8 @@ public class JavacAssignment extends AssignmentType {
           .filter(f -> f.endsWith(".java")).collect(Collectors.toList());
 
     } catch (IOException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     System.out.print(getCommand(fileList, assignmentName));
     return getCommand(fileList, assignmentName);

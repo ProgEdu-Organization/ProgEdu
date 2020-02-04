@@ -22,7 +22,11 @@ import fcu.selab.progedu.db.AssignmentUserDbManager;
 import fcu.selab.progedu.db.CommitRecordDbManager;
 import fcu.selab.progedu.db.ScreenshotRecordDbManager;
 import fcu.selab.progedu.db.UserDbManager;
+import fcu.selab.progedu.utils.ExceptionUtil;
+
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Path("commits/screenshot/")
 public class ScreenshotRecordService {
@@ -33,6 +37,7 @@ public class ScreenshotRecordService {
   UserDbManager userDb = UserDbManager.getInstance();
   AssignmentUserDbManager auDb = AssignmentUserDbManager.getInstance();
   AssignmentDbManager assignmentDb = AssignmentDbManager.getInstance();
+  private static final Logger LOGGER = LoggerFactory.getLogger(ScreenshotRecordService.class);
 
   public ScreenshotRecordService() {
     jenkinsData = JenkinsConfig.getInstance();
@@ -71,7 +76,8 @@ public class ScreenshotRecordService {
       return Response.ok().entity(ob.toString()).build();
     } catch (Exception e) {
       System.out.print("update URL to DB error: ");
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return Response.serverError().status(Status.INTERNAL_SERVER_ERROR).build();
   }
@@ -100,7 +106,8 @@ public class ScreenshotRecordService {
       ob.put("urls", urls);
       return Response.ok().entity(ob.toString()).build();
     } catch (Exception e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
     return Response.serverError().status(Status.INTERNAL_SERVER_ERROR).build();
   }

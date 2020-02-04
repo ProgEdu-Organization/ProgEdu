@@ -5,62 +5,75 @@ import java.util.ArrayList;
 
 import fcu.selab.progedu.data.FeedBack;
 
+import fcu.selab.progedu.utils.ExceptionUtil;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class WebUnitTestFailure implements Status {
 
+  private static final Logger LOGGER = LoggerFactory.getLogger(WebUnitTestFailure.class);
+
   @Override
   public String extractFailureMsg(String consoleText) {
-    String unitTestFailureStart = "npm run test";
-    String unitTestFailureEnd = "npm ERR! code ELIFECYCLE";
+    try {
+      String unitTestFailureStart = "npm run test";
+      String unitTestFailureEnd = "npm ERR! code ELIFECYCLE";
 
-    String unitTestInfo = consoleText.substring(
-        consoleText.indexOf(unitTestFailureStart) + unitTestFailureStart.length(),
-        consoleText.indexOf(unitTestFailureEnd));
+      String unitTestInfo = consoleText.substring(
+          consoleText.indexOf(unitTestFailureStart) + unitTestFailureStart.length(),
+          consoleText.indexOf(unitTestFailureEnd));
 
-    return unitTestInfo.trim();
+      return unitTestInfo.trim();
+    } catch (Exception e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+      return "ExtractFailureMsg Method Error";
+    }
   }
 
   @Override
   public ArrayList<FeedBack> formatExamineMsg(String consoleText) {
+    ArrayList<FeedBack> feedbackList = new ArrayList<>();
     try {
-      int consoleStart = consoleText.indexOf("--timeout");
       int consoleEnd = consoleText.indexOf("passing");
-      String unitTestInfo = consoleText.substring(consoleStart, consoleEnd);
+      String unitTestInfo = consoleText.substring(0, consoleEnd);
       int nextRow = unitTestInfo.indexOf("\n");
       unitTestInfo = unitTestInfo.substring(nextRow + 1, unitTestInfo.length()).trim();
       int endIndex = unitTestInfo.length();
       unitTestInfo = unitTestInfo.substring(nextRow + 1, endIndex);
       endIndex = unitTestInfo.length();
-      ArrayList<FeedBack> feedbacklist = new ArrayList<>();
       while (unitTestInfo.contains(")")) {
-        int nextparentheses = unitTestInfo.indexOf(")");
-        int nextrow = unitTestInfo.indexOf("\n", nextparentheses);
-        if (nextrow - nextparentheses == 1) { //
-          unitTestInfo = unitTestInfo.substring(nextrow + 1, endIndex);
-          endIndex = endIndex - nextrow - 1;
+        int nextParentheses = unitTestInfo.indexOf(")");
+        int nextRowIndex = unitTestInfo.indexOf("\n", nextParentheses);
+        if (nextRowIndex - nextParentheses == 1) { //
+          unitTestInfo = unitTestInfo.substring(nextRowIndex + 1, endIndex);
+          endIndex = endIndex - nextRowIndex - 1;
         } else {
-          int netspace = unitTestInfo.indexOf("\n", nextparentheses + 1);
-          feedbacklist.add(new FeedBack(
+          int nextSpace = unitTestInfo.indexOf("\n", nextParentheses + 1);
+          feedbackList.add(new FeedBack(
               StatusEnum.UNIT_TEST_FAILURE,
               "",
               "",
-              unitTestInfo.substring(nextparentheses + 2, netspace),
+              unitTestInfo.substring(nextParentheses + 2, nextSpace),
               "",
               ""));
-          unitTestInfo = unitTestInfo.substring(netspace + 1, endIndex);
-          endIndex = endIndex - nextrow - 1;
+          unitTestInfo = unitTestInfo.substring(nextSpace + 1, endIndex);
+          endIndex = endIndex - nextRowIndex - 1;
         }
       }
-      return feedbacklist;
+      if (feedbackList.isEmpty()) {
+        feedbackList.add(
+            new FeedBack(StatusEnum.UNIT_TEST_FAILURE,
+                "Please notify teacher or assistant this situation, thank you!", ""));
+      }
     } catch (Exception e) {
-      ArrayList<FeedBack> feedbacklist = new ArrayList<>();
-      feedbacklist.add(
-          new FeedBack(StatusEnum.UNIT_TEST_FAILURE, "", "",
-              "UnitTest ArrayList error", "", ""));
-      return feedbacklist;
+      feedbackList.add(
+          new FeedBack(StatusEnum.UNIT_TEST_FAILURE,
+              "UnitTest ArrayList error", e.getMessage()));
     }
+    return feedbackList;
   }
 }
