@@ -84,7 +84,7 @@ export class ProjectChoosedComponent implements OnInit {
       response => {
         this.feedbacks = response;
         this.selectedCommitNumber = commitNumber;
-        if () {
+        if (this.isShowScreenshot()) {
           this.getScreenshotUrls();
         }
       },
