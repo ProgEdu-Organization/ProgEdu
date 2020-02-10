@@ -480,31 +480,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>
-                    org.apache.tomcat.maven
-                </groupId>
-                <artifactId>
-                    tomcat7-maven-plugin
-                </artifactId>
-                <version>
-                    2.2
-                </version>
-                <configuration>
-                    <url>
-                        http://140.134.26.78:8818/manager/text
-                    </url>
-                    <username>
-                        admin
-                    </username>
-                    <password>
-                        iecsfcu123456
-                    </password>
-                    <path>
-                        /ProgEdu
-                    </path>
-                </configuration>
-            </plugin>
             <!-- angular front-end -->
             <plugin>
                 <groupId>
