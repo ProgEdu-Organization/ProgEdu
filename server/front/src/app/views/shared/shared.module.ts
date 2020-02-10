@@ -8,6 +8,7 @@ import { FormsModule } from '@angular/forms';
 
 import { GroupFilterPipe } from './../../pipe/group-filter.pipe';
 import { FilterPipe } from './../../pipe/filter.pipe';
+import { LineBreaksPipe } from './../../pipe/line-breaks.pipe';
 
 import { AssignmentChoosedComponent } from './assignment-choose/assignment-choose.component';
 import { ProjectChoosedComponent } from './project-choose/project-choose.component';
@@ -43,9 +44,9 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
     BsDropdownModule.forRoot(),
   ],
   declarations: [AssignmentChoosedComponent, ProjectChoosedComponent, GroupDashboardComponent,
-    GroupFilterPipe, FilterPipe, CommitRecordComponent, DashboardStatusComponent, ScreenshotComponent, ErrorModalComponent,
+    GroupFilterPipe, FilterPipe, LineBreaksPipe, CommitRecordComponent, DashboardStatusComponent, ScreenshotComponent, ErrorModalComponent,
     BarChartComponent, BubbleChartComponent, MixedChartComponent, ChartComponent],
   exports: [AssignmentChoosedComponent, GroupDashboardComponent, ProjectChoosedComponent, GroupFilterPipe,
-    FilterPipe, DashboardStatusComponent, ScreenshotComponent, ErrorModalComponent]
+    FilterPipe, LineBreaksPipe, DashboardStatusComponent, ScreenshotComponent, ErrorModalComponent]
 })
 export class SharedModule { }
