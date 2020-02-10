@@ -43,6 +43,7 @@ public class JavacCompileFailure implements Status {
       endIndex = endIndex - nextRow - 1;
       while (consoleText.contains("error:")) {
         int errorIndex = consoleText.indexOf("error:");
+        int nextArrow = consoleText.indexOf("^") + 1;
         nextRow = consoleText.indexOf("\n");
         if (errorIndex > nextRow) {
           consoleText = consoleText.substring(nextRow + 1, endIndex);
@@ -54,8 +55,8 @@ public class JavacCompileFailure implements Status {
               consoleText.substring(0, colonIndex).trim(),
               consoleText.substring(0, errorIndex)
                   .replace(":", " ").trim(),
+              consoleText.substring(nextRow, nextArrow).replace("\t", "").trim(),
               consoleText.substring(errorIndex + 6, nextRow).trim(),
-              "",
               ""
           ));
           consoleText = consoleText.substring(nextRow + 1, endIndex);
