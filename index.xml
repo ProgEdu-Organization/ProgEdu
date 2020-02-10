@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>ProgEdu</title>
+    <link>https://fcumselab.github.io/ProgEdu/</link>
+    <description>Recent content on ProgEdu</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    
+	<atom:link href="https://fcumselab.github.io/ProgEdu/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>1. Introduction</title>
+      <link>https://fcumselab.github.io/ProgEdu/introduction/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://fcumselab.github.io/ProgEdu/introduction/</guid>
+      <description> Use Docker First - Then Learn About It Later </description>
+    </item>
+    
+    <item>
+      <title>2. Getting Started</title>
+      <link>https://fcumselab.github.io/ProgEdu/getting-started/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://fcumselab.github.io/ProgEdu/getting-started/</guid>
+      <description> 2.1 Requirements  Git Docker &amp;gt;= 17.12  2.2 Installation </description>
+    </item>
+    
+    <item>
+      <title>3. Documentation</title>
+      <link>https://fcumselab.github.io/ProgEdu/documentation/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://fcumselab.github.io/ProgEdu/documentation/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>4. Guides</title>
+      <link>https://fcumselab.github.io/ProgEdu/guides/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://fcumselab.github.io/ProgEdu/guides/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>5. Help &amp; Questions</title>
+      <link>https://fcumselab.github.io/ProgEdu/help/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://fcumselab.github.io/ProgEdu/help/</guid>
+      <description>Join the chat room on Gitter and get help and support from the community.
+You can as well can open an issue on Github (will be labeled as Question) and discuss it with people on Gitter.</description>
+    </item>
+    
+    <item>
+      <title>6. Related Projects</title>
+      <link>https://fcumselab.github.io/ProgEdu/related-projects/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://fcumselab.github.io/ProgEdu/related-projects/</guid>
+      <description>ProgEdu related projects:
+If you want your project listed here, please open an issue.</description>
+    </item>
+    
+    <item>
+      <title>7. Contributing</title>
+      <link>https://fcumselab.github.io/ProgEdu/contributing/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://fcumselab.github.io/ProgEdu/contributing/</guid>
+      <description>Have a Question Found an Issue If you have an issue or you found a typo in the documentation, you can help us by opening an Issue.
+Steps to do before opening an Issue:
+ Before you submit your issue search the archive, maybe your question was already answered couple hours ago (search in the closed Issues as well).
+ Decide if the Issue belongs to this project or to Docker itself!</description>
+    </item>
+    
+    <item>
+      <title>8. License</title>
+      <link>https://fcumselab.github.io/ProgEdu/license/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://fcumselab.github.io/ProgEdu/license/</guid>
+      <description>MIT License (MIT)</description>
+    </item>
+    
+  </channel>
+</rss>

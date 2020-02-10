@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  
+  <url>
+    <loc>https://fcumselab.github.io/ProgEdu/introduction/</loc>
+  </url>
+  
+  <url>
+    <loc>https://fcumselab.github.io/ProgEdu/getting-started/</loc>
+  </url>
+  
+  <url>
+    <loc>https://fcumselab.github.io/ProgEdu/documentation/</loc>
+  </url>
+  
+  <url>
+    <loc>https://fcumselab.github.io/ProgEdu/guides/</loc>
+  </url>
+  
+  <url>
+    <loc>https://fcumselab.github.io/ProgEdu/help/</loc>
+  </url>
+  
+  <url>
+    <loc>https://fcumselab.github.io/ProgEdu/related-projects/</loc>
+  </url>
+  
+  <url>
+    <loc>https://fcumselab.github.io/ProgEdu/contributing/</loc>
+  </url>
+  
+  <url>
+    <loc>https://fcumselab.github.io/ProgEdu/license/</loc>
+  </url>
+  
+  <url>
+    <loc>https://fcumselab.github.io/ProgEdu/contributing.html</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://fcumselab.github.io/ProgEdu/documentation.html</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://fcumselab.github.io/ProgEdu/getting-started.html</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://fcumselab.github.io/ProgEdu/guides.html</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://fcumselab.github.io/ProgEdu/help.html</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://fcumselab.github.io/ProgEdu/introduction.html</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://fcumselab.github.io/ProgEdu/license.html</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://fcumselab.github.io/ProgEdu/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://fcumselab.github.io/ProgEdu/related-projects.html</loc>
+    <priority>0</priority>
+  </url>
+  
+</urlset>

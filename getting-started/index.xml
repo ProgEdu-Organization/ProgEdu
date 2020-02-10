@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Getting-starteds on ProgEdu</title>
+    <link>https://fcumselab.github.io/ProgEdu/getting-started.html</link>
+    <description>Recent content in Getting-starteds on ProgEdu</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    
+	<atom:link href="https://fcumselab.github.io/ProgEdu/getting-started/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>2. Getting Started</title>
+      <link>https://fcumselab.github.io/ProgEdu/getting-started/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://fcumselab.github.io/ProgEdu/getting-started/</guid>
+      <description> 2.1 Requirements  Git Docker &amp;gt;= 17.12  2.2 Installation </description>
+    </item>
+    
+  </channel>
+</rss>
