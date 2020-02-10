@@ -54,6 +54,7 @@ import { SharedModule } from './views/shared/shared.module';
 
 // Loading Component
 import { NgxLoadingModule, ngxLoadingAnimationTypes } from 'ngx-loading';
+
 @NgModule({
   imports: [
     BrowserModule,
@@ -82,7 +83,7 @@ import { NgxLoadingModule, ngxLoadingAnimationTypes } from 'ngx-loading';
     ...APP_CONTAINERS,
     P404Component,
     P500Component,
-    LoginComponent,
+    LoginComponent
   ],
   providers: [{
     provide: LocationStrategy,
