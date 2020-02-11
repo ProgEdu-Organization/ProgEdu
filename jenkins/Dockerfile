@@ -108,8 +108,8 @@ RUN cd /usr/local \
 ###########################################################################
 
 ARG SDK_SETUP=false
-ARG SDK_PLATFORMS
-ARG SDK_BUILD_TOOLS
+ARG SDK_PLATFORMS=android-28
+ARG SDK_BUILD_TOOLS=27.0.3
 
 RUN if [ ${SDK_SETUP} = true ]; then \
   yes | $ANDROID_HOME/tools/bin/sdkmanager "platforms;$SDK_PLATFORMS" >> /dev/null \

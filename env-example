@@ -55,7 +55,9 @@ MAIL_PASSWORD=example-password
 
 
 ############################## Build Config ##############################
-WEB_API_BASEURI=
-# WEB_API_BASEURI=/ProgEdu
-
 LOG_LEVEL=error
+
+############################## Download Android SDK ##############################
+SDK_SETUP=true
+SDK_PLATFORMS=android-28
+SDK_BUILD_TOOLS=27.0.3
