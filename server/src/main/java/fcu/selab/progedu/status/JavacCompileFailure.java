@@ -63,57 +63,26 @@ public class JavacCompileFailure implements Status {
         Matcher matcherError = patternError.matcher(subString);
         int nextMatcherError;
         while (matcherError.find()) {
-          String line = "";
-          String message = "";
-          String symptom = "";
           int errorEnd;
-          int matchRow = subString.indexOf("\n", matcherError.start()) + 1;
+          int matchRow = subString.indexOf("\n", matcherError.start());
           nextMatcherError = subString.indexOf("error:", matchRow);
           if (nextMatcherError != -1) {
-            errorEnd = subString.substring(matcherError.start(), nextMatcherError)
-                .lastIndexOf("\n");
-            line = matcherError.group(1) + matcherError.group(2);
-//            symptom = subString.substring(subString.indexOf("error:") + 6,
-//                subString.indexOf("\n", matcherError.start()));
-            System.out.println(subString);
-            System.out.println("++++++++++++++++++++++");
-            System.out.println(subString.substring(matcherError.start(), errorEnd));
-            System.out.println("---------------------");
+            errorEnd = matcherError.start()
+                + subString.substring(matcherError.start(), nextMatcherError).lastIndexOf("\n");
           } else {
-            System.out.println("else");
+            errorEnd = subString.length();
           }
-          System.out.println(matcherError.group(4));
-
+          String line = matcherError.group(1) + matcherError.group(2);
+          String symptom = subString.substring(subString.indexOf("error:", matcherError.start())
+              + 6, matchRow);
+          String message = subString.substring(matchRow + 1, errorEnd);
+          feedbackList.add(new FeedBack(
+              StatusEnum.COMPILE_FAILURE, fileName, line, message, symptom,
+              "https://www.learnjavaonline.org/"
+          ));
         }
-
         nextMatcherJavac = endJavacIndex + 2;
       }
-//      int nextRow = consoleText.indexOf("\n");
-//      int endIndex = consoleText.length();
-//      consoleText = consoleText.substring(nextRow, endIndex);
-//      endIndex = endIndex - nextRow - 1;
-//      while (consoleText.contains("error:")) {
-//        int errorIndex = consoleText.indexOf("error:");
-//        int nextArrow = consoleText.indexOf("^") + 1;
-//        nextRow = consoleText.indexOf("\n");
-//        if (errorIndex > nextRow) {
-//          consoleText = consoleText.substring(nextRow + 1, endIndex);
-//          endIndex = endIndex - nextRow - 1;
-//        } else {
-//          int colonIndex = consoleText.indexOf(":");
-//          feedbackList.add(new FeedBack(
-//              StatusEnum.COMPILE_FAILURE,
-//              consoleText.substring(0, colonIndex).trim(),
-//              consoleText.substring(0, errorIndex)
-//                  .replace(":", " ").trim(),
-//              consoleText.substring(nextRow, nextArrow).replace("\t", "").trim(),
-//              consoleText.substring(errorIndex + 6, nextRow).trim(),
-//              ""
-//          ));
-//          consoleText = consoleText.substring(nextRow + 1, endIndex);
-//          endIndex = endIndex - nextRow - 1;
-//        }
-//      }
       if (feedbackList.isEmpty()) {
         feedbackList.add(
             new FeedBack(StatusEnum.COMPILE_FAILURE,
