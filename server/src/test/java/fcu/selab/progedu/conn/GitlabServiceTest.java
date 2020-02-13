@@ -14,16 +14,16 @@ import java.util.Properties;
 public class GitlabServiceTest {
 
     @Test
-    void createNameEqual_root() {
+    void test_createUserProject_Username_is_root() {
         String actual_name = null;
         String hostUrl = null;
         String apiToken = null;
 
         Properties props = new Properties();
         try{
-            props.load(new FileInputStream("./src/test/java/fcu/selab/progedu/conn/.env")); // ./ = ProgEdu/server
-            hostUrl = (String)props.getProperty("GITLAB_HOST");
-            apiToken = (String)props.getProperty("WEB_GITLAB_ADMIN_PERSONAL_TOKEN");
+            props.load(new FileInputStream("./src/main/resources/config/gitlab_config.properties")); // ./ = ProgEdu/server
+            hostUrl = (String)props.getProperty("GITLAB_HOST_URL");
+            apiToken = (String)props.getProperty("GITLAB_API_TOKEN");
         } catch(Exception e){
             System.out.println(e);
         }
