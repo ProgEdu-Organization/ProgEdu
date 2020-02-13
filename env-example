@@ -55,7 +55,4 @@ MAIL_PASSWORD=example-password
 
 
 ############################## Build Config ##############################
-WEB_API_BASEURI=
-# WEB_API_BASEURI=/ProgEdu
-
 LOG_LEVEL=error

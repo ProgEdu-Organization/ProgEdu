@@ -12,8 +12,6 @@ RUN cd src/main/resources/config/ && \
     [ -f gitlab_config.properties ] && cat gitlab_config.properties || cp gitlab_config.properties.example gitlab_config.properties && \
     [ -f jenkins_config.properties ] && cat jenkins_config.properties || cp jenkins_config.properties.example jenkins_config.properties
 
-ARG WEB_API_BASEURI=
-ENV WEB_API_BASEURI=$WEB_API_BASEURI
 
 RUN apt-get update \
     && apt-get -y install gettext-base \
