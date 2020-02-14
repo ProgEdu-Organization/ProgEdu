@@ -45,8 +45,8 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
   ],
   declarations: [AssignmentChooseComponent, ProjectChooseComponent, GroupDashboardComponent,
     GroupFilterPipe, FilterPipe, CommitRecordComponent, DashboardStatusComponent, ScreenshotComponent, ErrorModalComponent,
-    BarChartComponent, BubbleChartComponent, MixedChartComponent, ChartComponent],
+    BarChartComponent, BubbleChartComponent, MixedChartComponent, ChartComponent, LineBreaksPipe],
   exports: [AssignmentChooseComponent, GroupDashboardComponent, ProjectChooseComponent, GroupFilterPipe,
-    FilterPipe, DashboardStatusComponent, ScreenshotComponent, ErrorModalComponent]
+    FilterPipe, DashboardStatusComponent, ScreenshotComponent, ErrorModalComponent, LineBreaksPipe]
 })
 export class SharedModule { }
