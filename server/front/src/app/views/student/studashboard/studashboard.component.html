@@ -46,7 +46,7 @@
                 <th *ngIf='isRelease(commit.releaseTime)'>
                   <p id="{{username}}_{{commit.assignmentName}}" class="circle {{commit.commitRecord.status}}">
                     <a *ngIf='!isNA(commit)' id="{{username}}_{{commit.hw}}_{{commit.commit}}"
-                      href="#/studashboard/assignmentChoosed?username={{username}}&assignmentName={{commit.assignmentName}}">{{commit.commitRecord.commitNumber}}</a>
+                      href="#/studashboard/assignmentChoose?username={{username}}&assignmentName={{commit.assignmentName}}">{{commit.commitRecord.commitNumber}}</a>
                     <a *ngIf='isNA(commit)'>N/A</a>
                   </p>
                 </th>

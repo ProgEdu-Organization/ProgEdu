@@ -10,8 +10,8 @@ import { GroupFilterPipe } from './../../pipe/group-filter.pipe';
 import { FilterPipe } from './../../pipe/filter.pipe';
 import { LineBreaksPipe } from './../../pipe/line-breaks.pipe';
 
-import { AssignmentChoosedComponent } from './assignment-choose/assignment-choose.component';
-import { ProjectChoosedComponent } from './project-choose/project-choose.component';
+import { AssignmentChooseComponent } from './assignment-choose/assignment-choose.component';
+import { ProjectChooseComponent } from './project-choose/project-choose.component';
 import { GroupDashboardComponent } from '../teacher/group-dashboard/group-dashboard.component';
 import { CommitRecordComponent } from './commit-record/commit-record.component';
 import { DashboardStatusComponent } from './dashboard-status/dashboard-status.component';
@@ -43,10 +43,10 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
     PaginationModule.forRoot(),
     BsDropdownModule.forRoot(),
   ],
-  declarations: [AssignmentChoosedComponent, ProjectChoosedComponent, GroupDashboardComponent,
-    GroupFilterPipe, FilterPipe, LineBreaksPipe, CommitRecordComponent, DashboardStatusComponent, ScreenshotComponent, ErrorModalComponent,
+  declarations: [AssignmentChooseComponent, ProjectChooseComponent, GroupDashboardComponent,
+    GroupFilterPipe, FilterPipe, CommitRecordComponent, DashboardStatusComponent, ScreenshotComponent, ErrorModalComponent,
     BarChartComponent, BubbleChartComponent, MixedChartComponent, ChartComponent],
-  exports: [AssignmentChoosedComponent, GroupDashboardComponent, ProjectChoosedComponent, GroupFilterPipe,
-    FilterPipe, LineBreaksPipe, DashboardStatusComponent, ScreenshotComponent, ErrorModalComponent]
+  exports: [AssignmentChooseComponent, GroupDashboardComponent, ProjectChooseComponent, GroupFilterPipe,
+    FilterPipe, DashboardStatusComponent, ScreenshotComponent, ErrorModalComponent]
 })
 export class SharedModule { }

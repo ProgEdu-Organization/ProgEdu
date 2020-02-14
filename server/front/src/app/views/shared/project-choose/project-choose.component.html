@@ -39,8 +39,8 @@
           </div>
         </div>
         <hr>
-        <app-commit-record [type]=projectType [commits]=commits [feedbacks]=feedbacks
-          (messageToEmit)="updateFeedback($event)" [screenshotUrls]=screenshotUrls></app-commit-record>
+        <app-commit-record [type]=projectType [commits]=commits [feedbacks]=feedbacks [showCommiter]='true'
+          [screenshotUrls]=screenshotUrls (messageToEmit)="updateFeedback($event)"></app-commit-record>
       </div>
     </div>
   </div>

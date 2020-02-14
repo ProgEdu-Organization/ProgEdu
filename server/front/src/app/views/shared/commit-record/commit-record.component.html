@@ -40,6 +40,7 @@
             <th>Light </th>
             <th>Date</th>
             <th>Commit Message</th>
+            <th *ngIf='showCommiter'>Committer</th>
             <th *ngIf="isShowScreenshot()">Screenshot</th>
           </tr>
         </thead>
@@ -51,6 +52,7 @@
             </td>
             <td class='w-25'>{{commit.time | date:'short'}}</td>
             <td class='w-50'>{{commit.message}}</td>
+            <td *ngIf='showCommiter'>{{commit.committer}}</td>
             <td *ngIf="isShowScreenshot()"><button class="btn btn-primary" (click)='screenshot.screenshotModal.show();'>
                 <i class="cui-screen-desktop"></i></button></td>
           </tr>
