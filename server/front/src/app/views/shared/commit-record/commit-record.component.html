@@ -76,15 +76,15 @@
         <tr>
           <th class='w-20'>fileName</th>
           <th class='w-10'>Line</th>
-          <th class='w-50'>Message</th>
-          <th>Symptom</th>
+          <th class='w-30'>Message</th>
+          <th class='w-30'>Symptom</th>
           <th>Suggest</th>
         </tr>
       </thead>
       <tr *ngFor="let feedback of feedbacks" id='feedback-bar'>
         <td>{{feedback.fileName}}</td>
         <td>{{feedback.line}}</td>
-        <td>{{feedback.message}}</td>
+        <td [innerHTML]='feedback.message | lineBreaks'></td>
         <td>{{feedback.symptom}}</td>
         <td><a href='{{feedback.suggest}}' target="blank">{{feedback.suggest}}</a></td>
       </tr>

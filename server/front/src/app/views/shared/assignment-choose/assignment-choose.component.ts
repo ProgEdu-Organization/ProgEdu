@@ -81,6 +81,10 @@ export class AssignmentChooseComponent implements OnInit {
     this.assignmentService.getFeedback(this.assignmentName, this.username, this.commits.length.toString()).subscribe(
       response => {
         this.feedbacks = response;
+        for (let i in this.feedbacks) {
+          this.feedbacks[i].message.replace('/\n/g', '<br />');
+          console.log(this.feedbacks[i].message);
+        }
       },
       error => {
         console.log(error);

@@ -8,6 +8,7 @@ import { FormsModule } from '@angular/forms';
 
 import { GroupFilterPipe } from './../../pipe/group-filter.pipe';
 import { FilterPipe } from './../../pipe/filter.pipe';
+import { LineBreaksPipe } from './../../pipe/line-breaks.pipe';
 
 import { AssignmentChooseComponent } from './assignment-choose/assignment-choose.component';
 import { ProjectChooseComponent } from './project-choose/project-choose.component';
