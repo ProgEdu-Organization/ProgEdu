@@ -8,7 +8,7 @@ import { ModalDirective } from 'ngx-bootstrap/modal';
   templateUrl: './project-choose.component.html',
   styleUrls: []
 })
-export class ProjectChoosedComponent implements OnInit {
+export class ProjectChooseComponent implements OnInit {
   @ViewChild('screenshotModal', { static: true }) public screenshotModal: ModalDirective;
 
   public group;
@@ -49,9 +49,7 @@ export class ProjectChoosedComponent implements OnInit {
               this.commits[commit].time = this.timeService.getUTCTime(this.commits[commit].time);
             }
           }
-
           this.commits.reverse();
-
         }
       }
     );

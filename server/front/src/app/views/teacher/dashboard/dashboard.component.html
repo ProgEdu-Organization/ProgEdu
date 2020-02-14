@@ -45,7 +45,7 @@
               <p id="{{student.username}}_{{commit.assignmentName}}" class="circle {{commit.commitRecord.status}}">
                 <a *ngIf='!isNA(commit)'
                   id="{{student.username}}_{{commit.assignmentName}}_{{commit.commitRecord.commitNumber}}"
-                  href="#/dashboard/assignmentChoosed?username={{student.username}}&assignmentName={{commit.assignmentName}}">{{commit.commitRecord.commitNumber}}</a>
+                  href="#/dashboard/assignmentChoose?username={{student.username}}&assignmentName={{commit.assignmentName}}">{{commit.commitRecord.commitNumber}}</a>
                 <a *ngIf='isNA(commit)'>N/A</a>
               </p>
             </th>
