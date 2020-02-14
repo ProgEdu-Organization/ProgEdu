@@ -106,7 +106,7 @@ fi
 
 adb pull /storage/sdcard/app_spoon-screenshots/ ./target/screenshot/
 find ./target -iname *.png | while read line; do mv $line ./target/screenshot/; done
-</command>
+        </command>
       </buildStep>
       <operationList class="empty-list" />
     </hudson.plugins.build__timeout.BuildStepWithTimeout>
@@ -153,15 +153,15 @@ find ./target -iname *.png | while read line; do mv $line ./target/screenshot/; 
       <screenResolution>WVGA</screenResolution>
       <deviceLocale>en_US</deviceLocale>
       <targetAbi>x86</targetAbi>
-      <sdCardSize>100M</sdCardSize>
+      <sdCardSize>50M</sdCardSize>
       <avdNameSuffix>M0806615_TEST</avdNameSuffix>
       <hardwareProperties />
       <wipeData>false</wipeData>
       <showWindow>false</showWindow>
       <useSnapshots>false</useSnapshots>
       <deleteAfterBuild>true</deleteAfterBuild>
-      <startupDelay>10</startupDelay>
-      <startupTimeout>360</startupTimeout>
+      <startupDelay>3</startupDelay>
+      <startupTimeout>180</startupTimeout>
       <commandLineOptions>-no-window -noaudio -no-boot-anim</commandLineOptions>
       <executable></executable>
     </hudson.plugins.android__emulator.AndroidEmulator>
