@@ -48,6 +48,7 @@ public class JavacCompileFailure implements Status {
     try {
       Pattern patternJavac = Pattern.compile("(\\+ javac )(.*?)(.java)");
       Matcher matcherJavac = patternJavac.matcher(consoleText);
+      String suggest = "https://www.learnjavaonline.org/";
       int nextMatcherJavac;
       while (matcherJavac.find()) {
         String subString;
@@ -77,8 +78,7 @@ public class JavacCompileFailure implements Status {
               + 6, matchRow);
           String message = subString.substring(matchRow + 1, errorEnd);
           feedbackList.add(new FeedBack(
-              StatusEnum.COMPILE_FAILURE, fileName, line, message, symptom,
-              "https://www.learnjavaonline.org/"
+              StatusEnum.COMPILE_FAILURE, fileName, line, message, symptom, suggest
           ));
         }
         nextMatcherJavac = endJavacIndex + 2;

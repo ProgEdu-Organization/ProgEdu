@@ -28,8 +28,8 @@ public class MavenCheckstyleFailure implements Status {
   public String extractFailureMsg(String consoleText) {
     try {
       String checkstyleInfo;
-      String checkstyleStart = "[INFO] --- maven-checkstyle";
-      String checkstyleEnd = "[INFO] BUILD FAILURE";
+      String checkstyleStart = "Starting audit...";
+      String checkstyleEnd = "Audit done.";
       checkstyleInfo = consoleText.substring(consoleText.indexOf(checkstyleStart),
           consoleText.indexOf(checkstyleEnd));
       checkstyleInfo = checkstyleInfo.replace("/var/jenkins_home/workspace/", "");
@@ -44,6 +44,7 @@ public class MavenCheckstyleFailure implements Status {
   @Override
   public ArrayList<FeedBack> formatExamineMsg(String consoleText) {
     ArrayList<FeedBack> feedbackList = new ArrayList<>();
+    String suggest = "https://checkstyle.sourceforge.io/";
     try {
       Pattern pattern = Pattern.compile("(.*?)(.java)(:)([\\d]"
           + "{1,4}(:)[\\d]{1,4})(: error:)(.*?)(\n)");
@@ -53,8 +54,7 @@ public class MavenCheckstyleFailure implements Status {
         String line = matcher.group(4);
         String message = matcher.group(7);
         feedbackList.add(new FeedBack(
-            StatusEnum.CHECKSTYLE_FAILURE, fileName, line, message,
-            "","https://checkstyle.sourceforge.io/"));
+            StatusEnum.CHECKSTYLE_FAILURE, fileName, line, message, "", suggest));
       }
       if (feedbackList.isEmpty()) {
         feedbackList.add(

@@ -22,13 +22,13 @@ public class MavenUnitTestFailure implements Status {
   public String extractFailureMsg(String consoleText) {
     try {
       String unitTest = "";
-      String startString = "[INFO] --- maven-surefire";
-      String endString = "[INFO] BUILD FAILURE";
+      String startString = "Failed tests:";
+      String endString = "Tests run:";
 
       unitTest = consoleText.substring(consoleText.indexOf(startString),
-          consoleText.indexOf(endString) - 1);
+          consoleText.indexOf(endString, consoleText.indexOf(startString)));
 
-      return unitTest.trim();
+      return unitTest;
     } catch (Exception e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
@@ -38,15 +38,14 @@ public class MavenUnitTestFailure implements Status {
 
   @Override
   public ArrayList<FeedBack> formatExamineMsg(String consoleText) {
+    String suggest = "https://www.learnjavaonline.org/";
     ArrayList<FeedBack> feedbackList = new ArrayList<>();
     try {
-      consoleText = consoleText.substring(consoleText.indexOf("Results :"), consoleText.length());
       Pattern pattern = Pattern.compile("(.*?)((\\()(.*?)(.java.)(.*?)(\\)))(.*?)(\n)");
       Matcher matcher = pattern.matcher(consoleText);
       while (matcher.find()) {
         feedbackList.add(new FeedBack(
-              StatusEnum.UNIT_TEST_FAILURE, matcher.group(6), "", matcher.group(8), "",
-              "https://www.learnjavaonline.org/"
+              StatusEnum.UNIT_TEST_FAILURE, matcher.group(6), "", matcher.group(8), "", suggest
           ));
       }
       if (feedbackList.isEmpty()) {
