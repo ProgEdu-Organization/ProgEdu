@@ -7,7 +7,7 @@ import { AssignmentChoosedService } from './assignment-choose.service';
   selector: 'app-assignment-choose',
   templateUrl: './assignment-choose.component.html'
 })
-export class AssignmentChoosedComponent implements OnInit {
+export class AssignmentChooseComponent implements OnInit {
   username: string;
   assignmentName: string;
 

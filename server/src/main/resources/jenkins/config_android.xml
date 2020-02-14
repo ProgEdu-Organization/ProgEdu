@@ -106,7 +106,7 @@ fi
 
 adb pull /storage/sdcard/app_spoon-screenshots/ ./target/screenshot/
 find ./target -iname *.png | while read line; do mv $line ./target/screenshot/; done
-</command>
+        </command>
       </buildStep>
       <operationList class="empty-list" />
     </hudson.plugins.build__timeout.BuildStepWithTimeout>
