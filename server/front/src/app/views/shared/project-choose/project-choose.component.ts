@@ -38,7 +38,6 @@ export class ProjectChooseComponent implements OnInit {
     this.projectService.getCommitResult(this.groupName, this.projectName).subscribe(
       (resopnse) => {
         this.commits = resopnse;
-        console.log(this.commits);
         this.selectedCommitNumber = this.commits.length;
         this.getFeedback();
         if (this.isShowScreenshot()) {
