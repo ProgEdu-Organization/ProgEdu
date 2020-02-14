@@ -160,7 +160,7 @@ find ./target -iname *.png | while read line; do mv $line ./target/screenshot/; 
       <showWindow>false</showWindow>
       <useSnapshots>false</useSnapshots>
       <deleteAfterBuild>true</deleteAfterBuild>
-      <startupDelay>10</startupDelay>
+      <startupDelay>3</startupDelay>
       <startupTimeout>360</startupTimeout>
       <commandLineOptions>-no-window -noaudio -no-boot-anim</commandLineOptions>
       <executable></executable>
