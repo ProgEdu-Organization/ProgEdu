@@ -25,6 +25,8 @@ import { CarouselModule } from 'ngx-bootstrap/carousel';
 import { SharedModule } from '../shared/shared.module';
 import { EditGroupManagementComponent } from './edit-group-management/edit-group-management.component';
 import { CreateGroupComponent } from './create-group/create-group.component';
+
+import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 @NgModule({
     imports: [
         FormsModule,
@@ -39,6 +41,7 @@ import { CreateGroupComponent } from './create-group/create-group.component';
         CollapseModule,
         CarouselModule,
         SharedModule,
+        CKEditorModule,
         TabsModule.forRoot()
     ],
     declarations: [
