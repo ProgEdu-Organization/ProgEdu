@@ -7,7 +7,6 @@ import { ModalDirective } from 'ngx-bootstrap/modal';
 import { assignmentTypeEnum } from './assignmentTypeEnum';
 import { HttpErrorResponse } from '@angular/common/http';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import Base64UploadAdapter from '@ckeditor/ckeditor5-upload/src/adapters/base64uploadadapter';
 @Component({
   selector: 'app-create-assignment',
   templateUrl: './create-assignment.component.html'
@@ -33,7 +32,6 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
   public Editor = ClassicEditor;
   public editorConfig = {
     placeholder: 'Write the assignment description in here!',
-    plugins: [Base64UploadAdapter],
   };
 
   constructor(private router: Router, private fb: FormBuilder, private createService: CreateAssignmentService) { }
