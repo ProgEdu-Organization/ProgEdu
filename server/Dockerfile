@@ -27,6 +27,7 @@ FROM tomcat
 
 COPY tomcat-config/context.xml /usr/local/tomcat/webapps/manager/META-INF/context.xml
 COPY tomcat-config/tomcat-users.xml /usr/local/tomcat/conf/tomcat-users.xml
+COPY tomcat-config/server.xml /usr/local/tomcat/conf/server.xml
 
 ARG DEBUG=false
 ENV DEBUG=$DEBUG
