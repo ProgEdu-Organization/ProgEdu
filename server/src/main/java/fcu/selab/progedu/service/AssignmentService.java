@@ -15,6 +15,7 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -190,7 +191,7 @@ public class AssignmentService {
       @FormDataParam("upload") FormDataContentDisposition fileDetail,
       @FormDataParam("ckCsrfToken") String token) {
 
-    tomcatService.storeImageToAssets(file, fileDetail.getFileName());
+    tomcatService.storeDescriptionImage(file, fileDetail.getFileName());
     /*
     CKEditor Response
     https://ckeditor.com/docs/ckeditor4/latest/guide/dev_file_upload.html

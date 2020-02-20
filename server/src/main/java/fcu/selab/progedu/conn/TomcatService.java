@@ -64,7 +64,7 @@ public class TomcatService {
    * @param fileName (to do)
    * @return target
    */
-  public String storeImageToAssets(InputStream file, String fileName) {
+  public String storeDescriptionImage(InputStream file, String fileName) {
     String uploadsDir = "/usr/local/tomcat/images";
     File uploadsFolder = new File(uploadsDir);
     if (!uploadsFolder.exists()) {
