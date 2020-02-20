@@ -116,7 +116,8 @@ public class AssignmentService {
   @Path("create")
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   @Produces(MediaType.APPLICATION_JSON)
-  public Response createAssignment(@FormDataParam("assignmentName") String assignmentName,
+  public Response createAssignment(
+      @FormDataParam("assignmentName") String assignmentName,
       @FormDataParam("releaseTime") Date releaseTime, @FormDataParam("deadline") Date deadline,
       @FormDataParam("readMe") String readMe, @FormDataParam("fileRadio") String assignmentType,
       @FormDataParam("file") InputStream file,
@@ -173,6 +174,33 @@ public class AssignmentService {
     tomcatService.removeFile(uploadDir);
 
     return Response.ok().build();
+  }
+
+  /**
+   * @param file       abc
+   * @param fileDetail abc
+   * @throws Exception abc
+   */
+  @POST
+  @Path("uploadImage")
+  @Consumes(MediaType.MULTIPART_FORM_DATA)
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response uploadImages(
+      @FormDataParam("upload") InputStream file,
+      @FormDataParam("upload") FormDataContentDisposition fileDetail,
+      @FormDataParam("ckCsrfToken") String token) {
+
+    tomcatService.storeImageToAssets(file, fileDetail.getFileName());
+    /*
+    CKEditor Response
+    https://ckeditor.com/docs/ckeditor4/latest/guide/dev_file_upload.html
+    */
+    String folderPath = "images/";
+    JSONObject ob = new JSONObject();
+    ob.put("uploaded", 1);
+    ob.put("fileName", fileDetail.getFileName());
+    ob.put("url", "/" + folderPath + fileDetail.getFileName());
+    return Response.ok(ob.toString()).build();
   }
 
   private void createRootProject(String name) {
@@ -246,7 +274,8 @@ public class AssignmentService {
    * @param hasTemplate Has template
    */
   public void addProject(String name, Date releaseTime, Date deadline, String readMe,
-      ProjectTypeEnum projectType, boolean hasTemplate, long testZipChecksum, String testZipUrl) {
+                         ProjectTypeEnum projectType, boolean hasTemplate, long testZipChecksum,
+                         String testZipUrl) {
     Assignment assignment = new Assignment();
     Date date = tomcatService.getCurrentTime();
     assignment.setName(name);
@@ -319,7 +348,8 @@ public class AssignmentService {
   @Path("edit")
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   @Produces(MediaType.APPLICATION_JSON)
-  public Response editProject(@FormDataParam("assignmentName") String assignmentName,
+  public Response editProject(
+      @FormDataParam("assignmentName") String assignmentName,
       @FormDataParam("releaseTime") Date releaseTime, @FormDataParam("deadline") Date deadline,
       @FormDataParam("readMe") String readMe, @FormDataParam("file") InputStream file,
       @FormDataParam("file") FormDataContentDisposition fileDetail) {
