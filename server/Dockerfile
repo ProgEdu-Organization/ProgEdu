@@ -38,6 +38,7 @@ RUN echo $DEBUG
 
 RUN git config --global user.email "admin@example.com" && \
     git config --global user.name "Administrator" && \
+    mkdir /usr/local/tomcat/temp/images  && \
     if [ ${DEBUG} = true ]; then \
     rm -rf /usr/local/tomcat/webapps/ROOT /usr/local/tomcat/webapps/ROOT.war \
     ;else \
