@@ -57,7 +57,9 @@ services:
       - jenkins
       - gitlab
     volumes:
-      - ${DATA_PATH_HOST}/server:/usr/local/tomcat
+      - ${DATA_PATH_HOST}/server/temp:/usr/local/tomcat/temp
+      - ${DATA_PATH_HOST}/server/logs:/usr/local/tomcat/logs
+      - ${DATA_PATH_HOST}/server/images:/usr/local/tomcat/images
 
   jenkins:
     # image: jenkins/jenkins:lts
