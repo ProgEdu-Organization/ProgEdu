@@ -32,6 +32,10 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
   public Editor = ClassicEditor;
   public editorConfig = {
     placeholder: 'Write the assignment description in here!',
+    ckfinder: {
+      // Upload the images to the server using the CKFinder QuickUpload command.
+      uploadUrl: environment.SERVER_URL + `/webapi/assignment/uploadImage`
+    }
   };
 
   constructor(private router: Router, private fb: FormBuilder, private createService: CreateAssignmentService) { }
