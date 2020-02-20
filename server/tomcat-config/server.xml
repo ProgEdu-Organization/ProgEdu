@@ -160,7 +160,7 @@
         <Valve className="org.apache.catalina.valves.AccessLogValve" directory="logs"
                prefix="localhost_access_log" suffix=".txt"
                pattern="%h %l %u %t &quot;%r&quot; %s %b" />
-        <Context docBase="/usr/local/tomcat/temp/images" path="/images" reloadable="false" />
+        <Context docBase="/usr/local/tomcat/images" path="/images" reloadable="false" /> 
       </Host>
     </Engine>
   </Service>
