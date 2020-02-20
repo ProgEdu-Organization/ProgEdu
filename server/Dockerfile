@@ -32,6 +32,7 @@ COPY tomcat-config/server.xml /usr/local/tomcat/conf/server.xml
 ARG DEBUG=false
 ENV DEBUG=$DEBUG
 ENV LOG_LEVEL=$LOG_LEVEL
+ENV JAVA_OPTS="-Xmx512m"
 
 RUN echo $DEBUG
 
