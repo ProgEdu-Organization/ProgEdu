@@ -73,7 +73,7 @@ public class JavacCompileFailure implements Status {
           } else {
             errorEnd = subString.length();
           }
-          String line = matcherError.group(1) + matcherError.group(2);
+          String line = matcherError.group(2).substring(matcherError.group(2).indexOf(":") + 1);
           String symptom = subString.substring(subString.indexOf("error:", matcherError.start())
               + 6, matchRow);
           String message = subString.substring(matchRow + 1, errorEnd);
