@@ -44,8 +44,14 @@ public class MavenUnitTestFailure implements Status {
       Pattern pattern = Pattern.compile("(.*?)((\\()(.*?)(.java.)(.*?)(\\)))(.*?)(\n)");
       Matcher matcher = pattern.matcher(consoleText);
       while (matcher.find()) {
+        String message;
+        if (matcher.group(8).contains(":")) {
+          message = matcher.group(8).substring(matcher.group(8).indexOf(":") + 1);
+        } else {
+          message = matcher.group(8);
+        }
         feedbackList.add(new FeedBack(
-              StatusEnum.UNIT_TEST_FAILURE, matcher.group(6), "", matcher.group(8), "", suggest
+              StatusEnum.UNIT_TEST_FAILURE, matcher.group(6), "", message.trim(), "", suggest
           ));
       }
       if (feedbackList.isEmpty()) {
