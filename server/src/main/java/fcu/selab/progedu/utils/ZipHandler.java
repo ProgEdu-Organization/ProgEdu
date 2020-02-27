@@ -63,28 +63,6 @@ public class ZipHandler {
    */
   private static final int BUFFER_SIZE = 4096;
 
-  // /**
-  // * Extracts a zip entry (file entry)
-  // *
-  // * @param zipIn The zip inputstream
-  // * @param filePath The file path
-  // * @throws IOException on fileoutputstream call error
-  // */
-  // public void extractFile(ZipInputStream zipIn, String filePath) throws
-  // IOException {
-  // try (BufferedOutputStream bos = new BufferedOutputStream(new
-  // FileOutputStream(filePath));) {
-  // byte[] bytesIn = new byte[BUFFER_SIZE];
-  // int read = 0;
-  // while ((read = zipIn.read(bytesIn)) != -1) {
-  // bos.write(bytesIn, 0, read);
-  // }
-  // } catch (Exception e) {
-  //       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
-  //      LOGGER.error(e.getMessage());
-  // }
-  // }
-
   public void setStringBuilder(StringBuilder sb) {
     this.sb = sb;
   }
@@ -104,36 +82,6 @@ public class ZipHandler {
     dir = file.getParent();
     return dir;
   }
-
-//  /**
-//   * modifyPomXml
-//   *
-//   * @param filePath The file path
-//   * @throws projectName projectName
-//   */
-//  public void modifyPomXml(String filePath, String projectName) {
-//    try {
-//      DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-//      DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-//      Document doc = docBuilder.parse(filePath);
-//
-//      Node ndId = doc.getElementsByTagName("artifactId").item(0);
-//      ndId.setTextContent(projectName);
-//
-//      Node ndName = doc.getElementsByTagName("name").item(0);
-//      ndName.setTextContent(projectName);
-//
-//      // write the content into xml file
-//      TransformerFactory transformerFactory = TransformerFactory.newInstance();
-//      Transformer transformer = transformerFactory.newTransformer();
-//      DOMSource source = new DOMSource(doc);
-//      StreamResult result = new StreamResult(new File(filePath));
-//      transformer.transform(source, result);
-//    } catch (ParserConfigurationException | SAXException | TransformerException | IOException e) {
-//      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
-//      LOGGER.error(e.getMessage());
-//    }
-//  }
 
   public void zipTestFolder(String testFilePath) {
     File testFile = new File(testFilePath);
