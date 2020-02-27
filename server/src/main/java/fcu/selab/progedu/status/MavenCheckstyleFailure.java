@@ -33,7 +33,7 @@ public class MavenCheckstyleFailure implements Status {
       checkstyleInfo = consoleText.substring(consoleText.indexOf(checkstyleStart),
           consoleText.indexOf(checkstyleEnd));
       checkstyleInfo = checkstyleInfo.replace("/var/jenkins_home/workspace/", "");
-      return checkstyleInfo.trim();
+      return checkstyleInfo;
     } catch (Exception e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
@@ -50,7 +50,8 @@ public class MavenCheckstyleFailure implements Status {
           + "{1,4}(:)[\\d]{1,4})(: error:)(.*?)(\n)");
       Matcher matcher = pattern.matcher(consoleText);
       while (matcher.find()) {
-        String fileName = matcher.group(1) + matcher.group(2);
+        String fileName = matcher.group(1).substring(matcher.group(1).indexOf("_") + 1)
+            + matcher.group(2);
         String line = matcher.group(4);
         String message = matcher.group(7);
         feedbackList.add(new FeedBack(
