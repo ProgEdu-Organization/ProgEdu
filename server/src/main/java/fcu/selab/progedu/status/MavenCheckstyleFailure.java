@@ -44,7 +44,7 @@ public class MavenCheckstyleFailure implements Status {
   @Override
   public ArrayList<FeedBack> formatExamineMsg(String consoleText) {
     ArrayList<FeedBack> feedbackList = new ArrayList<>();
-    String suggest = "https://checkstyle.sourceforge.io/";
+    String suggest = "https://google.github.io/styleguide/javaguide.html";
     try {
       Pattern pattern = Pattern.compile("(.*?)(.java)(:)([\\d]"
           + "{1,4}(:)[\\d]{1,4})(: error:)(.*?)(\n)");
