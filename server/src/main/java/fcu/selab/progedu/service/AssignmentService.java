@@ -89,7 +89,9 @@ public class AssignmentService {
   private final String tempDir = System.getProperty("java.io.tmpdir");
   private final String uploadDir = tempDir + "/uploads/";
   private final String testDir = tempDir + "/tests/";
-  private final String imageTestDir = "/temp/temp_image/";
+  private final String projectDir = System.getProperty("catalina.base");
+  private final String imageTempName = "/temp_images/";
+  private final String imageTempDir = projectDir + imageTempName;
   private static final Logger LOGGER = LoggerFactory.getLogger(AssignmentService.class);
 
   boolean isSave = true;
@@ -160,13 +162,13 @@ public class AssignmentService {
     ArrayList<String> paths = findAllDescriptionImagePaths(readMe);
     for (String path : paths) {
       String targetPath = path.replace("temp_images", "images");
-      tomcatService.copyFileToTarget(path, targetPath);
+      tomcatService.copyFileToTarget(projectDir + path, projectDir + targetPath);
     }
-    tomcatService.removeFile(uploadDir);
+    tomcatService.removeFile(imageTempDir);
 
     // 7. If README is not null
     // First, we need to modify images path
-    readMe = readMe.replaceAll("temp_images", "images");
+    readMe = readMe.replaceAll(imageTempName, "/images/");
     if (!readMe.equals("<br>") || !"".equals(readMe) || !readMe.isEmpty()) {
       // Add readme to folder
       tomcatService.createReadmeFile(readMe, cloneDirectoryPath);
@@ -211,9 +213,8 @@ public class AssignmentService {
     Timestamp ts = new Timestamp(System.currentTimeMillis());
     String fileName = fileDetail.getFileName().replace(".PNG", "")
         .replace(".png", "") + "_" + ts.getTime() + ".PNG";
-    String folderPath = "/temp_image/";
-    tomcatService.storeDescriptionImage(folderPath, fileName, file);
-
+    // Store image to temp_images folder
+    tomcatService.storeDescriptionImage(imageTempDir, fileName, file);
     /*
     CKEditor Response
     https://ckeditor.com/docs/ckeditor4/latest/guide/dev_file_upload.html
@@ -221,7 +222,7 @@ public class AssignmentService {
     JSONObject ob = new JSONObject();
     ob.put("uploaded", 1);
     ob.put("fileName", fileName);
-    ob.put("url", folderPath + fileName);
+    ob.put("url", imageTempName + fileName);
     return Response.ok(ob.toString()).build();
   }
 
