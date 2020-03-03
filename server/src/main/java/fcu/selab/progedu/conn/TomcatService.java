@@ -64,8 +64,7 @@ public class TomcatService {
    * @param fileName (to do)
    * @return target
    */
-  public String storeDescriptionImage(InputStream file, String fileName) {
-    String uploadsDir = "/usr/local/tomcat/images/";
+  public String storeDescriptionImage(String uploadsDir, String fileName, InputStream file) {
     File uploadsFolder = new File(uploadsDir);
     if (!uploadsFolder.exists()) {
       uploadsFolder.mkdirs();
@@ -78,6 +77,16 @@ public class TomcatService {
       LOGGER.error(e.getMessage());
     }
     return target;
+  }
+
+  /**
+   * @param originalFilePath originalFilePath
+   * @param target           targetPath
+   */
+  public void copyFileToTarget(String originalFilePath, String target) {
+    Linux linux = new Linux();
+    String removeFileCommand = "cp " + originalFilePath + " " + target;
+    linux.execLinuxCommand(removeFileCommand);
   }
 
 

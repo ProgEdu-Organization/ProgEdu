@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Timestamp;
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
@@ -28,11 +28,15 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
+import org.jsoup.nodes.Document;
 import org.gitlab.api.models.GitlabProject;
 import org.gitlab.api.models.GitlabUser;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.json.JSONObject;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -85,6 +89,7 @@ public class AssignmentService {
   private final String tempDir = System.getProperty("java.io.tmpdir");
   private final String uploadDir = tempDir + "/uploads/";
   private final String testDir = tempDir + "/tests/";
+  private final String imageTestDir = "/temp/temp_image/";
   private static final Logger LOGGER = LoggerFactory.getLogger(AssignmentService.class);
 
   boolean isSave = true;
@@ -152,18 +157,29 @@ public class AssignmentService {
 
     // 5. Add .gitkeep if folder is empty.
     tomcatService.findEmptyFolder(cloneDirectoryPath);
-    // 6. if README is not null
+
+    // 6. Copy all description image to temp/images
+    ArrayList<String> paths = findAllDescriptionImagePaths(readMe);
+    for (String path : paths) {
+      String targetPath = path.replace("temp_images", "images");
+      tomcatService.copyFileToTarget(path, targetPath);
+    }
+    tomcatService.removeFile(uploadDir);
+
+    // 7. If README is not null
+    // First, we need to modify images path
+    readMe = readMe.replaceAll("temp_images", "images");
     if (!readMe.equals("<br>") || !"".equals(readMe) || !readMe.isEmpty()) {
       // Add readme to folder
       tomcatService.createReadmeFile(readMe, cloneDirectoryPath);
     }
-    // 7. git push
+    // 8. git push
     gitlabService.pushProject(cloneDirectoryPath);
 
-    // 8. String removeTestDirectoryCommand = "rm -rf tests/" + name;
+    // 9. String removeTestDirectoryCommand = "rm -rf tests/" + name;
     tomcatService.removeFile(testDir + assignmentName);
 
-    // 9. import project infomation to database
+    // 10. import project infomation to database
     boolean hasTemplate = false;
 
     addProject(assignmentName, releaseTime, deadline, readMe, projectTypeEnum, hasTemplate,
@@ -174,9 +190,8 @@ public class AssignmentService {
       createAssignmentSettings(user.getUsername(), assignmentName);
     }
 
-    // 12. remove project file in linux
+    // 11. remove project file in linux
     tomcatService.removeFile(uploadDir);
-
     return Response.ok().build();
   }
 
@@ -196,19 +211,19 @@ public class AssignmentService {
 
     // Add timestamp to rename image
     Timestamp ts = new Timestamp(System.currentTimeMillis());
-    DateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-    String fileName = fileDetail.getFileName() + "_" + sdf.format(ts);
-    tomcatService.storeDescriptionImage(file, fileName);
+    String fileName = fileDetail.getFileName().replace(".PNG", "")
+        .replace(".png", "") + "_" + ts.getTime() + ".PNG";
+    String folderPath = "/temp_image/";
+    tomcatService.storeDescriptionImage(folderPath, fileName, file);
 
     /*
     CKEditor Response
     https://ckeditor.com/docs/ckeditor4/latest/guide/dev_file_upload.html
     */
-    String folderPath = "temp/temp_image/";
     JSONObject ob = new JSONObject();
     ob.put("uploaded", 1);
     ob.put("fileName", fileName);
-    ob.put("url", "/" + folderPath + fileName);
+    ob.put("url", folderPath + fileName);
     return Response.ok(ob.toString()).build();
   }
 
@@ -237,6 +252,20 @@ public class AssignmentService {
       }
     }
     return url;
+  }
+
+  /**
+   * @param readme Description details
+   * @return All images paths
+   */
+  public ArrayList<String> findAllDescriptionImagePaths(String readme) {
+    ArrayList<String> paths = new ArrayList<>();
+    Document doc = Jsoup.parse(readme);
+    Elements srcAttributes = doc.select("img[src]");
+    for (Element src : srcAttributes) {
+      paths.add(src.attr("src"));
+    }
+    return paths;
   }
 
   /**
