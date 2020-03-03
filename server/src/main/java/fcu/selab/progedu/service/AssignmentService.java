@@ -168,11 +168,17 @@ public class AssignmentService {
 
     // 7. If README is not null
     // First, we need to modify images path
-    readMe = readMe.replaceAll(imageTempName, "/images/");
-    if (!readMe.equals("<br>") || !"".equals(readMe) || !readMe.isEmpty()) {
-      // Add readme to folder
-      tomcatService.createReadmeFile(readMe, cloneDirectoryPath);
+    try {
+      readMe = readMe.replaceAll(imageTempName, courseConfig.getTomcatServerIp() + "/images/");
+      if (!readMe.equals("<br>") || !"".equals(readMe) || !readMe.isEmpty()) {
+        // Add readme to folder
+        tomcatService.createReadmeFile(readMe, cloneDirectoryPath);
+      }
+    } catch (LoadConfigFailureException e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
+
     // 8. git push
     gitlabService.pushProject(cloneDirectoryPath);
 
