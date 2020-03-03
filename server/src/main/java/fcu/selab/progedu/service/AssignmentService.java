@@ -3,6 +3,9 @@ package fcu.selab.progedu.service;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
@@ -186,21 +189,26 @@ public class AssignmentService {
   @Path("uploadImage")
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   @Produces(MediaType.APPLICATION_JSON)
-  public Response uploadImages(
+  public Response uploadImagesToTemp(
       @FormDataParam("upload") InputStream file,
       @FormDataParam("upload") FormDataContentDisposition fileDetail,
       @FormDataParam("ckCsrfToken") String token) {
 
-    tomcatService.storeDescriptionImage(file, fileDetail.getFileName());
+    // Add timestamp to rename image
+    Timestamp ts = new Timestamp(System.currentTimeMillis());
+    DateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+    String fileName = fileDetail.getFileName() + "_" + sdf.format(ts);
+    tomcatService.storeDescriptionImage(file, fileName);
+
     /*
     CKEditor Response
     https://ckeditor.com/docs/ckeditor4/latest/guide/dev_file_upload.html
     */
-    String folderPath = "images/";
+    String folderPath = "temp/temp_image/";
     JSONObject ob = new JSONObject();
     ob.put("uploaded", 1);
-    ob.put("fileName", fileDetail.getFileName());
-    ob.put("url", "/" + folderPath + fileDetail.getFileName());
+    ob.put("fileName", fileName);
+    ob.put("url", "/" + folderPath + fileName);
     return Response.ok(ob.toString()).build();
   }
 
