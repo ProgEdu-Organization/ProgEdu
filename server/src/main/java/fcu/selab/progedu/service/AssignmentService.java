@@ -132,12 +132,10 @@ public class AssignmentService {
       @FormDataParam("file") InputStream file,
       @FormDataParam("file") FormDataContentDisposition fileDetail) {
 
-    String rootProjectUrl = null;
     final AssignmentType assignment = AssignmentFactory.getAssignmentType(assignmentType);
     final ProjectTypeEnum projectTypeEnum = ProjectTypeEnum.getProjectTypeEnum(assignmentType);
     // 1. Create root project and get project id and url
     createRootProject(assignmentName);
-    rootProjectUrl = getRootProjectUrl(assignmentName);
 
     // 2. Clone the project to C:\\Users\\users\\AppData\\Temp\\uploads
     final String cloneDirectoryPath = gitlabService.cloneProject(gitlabRootUsername,

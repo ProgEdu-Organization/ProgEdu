@@ -43,11 +43,11 @@ public class MavenCompileFailure implements Status {
           + "(\\[([\\d]{0,4},[\\d]{0,4})\\])(.*?)(\n)");
       Matcher matcher = pattern.matcher(consoleText);
       while (matcher.find()) {
-        String fileName = matcher.group(2).trim();
-        String line = matcher.group(5).trim();
-        String message = matcher.group(6).trim();
+        String fileName = matcher.group(2).substring(matcher.group(2).indexOf("_") + 1).trim();
+        String line = matcher.group(5).replaceAll(",", ":").trim();
+        String symptom = matcher.group(6).trim();
         feedbackList.add(new FeedBack(
-            StatusEnum.COMPILE_FAILURE, fileName, line, message, "", suggest));
+            StatusEnum.COMPILE_FAILURE, fileName, line, "", symptom, suggest));
       }
       if (feedbackList.isEmpty()) {
         feedbackList.add(

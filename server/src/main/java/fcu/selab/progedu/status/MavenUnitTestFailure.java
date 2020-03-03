@@ -41,11 +41,18 @@ public class MavenUnitTestFailure implements Status {
     String suggest = "https://www.learnjavaonline.org/";
     ArrayList<FeedBack> feedbackList = new ArrayList<>();
     try {
-      Pattern pattern = Pattern.compile("(.*?)((\\()(.*?)(.java.)(.*?)(\\)))(.*?)(\n)");
+      Pattern pattern = Pattern.compile("(.*?)((\\()(.*?)(\\)))(.*?)(\n)");
       Matcher matcher = pattern.matcher(consoleText);
       while (matcher.find()) {
+        String message;
+        String fileName = matcher.group(4).replaceAll("\\.", "/");
+        if (matcher.group(6).contains(":")) {
+          message = matcher.group(6).substring(matcher.group(6).indexOf(":") + 1);
+        } else {
+          message = matcher.group(6);
+        }
         feedbackList.add(new FeedBack(
-              StatusEnum.UNIT_TEST_FAILURE, matcher.group(6), "", matcher.group(8), "", suggest
+              StatusEnum.UNIT_TEST_FAILURE, fileName, "", message.trim(), "", suggest
           ));
       }
       if (feedbackList.isEmpty()) {

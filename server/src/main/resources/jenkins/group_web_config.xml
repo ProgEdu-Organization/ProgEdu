@@ -76,7 +76,7 @@
     </builders>
     <publishers>
         <hudson.tasks.ArtifactArchiver>
-            <artifacts>target/screenshot/*.png,node_modules/</artifacts>
+            <artifacts>target/screenshot/*.png</artifacts>
             <allowEmptyArchive>true</allowEmptyArchive>
             <onlyIfSuccessful>false</onlyIfSuccessful>
             <fingerprint>false</fingerprint>
