@@ -71,7 +71,7 @@
     <span><a>
         <h3>Feedback Information {{commitNumber}}</h3>
       </a></span>
-    <table class='table table-responsive-sm table-bordered table-hover table-outline mb-0'>
+    <table class='table table-responsive-sm table-bordered table-hover table-outline'>
       <thead class="thead-light">
         <tr>
           <th class='w-20'>fileName</th>
@@ -82,11 +82,21 @@
         </tr>
       </thead>
       <tr *ngFor="let feedback of feedbacks" id='feedback-bar'>
-        <td>{{feedback.fileName}}</td>
-        <td>{{feedback.line}}</td>
-        <td [innerHTML]='feedback.message | lineBreaks'></td>
-        <td>{{feedback.symptom}}</td>
-        <td><a href='{{feedback.suggest}}' target="blank">{{feedback.suggest}}</a></td>
+        <td>
+          <pre>{{feedback.fileName}}</pre>
+        </td>
+        <td>
+          <pre>{{feedback.line}}</pre>
+        </td>
+        <td>
+          <pre [innerHTML]='feedback.message | lineBreaks'></pre>
+        </td>
+        <td>
+          <pre>{{feedback.symptom}}</pre>
+        </td>
+        <td>
+          <pre><a href='{{feedback.suggest}}' target="blank">{{feedback.suggest}}</a></pre>
+        </td>
       </tr>
     </table>
   </div>
