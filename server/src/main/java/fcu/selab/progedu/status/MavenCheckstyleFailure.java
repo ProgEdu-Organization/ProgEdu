@@ -46,8 +46,7 @@ public class MavenCheckstyleFailure implements Status {
     ArrayList<FeedBack> feedbackList = new ArrayList<>();
     String suggest = "https://google.github.io/styleguide/javaguide.html";
     try {
-      Pattern pattern = Pattern.compile("(.*?)(.java)(:)([\\d]"
-          + "{1,4}(:)[\\d]{1,4})(: error:)(.*?)(\n)");
+      Pattern pattern = Pattern.compile("(.*?)(.java)(:)([\\d]{1,4}(.*?))(: error:)(.*?)(\n)");
       Matcher matcher = pattern.matcher(consoleText);
       while (matcher.find()) {
         String fileName = matcher.group(1).substring(matcher.group(1).indexOf("_") + 1)

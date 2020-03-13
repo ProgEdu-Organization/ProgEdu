@@ -44,6 +44,7 @@ public class MavenCheckstyleFailureTest {
       consoleText = props.getProperty("TEST_ONE").trim();
     }
     consoleText = mavenCheckstyleFailure.extractFailureMsg(consoleText);
+    System.out.println("++++++++++++++++\n" + consoleText + "\n-------------------");
     ArrayList arrayList = mavenCheckstyleFailure.formatExamineMsg(consoleText);
     ArrayList<FeedBack> testArray = new ArrayList<>();
     testArray.add(new FeedBack(StatusEnum.CHECKSTYLE_FAILURE, "maven/src/main/java/selab/myapp/App.java", "8:3", " Missing a Javadoc comment.", "", "https://google.github.io/styleguide/javaguide.html"));
@@ -55,6 +56,7 @@ public class MavenCheckstyleFailureTest {
     testArray.add(new FeedBack(StatusEnum.CHECKSTYLE_FAILURE, "MAVAN1119/src/main/java/selab/myapp/App.java", "11:9", " WhitespaceAround: '<' is not preceded with whitespace.", "", "https://google.github.io/styleguide/javaguide.html"));
     testArray.add(new FeedBack(StatusEnum.CHECKSTYLE_FAILURE, "MAVAN1119/src/main/java/selab/myapp/App.java", "11:10", " WhitespaceAround: '<' is not followed by whitespace.", "", "https://google.github.io/styleguide/javaguide.html"));
     testArray.add(new FeedBack(StatusEnum.CHECKSTYLE_FAILURE, "MAVAN1119/src/main/java/selab/myapp/App.java", "11:12", " WhitespaceAround: '{' is not preceded with whitespace.", "", "https://google.github.io/styleguide/javaguide.html"));
+    testArray.add(new FeedBack(StatusEnum.CHECKSTYLE_FAILURE, "MAVAN1119/src/main/java/selab/myapp/App.java", "12", " 'if' child have incorrect indentation level 8, expected level should be 6.", "", "https://google.github.io/styleguide/javaguide.html"));
     testArray.add(new FeedBack(StatusEnum.CHECKSTYLE_FAILURE, "MAVAN1119/src/main/java/selab/myapp/App.java", "12:10", " WhitespaceAround: '=' is not preceded with whitespace.", "", "https://google.github.io/styleguide/javaguide.html"));
     testArray.add(new FeedBack(StatusEnum.CHECKSTYLE_FAILURE, "MAVAN1119/src/main/java/selab/myapp/App.java", "12:11", " WhitespaceAround: '=' is not followed by whitespace.", "", "https://google.github.io/styleguide/javaguide.html"));
     testArray.add(new FeedBack(StatusEnum.CHECKSTYLE_FAILURE, "MAVAN1119/src/main/java/selab/myapp/App.java", "12:12", " WhitespaceAround: '+' is not preceded with whitespace.", "", "https://google.github.io/styleguide/javaguide.html"));
