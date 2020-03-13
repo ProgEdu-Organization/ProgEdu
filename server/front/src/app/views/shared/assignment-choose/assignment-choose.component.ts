@@ -83,7 +83,6 @@ export class AssignmentChooseComponent implements OnInit {
         this.feedbacks = response;
         for (let i in this.feedbacks) {
           this.feedbacks[i].message.replace('/\n/g', '<br />');
-          console.log(this.feedbacks[i].message);
         }
       },
       error => {

@@ -201,37 +201,6 @@ public class AssignmentService {
     return Response.ok().build();
   }
 
-  /**
-   * @param file       abc
-   * @param fileDetail abc
-   * @throws Exception abc
-   */
-  @POST
-  @Path("uploadImage")
-  @Consumes(MediaType.MULTIPART_FORM_DATA)
-  @Produces(MediaType.APPLICATION_JSON)
-  public Response uploadImagesToTemp(
-      @FormDataParam("upload") InputStream file,
-      @FormDataParam("upload") FormDataContentDisposition fileDetail,
-      @FormDataParam("ckCsrfToken") String token) {
-
-    // Add timestamp to rename image
-    Timestamp ts = new Timestamp(System.currentTimeMillis());
-    String fileName = fileDetail.getFileName().replace(".PNG", "")
-        .replace(".png", "") + "_" + ts.getTime() + ".PNG";
-    // Store image to temp_images folder
-    tomcatService.storeDescriptionImage(imageTempDir, fileName, file);
-    /*
-    CKEditor Response
-    https://ckeditor.com/docs/ckeditor4/latest/guide/dev_file_upload.html
-    */
-    JSONObject ob = new JSONObject();
-    ob.put("uploaded", 1);
-    ob.put("fileName", fileName);
-    ob.put("url", imageTempName + fileName);
-    return Response.ok(ob.toString()).build();
-  }
-
   private void createRootProject(String name) {
     gitlabService.createRootProject(name);
   }
