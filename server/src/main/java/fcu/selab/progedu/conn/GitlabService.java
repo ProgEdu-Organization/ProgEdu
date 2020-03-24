@@ -74,6 +74,7 @@ public class GitlabService {
 
   /**
    * Get root session from Gitlab
+   *
    * @param userGitlabId user Gitlab Id
    * @return token
    */
@@ -83,7 +84,7 @@ public class GitlabService {
 
   /**
    * Get a new GitlabApi by user token
-   * 
+   *
    * @param token A token from user
    * @return a new GitlabApi
    */
@@ -95,7 +96,7 @@ public class GitlabService {
 
   /**
    * Get a list of project by user
-   * 
+   *
    * @param user A user from database
    * @return The project list of user
    */
@@ -114,7 +115,7 @@ public class GitlabService {
 
   /**
    * Get a list of project by GitlabUser
-   * 
+   *
    * @param user of gitlab
    * @return The project list of user
    */
@@ -132,7 +133,7 @@ public class GitlabService {
 
   /**
    * get gitlab project by id
-   * 
+   *
    * @param id gitlab project id
    * @return gitlab project
    */
@@ -152,7 +153,7 @@ public class GitlabService {
    * get gitlab project by username and projectName
    *
    * @param username username
-   * @param proName proName
+   * @param proName  proName
    * @return gitlabProject
    */
   public GitlabProject getProject(String username, String proName) {
@@ -168,7 +169,7 @@ public class GitlabService {
 
   /**
    * get project all commit information
-   * 
+   *
    * @param projectId project id
    * @return commits list
    */
@@ -185,7 +186,7 @@ public class GitlabService {
 
   /**
    * get project all commit information
-   * 
+   *
    * @param groupName groupName
    * @return commits list
    */
@@ -205,6 +206,7 @@ public class GitlabService {
 
   /**
    * Get all user's list of projects
+   *
    * @return projects
    */
   public List<GitlabProject> getAllProjects() {
@@ -213,7 +215,7 @@ public class GitlabService {
 
   /**
    * Get a gitlab user
-   * 
+   *
    * @return gitlabUser
    */
   public GitlabUser getUser() {
@@ -229,7 +231,7 @@ public class GitlabService {
 
   /**
    * Get a gitlab user by user id
-   * 
+   *
    * @param userId user id
    * @return gitlab user
    */
@@ -246,6 +248,7 @@ public class GitlabService {
 
   /**
    * Get all user from Gitlab
+   *
    * @return a list of users
    */
   public List<GitlabUser> getUsers() {
@@ -254,7 +257,7 @@ public class GitlabService {
 
   /**
    * get Gitlab user id via sudo
-   * 
+   *
    * @param userName user name
    * @return Gitlab user
    */
@@ -271,7 +274,7 @@ public class GitlabService {
 
   /**
    * Get a private token by GitlabUser
-   * 
+   *
    * @param user A Gitlab user
    * @return a private token of user
    */
@@ -287,7 +290,7 @@ public class GitlabService {
 
   /**
    * Get GitlabUser of Root
-   * 
+   *
    * @return GitlabUser of Root
    */
   public GitlabUser getRoot() {
@@ -303,7 +306,7 @@ public class GitlabService {
 
   /**
    * Get all groups of Gitlab
-   * 
+   *
    * @return a list of groups from Gitlab
    */
   public List<GitlabGroup> getGroups() {
@@ -319,7 +322,7 @@ public class GitlabService {
 
   /**
    * Get a list of project from group
-   * 
+   *
    * @param group A group form Gitlab
    * @return a list of project from group
    */
@@ -329,7 +332,7 @@ public class GitlabService {
 
   /**
    * Get a list of group's member
-   * 
+   *
    * @param group a group from Gitlab
    * @return a list of group's member
    */
@@ -339,7 +342,7 @@ public class GitlabService {
 
   /**
    * get Gitlab group id with group name
-   * 
+   *
    * @param groupName group name
    * @return group id
    */
@@ -359,8 +362,8 @@ public class GitlabService {
   }
 
   /**
-   * @param username username
-   * @param proName proName
+   * @param username     username
+   * @param proName      proName
    * @param projectOwner project owner name
    * @return project
    * @throws IOException on gitlab api call error
@@ -378,7 +381,7 @@ public class GitlabService {
 
   /**
    * Create a new User
-   * 
+   *
    * @param email    User email
    * @param password User password
    * @param username User name
@@ -415,7 +418,7 @@ public class GitlabService {
 
   /**
    * transfer project into group
-   * 
+   *
    * @param groupName   group name
    * @param projectName project name
    * @return projectId
@@ -431,7 +434,7 @@ public class GitlabService {
 
   /**
    * Add a member to group
-   * 
+   *
    * @param groupId     gitlab group id
    * @param userId      gitlab user id
    * @param accessLevel access level in group
@@ -447,7 +450,7 @@ public class GitlabService {
 
   /**
    * update member access level
-   * 
+   *
    * @param groupId     Group id
    * @param userId      User id
    * @param accessLevel access level in group
@@ -479,7 +482,7 @@ public class GitlabService {
 
   /**
    * Create a root project
-   * 
+   *
    * @param proName Project name
    * @return true or false
    */
@@ -496,7 +499,7 @@ public class GitlabService {
 
   /**
    * Get commit counts from project
-   * 
+   *
    * @param projectId Project id
    * @return a count of commit
    */
@@ -519,7 +522,7 @@ public class GitlabService {
 
   /**
    * Get project commit
-   * 
+   *
    * @param projectId project id
    * @return list of commit
    */
@@ -536,7 +539,7 @@ public class GitlabService {
 
   /**
    * Replace the project url
-   * 
+   *
    * @param oldUrl The old url of project
    * @return the new url
    */
@@ -548,7 +551,7 @@ public class GitlabService {
 
   /**
    * Delete the target user
-   * 
+   *
    * @param userId user id
    */
   public void deleteUser(int userId) {
@@ -562,6 +565,7 @@ public class GitlabService {
 
   /**
    * delete all gitlab projects
+   *
    * @param name name
    */
   public void deleteProjects(String name) {
@@ -580,7 +584,8 @@ public class GitlabService {
 
   /**
    * Update user password
-   * @param userId user id
+   *
+   * @param userId   user id
    * @param password user new password
    */
   public void updateUserPassword(int userId, String password) {
@@ -588,8 +593,8 @@ public class GitlabService {
     try {
       user = gitlab.getUser(userId);
       gitlab.updateUser(user.getId(), user.getEmail(), password, user.getUsername(),
-              user.getName(), null, null, null, null, 20, null, null,
-              null, false, true, false);
+          user.getName(), null, null, null, null, 20, null, null,
+          null, false, true, false);
     } catch (IOException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
@@ -598,7 +603,7 @@ public class GitlabService {
 
   /**
    * get commits from gitlab project.
-   * 
+   *
    * @param name project's name
    * @return committers
    */
@@ -619,8 +624,8 @@ public class GitlabService {
 
   /**
    * get commits from gitlab project. (to do)
-   * 
-   * @param username project's (to do)
+   *
+   * @param username    project's (to do)
    * @param projectName project name
    * @return target
    */
@@ -635,7 +640,7 @@ public class GitlabService {
 
   /**
    * (to do)
-   * 
+   *
    * @param cloneDirectoryPath (to do)
    */
   public void pushProject(String cloneDirectoryPath) {
@@ -643,7 +648,7 @@ public class GitlabService {
     String addCommand = "git add .";
     linux.execLinuxCommandInFile(addCommand, cloneDirectoryPath);
 
-    String commitCommand = "git commit -m \"Instructor&nbsp;Commit\"";
+    String commitCommand = "git commit -m \"Instructor Commit\"";
     linux.execLinuxCommandInFile(commitCommand, cloneDirectoryPath);
 
     String pushCommand = "git push";
@@ -652,7 +657,7 @@ public class GitlabService {
 
   /**
    * (to do)
-   * 
+   *
    * @param project (to do)
    * @throws IOException                (to do)
    * @throws LoadConfigFailureException (to do)
@@ -682,7 +687,7 @@ public class GitlabService {
 
   /**
    * transfer project from root to group
-   * 
+   *
    * @param groupId   group id
    * @param projectId project id
    */
@@ -691,7 +696,7 @@ public class GitlabService {
     String url = "";
     try {
       url = hostUrl + API_NAMESPACE + "/groups/" + groupId + "/projects/"
-              + projectId + "?private_token=" + apiToken;
+          + projectId + "?private_token=" + apiToken;
       HttpPost post = new HttpPost(url);
 
       HttpResponse response = client.execute(post);
@@ -709,7 +714,7 @@ public class GitlabService {
 
   /**
    * get gitlab project url
-   * 
+   *
    * @param username    username
    * @param projectName project name
    * @return gitlab project url
@@ -720,7 +725,7 @@ public class GitlabService {
 
   /**
    * remove gitlab group
-   * 
+   *
    * @param id gitlab group id
    */
   public void removeGroup(int id) {
@@ -735,7 +740,7 @@ public class GitlabService {
 
   /**
    * remove member from gitlab group
-   * 
+   *
    * @param groupId group gitlab id
    * @param userId  user gitlab id
    */
