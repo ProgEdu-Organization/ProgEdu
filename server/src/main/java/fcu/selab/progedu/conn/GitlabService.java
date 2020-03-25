@@ -645,13 +645,13 @@ public class GitlabService {
    */
   public void pushProject(String cloneDirectoryPath) {
     Linux linux = new Linux();
-    String addCommand = "git add .";
+    String[] addCommand = {"git", "add", "."};
     linux.execLinuxCommandInFile(addCommand, cloneDirectoryPath);
 
-    String commitCommand = "git commit -m \"Instructor Commit\"";
+    String[] commitCommand = {"git", "commit", "-m", "Instructor Commit"};
     linux.execLinuxCommandInFile(commitCommand, cloneDirectoryPath);
 
-    String pushCommand = "git push";
+    String[] pushCommand = {"git", "push"};
     linux.execLinuxCommandInFile(pushCommand, cloneDirectoryPath);
   }
 

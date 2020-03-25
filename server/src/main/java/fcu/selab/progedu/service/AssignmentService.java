@@ -116,7 +116,8 @@ public class AssignmentService {
   @Path("create")
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   @Produces(MediaType.APPLICATION_JSON)
-  public Response createAssignment(@FormDataParam("assignmentName") String assignmentName,
+  public Response createAssignment(
+      @FormDataParam("assignmentName") String assignmentName,
       @FormDataParam("releaseTime") Date releaseTime, @FormDataParam("deadline") Date deadline,
       @FormDataParam("readMe") String readMe, @FormDataParam("fileRadio") String assignmentType,
       @FormDataParam("file") InputStream file,
@@ -244,7 +245,8 @@ public class AssignmentService {
    * @param hasTemplate Has template
    */
   public void addProject(String name, Date releaseTime, Date deadline, String readMe,
-      ProjectTypeEnum projectType, boolean hasTemplate, long testZipChecksum, String testZipUrl) {
+                         ProjectTypeEnum projectType, boolean hasTemplate,
+                         long testZipChecksum, String testZipUrl) {
     Assignment assignment = new Assignment();
     Date date = tomcatService.getCurrentTime();
     assignment.setName(name);
@@ -288,8 +290,6 @@ public class AssignmentService {
 
     String removeZipTestFileCommand = testDir + name + ".zip";
     tomcatService.removeFile(removeZipTestFileCommand);
-    linuxApi.execLinuxCommandInFile(removeZipTestFileCommand, tempDir);
-
     // delete db
     deleteAssignmentDatabase(name);
 
@@ -317,7 +317,8 @@ public class AssignmentService {
   @Path("edit")
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   @Produces(MediaType.APPLICATION_JSON)
-  public Response editProject(@FormDataParam("assignmentName") String assignmentName,
+  public Response editProject(
+      @FormDataParam("assignmentName") String assignmentName,
       @FormDataParam("releaseTime") Date releaseTime, @FormDataParam("deadline") Date deadline,
       @FormDataParam("readMe") String readMe, @FormDataParam("file") InputStream file,
       @FormDataParam("file") FormDataContentDisposition fileDetail) {
