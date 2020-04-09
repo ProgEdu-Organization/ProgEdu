@@ -286,8 +286,8 @@ public class AssignmentService {
    * @param hasTemplate Has template
    */
   public void addProject(String name, Date releaseTime, Date deadline, String readMe,
-                         ProjectTypeEnum projectType, boolean hasTemplate, long testZipChecksum,
-                         String testZipUrl) {
+                         ProjectTypeEnum projectType, boolean hasTemplate,
+                         long testZipChecksum, String testZipUrl) {
     Assignment assignment = new Assignment();
     Date date = tomcatService.getCurrentTime();
     assignment.setName(name);
@@ -331,8 +331,6 @@ public class AssignmentService {
 
     String removeZipTestFileCommand = testDir + name + ".zip";
     tomcatService.removeFile(removeZipTestFileCommand);
-    linuxApi.execLinuxCommandInFile(removeZipTestFileCommand, tempDir);
-
     // delete db
     deleteAssignmentDatabase(name);
 

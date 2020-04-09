@@ -22,7 +22,7 @@ public class Linux {
 
   /**
    * execLinuxCommand
-   * 
+   *
    * @param command Linux command
    */
   public void execLinuxCommand(String command) {
@@ -47,11 +47,11 @@ public class Linux {
 
   /**
    * execLinuxCommandInFile
-   * 
+   *
    * @param command  Linux command
    * @param filePath path
    */
-  public void execLinuxCommandInFile(String command, String filePath) {
+  public void execLinuxCommandInFile(String[] command, String filePath) {
     Process process;
     String line;
     try {

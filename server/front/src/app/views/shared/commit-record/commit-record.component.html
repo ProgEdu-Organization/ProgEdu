@@ -51,7 +51,9 @@
               <p class="circle {{commit.status}}"></p>
             </td>
             <td class='w-25'>{{commit.time | date:'short'}}</td>
-            <td class='w-50'>{{commit.message}}</td>
+            <td class='w-50'>
+              {{commit.message | lineBreaks}}
+            </td>
             <td *ngIf='showCommiter'>{{commit.committer}}</td>
             <td *ngIf="isShowScreenshot()"><button class="btn btn-primary" (click)='screenshot.screenshotModal.show();'>
                 <i class="cui-screen-desktop"></i></button></td>
@@ -69,24 +71,34 @@
     </div>
     <hr>
     <span><a>
-        <h3>Feedback Information {{commitNumber}}</h3>
+        <h3>Feedback Information #{{commitNumber}}</h3>
       </a></span>
-    <table class='table table-responsive-sm table-bordered table-hover table-outline mb-0'>
+    <table class='table table-responsive-sm table-bordered table-hover table-outline'>
       <thead class="thead-light">
         <tr>
-          <th class='w-20'>fileName</th>
-          <th class='w-10'>Line</th>
-          <th class='w-30'>Message</th>
-          <th class='w-30'>Symptom</th>
+          <th>fileName</th>
+          <th>Line</th>
+          <th>Message</th>
+          <th>Symptom</th>
           <th>Suggest</th>
         </tr>
       </thead>
       <tr *ngFor="let feedback of feedbacks" id='feedback-bar'>
-        <td>{{feedback.fileName}}</td>
-        <td>{{feedback.line}}</td>
-        <td [innerHTML]='feedback.message | lineBreaks'></td>
-        <td>{{feedback.symptom}}</td>
-        <td><a href='{{feedback.suggest}}' target="blank">{{feedback.suggest}}</a></td>
+        <td class='w-5'>
+          <pre>{{feedback.fileName}}</pre>
+        </td>
+        <td class='w-5'>
+          <pre>{{feedback.line}}</pre>
+        </td>
+        <td class='w-40'>
+          <pre style="white-space:pre-wrap;">{{feedback.message}}</pre>
+        </td>
+        <td class='w-20'>
+          <pre style="white-space:pre-wrap;">{{feedback.symptom}}</pre>
+        </td>
+        <td>
+          <pre><a href='{{feedback.suggest}}' target=" blank">Click Me</a></pre>
+        </td>
       </tr>
     </table>
   </div>
