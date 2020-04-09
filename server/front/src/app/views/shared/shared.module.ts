@@ -31,11 +31,14 @@ import { PaginationModule } from 'ngx-bootstrap/pagination';
 
 // Dropdowns Component
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+
+import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     ChartsModule,
+    CKEditorModule,
     TabsModule.forRoot(),
     ModalModule.forRoot(),
     CollapseModule.forRoot(),
