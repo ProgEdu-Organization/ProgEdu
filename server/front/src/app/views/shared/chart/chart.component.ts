@@ -124,7 +124,7 @@ export class ChartComponent implements OnInit {
     this.chartService.getAllCommits().subscribe(
       (response) => {
         this.commits = response.allCommitRecord;
-        this.getStatusResultData();
+        this.getMixedChartData();
         this.selectedAssignment = this.commits[0].name;
       },
       (error) => {
@@ -215,8 +215,8 @@ export class ChartComponent implements OnInit {
         if (chartData.data[0].x === this.bubbleChartData[j].data[0].x &&
           chartData.data[0].y === this.bubbleChartData[j].data[0].y) {
           // limit max radius = 40
-          if (this.bubbleChartData[j].radius !== 40) {
-            this.bubbleChartData[j].radius += 1;
+          if (this.bubbleChartData[j].radius <= 40) {
+            this.bubbleChartData[j].radius += 2;
           }
           isDataDuplicate = true;
           break;

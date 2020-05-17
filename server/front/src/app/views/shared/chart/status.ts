@@ -1,6 +1,6 @@
 export const Status = {
     notBuild: {
-      name: 'Not Build',
+      name: 'Initial',
       color: '#878787',
       status: ['INI']
     },
@@ -10,7 +10,7 @@ export const Status = {
       status: ['CPF']
     },
     codingStyleError: {
-      name: 'Coding Style Error',
+      name: 'Coding Style Failure',
       color: '#ffc229',
       status: ['CSF','WEF','WHF','WSF']
     },
@@ -26,5 +26,5 @@ export const Status = {
     }
   };
 export const Color = {
-  bubble: 'rgba(30, 144, 255, 1)'
+  bubble: 'rgba(30, 144, 255, 0.65)'
 }
