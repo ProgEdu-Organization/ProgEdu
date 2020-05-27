@@ -44,7 +44,7 @@ RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - \
 # Install GRADLE and MAVEN:
 ###########################################################################
 
-ARG GRADLE_MAVEN=5.6.2
+ARG GRADLE_MAVEN=5.6.4
 ENV PATH=$PATH:/opt/gradle/gradle-$GRADLE_MAVEN/bin
 RUN apt-get update && apt-get install -y default-jdk maven \
       && \
@@ -108,8 +108,8 @@ RUN cd /usr/local \
 ###########################################################################
 
 ARG SDK_SETUP=false
-ARG SDK_PLATFORMS
-ARG SDK_BUILD_TOOLS
+ARG SDK_PLATFORMS=android-28
+ARG SDK_BUILD_TOOLS=28.0.3
 
 RUN if [ ${SDK_SETUP} = true ]; then \
   yes | $ANDROID_HOME/tools/bin/sdkmanager "platforms;$SDK_PLATFORMS" >> /dev/null \
