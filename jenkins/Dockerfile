@@ -14,7 +14,7 @@ WORKDIR /workdir
 RUN git clone https://github.com/fcumselab/screenshotjenkinsplugin.git
 RUN git clone https://github.com/fcumselab/UpdatePngToDBJenkinsPlugin.git
 RUN git clone https://github.com/fcumselab/ProgEduJenkinsPlugin.git
-RUN git clone https://github.com/fcumselab/AndroidScreenshotPlugin
+RUN git clone https://github.com/fcumselab/AndroidScreenshotPlugin.git
 
 RUN cd ProgEduJenkinsPlugin && mvn package
 RUN cd screenshotjenkinsplugin && mvn package
