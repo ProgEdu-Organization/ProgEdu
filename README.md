@@ -1,6 +1,7 @@
 ![](https://github.com/fcumselab/ProgEdu/blob/developer/server/front/src/assets/img/logo.png)
 # ProgEdu介紹
-# ProgEdu建置流程3.1(2020/1/07更新)
+
+# ProgEdu建置流程(2020/05/28更新)
 
 ### 首先確認server是否有docker-compose與docker工具
 ```
@@ -12,8 +13,8 @@ docker -v
 2. 將env-example文件修改成`.env` (注意是 **".env"** ) 
 *  修正 DB_USER=root
 *  設定密碼 DB_PASSWORD 要和 DB_PASSWORD 一樣 
-*  修正 GITLAB_HOST=http://gitlab.example.com:22080 成 
-   GITLAB_HOST=http://host:port
+*  修正 `GITLAB_HOST=http://gitlab.example.com:22080` 成 
+   `GITLAB_HOST=http://host:port`
 *  如上一步 去修正其他所有 `http://example.com` 的路徑
 3. 執行`sudo docker-compose up -d` 
 
@@ -40,10 +41,10 @@ docker exec -it (YOUR_JENKINS_hash) bash
 cat /var/jenkins_home/secrets/initialAdminPassword
 ``` 
 3. 安裝plug-in 選擇"Install suggested plugins"
-![](https://i.imgur.com/0vwWzHz.png)  
+![](https://github.com/fcumselab/ProgEdu/readme-images/jenkins-install-plugins.png)  
 
 4. 填上使用者資訊 
-![](https://i.imgur.com/dJ7a9Tj.png)  
+![](https://github.com/fcumselab/ProgEdu/readme-images/jenkins-create-admin-user.png)  
 
 這裡的名稱 跟密碼 設定必須跟 `.env` 的設定 一致
 所以你要先查看你的`.evn` 把你設定的帳密填入以下兩行
@@ -56,7 +57,7 @@ WEB_JENKINS_ADMIN_PASSWORD=password
 5. 拿**Jenkins Token** 
 因為ProgEdu要跟Jenkins做溝通 所以需要 **Jenkins Token**
 右上角點選 使用者名稱 > 設定 > API Token > Add new Token > Generate > 複製Token > **==儲存==**
-![](https://i.imgur.com/2XmKVs5.jpg)  
+![](https://github.com/fcumselab/ProgEdu/readme-images/jenkins-token.jpg)  
 
 拿到**Jenkins Token**後要去設定 `.env` 檔
 `WEB_JENKINS_API_TOKEN={Jenkins Token}`
@@ -64,7 +65,7 @@ WEB_JENKINS_ADMIN_PASSWORD=password
 6. 開啟讀取權限
 因為ProgEdu需要讀Jenkins建置完成的檔案
 在Jenkins  管理jenkins > 設定全域安全性中 > 打勾 Allow anonymous read access > **儲存**
-![](https://i.imgur.com/v2bqgvV.png)
+![](https://github.com/fcumselab/ProgEdu/readme-images/jenkins-access-control.png)
 
 5. 設定**Gitlab API Token**
 因為jenkins必須要跟Gitlab要程式碼，所以必須給他gitlab的token
@@ -72,14 +73,14 @@ WEB_JENKINS_ADMIN_PASSWORD=password
     先把(Enable authentication for ... connection) 的勾 取消 
     設定 Connection name = gitlab
     設定 Gitlab host URL 填上.env文件設定的 gitlab 網址
-    ![](https://i.imgur.com/juWY7Yu.png)  
+    ![](https://github.com/fcumselab/ProgEdu/readme-images/jenkins-gitlab-api.png)  
     1. 設定 Credentials(證書):  如下步驟
         1. 按 Add > Jenkins
         2. Kind = Gitlab API token
         3. Scope = Glibal
         4. API token填上 你之前存在`.env`的**Gitlab Token**
         5. ID = gitlab_api
-        ![](https://i.imgur.com/T5Gq9WS.jpg)  
+        ![](https://github.com/fcumselab/ProgEdu/readme-images/jenkins-credentials.jpg)  
     2. 新增後把Credentials 換成 `GitLab API token` 
     3. 點擊Test Connection測試是否成功
     4. **==儲存==**
@@ -90,7 +91,7 @@ WEB_JENKINS_ADMIN_PASSWORD=password
     - Username：Gitlab root username (去你剛剛設定的.env找)
     - Password：Gitlab root password (去你剛剛設定的.env找)  
     
-    ![](https://i.imgur.com/7eVrkGR.jpg)
+    ![](https://github.com/fcumselab/ProgEdu/readme-images/)
 
 **全部設定結束後 要重新下 docker-compose up -d**
 
