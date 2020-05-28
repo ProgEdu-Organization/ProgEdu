@@ -63,8 +63,10 @@ RUN apt-get update && apt-get install -y default-jdk maven \
 ###########################################################################
 # Install Android SDK Library:
 ###########################################################################
+ARG SDK_SETUP=false
 
-RUN dpkg --add-architecture i386 \
+RUN if [ ${SDK_SETUP} = true ]; then \
+	dpkg --add-architecture i386 \
 		&& \
 	apt-get update && apt-get install -y --no-install-recommends \
 		&& \
@@ -74,12 +76,12 @@ RUN dpkg --add-architecture i386 \
 		&& \
 	apt-get clean \
 		&& \
-  rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+  rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
+;fi
 
 ###########################################################################
 # Install Android SDK:
 ###########################################################################
-
 # Environment variables
 ARG SDK_NAME=sdk-tools-linux-4333796
 ENV ANDROID_HOME /usr/local/android-sdk-linux
@@ -87,7 +89,8 @@ ENV ANDROID_SDK_HOME /usr/local/android-sdk-linux
 ENV ANDROID_AVD_HOME /root/.android/avd
 ENV PATH $PATH:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools:$ANDROID_HOME/emulator
 
-RUN cd /usr/local \ 
+RUN if [ ${SDK_SETUP} = true ]; then \
+	cd /usr/local \ 
 		&& \
 	mkdir -p $ANDROID_HOME \
 		&& \
@@ -101,13 +104,11 @@ RUN cd /usr/local \
 		&& \
 	mkdir -p $ANDROID_HOME/.android \
 		&& \
-	touch $ANDROID_HOME/.android/repositories.cfg
-
+	touch $ANDROID_HOME/.android/repositories.cfg \
+;fi
 ###########################################################################
 # Setup Android SDK:
 ###########################################################################
-
-ARG SDK_SETUP=false
 ARG SDK_PLATFORMS=android-28
 ARG SDK_BUILD_TOOLS=28.0.3
 
