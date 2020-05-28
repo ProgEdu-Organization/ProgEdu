@@ -17,7 +17,7 @@ docker -v
 *  如上一步 去修正其他所有 `http://example.com` 的路徑
 3. 執行`sudo docker-compose up -d` 
 
-### ==**Gitlab**==
+### **Gitlab**
 ##### 1. 登入
 依docker-compose.yml文件設定網址進入Gitlab
 使用者名稱為root，密碼為.env設定之密碼 
@@ -30,7 +30,7 @@ docker -v
 `WEB_GITLAB_ADMIN_PERSONAL_TOKEN = {Gitlab API Token}`
 將 **{Gitlab API Token}** 替換成 **Gitlab Token** (提醒 大括號要被刪掉)
 
-### ==**Jenkins**==  
+### **Jenkins**  
 
 1. 依docker-compose.yml文件設定網址進入Jenkins (第一次進入他會要你Unlock Jenkins)
 ![](https://i.imgur.com/99VpcpO.png =x200)
@@ -53,9 +53,9 @@ WEB_JENKINS_ADMIN_PASSWORD=password
 ```
 > 完成Jenkins初始化程序
 
-5. 拿**Jenkins Token** 
+5. 拿取**Jenkins Token** 
 因為ProgEdu要跟Jenkins做溝通 所以需要 **Jenkins Token**
-右上角點選 使用者名稱 > 設定 > API Token > Add new Token > Generate > 複製Token > **==儲存==**
+右上角點選 使用者名稱 > 設定 > API Token > Add new Token > Generate > 複製Token > **儲存**
 ![](https://i.imgur.com/2XmKVs5.jpg)  
 
 拿到**Jenkins Token**後要去設定 `.env` 檔
@@ -82,7 +82,7 @@ WEB_JENKINS_ADMIN_PASSWORD=password
         ![](https://i.imgur.com/T5Gq9WS.jpg)  
     2. 新增後把Credentials 換成 `GitLab API token` 
     3. 點擊Test Connection測試是否成功
-    4. **==儲存==**
+    4. **儲存**
     5. 可以在jenkins -> Credentials 發現你剛剛設定的憑證
 
 6. 設定Gitlab憑證
