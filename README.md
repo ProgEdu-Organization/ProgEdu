@@ -34,7 +34,7 @@ docker -v
 ### **Jenkins**  
 
 1. 依docker-compose.yml文件設定網址進入Jenkins (第一次進入他會要你Unlock Jenkins)
-![](https://i.imgur.com/99VpcpO.png =x200)
+![](https://github.com/fcumselab/ProgEdu/blob/developer/readme-images/unlock-jenkins.png)
 2. 解鎖Jenkins 進入容器 > 查看 initialAdminPassword 檔案 > 貼到上面輸入欄
 ```
 docker exec -it (YOUR_JENKINS_hash) bash 
