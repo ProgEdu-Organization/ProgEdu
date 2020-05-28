@@ -78,4 +78,3 @@ credentials:latest
 github-branch-source:latest
 android-emulator:latest
 android-lint:latest
-android-screenshot:latest
