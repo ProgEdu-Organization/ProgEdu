@@ -90,8 +90,9 @@ WEB_JENKINS_ADMIN_PASSWORD=password
     Credentials > System > Global credentials (unrestricted) > Add Credentials
     - Username：Gitlab root username (去你剛剛設定的.env找)
     - Password：Gitlab root password (去你剛剛設定的.env找)  
+    - ID: 必須是 **gitlab_root**  
     
-    ![](https://github.com/fcumselab/ProgEdu/blob/developer/readme-images/)
+    ![](https://github.com/fcumselab/ProgEdu/blob/developer/readme-images/jenkins-credentials-gitlab.jpg)
 
 **全部設定結束後 要重新下 docker-compose up -d**
 
