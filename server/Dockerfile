@@ -1,4 +1,4 @@
-FROM maven as builder
+FROM maven:3-jdk-8 as builder
 
 RUN mkdir /workdir
 
@@ -23,7 +23,7 @@ RUN apt-get update \
 
 RUN mvn -T 1C clean package -DskipTests
 
-FROM tomcat
+FROM tomcat:8.5.53
 
 COPY tomcat-config/context.xml /usr/local/tomcat/webapps/manager/META-INF/context.xml
 COPY tomcat-config/tomcat-users.xml /usr/local/tomcat/conf/tomcat-users.xml
