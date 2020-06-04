@@ -40,7 +40,7 @@ export class BarChartComponent implements OnInit, OnChanges {
       data: [65, 59, 80, 81, 56, 55, 40], label: this.status.checkStyleError.name
     },
     {
-      data: [28, 48, 40, 19, 86, 27, 90], label: this.status.Initial.name
+      data: [28, 48, 40, 19, 86, 27, 90], label: this.status.initial.name
     },
     {
       data: [65, 59, 80, 81, 56, 55, 40], label: this.status.testFailure.name

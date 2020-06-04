@@ -1,5 +1,5 @@
 export const Status = {
-  Initial: {
+  initial: {
     name: 'Initial',
     color: '#878787',
     status: ['INI']
