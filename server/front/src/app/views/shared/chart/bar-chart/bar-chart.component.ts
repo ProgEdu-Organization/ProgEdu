@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnChanges} from '@angular/core';
+import { Component, OnInit, Input, OnChanges } from '@angular/core';
 
 @Component({
   selector: 'app-bar-chart',
@@ -40,7 +40,7 @@ export class BarChartComponent implements OnInit, OnChanges {
       data: [65, 59, 80, 81, 56, 55, 40], label: this.status.checkStyleError.name
     },
     {
-      data: [28, 48, 40, 19, 86, 27, 90], label: this.status.notBuild.name
+      data: [28, 48, 40, 19, 86, 27, 90], label: this.status.Initial.name
     },
     {
       data: [65, 59, 80, 81, 56, 55, 40], label: this.status.testFailure.name
@@ -50,18 +50,18 @@ export class BarChartComponent implements OnInit, OnChanges {
   constructor() { }
 
   ngOnInit() {
-    
+
   }
 
   ngOnChanges(): void {
   }
-  
+
   public chartClicked(e: any): void {
-   
+
   }
 
   public chartHovered(e: any): void {
-    
+
   }
 
 
