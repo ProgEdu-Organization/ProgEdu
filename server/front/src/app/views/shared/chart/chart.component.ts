@@ -34,11 +34,11 @@ export class ChartComponent implements OnInit {
   public labels: string[] = [];
   public barChartData: any[] = [
     {
-      data: [], label: Status.notBuild.name,
-      backgroundColor: Status.notBuild.color,
-      borderColor: Status.notBuild.color,
-      hoverBackgroundColor: Status.notBuild.color,
-      hoverBorderColor: Status.notBuild.color,
+      data: [], label: Status.initial.name,
+      backgroundColor: Status.initial.color,
+      borderColor: Status.initial.color,
+      hoverBackgroundColor: Status.initial.color,
+      hoverBorderColor: Status.initial.color,
     },
     {
       data: [], label: Status.compilerFailure.name,
@@ -73,11 +73,11 @@ export class ChartComponent implements OnInit {
 
   public mixedChartData: Array<any> = [
     {
-      data: [], label: Status.notBuild.name, fill: false, type: 'line',
-      backgroundColor: Status.notBuild.color,
-      borderColor: Status.notBuild.color,
-      hoverBackgroundColor: Status.notBuild.color,
-      hoverBorderColor: Status.notBuild.color,
+      data: [], label: Status.initial.name, fill: false, type: 'line',
+      backgroundColor: Status.initial.color,
+      borderColor: Status.initial.color,
+      hoverBackgroundColor: Status.initial.color,
+      hoverBorderColor: Status.initial.color,
     },
     {
       data: [], label: Status.compilerFailure.name, fill: false, type: 'line',
@@ -138,7 +138,7 @@ export class ChartComponent implements OnInit {
 
     if (commits) {
       for (let i = 0; i < commits.length; i++) {
-        if (Status.notBuild.status.includes(commits[i].status)) {
+        if (Status.initial.status.includes(commits[i].status)) {
           statusCount[0] = statusCount[0] + 1;
         } else if (Status.compilerFailure.status.includes(commits[i].status)) {
           statusCount[1] = statusCount[1] + 1;
