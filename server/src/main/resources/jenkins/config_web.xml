@@ -56,9 +56,6 @@
   </triggers>
   <concurrentBuild>false</concurrentBuild>
   <builders>
-    <io.jenkins.plugins.screenshot.ScreenShotBuilder plugin="screenshot@1.0-SNAPSHOT">
-      <seleniumUrl>http://140.134.26.76:28808/wd/hub</seleniumUrl>
-    </io.jenkins.plugins.screenshot.ScreenShotBuilder>
     <hudson.plugins.build__timeout.BuildStepWithTimeout plugin="build-timeout@1.20">
       <strategy class="hudson.plugins.build_timeout.impl.AbsoluteTimeOutStrategy">
         <timeoutMinutes>15</timeoutMinutes>
@@ -80,8 +77,7 @@
         <timeoutMinutes>15</timeoutMinutes>
       </strategy>
       <buildStep class="hudson.tasks.Shell">
-        <command>npm i
-npm run test-suite</command>
+        <command>npm run test-suite</command>
       </buildStep>
       <operationList>
         <hudson.plugins.build__timeout.operations.FailOperation/>
@@ -91,19 +87,6 @@ npm run test-suite</command>
       <jenkinsIp>http://jenkins</jenkinsIp>
       <errorJobName>Sideex</errorJobName>
     </io.jenkins.plugins.sample.ErrorCatchBuilder>
-    <hudson.plugins.build__timeout.BuildStepWithTimeout plugin="build-timeout@1.20">
-      <strategy class="hudson.plugins.build_timeout.impl.AbsoluteTimeOutStrategy">
-        <timeoutMinutes>15</timeoutMinutes>
-      </strategy>
-      <buildStep class="hudson.tasks.Shell">
-        <command>npm run htmlhint
-npm run stylelint
-npm run eslint</command>
-      </buildStep>
-      <operationList>
-        <hudson.plugins.build__timeout.operations.FailOperation/>
-      </operationList>
-    </hudson.plugins.build__timeout.BuildStepWithTimeout>
   </builders>
   <publishers>
     <hudson.tasks.ArtifactArchiver>

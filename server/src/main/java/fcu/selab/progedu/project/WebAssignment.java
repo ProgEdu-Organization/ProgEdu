@@ -68,7 +68,6 @@ public class WebAssignment extends AssignmentType {
 
       String updateDbUrl = progEduApiUrl + "/commits/update";
       JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
-      String seleniumUrl = jenkinsData.getSeleniumHostUrl() + "/wd/hub";
       String jenkinsHostUrl = jenkinsData.getJenkinsHostUrl();
       String checksumUrl = progEduApiUrl + "/assignment/checksum?proName=" + projectName;
       String testFileUrl = AssignmentDbManager.getInstance().getTestFileUrl(projectName);
@@ -81,7 +80,6 @@ public class WebAssignment extends AssignmentType {
       doc.getElementsByTagName("jobName").item(0).setTextContent(jobName);
       doc.getElementsByTagName("testFileName").item(0).setTextContent(projectName);
       doc.getElementsByTagName("proDetailUrl").item(0).setTextContent(checksumUrl);
-      doc.getElementsByTagName("seleniumUrl").item(0).setTextContent(seleniumUrl);
       doc.getElementsByTagName("progeduDbUrl").item(0).setTextContent(updateDbUrl);
       doc.getElementsByTagName("user").item(0).setTextContent(username);
       doc.getElementsByTagName("proName").item(0).setTextContent(projectName);
