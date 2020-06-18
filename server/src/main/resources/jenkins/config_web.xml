@@ -77,7 +77,7 @@
         <timeoutMinutes>15</timeoutMinutes>
       </strategy>
       <buildStep class="hudson.tasks.Shell">
-        <command>npm run test-suite</command>
+        <command>npm run e2e-test</command>
       </buildStep>
       <operationList>
         <hudson.plugins.build__timeout.operations.FailOperation/>
@@ -122,5 +122,7 @@
       <disableDeferredWipeout>false</disableDeferredWipeout>
     </hudson.plugins.ws__cleanup.WsCleanup>
   </publishers>
-  <buildWrappers/>
+  <buildWrappers>
+    <hudson.plugins.timestamper.TimestamperBuildWrapper plugin="timestamper@1.11.3"/>
+  </buildWrappers>
 </project>

@@ -17,8 +17,9 @@ DB_CONNECTION_OPTION=?relaxAutoCommit=true&useSSL=false&useUnicode=true&characte
 JENKINS_PORT=8080
 
 
-############################## Selenium Config ##############################
-SELENIUM_PORT=4444
+############################## Selenium Config #############################
+SELENIUM_PORT=
+NGINX_PORT=
 
 
 ############################## Gitlab Config ##############################
@@ -41,8 +42,9 @@ WEB_JENKINS_ADMIN_PASSWORD=admin
 
 
 ############################## ProgEdu Selenium Connection Config ##############################
-WEB_SELENIUM_URL=http://example.com:4444
+WEB_SELENIUM_URL=
 
+WEB_NGINX_URL=
 
 ############################## ProgEdu Gitlab Connection Config ##############################
 WEB_GITLAB_ADMIN_USERNAME=root
@@ -58,11 +60,4 @@ MAIL_PASSWORD=example-password
 WEB_API_BASEURI=
 # WEB_API_BASEURI=/ProgEdu
 
-############################## Download Android SDK ##############################
-
-SDK_SETUP=true
-SDK_PLATFORMS=android-28
-SDK_BUILD_TOOLS=28.0.3
-
-############################## LOG ##############################
 LOG_LEVEL=error

@@ -77,14 +77,21 @@ services:
     privileged: true
     environment:
       WEB_SELENIUM_URL: ${WEB_SELENIUM_URL}
+      WEB_NGINX_URL: ${WEB_NGINX_URL}
     volumes:
       - ${DATA_PATH_HOST}/jenkins:/var/jenkins_home
       - /dev/kvm:/dev/kvm
 
+  selenium:
+    image: selenium/standalone-chrome:3.141.59
+    ports:
+      - "${SELENIUM_PORT}:4444"
+    restart: always
+
   nginx:
     image: nginx:stable
     ports:
-      - "${SELENIUM_PORT}:80"
+      - "${NGINX_PORT}:80"
     restart: always
     volumes:
       - ${DATA_PATH_HOST}/jenkins/workspace:/usr/share/nginx/html
