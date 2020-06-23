@@ -12,7 +12,7 @@ docker -v
 1. 在linux 中 clone [ProgEdu專案](https://github.com/fcumselab/ProgEdu)
 2. 將env-example文件修改成`.env` (注意是 **".env"** ) 
 *  修正 DB_USER=root
-*  設定密碼 DB_PASSWORD 要和 DB_PASSWORD 一樣 
+*  設定密碼 DB_PASSWORD 要和 DB_ROOT_PASSWORD 一樣 
 *  修正 `GITLAB_HOST=http://gitlab.example.com:22080` 成 
    `GITLAB_HOST=http://host:port`
 *  如上一步 去修正其他所有 `http://example.com` 的路徑
