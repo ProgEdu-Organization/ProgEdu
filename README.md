@@ -5,7 +5,7 @@
 主要為調用Jenkins與Gitlab的API服務, 且將整個系統用到的服務 **容器化** 運行。
 
 # ProgEdu建置流程
-此建置流程是從[ProgEdu建置流程文件](https://hackmd.io/2WghIgBwQIOIiOMibE94xg?view)遷移過來的, 如果有遇到問題也能從這找線索。
+此建置流程是從[ProgEdu建置流程文件](https://hackmd.io/2WghIgBwQIOIiOMibE94xg?view)遷移過來的, 目前排版有些地方不太對齊, 所以如果有遇到問題也能從這找線索。
 ### 首先確認server是否有docker-compose與docker工具
 ```
 docker-compose  
