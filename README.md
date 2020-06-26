@@ -5,6 +5,7 @@
 主要為調用Jenkins與Gitlab的API服務, 且將整個系統用到的服務 **容器化** 運行。
 
 # ProgEdu建置流程
+此建置流程是從[ProgEdu建置流程文件](https://hackmd.io/2WghIgBwQIOIiOMibE94xg?view)遷移過來的, 如果有遇到問題也能從這找線索。
 ### 首先確認server是否有docker-compose與docker工具
 ```
 docker-compose  
@@ -50,7 +51,7 @@ cat /var/jenkins_home/secrets/initialAdminPassword
 ![](https://github.com/fcumselab/ProgEdu/blob/developer/readme-images/jenkins-create-admin-user.png)  
 
 這裡的名稱 跟密碼 設定必須跟 `.env` 的設定 一致
-所以你要先查看你的`.evn` 把你設定的帳密填入以下兩行
+所以你要先查看你的`.env` 把你設定的帳密填入以下兩行
 ```
 WEB_JENKINS_ADMIN_USERNAME=yaya
 WEB_JENKINS_ADMIN_PASSWORD=password
@@ -59,7 +60,7 @@ WEB_JENKINS_ADMIN_PASSWORD=password
 
 5. 拿取**Jenkins Token** 
 因為ProgEdu要跟Jenkins做溝通 所以需要 **Jenkins Token**
-右上角點選 使用者名稱 > 設定 > API Token > Add new Token > Generate > 複製Token > **存**
+右上角點選 使用者名稱 > 設定 > API Token > Add new Token > Generate > 複製Token > **儲存**
 ![](https://github.com/fcumselab/ProgEdu/blob/developer/readme-images/jenkins-token.jpg)  
 
 拿到**Jenkins Token**後要去設定 `.env` 檔
