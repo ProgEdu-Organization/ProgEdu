@@ -1,33 +1,35 @@
 ![](https://github.com/fcumselab/ProgEdu/blob/developer/server/front/src/assets/img/logo.png)
 # ProgEdu介紹
+是一個自動檢查程式碼與編譯程式碼後批改, 統計, 測試的系統。
+主要為調用Jenkins與Gitlab的API服務, 並將整個系統容器化運行。
 
-# ProgEdu建置流程(2020/05/28更新)
-
+# ProgEdu建置流程(2020/6/27更新)
 ### 首先確認server是否有docker-compose與docker工具
 ```
 docker-compose  
 docker -v
 ```
-#### 建置步驟
+#### 初步建置步驟
 1. 在linux 中 clone [ProgEdu專案](https://github.com/fcumselab/ProgEdu)
-2. 將env-example文件修改成`.env` (注意是 **".env"** ) 
+2. 將env-example文件修改成`.env` (注意是 "點 env" )
+接著需要編輯 `.env` 做以下設定
 *  修正 DB_USER=root
-*  設定密碼 DB_PASSWORD 要和 DB_ROOT_PASSWORD 一樣 
+*  設定 `DB_PASSWORD` 和 `DB_ROOT_PASSWORD` 成一樣的密碼, 例如 DB_PASSWORD=123456 
 *  修正 `GITLAB_HOST=http://gitlab.example.com:22080` 成 
-   `GITLAB_HOST=http://host:port`
-*  如上一步 去修正其他所有 `http://example.com` 的路徑
+   `GITLAB_HOST=http://140.134.26.XXX:22080`。(22080 需要與 `.env` 裡的 `GITLAB_HTTP_PORT`設定一致)
+*  如上一步 去修正其它像右邊這種特徵的網址 `http://example.com` 成實際上ProgEdu要架設到的地方
 3. 執行`sudo docker-compose up -d` 
-
+4. 初步建置步驟結束,接下來需要個別設定 Gitlab 和 Jenkins 的一些權限，這樣ProgEdu才能跟這兩個服務連動
 ### **Gitlab**
 ##### 1. 登入
-依docker-compose.yml文件設定網址進入Gitlab
-使用者名稱為root，密碼為.env設定之密碼 
+依docker-compose.yml文件設定的網址進入Gitlab
+使用者名稱為root，密碼為`.env`設定的密碼 
 ##### 2. 複製Gitlab Token
 右上方頭像進入 > `Settings` ,再右邊導覽列找到 `Account Tokens` 
 全部權限打勾然後產生**Gitlab Token** 
-這是用來讓ProgEdu可以對Gitlab 控制的方法
-而ProgEdu的設定都源自於.env
-所以想當然爾要去.env設定 
+這是用來讓 ProgEdu 可以對 Gitlab 控制的權限設定
+而ProgEdu的設定都源自於`.env`
+所以想當然要去`.env`設定 
 `WEB_GITLAB_ADMIN_PERSONAL_TOKEN = {Gitlab API Token}`
 將 **{Gitlab API Token}** 替換成 **Gitlab Token** (提醒 大括號要被刪掉)
 
@@ -88,8 +90,8 @@ WEB_JENKINS_ADMIN_PASSWORD=password
 
 6. 設定Gitlab憑證
     Credentials > System > Global credentials (unrestricted) > Add Credentials
-    - Username：Gitlab root username (去你剛剛設定的.env找)
-    - Password：Gitlab root password (去你剛剛設定的.env找)  
+    - Username：Gitlab root username (在你剛剛設定的.env找)
+    - Password：Gitlab root password (在你剛剛設定的.env找)  
     - ID: 必須是 **gitlab_root**  
     
     ![](https://github.com/fcumselab/ProgEdu/blob/developer/readme-images/jenkins-credentials-gitlab.jpg)
