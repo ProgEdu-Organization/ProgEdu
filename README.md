@@ -1,9 +1,10 @@
 ![](https://github.com/fcumselab/ProgEdu/blob/developer/server/front/src/assets/img/logo.png)
 # ProgEdu介紹
 是一個自動檢查程式碼與編譯程式碼後批改, 統計, 測試的系統。
-主要為調用Jenkins與Gitlab的API服務, 並將整個系統容器化運行。
 
-# ProgEdu建置流程(2020/6/27更新)
+主要為調用Jenkins與Gitlab的API服務, 且將整個系統用到的服務 **容器化** 運行。
+
+# ProgEdu建置流程
 ### 首先確認server是否有docker-compose與docker工具
 ```
 docker-compose  
