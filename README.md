@@ -11,8 +11,9 @@ docker-compose
 docker -v
 ```
 ## 初步建置步驟
-1. 在linux系統中clone [ProgEdu專案](https://github.com/fcumselab/ProgEdu)
-2. 將env-example文件另外複製一份後， 改名成`.env` (注意是 "點 env" )
+1. 在linux系統中clone [ProgEdu專案](https://github.com/fcumselab/ProgEdu), 的develop分支
+`git clone --depth 1  --branch developer --single-branch https://github.com/fcumselab/ProgEdu.git`
+2. 將env-example文件另外複製一份後， 改名成`.env` (注意是 "點 env" ), 它將用來設定機密資料。
 接著需要編輯 `.env` 做以下設定
 *  要一起更改 `DB_PASSWORD` 和 `DB_ROOT_PASSWORD` ,這兩個變數值必須一樣。
 *  修正 `GITLAB_HOST=http://example.com:22080` 成 
