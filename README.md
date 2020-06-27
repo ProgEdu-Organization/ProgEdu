@@ -19,7 +19,7 @@ docker -v
 接著需要編輯 `.env` 做以下設定
 *  要一起更改 `DB_PASSWORD` 和 `DB_ROOT_PASSWORD` ,這兩個變數值必須一樣。
 *  修正 `GITLAB_HOST=http://example.com:22080` 成 
-   `GITLAB_HOST=http://140.134.26.XXX:22080`。(22080 需要與 `.env` 裡的 `GITLAB_HTTP_PORT`設定一致)
+   `GITLAB_HOST=http://{你電腦的IP地址}:22080`。(22080 需要與 `.env` 裡的 `GITLAB_HTTP_PORT`設定一致)
 *  如上一步 去修正其它像右邊這種特徵的網址 `http://example.com` 成實際上ProgEdu要架設到的地方
 3. 在專案的根目錄執行`sudo docker-compose up -d` 
 4. 初步建置步驟結束,接下來需要個別設定 Gitlab 和 Jenkins 的一些權限，這樣ProgEdu才能跟這兩個服務連動
