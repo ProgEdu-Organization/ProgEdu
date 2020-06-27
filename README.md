@@ -1,17 +1,16 @@
-![](https://github.com/fcumselab/ProgEdu/blob/developer/server/front/src/assets/img/logo.png)
-# 介紹
-是一個自動檢查程式碼與編譯程式碼後批改, 統計, 測試的系統。
+![](/readme-images/logo.png)
+# 簡介
+是一個自動檢查程式碼與編譯程式碼後，`批改`, `統計`, `測試` 的系統。
 
 主要為調用Jenkins與Gitlab的API服務, 且將整個系統用到的服務 **容器化** 運行。
 
-# 建置流程
-此建置流程是從[ProgEdu建置流程文件](https://hackmd.io/2WghIgBwQIOIiOMibE94xg?view)遷移過來的, 目前排版有些地方不太對齊, 所以如果有遇到問題也能從這找線索。
-### 首先確認server是否有docker-compose與docker工具
+# 建置流程教學
+## 首先確認server是否有docker-compose與docker工具
 ```
 docker-compose  
 docker -v
 ```
-#### 初步建置步驟
+## 初步建置步驟
 1. 在linux系統中clone [ProgEdu專案](https://github.com/fcumselab/ProgEdu)
 2. 將env-example文件另外複製一份後， 改名成`.env` (注意是 "點 env" )
 接著需要編輯 `.env` 做以下設定
@@ -22,11 +21,11 @@ docker -v
 3. 在專案的根目錄執行`sudo docker-compose up -d` 
 4. 初步建置步驟結束,接下來需要個別設定 Gitlab 和 Jenkins 的一些權限，這樣ProgEdu才能跟這兩個服務連動
 
-### **設定 Gitlab 流程**
-##### 1. 登入
+## **設定 Gitlab 流程**
+### 1. 登入
 用瀏覽器依照 `.env`裡的 `GITLAB_HOST` 的網址進入Gitlab，
 使用者名稱為root，密碼為 `GITLAB_ROOT_PASSWORD`對應的值
-##### 2. 複製Gitlab Token
+### 2. 複製Gitlab Token
 右上方頭像進入 > `Settings` ,在右邊導覽列找到 `Account Tokens`後， 
 全部權限打勾，接著按下產生**Gitlab Token** 
 這是用來讓 ProgEdu 可以對 Gitlab 控制的設定
@@ -35,7 +34,7 @@ docker -v
 `WEB_GITLAB_ADMIN_PERSONAL_TOKEN = {Gitlab API Token}`
 將 `{Gitlab API Token}` 替換 **token** (提醒: 大括號要拿掉)
 
-### **Jenkins**  
+## **設定 Jenkins 流程**  
 
 1. 依`.env`的`WEB_JENKINS_URL`所設定的網址進入Jenkins 
 2. 解鎖Jenkins
@@ -111,8 +110,12 @@ WEB_JENKINS_ADMIN_PASSWORD=password
 
 ![](/readme-images/jenkins-credentials-gitlab.jpg)
 
-**全部設定結束後 要重新下 docker-compose up -d**
-
+**全部設定結束後，儲存.env檔，然後要重新下 `docker-compose up -d` 指令，目的是用新的設定重新建置一次**
+## 測試系統建置成功
+1. 進入 `.env` 的 `WEB_EXTERNAL_URL` 的網址
+2. 輸入帳號: root, 密碼: `.env` 的`GITLAB_ROOT_PASSWORD`的值
+3. 可以測試創使用者後, 會發現GitLab也會新增一個使用者
+4. 詳細功能目前還沒有文件來說明， 待之後補上
 
 ## 推薦開發ProgEdu的重要工具
 * MobeXterm => 用ssh來連線linux
