@@ -56,11 +56,13 @@ cat /var/jenkins_home/secrets/initialAdminPassword
 ![](/readme-images/jenkins-create-admin-user.png)  
 
 這裡的名稱 跟密碼 設定必須跟 `.env` 的設定 一致
-所以你要先查看你的`.env` 把你設定的帳密填入以下兩行
+所以你要先查看你的`.env`。 例如下面例子的`.env`
 ```
-WEB_JENKINS_ADMIN_USERNAME=yaya
-WEB_JENKINS_ADMIN_PASSWORD=password
+WEB_JENKINS_ADMIN_USERNAME=admin
+WEB_JENKINS_ADMIN_PASSWORD=admin
 ```
+那就必須設定 帳號: `admin`, 密碼: `admin`
+
 然後一直下一步，就會完成初步的Jenkins架設流程。
 還剩幾步驟是為了拿權限。
 
