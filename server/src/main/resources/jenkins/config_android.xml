@@ -131,6 +131,13 @@ find ./target -iname *.png | while read line; do mv $line ./target/screenshot/; 
       <jenkinsAssignmentName>TEST</jenkinsAssignmentName>
       <pngPath>/target/screenshot</pngPath>
     </io.jenkins.plugins.progupdatetodb.UpdateToDbPublisher>
+    <io.jenkins.plugins.sample.SendMailNotifier plugin="MailPlugin@1.0-SNAPSHOT">
+      <studentEmail>D0123456@o365.fcu.edu.tw</studentEmail>
+      <credentialsId>email</credentialsId>
+      <smtpHost>smtp.gmail.com</smtpHost>
+      <smtpPort>465</smtpPort>
+      <assignmentType>android</assignmentType>
+    </io.jenkins.plugins.sample.SendMailNotifier>
     <hudson.plugins.ws__cleanup.WsCleanup plugin="ws-cleanup@0.37">
       <patterns class="empty-list" />
       <deleteDirs>false</deleteDirs>

@@ -72,6 +72,8 @@ public class JavacAssignment extends AssignmentType {
       DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 
       String updateDbUrl = progEduApiUrl + "/commits/update";
+      String studentMail = username + "@o365.fcu.edu.tw";
+
       // to-do : command
       String assignmentPath = System.getProperty("java.io.tmpdir") + "/tests/" + projectName;
       String command = getCommandFromFile(assignmentPath);
@@ -82,6 +84,9 @@ public class JavacAssignment extends AssignmentType {
       doc.getElementsByTagName("progeduDbUrl").item(0).setTextContent(updateDbUrl);
       doc.getElementsByTagName("user").item(0).setTextContent(username);
       doc.getElementsByTagName("proName").item(0).setTextContent(projectName);
+
+      // Send mail
+      doc.getElementsByTagName("studentEmail").item(0).setTextContent(studentMail);
 
       // write the content into xml file
       TransformerFactory transformerFactory = TransformerFactory.newInstance();

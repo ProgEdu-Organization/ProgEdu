@@ -72,6 +72,7 @@ public class WebAssignment extends AssignmentType {
       String checksumUrl = progEduApiUrl + "/assignment/checksum?proName=" + projectName;
       String testFileUrl = AssignmentDbManager.getInstance().getTestFileUrl(projectName);
       String stringEmpty = "";
+      String studentMail = username + "@o365.fcu.edu.tw";
 
       Document doc = docBuilder.parse(jenkinsJobConfigPath);
 
@@ -89,6 +90,9 @@ public class WebAssignment extends AssignmentType {
       doc.getElementsByTagName("jenkinsUsername").item(0).setTextContent(username);
       doc.getElementsByTagName("jenkinsAssignmentName").item(0).setTextContent(projectName);
       doc.getElementsByTagName("secretToken").item(0).setTextContent(stringEmpty);
+
+      // Send mail
+      doc.getElementsByTagName("studentEmail").item(0).setTextContent(studentMail);
 
       // write the content into xml file
       TransformerFactory transformerFactory = TransformerFactory.newInstance();

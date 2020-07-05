@@ -69,9 +69,10 @@ public class MavenAssignment extends AssignmentType {
       String checksumUrl = progEduApiUrl + "/assignment/checksum?proName=" + projectName;
       String testFileUrl = AssignmentDbManager.getInstance().getTestFileUrl(projectName);
 
-      Document doc = docBuilder.parse(jenkinsJobConfigPath);
       String jobName = username + "_" + projectName;
+      String studentMail = username + "@o365.fcu.edu.tw";
 
+      Document doc = docBuilder.parse(jenkinsJobConfigPath);
       doc.getElementsByTagName("url").item(0).setTextContent(projectUrl);
       doc.getElementsByTagName("jobName").item(0).setTextContent(jobName);
       doc.getElementsByTagName("testFileName").item(0).setTextContent(projectName);
@@ -80,6 +81,9 @@ public class MavenAssignment extends AssignmentType {
       doc.getElementsByTagName("testFileUrl").item(0).setTextContent(testFileUrl);
       doc.getElementsByTagName("user").item(0).setTextContent(username);
       doc.getElementsByTagName("proName").item(0).setTextContent(projectName);
+
+      // Send mail
+      doc.getElementsByTagName("studentEmail").item(0).setTextContent(studentMail);
 
       // write the content into xml file
       TransformerFactory transformerFactory = TransformerFactory.newInstance();

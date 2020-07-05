@@ -65,6 +65,7 @@ public class AndroidAssignment extends AssignmentType {
       String checksumUrl = progEduApiUrl + "/assignment/checksum?proName=" + projectName;
       String testFileUrl = AssignmentDbManager.getInstance().getTestFileUrl(projectName);
       String stringEmpty = "";
+      String studentMail = username + "@o365.fcu.edu.tw";
 
       DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
       DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
@@ -95,6 +96,9 @@ public class AndroidAssignment extends AssignmentType {
 
       // AndroidEmulator
       doc.getElementsByTagName("avdNameSuffix").item(0).setTextContent(jobName);
+
+      // Send mail
+      doc.getElementsByTagName("studentEmail").item(0).setTextContent(studentMail);
 
       // write the content into xml file
       TransformerFactory transformerFactory = TransformerFactory.newInstance();

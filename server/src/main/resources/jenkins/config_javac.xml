@@ -66,6 +66,13 @@ echo &quot;BUILD SUCCESS&quot;</command>
       <user>D0121564</user>
       <proName>OOP-HW6</proName>
     </org.jenkinsci.plugins.UpdatingDbPublisher>
+    <io.jenkins.plugins.sample.SendMailNotifier plugin="MailPlugin@1.0-SNAPSHOT">
+      <studentEmail>D0123456@o365.fcu.edu.tw</studentEmail>
+      <credentialsId>email</credentialsId>
+      <smtpHost>smtp.gmail.com</smtpHost>
+      <smtpPort>465</smtpPort>
+      <assignmentType>java</assignmentType>
+    </io.jenkins.plugins.sample.SendMailNotifier>
     <hudson.plugins.ws__cleanup.WsCleanup plugin="ws-cleanup@0.36">
       <patterns class="empty-list"/>
       <deleteDirs>false</deleteDirs>
