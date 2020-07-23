@@ -71,7 +71,7 @@ echo &quot;BUILD SUCCESS&quot;</command>
       <credentialsId>email</credentialsId>
       <smtpHost>smtp.gmail.com</smtpHost>
       <smtpPort>465</smtpPort>
-      <assignmentType>java</assignmentType>
+      <assignmentType>javac</assignmentType>
     </io.jenkins.plugins.sample.SendMailNotifier>
     <hudson.plugins.ws__cleanup.WsCleanup plugin="ws-cleanup@0.36">
       <patterns class="empty-list"/>
