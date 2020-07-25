@@ -23,6 +23,7 @@ import fcu.selab.progedu.config.CourseConfig;
 import fcu.selab.progedu.config.GitlabConfig;
 import fcu.selab.progedu.conn.JenkinsService;
 import fcu.selab.progedu.db.AssignmentDbManager;
+import fcu.selab.progedu.db.UserDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.service.StatusService;
 import fcu.selab.progedu.status.StatusEnum;
@@ -70,7 +71,7 @@ public class MavenAssignment extends AssignmentType {
       String testFileUrl = AssignmentDbManager.getInstance().getTestFileUrl(projectName);
 
       String jobName = username + "_" + projectName;
-      String studentMail = username + "@o365.fcu.edu.tw";
+      String studentMail = UserDbManager.getInstance().getUser(username).getEmail();
 
       Document doc = docBuilder.parse(jenkinsJobConfigPath);
       doc.getElementsByTagName("url").item(0).setTextContent(projectUrl);

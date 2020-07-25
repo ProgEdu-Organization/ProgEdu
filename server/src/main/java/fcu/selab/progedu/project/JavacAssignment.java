@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 import fcu.selab.progedu.config.CourseConfig;
 import fcu.selab.progedu.config.GitlabConfig;
 import fcu.selab.progedu.conn.JenkinsService;
+import fcu.selab.progedu.db.UserDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.service.StatusService;
 import fcu.selab.progedu.status.StatusEnum;
@@ -72,7 +73,7 @@ public class JavacAssignment extends AssignmentType {
       DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 
       String updateDbUrl = progEduApiUrl + "/commits/update";
-      String studentMail = username + "@o365.fcu.edu.tw";
+      String studentMail = UserDbManager.getInstance().getUser(username).getEmail();
 
       // to-do : command
       String assignmentPath = System.getProperty("java.io.tmpdir") + "/tests/" + projectName;
