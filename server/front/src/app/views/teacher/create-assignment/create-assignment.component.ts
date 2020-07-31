@@ -6,7 +6,7 @@ import { CreateAssignmentService } from './create-assignment.service';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { assignmentTypeEnum } from './assignmentTypeEnum';
 import { HttpErrorResponse } from '@angular/common/http';
-
+import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 @Component({
   selector: 'app-create-assignment',
   templateUrl: './create-assignment.component.html'
@@ -29,6 +29,15 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
   dynamic: number = 60;
   type: string = 'Waiting';
 
+  public Editor = ClassicEditor;
+  public editorConfig = {
+    placeholder: 'Write the assignment description in here!',
+    ckfinder: {
+      // Upload the images to the server using the CKFinder QuickUpload command.
+      uploadUrl: environment.SERVER_URL + `/webapi/image`
+    }
+  };
+
   constructor(private router: Router, private fb: FormBuilder, private createService: CreateAssignmentService) { }
   @ViewChild('myModal', { static: true }) public progressModal: ModalDirective;
   @ViewChild('errorModal', { static: false }) public errorModal: ModalDirective;
@@ -36,29 +45,26 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
   ngOnInit() {
     const now_time = Date.now() - (new Date().getTimezoneOffset() * 60 * 1000);
     this.assignment = this.fb.group({
-      name: [undefined, [Validators.required, Validators.pattern('^[a-zA-Z0-9-_]{3,10}')]],
+      name: [undefined, [Validators.required, Validators.pattern('^[a-zA-Z0-9-_]{3,12}')]],
       releaseTime: [new Date(now_time).toISOString().slice(0, 17) + '00', Validators.required],
       deadline: [new Date(now_time).toISOString().slice(0, 17) + '00', Validators.required],
-      description: [undefined, Validators.required],
+      description: [undefined],
       type: [undefined, Validators.required],
       file: [undefined, Validators.required],
       rememberMe: [true]
     });
     this.onChanges();
-
   }
 
   onChanges(): void {
     const name = 'name';
     const releaseTime = 'releaseTime';
     const deadline = 'deadline';
-    const description = 'description';
     this.assignment.get(name).valueChanges.subscribe(
       () => {
         this.assignment.get(name).valid ? this.showIsValidById(name) : this.hideIsInvalidById(name);
       }
     );
-
     this.assignment.get(releaseTime).valueChanges.subscribe(
       val => {
         val.length !== 0 ? this.showIsValidById(releaseTime) : this.hideIsInvalidById(releaseTime);
@@ -67,12 +73,6 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
     this.assignment.get(deadline).valueChanges.subscribe(
       val => {
         val.length !== 0 ? this.showIsValidById(deadline) : this.hideIsInvalidById(deadline);
-      }
-    );
-
-    this.assignment.get(description).valueChanges.subscribe(
-      val => {
-        val.length !== 0 ? this.showIsValidById(description) : this.hideIsInvalidById(description);
       }
     );
   }

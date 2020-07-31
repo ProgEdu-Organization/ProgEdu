@@ -51,10 +51,15 @@ services:
       - .env
     ports:
       - "${WEB_PORT}:8080"
+    restart: always
     depends_on:
       - db
       - jenkins
       - gitlab
+    volumes:
+      - ${DATA_PATH_HOST}/server/temp:/usr/local/tomcat/temp
+      - ${DATA_PATH_HOST}/server/logs:/usr/local/tomcat/logs
+      - ${DATA_PATH_HOST}/server/images:/usr/local/tomcat/images
 
   jenkins:
     # image: jenkins/jenkins:lts

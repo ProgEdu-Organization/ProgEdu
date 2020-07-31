@@ -1,4 +1,4 @@
-FROM maven as builder
+FROM maven:3-jdk-8 as builder
 
 RUN mkdir /workdir
 
@@ -23,19 +23,23 @@ RUN apt-get update \
 
 RUN mvn -T 1C clean package -DskipTests
 
-FROM tomcat
+FROM tomcat:8.5.53
 
 COPY tomcat-config/context.xml /usr/local/tomcat/webapps/manager/META-INF/context.xml
 COPY tomcat-config/tomcat-users.xml /usr/local/tomcat/conf/tomcat-users.xml
+COPY tomcat-config/server.xml /usr/local/tomcat/conf/server.xml
 
 ARG DEBUG=false
 ENV DEBUG=$DEBUG
 ENV LOG_LEVEL=$LOG_LEVEL
+ENV JAVA_OPTS="-Xmx512m"
 
 RUN echo $DEBUG
 
 RUN git config --global user.email "admin@example.com" && \
     git config --global user.name "Administrator" && \
+    mkdir /usr/local/tomcat/images  && \
+    mkdir /usr/local/tomcat/temp_images  && \
     if [ ${DEBUG} = true ]; then \
     rm -rf /usr/local/tomcat/webapps/ROOT /usr/local/tomcat/webapps/ROOT.war \
     ;else \

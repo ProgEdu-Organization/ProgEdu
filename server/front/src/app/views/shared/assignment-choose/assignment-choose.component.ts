@@ -1,7 +1,8 @@
-import { Component, OnInit, SystemJsNgModuleLoader } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { TimeService } from '../../../services/time.service'
 import { AssignmentChoosedService } from './assignment-choose.service';
+import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 @Component({
   selector: 'app-assignment-choose',
@@ -17,6 +18,9 @@ export class AssignmentChooseComponent implements OnInit {
   feedbacks: JSON;
   selectedCommitNumber;
   screenshotUrls: Array<string>;
+
+  public Editor = ClassicEditor;
+  public editorConfig = { toolbar: [] }
 
   constructor(private route: ActivatedRoute, private assignmentService: AssignmentChoosedService,
     private timeService: TimeService) { }
@@ -50,9 +54,7 @@ export class AssignmentChooseComponent implements OnInit {
             this.commits[commit].time = this.timeService.getUTCTime(this.commits[commit].time);
           }
         }
-
         this.commits.reverse();
-
       }
       if (this.isWebOrAndroid()) {
         this.getScreenshotUrls();
@@ -69,9 +71,7 @@ export class AssignmentChooseComponent implements OnInit {
   public copyToClipboard() {
     const copyBox = document.createElement('textarea');
     copyBox.value = this.gitlabAssignmentURL;
-
     document.body.appendChild(copyBox);
-    copyBox.focus();
     copyBox.select();
     document.execCommand('copy');
     document.body.removeChild(copyBox);
@@ -83,7 +83,6 @@ export class AssignmentChooseComponent implements OnInit {
         this.feedbacks = response;
         for (let i in this.feedbacks) {
           this.feedbacks[i].message.replace('/\n/g', '<br />');
-          console.log(this.feedbacks[i].message);
         }
       },
       error => {
