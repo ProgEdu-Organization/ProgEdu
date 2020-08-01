@@ -73,8 +73,8 @@ WEB_JENKINS_ADMIN_USERNAME=admin
 WEB_JENKINS_ADMIN_PASSWORD=admin
 ```
 則在此例下, 就必須設定Jenkins的帳號: `admin`, 密碼: `admin`
-
-接著持續按下一步，就會完成初步的Jenkins架設流程,
+, 按下 `Save and Finish`
+接著持續按下一步， 與登入, 就會完成初步的Jenkins架設流程,
 還剩幾步驟是為了拿權限。
 
 5. 拿取**Jenkins Token** 
