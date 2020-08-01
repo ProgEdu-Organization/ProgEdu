@@ -41,13 +41,11 @@ docker -v // 19.03.11
 用瀏覽器依照 `.env`裡的 `GITLAB_HOST` 的網址進入GitLab，
 使用者名稱為root，密碼為 `GITLAB_ROOT_PASSWORD`對應的值
 ### 2. 複製GitLab Token 
-右上方頭像進入 > `Settings` ,在右邊導覽列找到 `Account Tokens`後， 
-全部權限打勾，接著按下產生**GitLab Token** 
-這是用來讓 ProgEdu 可以對 GitLab 控制的設定
-，而ProgEdu的設定都源自於`.env`
-所以想當然要去`.env`設定 
-`WEB_GITLAB_ADMIN_PERSONAL_TOKEN = {GitLab API Token}`
-將 `{GitLab API Token}` 替換 **token** (提醒: 大括號要拿掉)
+右上方頭像進入 > `Settings` ,在左邊導覽列找到 `Account Tokens`後， 
+可自行設定Name, 日期可以不用設定,
+接著全部權限打勾後, 按下`Create personal access token`, 將產生的 **GitLab Token** 
+輸入到`.env`的 `WEB_GITLAB_ADMIN_PERSONAL_TOKEN`的值,如下範例 
+`WEB_GITLAB_ADMIN_PERSONAL_TOKEN=wek213wlkawjrlamsdkfa`
 
 ## **設定 Jenkins 流程**  
 
