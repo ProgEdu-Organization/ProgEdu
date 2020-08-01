@@ -56,10 +56,11 @@ docker -v // 19.03.11
 ![](readme-images/unlock-jenkins.png)
 (備註 解鎖Jenkins需要進入容器查看 initialAdminPassword 檔案) 以下是進入容器方法
 ```
-docker exec -it (YOUR_JENKINS_hash) bash 
+docker exec -it (your_Jenkins_container_name) bash 
 cat /var/jenkins_home/secrets/initialAdminPassword
 ``` 
-(備註: exec 是指進入容器, -it是指用互動模式, YOUR_JENKINS_hash 是指定哪個容器, bash 是指開啟容器內的bash程式。 cat 是顯示檔案內容用的指令)
+(備註: your_Jenkins_container_name 可以從docker-compose時得到, 如下圖範例
+![](/readme-images/how-into-jenkins-container.png)  
 
 3. 安裝plug-in 選擇"Install suggested plugins"
 ![](/readme-images/jenkins-install-plugins.png)  
@@ -73,9 +74,9 @@ cat /var/jenkins_home/secrets/initialAdminPassword
 WEB_JENKINS_ADMIN_USERNAME=admin
 WEB_JENKINS_ADMIN_PASSWORD=admin
 ```
-那就必須設定 帳號: `admin`, 密碼: `admin`
+則在此例下, 就必須設定Jenkins的帳號: `admin`, 密碼: `admin`
 
-然後一直下一步，就會完成初步的Jenkins架設流程。
+接著持續按下一步，就會完成初步的Jenkins架設流程,
 還剩幾步驟是為了拿權限。
 
 5. 拿取**Jenkins Token** 
