@@ -8,17 +8,9 @@ DB_HOST=db
 DB_PORT=23306
 DB_USER=root
 DB_PASSWORD=123456
-DB_DATABASE=ProgEdu
 DB_ROOT_PASSWORD=123456
+DB_DATABASE=ProgEdu
 DB_CONNECTION_OPTION=?relaxAutoCommit=true&useSSL=false&useUnicode=true&characterEncoding=utf-8
-
-
-############################## Jenkins Config ##############################
-JENKINS_PORT=8080
-
-
-############################## Selenium Config ##############################
-SELENIUM_PORT=4444
 
 
 ############################## Gitlab Config ##############################
@@ -34,6 +26,7 @@ WEB_PORT=22000
 
 
 ############################## ProgEdu Jenkins Connection Config ##############################
+JENKINS_PORT=8080
 WEB_JENKINS_URL=http://example.com:8080
 WEB_JENKINS_API_TOKEN={replace token}
 WEB_JENKINS_ADMIN_USERNAME=admin
@@ -41,6 +34,7 @@ WEB_JENKINS_ADMIN_PASSWORD=admin
 
 
 ############################## ProgEdu Selenium Connection Config ##############################
+SELENIUM_PORT=4444
 WEB_SELENIUM_URL=http://example.com:4444
 
 
@@ -55,8 +49,8 @@ MAIL_PASSWORD=example-password
 
 
 ############################## Build Config ##############################
+# This need have empty value, so don't care about it, this will fix later
 WEB_API_BASEURI=
-# WEB_API_BASEURI=/ProgEdu
 
 ############################## Download Android SDK ##############################
 
