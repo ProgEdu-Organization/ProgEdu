@@ -155,4 +155,14 @@ public class StatusService {
   public boolean isAndroidCheckstyleFailure(String console) {
     return console.contains("Task :app:checkStyle FAILED");
   }
+
+  /**
+   * Android is lint error
+   *
+   * @param console jenkins job console text
+   * @return boolean
+   */
+  public boolean isAndroidLintFailure(String console) {
+    return console.contains("Task :app:lint FAILED");
+  }
 }
