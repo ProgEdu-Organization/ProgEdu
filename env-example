@@ -1,4 +1,5 @@
-############################## Project Config ##############################
+############################## Main Config ##############################
+
 COMPOSE_PROJECT_NAME=ProgEdu
 DATA_PATH_HOST=./.data
 
@@ -18,7 +19,12 @@ WEB_JENKINS_URL=http://example.com:8080
 SELENIUM_PORT=4444
 WEB_SELENIUM_URL=http://example.com:4444
 
-############################## Database Config ##############################
+#########################################################################
+
+############################## Minor Config ##############################
+
+###### Database Config 
+
 DB_USER=root
 DB_PASSWORD=123456
 DB_ROOT_PASSWORD=123456
@@ -26,41 +32,40 @@ DB_DATABASE=ProgEdu
 DB_CONNECTION_OPTION=?relaxAutoCommit=true&useSSL=false&useUnicode=true&characterEncoding=utf-8
 
 
-############################## Gitlab Config ##############################
+###### Gitlab Config
+
 GITLAB_ROOT_PASSWORD=rootrootrootroot
 
+###### ProgEdu Jenkins Connection Config
 
-############################## ProgEdu Config ##############################
-
-
-############################## ProgEdu Jenkins Connection Config ##############################
 WEB_JENKINS_API_TOKEN={replace token}
 WEB_JENKINS_ADMIN_USERNAME=admin
 WEB_JENKINS_ADMIN_PASSWORD=admin
 
+###### ProgEdu Gitlab Connection Config
 
-############################## ProgEdu Selenium Connection Config ##############################
-
-
-############################## ProgEdu Gitlab Connection Config ##############################
 WEB_GITLAB_ADMIN_USERNAME=root
 WEB_GITLAB_ADMIN_PERSONAL_TOKEN={replace token}
 
+###### ProgEdu Mailer Config 
 
-############################## ProgEdu Mailer Config ##############################
 MAIL_USER=admin@example.com
 MAIL_PASSWORD=example-password
 
+###### Build Config
 
-############################## Build Config ##############################
 # This need have empty value, so don't care about it, this will fix later
 WEB_API_BASEURI=
 
-############################## Download Android SDK ##############################
+###### Download Android SDK
 
 SDK_SETUP=true
 SDK_PLATFORMS=android-28
 SDK_BUILD_TOOLS=28.0.3
 
-############################## LOG ##############################
+###### LOG
+
 LOG_LEVEL=error
+
+
+#########################################################################
