@@ -162,7 +162,7 @@ public class AndroidAssignment extends AssignmentType {
       if (statusService.isAndroidCompileFailure(console)) {
         status = StatusEnum.COMPILE_FAILURE;
       } else if (statusService.isAndroidLintFailure(console)) {
-        status = StatusEnum.LINT_FAILURE;
+        status = StatusEnum.ANDROID_LINT_FAILURE;
       } else if (statusService.isAndroidCheckstyleFailure(console)) {
         status = StatusEnum.CHECKSTYLE_FAILURE;
       } else if (statusService.isAndroidUnitTestFailure(console)) {

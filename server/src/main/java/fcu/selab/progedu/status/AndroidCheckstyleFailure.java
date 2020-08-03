@@ -55,7 +55,7 @@ public class AndroidCheckstyleFailure implements Status {
       ArrayList<FeedBack> feedbackList = new ArrayList<>();
       feedbackList.add(
           new FeedBack(StatusEnum.CHECKSTYLE_FAILURE, "", "",
-              "Coding Style ArrayList error", "", ""));
+              "Coding Style ArrayList Error", "", ""));
       return feedbackList;
     }
   }

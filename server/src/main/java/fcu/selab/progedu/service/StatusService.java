@@ -123,7 +123,7 @@ public class StatusService {
    * @return boolean
    */
   public boolean isAndroidCompileFailure(String console) {
-    return console.contains("Task :app:compileDebugJavaWithJavac FAILED");
+    return console.contains("compileDebugJavaWithJavac FAILED");
   }
 
   /**
@@ -133,7 +133,7 @@ public class StatusService {
    * @return boolean
    */
   public boolean isAndroidUnitTestFailure(String console) {
-    return console.contains("Task :app:testDebugUnitTest FAILED");
+    return console.contains("testDebugUnitTest FAILED");
   }
 
   /**
@@ -143,7 +143,7 @@ public class StatusService {
    * @return boolean
    */
   public boolean isAndroidUiTestFailure(String console) {
-    return console.contains("Task :app:connectedDebugAndroidTest FAILED");
+    return console.contains("connectedDebugAndroidTest FAILED");
   }
 
   /**
@@ -153,7 +153,7 @@ public class StatusService {
    * @return boolean
    */
   public boolean isAndroidCheckstyleFailure(String console) {
-    return console.contains("Task :app:checkStyle FAILED");
+    return console.contains("checkStyle FAILED");
   }
 
   /**
@@ -163,6 +163,6 @@ public class StatusService {
    * @return boolean
    */
   public boolean isAndroidLintFailure(String console) {
-    return console.contains("Task :app:lint FAILED");
+    return console.contains("lint FAILED");
   }
 }
