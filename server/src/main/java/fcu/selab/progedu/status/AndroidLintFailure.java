@@ -7,11 +7,11 @@ import java.util.ArrayList;
 public class AndroidLintFailure implements Status {
   @Override
   public String extractFailureMsg(String consoleText) {
-
+    return null;
   }
 
   @Override
   public ArrayList<FeedBack> formatExamineMsg(String consoleText) {
-
+    return null;
   }
 }
