@@ -2,10 +2,23 @@
 COMPOSE_PROJECT_NAME=ProgEdu
 DATA_PATH_HOST=./.data
 
-
-############################## Database Config ##############################
 DB_HOST=db
 DB_PORT=23306
+
+GITLAB_HTTP_PORT=22080
+GITLAB_HOST=http://example.com:22080
+GITLAB_SSH_PORT=22022
+
+WEB_EXTERNAL_URL=http://example.com:22000
+WEB_PORT=22000
+
+JENKINS_PORT=8080
+WEB_JENKINS_URL=http://example.com:8080
+
+SELENIUM_PORT=4444
+WEB_SELENIUM_URL=http://example.com:4444
+
+############################## Database Config ##############################
 DB_USER=root
 DB_PASSWORD=123456
 DB_ROOT_PASSWORD=123456
@@ -14,28 +27,19 @@ DB_CONNECTION_OPTION=?relaxAutoCommit=true&useSSL=false&useUnicode=true&characte
 
 
 ############################## Gitlab Config ##############################
-GITLAB_HTTP_PORT=22080
-GITLAB_HOST=http://example.com:22080
-GITLAB_SSH_PORT=22022
 GITLAB_ROOT_PASSWORD=rootrootrootroot
 
 
 ############################## ProgEdu Config ##############################
-WEB_EXTERNAL_URL=http://example.com:22000
-WEB_PORT=22000
 
 
 ############################## ProgEdu Jenkins Connection Config ##############################
-JENKINS_PORT=8080
-WEB_JENKINS_URL=http://example.com:8080
 WEB_JENKINS_API_TOKEN={replace token}
 WEB_JENKINS_ADMIN_USERNAME=admin
 WEB_JENKINS_ADMIN_PASSWORD=admin
 
 
 ############################## ProgEdu Selenium Connection Config ##############################
-SELENIUM_PORT=4444
-WEB_SELENIUM_URL=http://example.com:4444
 
 
 ############################## ProgEdu Gitlab Connection Config ##############################
