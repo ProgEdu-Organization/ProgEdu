@@ -44,6 +44,9 @@ docker -v // 19.03.11
 右上方頭像進入 > `Settings` ,在左邊導覽列找到 `Account Tokens`後， 
 可自行設定Name, 日期可以不用設定,
 接著全部權限打勾後, 按下`Create personal access token`, 將產生的 **GitLab Token** 
+![](readme-images/How-to-take-token-in-Gitlab.png)
+
+
 輸入到`.env`的 `WEB_GITLAB_ADMIN_PERSONAL_TOKEN`的值,如下範例 
 `WEB_GITLAB_ADMIN_PERSONAL_TOKEN=wek213wlkawjrlamsdkfa`
 
