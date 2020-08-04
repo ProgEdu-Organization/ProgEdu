@@ -64,8 +64,9 @@ public class AndroidLintFailure implements Status {
               consoleText.indexOf("\n", consoleText.indexOf('~')) + 1, endIndex);
         }
         endIndex = consoleText.length();
-
+        System.out.println("FileName: " + fileName);
       }
+      return feedbackList;
     } catch (Exception e) {
       ArrayList<FeedBack> feedbackList = new ArrayList<>();
       feedbackList.add(
@@ -73,7 +74,6 @@ public class AndroidLintFailure implements Status {
               "Coding Style ArrayList Error", "", ""));
       return feedbackList;
     }
-    return null;
   }
 
   public String extractFilename(String str) {

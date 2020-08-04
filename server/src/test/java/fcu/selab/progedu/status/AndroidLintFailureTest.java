@@ -45,23 +45,31 @@ public class AndroidLintFailureTest {
       consoleText = props.getProperty("TEST_ONE").trim();
     }
     consoleText = androidLintFailure.extractFailureMsg(consoleText);
-    System.out.println("++++++++++++++++\n" + consoleText + "\n-------------------");
     ArrayList arrayList = androidLintFailure.formatExamineMsg(consoleText);
     ArrayList<FeedBack> testArray = new ArrayList<>();
-    testArray.add(new FeedBack(StatusEnum.CHECKSTYLE_FAILURE, "/D0440792_Android-Lint/app/src/main/res/layout/activity_main.xml"
-        + "\n/D0440792_Android-Lint/app/src/main/res/layout/activity_main.xml",
-        "20\n10", "Error: Duplicate id @+id/helloWorld, already defined earlier in this layout [DuplicateIds]", "android:id=\"@+id/helloWorld\"",
+    testArray.add(new FeedBack(StatusEnum.ANDROID_LINT_FAILURE,
+        "/D0440792_Android-Lint/app/src/main/res/layout/activity_main.xml"
+            + "\n/D0440792_Android-Lint/app/src/main/res/layout/activity_main.xml",
+        "20\n10",
+        "Error: Duplicate id @+id/helloWorld, already defined earlier in this layout [DuplicateIds]",
+        "android:id=\"@+id/helloWorld\"",
         "https://developer.android.com/studio/write/lint"));
-    testArray.add(new FeedBack(StatusEnum.CHECKSTYLE_FAILURE, "/D0440792_Android-Lint/app/src/main/res/layout/activity_main.xml"
-        + "\n/D0440792_Android-Lint/app/src/main/res/layout/activity_main.xml",
-        "20\n10", "Error: Duplicate id @+id/helloWorld, already defined earlier in this layout [DuplicateIds]", "android:id=\"@+id/helloWorld\"",
+    testArray.add(new FeedBack(StatusEnum.ANDROID_LINT_FAILURE,
+        "/D0440792_Android-Lint/app/src/main/res/layout/activity_main.xml",
+        "13",
+        "Error: Hardcoded string \"hello\", should use @string resource [HardcodedText]",
+        "android:text=\"hello\"",
         "https://developer.android.com/studio/write/lint"));
-    testArray.add(new FeedBack(StatusEnum.CHECKSTYLE_FAILURE, "/D0440792_Android-Lint/app/src/main/res/layout/activity_main.xml"
-        + "\n/D0440792_Android-Lint/app/src/main/res/layout/activity_main.xml",
-        "20\n10", "Error: Duplicate id @+id/helloWorld, already defined earlier in this layout [DuplicateIds]", "android:id=\"@+id/helloWorld\"",
+    testArray.add(new FeedBack(StatusEnum.ANDROID_LINT_FAILURE,
+        "/D0440792_Android-Lint/app/src/main/res/layout/activity_main.xml",
+        "23",
+        "Error: Hardcoded string \"hello\", should use @string resource [HardcodedText]",
+        "android:text=\"hello\"",
         "https://developer.android.com/studio/write/lint"));
     String toJson = androidLintFailure.tojsonArray(arrayList);
     String testJson = androidLintFailure.tojsonArray(testArray);
+    System.out.println(toJson);
+    System.out.println(testJson);
     Assert.assertEquals(toJson, testJson);
   }
 
