@@ -1,13 +1,14 @@
 package fcu.selab.progedu.status;
 
+import fcu.selab.progedu.conn.JenkinsService;
 import fcu.selab.progedu.data.FeedBack;
+import fcu.selab.progedu.service.CommitRecordService;
 
 import java.util.ArrayList;
 
 public class AndroidLintFailure implements Status {
   @Override
   public String extractFailureMsg(String consoleText) {
-
     String feedback;
     String feedbackStart = "Errors found:";
     String feedbackEnd = "BUILD FAILED";
@@ -27,14 +28,12 @@ public class AndroidLintFailure implements Status {
       while (consoleText.contains("Error:")) {
         int error = consoleText.indexOf("Error:");
         int nextRow = consoleText.indexOf("\n", error);
-
         // Duplicate failure need to format
         String fileNameAndLine = consoleText.substring(0, error).trim();
-
-        String fileName = extractFilename(fileNameAndLine);
+        String fileName = extractFileName(fileNameAndLine);
         String line = extractLine(fileNameAndLine);
         String msg = consoleText.substring(error, nextRow).trim();
-        String symtom = consoleText.substring(nextRow,
+        String symptom = consoleText.substring(nextRow,
             consoleText.indexOf("\n", nextRow + 1)).trim();
 
         if (msg.contains("Duplicate")) {
@@ -42,7 +41,7 @@ public class AndroidLintFailure implements Status {
               consoleText.indexOf('~')) + 1;
           String duplicateMsg = "\n" + consoleText.substring(
               duplicateMsgIdx, consoleText.indexOf("\n", duplicateMsgIdx)).trim();
-          fileName += "\n" + extractFilename(duplicateMsg);
+          fileName += "\n" + extractFileName(duplicateMsg);
           line += "\n" + extractLine(duplicateMsg);
         }
 
@@ -51,7 +50,7 @@ public class AndroidLintFailure implements Status {
             fileName,
             line,
             msg,
-            symtom,
+            symptom,
             "https://developer.android.com/studio/write/lint"
         ));
 
@@ -64,7 +63,6 @@ public class AndroidLintFailure implements Status {
               consoleText.indexOf("\n", consoleText.indexOf('~')) + 1, endIndex);
         }
         endIndex = consoleText.length();
-        System.out.println("FileName: " + fileName);
       }
       return feedbackList;
     } catch (Exception e) {
@@ -76,7 +74,7 @@ public class AndroidLintFailure implements Status {
     }
   }
 
-  public String extractFilename(String str) {
+  public String extractFileName(String str) {
     return str.substring(0, str.indexOf(":")).trim();
   }
 
