@@ -15,16 +15,16 @@ docker -v // 19.03.11
 
 `git clone --depth 1  --branch developer --single-branch https://github.com/fcumselab/ProgEdu.git`
 
-1. 將 `env-example`檔案改名成 `.env` (注意是 "點 env" ), 並編輯它, 它將用來作為建置的設定。
+2. 將 `env-example`檔案改名成 `.env` (注意是 "點 env" ), 並編輯它, 它將用來作為建置的設定。
 
    2.1. 修正 `GITLAB_HOST=http://example.com:22080` 成 
    `GITLAB_HOST=http://你電腦的IP地址:22080`。(22080 需要與 `.env` 裡的 `GITLAB_HTTP_PORT`設定一致)。
    
-   2.2.如上一步, 去修正其它像右邊這種特徵的網址 `http://example.com` 成實際上ProgEdu要架設到的地方, 記得每個服務的 port 都要跟網址後面的 port 一致, 像是 `JENKINS_PORT=8080` 與 `WEB_JENKINS_URL=http://example.com:8080`,可以注意到後面的8080是一樣的, 所以如果因為port號被占用, 而要更換成38080, 則兩個設定為`JENKINS_PORT=38080` 與 `WEB_JENKINS_URL=http://example.com:38080`。
+   2.2.如上一步, 去修正其它像右邊這種特徵的網址 `http://example.com` 成實際上ProgEdu要架設到的地方, 記得每個服務的 port 都要跟網址後面的 port 一致, 像是 `JENKINS_PORT=8080` 與 `WEB_JENKINS_URL=http://example.com:8080`,可以注意到後面的8080是一樣的, 所以如果因為port號被占用, 而想要把port號更換成38080, 則這兩個設定為 `JENKINS_PORT=38080` 與 `WEB_JENKINS_URL=http://example.com:38080` 。
 
-   2.3. 更改 `COMPOSE_PROJECT_NAME=ProgEdu`, 後面的`ProgEdu`可以修改成`MyProgEdu`, 這是表示這群容器的唯一識別ID, 所以如果同一電腦部屬了兩組ProgEdu, 則這變數必須不一樣, 才不會有衝突。
+   2.3. 更改 `COMPOSE_PROJECT_NAME=ProgEdu`, 後面的`ProgEdu`可以修改成`yourname-ProgEdu`, 這是表示這群容器的唯一識別ID, 所以如果同一電腦部屬了兩組ProgEdu, 則這變數必須不一樣, 才不會有衝突。
 
-2. 安全性設定的重要細節 : 
+3. 安全性設定的重要細節 : 
    
    3.1. 如果要更改資料庫密碼, 則 `DB_PASSWORD` 和 `DB_ROOT_PASSWORD` ,必須設定一樣。
    
@@ -32,9 +32,9 @@ docker -v // 19.03.11
    
    3.3. 補充上述, `server`是指ProgEdu的主要網站服務, 之後網站管理員的進入帳號是root, 密碼是上述所設定的。
   
-3. 在專案的根目錄執行 `sudo docker-compose up -d` 即可完成初步建置。
+4. 在專案的根目錄執行 `sudo docker-compose up -d` 即可完成初步建置。
 
-4. 初步建置步驟結束,接下來需要各別設定 GitLab 和 Jenkins 的一些權限，這樣ProgEdu才能跟這兩個服務連動。
+5. 初步建置步驟結束,接下來需要各別設定 GitLab 和 Jenkins 的一些權限，這樣ProgEdu才能跟這兩個服務連動。
 
 ## **設定 GitLab 流程**
 ### 1. 登入
@@ -44,6 +44,9 @@ docker -v // 19.03.11
 右上方頭像進入 > `Settings` ,在左邊導覽列找到 `Account Tokens`後， 
 可自行設定Name, 日期可以不用設定,
 接著全部權限打勾後, 按下`Create personal access token`, 將產生的 **GitLab Token** 
+![](readme-images/How-to-take-token-in-Gitlab.png)
+
+
 輸入到`.env`的 `WEB_GITLAB_ADMIN_PERSONAL_TOKEN`的值,如下範例 
 `WEB_GITLAB_ADMIN_PERSONAL_TOKEN=wek213wlkawjrlamsdkfa`
 
