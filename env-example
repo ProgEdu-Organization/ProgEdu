@@ -1,68 +1,71 @@
-############################## Project Config ##############################
+############################## Main Config ##############################
+
 COMPOSE_PROJECT_NAME=ProgEdu
 DATA_PATH_HOST=./.data
 
-
-############################## Database Config ##############################
-DB_HOST=db
 DB_PORT=23306
+DB_HOST=db
+
+GITLAB_HTTP_PORT=22080
+GITLAB_HOST=http://example.com:22080
+GITLAB_SSH_PORT=22022
+
+WEB_PORT=22000
+WEB_EXTERNAL_URL=http://example.com:22000
+
+JENKINS_PORT=8080
+WEB_JENKINS_URL=http://example.com:8080
+
+SELENIUM_PORT=4444
+WEB_SELENIUM_URL=http://example.com:4444
+
+#########################################################################
+
+############################## Minor Config ##############################
+
+###### Database Config 
+
 DB_USER=root
 DB_PASSWORD=123456
-DB_DATABASE=ProgEdu
 DB_ROOT_PASSWORD=123456
+DB_DATABASE=ProgEdu
 DB_CONNECTION_OPTION=?relaxAutoCommit=true&useSSL=false&useUnicode=true&characterEncoding=utf-8
 
 
-############################## Jenkins Config ##############################
-JENKINS_PORT=8080
+###### Gitlab Config
 
-
-############################## Selenium Config ##############################
-SELENIUM_PORT=4444
-
-
-############################## Gitlab Config ##############################
-GITLAB_HOST=http://example.com:22080
-GITLAB_SSH_PORT=22022
-GITLAB_HTTP_PORT=22080
 GITLAB_ROOT_PASSWORD=rootrootrootroot
 
+###### ProgEdu Jenkins Connection Config
 
-############################## ProgEdu Config ##############################
-WEB_EXTERNAL_URL=http://example.com:22000
-WEB_PORT=22000
-
-
-############################## ProgEdu Jenkins Connection Config ##############################
-WEB_JENKINS_URL=http://example.com:8080
 WEB_JENKINS_API_TOKEN={replace token}
 WEB_JENKINS_ADMIN_USERNAME=admin
 WEB_JENKINS_ADMIN_PASSWORD=admin
 
+###### ProgEdu Gitlab Connection Config
 
-############################## ProgEdu Selenium Connection Config ##############################
-WEB_SELENIUM_URL=http://example.com:4444
-
-
-############################## ProgEdu Gitlab Connection Config ##############################
 WEB_GITLAB_ADMIN_USERNAME=root
 WEB_GITLAB_ADMIN_PERSONAL_TOKEN={replace token}
 
+###### ProgEdu Mailer Config 
 
-############################## ProgEdu Mailer Config ##############################
 MAIL_USER=admin@example.com
 MAIL_PASSWORD=example-password
 
+###### Build Config
 
-############################## Build Config ##############################
+# This need have empty value, so don't care about it, this will fix later
 WEB_API_BASEURI=
-# WEB_API_BASEURI=/ProgEdu
 
-############################## Download Android SDK ##############################
+###### Download Android SDK
 
 SDK_SETUP=true
 SDK_PLATFORMS=android-28
 SDK_BUILD_TOOLS=28.0.3
 
-############################## LOG ##############################
+###### LOG
+
 LOG_LEVEL=error
+
+
+#########################################################################
