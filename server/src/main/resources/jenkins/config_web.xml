@@ -77,7 +77,11 @@
         <timeoutMinutes>15</timeoutMinutes>
       </strategy>
       <buildStep class="hudson.tasks.Shell">
-        <command>npm run e2e-test</command>
+        <command>npm i
+npm run htmlhint
+npm run stylelint
+npm run eslint
+npm run e2e-test</command>
       </buildStep>
       <operationList>
         <hudson.plugins.build__timeout.operations.FailOperation/>
@@ -87,6 +91,9 @@
       <jenkinsIp>http://jenkins</jenkinsIp>
       <errorJobName>Sideex</errorJobName>
     </io.jenkins.plugins.sample.ErrorCatchBuilder>
+    <io.jenkins.plugins.screenshot.ScreenShotBuilder plugin="screenshot@1.0-SNAPSHOT">
+      <seleniumUrl>http://selenium:4444/wd/hub</seleniumUrl>
+    </io.jenkins.plugins.screenshot.ScreenShotBuilder>
   </builders>
   <publishers>
     <hudson.tasks.ArtifactArchiver>
@@ -122,7 +129,4 @@
       <disableDeferredWipeout>false</disableDeferredWipeout>
     </hudson.plugins.ws__cleanup.WsCleanup>
   </publishers>
-  <buildWrappers>
-    <hudson.plugins.timestamper.TimestamperBuildWrapper plugin="timestamper@1.11.3"/>
-  </buildWrappers>
 </project>

@@ -41,7 +41,7 @@ public class WebAssignment extends AssignmentType {
 
   @Override
   public String getSampleTemplate() {
-    return "WebQuickStart.zip";
+    return "SideeXQuickStart.zip";
   }
 
   @Override
