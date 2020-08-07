@@ -70,8 +70,6 @@ MAIL_PASSWORD=example-password
 # This need have empty value, so don't care about it, this will fix later
 WEB_API_BASEURI=
 
-<<<<<<< HEAD
-=======
 ###### Download Android SDK
 
 SDK_SETUP=true
@@ -80,7 +78,6 @@ SDK_BUILD_TOOLS=28.0.3
 
 ###### LOG
 
->>>>>>> fcumselab/developer
 LOG_LEVEL=error
 
 
