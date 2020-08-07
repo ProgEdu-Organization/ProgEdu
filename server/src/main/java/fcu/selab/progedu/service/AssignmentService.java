@@ -164,7 +164,8 @@ public class AssignmentService {
       String targetPath = path.replace("temp_images", "images");
       tomcatService.copyFileToTarget(projectDir + path, projectDir + targetPath);
     }
-    tomcatService.removeFile(imageTempDir);
+    // Delete all images of temp_images folder
+    tomcatService.removeFile(imageTempDir + "*");
 
     // 7. If README is not null
     // First, we need to modify images path
