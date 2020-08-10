@@ -16,10 +16,10 @@ WEB_EXTERNAL_URL=http://example.com:22000
 JENKINS_PORT=8080
 WEB_JENKINS_URL=http://example.com:8080
 
-SELENIUM_PORT=4444
-WEB_SELENIUM_URL=http://example.com:4444
 
-#########################################################################
+############################## Nginx Config #############################
+NGINX_PORT=80
+WEB_NGINX_URL=http://example.com:80
 
 ############################## Minor Config ##############################
 
@@ -44,6 +44,10 @@ WEB_JENKINS_ADMIN_PASSWORD=admin
 
 ###### ProgEdu Gitlab Connection Config
 
+############################## ProgEdu Selenium Connection Config ##############################
+WEB_SELENIUM_URL=http://example.cpm:30080
+
+############################## ProgEdu Gitlab Connection Config ##############################
 WEB_GITLAB_ADMIN_USERNAME=root
 WEB_GITLAB_ADMIN_PERSONAL_TOKEN={replace token}
 

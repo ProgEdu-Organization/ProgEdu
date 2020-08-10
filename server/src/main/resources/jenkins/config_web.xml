@@ -1,6 +1,6 @@
-<?xml version="1.1" encoding="UTF-8" ?>
+<?xml version='1.1' encoding='UTF-8'?>
 <project>
-  <actions />
+  <actions/>
   <description></description>
   <keepDependencies>false</keepDependencies>
   <properties>
@@ -8,11 +8,11 @@
       <gitLabConnection>gitlab</gitLabConnection>
     </com.dabsquared.gitlabjenkins.connection.GitLabConnectionProperty>
   </properties>
-  <scm class="hudson.plugins.git.GitSCM" plugin="git@3.12.1">
+  <scm class="hudson.plugins.git.GitSCM" plugin="git@4.2.2">
     <configVersion>2</configVersion>
     <userRemoteConfigs>
       <hudson.plugins.git.UserRemoteConfig>
-        <url>http://140.134.26.66:37777/test01/web.git</url>
+        <url>http://140.134.26.76:27777/m0720881/hw2.git</url>
         <credentialsId>gitlab_root</credentialsId>
       </hudson.plugins.git.UserRemoteConfig>
     </userRemoteConfigs>
@@ -22,8 +22,8 @@
       </hudson.plugins.git.BranchSpec>
     </branches>
     <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
-    <submoduleCfg class="list" />
-    <extensions />
+    <submoduleCfg class="list"/>
+    <extensions/>
   </scm>
   <canRoam>true</canRoam>
   <disabled>false</disabled>
@@ -49,47 +49,51 @@
       <excludeBranchesSpec></excludeBranchesSpec>
       <sourceBranchRegex></sourceBranchRegex>
       <targetBranchRegex></targetBranchRegex>
-      <secretToken>{AQAAABAAAAAQwG0/sMM2eCyRP2hsyC9ZiY1UfY4bJyWLh2K5MP8aaEE=}</secretToken>
+      <secretToken>{AQAAABAAAAAQTMvb0Ta022gmqxxTxLChxk1DcisN8MHKAK7pWeNCRqc=}</secretToken>
       <pendingBuildName></pendingBuildName>
       <cancelPendingBuildsOnUpdate>false</cancelPendingBuildsOnUpdate>
     </com.dabsquared.gitlabjenkins.GitLabPushTrigger>
   </triggers>
   <concurrentBuild>false</concurrentBuild>
   <builders>
-    <io.jenkins.plugins.screenshot.ScreenShotBuilder plugin="screenshot@1.0-SNAPSHOT">
-      <seleniumUrl>http://selenium:4444/wd/hub</seleniumUrl>
-    </io.jenkins.plugins.screenshot.ScreenShotBuilder>
-    <hudson.plugins.build__timeout.BuildStepWithTimeout plugin="build-timeout@1.19">
+    <hudson.plugins.build__timeout.BuildStepWithTimeout plugin="build-timeout@1.20">
       <strategy class="hudson.plugins.build_timeout.impl.AbsoluteTimeOutStrategy">
         <timeoutMinutes>15</timeoutMinutes>
       </strategy>
       <buildStep class="org.jenkinsci.plugins.AssessmentBuilder" plugin="jenkins-progedu@1.0-SNAPSHOT">
-        <jobName>test01_web</jobName>
-        <testFileName>web</testFileName>
-        <proDetailUrl>http://140.134.26.66:38818/webapi/assignment/checksum?proName=web</proDetailUrl>
-        <testFileUrl>http://140.134.26.66:38818/webapi/assignment/getTestFile?filePath=/usr/local/tomcat/temp/tests/web.zip</testFileUrl>
-        <testFileChecksum>2354726748</testFileChecksum>
+        <jobName>m0720881_hw2</jobName>
+        <testFileName>hw2</testFileName>
+        <proDetailUrl>http://140.134.26.76:28818/webapi/assignment/checksum?proName=hw2</proDetailUrl>
+        <testFileUrl>http://140.134.26.76:28818/webapi/assignment/getTestFile?filePath=/usr/local/tomcat/temp/tests/hw2.zip</testFileUrl>
+        <testFileChecksum>1028473045</testFileChecksum>
         <testFilePath></testFilePath>
       </buildStep>
       <operationList>
-        <hudson.plugins.build__timeout.operations.FailOperation />
+        <hudson.plugins.build__timeout.operations.FailOperation/>
       </operationList>
     </hudson.plugins.build__timeout.BuildStepWithTimeout>
-    <hudson.plugins.build__timeout.BuildStepWithTimeout plugin="build-timeout@1.19">
+    <hudson.plugins.build__timeout.BuildStepWithTimeout plugin="build-timeout@1.20">
       <strategy class="hudson.plugins.build_timeout.impl.AbsoluteTimeOutStrategy">
         <timeoutMinutes>15</timeoutMinutes>
       </strategy>
       <buildStep class="hudson.tasks.Shell">
         <command>npm i
-npm run test
 npm run htmlhint
 npm run stylelint
-npm run eslint</command>
+npm run eslint
+npm run e2e-test</command>
       </buildStep>
       <operationList>
-        <hudson.plugins.build__timeout.operations.FailOperation />
+        <hudson.plugins.build__timeout.operations.FailOperation/>
       </operationList>
     </hudson.plugins.build__timeout.BuildStepWithTimeout>
+    <io.jenkins.plugins.sample.ErrorCatchBuilder plugin="ThrowError@1.0-SNAPSHOT">
+      <jenkinsIp>http://jenkins</jenkinsIp>
+      <errorJobName>Sideex</errorJobName>
+    </io.jenkins.plugins.sample.ErrorCatchBuilder>
+    <io.jenkins.plugins.screenshot.ScreenShotBuilder plugin="screenshot@1.0-SNAPSHOT">
+      <seleniumUrl>http://selenium:4444/wd/hub</seleniumUrl>
+    </io.jenkins.plugins.screenshot.ScreenShotBuilder>
   </builders>
   <publishers>
     <hudson.tasks.ArtifactArchiver>
@@ -101,18 +105,17 @@ npm run eslint</command>
       <caseSensitive>true</caseSensitive>
     </hudson.tasks.ArtifactArchiver>
     <org.jenkinsci.plugins.UpdatingDbPublisher plugin="jenkins-progedu@1.0-SNAPSHOT">
-      <progeduDbUrl>http://140.134.26.66:38818/webapi/commits/update</progeduDbUrl>
-      <user>test01</user>
-      <proName>web</proName>
+      <progeduDbUrl>http://140.134.26.76:28818/webapi/commits/update</progeduDbUrl>
+      <user>m0720881</user>
+      <proName>hw2</proName>
     </org.jenkinsci.plugins.UpdatingDbPublisher>
     <io.jenkins.plugins.progupdatetodb.UpdateToDbPublisher plugin="progeduDB@1.0-SNAPSHOT">
-      <progeduAPIUrl>http://140.134.26.66:38818/webapi</progeduAPIUrl>
-      <jenkinsUsername>test01</jenkinsUsername>
-      <jenkinsAssignmentName>web</jenkinsAssignmentName>
-      <pngPath>/target/screenshot</pngPath>
+      <progeduAPIUrl>http://140.134.26.76:28818/webapi</progeduAPIUrl>
+      <jenkinsUsername>m0720881</jenkinsUsername>
+      <jenkinsAssignmentName>hw2</jenkinsAssignmentName>
     </io.jenkins.plugins.progupdatetodb.UpdateToDbPublisher>
-    <hudson.plugins.ws__cleanup.WsCleanup plugin="ws-cleanup@0.37">
-      <patterns class="empty-list" />
+    <hudson.plugins.ws__cleanup.WsCleanup plugin="ws-cleanup@0.38">
+      <patterns class="empty-list"/>
       <deleteDirs>false</deleteDirs>
       <skipWhenFailed>false</skipWhenFailed>
       <cleanWhenSuccess>true</cleanWhenSuccess>
@@ -126,5 +129,4 @@ npm run eslint</command>
       <disableDeferredWipeout>false</disableDeferredWipeout>
     </hudson.plugins.ws__cleanup.WsCleanup>
   </publishers>
-  <buildWrappers />
 </project>

@@ -71,7 +71,7 @@ public class StatusService {
    */
   public boolean isWebUnitTestFailure(String console) {
     boolean isUnitTestError = false;
-    if (console.contains(NPM_ERR) && console.contains("test script.")) {
+    if (console.contains("SideeX test failed with the reason below:")) {
       isUnitTestError = true;
     }
     return isUnitTestError;
