@@ -78,7 +78,8 @@ public class JavacAssignment extends AssignmentType {
       String studentMail = UserDbManager.getInstance().getUser(username).getEmail();
 
       SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd hh:mm");
-      String releaseTime = ft.format(AssignmentDbManager.getInstance().getAssignmentByName(projectName).getReleaseTime());
+      String releaseTime = ft.format(
+              AssignmentDbManager.getInstance().getAssignmentByName(projectName).getReleaseTime());
 
       // to-do : command
       String assignmentPath = System.getProperty("java.io.tmpdir") + "/tests/" + projectName;

@@ -75,7 +75,8 @@ public class MavenAssignment extends AssignmentType {
       String studentMail = UserDbManager.getInstance().getUser(username).getEmail();
 
       SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd hh:mm");
-      String releaseTime = ft.format(AssignmentDbManager.getInstance().getAssignmentByName(projectName).getReleaseTime());
+      String releaseTime = ft.format(
+              AssignmentDbManager.getInstance().getAssignmentByName(projectName).getReleaseTime());
 
       Document doc = docBuilder.parse(jenkinsJobConfigPath);
       doc.getElementsByTagName("url").item(0).setTextContent(projectUrl);
