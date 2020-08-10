@@ -114,8 +114,7 @@ npm run eslint</command>
     <progedu.plugins.mail.SendMailNotifier plugin="ProgEduMailPlugin@1.0-SNAPSHOT">
       <studentEmail>D0123456@o365.fcu.edu.tw</studentEmail>
       <credentialsId>email</credentialsId>
-      <smtpHost>smtp.gmail.com</smtpHost>
-      <smtpPort>465</smtpPort>
+      <releaseTime>2020-01-01 00:00</releaseTime>
       <assignmentType>web</assignmentType>
     </progedu.plugins.mail.SendMailNotifier>
     <hudson.plugins.ws__cleanup.WsCleanup plugin="ws-cleanup@0.37">

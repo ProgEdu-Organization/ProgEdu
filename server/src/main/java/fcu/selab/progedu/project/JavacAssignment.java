@@ -7,6 +7,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,6 +31,7 @@ import org.slf4j.LoggerFactory;
 import fcu.selab.progedu.config.CourseConfig;
 import fcu.selab.progedu.config.GitlabConfig;
 import fcu.selab.progedu.conn.JenkinsService;
+import fcu.selab.progedu.db.AssignmentDbManager;
 import fcu.selab.progedu.db.UserDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.service.StatusService;
@@ -75,6 +77,9 @@ public class JavacAssignment extends AssignmentType {
       String updateDbUrl = progEduApiUrl + "/commits/update";
       String studentMail = UserDbManager.getInstance().getUser(username).getEmail();
 
+      SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+      String releaseTime = ft.format(AssignmentDbManager.getInstance().getAssignmentByName(projectName).getReleaseTime());
+
       // to-do : command
       String assignmentPath = System.getProperty("java.io.tmpdir") + "/tests/" + projectName;
       String command = getCommandFromFile(assignmentPath);
@@ -88,6 +93,7 @@ public class JavacAssignment extends AssignmentType {
 
       // Send mail
       doc.getElementsByTagName("studentEmail").item(0).setTextContent(studentMail);
+      doc.getElementsByTagName("releaseTime").item(0).setTextContent(releaseTime);
 
       // write the content into xml file
       TransformerFactory transformerFactory = TransformerFactory.newInstance();

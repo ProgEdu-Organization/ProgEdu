@@ -2,6 +2,7 @@ package fcu.selab.progedu.project;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
@@ -73,6 +74,9 @@ public class MavenAssignment extends AssignmentType {
       String jobName = username + "_" + projectName;
       String studentMail = UserDbManager.getInstance().getUser(username).getEmail();
 
+      SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+      String releaseTime = ft.format(AssignmentDbManager.getInstance().getAssignmentByName(projectName).getReleaseTime());
+
       Document doc = docBuilder.parse(jenkinsJobConfigPath);
       doc.getElementsByTagName("url").item(0).setTextContent(projectUrl);
       doc.getElementsByTagName("jobName").item(0).setTextContent(jobName);
@@ -85,6 +89,7 @@ public class MavenAssignment extends AssignmentType {
 
       // Send mail
       doc.getElementsByTagName("studentEmail").item(0).setTextContent(studentMail);
+      doc.getElementsByTagName("releaseTime").item(0).setTextContent(releaseTime);
 
       // write the content into xml file
       TransformerFactory transformerFactory = TransformerFactory.newInstance();

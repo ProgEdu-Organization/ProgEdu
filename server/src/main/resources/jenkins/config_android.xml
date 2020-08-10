@@ -125,6 +125,12 @@ find ./target -iname *.png | while read line; do mv $line ./target/screenshot/; 
       <user>M0806615</user>
       <proName>TEST</proName>
     </org.jenkinsci.plugins.UpdatingDbPublisher>
+    <progedu.plugins.mail.SendMailNotifier plugin="ProgEduMailPlugin@1.0-SNAPSHOT">
+      <studentEmail>D0123456@o365.fcu.edu.tw</studentEmail>
+      <credentialsId>email</credentialsId>
+      <releaseTime>2020-01-01 00:00</releaseTime>
+      <assignmentType>android</assignmentType>
+    </progedu.plugins.mail.SendMailNotifier>
     <io.jenkins.plugins.progupdatetodb.UpdateToDbPublisher plugin="progeduDB@1.0-SNAPSHOT">
       <progeduAPIUrl>http://140.134.26.71:49999/webapi</progeduAPIUrl>
       <jenkinsUsername>M0806615</jenkinsUsername>
