@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.7.20, for Linux (x86_64)
+-- MySQL dump 10.13  Distrib 5.7.31, for Linux (x86_64)
 --
 -- Host: localhost    Database: ProgEdu
 -- ------------------------------------------------------
--- Server version	5.7.20
+-- Server version	5.7.31
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -15,7 +15,6 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 CREATE SCHEMA ProgEdu DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ;
-
 
 use ProgEdu;
 --
@@ -41,7 +40,7 @@ CREATE TABLE `Assignment` (
   PRIMARY KEY (`id`),
   KEY `A_type_idx` (`type`),
   CONSTRAINT `A_type` FOREIGN KEY (`type`) REFERENCES `Assignment_Type` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -51,6 +50,34 @@ CREATE TABLE `Assignment` (
 LOCK TABLES `Assignment` WRITE;
 /*!40000 ALTER TABLE `Assignment` DISABLE KEYS */;
 /*!40000 ALTER TABLE `Assignment` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `Assignment_Review_Metrics`
+--
+
+DROP TABLE IF EXISTS `Assignment_Review_Metrics`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Assignment_Review_Metrics` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `aId` int(11) DEFAULT NULL,
+  `rmId` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `A_R_M_aId_idx` (`aId`),
+  KEY `A_R_M_rmId_idx` (`rmId`),
+  CONSTRAINT `A_R_M_aId` FOREIGN KEY (`aId`) REFERENCES `Assignment` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `A_R_M_rmId` FOREIGN KEY (`rmId`) REFERENCES `Review_Metrics` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Assignment_Review_Metrics`
+--
+
+LOCK TABLES `Assignment_Review_Metrics` WRITE;
+/*!40000 ALTER TABLE `Assignment_Review_Metrics` DISABLE KEYS */;
+/*!40000 ALTER TABLE `Assignment_Review_Metrics` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -93,7 +120,7 @@ CREATE TABLE `Assignment_User` (
   KEY `A_U_uid_idx` (`uId`),
   CONSTRAINT `A_U_aid` FOREIGN KEY (`aId`) REFERENCES `Assignment` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `A_U_uid` FOREIGN KEY (`uId`) REFERENCES `User` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -123,7 +150,7 @@ CREATE TABLE `Commit_Record` (
   KEY `C_S_id_idx` (`status`),
   CONSTRAINT `C_R_auid` FOREIGN KEY (`auId`) REFERENCES `Assignment_User` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `C_R_status` FOREIGN KEY (`status`) REFERENCES `Commit_Status` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -146,7 +173,7 @@ CREATE TABLE `Commit_Status` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `status` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -155,7 +182,7 @@ CREATE TABLE `Commit_Status` (
 
 LOCK TABLES `Commit_Status` WRITE;
 /*!40000 ALTER TABLE `Commit_Status` DISABLE KEYS */;
-INSERT INTO `Commit_Status` VALUES (1,'bs'),(2,'csf'),(3,'cpf'),(4,'ini'),(5,'utf'),(6, 'whf'),(7, 'wsf'),(8, 'wef'),(9, 'uitf');
+INSERT INTO `Commit_Status` VALUES (1,'bs'),(2,'csf'),(3,'cpf'),(4,'ini'),(5,'utf'),(6,'whf'),(7,'wsf'),(8,'wef'),(9,'uitf');
 /*!40000 ALTER TABLE `Commit_Status` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -212,6 +239,37 @@ CREATE TABLE `Group_User` (
 LOCK TABLES `Group_User` WRITE;
 /*!40000 ALTER TABLE `Group_User` DISABLE KEYS */;
 /*!40000 ALTER TABLE `Group_User` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `Pair_Matching`
+--
+
+DROP TABLE IF EXISTS `Pair_Matching`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Pair_Matching` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `auId` int(11) DEFAULT NULL,
+  `reviewId` int(11) DEFAULT NULL,
+  `status` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `P_M_reviewId_idx` (`reviewId`),
+  KEY `P_M_auId_idx` (`auId`),
+  KEY `P_M_status_idx` (`status`),
+  CONSTRAINT `P_M_auId` FOREIGN KEY (`auId`) REFERENCES `Assignment_User` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `P_M_reviewId` FOREIGN KEY (`reviewId`) REFERENCES `User` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `P_M_status` FOREIGN KEY (`status`) REFERENCES `Review_Status` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Pair_Matching`
+--
+
+LOCK TABLES `Pair_Matching` WRITE;
+/*!40000 ALTER TABLE `Pair_Matching` DISABLE KEYS */;
+/*!40000 ALTER TABLE `Pair_Matching` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -332,6 +390,142 @@ LOCK TABLES `Project_Screenshot_Record` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `Review_Category`
+--
+
+DROP TABLE IF EXISTS `Review_Category`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Review_Category` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(45) CHARACTER SET utf8 DEFAULT NULL,
+  `metrics` varchar(3000) CHARACTER SET utf8 DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Review_Category`
+--
+
+LOCK TABLES `Review_Category` WRITE;
+/*!40000 ALTER TABLE `Review_Category` DISABLE KEYS */;
+/*!40000 ALTER TABLE `Review_Category` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `Review_Metrics`
+--
+
+DROP TABLE IF EXISTS `Review_Metrics`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Review_Metrics` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `category` int(11) DEFAULT NULL,
+  `mode` int(11) DEFAULT NULL,
+  `description` varchar(3000) COLLATE utf8_bin DEFAULT NULL,
+  `link` varchar(3000) COLLATE utf8_bin DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `R_M_category_idx` (`category`),
+  KEY `R_M_mode_idx` (`mode`),
+  CONSTRAINT `R_M_category` FOREIGN KEY (`category`) REFERENCES `Review_Category` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `R_M_mode` FOREIGN KEY (`mode`) REFERENCES `Score_Mode` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Review_Metrics`
+--
+
+LOCK TABLES `Review_Metrics` WRITE;
+/*!40000 ALTER TABLE `Review_Metrics` DISABLE KEYS */;
+/*!40000 ALTER TABLE `Review_Metrics` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `Review_Record`
+--
+
+DROP TABLE IF EXISTS `Review_Record`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Review_Record` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `pmId` int(11) DEFAULT NULL,
+  `armId` int(11) DEFAULT NULL,
+  `score` int(11) DEFAULT NULL,
+  `time` datetime DEFAULT NULL,
+  `feedback` varchar(3000) COLLATE utf8_bin DEFAULT NULL,
+  `reviewOrder` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `R_R_pmId_idx` (`pmId`),
+  KEY `R_R_armId_idx` (`armId`),
+  CONSTRAINT `R_R_armId` FOREIGN KEY (`armId`) REFERENCES `Assignment_Review_Metrics` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `R_R_pmId` FOREIGN KEY (`pmId`) REFERENCES `Pair_Matching` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Review_Record`
+--
+
+LOCK TABLES `Review_Record` WRITE;
+/*!40000 ALTER TABLE `Review_Record` DISABLE KEYS */;
+/*!40000 ALTER TABLE `Review_Record` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `Review_Setting`
+--
+
+DROP TABLE IF EXISTS `Review_Setting`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Review_Setting` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `aId` int(11) DEFAULT NULL,
+  `amount` int(11) DEFAULT NULL,
+  `releaseTime` datetime DEFAULT NULL,
+  `deadline` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `R_S_aId` FOREIGN KEY (`id`) REFERENCES `Assignment` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Review_Setting`
+--
+
+LOCK TABLES `Review_Setting` WRITE;
+/*!40000 ALTER TABLE `Review_Setting` DISABLE KEYS */;
+/*!40000 ALTER TABLE `Review_Setting` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `Review_Status`
+--
+
+DROP TABLE IF EXISTS `Review_Status`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Review_Status` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `status` varchar(45) CHARACTER SET utf8 DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Review_Status`
+--
+
+LOCK TABLES `Review_Status` WRITE;
+/*!40000 ALTER TABLE `Review_Status` DISABLE KEYS */;
+/*!40000 ALTER TABLE `Review_Status` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `Role`
 --
 
@@ -371,7 +565,7 @@ CREATE TABLE `Role_User` (
   KEY `R_U_rid_idx` (`rId`),
   CONSTRAINT `R_U_rid` FOREIGN KEY (`rId`) REFERENCES `Role` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `R_U_uid` FOREIGN KEY (`uId`) REFERENCES `User` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -381,6 +575,29 @@ CREATE TABLE `Role_User` (
 LOCK TABLES `Role_User` WRITE;
 /*!40000 ALTER TABLE `Role_User` DISABLE KEYS */;
 /*!40000 ALTER TABLE `Role_User` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `Score_Mode`
+--
+
+DROP TABLE IF EXISTS `Score_Mode`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Score_Mode` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `mode` varchar(45) CHARACTER SET utf8 DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Score_Mode`
+--
+
+LOCK TABLES `Score_Mode` WRITE;
+/*!40000 ALTER TABLE `Score_Mode` DISABLE KEYS */;
+/*!40000 ALTER TABLE `Score_Mode` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -426,7 +643,7 @@ CREATE TABLE `User` (
   `gitLabToken` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
   `display` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -447,4 +664,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-08-23  6:00:14
+-- Dump completed on 2020-08-03  2:54:55
