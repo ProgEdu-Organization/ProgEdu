@@ -13,7 +13,7 @@ docker -v // 19.03.11
 ## 初步建置步驟
 1. 在linux系統中clone [ProgEdu專案](https://github.com/fcumselab/ProgEdu), 的develop分支
 
-`git clone --depth 1  --branch developer --single-branch https://github.com/fcumselab/ProgEdu.git`
+`git clone --depth 1  --branch master --single-branch https://github.com/fcumselab/ProgEdu.git`
 
 2. 將 `env-example`檔案改名成 `.env` (注意是 "點 env" ), 並編輯它, 它將用來作為建置的設定。
 
