@@ -10,6 +10,7 @@ import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -75,11 +76,6 @@ public class JavacAssignment extends AssignmentType {
       DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 
       String updateDbUrl = progEduApiUrl + "/commits/update";
-      String studentMail = UserDbManager.getInstance().getUser(username).getEmail();
-
-      SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd hh:mm");
-      String releaseTime = ft.format(
-              AssignmentDbManager.getInstance().getAssignmentByName(projectName).getReleaseTime());
 
       // to-do : command
       String assignmentPath = System.getProperty("java.io.tmpdir") + "/tests/" + projectName;
@@ -93,8 +89,17 @@ public class JavacAssignment extends AssignmentType {
       doc.getElementsByTagName("proName").item(0).setTextContent(projectName);
 
       // Send mail
+      String studentMail = UserDbManager.getInstance().getUser(username).getEmail();
+      SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+      ft.setTimeZone(TimeZone.getTimeZone("Asia/Taipei"));
+      String releaseTime = ft.format(
+              AssignmentDbManager.getInstance().getAssignmentByName(projectName).getReleaseTime());
+      String progEduUrl = courseConfig.getTomcatServerIp() + courseConfig.getBaseuri();
+
       doc.getElementsByTagName("studentEmail").item(0).setTextContent(studentMail);
       doc.getElementsByTagName("releaseTime").item(0).setTextContent(releaseTime);
+      doc.getElementsByTagName("progEduURL").item(0).setTextContent(progEduUrl);
+
 
       // write the content into xml file
       TransformerFactory transformerFactory = TransformerFactory.newInstance();

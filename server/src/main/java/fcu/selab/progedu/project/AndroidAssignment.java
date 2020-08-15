@@ -3,6 +3,7 @@ package fcu.selab.progedu.project;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.TimeZone;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -67,12 +68,6 @@ public class AndroidAssignment extends AssignmentType {
       String checksumUrl = progEduApiUrl + "/assignment/checksum?proName=" + projectName;
       String testFileUrl = AssignmentDbManager.getInstance().getTestFileUrl(projectName);
       String stringEmpty = "";
-      String studentMail = UserDbManager.getInstance().getUser(username).getEmail();
-
-      SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd hh:mm");
-      String releaseTime = ft.format(
-              AssignmentDbManager.getInstance().getAssignmentByName(projectName).getReleaseTime());
-
 
       DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
       DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
@@ -105,8 +100,16 @@ public class AndroidAssignment extends AssignmentType {
       doc.getElementsByTagName("avdNameSuffix").item(0).setTextContent(jobName);
 
       // Send mail
+      String studentMail = UserDbManager.getInstance().getUser(username).getEmail();
+      SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+      ft.setTimeZone(TimeZone.getTimeZone("Asia/Taipei"));
+      String releaseTime = ft.format(
+              AssignmentDbManager.getInstance().getAssignmentByName(projectName).getReleaseTime());
+      String progEduUrl = courseConfig.getTomcatServerIp() + courseConfig.getBaseuri();
+
       doc.getElementsByTagName("studentEmail").item(0).setTextContent(studentMail);
       doc.getElementsByTagName("releaseTime").item(0).setTextContent(releaseTime);
+      doc.getElementsByTagName("progEduURL").item(0).setTextContent(progEduUrl);
 
 
       // write the content into xml file

@@ -3,6 +3,7 @@ package fcu.selab.progedu.project;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.TimeZone;
 
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
@@ -72,11 +73,6 @@ public class MavenAssignment extends AssignmentType {
       String testFileUrl = AssignmentDbManager.getInstance().getTestFileUrl(projectName);
 
       String jobName = username + "_" + projectName;
-      String studentMail = UserDbManager.getInstance().getUser(username).getEmail();
-
-      SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd hh:mm");
-      String releaseTime = ft.format(
-              AssignmentDbManager.getInstance().getAssignmentByName(projectName).getReleaseTime());
 
       Document doc = docBuilder.parse(jenkinsJobConfigPath);
       doc.getElementsByTagName("url").item(0).setTextContent(projectUrl);
@@ -88,9 +84,18 @@ public class MavenAssignment extends AssignmentType {
       doc.getElementsByTagName("user").item(0).setTextContent(username);
       doc.getElementsByTagName("proName").item(0).setTextContent(projectName);
 
+
       // Send mail
+      String studentMail = UserDbManager.getInstance().getUser(username).getEmail();
+      SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+      ft.setTimeZone(TimeZone.getTimeZone("Asia/Taipei"));
+      String releaseTime = ft.format(
+              AssignmentDbManager.getInstance().getAssignmentByName(projectName).getReleaseTime());
+      String progEduUrl = courseConfig.getTomcatServerIp() + courseConfig.getBaseuri();
+
       doc.getElementsByTagName("studentEmail").item(0).setTextContent(studentMail);
       doc.getElementsByTagName("releaseTime").item(0).setTextContent(releaseTime);
+      doc.getElementsByTagName("progEduURL").item(0).setTextContent(progEduUrl);
 
       // write the content into xml file
       TransformerFactory transformerFactory = TransformerFactory.newInstance();
