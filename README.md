@@ -54,14 +54,11 @@ docker -v // 19.03.11
 
 1. 依`.env`的`WEB_JENKINS_URL`所設定的網址進入Jenkins 
 2. 解鎖Jenkins
-![](readme-images/unlock-jenkins.png)
-(備註 解鎖Jenkins需要進入容器查看 initialAdminPassword 檔案) 以下是進入容器方法
 ```
-docker exec -it (your_Jenkins_container_name) bash 
-cat /var/jenkins_home/secrets/initialAdminPassword
-``` 
-(備註: your_Jenkins_container_name 可以從docker-compose時得到, 如下圖範例
-![](/readme-images/how-into-jenkins-container.png)  
+// 輸入以下指令拿password，後把拿到的password, 填入下方輸入區
+bash getJenkinsUnlockPassword.sh
+```
+![](readme-images/unlock-jenkins.png)
 
 3. 安裝plug-in 選擇"Install suggested plugins"
 ![](/readme-images/jenkins-install-plugins.png)  
@@ -86,8 +83,8 @@ WEB_JENKINS_ADMIN_PASSWORD=admin
 右上角點選 `使用者名稱 > 設定 > API Token > Add new Token > Generate > 複製Token > 儲存`
 ![](/readme-images/jenkins-token.jpg)  
 
-拿到**Jenkins Token**後要去設定 `.env` 檔
-`WEB_JENKINS_API_TOKEN={Jenkins Token}`(提醒: 大括號要拿掉)
+拿到**Jenkins Token**後填入 `.env` 檔的
+`WEB_JENKINS_API_TOKEN=` 的等號右邊。
 
 6. 開啟讀取權限
 因為ProgEdu需要用它提供的API來讀取`Jenkins`建置完成的檔案。
