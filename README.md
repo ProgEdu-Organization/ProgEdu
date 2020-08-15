@@ -95,46 +95,56 @@ WEB_JENKINS_ADMIN_PASSWORD=admin
 `管理jenkins > 設定全域安全性中 > 打勾 Allow anonymous read access > 儲存`
 ![](/readme-images/jenkins-access-control.png)
 
-7. 設定**GitLab API Token**
+7. 設定 **GitLab API Token**
 
 因為jenkins也必須要跟GitLab請求程式碼，所以必須給他gitlab的token。
-
-7_1. `管理Jenkins > 設定系統` 找到 GitLab後，
+   1. `管理Jenkins > 設定系統` 找到 GitLab後，
 先把(Enable authentication for ... connection) 的勾取消
- 
-7_2. 設定 Connection name = gitlab
-
-7_3. 設定 GitLab host URL 為`.env`文件設定的 gitlab 網址
+   2. 設定 Connection name = gitlab
+   3. 設定 GitLab host URL 為`.env`文件設定的 gitlab 網址
 ![](/readme-images/jenkins-gitlab-api.png)  
 
-7_4. 設定 Credentials:  如下步驟
-1. 按 Add > Jenkins
-2. Kind = GitLab API token
-3. Scope = Glibal
-4. API token填上 你之前存在`.env`的**GitLab Token**
-5. ID = gitlab_api
- ![](/readme-images/jenkins-credentials.jpg)  
-6. 新增後把Credentials 換成 `GitLab API token` 
-7. 點擊Test Connection測試是否成功
-8. **儲存**
-9. 可以在jenkins -> Credentials 發現你剛剛設定的憑證
+   4. 設定 Credentials:  如下步驟
+      1. 按 Add > Jenkins
+      2. Kind = GitLab API token
+      3. Scope = Global
+      4. API token填上 你之前存在`.env`的 **GitLab Token**
+      5. ID = gitlab_api
+      ![](/readme-images/jenkins-credentials.jpg)  
+      6. 新增後把Credentials 換成 `GitLab API token` 
+      7. 點擊Test Connection測試是否成功
+      8. **儲存**
+      9. 可以在jenkins -> Credentials 發現你剛剛設定的憑證
+## 
 
-10. 設定GitLab憑證
+8. 把GitLab帳密設定給Jenkins
     
-`Credentials > System > Global credentials (unrestricted) > Add Credentials`
+   1. 管理Jenkins > Manage Credentials
+   ![](/readme-images/Jenins_step1.PNG) 
+   2. 在Stores scoped to Jenkins 下按一下Jenkins
+   ![](/readme-images/Jenins_step2.PNG)
+   3. 按一下 Global credentials (unrestricted)
+   ![](/readme-images/Jenins_step3.PNG)
+   4. 按一下 在左上角的 Add Credentials
+   ![](/readme-images/Jenins_step4.PNG)
+   5. 進入以下畫面
+   ![](/readme-images/jenkins-credentials-gitlab.jpg)
 
-- Username：{GitLab root username} (在你剛剛設定的.env找)
-- Password：{GitLab root password} (在你剛剛設定的.env找)  
-- ID: 必須是 **gitlab_root**  
+   - Username：{GitLab root username} (在你剛剛設定的.env找)
+   - Password：{GitLab root password} (在你剛剛設定的.env找)  
+   - ID: 必須是 **gitlab_root**  
+   
+   6. 按OK
 
-![](/readme-images/jenkins-credentials-gitlab.jpg)
+## 
 
-**全部設定結束後，儲存.env檔，然後要重新下 `docker-compose up -d` 指令，目的是用新的設定重新建置一次**
-## 測試系統建置成功
+## 設定完成
+### 重新佈署
+1. 儲存.env檔，然後重新下 `docker-compose up -d` 指令，目的是用新的設定重新建置一次
+
+## 登入ProgEdu系統
 1. 進入 `.env` 所設定的 `WEB_EXTERNAL_URL` 的網址
 2. 輸入帳號: root, 密碼: `.env` 的 `GITLAB_ROOT_PASSWORD` 的值
-3. 可以測試創使用者後, 會發現GitLab也會新增一個使用者
-4. 詳細功能目前還沒有文件來說明， 待之後補上
 
 ## 推薦開發ProgEdu的重要工具
 * MobeXterm => 用ssh來連線linux
