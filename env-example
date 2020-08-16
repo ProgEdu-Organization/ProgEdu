@@ -1,6 +1,6 @@
 ############################## Main Config ##############################
 
-COMPOSE_PROJECT_NAME=ProgEdu
+COMPOSE_PROJECT_NAME=progedu
 DATA_PATH_HOST=./.data
 
 DB_PORT=23306
@@ -36,16 +36,16 @@ DB_CONNECTION_OPTION=?relaxAutoCommit=true&useSSL=false&useUnicode=true&characte
 
 GITLAB_ROOT_PASSWORD=rootrootrootroot
 
-###### ProgEdu Jenkins Connection Config
-
-WEB_JENKINS_API_TOKEN={replace token}
-WEB_JENKINS_ADMIN_USERNAME=admin
-WEB_JENKINS_ADMIN_PASSWORD=admin
-
 ###### ProgEdu Gitlab Connection Config
 
 WEB_GITLAB_ADMIN_USERNAME=root
-WEB_GITLAB_ADMIN_PERSONAL_TOKEN={replace token}
+WEB_GITLAB_ADMIN_PERSONAL_TOKEN=
+
+###### ProgEdu Jenkins Connection Config
+
+WEB_JENKINS_API_TOKEN=
+WEB_JENKINS_ADMIN_USERNAME=admin
+WEB_JENKINS_ADMIN_PASSWORD=admin
 
 ###### ProgEdu Mailer Config 
 
