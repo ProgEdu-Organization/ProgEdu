@@ -8,4 +8,5 @@ DB_PASSWORD =
 #Fill in the IP of your DB in JDBC Connection String
 DB_DATABASE =
 DB_HOST =
+#127.0.0.1:1234
 DB_CONNECTION_OPTION = ?relaxAutoCommit=true&useSSL=false&useUnicode=true&characterEncoding=utf-8
