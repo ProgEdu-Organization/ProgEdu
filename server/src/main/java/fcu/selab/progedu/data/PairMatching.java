@@ -1,6 +1,6 @@
 package fcu.selab.progedu.data;
 
-import fcu.selab.progedu.service.ScoreModeEnum;
+import fcu.selab.progedu.service.ReviewStatusEnum;
 
 public class PairMatching {
 
@@ -10,7 +10,7 @@ public class PairMatching {
 
   private int reviewId;
 
-  private ScoreModeEnum scoreModeEnum;
+  private ReviewStatusEnum scoreModeEnum;
 
   public int getId() {
     return id;
@@ -36,11 +36,11 @@ public class PairMatching {
     this.reviewId = reviewId;
   }
 
-  public ScoreModeEnum getScoreModeEnum() {
+  public ReviewStatusEnum getScoreModeEnum() {
     return scoreModeEnum;
   }
 
-  public void setScoreModeEnum(ScoreModeEnum scoreModeEnum) {
+  public void setScoreModeEnum(ReviewStatusEnum scoreModeEnum) {
     this.scoreModeEnum = scoreModeEnum;
   }
 }
