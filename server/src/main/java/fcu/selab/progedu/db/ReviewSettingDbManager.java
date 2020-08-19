@@ -93,7 +93,11 @@ public class ReviewSettingDbManager {
         try (Connection conn = database.getConnection();
              PreparedStatement preStmt = conn.prepareStatement(query)) {
             preStmt.setInt(1, aId);
-            preStmt.executeUpdate();
+            try (ResultSet rs = preStmt.executeQuery()) {
+                while (rs.next()) {
+                    amount = rs.getInt("amount");
+                }
+            }
         } catch (SQLException e) {
             LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
             LOGGER.error(e.getMessage());
