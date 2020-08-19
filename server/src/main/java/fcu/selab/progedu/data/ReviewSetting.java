@@ -6,7 +6,7 @@ public class ReviewSetting {
 
   private int id;
 
-  private int aId;
+  private int aid;
 
   private int amount;
 
@@ -23,11 +23,11 @@ public class ReviewSetting {
   }
 
   public int getaId() {
-    return aId;
+    return aid;
   }
 
-  public void setaId(int aId) {
-    this.aId = aId;
+  public void setaId(int aid) {
+    this.aid = aid;
   }
 
   public int getAmount() {

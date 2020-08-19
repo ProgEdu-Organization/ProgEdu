@@ -35,7 +35,7 @@ public class ReviewSettingDbManager {
    */
   public void insertReviewSetting(int aid, int amount, Date releaseTime, Date deadline) {
     String query = "INSERT INTO Review_Setting(aId, amount, releaseTime, deadline)"
-        + " VALUES(?,?,?,?);";
+        + " VALUES(?,?,?,?)";
     Timestamp releaseTimestamp = new Timestamp(releaseTime.getTime());
     Timestamp deadlineTimestamp = new Timestamp(deadline.getTime());
 
