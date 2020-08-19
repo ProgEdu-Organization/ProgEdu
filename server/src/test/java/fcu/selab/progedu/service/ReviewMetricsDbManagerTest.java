@@ -1,17 +1,16 @@
 package fcu.selab.progedu.service;
 
+import java.util.List;
 import fcu.selab.progedu.data.ReviewMetrics;
 import fcu.selab.progedu.db.ReviewMetricsDbManager;
 import org.junit.Test;
 
-import java.util.List;
-
 public class ReviewMetricsDbManagerTest {
 
-    ReviewMetricsDbManager reviewMetricsDbManager = new ReviewMetricsDbManager();
+  ReviewMetricsDbManager reviewMetricsDbManager = new ReviewMetricsDbManager();
 
-    @Test
-    public void insertReviewMetricsTest() {
+  @Test
+  public void insertReviewMetricsTest() {
 //        reviewMetricsDbManager.insertReviewMetrics(1, 1,
 //                "符合題目要求",
 //                "這次的提交是否達到開發者的預期目的?也就是學生是否達到老師題目要求",
@@ -32,29 +31,29 @@ public class ReviewMetricsDbManagerTest {
 //                "是否過度設計",
 //                "太複雜通常表示\"審查人員很難立即理解\"，這也表示\"開發人員在引用或修改此程式碼可能引入錯誤\"",
 //                "https://www.google.com/");
-    }
+  }
 
-    @Test
-    public void getReviewMetricsTest() {
-        List<ReviewMetrics> reviewMetricsList = reviewMetricsDbManager.getReviewMetrics(4);
+  @Test
+  public void getReviewMetricsTest() {
+    List<ReviewMetrics> reviewMetricsList = reviewMetricsDbManager.getReviewMetrics(4);
 
-        for(ReviewMetrics reviewMetrics: reviewMetricsList) {
-            System.out.println(reviewMetrics.getId());
-            System.out.println(reviewMetrics.getCategory());
-            System.out.println(reviewMetrics.getMode());
-            System.out.println(reviewMetrics.getMetrics());
-            System.out.println(reviewMetrics.getDescription());
-            System.out.println(reviewMetrics.getLink());
-        }
+    for (ReviewMetrics reviewMetrics : reviewMetricsList) {
+      System.out.println(reviewMetrics.getId());
+      System.out.println(reviewMetrics.getCategory());
+      System.out.println(reviewMetrics.getMode());
+      System.out.println(reviewMetrics.getMetrics());
+      System.out.println(reviewMetrics.getDescription());
+      System.out.println(reviewMetrics.getLink());
     }
+  }
 
-    @Test
-    public void editReviewMetricsByIdTest() {
-        reviewMetricsDbManager.editReviewMetricsById(8, 1, "editTest", "wwwwwwww");
-    }
+  @Test
+  public void editReviewMetricsByIdTest() {
+    reviewMetricsDbManager.editReviewMetricsById(8, 1, "editTest", "wwwwwwww");
+  }
 
-    @Test
-    public void deleteReviewMetricsTest() {
-        reviewMetricsDbManager.deleteReviewMetrics(9);
-    }
+  @Test
+  public void deleteReviewMetricsTest() {
+    reviewMetricsDbManager.deleteReviewMetrics(9);
+  }
 }

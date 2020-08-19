@@ -13,12 +13,14 @@ import fcu.selab.progedu.utils.ExceptionUtil;
 
 public class ReviewRecordDbManager {
 
-    private static ReviewRecordDbManager dbManager = new ReviewRecordDbManager();
+  private static ReviewRecordDbManager dbManager = new ReviewRecordDbManager();
 
-    public static ReviewRecordDbManager getInstance() { return dbManager; }
+  public static ReviewRecordDbManager getInstance() {
+    return dbManager;
+  }
 
-    private IDatabase database = new MySqlDatabase();
+  private IDatabase database = new MySqlDatabase();
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ReviewRecordDbManager.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(ReviewRecordDbManager.class);
 
 }
