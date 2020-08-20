@@ -44,4 +44,15 @@ public class ReviewRecordDbManagerTest {
       System.out.println(reviewRecord.getReviewOrder());
     }
   }
+
+  @Test
+  public void isFirstTimeReviewRecordTest() {
+    boolean trueFalse = reviewRecordDbManager.isFirstTimeReviewRecord(40);
+    System.out.println(trueFalse);
+  }
+
+  @Test
+  public void getLatestReviewOrderTest() {
+    System.out.println(reviewRecordDbManager.getLatestReviewOrder(41));
+  }
 }

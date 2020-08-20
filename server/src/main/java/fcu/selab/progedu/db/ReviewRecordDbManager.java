@@ -136,11 +136,58 @@ public class ReviewRecordDbManager {
   }
 
   /**
-   * Get review order by specific pair matching Id
+   * Whether the reviewer reviewed specific pair matching in the first time or not
    *
-   * @param reviewOrder review order
+   * @param pmId pair matching id
    *
-   * @return review order from specific owner, reviewer and assignment
+   * @return isFirstTime  return boolean
    */
+  public boolean isFirstTimeReviewRecord(int pmId) {
+    String query = "SELECT COUNT(*) AS isFirstTime FROM Review_Record WHERE pmId = ?";
+    boolean isFirstTime = false;
+
+    try (Connection conn = database.getConnection();
+         PreparedStatement preStmt = conn.prepareStatement(query)) {
+      preStmt.setInt(1, pmId);
+      try (ResultSet rs = preStmt.executeQuery()) {
+        while (rs.next()) {
+          int count = rs.getInt("isFirstTime");
+          if (count == 0) {
+            isFirstTime = true;
+          }
+        }
+      }
+    } catch (SQLException e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    }
+    return isFirstTime;
+  }
+
+  /**
+   * Get latest review order number for specific pair matching
+   *
+   * @param pmId pair matching id
+   *
+   * @return reviewOrder review order
+   */
+  public int getLatestReviewOrder(int pmId) {
+    String query = "SELECT MAX(reviewOrder) AS latestCount FROM Review_Record WHERE pmId = ?";
+    int latestCount = -1;
+
+    try (Connection conn = database.getConnection();
+         PreparedStatement preStmt = conn.prepareStatement(query)) {
+      preStmt.setInt(1, pmId);
+      try (ResultSet rs = preStmt.executeQuery()) {
+        while (rs.next()) {
+          latestCount = rs.getInt("latestCount");
+        }
+      }
+    } catch (SQLException e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    }
+    return latestCount;
+  }
 
 }
