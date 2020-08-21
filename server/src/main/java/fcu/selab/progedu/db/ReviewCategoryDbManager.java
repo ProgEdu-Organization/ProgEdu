@@ -54,21 +54,21 @@ public class ReviewCategoryDbManager {
    */
   public int getCategoryIdByName(String name) {
     String query = "SELECT id FROM Review_Category WHERE name = ?";
-    int Id = 0;
+    int id = 0;
 
     try (Connection conn = database.getConnection();
          PreparedStatement preStmt = conn.prepareStatement(query)) {
       preStmt.setString(1, name);
       try (ResultSet rs = preStmt.executeQuery();) {
         while (rs.next()) {
-          Id = rs.getInt("id");
+          id = rs.getInt("id");
         }
       }
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
     }
-    return Id;
+    return id;
   }
 
   /**

@@ -35,7 +35,8 @@ public class ReviewMetricsDbManager {
    * @param description description
    * @param link        link
    */
-  public void insertReviewMetrics(int category, int mode, String metrics, String description, String link) {
+  public void insertReviewMetrics(int category, int mode,
+                                  String metrics, String description, String link) {
     String query = "INSERT INTO Review_Metrics(category, mode, metrics, description, link) "
         + "VALUES(?,?,?,?,?);";
 
