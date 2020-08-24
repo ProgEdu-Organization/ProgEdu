@@ -132,6 +132,45 @@ public class CommitRecordService {
   }
 
   /**
+   * get a part of student build detail info
+   * 
+   * @param username       student id
+   * @param assignmentName assignment name
+   * @param currentPage current page
+   * @return build detail
+   */
+  @GET
+  @Path("partCommitRecords")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response getPartCommitRecord(@QueryParam("username") String username,
+      @QueryParam("assignmentName") String assignmentName,
+      @QueryParam("currentPage") int currentPage) {
+    JSONArray array = new JSONArray();
+    String jobName = username + "_" + assignmentName;
+    int auId = auDb.getAuid(assignmentDb.getAssignmentIdByName(assignmentName),
+        userDb.getUserIdByUsername(username));
+    List<CommitRecord> commitRecords = db.getPartCommitRecord(auId,currentPage);
+    int totalcommit = db.getCommitCount(auId);
+    
+    for (CommitRecord commitRecord : commitRecords) {
+      int number = commitRecord.getNumber();
+      String message = js.getCommitMessage(jobName, number);
+      Date time = commitRecord.getTime();
+      String status = commitRecord.getStatus().getType();
+      JSONObject ob = new JSONObject();
+      ob.put("totalcommit", totalcommit);
+      ob.put("number", number);
+      ob.put("status", status.toUpperCase());
+      ob.put("time", time);
+      ob.put("message", message);
+      
+      array.put(ob);
+    }
+
+    return Response.ok(array.toString()).build();
+  }
+
+  /**
    * update user assignment commit record to DB.
    * 
    * @param username       username

@@ -8,6 +8,12 @@ public class AndroidStatusFactory implements StatusFactory {
       case INITIALIZATION: {
         return new Initialization();
       }
+      case ANDROID_LINT_FAILURE: {
+        return new AndroidLintFailure();
+      }
+      case CHECKSTYLE_FAILURE: {
+        return new AndroidCheckstyleFailure();
+      }
       case COMPILE_FAILURE: {
         return new AndroidCompileFailure();
       }
@@ -16,9 +22,6 @@ public class AndroidStatusFactory implements StatusFactory {
       }
       case UI_TEST_FAILURE: {
         return new AndroidUiTestFailure();
-      }
-      case CHECKSTYLE_FAILURE: {
-        return new AndroidCheckstyleFailure();
       }
       case BUILD_SUCCESS: {
         return new BuildSuccess();
