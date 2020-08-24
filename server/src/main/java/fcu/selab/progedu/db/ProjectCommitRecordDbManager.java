@@ -181,6 +181,53 @@ public class ProjectCommitRecordDbManager {
   }
 
   /**
+   * get part project commit record details from the homework of a student
+   *
+   * @param pgId pgId
+   * @param currentPage current page
+   * @return project commit record details
+   */
+  public List<CommitRecord> getPartProjectCommitRecords(int pgId, int currentPage) {
+    String sql = "SELECT * FROM ProgEdu.Project_Commit_Record WHERE pgId = ? "
+        + "AND commitNumber IN (SELECT commitNumber FROM "
+        + "ProgEdu.Project_Commit_Record WHERE commitNumber BETWEEN ? AND ?)";
+    List<CommitRecord> crs = new ArrayList<>();
+    int totalCommitNumber = getProjectCommitCount(pgId);
+    int startSearchNumber = totalCommitNumber - (currentPage - 1) * 5;
+    int endSearchNumber = startSearchNumber - 4;
+    if (endSearchNumber <= 0) {
+      endSearchNumber = 1;
+    }
+
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+      preStmt.setInt(1, pgId);
+      preStmt.setInt(2, endSearchNumber);
+      preStmt.setInt(3, startSearchNumber);
+      try (ResultSet rs = preStmt.executeQuery()) {
+        while (rs.next()) {
+          int statusId = rs.getInt("status");
+          StatusEnum statusEnum = csDb.getStatusNameById(statusId);
+          int commitNumber = rs.getInt("commitNumber");
+          Date commitTime = rs.getTimestamp("time");
+          String committer = rs.getString("commitStudent");
+
+          CommitRecord cr = new CommitRecord();
+          cr.setCommitter(committer);
+          cr.setNumber(commitNumber);
+          cr.setStatus(statusEnum);
+          cr.setTime(commitTime);
+          crs.add(cr);
+        }
+      }
+    } catch (SQLException e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    }
+    return crs;
+  }
+
+  /**
    * get last project commit record details from assigned homework of one student
    *
    * @param pgId pgId
@@ -229,7 +276,7 @@ public class ProjectCommitRecordDbManager {
     int commitNumber = 0;
     String sql =
         "SELECT commitNumber from Project_Commit_Record a where (a.commitNumber = "
-            + "(SELECT max(commitNumber) FROM Project_Commit_Record WHERE auId = ?));";
+            + "(SELECT max(commitNumber) FROM Project_Commit_Record WHERE pgId = ?));";
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
       preStmt.setInt(1, pgId);
@@ -286,4 +333,5 @@ public class ProjectCommitRecordDbManager {
     }
     return status;
   }
+
 }

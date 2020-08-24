@@ -8,6 +8,7 @@ import { environment } from '../../../../environments/environment';
 })
 export class AssignmentChoosedService {
   COMMIT_RECORD_DETAIL = environment.SERVER_URL + '/webapi/commits/commitRecords';
+  PART_COMMIT_RECORD_DETAIL = environment.SERVER_URL + '/webapi/commits/partCommitRecords';
   ASSIGNMENT_API = environment.SERVER_URL + '/webapi/assignment/getAssignment';
   GITLAB_URL_API = environment.SERVER_URL + '/webapi/commits/gitLab';
   FEEDBACK_API = environment.SERVER_URL + '/webapi/commits/feedback';
@@ -19,6 +20,14 @@ export class AssignmentChoosedService {
       .set('username', username)
       .set('assignmentName', assignmentName);
     return this.http.get<any>(this.COMMIT_RECORD_DETAIL, { params });
+  }
+
+  getPartCommitDetail(assignmentName: string, username: string, currentPage: string): Observable<any> {
+    const params = new HttpParams()
+      .set('username', username)
+      .set('assignmentName', assignmentName)
+      .set('currentPage', currentPage);
+    return this.http.get<any>(this.PART_COMMIT_RECORD_DETAIL, { params });
   }
 
   getFeedback(assignmentName: string, username: string, commitNumber: string): Observable<any> {
@@ -51,3 +60,4 @@ export class AssignmentChoosedService {
   }
 
 }
+
