@@ -1,14 +1,11 @@
 package fcu.selab.progedu.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
@@ -29,7 +26,7 @@ public class CategoryMetricsService {
   private ReviewMetricsDbManager reviewMetricsDbManager = ReviewMetricsDbManager.getInstance();
 
   /**
-   *
+   *  get all category
    */
   @GET
   @Path("category")
@@ -51,7 +48,9 @@ public class CategoryMetricsService {
   }
 
   /**
+   *  get metrics by specific category
    *
+   * @param category category
    */
   @GET
   @Path("metrics")
@@ -73,6 +72,102 @@ public class CategoryMetricsService {
     result.put("allMetrics", array);
 
     return Response.ok().entity(result.toString()).build();
+  }
+
+  /**
+   *  insert new category
+   *
+   * @param name name
+   * @param metrics metrics
+   */
+  @POST
+  @Path("category/create")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response createCategory(@QueryParam("name") String name,
+                                 @QueryParam("metrics") String metrics) {
+    reviewCategoryDbManager.insertReviewCategory(name, metrics);
+    return Response.ok().build();
+  }
+
+  /**
+   *  edit category by specific id
+   *
+   * @param id id
+   * @param metrics metrics
+   */
+  @PUT
+  @Path("category/edit")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response editCategory(@QueryParam("id") int id,
+                               @QueryParam("metrics") String metrics) {
+    reviewCategoryDbManager.editReviewCategoryById(id, metrics);
+    return Response.ok().build();
+  }
+
+  /**
+   * delete category by specific id
+   *
+   * @param id id
+   */
+  @DELETE
+  @Path("category/delete")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response deleteCategory(@QueryParam("id") int id) {
+    reviewCategoryDbManager.deleteReviewCategoryById(id);
+    return Response.ok().build();
+  }
+
+  /**
+   *  insert new metrics into specific category
+   *
+   * @param category category
+   * @param mode mode
+   * @param metrics metrics
+   * @param description description
+   * @param link link
+   */
+  @POST
+  @Path("metrics/create")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response createMetrics(@QueryParam("category") int category,
+                                 @QueryParam("mode") int mode,
+                                @QueryParam("metrics") String metrics,
+                                @QueryParam("description") String description,
+                                @QueryParam("link") String link) {
+    reviewMetricsDbManager.insertReviewMetrics(category, mode, metrics, description, link);
+    return Response.ok().build();
+  }
+
+  /**
+   *  edit metrics by specific id
+   *
+   * @param id id
+   * @param mode mode
+   * @param description description
+   * @param link link
+   */
+  @PUT
+  @Path("metrics/edit")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response editMetrics(@QueryParam("id") int id,
+                              @QueryParam("mode") int mode,
+                              @QueryParam("description") String description,
+                              @QueryParam("link") String link) {
+    reviewMetricsDbManager.editReviewMetricsById(id, mode, description, link);
+    return Response.ok().build();
+  }
+
+  /**
+   *  delete metrics by specific id
+   *
+   * @param id id
+   */
+  @DELETE
+  @Path("metrics/delete")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response deleteMetrics(@QueryParam("id") int id) {
+    reviewMetricsDbManager.deleteReviewMetrics(id);
+    return Response.ok().build();
   }
 
   public List<ReviewCategory> getAllCategory() {

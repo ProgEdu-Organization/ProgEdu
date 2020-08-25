@@ -100,6 +100,26 @@ public class ReviewCategoryDbManager {
   }
 
   /**
+   * update review category by id
+   *
+   * @param id id
+   * @param metrics metrics
+   */
+  public void editReviewCategoryById(int id, String metrics) {
+    String query = "UPDATE Review_Category SET metrics = ? WHERE id = ?";
+
+    try (Connection conn = database.getConnection();
+         PreparedStatement preStmt = conn.prepareStatement(query)) {
+      preStmt.setString(1, metrics);
+      preStmt.setInt(2, id);
+      preStmt.executeUpdate();
+    } catch (SQLException e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    }
+  }
+
+  /**
    * delete review category by id
    *
    * @param id id
