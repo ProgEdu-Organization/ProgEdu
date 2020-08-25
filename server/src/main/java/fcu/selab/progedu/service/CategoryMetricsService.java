@@ -32,32 +32,45 @@ public class CategoryMetricsService {
    *
    */
   @GET
-  @Path("allCategoryMetrics")
+  @Path("category")
   @Produces(MediaType.APPLICATION_JSON)
-  public Response getAllCategoryMetrics() {
+  public Response getCategory() {
     JSONArray array = new JSONArray();
     JSONObject result = new JSONObject();
     List<ReviewCategory> reviewCategoryList = getAllCategory();
     for (ReviewCategory reviewCategory: reviewCategoryList) {
       JSONObject object = new JSONObject();
-      JSONArray metricsArray = new JSONArray();
-      List<ReviewMetrics> reviewMetricsList = getAllMetrics(reviewCategory.getId());
-      for (ReviewMetrics reviewMetrics: reviewMetricsList) {
-        JSONObject metricsObject = new JSONObject();
-        metricsObject.put("id", reviewMetrics.getId());
-        metricsObject.put("category", reviewCategory.getId());
-        metricsObject.put("mode", reviewMetrics.getMode());
-        metricsObject.put("metrics", reviewMetrics.getMetrics());
-        metricsObject.put("description", reviewMetrics.getDescription());
-        metricsArray.put(metricsObject);
-      }
       object.put("id", reviewCategory.getId());
       object.put("name", reviewCategory.getName());
       object.put("metrics", reviewCategory.getMetrics());
-      object.put("metricsList", metricsArray);
       array.put(object);
     }
-    result.put("allCategoryMetrics", array);
+    result.put("allCategory", array);
+
+    return Response.ok().entity(result.toString()).build();
+  }
+
+  /**
+   *
+   */
+  @GET
+  @Path("metrics")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response getMetrics(@QueryParam("category") int category) {
+    JSONArray array = new JSONArray();
+    JSONObject result = new JSONObject();
+    List<ReviewMetrics> reviewMetricsList = getAllMetrics(category);
+    for (ReviewMetrics reviewMetrics: reviewMetricsList) {
+      JSONObject object = new JSONObject();
+      object.put("id", reviewMetrics.getId());
+      object.put("category", reviewMetrics.getCategory());
+      object.put("mode", reviewMetrics.getMode());
+      object.put("metrics", reviewMetrics.getMetrics());
+      object.put("description", reviewMetrics.getDescription());
+      object.put("link", reviewMetrics.getLink());
+      array.put(object);
+    }
+    result.put("allMetrics", array);
 
     return Response.ok().entity(result.toString()).build();
   }
