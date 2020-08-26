@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import fcu.selab.progedu.data.AssignmentUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,7 +30,7 @@ public class AssignmentUserDbManager {
 
   /**
    * Add AssignmentUser to database
-   * 
+   *
    * @param aid Assignment Id
    * @param uid User Id
    */
@@ -49,7 +50,7 @@ public class AssignmentUserDbManager {
 
   /**
    * get auId by assignment Id and user Id
-   * 
+   *
    * @param aid Assignment Id
    * @param uid User Id
    * @return auId assignmentUser Id
@@ -75,7 +76,7 @@ public class AssignmentUserDbManager {
 
   /**
    * get auIds by assignment Id
-   * 
+   *
    * @param aid Assignment Id
    * @return auId assignmentUser Id
    */
@@ -126,7 +127,7 @@ public class AssignmentUserDbManager {
 
   /**
    * get aids by User Id
-   * 
+   *
    * @return lsAids assignment id
    */
   public List<Integer> getAIds(int uid) {
@@ -173,8 +174,37 @@ public class AssignmentUserDbManager {
   }
 
   /**
+   * Get assignment user by aid
+   *
+   * @param aid assignment id
+   */
+  public List<AssignmentUser> getAssignmentUserListByAid(int aid) {
+    String sql = "SELECT * FROM Assignment_User WHERE aId = ?";
+    List<AssignmentUser> assignmentUserList = new ArrayList<>();
+
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+      preStmt.setInt(1, aid);
+      try (ResultSet rs = preStmt.executeQuery()) {
+        while (rs.next()) {
+          AssignmentUser assignmentUser = new AssignmentUser();
+          assignmentUser.setId(rs.getInt("id"));
+          assignmentUser.setAid(rs.getInt("aId"));
+          assignmentUser.setUid(rs.getInt("uId"));
+          assignmentUserList.add(assignmentUser);
+        }
+      }
+    } catch (SQLException e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    }
+
+    return assignmentUserList;
+  }
+
+  /**
    * Delete assignment_user from database by aid
-   * 
+   *
    */
   public void deleteAssignmentUserByAid(int aid) {
     String sql = "DELETE FROM Assignment_User WHERE aId = ?";

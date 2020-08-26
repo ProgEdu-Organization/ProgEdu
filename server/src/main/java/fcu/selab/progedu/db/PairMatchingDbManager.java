@@ -53,6 +53,19 @@ public class PairMatchingDbManager {
   }
 
   /**
+   * Insert pair matching list into db
+   *
+   * @param pairMatchingList     pair matching list
+   *
+   */
+  public void insertPairMatchingList(List<PairMatching> pairMatchingList) {
+    for (PairMatching pairMatching: pairMatchingList) {
+      insertPairMatching(pairMatching.getAuId(), pairMatching.getReviewId(),
+          pairMatching.getScoreModeEnum());
+    }
+  }
+
+  /**
    * Get all pair matching
    *
    * @return pair matching details
@@ -150,10 +163,35 @@ public class PairMatchingDbManager {
   }
 
   /**
+   * Get reviewId which had existed in pair matching by specific assignment user id
+   *
+   * @param auId assignment user id
+   * @return integer list
+   */
+  public List<Integer> getReviewListByAuId(int auId) {
+    String query = "SELECT reviewId FROM Pair_Matching WHERE auId = ?";
+    List<Integer> integerList = new ArrayList<>();
+
+    try (Connection conn = database.getConnection();
+         PreparedStatement preStmt = conn.prepareStatement(query)) {
+      preStmt.setInt(1, auId);
+      try (ResultSet rs = preStmt.executeQuery()) {
+        while (rs.next()) {
+          integerList.add(rs.getInt("reviewId"));
+        }
+      }
+    } catch (SQLException e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    }
+    return integerList;
+  }
+
+  /**
    * Get pair matching By reviewer id
    * Know what assignment had been reviewed by specific reviewer
    *
-   * @param reviewId assignment user id
+   * @param reviewId user id
    * @return pair matching details
    */
   public List<PairMatching> getPairMatchingByReviewId(int reviewId) {

@@ -28,6 +28,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
+import fcu.selab.progedu.data.AssignmentUser;
+import fcu.selab.progedu.data.PairMatching;
+import fcu.selab.progedu.db.PairMatchingDbManager;
 import org.jsoup.nodes.Document;
 import org.gitlab.api.models.GitlabProject;
 import org.gitlab.api.models.GitlabUser;
@@ -86,6 +89,7 @@ public class AssignmentService {
   private UserDbManager userDbManager = UserDbManager.getInstance();
   private CommitRecordDbManager crDbManager = CommitRecordDbManager.getInstance();
   private ScreenshotRecordDbManager srDbManager = ScreenshotRecordDbManager.getInstance();
+  private PairMatchingDbManager pmDbManager = PairMatchingDbManager.getInstance();
   private final String tempDir = System.getProperty("java.io.tmpdir");
   private final String uploadDir = tempDir + "/uploads/";
   private final String testDir = tempDir + "/tests/";
@@ -522,4 +526,70 @@ public class AssignmentService {
 
   }
 
+//  /**
+//   *
+//   */
+//  public void randomPairMatching(int amount, String assignmentName) {
+//    int aid = dbManager.getAssignmentIdByName(assignmentName);
+//    List<User> userList = userService.getStudents();
+//    List<AssignmentUser> assignmentUserList = auDbManager.getAssignmentUserListByAid(aid);
+//    for (int count = 0; count < amount; count++) {
+//      List<Integer> storedList = new ArrayList<>();
+//
+//      for (int eachAu = 0; eachAu < assignmentUserList.size(); eachAu++) {
+//        List<Integer> existedReviewerList = pmDbManager
+//            .getReviewListByAuId(assignmentUserList.get(eachAu).getId());
+//
+//        System.out.println("===================================");
+//        System.out.println("auId=" + assignmentUserList.get(eachAu).getId());
+//
+//        while (true) {
+//          System.out.println("-----------------------------------");
+//          User user = userList.get((int) (Math.random() * userList.size()));
+//          int reviewId = user.getId();
+//          boolean storedNotExisted = true;
+//          boolean reviewerNotExisted = true;
+//          System.out.println("reviewId=" + reviewId);
+//          System.out.println("assignmentUserList.get(eachAu).getUid()"
+//              + assignmentUserList.get(eachAu).getUid());
+//
+//          if (assignmentUserList.get(eachAu).getUid() == reviewId) {
+//            continue;
+//          }
+//
+//          for (Integer integer: existedReviewerList) {
+//            System.out.println("reviewerNotExisted integer" + integer);
+//            if (integer.equals(reviewId)) {
+//              reviewerNotExisted = false;
+//              break;
+//            }
+//          }
+//
+//          for (Integer integer: storedList) {
+//            System.out.println("storedNotExisted integer" + integer);
+//            if ( integer.equals(reviewId)) {
+//              storedNotExisted = false;
+//              break;
+//            }
+//          }
+//
+//          if ( reviewerNotExisted && storedNotExisted ) {
+//            insertNewPairMatching(assignmentUserList.get(eachAu).getId(), reviewId);
+//            storedList.add(reviewId);
+//            break;
+//          }
+//
+//        }
+//
+//        System.out.println("===================================\n\n");
+//      }
+//    }
+//  }
+//
+//  /**
+//   *
+//   */
+//  public void insertNewPairMatching(int auId, int reviewId) {
+//    pmDbManager.insertPairMatching(auId, reviewId, ReviewStatusEnum.INIT);
+//  }
 }
