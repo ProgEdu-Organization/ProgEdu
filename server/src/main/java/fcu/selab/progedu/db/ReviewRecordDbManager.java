@@ -11,10 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fcu.selab.progedu.data.ReviewRecord;
-import fcu.selab.progedu.utils.ExceptionUtil;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ReviewRecordDbManager {
 
@@ -26,8 +22,6 @@ public class ReviewRecordDbManager {
 
   private IDatabase database = new MySqlDatabase();
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(ReviewRecordDbManager.class);
-
   /**
    * Insert review record into db
    *
@@ -38,8 +32,8 @@ public class ReviewRecordDbManager {
    * @param feedback    feedback
    * @param reviewOrder reviewOrder
    */
-  public void insertReviewRecord(int pmId, int rsmId, int score,
-                                 Date time, String feedback, int reviewOrder) {
+  public void insertReviewRecord(int pmId, int rsmId, int score, Date time,
+                                 String feedback, int reviewOrder) throws SQLException {
     String query = "INSERT INTO Review_Record(pmId, rsmId, score, time, feedback, reviewOrder)"
         + " VALUES (?,?,?,?,?,?);";
     Timestamp timeTimestamp = new Timestamp(time.getTime());
@@ -53,9 +47,6 @@ public class ReviewRecordDbManager {
       preStmt.setString(5, feedback);
       preStmt.setInt(6, reviewOrder);
       preStmt.executeUpdate();
-    } catch (SQLException e) {
-      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
-      LOGGER.error(e.getMessage());
     }
   }
 
@@ -65,7 +56,7 @@ public class ReviewRecordDbManager {
    * @param id id
    * @return review record from specific owner, reviewer, assignment and question
    */
-  public ReviewRecord getReviewRecordById(int id) {
+  public ReviewRecord getReviewRecordById(int id) throws SQLException {
     String query = "SELECT * FROM Review_Record WHERE id = ?";
     ReviewRecord reviewRecord = new ReviewRecord();
 
@@ -89,9 +80,6 @@ public class ReviewRecordDbManager {
           reviewRecord.setReviewOrder(reviewOrder);
         }
       }
-    } catch (SQLException e) {
-      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
-      LOGGER.error(e.getMessage());
     }
     return reviewRecord;
   }
@@ -102,7 +90,7 @@ public class ReviewRecordDbManager {
    * @param pmId pair matching Id
    * @return review record from specific owner, reviewer and assignment
    */
-  public List<ReviewRecord> getReviewRecordByPairMatchingId(int pmId) {
+  public List<ReviewRecord> getReviewRecordByPairMatchingId(int pmId) throws SQLException {
     String query = "SELECT * FROM Review_Record WHERE pmId = ?";
     List<ReviewRecord> reviewRecordList = new ArrayList<>();
 
@@ -128,9 +116,6 @@ public class ReviewRecordDbManager {
           reviewRecordList.add(reviewRecord);
         }
       }
-    } catch (SQLException e) {
-      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
-      LOGGER.error(e.getMessage());
     }
     return reviewRecordList;
   }
@@ -142,7 +127,7 @@ public class ReviewRecordDbManager {
    *
    * @return isFirstTime  return boolean
    */
-  public boolean isFirstTimeReviewRecord(int pmId) {
+  public boolean isFirstTimeReviewRecord(int pmId) throws SQLException {
     String query = "SELECT COUNT(*) AS isFirstTime FROM Review_Record WHERE pmId = ?";
     boolean isFirstTime = false;
 
@@ -157,9 +142,6 @@ public class ReviewRecordDbManager {
           }
         }
       }
-    } catch (SQLException e) {
-      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
-      LOGGER.error(e.getMessage());
     }
     return isFirstTime;
   }
@@ -171,7 +153,7 @@ public class ReviewRecordDbManager {
    *
    * @return reviewOrder review order
    */
-  public int getLatestReviewOrder(int pmId) {
+  public int getLatestReviewOrder(int pmId) throws SQLException {
     String query = "SELECT MAX(reviewOrder) AS latestCount FROM Review_Record WHERE pmId = ?";
     int latestCount = -1;
 
@@ -183,9 +165,6 @@ public class ReviewRecordDbManager {
           latestCount = rs.getInt("latestCount");
         }
       }
-    } catch (SQLException e) {
-      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
-      LOGGER.error(e.getMessage());
     }
     return latestCount;
   }

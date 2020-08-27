@@ -1,5 +1,6 @@
 package fcu.selab.progedu.service;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import javax.ws.rs.GET;
@@ -12,18 +13,23 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
+import fcu.selab.progedu.utils.ExceptionUtil;
 import fcu.selab.progedu.db.ReviewCategoryDbManager;
 import fcu.selab.progedu.db.ReviewMetricsDbManager;
 import fcu.selab.progedu.data.ReviewCategory;
 import fcu.selab.progedu.data.ReviewMetrics;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Path("categoryMetrics/")
 public class CategoryMetricsService {
   private ReviewCategoryDbManager reviewCategoryDbManager = ReviewCategoryDbManager.getInstance();
   private ReviewMetricsDbManager reviewMetricsDbManager = ReviewMetricsDbManager.getInstance();
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(CategoryMetricsService.class);
 
   /**
    *  get all category
@@ -32,19 +38,29 @@ public class CategoryMetricsService {
   @Path("category")
   @Produces(MediaType.APPLICATION_JSON)
   public Response getCategory() {
-    JSONArray array = new JSONArray();
-    JSONObject result = new JSONObject();
-    List<ReviewCategory> reviewCategoryList = getAllCategory();
-    for (ReviewCategory reviewCategory: reviewCategoryList) {
-      JSONObject object = new JSONObject();
-      object.put("id", reviewCategory.getId());
-      object.put("name", reviewCategory.getName());
-      object.put("metrics", reviewCategory.getMetrics());
-      array.put(object);
-    }
-    result.put("allCategory", array);
+    Response response = null;
 
-    return Response.ok().entity(result.toString()).build();
+    try {
+      JSONArray array = new JSONArray();
+      JSONObject result = new JSONObject();
+      List<ReviewCategory> reviewCategoryList = getAllCategory();
+      for (ReviewCategory reviewCategory : reviewCategoryList) {
+        JSONObject object = new JSONObject();
+        object.put("id", reviewCategory.getId());
+        object.put("name", reviewCategory.getName());
+        object.put("metrics", reviewCategory.getMetrics());
+        array.put(object);
+      }
+      result.put("allCategory", array);
+
+      response = Response.ok().entity(result.toString()).build();
+    } catch (Exception e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+      response = Response.serverError().build();
+    }
+
+    return response;
   }
 
   /**
@@ -56,22 +72,32 @@ public class CategoryMetricsService {
   @Path("metrics")
   @Produces(MediaType.APPLICATION_JSON)
   public Response getMetrics(@QueryParam("category") int category) {
-    JSONArray array = new JSONArray();
-    JSONObject result = new JSONObject();
-    List<ReviewMetrics> reviewMetricsList = getAllMetrics(category);
-    for (ReviewMetrics reviewMetrics: reviewMetricsList) {
-      JSONObject object = new JSONObject();
-      object.put("id", reviewMetrics.getId());
-      object.put("category", reviewMetrics.getCategory());
-      object.put("mode", reviewMetrics.getMode());
-      object.put("metrics", reviewMetrics.getMetrics());
-      object.put("description", reviewMetrics.getDescription());
-      object.put("link", reviewMetrics.getLink());
-      array.put(object);
-    }
-    result.put("allMetrics", array);
+    Response response = null;
 
-    return Response.ok().entity(result.toString()).build();
+    try {
+      JSONArray array = new JSONArray();
+      JSONObject result = new JSONObject();
+      List<ReviewMetrics> reviewMetricsList = getAllMetrics(category);
+      for (ReviewMetrics reviewMetrics : reviewMetricsList) {
+        JSONObject object = new JSONObject();
+        object.put("id", reviewMetrics.getId());
+        object.put("category", reviewMetrics.getCategory());
+        object.put("mode", reviewMetrics.getMode());
+        object.put("metrics", reviewMetrics.getMetrics());
+        object.put("description", reviewMetrics.getDescription());
+        object.put("link", reviewMetrics.getLink());
+        array.put(object);
+      }
+      result.put("allMetrics", array);
+
+      response = Response.ok().entity(result.toString()).build();
+    } catch (Exception e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+      response = Response.serverError().build();
+    }
+
+    return response;
   }
 
   /**
@@ -85,8 +111,17 @@ public class CategoryMetricsService {
   @Produces(MediaType.APPLICATION_JSON)
   public Response createCategory(@QueryParam("name") String name,
                                  @QueryParam("metrics") String metrics) {
-    reviewCategoryDbManager.insertReviewCategory(name, metrics);
-    return Response.ok().build();
+    Response response = null;
+
+    try {
+      reviewCategoryDbManager.insertReviewCategory(name, metrics);
+      response = Response.ok().build();
+    } catch (Exception e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+      response = Response.serverError().build();
+    }
+    return response;
   }
 
   /**
@@ -100,8 +135,17 @@ public class CategoryMetricsService {
   @Produces(MediaType.APPLICATION_JSON)
   public Response editCategory(@QueryParam("id") int id,
                                @QueryParam("metrics") String metrics) {
-    reviewCategoryDbManager.editReviewCategoryById(id, metrics);
-    return Response.ok().build();
+    Response response = null;
+
+    try {
+      reviewCategoryDbManager.editReviewCategoryById(id, metrics);
+      response = Response.ok().build();
+    } catch (Exception e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+      response = Response.serverError().build();
+    }
+    return response;
   }
 
   /**
@@ -113,8 +157,17 @@ public class CategoryMetricsService {
   @Path("category/delete")
   @Produces(MediaType.APPLICATION_JSON)
   public Response deleteCategory(@QueryParam("id") int id) {
-    reviewCategoryDbManager.deleteReviewCategoryById(id);
-    return Response.ok().build();
+    Response response = null;
+
+    try {
+      reviewCategoryDbManager.deleteReviewCategoryById(id);
+      response = Response.ok().build();
+    } catch (Exception e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+      response = Response.serverError().build();
+    }
+    return response;
   }
 
   /**
@@ -134,8 +187,17 @@ public class CategoryMetricsService {
                                 @QueryParam("metrics") String metrics,
                                 @QueryParam("description") String description,
                                 @QueryParam("link") String link) {
-    reviewMetricsDbManager.insertReviewMetrics(category, mode, metrics, description, link);
-    return Response.ok().build();
+    Response response = null;
+
+    try {
+      reviewMetricsDbManager.insertReviewMetrics(category, mode, metrics, description, link);
+      response = Response.ok().build();
+    } catch (Exception e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+      response = Response.serverError().build();
+    }
+    return response;
   }
 
   /**
@@ -153,8 +215,17 @@ public class CategoryMetricsService {
                               @QueryParam("mode") int mode,
                               @QueryParam("description") String description,
                               @QueryParam("link") String link) {
-    reviewMetricsDbManager.editReviewMetricsById(id, mode, description, link);
-    return Response.ok().build();
+    Response response = null;
+
+    try {
+      reviewMetricsDbManager.editReviewMetricsById(id, mode, description, link);
+      response = Response.ok().build();
+    } catch (Exception e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+      response = Response.serverError().build();
+    }
+    return response;
   }
 
   /**
@@ -166,16 +237,25 @@ public class CategoryMetricsService {
   @Path("metrics/delete")
   @Produces(MediaType.APPLICATION_JSON)
   public Response deleteMetrics(@QueryParam("id") int id) {
-    reviewMetricsDbManager.deleteReviewMetrics(id);
-    return Response.ok().build();
+    Response response = null;
+
+    try {
+      reviewMetricsDbManager.deleteReviewMetrics(id);
+      response = Response.ok().build();
+    } catch (Exception e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+      response = Response.serverError().build();
+    }
+    return response;
   }
 
-  public List<ReviewCategory> getAllCategory() {
+  public List<ReviewCategory> getAllCategory() throws SQLException {
     List<ReviewCategory> reviewCategoryList = reviewCategoryDbManager.getReviewCategory();
     return reviewCategoryList;
   }
 
-  public List<ReviewMetrics> getAllMetrics(int category) {
+  public List<ReviewMetrics> getAllMetrics(int category) throws SQLException {
     List<ReviewMetrics> reviewMetricsList = reviewMetricsDbManager.getReviewMetrics(category);
     return reviewMetricsList;
   }

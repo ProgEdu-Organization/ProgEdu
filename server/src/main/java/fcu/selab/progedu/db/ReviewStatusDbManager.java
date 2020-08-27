@@ -6,10 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import fcu.selab.progedu.service.ReviewStatusEnum;
-import fcu.selab.progedu.utils.ExceptionUtil;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ReviewStatusDbManager {
 
@@ -21,15 +17,13 @@ public class ReviewStatusDbManager {
 
   private IDatabase database = new MySqlDatabase();
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(ReviewStatusDbManager.class);
-
   /**
    * Get Id by status
    *
    * @param status review status
    * @return id review Id
    */
-  public int getReviewStatusIdByStatus(String status) {
+  public int getReviewStatusIdByStatus(String status) throws SQLException {
     String query = "SELECT id FROM Review_Status WHERE status = ?";
     int id = 0;
 
@@ -41,9 +35,6 @@ public class ReviewStatusDbManager {
           id = rs.getInt("id");
         }
       }
-    } catch (SQLException e) {
-      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
-      LOGGER.error(e.getMessage());
     }
     return id;
   }
@@ -54,7 +45,7 @@ public class ReviewStatusDbManager {
    * @param id review status Id
    * @return status review status
    */
-  public ReviewStatusEnum getReviewStatusById(int id) {
+  public ReviewStatusEnum getReviewStatusById(int id) throws SQLException {
     String query = "SELECT status FROM Review_Status WHERE id = ?";
     String reviewStatus = null;
 
@@ -66,9 +57,6 @@ public class ReviewStatusDbManager {
           reviewStatus = rs.getString("status");
         }
       }
-    } catch (SQLException e) {
-      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
-      LOGGER.error(e.getMessage());
     }
     ReviewStatusEnum reviewStatusEnum = ReviewStatusEnum.getScoreModeEnum(reviewStatus);
     return reviewStatusEnum;

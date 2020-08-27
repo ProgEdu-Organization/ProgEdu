@@ -3,6 +3,7 @@ package fcu.selab.progedu.service;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -532,7 +533,7 @@ public class AssignmentService {
    * @param amount number of reviewer
    * @param assignmentName assignment name
    */
-  public void randomPairMatching(int amount, String assignmentName) {
+  public void randomPairMatching(int amount, String assignmentName) throws SQLException {
     int aid = dbManager.getAssignmentIdByName(assignmentName);
     List<User> userList = userService.getStudents();
     List<AssignmentUser> assignmentUserList = auDbManager.getAssignmentUserListByAid(aid);

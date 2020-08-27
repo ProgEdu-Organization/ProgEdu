@@ -6,10 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import fcu.selab.progedu.service.ScoreModeEnum;
-import fcu.selab.progedu.utils.ExceptionUtil;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ScoreModeDbManager {
 
@@ -21,15 +17,13 @@ public class ScoreModeDbManager {
 
   private IDatabase database = new MySqlDatabase();
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(ScoreModeDbManager.class);
-
   /**
    * Get Score mode Id by score description
    *
    * @param scoreDesc score mode
    * @return scoreModeId score mode Id
    */
-  public int getScoreModeIdByDesc(String scoreDesc) {
+  public int getScoreModeIdByDesc(String scoreDesc) throws SQLException {
     String query = "SELECT id FROM Score_Mode WHERE mode = ?";
     int scoreModeId = 0;
 
@@ -41,9 +35,6 @@ public class ScoreModeDbManager {
           scoreModeId = rs.getInt("id");
         }
       }
-    } catch (SQLException e) {
-      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
-      LOGGER.error(e.getMessage());
     }
     return scoreModeId;
   }
@@ -54,7 +45,7 @@ public class ScoreModeDbManager {
    * @param scoreModeId score mode
    * @return scoreDesc score mode description
    */
-  public ScoreModeEnum getScoreModeDescById(int scoreModeId) {
+  public ScoreModeEnum getScoreModeDescById(int scoreModeId) throws SQLException {
     String query = "SELECT mode FROM Score_Mode WHERE id = ?";
     String scoreMode = null;
 
@@ -66,9 +57,6 @@ public class ScoreModeDbManager {
           scoreMode = rs.getString("mode");
         }
       }
-    } catch (SQLException e) {
-      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
-      LOGGER.error(e.getMessage());
     }
     ScoreModeEnum scoreModeEnum = ScoreModeEnum.getScoreModeEnum(scoreMode);
     return scoreModeEnum;

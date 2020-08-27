@@ -10,10 +10,6 @@ import java.util.List;
 
 import fcu.selab.progedu.data.PairMatching;
 import fcu.selab.progedu.service.ReviewStatusEnum;
-import fcu.selab.progedu.utils.ExceptionUtil;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class PairMatchingDbManager {
 
@@ -27,8 +23,6 @@ public class PairMatchingDbManager {
 
   private IDatabase database = new MySqlDatabase();
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(PairMatchingDbManager.class);
-
   /**
    * Insert pair matching into db
    *
@@ -36,7 +30,8 @@ public class PairMatchingDbManager {
    * @param reviewId user Id
    * @param status   status
    */
-  public void insertPairMatching(int auId, int reviewId, ReviewStatusEnum status) {
+  public void insertPairMatching(int auId, int reviewId, ReviewStatusEnum status)
+      throws SQLException {
     String query = "INSERT INTO Pair_Matching(auId, reviewId, status) VALUES(?,?,?)";
     int statusId = rsDb.getReviewStatusIdByStatus(status.getTypeName());
 
@@ -46,9 +41,6 @@ public class PairMatchingDbManager {
       preStmt.setInt(2, reviewId);
       preStmt.setInt(3, statusId);
       preStmt.executeUpdate();
-    } catch (SQLException e) {
-      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
-      LOGGER.error(e.getMessage());
     }
   }
 
@@ -58,7 +50,7 @@ public class PairMatchingDbManager {
    * @param pairMatchingList     pair matching list
    *
    */
-  public void insertPairMatchingList(List<PairMatching> pairMatchingList) {
+  public void insertPairMatchingList(List<PairMatching> pairMatchingList) throws SQLException {
     for (PairMatching pairMatching: pairMatchingList) {
       insertPairMatching(pairMatching.getAuId(), pairMatching.getReviewId(),
           pairMatching.getScoreModeEnum());
@@ -70,7 +62,7 @@ public class PairMatchingDbManager {
    *
    * @return pair matching details
    */
-  public List<PairMatching> getAllPairMatching() {
+  public List<PairMatching> getAllPairMatching() throws SQLException {
     String query = "SELECT * FROM Pair_Matching";
     List<PairMatching> pairMatchingList = new ArrayList<>();
 
@@ -90,9 +82,6 @@ public class PairMatchingDbManager {
           pairMatchingList.add(pairMatching);
         }
       }
-    } catch (SQLException e) {
-      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
-      LOGGER.error(e.getMessage());
     }
     return pairMatchingList;
   }
@@ -103,7 +92,7 @@ public class PairMatchingDbManager {
    * @param id pair matching id
    * @return pair matching details
    */
-  public PairMatching getPairMatchingById(int id) {
+  public PairMatching getPairMatchingById(int id) throws SQLException {
     String query = "SELECT * FROM Pair_Matching WHERE id = ?";
     PairMatching pairMatching = new PairMatching();
 
@@ -121,9 +110,6 @@ public class PairMatchingDbManager {
           pairMatching.setScoreModeEnum(status);
         }
       }
-    } catch (SQLException e) {
-      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
-      LOGGER.error(e.getMessage());
     }
     return pairMatching;
   }
@@ -135,7 +121,7 @@ public class PairMatchingDbManager {
    * @param auId assignment user id
    * @return pair matching details
    */
-  public List<PairMatching> getPairMatchingByAuId(int auId) {
+  public List<PairMatching> getPairMatchingByAuId(int auId) throws SQLException {
     String query = "SELECT * FROM Pair_Matching WHERE auId = ?";
     List<PairMatching> pairMatchingList = new ArrayList<>();
 
@@ -155,9 +141,6 @@ public class PairMatchingDbManager {
           pairMatchingList.add(pairMatching);
         }
       }
-    } catch (SQLException e) {
-      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
-      LOGGER.error(e.getMessage());
     }
     return pairMatchingList;
   }
@@ -168,7 +151,7 @@ public class PairMatchingDbManager {
    * @param auId assignment user id
    * @return integer list
    */
-  public List<Integer> getReviewListByAuId(int auId) {
+  public List<Integer> getReviewListByAuId(int auId) throws SQLException {
     String query = "SELECT reviewId FROM Pair_Matching WHERE auId = ?";
     List<Integer> integerList = new ArrayList<>();
 
@@ -180,9 +163,6 @@ public class PairMatchingDbManager {
           integerList.add(rs.getInt("reviewId"));
         }
       }
-    } catch (SQLException e) {
-      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
-      LOGGER.error(e.getMessage());
     }
     return integerList;
   }
@@ -194,7 +174,7 @@ public class PairMatchingDbManager {
    * @param reviewId user id
    * @return pair matching details
    */
-  public List<PairMatching> getPairMatchingByReviewId(int reviewId) {
+  public List<PairMatching> getPairMatchingByReviewId(int reviewId) throws SQLException {
     String query = "SELECT * FROM Pair_Matching WHERE reviewId = ?";
     List<PairMatching> pairMatchingList = new ArrayList<>();
 
@@ -214,9 +194,6 @@ public class PairMatchingDbManager {
           pairMatchingList.add(pairMatching);
         }
       }
-    } catch (SQLException e) {
-      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
-      LOGGER.error(e.getMessage());
     }
     return pairMatchingList;
   }
@@ -226,16 +203,13 @@ public class PairMatchingDbManager {
    *
    * @param id pair matching id
    */
-  public void deletePairMatchingById(int id) {
+  public void deletePairMatchingById(int id) throws SQLException {
     String query = "DELETE FROM Pair_Matching WHERE id = ?";
 
     try (Connection conn = database.getConnection();
          PreparedStatement preStmt = conn.prepareStatement(query)) {
       preStmt.setInt(1, id);
       preStmt.executeUpdate();
-    } catch (SQLException e) {
-      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
-      LOGGER.error(e.getMessage());
     }
   }
 
@@ -245,16 +219,13 @@ public class PairMatchingDbManager {
    *
    * @param auId assignment user id
    */
-  public void deletePairMatchingByAuId(int auId) {
+  public void deletePairMatchingByAuId(int auId) throws SQLException {
     String query = "DELETE FROM Pair_Matching WHERE auId = ?";
 
     try (Connection conn = database.getConnection();
          PreparedStatement preStmt = conn.prepareStatement(query)) {
       preStmt.setInt(1, auId);
       preStmt.executeUpdate();
-    } catch (SQLException e) {
-      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
-      LOGGER.error(e.getMessage());
     }
   }
 
@@ -264,16 +235,13 @@ public class PairMatchingDbManager {
    *
    * @param reviewId reviewer id
    */
-  public void deletePairMatchingByReviewId(int reviewId) {
+  public void deletePairMatchingByReviewId(int reviewId) throws SQLException {
     String query = "DELETE FROM Pair_Matching WHERE reviewId = ?";
 
     try (Connection conn = database.getConnection();
          PreparedStatement preStmt = conn.prepareStatement(query)) {
       preStmt.setInt(1, reviewId);
       preStmt.executeUpdate();
-    } catch (SQLException e) {
-      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
-      LOGGER.error(e.getMessage());
     }
   }
 

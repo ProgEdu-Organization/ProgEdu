@@ -9,10 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fcu.selab.progedu.data.ReviewMetrics;
-import fcu.selab.progedu.utils.ExceptionUtil;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ReviewMetricsDbManager {
 
@@ -24,8 +20,6 @@ public class ReviewMetricsDbManager {
 
   private IDatabase database = new MySqlDatabase();
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(ReviewMetricsDbManager.class);
-
   /**
    * Insert review metrics into db
    *
@@ -35,8 +29,8 @@ public class ReviewMetricsDbManager {
    * @param description description
    * @param link        link
    */
-  public void insertReviewMetrics(int category, int mode,
-                                  String metrics, String description, String link) {
+  public void insertReviewMetrics(int category, int mode, String metrics,
+                                  String description, String link) throws SQLException {
     String query = "INSERT INTO Review_Metrics(category, mode, metrics, description, link) "
         + "VALUES(?,?,?,?,?);";
 
@@ -48,9 +42,6 @@ public class ReviewMetricsDbManager {
       preStmt.setString(4, description);
       preStmt.setString(5, link);
       preStmt.executeUpdate();
-    } catch (SQLException e) {
-      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
-      LOGGER.error(e.getMessage());
     }
   }
 
@@ -60,7 +51,7 @@ public class ReviewMetricsDbManager {
    * @param category category Id
    * @return review metrics details
    */
-  public List<ReviewMetrics> getReviewMetrics(int category) {
+  public List<ReviewMetrics> getReviewMetrics(int category) throws SQLException {
     String query = "SELECT * FROM Review_Metrics WHERE category = ?";
     List<ReviewMetrics> reviewMetricsList = new ArrayList<>();
 
@@ -84,9 +75,6 @@ public class ReviewMetricsDbManager {
           reviewMetricsList.add(reviewMetrics);
         }
       }
-    } catch (SQLException e) {
-      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
-      LOGGER.error(e.getMessage());
     }
     return reviewMetricsList;
   }
@@ -99,7 +87,8 @@ public class ReviewMetricsDbManager {
    * @param description description
    * @param link        link
    */
-  public void editReviewMetricsById(int id, int mode, String description, String link) {
+  public void editReviewMetricsById(int id, int mode, String description, String link)
+      throws SQLException {
     String query = "UPDATE Review_Metrics SET mode = ?, description = ?, link = ? WHERE id = ?";
 
     try (Connection conn = database.getConnection();
@@ -109,9 +98,6 @@ public class ReviewMetricsDbManager {
       preStmt.setString(3, link);
       preStmt.setInt(4, id);
       preStmt.executeUpdate();
-    } catch (SQLException e) {
-      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
-      LOGGER.error(e.getMessage());
     }
   }
 
@@ -120,16 +106,13 @@ public class ReviewMetricsDbManager {
    *
    * @param id Id
    */
-  public void deleteReviewMetrics(int id) {
+  public void deleteReviewMetrics(int id) throws SQLException {
     String query = "DELETE FROM Review_Metrics WHERE id = ?";
 
     try (Connection conn = database.getConnection();
          PreparedStatement preStmt = conn.prepareStatement(query)) {
       preStmt.setInt(1, id);
       preStmt.executeUpdate();
-    } catch (SQLException e) {
-      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
-      LOGGER.error(e.getMessage());
     }
   }
 
