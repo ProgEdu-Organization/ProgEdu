@@ -31,7 +31,10 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 
 import fcu.selab.progedu.data.AssignmentUser;
 import fcu.selab.progedu.data.PairMatching;
+import fcu.selab.progedu.data.ReviewSetting;
 import fcu.selab.progedu.db.PairMatchingDbManager;
+import fcu.selab.progedu.db.ReviewSettingDbManager;
+import fcu.selab.progedu.db.ReviewSettingMetricsDbManager;
 import org.jsoup.nodes.Document;
 import org.gitlab.api.models.GitlabProject;
 import org.gitlab.api.models.GitlabUser;
@@ -90,7 +93,9 @@ public class AssignmentService {
   private UserDbManager userDbManager = UserDbManager.getInstance();
   private CommitRecordDbManager crDbManager = CommitRecordDbManager.getInstance();
   private ScreenshotRecordDbManager srDbManager = ScreenshotRecordDbManager.getInstance();
+  private ReviewSettingDbManager rsDbManager = ReviewSettingDbManager.getInstance();
   private PairMatchingDbManager pmDbManager = PairMatchingDbManager.getInstance();
+  private ReviewSettingMetricsDbManager rsmDbManager = ReviewSettingMetricsDbManager.getInstance();
   private final String tempDir = System.getProperty("java.io.tmpdir");
   private final String uploadDir = tempDir + "/uploads/";
   private final String testDir = tempDir + "/tests/";
@@ -120,11 +125,12 @@ public class AssignmentService {
   }
 
   /**
-   * @param assignmentName abc
-   * @param readMe         abc
-   * @param assignmentType abc
-   * @param file           abc
-   * @param fileDetail     abc
+   * @param assignmentName assignment name
+   * @param releaseTime    release time
+   * @param readMe         read me
+   * @param assignmentType assignment type
+   * @param file           file
+   * @param fileDetail     file detail
    * @return abc
    * @throws Exception abc
    */
@@ -190,7 +196,7 @@ public class AssignmentService {
     // 9. String removeTestDirectoryCommand = "rm -rf tests/" + name;
     tomcatService.removeFile(testDir + assignmentName);
 
-    // 10. import project infomation to database
+    // 10. import project information to database
     boolean hasTemplate = false;
 
     addProject(assignmentName, releaseTime, deadline, readMe, projectTypeEnum, hasTemplate,
@@ -204,6 +210,66 @@ public class AssignmentService {
     // 11. remove project file in linux
     tomcatService.removeFile(uploadDir);
     return Response.ok().build();
+  }
+
+  /**
+   * @param assignmentName    assignment name
+//   * @param releaseTime       release time
+//   * @param readMe            read me
+//   * @param assignmentType    assignment type
+//   * @param file              file
+//   * @param fileDetail        file detail
+   * @param amount            amount
+//   * @param reviewStartTime   review release time
+//   * @param reviewEndTime     review deadline
+//   * @param metrics           metrics
+   * @return response
+   * @throws Exception abc
+   */
+  @POST
+  @Path("peerReview/create")
+  @Consumes(MediaType.MULTIPART_FORM_DATA)
+//  @Produces(MediaType.APPLICATION_JSON)
+  public Response createPeerReview(
+      @QueryParam("assignmentName") String assignmentName,
+//      @FormDataParam("releaseTime") Date releaseTime,
+//      @FormDataParam("deadline") Date deadline,
+//      @FormDataParam("readMe") String readMe,
+//      @FormDataParam("fileRadio") String assignmentType,
+//      @FormDataParam("file") InputStream file,
+//      @FormDataParam("file") FormDataContentDisposition fileDetail,
+      @QueryParam("amount") int amount
+//      @FormDataParam("reviewStartTime") Date reviewStartTime,
+//      @FormDataParam("reviewEndTime") Date reviewEndTime,
+//      @FormDataParam("metrics") int... metrics
+  ) {
+    Response response = null;
+
+    try {
+//      // 1. create assignment
+//      createAssignment(assignmentName,
+//          releaseTime, deadline, readMe, assignmentType, file, fileDetail);
+//
+//      // 2. create peer review setting
+//      int assignmentId = dbManager.getAssignmentIdByName(assignmentName);
+//      rsDbManager.insertReviewSetting(assignmentId, amount, reviewStartTime, reviewEndTime);
+//
+//      // 3. set review metrics for specific peer review
+//      int reviewSettingId = rsDbManager.getReviewSettingIdByAid(assignmentId);
+//      for (int metricId: metrics) {
+//        rsmDbManager.insertReviewSettingMetrics(reviewSettingId, metricId);
+//      }
+
+      // 4. set random reviewer and review status for each assignment_user
+      randomPairMatching(amount, assignmentName);
+
+      response = Response.ok().build();
+    } catch (Exception e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+      response = Response.serverError().build();
+    }
+    return response;
   }
 
   private void createRootProject(String name) {

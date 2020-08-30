@@ -1,11 +1,12 @@
 package fcu.selab.progedu.db;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+
+import java.util.Date;
 
 import fcu.selab.progedu.data.ReviewSetting;
 
@@ -42,6 +43,28 @@ public class ReviewSettingDbManager {
       preStmt.setTimestamp(4, deadlineTimestamp);
       preStmt.executeUpdate();
     }
+  }
+
+  /**
+   * Get id from review setting by assignment Id
+   *
+   * @param aid assignment Id
+   * @return id
+   */
+  public int getReviewSettingIdByAid(int aid) throws SQLException {
+    String query = "SELECT id FROM Review_Setting WHERE aId = ?";
+    int id = 0;
+
+    try (Connection conn = database.getConnection();
+         PreparedStatement preStmt = conn.prepareStatement(query)) {
+      preStmt.setInt(1, aid);
+      try (ResultSet rs = preStmt.executeQuery()) {
+        while (rs.next()) {
+          id = rs.getInt("id");
+        }
+      }
+    }
+    return id;
   }
 
   /**

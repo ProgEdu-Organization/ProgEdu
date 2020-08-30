@@ -1,12 +1,12 @@
 package fcu.selab.progedu.db;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
 
