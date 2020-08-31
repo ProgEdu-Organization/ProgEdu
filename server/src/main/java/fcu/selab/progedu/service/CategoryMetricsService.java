@@ -57,7 +57,7 @@ public class CategoryMetricsService {
     } catch (Exception e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
-      response = Response.serverError().build();
+      response = Response.serverError().entity(e.getMessage()).build();
     }
 
     return response;
@@ -94,7 +94,7 @@ public class CategoryMetricsService {
     } catch (Exception e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
-      response = Response.serverError().build();
+      response = Response.serverError().entity(e.getMessage()).build();
     }
 
     return response;
@@ -119,7 +119,7 @@ public class CategoryMetricsService {
     } catch (Exception e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
-      response = Response.serverError().build();
+      response = Response.serverError().entity(e.getMessage()).build();
     }
     return response;
   }
@@ -143,7 +143,7 @@ public class CategoryMetricsService {
     } catch (Exception e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
-      response = Response.serverError().build();
+      response = Response.serverError().entity(e.getMessage()).build();
     }
     return response;
   }
@@ -165,7 +165,7 @@ public class CategoryMetricsService {
     } catch (Exception e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
-      response = Response.serverError().build();
+      response = Response.serverError().entity(e.getMessage()).build();
     }
     return response;
   }
@@ -195,7 +195,7 @@ public class CategoryMetricsService {
     } catch (Exception e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
-      response = Response.serverError().build();
+      response = Response.serverError().entity(e.getMessage()).build();
     }
     return response;
   }
@@ -223,7 +223,7 @@ public class CategoryMetricsService {
     } catch (Exception e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
-      response = Response.serverError().build();
+      response = Response.serverError().entity(e.getMessage()).build();
     }
     return response;
   }
@@ -245,7 +245,7 @@ public class CategoryMetricsService {
     } catch (Exception e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
-      response = Response.serverError().build();
+      response = Response.serverError().entity(e.getMessage()).build();
     }
     return response;
   }

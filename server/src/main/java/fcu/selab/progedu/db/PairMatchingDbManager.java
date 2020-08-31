@@ -10,6 +10,8 @@ import java.util.List;
 
 import fcu.selab.progedu.data.PairMatching;
 import fcu.selab.progedu.service.ReviewStatusEnum;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 public class PairMatchingDbManager {
 
@@ -143,6 +145,37 @@ public class PairMatchingDbManager {
       }
     }
     return pairMatchingList;
+  }
+
+  /**
+   * Get pair matching By assignment user id
+   * Know who reviewed this assignment by specific user
+   *
+   * @param auId assignment user id
+   * @return pair matching details
+   */
+  public JSONArray getPairMatchingJsonByAuId(int auId) throws SQLException {
+    String query = "SELECT * FROM Pair_Matching WHERE auId = ?";
+    JSONArray result = new JSONArray();
+
+    try (Connection conn = database.getConnection();
+         PreparedStatement preStmt = conn.prepareStatement(query)) {
+      preStmt.setInt(1, auId);
+      try (ResultSet rs = preStmt.executeQuery()) {
+        while (rs.next()) {
+          JSONObject ob = new JSONObject();
+          int id = rs.getInt("id");
+          int reviewId = rs.getInt("reviewId");
+          ReviewStatusEnum status = rsDb.getReviewStatusById(rs.getInt("status"));
+          ob.put("id", id);
+          ob.put("reviewId", reviewId);
+          ob.put("status", status.getTypeName());
+          result.put(ob);
+        }
+      }
+    }
+
+    return result;
   }
 
   /**

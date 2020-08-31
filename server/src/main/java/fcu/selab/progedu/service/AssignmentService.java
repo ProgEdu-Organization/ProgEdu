@@ -214,34 +214,34 @@ public class AssignmentService {
 
   /**
    * @param assignmentName    assignment name
-//   * @param releaseTime       release time
-//   * @param readMe            read me
-//   * @param assignmentType    assignment type
-//   * @param file              file
-//   * @param fileDetail        file detail
+   * @param releaseTime       release time
+   * @param readMe            read me
+   * @param assignmentType    assignment type
+   * @param file              file
+   * @param fileDetail        file detail
    * @param amount            amount
-//   * @param reviewStartTime   review release time
-//   * @param reviewEndTime     review deadline
-//   * @param metrics           metrics
+   * @param reviewStartTime   review release time
+   * @param reviewEndTime     review deadline
+   * @param metrics           metrics
    * @return response
    * @throws Exception abc
    */
   @POST
   @Path("peerReview/create")
   @Consumes(MediaType.MULTIPART_FORM_DATA)
-//  @Produces(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
   public Response createPeerReview(
       @QueryParam("assignmentName") String assignmentName,
-//      @FormDataParam("releaseTime") Date releaseTime,
-//      @FormDataParam("deadline") Date deadline,
-//      @FormDataParam("readMe") String readMe,
-//      @FormDataParam("fileRadio") String assignmentType,
-//      @FormDataParam("file") InputStream file,
-//      @FormDataParam("file") FormDataContentDisposition fileDetail,
-      @QueryParam("amount") int amount
-//      @FormDataParam("reviewStartTime") Date reviewStartTime,
-//      @FormDataParam("reviewEndTime") Date reviewEndTime,
-//      @FormDataParam("metrics") int... metrics
+      @FormDataParam("releaseTime") Date releaseTime,
+      @FormDataParam("deadline") Date deadline,
+      @FormDataParam("readMe") String readMe,
+      @FormDataParam("fileRadio") String assignmentType,
+      @FormDataParam("file") InputStream file,
+      @FormDataParam("file") FormDataContentDisposition fileDetail,
+      @QueryParam("amount") int amount,
+      @FormDataParam("reviewStartTime") Date reviewStartTime,
+      @FormDataParam("reviewEndTime") Date reviewEndTime,
+      @FormDataParam("metrics") int... metrics
   ) {
     Response response = null;
 
@@ -261,13 +261,13 @@ public class AssignmentService {
 //      }
 
       // 4. set random reviewer and review status for each assignment_user
-      randomPairMatching(amount, assignmentName);
+//      randomPairMatching(amount, assignmentName);
 
       response = Response.ok().build();
     } catch (Exception e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
-      response = Response.serverError().build();
+      response = Response.serverError().entity(e.getMessage()).build();
     }
     return response;
   }
