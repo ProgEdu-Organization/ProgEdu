@@ -91,12 +91,16 @@ public class PeerReviewService {
 
       for (Assignment assignment: assignmentList) {
         int auId = assignmentUserDbManager.getAuid(assignment.getId(), userId);
+        ReviewSetting reviewSetting = reviewSettingDbManager.getReviewSetting(assignment.getId());
         JSONObject ob = new JSONObject();
         int commitRecordCount = commitRecordDbManager.getCommitCount(auId);
         ob.put("assignmentName", assignment.getName());
         ob.put("releaseTime", assignment.getReleaseTime());
+        ob.put("deadline", assignment.getDeadline());
         ob.put("commitRecordCount", commitRecordCount);
-        ob.put("reviewStatus", reviewedRecordStatus(auId, commitRecordCount).getTypeName());
+        ob.put("reviewReleaseTime", reviewSetting.getReleaseTime());
+        ob.put("reviewDeadline", reviewSetting.getDeadline());
+        ob.put("reviewStatus", reviewedRecordStatus(auId, commitRecordCount));
         array.put(ob);
       }
       response = Response.ok(array.toString()).build();
@@ -109,25 +113,155 @@ public class PeerReviewService {
     return response;
   }
 
-  public ReviewStatusEnum reviewedRecordStatus(int auId, int commitRecordCount)
+  /**
+   * get all user's status of reviewing other's hw
+   */
+  @GET
+  @Path("status/allUsers")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response getAllReviewStatus() {
+    Response response = null;
+
+    try {
+      JSONArray array = new JSONArray();
+      JSONObject result = new JSONObject();
+      List<User> users = getStudents();
+      for (User user: users) {
+        String username = user.getUsername();
+        Response reviewStatus = getReviewStatus(username);
+        JSONObject ob = new JSONObject();
+        ob.put("username", username);
+        ob.put("name", user.getName());
+        ob.put("display", user.getDisplay());
+        ob.put("reviewStatus", new JSONArray(reviewStatus.getEntity().toString()));
+        array.put(ob);
+      }
+
+      result.put("allReviewStatus", array);
+      response = Response.ok(result.toString()).build();
+    } catch (Exception e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+      response = Response.serverError().entity(e.getMessage()).build();
+    }
+
+    return response;
+  }
+
+  /**
+   *
+   * @param username user name
+   */
+  @GET
+  @Path("status/oneUser")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response getReviewStatus(@QueryParam("username") String username) {
+    Response response = null;
+    try {
+      List<Assignment> assignmentList = assignmentDbManager.getAllReviewAssignment();
+      int reviewId = userDbManager.getUserIdByUsername(username);
+      JSONArray array = new JSONArray();
+
+      for (Assignment assignment: assignmentList) {
+        ReviewSetting reviewSetting = reviewSettingDbManager.getReviewSetting(assignment.getId());
+        JSONObject ob = new JSONObject();
+        ob.put("assignmentName", assignment.getName());
+        ob.put("amount", reviewSetting.getAmount());
+        ob.put("releaseTime", assignment.getReleaseTime());
+        ob.put("deadline", assignment.getDeadline());
+        ob.put("reviewReleaseTime", reviewSetting.getReleaseTime());
+        ob.put("reviewDeadline", reviewSetting.getDeadline());
+        ob.put("count", getReviewCompletedCount(assignment.getId(), reviewId));
+        ob.put("status", reviewerStatus(assignment.getId(),
+            reviewId, reviewSetting.getAmount()).getTypeName());
+        array.put(ob);
+      }
+
+      response = Response.ok(array.toString()).build();
+    } catch (Exception e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+      response = Response.serverError().entity(e.getMessage()).build();
+    }
+
+    return response;
+  }
+
+  /**
+   * check which reviewed status of specific assignment_user
+   *
+   * @param auId assignment_user id
+   * @param commitRecordCount commit record count
+   */
+  public String reviewedRecordStatus(int auId, int commitRecordCount)
       throws SQLException {
     List<PairMatching> pairMatchingList = pairMatchingDbManager.getPairMatchingByAuId(auId);
-    ReviewStatusEnum resultStatus = ReviewStatusEnum.INIT;
+    String resultStatus = "INIT";
 
-    if (commitRecordCount > 1) {
+    if (commitRecordCount == 1) {
       return resultStatus;
     }
 
     for (PairMatching pairMatching: pairMatchingList) {
-      if (pairMatching.getScoreModeEnum().equals(ReviewStatusEnum.UNCOMPLETED)) {
-        resultStatus = ReviewStatusEnum.UNCOMPLETED;
+      if (pairMatching.getReviewStatusEnum().equals(ReviewStatusEnum.UNCOMPLETED)) {
+        resultStatus = "DONE";
         break;
-      } else if (pairMatching.getScoreModeEnum().equals(ReviewStatusEnum.COMPLETED)) {
-        resultStatus = ReviewStatusEnum.COMPLETED;
+      } else if (pairMatching.getReviewStatusEnum().equals(ReviewStatusEnum.COMPLETED)) {
+        resultStatus = "REVIEWED";
       }
     }
 
     return resultStatus;
+  }
+
+  /**
+   *  check reviewer status of his/her review job
+   *
+   * @param aid assignment id
+   * @param reviewId user id
+   */
+  public ReviewStatusEnum reviewerStatus(int aid, int reviewId, int amount) throws SQLException {
+    List<PairMatching> pairMatchingList =
+        pairMatchingDbManager.getPairMatchingByAidAndReviewId(aid, reviewId);
+    ReviewStatusEnum resultStatus = ReviewStatusEnum.INIT;
+    int initCount = 0;
+
+    for (PairMatching pairMatching: pairMatchingList) {
+      if (pairMatching.getReviewStatusEnum().equals(ReviewStatusEnum.UNCOMPLETED)) {
+        resultStatus = ReviewStatusEnum.UNCOMPLETED;
+        break;
+      } else if (pairMatching.getReviewStatusEnum().equals(ReviewStatusEnum.COMPLETED)) {
+        resultStatus = ReviewStatusEnum.COMPLETED;
+      } else if (pairMatching.getReviewStatusEnum().equals(ReviewStatusEnum.INIT)) {
+        initCount++;
+      }
+    }
+
+    if (initCount == amount) {
+      resultStatus = ReviewStatusEnum.INIT;
+    }
+
+    return resultStatus;
+  }
+
+  /**
+   * get count about how many hw have reviewer reviewed
+   *
+   * @param aid assignment id
+   * @param reviewId user id
+   */
+  public int getReviewCompletedCount(int aid, int reviewId) throws SQLException {
+    List<PairMatching> pairMatchingList =
+        pairMatchingDbManager.getPairMatchingByAidAndReviewId(aid, reviewId);
+    int count = 0;
+
+    for (PairMatching pairMatching: pairMatchingList) {
+      if (pairMatching.getReviewStatusEnum().equals(ReviewStatusEnum.COMPLETED)) {
+        count++;
+      }
+    }
+
+    return count;
   }
 
   /**

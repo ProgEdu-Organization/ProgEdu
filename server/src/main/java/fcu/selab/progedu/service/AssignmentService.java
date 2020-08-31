@@ -660,7 +660,7 @@ public class AssignmentService {
             PairMatching pairMatching = new PairMatching();
             pairMatching.setAuId(assignmentUserList.get(eachAu).getId());
             pairMatching.setReviewId(reviewId);
-            pairMatching.setScoreModeEnum(ReviewStatusEnum.INIT);
+            pairMatching.setReviewStatusEnum(ReviewStatusEnum.INIT);
             insertPairMatchingList.add(pairMatching);
             storedList.add(reviewId);
             break;

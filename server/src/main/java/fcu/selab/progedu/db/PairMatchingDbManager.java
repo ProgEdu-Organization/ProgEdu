@@ -55,7 +55,7 @@ public class PairMatchingDbManager {
   public void insertPairMatchingList(List<PairMatching> pairMatchingList) throws SQLException {
     for (PairMatching pairMatching: pairMatchingList) {
       insertPairMatching(pairMatching.getAuId(), pairMatching.getReviewId(),
-          pairMatching.getScoreModeEnum());
+          pairMatching.getReviewStatusEnum());
     }
   }
 
@@ -80,7 +80,7 @@ public class PairMatchingDbManager {
           pairMatching.setId(id);
           pairMatching.setAuId(auId);
           pairMatching.setReviewId(reviewId);
-          pairMatching.setScoreModeEnum(status);
+          pairMatching.setReviewStatusEnum(status);
           pairMatchingList.add(pairMatching);
         }
       }
@@ -109,7 +109,7 @@ public class PairMatchingDbManager {
           pairMatching.setId(id);
           pairMatching.setAuId(auId);
           pairMatching.setReviewId(reviewId);
-          pairMatching.setScoreModeEnum(status);
+          pairMatching.setReviewStatusEnum(status);
         }
       }
     }
@@ -139,43 +139,12 @@ public class PairMatchingDbManager {
           pairMatching.setId(id);
           pairMatching.setAuId(auId);
           pairMatching.setReviewId(reviewId);
-          pairMatching.setScoreModeEnum(status);
+          pairMatching.setReviewStatusEnum(status);
           pairMatchingList.add(pairMatching);
         }
       }
     }
     return pairMatchingList;
-  }
-
-  /**
-   * Get pair matching By assignment user id
-   * Know who reviewed this assignment by specific user
-   *
-   * @param auId assignment user id
-   * @return pair matching details
-   */
-  public JSONArray getPairMatchingJsonByAuId(int auId) throws SQLException {
-    String query = "SELECT * FROM Pair_Matching WHERE auId = ?";
-    JSONArray result = new JSONArray();
-
-    try (Connection conn = database.getConnection();
-         PreparedStatement preStmt = conn.prepareStatement(query)) {
-      preStmt.setInt(1, auId);
-      try (ResultSet rs = preStmt.executeQuery()) {
-        while (rs.next()) {
-          JSONObject ob = new JSONObject();
-          int id = rs.getInt("id");
-          int reviewId = rs.getInt("reviewId");
-          ReviewStatusEnum status = rsDb.getReviewStatusById(rs.getInt("status"));
-          ob.put("id", id);
-          ob.put("reviewId", reviewId);
-          ob.put("status", status.getTypeName());
-          result.put(ob);
-        }
-      }
-    }
-
-    return result;
   }
 
   /**
@@ -201,6 +170,41 @@ public class PairMatchingDbManager {
   }
 
   /**
+   * Get pair matching By assignment id and reviewer id
+   * Know the status by specific assignment and reviewer
+   *
+   * @param aid assignment id
+   * @param reviewId user id
+   */
+  public List<PairMatching> getPairMatchingByAidAndReviewId(int aid, int reviewId)
+      throws SQLException {
+    String query = "SELECT pm.id, pm.auId, pm.reviewId, pm.status FROM "
+        + "Pair_Matching AS pm, Assignment_User AS au "
+        + "WHERE au.id = pm.auId AND au.aId = ? AND pm.reviewId = ?;";
+    List<PairMatching> pairMatchingList = new ArrayList<>();
+
+    try (Connection conn = database.getConnection();
+         PreparedStatement preStmt = conn.prepareStatement(query)) {
+      preStmt.setInt(1, aid);
+      preStmt.setInt(2, reviewId);
+      try (ResultSet rs = preStmt.executeQuery()) {
+        while (rs.next()) {
+          int id = rs.getInt("id");
+          int auId = rs.getInt("auId");
+          ReviewStatusEnum status = rsDb.getReviewStatusById(rs.getInt("status"));
+          PairMatching pairMatching = new PairMatching();
+          pairMatching.setId(id);
+          pairMatching.setAuId(auId);
+          pairMatching.setReviewId(reviewId);
+          pairMatching.setReviewStatusEnum(status);
+          pairMatchingList.add(pairMatching);
+        }
+      }
+    }
+    return pairMatchingList;
+  }
+
+  /**
    * Get pair matching By reviewer id
    * Know what assignment had been reviewed by specific reviewer
    *
@@ -223,7 +227,7 @@ public class PairMatchingDbManager {
           pairMatching.setId(id);
           pairMatching.setAuId(auId);
           pairMatching.setReviewId(reviewId);
-          pairMatching.setScoreModeEnum(status);
+          pairMatching.setReviewStatusEnum(status);
           pairMatchingList.add(pairMatching);
         }
       }
