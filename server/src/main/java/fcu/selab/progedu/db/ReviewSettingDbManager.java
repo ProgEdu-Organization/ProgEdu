@@ -6,7 +6,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import fcu.selab.progedu.data.ReviewSetting;
 
@@ -65,6 +67,34 @@ public class ReviewSettingDbManager {
       }
     }
     return id;
+  }
+
+  /**
+   *  Get all review setting
+   */
+  public List<ReviewSetting> getAllReviewSetting() throws SQLException {
+    String query = "SELECT * FROM Review_Setting";
+    List<ReviewSetting> reviewSettingList = new ArrayList<>();
+
+    try (Connection conn = database.getConnection();
+         PreparedStatement preStmt = conn.prepareStatement(query)) {
+      try (ResultSet rs = preStmt.executeQuery()) {
+        while (rs.next()) {
+          ReviewSetting reviewSetting = new ReviewSetting();
+          int id = rs.getInt("id");
+          int aid = rs.getInt("aId");
+          int amount = rs.getInt("amount");
+          Date releaseTime = rs.getDate("releaseTime");
+          Date deadline = rs.getDate("deadline");
+          reviewSetting.setId(id);
+          reviewSetting.setaId(aid);
+          reviewSetting.setAmount(amount);
+          reviewSetting.setReleaseTime(releaseTime);
+          reviewSetting.setDeadline(deadline);
+        }
+      }
+    }
+    return reviewSettingList;
   }
 
   /**

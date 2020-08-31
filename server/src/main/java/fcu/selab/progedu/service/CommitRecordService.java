@@ -44,7 +44,7 @@ public class CommitRecordService {
   private UserDbManager userDb = UserDbManager.getInstance();
   private AssignmentDbManager assignmentDb = AssignmentDbManager.getInstance();
   private AssignmentTypeDbManager atDb = AssignmentTypeDbManager.getInstance();
-  private CommitStatusDbManager csdb = CommitStatusDbManager.getInstance();
+  private CommitStatusDbManager csDb = CommitStatusDbManager.getInstance();
   private JenkinsService js = JenkinsService.getInstance();
   private GitlabService gs = GitlabService.getInstance();
 
@@ -240,7 +240,7 @@ public class CommitRecordService {
 
   private String getStatusTypeName(int auId, int number) {
     int statusId = db.getCommitRecordStatus(auId, number);
-    return csdb.getStatusNameById(statusId).getType();
+    return csDb.getStatusNameById(statusId).getType();
   }
 
   /**
