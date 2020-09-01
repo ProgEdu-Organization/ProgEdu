@@ -241,7 +241,7 @@ public class AssignmentService {
       @QueryParam("amount") int amount,
       @FormDataParam("reviewStartTime") Date reviewStartTime,
       @FormDataParam("reviewEndTime") Date reviewEndTime,
-      @FormDataParam("metrics") int... metrics
+      @FormDataParam("metrics") JSONObject metrics
   ) {
     Response response = null;
 
@@ -264,6 +264,52 @@ public class AssignmentService {
 //      randomPairMatching(amount, assignmentName);
 
       response = Response.ok().build();
+    } catch (Exception e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+      response = Response.serverError().entity(e.getMessage()).build();
+    }
+    return response;
+  }
+
+  /**
+   * Get all assignment which is assign as pair review
+   */
+  @GET
+  @Path("peerReview/allAssignment")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response getAllReviewAssignment() {
+    Response response = null;
+
+    try {
+      List<Assignment> assignmentList = dbManager.getAllReviewAssignment();
+      JSONObject ob = new JSONObject();
+      ob.put("allReviewAssignments", assignmentList);
+
+      response = Response.ok().entity(ob.toString()).build();
+    } catch (Exception e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+      response = Response.serverError().entity(e.getMessage()).build();
+    }
+    return response;
+  }
+
+  /**
+   * Get all assignment which is assign as auto assessment
+   */
+  @GET
+  @Path("autoAssessment/allAssignment")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response getAllAutoAssignment() {
+    Response response = null;
+
+    try {
+      List<Assignment> assignmentList = dbManager.getAutoAssessment();
+      JSONObject ob = new JSONObject();
+      ob.put("allAutoAssessment", assignmentList);
+
+      response = Response.ok().entity(ob.toString()).build();
     } catch (Exception e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());

@@ -244,8 +244,10 @@ public class AssignmentDbManager {
    *
    */
   public List<Assignment> getAllReviewAssignment() throws SQLException {
-    String query = "SELECT * FROM Assignment AS assign,"
-        + " Review_Setting AS review WHERE assign.id = review.aId ORDER BY assign.id";
+    String query = "SELECT assign.id, assign.name, assign.createTime, assign.deadline, "
+        + "assign.releaseTime, assign.display, assign.description "
+        + "FROM Assignment AS assign, Review_Setting AS review "
+        + "WHERE assign.id = review.aId ORDER BY assign.id";
     List<Assignment> assignmentList = new ArrayList<>();
 
     try (Connection conn = database.getConnection();
@@ -270,7 +272,8 @@ public class AssignmentDbManager {
    * get auto assessment which is not assign as peer review
    */
   public List<Assignment> getAutoAssessment() throws SQLException {
-    String query = "SELECT * FROM Assignment WHERE id NOT IN (SELECT aId FROM Review_Setting);";
+    String query = "SELECT id, name, createTime, deadline, releaseTime, display, description "
+        + "FROM Assignment WHERE id NOT IN (SELECT aId FROM Review_Setting);";
     List<Assignment> assignmentList = new ArrayList<>();
 
     try (Connection conn = database.getConnection();
