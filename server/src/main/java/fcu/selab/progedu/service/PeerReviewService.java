@@ -1,9 +1,13 @@
 package fcu.selab.progedu.service;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.OutputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -12,6 +16,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import fcu.selab.progedu.conn.GitlabService;
 import fcu.selab.progedu.data.Assignment;
 import fcu.selab.progedu.data.PairMatching;
 import fcu.selab.progedu.data.ReviewSetting;
@@ -19,11 +24,13 @@ import fcu.selab.progedu.data.User;
 import fcu.selab.progedu.db.AssignmentDbManager;
 import fcu.selab.progedu.db.AssignmentUserDbManager;
 import fcu.selab.progedu.db.CommitRecordDbManager;
-
 import fcu.selab.progedu.db.PairMatchingDbManager;
 import fcu.selab.progedu.db.ReviewSettingDbManager;
 import fcu.selab.progedu.db.UserDbManager;
 import fcu.selab.progedu.utils.ExceptionUtil;
+
+import org.gitlab.api.GitlabAPI;
+import org.gitlab.api.models.GitlabProject;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -31,6 +38,7 @@ import org.slf4j.LoggerFactory;
 
 @Path("peerReview")
 public class PeerReviewService {
+  private GitlabService gitlabService = GitlabService.getInstance();
   private CommitRecordDbManager commitRecordDbManager = CommitRecordDbManager.getInstance();
   private AssignmentUserDbManager assignmentUserDbManager = AssignmentUserDbManager.getInstance();
   private AssignmentDbManager assignmentDbManager = AssignmentDbManager.getInstance();
@@ -178,6 +186,34 @@ public class PeerReviewService {
       }
 
       response = Response.ok(array.toString()).build();
+    } catch (Exception e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+      response = Response.serverError().entity(e.getMessage()).build();
+    }
+
+    return response;
+  }
+
+  /**
+   *
+   */
+  @GET
+  @Path("sourceCode")
+  public Response getSourceCode(@QueryParam("username") String username,
+                                @QueryParam("assignmentName") String assignmentName) {
+    Response response = null;
+
+    try {
+      GitlabProject gitlabProject = gitlabService.getProject(username, assignmentName);
+      System.out.println(gitlabProject.getId());
+      System.out.println(gitlabProject.getName());
+      GitlabAPI gitlabApi = gitlabService.getGitlab();
+      System.out.println(gitlabApi.getAllProjects());
+      byte[] buffer = gitlabApi.getFileArchive(gitlabProject);
+
+      response = Response.ok(buffer).type("application/zip")
+          .header("Content-Disposition", "attachment; filename=\"test.zip\"").build();
     } catch (Exception e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());

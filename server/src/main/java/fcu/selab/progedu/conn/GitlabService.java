@@ -72,6 +72,10 @@ public class GitlabService {
     return instance;
   }
 
+  public GitlabAPI getGitlab() {
+    return gitlab;
+  }
+
   /**
    * Get root session from Gitlab
    *

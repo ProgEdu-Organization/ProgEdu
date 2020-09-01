@@ -266,6 +266,31 @@ public class AssignmentDbManager {
     return assignmentList;
   }
 
+  /**
+   * get auto assessment which is not assign as peer review
+   */
+  public List<Assignment> getAutoAssessment() throws SQLException {
+    String query = "SELECT * FROM Assignment WHERE id NOT IN (SELECT aId FROM Review_Setting);";
+    List<Assignment> assignmentList = new ArrayList<>();
+
+    try (Connection conn = database.getConnection();
+         Statement stmt = conn.createStatement();
+         ResultSet rs = stmt.executeQuery(query)) {
+      while (rs.next()) {
+        Assignment assignment = new Assignment();
+        assignment.setId(rs.getInt("id"));
+        assignment.setName(rs.getString("name"));
+        assignment.setCreateTime(rs.getTimestamp("createTime"));
+        assignment.setDeadline(rs.getTimestamp("deadline"));
+        assignment.setReleaseTime(rs.getTimestamp("releaseTime"));
+        assignment.setDisplay(rs.getBoolean("display"));
+        assignment.setDescription(rs.getString("description"));
+        assignmentList.add(assignment);
+      }
+    }
+    return assignmentList;
+  }
+
 
   /**
    * list all assignment names;
