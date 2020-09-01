@@ -2,6 +2,7 @@ package fcu.selab.progedu.service;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -200,23 +201,26 @@ public class PeerReviewService {
    */
   @GET
   @Path("sourceCode")
+  @Produces(MediaType.APPLICATION_OCTET_STREAM)
   public Response getSourceCode(@QueryParam("username") String username,
                                 @QueryParam("assignmentName") String assignmentName) {
     Response response = null;
 
     try {
       GitlabProject gitlabProject = gitlabService.getProject(username, assignmentName);
-      System.out.println(gitlabProject.getId());
-      System.out.println(gitlabProject.getName());
       GitlabAPI gitlabApi = gitlabService.getGitlab();
-      System.out.println(gitlabApi.getAllProjects());
       byte[] buffer = gitlabApi.getFileArchive(gitlabProject);
+      String filePath = "E://test.zip";
+      File file = new File(filePath);
+      OutputStream os = new FileOutputStream(file);
+      os.write(buffer);
+      os.close();
 
-      response = Response.ok(buffer).type("application/zip")
-          .header("Content-Disposition", "attachment; filename=\"test.zip\"").build();
+      response = Response.ok(buffer).build();
     } catch (Exception e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+      System.out.println(e.getMessage());
       response = Response.serverError().entity(e.getMessage()).build();
     }
 
