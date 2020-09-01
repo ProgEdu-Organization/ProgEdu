@@ -80,6 +80,27 @@ public class ReviewMetricsDbManager {
   }
 
   /**
+   * Get metrics from review metrics by Id
+   *
+   * @param id id
+   */
+  public String getReviewMetricsById(int id) throws SQLException {
+    String query = "SELECT metrics FROM Review_Metrics WHERE id = ?";
+    String metrics = null;
+
+    try (Connection conn = database.getConnection();
+         PreparedStatement preStmt = conn.prepareStatement(query)) {
+      preStmt.setInt(1, id);
+      try (ResultSet rs = preStmt.executeQuery()) {
+        while (rs.next()) {
+          metrics = rs.getString("metrics");
+        }
+      }
+    }
+    return metrics;
+  }
+
+  /**
    * Update review metrics by Id
    *
    * @param id          Id

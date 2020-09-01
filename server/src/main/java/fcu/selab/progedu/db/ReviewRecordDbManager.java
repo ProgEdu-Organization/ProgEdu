@@ -88,15 +88,18 @@ public class ReviewRecordDbManager {
    * Get review record by specific pair matching Id
    *
    * @param pmId pair matching Id
+   * @param order review order
    * @return review record from specific owner, reviewer and assignment
    */
-  public List<ReviewRecord> getReviewRecordByPairMatchingId(int pmId) throws SQLException {
-    String query = "SELECT * FROM Review_Record WHERE pmId = ?";
+  public List<ReviewRecord> getReviewRecordByPairMatchingId(int pmId, int order)
+      throws SQLException {
+    String query = "SELECT * FROM Review_Record WHERE pmId = ? AND reviewOrder = ?";
     List<ReviewRecord> reviewRecordList = new ArrayList<>();
 
     try (Connection conn = database.getConnection();
          PreparedStatement preStmt = conn.prepareStatement(query)) {
       preStmt.setInt(1, pmId);
+      preStmt.setInt(2, order);
       try (ResultSet rs = preStmt.executeQuery()) {
         while (rs.next()) {
           int id = rs.getInt("id");

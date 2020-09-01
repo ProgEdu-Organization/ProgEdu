@@ -17,19 +17,24 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import fcu.selab.progedu.conn.GitlabService;
 import fcu.selab.progedu.data.Assignment;
 import fcu.selab.progedu.data.PairMatching;
+import fcu.selab.progedu.data.ReviewRecord;
 import fcu.selab.progedu.data.ReviewSetting;
 import fcu.selab.progedu.data.User;
 import fcu.selab.progedu.db.AssignmentDbManager;
 import fcu.selab.progedu.db.AssignmentUserDbManager;
 import fcu.selab.progedu.db.CommitRecordDbManager;
 import fcu.selab.progedu.db.PairMatchingDbManager;
+import fcu.selab.progedu.db.ReviewMetricsDbManager;
+import fcu.selab.progedu.db.ReviewRecordDbManager;
 import fcu.selab.progedu.db.ReviewSettingDbManager;
+import fcu.selab.progedu.db.ReviewSettingMetricsDbManager;
 import fcu.selab.progedu.db.UserDbManager;
+import fcu.selab.progedu.conn.GitlabService;
 import fcu.selab.progedu.utils.ExceptionUtil;
 
+import org.apache.commons.io.FileUtils;
 import org.gitlab.api.GitlabAPI;
 import org.gitlab.api.models.GitlabProject;
 import org.json.JSONArray;
@@ -45,6 +50,10 @@ public class PeerReviewService {
   private AssignmentDbManager assignmentDbManager = AssignmentDbManager.getInstance();
   private ReviewSettingDbManager reviewSettingDbManager = ReviewSettingDbManager.getInstance();
   private PairMatchingDbManager pairMatchingDbManager = PairMatchingDbManager.getInstance();
+  private ReviewRecordDbManager reviewRecordDbManager = ReviewRecordDbManager.getInstance();
+  private ReviewMetricsDbManager reviewMetricsDbManager = ReviewMetricsDbManager.getInstance();
+  private ReviewSettingMetricsDbManager reviewSettingMetricsDbManager =
+      ReviewSettingMetricsDbManager.getInstance();
   private UserDbManager userDbManager = UserDbManager.getInstance();
 
   private static final Logger LOGGER = LoggerFactory.getLogger(PeerReviewService.class);
@@ -119,6 +128,67 @@ public class PeerReviewService {
       response = Response.serverError().entity(e.getMessage()).build();
     }
 
+    return response;
+  }
+
+  /**
+   * get user's hw detail which had been reviewed
+   *
+   * @param username user name
+   * @param assignmentName assignment name
+   */
+  @GET
+  @Path("record/detail")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response getReviewedRecordDetail(@QueryParam("username") String username,
+                                          @QueryParam("assignmentName") String assignmentName) {
+    Response response = null;
+
+    try {
+      JSONObject result = new JSONObject();
+      JSONArray array = new JSONArray();
+      int userId = userDbManager.getUserIdByUsername(username);
+      int assignmentId = assignmentDbManager.getAssignmentIdByName(assignmentName);
+      int auId = assignmentUserDbManager.getAuid(assignmentId, userId);
+      List<PairMatching> pairMatchingList = pairMatchingDbManager.getPairMatchingByAuId(auId);
+
+      for (PairMatching pairMatching: pairMatchingList) {
+        JSONObject reviewer = new JSONObject();
+        JSONArray reviewDetailArray = new JSONArray();
+        int order = reviewRecordDbManager.getLatestReviewOrder(pairMatching.getId());
+        List<ReviewRecord> reviewRecordList =
+            reviewRecordDbManager.getReviewRecordByPairMatchingId(pairMatching.getId(), order);
+
+        reviewer.put("id", pairMatching.getReviewId());
+        reviewer.put("name", userDbManager.getUsername(pairMatching.getReviewId()));
+        if (reviewRecordList.isEmpty()) {
+          reviewer.put("status", false);
+        } else {
+          reviewer.put("status", true);
+          for (ReviewRecord reviewRecord: reviewRecordList) {
+            JSONObject ob = new JSONObject();
+            int metricsId = reviewSettingMetricsDbManager
+                .getReviewMetricsIdByRsmId(reviewRecord.getRsmId());
+            ob.put("score", reviewRecord.getScore());
+            ob.put("feedback", reviewRecord.getFeedback());
+            ob.put("time", reviewRecord.getTime());
+            ob.put("metrics", reviewMetricsDbManager.getReviewMetricsById(metricsId));
+            reviewDetailArray.put(ob);
+          }
+          reviewer.put("Detail", reviewDetailArray);
+        }
+
+        array.put(reviewer);
+      }
+
+      result.put("allRecordDetail", array);
+
+      response = Response.ok().entity(result.toString()).build();
+    } catch (Exception e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+      response = Response.serverError().build();
+    }
     return response;
   }
 
@@ -210,13 +280,15 @@ public class PeerReviewService {
       GitlabProject gitlabProject = gitlabService.getProject(username, assignmentName);
       GitlabAPI gitlabApi = gitlabService.getGitlab();
       byte[] buffer = gitlabApi.getFileArchive(gitlabProject);
-      String filePath = "E://test.zip";
-      File file = new File(filePath);
-      OutputStream os = new FileOutputStream(file);
-      os.write(buffer);
-      os.close();
+      byte[] test = {65,66,67,68,69};
+//      String filePath = "E://test.zip";
+//      File file = new File(filePath);
+//      OutputStream os = new FileOutputStream(file);
+//      os.write(buffer);
+//      os.close();
+      FileUtils.writeByteArrayToFile(new File("E://test"), buffer);
 
-      response = Response.ok(buffer).build();
+      response = Response.ok().build();
     } catch (Exception e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());

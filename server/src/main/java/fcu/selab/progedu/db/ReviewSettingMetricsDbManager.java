@@ -58,6 +58,27 @@ public class ReviewSettingMetricsDbManager {
   }
 
   /**
+   * Get metrics id from review setting metrics by rsmId form review record
+   *
+   * @param rsmId review setting metrics id
+   */
+  public int getReviewMetricsIdByRsmId(int rsmId) throws SQLException {
+    String query = "SELECT rmId FROM Review_Setting_Metrics WHERE id = ?";
+    int rmId = 0;
+
+    try (Connection conn = database.getConnection();
+         PreparedStatement preStmt = conn.prepareStatement(query)) {
+      preStmt.setInt(1, rsmId);
+      try (ResultSet rs = preStmt.executeQuery()) {
+        while (rs.next()) {
+          rmId = rs.getInt("rmId");
+        }
+      }
+    }
+    return rmId;
+  }
+
+  /**
    * Delete review metrics from review setting metrics by specific assignment id
    *
    * @param rsId review setting Id
