@@ -75,6 +75,28 @@ public class AssignmentUserDbManager {
   }
 
   /**
+   * get user id by id
+   *
+   * @param id assignment user id
+   */
+  public int getUidById(int id) throws SQLException {
+    String sql = "SELECT uId FROM Assignment_User WHERE id = ?";
+    int uid = 0;
+
+    try (Connection conn = database.getConnection();
+         PreparedStatement preStmt = conn.prepareStatement(sql)) {
+      preStmt.setInt(1, id);
+      try (ResultSet rs = preStmt.executeQuery()) {
+        while (rs.next()) {
+          uid = rs.getInt("uId");
+        }
+      }
+    }
+
+    return uid;
+  }
+
+  /**
    * get auIds by assignment Id
    *
    * @param aid Assignment Id

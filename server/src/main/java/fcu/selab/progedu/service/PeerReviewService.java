@@ -93,7 +93,7 @@ public class PeerReviewService {
   }
 
   /**
-   *  get one user commit result which is assigned by peer review
+   * get one user commit result which is assigned by peer review
    *
    * @param username user name
    */
@@ -228,6 +228,7 @@ public class PeerReviewService {
   }
 
   /**
+   * get one user's status of reviewing other's hw
    *
    * @param username user name
    */
@@ -261,6 +262,67 @@ public class PeerReviewService {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
       response = Response.serverError().entity(e.getMessage()).build();
+    }
+
+    return response;
+  }
+
+  /**
+   * get review details from specific reviewer and assignment name
+   *
+   * @param username user name
+   * @param assignmentName assignment name
+   */
+  @GET
+  @Path("status/detail")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response getReviewStatusDetail(@QueryParam("username") String username,
+                                        @QueryParam("assignmentName") String assignmentName) {
+    Response response = null;
+
+    try {
+      JSONObject result = new JSONObject();
+      JSONArray array = new JSONArray();
+      int reviewId = userDbManager.getUserIdByUsername(username);
+      int assignmentId = assignmentDbManager.getAssignmentIdByName(assignmentName);
+      List<PairMatching> pairMatchingList = pairMatchingDbManager
+          .getPairMatchingByAidAndReviewId(assignmentId, reviewId);
+
+      for (PairMatching pairMatching: pairMatchingList) {
+        JSONObject reviewed = new JSONObject();
+        JSONArray reviewDetailArray = new JSONArray();
+        int order = reviewRecordDbManager.getLatestReviewOrder(pairMatching.getId());
+        List<ReviewRecord> reviewRecordList =
+            reviewRecordDbManager.getReviewRecordByPairMatchingId(pairMatching.getId(), order);
+
+        int userId = assignmentUserDbManager.getUidById(pairMatching.getAuId());
+        reviewed.put("id", userId);
+        reviewed.put("name", userDbManager.getUsername(userId));
+        if (reviewRecordList.isEmpty()) {
+          reviewed.put("status", false);
+        } else {
+          reviewed.put("status", true);
+          for (ReviewRecord reviewRecord: reviewRecordList) {
+            JSONObject ob = new JSONObject();
+            int metricsId = reviewSettingMetricsDbManager
+                .getReviewMetricsIdByRsmId(reviewRecord.getRsmId());
+            ob.put("score", reviewRecord.getScore());
+            ob.put("feedback", reviewRecord.getFeedback());
+            ob.put("time", reviewRecord.getTime());
+            ob.put("metrics", reviewMetricsDbManager.getReviewMetricsById(metricsId));
+            reviewDetailArray.put(ob);
+          }
+          reviewed.put("Detail", reviewDetailArray);
+        }
+
+        array.put(reviewed);
+      }
+
+      result.put("allStatusDetail", array);
+
+      response = Response.ok().entity(result.toString()).build();
+    } catch (Exception e) {
+      response = Response.serverError().build();
     }
 
     return response;
