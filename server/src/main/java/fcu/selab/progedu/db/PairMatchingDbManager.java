@@ -117,6 +117,35 @@ public class PairMatchingDbManager {
   }
 
   /**
+   * Get pair matching By auId and reviewId
+   *
+   * @param auId assignment_user id
+   * @param reviewId review id
+   * @return pair matching details
+   */
+  public PairMatching getPairMatchingByAuIdReviewId(int auId, int reviewId) throws SQLException {
+    String query = "SELECT * FROM Pair_Matching WHERE auId = ? AND reviewId = ?";
+    PairMatching pairMatching = new PairMatching();
+
+    try (Connection conn = database.getConnection();
+         PreparedStatement preStmt = conn.prepareStatement(query)) {
+      preStmt.setInt(1, auId);
+      preStmt.setInt(2, reviewId);
+      try (ResultSet rs = preStmt.executeQuery()) {
+        while (rs.next()) {
+          int id = rs.getInt("id");
+          ReviewStatusEnum status = rsDb.getReviewStatusById(rs.getInt("status"));
+          pairMatching.setId(id);
+          pairMatching.setAuId(auId);
+          pairMatching.setReviewId(reviewId);
+          pairMatching.setReviewStatusEnum(status);
+        }
+      }
+    }
+    return pairMatching;
+  }
+
+  /**
    * Get pair matching By assignment user id
    * Know who reviewed this assignment by specific user
    *

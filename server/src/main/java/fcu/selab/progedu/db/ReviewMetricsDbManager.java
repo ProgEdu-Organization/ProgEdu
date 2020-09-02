@@ -101,6 +101,27 @@ public class ReviewMetricsDbManager {
   }
 
   /**
+   * Get metrics from review metrics by Id
+   *
+   * @param id id
+   */
+  public int getScoreModeIdById(int id) throws SQLException {
+    String query = "SELECT mode FROM Review_Metrics WHERE id = ?";
+    int mode = 0;
+
+    try (Connection conn = database.getConnection();
+         PreparedStatement preStmt = conn.prepareStatement(query)) {
+      preStmt.setInt(1, id);
+      try (ResultSet rs = preStmt.executeQuery()) {
+        while (rs.next()) {
+          mode = rs.getInt("mode");
+        }
+      }
+    }
+    return mode;
+  }
+
+  /**
    * Update review metrics by Id
    *
    * @param id          Id
