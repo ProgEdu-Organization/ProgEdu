@@ -649,88 +649,37 @@ public class AssignmentService {
     int aid = dbManager.getAssignmentIdByName(assignmentName);
     List<User> userList = userService.getStudents();
     List<AssignmentUser> assignmentUserList = auDbManager.getAssignmentUserListByAid(aid);
+    int randomNumber;
 
-    // 1. assign "amount" times of student to review
+    while (true) {
+      randomNumber = (int) (Math.random() * userList.size());
+      if (assignmentUserList.get(randomNumber).getUid() != userList.get(0).getId()) {
+        break;
+      }
+    }
+
     for (int count = 0; count < amount; count++) {
-
-      // Reviewer can't be repeat in the same round, this list store who had been assign to review
-      List<Integer> storedList = new ArrayList<>();
+      int userSize = userList.size();
       List<PairMatching> insertPairMatchingList = new ArrayList<>();
+      for (int order = 0; order < userSize; order++) {
+        int totalCount = randomNumber + order + count;
+        int mod = totalCount % userSize;
 
-      // When assign the random reviewer, sometimes the last random reviewer and reviewed person
-      // is the same, so we need to reassign reviewer in this round
-      boolean lastIdSameOrNot = false;
-
-      // 2. assign number of students to different assignment
-      for (int eachAu = 0; eachAu < assignmentUserList.size(); eachAu++) {
-
-        // The same assignment_user can't have the repeated reviewer,
-        // this list store who have reviewed this assignment_user
-        List<Integer> existedReviewerList = pmDbManager
-            .getReviewListByAuId(assignmentUserList.get(eachAu).getId());
-
-        // effect as same as lastIdSameOrNot
-        int lastImproviseCount = 0;
-
-        while (true) {
-
-          // 3. random reviewer for this assignment_user
-          User user = userList.get((int) (Math.random() * userList.size()));
-          int reviewId = user.getId();
-          boolean storedNotExisted = true;
-          boolean reviewerNotExisted = true;
-
-          // 3.1 reviewer can't see his/her own hw
-          if (assignmentUserList.get(eachAu).getUid() == reviewId) {
-            continue;
-          }
-
-          // 3.2 check random reviewer have existed in the existedReviewerList
-          for (Integer integer: existedReviewerList) {
-            if (integer.equals(reviewId)) {
-              reviewerNotExisted = false;
-              break;
-            }
-          }
-
-          // 3.3 check random reviewer have existed in the storedList
-          for (Integer integer: storedList) {
-            if ( integer.equals(reviewId)) {
-              storedNotExisted = false;
-              break;
-            }
-          }
-
-          // 3.4 if it pass the condition, insert to the dateBase
-          if ( reviewerNotExisted && storedNotExisted ) {
-            PairMatching pairMatching = new PairMatching();
-            pairMatching.setAuId(assignmentUserList.get(eachAu).getId());
-            pairMatching.setReviewId(reviewId);
-            pairMatching.setReviewStatusEnum(ReviewStatusEnum.INIT);
-            insertPairMatchingList.add(pairMatching);
-            storedList.add(reviewId);
-            break;
-          }
-
-          // 3.5 effect as same as lastIdSameOrNot, the condition to break while loop
-          if ((eachAu + 1) == assignmentUserList.size()) {
-            if (lastImproviseCount == assignmentUserList.size()) {
-              lastIdSameOrNot = true;
-              break;
-            } else {
-              lastImproviseCount++;
-            }
-          }
+        if (assignmentUserList.get(mod).getUid() == userList.get(order).getId()) {
+          randomNumber++;
+          totalCount = randomNumber + order + count;
+          mod = totalCount % userSize;
         }
+
+        PairMatching pairMatching = new PairMatching();
+        pairMatching.setAuId(assignmentUserList.get(mod).getId());
+        pairMatching.setReviewId(userList.get(order).getId());
+        pairMatching.setReviewStatusEnum(ReviewStatusEnum.INIT);
+
+        insertPairMatchingList.add(pairMatching);
       }
 
-      // 4 effect as same as lastIdSameOrNot,
-      // if the condition pass, it will insert new pair matching to dataBase
-      if (lastIdSameOrNot) {
-        count--;
-      } else {
-        pmDbManager.insertPairMatchingList(insertPairMatchingList);
-      }
+      pmDbManager.insertPairMatchingList(insertPairMatchingList);
     }
   }
 

@@ -13,7 +13,7 @@ public enum ReviewStatusEnum {
    * @param reviewStatus is proJectStatus String
    * @return status is getStatusProjecTypeEnum object
    */
-  public static ReviewStatusEnum getScoreModeEnum(String reviewStatus) {
+  public static ReviewStatusEnum getReviewStatusEnum(String reviewStatus) {
     for (ReviewStatusEnum reviewStatusType : ReviewStatusEnum.values()) {
       if (reviewStatusType.getTypeName().equals(reviewStatus)) {
         return reviewStatusType;

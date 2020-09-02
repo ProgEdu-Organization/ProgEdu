@@ -58,7 +58,7 @@ public class ReviewStatusDbManager {
         }
       }
     }
-    ReviewStatusEnum reviewStatusEnum = ReviewStatusEnum.getScoreModeEnum(reviewStatus);
+    ReviewStatusEnum reviewStatusEnum = ReviewStatusEnum.getReviewStatusEnum(reviewStatus);
     return reviewStatusEnum;
   }
 }

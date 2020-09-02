@@ -40,7 +40,7 @@ public class PairMatching {
     return reviewStatusEnum;
   }
 
-  public void setReviewStatusEnum(ReviewStatusEnum scoreModeEnum) {
-    this.reviewStatusEnum = scoreModeEnum;
+  public void setReviewStatusEnum(ReviewStatusEnum reviewStatusEnum) {
+    this.reviewStatusEnum = reviewStatusEnum;
   }
 }
