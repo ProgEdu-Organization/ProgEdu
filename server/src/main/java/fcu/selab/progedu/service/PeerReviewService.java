@@ -348,9 +348,10 @@ public class PeerReviewService {
 //      OutputStream os = new FileOutputStream(file);
 //      os.write(buffer);
 //      os.close();
-      FileUtils.writeByteArrayToFile(new File("E://test"), buffer);
+//      FileUtils.writeByteArrayToFile(new File("E://test"), buffer);
 
-      response = Response.ok().build();
+      response = Response.ok().entity(buffer).type("application/zip")
+          .header("Content-Disposition", "inline; filename=\"test.zip\"").build();
     } catch (Exception e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
