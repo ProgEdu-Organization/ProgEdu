@@ -153,18 +153,18 @@ public class PeerReviewService {
       List<PairMatching> pairMatchingList = pairMatchingDbManager.getPairMatchingByAuId(auId);
 
       for (PairMatching pairMatching: pairMatchingList) {
-        JSONObject reviewer = new JSONObject();
+        JSONObject reviewed = new JSONObject();
         JSONArray reviewDetailArray = new JSONArray();
         int order = reviewRecordDbManager.getLatestReviewOrder(pairMatching.getId());
         List<ReviewRecord> reviewRecordList =
             reviewRecordDbManager.getReviewRecordByPairMatchingId(pairMatching.getId(), order);
 
-        reviewer.put("id", pairMatching.getReviewId());
-        reviewer.put("name", userDbManager.getUsername(pairMatching.getReviewId()));
+        reviewed.put("id", pairMatching.getReviewId());
+        reviewed.put("name", userDbManager.getUsername(pairMatching.getReviewId()));
         if (reviewRecordList.isEmpty()) {
-          reviewer.put("status", false);
+          reviewed.put("status", false);
         } else {
-          reviewer.put("status", true);
+          reviewed.put("status", true);
           for (ReviewRecord reviewRecord: reviewRecordList) {
             JSONObject ob = new JSONObject();
             int metricsId = reviewSettingMetricsDbManager
@@ -175,10 +175,11 @@ public class PeerReviewService {
             ob.put("metrics", reviewMetricsDbManager.getReviewMetricsById(metricsId));
             reviewDetailArray.put(ob);
           }
-          reviewer.put("Detail", reviewDetailArray);
+          reviewed.put("totalCount", order);
+          reviewed.put("Detail", reviewDetailArray);
         }
 
-        array.put(reviewer);
+        array.put(reviewed);
       }
 
       result.put("allRecordDetail", array);
@@ -289,19 +290,19 @@ public class PeerReviewService {
           .getPairMatchingByAidAndReviewId(assignmentId, reviewId);
 
       for (PairMatching pairMatching: pairMatchingList) {
-        JSONObject reviewed = new JSONObject();
+        JSONObject reviewer = new JSONObject();
         JSONArray reviewDetailArray = new JSONArray();
         int order = reviewRecordDbManager.getLatestReviewOrder(pairMatching.getId());
         List<ReviewRecord> reviewRecordList =
             reviewRecordDbManager.getReviewRecordByPairMatchingId(pairMatching.getId(), order);
 
         int userId = assignmentUserDbManager.getUidById(pairMatching.getAuId());
-        reviewed.put("id", userId);
-        reviewed.put("name", userDbManager.getUsername(userId));
+        reviewer.put("id", userId);
+        reviewer.put("name", userDbManager.getUsername(userId));
         if (reviewRecordList.isEmpty()) {
-          reviewed.put("status", false);
+          reviewer.put("status", false);
         } else {
-          reviewed.put("status", true);
+          reviewer.put("status", true);
           for (ReviewRecord reviewRecord: reviewRecordList) {
             JSONObject ob = new JSONObject();
             int metricsId = reviewSettingMetricsDbManager
@@ -312,10 +313,11 @@ public class PeerReviewService {
             ob.put("metrics", reviewMetricsDbManager.getReviewMetricsById(metricsId));
             reviewDetailArray.put(ob);
           }
-          reviewed.put("Detail", reviewDetailArray);
+          reviewer.put("totalCount", order);
+          reviewer.put("Detail", reviewDetailArray);
         }
 
-        array.put(reviewed);
+        array.put(reviewer);
       }
 
       result.put("allStatusDetail", array);
