@@ -41,7 +41,7 @@ public class WebAssignment extends AssignmentType {
 
   @Override
   public String getSampleTemplate() {
-    return "WebQuickStart.zip";
+    return "SideeXQuickStart.zip";
   }
 
   @Override
@@ -68,7 +68,7 @@ public class WebAssignment extends AssignmentType {
 
       String updateDbUrl = progEduApiUrl + "/commits/update";
       JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
-      String seleniumUrl = jenkinsData.getSeleniumHostUrl() + "/wd/hub";
+      String jenkinsHostUrl = jenkinsData.getJenkinsHostUrl();
       String checksumUrl = progEduApiUrl + "/assignment/checksum?proName=" + projectName;
       String testFileUrl = AssignmentDbManager.getInstance().getTestFileUrl(projectName);
       String stringEmpty = "";
@@ -80,7 +80,6 @@ public class WebAssignment extends AssignmentType {
       doc.getElementsByTagName("jobName").item(0).setTextContent(jobName);
       doc.getElementsByTagName("testFileName").item(0).setTextContent(projectName);
       doc.getElementsByTagName("proDetailUrl").item(0).setTextContent(checksumUrl);
-      doc.getElementsByTagName("seleniumUrl").item(0).setTextContent(seleniumUrl);
       doc.getElementsByTagName("progeduDbUrl").item(0).setTextContent(updateDbUrl);
       doc.getElementsByTagName("user").item(0).setTextContent(username);
       doc.getElementsByTagName("proName").item(0).setTextContent(projectName);
@@ -89,6 +88,8 @@ public class WebAssignment extends AssignmentType {
       doc.getElementsByTagName("jenkinsUsername").item(0).setTextContent(username);
       doc.getElementsByTagName("jenkinsAssignmentName").item(0).setTextContent(projectName);
       doc.getElementsByTagName("secretToken").item(0).setTextContent(stringEmpty);
+      doc.getElementsByTagName("jenkinsIp").item(0).setTextContent(jenkinsHostUrl);
+      doc.getElementsByTagName("errorJobName").item(0).setTextContent(jobName);
 
       // write the content into xml file
       TransformerFactory transformerFactory = TransformerFactory.newInstance();

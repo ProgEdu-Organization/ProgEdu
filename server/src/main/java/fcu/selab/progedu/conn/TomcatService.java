@@ -36,7 +36,7 @@ public class TomcatService {
 
   /**
    * (to do)
-   * 
+   *
    * @param file        (to do)
    * @param projectName (to do)
    * @return target
@@ -58,8 +58,41 @@ public class TomcatService {
   }
 
   /**
+   * (to do)
+   *
+   * @param file     (to do)
+   * @param fileName (to do)
+   * @return target
+   */
+  public String storeDescriptionImage(String uploadsDir, String fileName, InputStream file) {
+    File uploadsFolder = new File(uploadsDir);
+    if (!uploadsFolder.exists()) {
+      uploadsFolder.mkdirs();
+    }
+    String target = uploadsDir + fileName;
+    try {
+      storeFile(file, target);
+    } catch (SecurityException | IOException e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    }
+    return target;
+  }
+
+  /**
+   * @param originalFilePath originalFilePath
+   * @param target           targetPath
+   */
+  public void copyFileToTarget(String originalFilePath, String target) {
+    Linux linux = new Linux();
+    String removeFileCommand = "cp " + originalFilePath + " " + target;
+    linux.execLinuxCommand(removeFileCommand);
+  }
+
+
+  /**
    * Creates a folder to desired location if it not already exists
-   * 
+   *
    * @param dirName - full path to the folder
    * @throws SecurityException - in case you don't have permission to create the
    *                           folder
@@ -73,7 +106,7 @@ public class TomcatService {
 
   /**
    * Utility method to save InputStream data to target location/file
-   * 
+   *
    * @param input  - InputStream to be saved
    * @param target - full path to destination file
    */
@@ -84,14 +117,14 @@ public class TomcatService {
 
   /**
    * (to do)
-   * 
+   *
    * @param file       (to do)
    * @param fileDetail (to do)
    * @param project    (to do)
    * @return target (to do)
    */
   public String storeFileToServer(InputStream file, FormDataContentDisposition fileDetail,
-      ProjectType project) {
+                                  ProjectType project) {
     String fileName;
     if (!hasTemplate(fileDetail)) {
       fileName = project.getSampleTemplate();
@@ -112,7 +145,7 @@ public class TomcatService {
 
   /**
    * (to do)
-   * 
+   *
    * @param fileDetail (to do)
    * @return hasTemplate (to do)
    */
@@ -126,7 +159,7 @@ public class TomcatService {
 
   /**
    * (to do)
-   * 
+   *
    * @param path (to do)
    */
   public void findEmptyFolder(String path) {
@@ -161,7 +194,7 @@ public class TomcatService {
 
   /**
    * (to do)
-   * 
+   *
    * @param path (to do)
    */
   public void removeFile(String path) {
@@ -172,7 +205,7 @@ public class TomcatService {
 
   /**
    * (to do)
-   * 
+   *
    * @param readMe (to do)
    * @param path   (to do)
    */
@@ -189,7 +222,7 @@ public class TomcatService {
 
   /**
    * get server current time
-   * 
+   *
    * @return current time
    */
   public Date getCurrentTime() {

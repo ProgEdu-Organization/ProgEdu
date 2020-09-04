@@ -103,8 +103,9 @@
           <div class="form-group row">
             <label class="col-md-3 col-form-label" for="description"> Assignment Description</label>
             <div class="col-md-9">
-              <textarea id="description" name="description" rows="9" class="form-control" placeholder="Content.."
-                formControlName='description'></textarea>
+              <ckeditor [config]="editorConfig" name='description' id="description" formControlName='description'
+                [editor]="Editor">
+              </ckeditor>
             </div>
           </div>
           <div class="form-group row">

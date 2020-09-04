@@ -252,4 +252,50 @@ public class CommitRecordDbManager {
       LOGGER.error(e.getMessage());
     }
   }
+  
+  /**
+   * get a part of commit record details from the homework of a student
+   * 
+   * 
+   * @param auId auId
+   * @param currentPage current page
+   * @return commit record details
+   */
+  public List<CommitRecord> getPartCommitRecord(int auId, int currentPage) {
+    String sql = "SELECT * FROM ProgEdu.Commit_Record WHERE auId = ? "
+        + "AND commitNumber IN (SELECT commitNumber FROM "
+        + "ProgEdu.Commit_Record WHERE commitNumber BETWEEN ? AND ?)";
+    List<CommitRecord> commitRecords = new ArrayList<>();
+    int totalCommitNumber = getCommitCount(auId);
+    int startSearchNumber = totalCommitNumber - (currentPage - 1) * 5;
+    int endSearchNumber = startSearchNumber - 4;
+    if (endSearchNumber <= 0) {
+      endSearchNumber = 1;
+    }
+
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+      preStmt.setInt(1, auId);
+      preStmt.setInt(2, endSearchNumber);
+      preStmt.setInt(3, startSearchNumber);
+      try (ResultSet rs = preStmt.executeQuery()) {
+        while (rs.next()) {
+          int statusId = rs.getInt("status");
+          StatusEnum statusEnum = csDb.getStatusNameById(statusId);
+          int commitNumber = rs.getInt("commitNumber");
+          Date commitTime = rs.getTimestamp("time");
+          CommitRecord commitRecord = new CommitRecord();
+          commitRecord.setNumber(commitNumber);
+          commitRecord.setStatus(statusEnum);
+          commitRecord.setTime(commitTime);
+          commitRecords.add(commitRecord);
+        }
+      }
+    } catch (SQLException e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    }
+    return commitRecords;
+  }  
+
 }

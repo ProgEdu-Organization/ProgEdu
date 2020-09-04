@@ -14,8 +14,7 @@
             <input type="text" class="form-control" id="name" formControlName='name'
               placeholder="Enter Your Assignment Name">
             <div *ngIf="!assignment.get('name').valid" class='invalid-feedback'><span>Your assignment must be less
-                than 10 and must be English</span></div>
-
+                than 12 and must be English</span></div>
           </div>
         </div>
         <div class="form-group row">
@@ -36,10 +35,11 @@
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-md-3 col-form-label" for="description"> Assignment Description</label>
+          <label class="col-md-3 col-form-label" for="description">Assignment Description</label>
           <div class="col-md-9">
-            <textarea id="description" name="description" rows="9" class="form-control" formControlName='description'
-              placeholder="Content.."></textarea>
+            <ckeditor [config]="editorConfig" name='description' id="description" formControlName='description'
+              [editor]="Editor">
+            </ckeditor>
           </div>
         </div>
         <!--tabs-->
@@ -123,8 +123,8 @@
                     <i class="icon-cloud-download"></i><span class="caret"> template</span>
                   </button>
                   <ul *dropdownMenu class="dropdown-menu" role="menu">
-                    <li role="menuitem"><a class="dropdown-item" href="{{SERVER_URL}}/resources/WebQuickStart.zip"
-                        download>WebQuickStart.zip</a>
+                    <li role="menuitem"><a class="dropdown-item" href="{{SERVER_URL}}/resources/SideeXQuickStart.zip"
+                        download>SideeXQuickStart.zip</a>
                     </li>
                   </ul>
                 </div>

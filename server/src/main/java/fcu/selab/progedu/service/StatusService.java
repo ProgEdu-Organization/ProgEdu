@@ -64,6 +64,21 @@ public class StatusService {
   }
 
   /**
+   * Check is Maven Compile Failure Of Unit Test error
+   *
+   * @param console jenkins job build console
+   * @return boolean
+   */
+  public boolean isMavenCompileFailureOfUnitTest(String console) {
+    boolean isCompileFailureOfUnitTestError = false;
+    if (console.contains("testCompile") && console.contains("[ERROR] COMPILATION ERROR : ")) {
+      isCompileFailureOfUnitTestError = true;
+    }
+    return isCompileFailureOfUnitTestError;
+  }
+
+
+  /**
    * Check is JUnit error
    *
    * @param console jenkins job build console
@@ -71,7 +86,7 @@ public class StatusService {
    */
   public boolean isWebUnitTestFailure(String console) {
     boolean isUnitTestError = false;
-    if (console.contains(NPM_ERR) && console.contains("test script.")) {
+    if (console.contains("SideeX test failed with the reason below:")) {
       isUnitTestError = true;
     }
     return isUnitTestError;
@@ -123,7 +138,7 @@ public class StatusService {
    * @return boolean
    */
   public boolean isAndroidCompileFailure(String console) {
-    return console.contains("Task :app:compileDebugJavaWithJavac FAILED");
+    return console.contains("compileDebugJavaWithJavac FAILED");
   }
 
   /**
@@ -133,7 +148,7 @@ public class StatusService {
    * @return boolean
    */
   public boolean isAndroidUnitTestFailure(String console) {
-    return console.contains("Task :app:testDebugUnitTest FAILED");
+    return console.contains("testDebugUnitTest FAILED");
   }
 
   /**
@@ -143,7 +158,7 @@ public class StatusService {
    * @return boolean
    */
   public boolean isAndroidUiTestFailure(String console) {
-    return console.contains("Task :app:connectedDebugAndroidTest FAILED");
+    return console.contains("connectedDebugAndroidTest FAILED");
   }
 
   /**
@@ -153,6 +168,16 @@ public class StatusService {
    * @return boolean
    */
   public boolean isAndroidCheckstyleFailure(String console) {
-    return console.contains("Task :app:checkStyle FAILED");
+    return console.contains("checkStyle FAILED");
+  }
+
+  /**
+   * Android is lint error
+   *
+   * @param console jenkins job console text
+   * @return boolean
+   */
+  public boolean isAndroidLintFailure(String console) {
+    return console.contains("lint FAILED");
   }
 }

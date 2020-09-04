@@ -1,9 +1,7 @@
 version: "3.7"
 services:
   db:
-    # image: mysql:latest
     # image: mysql:5.7
-    # image: fcumselab/progedu-mysql:latest
     image: fcumselab/progedu-mysql:latest
     build: ./mysql
     ports:
@@ -18,10 +16,6 @@ services:
       - ${DATA_PATH_HOST}/mysql:/var/lib/mysql
 
   gitlab:
-    # NOTE [gitlab-ce:9.5...] can't change to [gitlab-ce:latest] directly 
-    # so you need follow below step
-    # step1. change [gitlab/gitlab-ce:11.11.0-ce.0] and run [docker-compose up ..]
-    # step2. change [gitlab/gitlab-ce:12.5.6-ce.0] and run [docker-compose up ..]
     image: gitlab/gitlab-ce:12.5.6-ce.0
     ports:
       - "${GITLAB_HTTP_PORT}:80"
@@ -42,7 +36,6 @@ services:
 
   server:
     image: fcumselab/progedu-tomcat:latest
-    # image: fcumselab/progedu-tomcat:latest
     build:
       context: ./server
       args:
@@ -51,10 +44,15 @@ services:
       - .env
     ports:
       - "${WEB_PORT}:8080"
+    restart: always
     depends_on:
       - db
       - jenkins
       - gitlab
+    volumes:
+      - ${DATA_PATH_HOST}/server/temp:/usr/local/tomcat/temp
+      - ${DATA_PATH_HOST}/server/logs:/usr/local/tomcat/logs
+      - ${DATA_PATH_HOST}/server/images:/usr/local/tomcat/images
 
   jenkins:
     # image: jenkins/jenkins:lts
@@ -72,14 +70,15 @@ services:
     privileged: true
     environment:
       WEB_SELENIUM_URL: ${WEB_SELENIUM_URL}
+      WEB_NGINX_URL: ${WEB_NGINX_URL}
     volumes:
       - ${DATA_PATH_HOST}/jenkins:/var/jenkins_home
       - /dev/kvm:/dev/kvm
 
-  selenium:
-    image: selenium/standalone-chrome
+  nginx:
+    image: nginx:stable
     ports:
-      - "${SELENIUM_PORT}:4444"
+      - "${NGINX_PORT}:80"
     restart: always
     volumes:
-      - ${DATA_PATH_HOST}/jenkins/workspace:/var/lib/workspace
+      - ${DATA_PATH_HOST}/jenkins/workspace:/usr/share/nginx/html

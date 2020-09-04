@@ -21,6 +21,7 @@ export class ProjectChooseComponent implements OnInit {
   public commits: Array<any> = [];
   public feedbacks;
   public selectedCommitNumber;
+  public currentPage: string = "1";
   public screenshotUrls: Array<string>;
 
   constructor(private activeRoute: ActivatedRoute, private projectService: ProjectChoosedService,
@@ -29,13 +30,35 @@ export class ProjectChooseComponent implements OnInit {
   ngOnInit() {
     this.groupName = this.activeRoute.snapshot.queryParamMap.get('groupName');
     this.projectName = this.activeRoute.snapshot.queryParamMap.get('projectName');
-    this.getCommitResult();
+    //this.getCommitResult();
+    this.getPartCommitResult();
     this.getGroup(this.groupName);
     this.getProjectUrl(this.groupName, this.projectName);
   }
 
   getCommitResult() {
     this.projectService.getCommitResult(this.groupName, this.projectName).subscribe(
+      (resopnse) => {
+        this.commits = resopnse;
+        this.selectedCommitNumber = this.commits.length;
+        this.getFeedback();
+        if (this.isShowScreenshot()) {
+          this.getScreenshotUrls();
+        }
+        if (this.commits) {
+          for (const commit in this.commits) {
+            if (commit) {
+              this.commits[commit].time = this.timeService.getUTCTime(this.commits[commit].time);
+            }
+          }
+          this.commits.reverse();
+        }
+      }
+    );
+  }
+
+  getPartCommitResult() {
+    this.projectService.getPartCommitResult(this.groupName, this.projectName, this.currentPage).subscribe(
       (resopnse) => {
         this.commits = resopnse;
         this.selectedCommitNumber = this.commits.length;

@@ -3,7 +3,8 @@ package fcu.selab.progedu.status;
 public enum StatusEnum {
   BUILD_SUCCESS("bs"), CHECKSTYLE_FAILURE("csf"), COMPILE_FAILURE("cpf"), INITIALIZATION("ini"),
   UNIT_TEST_FAILURE("utf"), UI_TEST_FAILURE("uitf"), WEB_HTMLHINT_FAILURE("whf"),
-  WEB_STYLELINT_FAILURE("wsf"), WEB_ESLINT_FAILURE("wef");
+  WEB_STYLELINT_FAILURE("wsf"), WEB_ESLINT_FAILURE("wef"),
+  ANDROID_LINT_FAILURE("alf"), COMPILE_ERROR_OF_UNIT_TEST("cpeout");
 
   private String type;
 
@@ -12,7 +13,6 @@ public enum StatusEnum {
   }
 
   /**
-   * 
    * @param type is status String
    * @return status is statusEnum object
    */

@@ -168,6 +168,47 @@ public class GroupCommitRecordService {
   }
 
   /**
+   * get student build detail info
+   *
+   * @param groupName student id
+   * @param projectName assignment name
+   * @param currentPage current page
+   * @return build detail
+   */
+  @GET
+  @Path("/{name}/projects/{projectName}/partCommits/{currentPage}")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response getPartCommitRecord(
+      @PathParam("name") String groupName, @PathParam("projectName") String projectName, 
+      @PathParam("currentPage") int currentPage) {
+    JenkinsService js = JenkinsService.getInstance();
+    JSONArray array = new JSONArray();
+    int pgid = gpdb.getPgid(groupName, projectName);
+    List<CommitRecord> commitRecords = gpdb.getPartCommitRecords(pgid,currentPage);
+    String jobName = groupName + "_" + projectName;
+    int totalCommit = gpdb.getCommitCount(pgid);
+
+    for (CommitRecord commitRecord : commitRecords) {
+      int number = commitRecord.getNumber();
+      String message = js.getCommitMessage(jobName, number);
+      Date time = commitRecord.getTime();
+      String status = commitRecord.getStatus().getType();
+      String committer = commitRecord.getCommitter();
+      JSONObject ob = new JSONObject();
+
+      ob.put("totalCommit", totalCommit);
+      ob.put("number", number);
+      ob.put("status", status.toUpperCase());
+      ob.put("time", time);
+      ob.put("message", message);
+      ob.put("committer", committer);
+      array.put(ob);
+    }
+
+    return Response.ok(array.toString()).build();
+  }
+
+  /**
    * update user assignment commit record to DB.
    *
    * @param groupName username
@@ -210,7 +251,7 @@ public class GroupCommitRecordService {
 
     return Response.ok().entity(ob.toString()).build();
   }
-
+  
   /**
    * update user assignment commit record to DB.
    *
