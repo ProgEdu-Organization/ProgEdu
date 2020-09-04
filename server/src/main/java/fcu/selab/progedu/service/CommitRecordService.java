@@ -18,6 +18,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import fcu.selab.progedu.status.Status;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -150,7 +151,7 @@ public class CommitRecordService {
     int auId = auDb.getAuid(assignmentDb.getAssignmentIdByName(assignmentName),
         userDb.getUserIdByUsername(username));
     List<CommitRecord> commitRecords = db.getPartCommitRecord(auId,currentPage);
-    int totalcommit = db.getCommitCount(auId);
+    int totalCommit = db.getCommitCount(auId);
     
     for (CommitRecord commitRecord : commitRecords) {
       int number = commitRecord.getNumber();
@@ -158,7 +159,7 @@ public class CommitRecordService {
       Date time = commitRecord.getTime();
       String status = commitRecord.getStatus().getType();
       JSONObject ob = new JSONObject();
-      ob.put("totalcommit", totalcommit);
+      ob.put("totalCommit", totalCommit);
       ob.put("number", number);
       ob.put("status", status.toUpperCase());
       ob.put("time", time);

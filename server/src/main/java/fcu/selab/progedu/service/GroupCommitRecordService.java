@@ -186,7 +186,7 @@ public class GroupCommitRecordService {
     int pgid = gpdb.getPgid(groupName, projectName);
     List<CommitRecord> commitRecords = gpdb.getPartCommitRecords(pgid,currentPage);
     String jobName = groupName + "_" + projectName;
-    int totalCommitNumber = gpdb.getCommitCount(pgid);
+    int totalCommit = gpdb.getCommitCount(pgid);
 
     for (CommitRecord commitRecord : commitRecords) {
       int number = commitRecord.getNumber();
@@ -194,10 +194,9 @@ public class GroupCommitRecordService {
       Date time = commitRecord.getTime();
       String status = commitRecord.getStatus().getType();
       String committer = commitRecord.getCommitter();
-
       JSONObject ob = new JSONObject();
 
-      ob.put("totalCommitNumber", totalCommitNumber);
+      ob.put("totalCommit", totalCommit);
       ob.put("number", number);
       ob.put("status", status.toUpperCase());
       ob.put("time", time);
