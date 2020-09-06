@@ -19,6 +19,7 @@ import javax.ws.rs.core.Response;
 
 import fcu.selab.progedu.data.Assignment;
 import fcu.selab.progedu.data.PairMatching;
+import fcu.selab.progedu.data.ReviewMetrics;
 import fcu.selab.progedu.data.ReviewRecord;
 import fcu.selab.progedu.data.ReviewSetting;
 import fcu.selab.progedu.data.User;
@@ -59,6 +60,48 @@ public class PeerReviewService {
   private UserDbManager userDbManager = UserDbManager.getInstance();
 
   private static final Logger LOGGER = LoggerFactory.getLogger(PeerReviewService.class);
+
+  /**
+   * create new review record
+   */
+
+  /**
+   * get metrics by specific assignment
+   *
+   * @param assignmentName assignment name
+   */
+  @GET
+  @Path("metrics")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response getReviewMetrics(@QueryParam("assignmentName") String assignmentName) {
+    Response response = null;
+
+    try {
+      JSONArray array = new JSONArray();
+      JSONObject result = new JSONObject();
+      int assignmentId = assignmentDbManager.getAssignmentIdByName(assignmentName);
+      int reviewSettingId = reviewSettingDbManager.getReviewSettingIdByAid(assignmentId);
+      List<Integer> metricsList = reviewSettingMetricsDbManager
+          .getReviewSettingMetricsByAssignmentId(reviewSettingId);
+
+      for (Integer integer: metricsList) {
+        JSONObject ob = new JSONObject();
+        ReviewMetrics reviewMetrics = reviewMetricsDbManager.getReviewMetrics(integer);
+        ob.put("id", integer);
+        ob.put("mode", scoreModeDbManager.getScoreModeDescById(reviewMetrics.getMode()));
+        ob.put("metrics", reviewMetrics.getMetrics());
+        ob.put("description", reviewMetrics.getDescription());
+        ob.put("link", reviewMetrics.getLink());
+        array.put(ob);
+      }
+      result.put("allMetrics", array);
+
+      response = Response.ok().entity(result.toString()).build();
+    } catch (Exception e) {
+      response = Response.serverError().build();
+    }
+    return response;
+  }
 
   /**
    * get all commit result which is assigned by peer review

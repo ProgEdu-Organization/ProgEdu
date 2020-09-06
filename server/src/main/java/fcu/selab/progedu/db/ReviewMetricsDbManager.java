@@ -51,7 +51,7 @@ public class ReviewMetricsDbManager {
    * @param category category Id
    * @return review metrics details
    */
-  public List<ReviewMetrics> getReviewMetrics(int category) throws SQLException {
+  public List<ReviewMetrics> getReviewMetricsList(int category) throws SQLException {
     String query = "SELECT * FROM Review_Metrics WHERE category = ?";
     List<ReviewMetrics> reviewMetricsList = new ArrayList<>();
 
@@ -77,6 +77,32 @@ public class ReviewMetricsDbManager {
       }
     }
     return reviewMetricsList;
+  }
+
+  /**
+   * Get review metrics from review metrics by id
+   *
+   * @param id id
+   */
+  public ReviewMetrics getReviewMetrics(int id) throws SQLException {
+    String query = "SELECT * FROM Review_Metrics WHERE id = ?";
+    ReviewMetrics reviewMetrics = new ReviewMetrics();
+
+    try (Connection conn = database.getConnection();
+         PreparedStatement preStmt = conn.prepareStatement(query)) {
+      preStmt.setInt(1, id);
+      try (ResultSet rs = preStmt.executeQuery()) {
+        while (rs.next()) {
+          reviewMetrics.setId(id);
+          reviewMetrics.setCategory(rs.getInt("category"));
+          reviewMetrics.setMode(rs.getInt("mode"));
+          reviewMetrics.setMetrics(rs.getString("metrics"));
+          reviewMetrics.setDescription(rs.getString("description"));
+          reviewMetrics.setLink(rs.getString("link"));
+        }
+      }
+    }
+    return reviewMetrics;
   }
 
   /**

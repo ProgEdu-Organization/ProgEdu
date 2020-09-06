@@ -256,7 +256,7 @@ public class CategoryMetricsService {
   }
 
   public List<ReviewMetrics> getAllMetrics(int category) throws SQLException {
-    List<ReviewMetrics> reviewMetricsList = reviewMetricsDbManager.getReviewMetrics(category);
+    List<ReviewMetrics> reviewMetricsList = reviewMetricsDbManager.getReviewMetricsList(category);
     return reviewMetricsList;
   }
 
