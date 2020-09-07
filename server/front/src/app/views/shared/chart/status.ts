@@ -17,7 +17,7 @@ export const Status = {
   testFailure: {
     name: 'Test Failure',
     color: '#26cedf',
-    status: ["UTF"]
+    status: ['UTF']
   },
   success: {
     name: 'Success',
