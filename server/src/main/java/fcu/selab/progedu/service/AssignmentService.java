@@ -231,37 +231,39 @@ public class AssignmentService {
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   @Produces(MediaType.APPLICATION_JSON)
   public Response createPeerReview(
-      @QueryParam("assignmentName") String assignmentName,
+      @FormDataParam("assignmentName") String assignmentName,
       @FormDataParam("releaseTime") Date releaseTime,
       @FormDataParam("deadline") Date deadline,
       @FormDataParam("readMe") String readMe,
       @FormDataParam("fileRadio") String assignmentType,
       @FormDataParam("file") InputStream file,
       @FormDataParam("file") FormDataContentDisposition fileDetail,
-      @QueryParam("amount") int amount,
+      @FormDataParam("amount") int amount,
       @FormDataParam("reviewStartTime") Date reviewStartTime,
       @FormDataParam("reviewEndTime") Date reviewEndTime,
-      @FormDataParam("metrics") JSONObject metrics
+      @FormDataParam("metrics") String metrics
   ) {
     Response response = null;
 
     try {
-//      // 1. create assignment
-//      createAssignment(assignmentName,
-//          releaseTime, deadline, readMe, assignmentType, file, fileDetail);
-//
-//      // 2. create peer review setting
-//      int assignmentId = dbManager.getAssignmentIdByName(assignmentName);
-//      rsDbManager.insertReviewSetting(assignmentId, amount, reviewStartTime, reviewEndTime);
-//
-//      // 3. set review metrics for specific peer review
-//      int reviewSettingId = rsDbManager.getReviewSettingIdByAid(assignmentId);
-//      for (int metricId: metrics) {
-//        rsmDbManager.insertReviewSettingMetrics(reviewSettingId, metricId);
-//      }
+
+      // 1. create assignment
+      createAssignment(assignmentName,
+          releaseTime, deadline, readMe, assignmentType, file, fileDetail);
+
+      // 2. create peer review setting
+      int assignmentId = dbManager.getAssignmentIdByName(assignmentName);
+      rsDbManager.insertReviewSetting(assignmentId, amount, reviewStartTime, reviewEndTime);
+
+      // 3. set review metrics for specific peer review
+      int reviewSettingId = rsDbManager.getReviewSettingIdByAid(assignmentId);
+      int[] array = arrayStringToIntArray(metrics);
+      for (int item: array) {
+        rsmDbManager.insertReviewSettingMetrics(reviewSettingId, item);
+      }
 
       // 4. set random reviewer and review status for each assignment_user
-//      randomPairMatching(amount, assignmentName);
+      randomPairMatching(amount, assignmentName);
 
       response = Response.ok().build();
     } catch (Exception e) {
@@ -683,4 +685,19 @@ public class AssignmentService {
     }
   }
 
+  /**
+   * split string to array
+   *
+   * @param metrics metrics
+   */
+  public int[] arrayStringToIntArray(String metrics) {
+    String[] items = metrics.split(",");
+    int[] array = new int[items.length];
+
+    for (int i = 0; i < items.length; i++) {
+      array[i] = Integer.parseInt(items[i].trim());
+    }
+
+    return array;
+  }
 }
