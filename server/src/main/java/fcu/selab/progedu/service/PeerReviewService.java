@@ -5,10 +5,14 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -39,6 +43,7 @@ import fcu.selab.progedu.utils.ExceptionUtil;
 import org.apache.commons.io.FileUtils;
 import org.gitlab.api.GitlabAPI;
 import org.gitlab.api.models.GitlabProject;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -516,8 +521,64 @@ public class PeerReviewService {
     } catch (Exception e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
-      System.out.println(e.getMessage());
       response = Response.serverError().entity(e.getMessage()).build();
+    }
+
+    return response;
+  }
+
+  /**
+   * insert review record by specific user, reviewed and assignment name
+   *
+   * @param username user name
+   * @param reviewedName reviewed name
+   * @param assignmentName assignment name
+   * @param reviewRecord review record
+   */
+  @POST
+  @Path("create")
+  @Consumes(MediaType.APPLICATION_JSON)
+  public Response createReviewRecord(@FormDataParam("username") String username,
+                                     @FormDataParam("reviewedName") String reviewedName,
+                                     @FormDataParam("assignmentName") String assignmentName,
+                                     @FormDataParam("reviewRecord") String reviewRecord) {
+    Response response = null;
+
+    try {
+      int userId = userDbManager.getUserIdByUsername(username);
+      int reviewedId = userDbManager.getUserIdByUsername(reviewedName);
+      int assignmentId = assignmentDbManager.getAssignmentIdByName(assignmentName);
+      int reviewSettingId = reviewSettingDbManager.getReviewSettingIdByAid(assignmentId);
+      int auId = assignmentUserDbManager.getAuid(assignmentId, reviewedId);
+      int pmId = pairMatchingDbManager.getPairMatchingIdByAuIdReviewId(auId, userId);
+      int reviewOrder = 1;
+      JSONObject jsonObject = new JSONObject(reviewRecord);
+      JSONArray jsonArray = jsonObject.getJSONArray("allReviewRecord");
+
+      if (!reviewRecordDbManager.isFirstTimeReviewRecord(pmId)) {
+        reviewOrder = reviewRecordDbManager.getLatestReviewOrder(pmId) + 1;
+      }
+
+      for (int i = 0; i < jsonArray.length(); i++) {
+        JSONObject object = jsonArray.getJSONObject(i);
+        int id = object.getInt("id");
+        int score = object.getInt("score");
+        String time = object.getString("time");
+        String feedback = object.getString("feedback");
+        Date date = new Date();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        date = dateFormat.parse(time);
+        int rsmId = reviewSettingMetricsDbManager
+            .getReviewSettingMetricsIdByRsIdRsmId(reviewSettingId, id);
+
+        reviewRecordDbManager.insertReviewRecord(pmId, rsmId, score, date, feedback, reviewOrder);
+      }
+
+      response = Response.ok().build();
+    } catch (Exception e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+      response = Response.serverError().build();
     }
 
     return response;

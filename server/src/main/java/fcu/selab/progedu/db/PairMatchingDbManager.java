@@ -265,6 +265,30 @@ public class PairMatchingDbManager {
   }
 
   /**
+   * Get pair matching id by auId and reviewId
+   *
+   * @param auId assignment id
+   * @param reviewId review id
+   */
+  public int getPairMatchingIdByAuIdReviewId(int auId, int reviewId) throws SQLException {
+    String query = "SELECT id FROM Pair_Matching WHERE auId = ? AND reviewId = ?";
+    int id = 0;
+
+    try (Connection conn = database.getConnection();
+         PreparedStatement preStmt = conn.prepareStatement(query)) {
+      preStmt.setInt(1, auId);
+      preStmt.setInt(2, reviewId);
+      try (ResultSet rs = preStmt.executeQuery()) {
+        while (rs.next()) {
+          id = rs.getInt("id");
+        }
+      }
+    }
+
+    return id;
+  }
+
+  /**
    * Delete pair matching by id
    *
    * @param id pair matching id
