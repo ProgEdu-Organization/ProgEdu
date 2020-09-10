@@ -121,7 +121,7 @@ public class MySqlDbConfig {
    *
    * @return database host
    */
-  public String getDbConnectionOption() {
+  public String getDbConnectionOption() throws LoadConfigFailureException {
     String dbConnectionOption = System.getenv("DB_CONNECTION_OPTION");
     if (dbConnectionOption != null && !dbConnectionOption.equals("")) {
       return dbConnectionOption;
@@ -129,6 +129,7 @@ public class MySqlDbConfig {
     if (props != null) {
       return props.getProperty("DB_CONNECTION_OPTION").trim();
     }
-    return "?relaxAutoCommit=true&useSSL=false&useUnicode=true&characterEncoding=utf-8";
+    throw new LoadConfigFailureException(
+            "Unable to get config of MYSQL connection option from file;" + PROPERTY_FILE);
   }
 }
