@@ -262,7 +262,8 @@ public class TomcatService {
         return true;
       }
     } catch (IOException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
 
     return false;
