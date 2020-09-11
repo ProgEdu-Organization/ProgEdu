@@ -11,6 +11,8 @@ import static org.junit.Assert.*;
 
 public class JenkinsConfigTest {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(JenkinsConfigTest.class);
+
     @Test
     public void getJenkinsHostUrl() {
         JenkinsConfig jenkinsConfig = JenkinsConfig.getInstance();
@@ -18,7 +20,8 @@ public class JenkinsConfigTest {
         try {
             ConfigTestExample.testConfigHasValue( "JenkinsHostUrl", jenkinsConfig.getJenkinsHostUrl());
         } catch (LoadConfigFailureException e) {
-            e.printStackTrace();
+            LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+            LOGGER.error(e.getMessage());
         }
     }
 
@@ -29,7 +32,8 @@ public class JenkinsConfigTest {
         try {
             ConfigTestExample.testConfigHasValue( "SELENIUM_HOST_URL", jenkinsConfig.getSeleniumHostUrl());
         } catch (LoadConfigFailureException e) {
-            e.printStackTrace();
+            LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+            LOGGER.error(e.getMessage());
         }
     }
 
@@ -40,7 +44,8 @@ public class JenkinsConfigTest {
         try {
             ConfigTestExample.testConfigHasValue( "JENKINS_ROOT_USERNAME", jenkinsConfig.getJenkinsRootUsername());
         } catch (LoadConfigFailureException e) {
-            e.printStackTrace();
+            LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+            LOGGER.error(e.getMessage());
         }
     }
 
@@ -51,7 +56,8 @@ public class JenkinsConfigTest {
         try {
             ConfigTestExample.testConfigHasValue( "JenkinsAdminUsername", jenkinsConfig.getJenkinsAdminUsername());
         } catch (LoadConfigFailureException e) {
-            e.printStackTrace();
+            LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+            LOGGER.error(e.getMessage());
         }
     }
 
@@ -62,7 +68,8 @@ public class JenkinsConfigTest {
         try {
             ConfigTestExample.testConfigHasValue( "JENKINS_ROOT_PASSWORD", jenkinsConfig.getJenkinsRootPassword());
         } catch (LoadConfigFailureException e) {
-            e.printStackTrace();
+            LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+            LOGGER.error(e.getMessage());
         }
     }
 
@@ -73,7 +80,8 @@ public class JenkinsConfigTest {
         try {
             ConfigTestExample.testConfigHasValue( "JenkinsAdminPassword", jenkinsConfig.getJenkinsAdminPassword());
         } catch (LoadConfigFailureException e) {
-            e.printStackTrace();
+            LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+            LOGGER.error(e.getMessage());
         }
     }
 
@@ -84,7 +92,8 @@ public class JenkinsConfigTest {
         try {
             ConfigTestExample.testConfigHasValue( "JENKINS_API_TOKEN", jenkinsConfig.getJenkinsApiToken());
         } catch (LoadConfigFailureException e) {
-            e.printStackTrace();
+            LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+            LOGGER.error(e.getMessage());
         }
     }
 
@@ -95,7 +104,8 @@ public class JenkinsConfigTest {
         try {
             ConfigTestExample.testConfigHasValue( "JENKINS_ROOT_URL", jenkinsConfig.getJenkinsRootUrl());
         } catch (LoadConfigFailureException e) {
-            e.printStackTrace();
+            LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+            LOGGER.error(e.getMessage());
         }
     }
 
@@ -106,7 +116,8 @@ public class JenkinsConfigTest {
         try {
             ConfigTestExample.testConfigHasValue( "MAIL_USERNAME", jenkinsConfig.getMailUser(), false);
         } catch (LoadConfigFailureException e) {
-            e.printStackTrace();
+            LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+            LOGGER.error(e.getMessage());
         }
     }
 
@@ -117,7 +128,8 @@ public class JenkinsConfigTest {
         try {
             ConfigTestExample.testConfigHasValue( "MAIL_PASSWORD", jenkinsConfig.getMailPassword(), false);
         } catch (LoadConfigFailureException e) {
-            e.printStackTrace();
+            LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+            LOGGER.error(e.getMessage());
         }
     }
 }
