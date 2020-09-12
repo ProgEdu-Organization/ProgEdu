@@ -289,6 +289,30 @@ public class PairMatchingDbManager {
   }
 
   /**
+   * Check the status had been update or not
+   *
+   * @param auId assignment user id
+   */
+  public boolean checkStatusUpdated(int auId) throws SQLException {
+    String query = "SELECT COUNT(status) AS count FROM Pair_Matching WHERE auId = ? AND status = 1";
+    boolean haveUpdated = false;
+
+    try (Connection conn = database.getConnection();
+         PreparedStatement preStmt = conn.prepareStatement(query)) {
+      preStmt.setInt(1, auId);
+      try (ResultSet rs = preStmt.executeQuery()) {
+        while (rs.next()) {
+          int count = rs.getInt("count");
+          if (count == 0) {
+            haveUpdated = true;
+          }
+        }
+      }
+    }
+    return haveUpdated;
+  }
+
+  /**
    * Upload status by id
    *
    * @param status review status

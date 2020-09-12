@@ -4,8 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -31,10 +29,10 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 
 import fcu.selab.progedu.data.AssignmentUser;
 import fcu.selab.progedu.data.PairMatching;
-import fcu.selab.progedu.data.ReviewSetting;
 import fcu.selab.progedu.db.PairMatchingDbManager;
 import fcu.selab.progedu.db.ReviewSettingDbManager;
 import fcu.selab.progedu.db.ReviewSettingMetricsDbManager;
+import fcu.selab.progedu.db.ReviewStatusDbManager;
 import org.jsoup.nodes.Document;
 import org.gitlab.api.models.GitlabProject;
 import org.gitlab.api.models.GitlabUser;
@@ -96,6 +94,7 @@ public class AssignmentService {
   private ReviewSettingDbManager rsDbManager = ReviewSettingDbManager.getInstance();
   private PairMatchingDbManager pmDbManager = PairMatchingDbManager.getInstance();
   private ReviewSettingMetricsDbManager rsmDbManager = ReviewSettingMetricsDbManager.getInstance();
+  private ReviewStatusDbManager reviewStatusDbManager = ReviewStatusDbManager.getInstance();
   private final String tempDir = System.getProperty("java.io.tmpdir");
   private final String uploadDir = tempDir + "/uploads/";
   private final String testDir = tempDir + "/tests/";
@@ -285,6 +284,12 @@ public class AssignmentService {
 
     try {
       List<Assignment> assignmentList = dbManager.getAllReviewAssignment();
+      Date current = new Date();
+      for (Assignment assignment : assignmentList) {
+        if (current.compareTo(assignment.getReleaseTime()) >= 0) {
+          updatePairMatchingStatusByAid(assignment.getId());
+        }
+      }
       JSONObject ob = new JSONObject();
       ob.put("allReviewAssignments", assignmentList);
 
@@ -699,5 +704,30 @@ public class AssignmentService {
     }
 
     return array;
+  }
+
+  /**
+   * update status in pair matching
+   *
+   * @param aid assignment id
+   */
+  public void updatePairMatchingStatusByAid(int aid) throws SQLException {
+    List<AssignmentUser> assignmentUserList = auDbManager.getAssignmentUserListByAid(aid);
+
+    for (AssignmentUser assignmentUser : assignmentUserList) {
+
+      if (!pmDbManager.checkStatusUpdated(assignmentUser.getId())) {
+        List<PairMatching> pmList = pmDbManager.getPairMatchingByAuId(assignmentUser.getId());
+
+        for (PairMatching pairMatching: pmList) {
+
+          if (pairMatching.getReviewStatusEnum().equals(ReviewStatusEnum.INIT)) {
+            int status = reviewStatusDbManager
+                .getReviewStatusIdByStatus(ReviewStatusEnum.UNCOMPLETED.getTypeName());
+            pmDbManager.updatePairMatchingById(status, pairMatching.getId());
+          }
+        }
+      }
+    }
   }
 }
