@@ -289,6 +289,23 @@ public class PairMatchingDbManager {
   }
 
   /**
+   * Upload status by id
+   *
+   * @param status review status
+   * @param id pair matching id
+   */
+  public void uploadPairMatchingById(int status, int id) throws SQLException {
+    String query = "UPDATE ProgEdu.Pair_Matching SET status = ? WHERE id = ?";
+
+    try (Connection conn = database.getConnection();
+         PreparedStatement preStmt = conn.prepareStatement(query)) {
+      preStmt.setInt(1, status);
+      preStmt.setInt(2, id);
+      preStmt.executeUpdate();
+    }
+  }
+
+  /**
    * Delete pair matching by id
    *
    * @param id pair matching id

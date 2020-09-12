@@ -1,12 +1,17 @@
 package fcu.selab.progedu.service;
 
-import java.io.ByteArrayInputStream;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.SQLException;
@@ -17,18 +22,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-
-import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
+import fcu.selab.progedu.conn.GitlabService;
 import fcu.selab.progedu.data.Assignment;
 import fcu.selab.progedu.data.PairMatching;
 import fcu.selab.progedu.data.ReviewMetrics;
@@ -43,11 +37,10 @@ import fcu.selab.progedu.db.ReviewMetricsDbManager;
 import fcu.selab.progedu.db.ReviewRecordDbManager;
 import fcu.selab.progedu.db.ReviewSettingDbManager;
 import fcu.selab.progedu.db.ReviewSettingMetricsDbManager;
+import fcu.selab.progedu.db.ReviewStatusDbManager;
 import fcu.selab.progedu.db.ScoreModeDbManager;
 import fcu.selab.progedu.db.UserDbManager;
-import fcu.selab.progedu.conn.GitlabService;
 import fcu.selab.progedu.utils.ExceptionUtil;
-
 import org.apache.commons.io.FileUtils;
 import org.gitlab.api.GitlabAPI;
 import org.gitlab.api.models.GitlabProject;
@@ -67,6 +60,7 @@ public class PeerReviewService {
   private PairMatchingDbManager pairMatchingDbManager = PairMatchingDbManager.getInstance();
   private ReviewRecordDbManager reviewRecordDbManager = ReviewRecordDbManager.getInstance();
   private ReviewMetricsDbManager reviewMetricsDbManager = ReviewMetricsDbManager.getInstance();
+  private ReviewStatusDbManager reviewStatusDbManager = ReviewStatusDbManager.getInstance();
   private ReviewSettingMetricsDbManager reviewSettingMetricsDbManager =
       ReviewSettingMetricsDbManager.getInstance();
   private ScoreModeDbManager scoreModeDbManager = ScoreModeDbManager.getInstance();
@@ -99,7 +93,7 @@ public class PeerReviewService {
       List<Integer> metricsList = reviewSettingMetricsDbManager
           .getReviewSettingMetricsByAssignmentId(reviewSettingId);
 
-      for (Integer integer: metricsList) {
+      for (Integer integer : metricsList) {
         JSONObject ob = new JSONObject();
         ReviewMetrics reviewMetrics = reviewMetricsDbManager.getReviewMetrics(integer);
         ob.put("id", integer);
@@ -130,7 +124,7 @@ public class PeerReviewService {
       JSONArray array = new JSONArray();
       JSONObject result = new JSONObject();
       List<User> users = getStudents();
-      for (User user: users) {
+      for (User user : users) {
         String username = user.getUsername();
         Response userCommitRecord = getReviewedRecord(username);
         JSONObject ob = new JSONObject();
@@ -167,7 +161,7 @@ public class PeerReviewService {
       int userId = userDbManager.getUserIdByUsername(username);
       JSONArray array = new JSONArray();
 
-      for (Assignment assignment: assignmentList) {
+      for (Assignment assignment : assignmentList) {
         int auId = assignmentUserDbManager.getAuid(assignment.getId(), userId);
         ReviewSetting reviewSetting = reviewSettingDbManager.getReviewSetting(assignment.getId());
         JSONObject ob = new JSONObject();
@@ -194,7 +188,7 @@ public class PeerReviewService {
   /**
    * get user's hw detail which had been reviewed
    *
-   * @param username user name
+   * @param username       user name
    * @param assignmentName assignment name
    */
   @GET
@@ -212,7 +206,7 @@ public class PeerReviewService {
       int auId = assignmentUserDbManager.getAuid(assignmentId, userId);
       List<PairMatching> pairMatchingList = pairMatchingDbManager.getPairMatchingByAuId(auId);
 
-      for (PairMatching pairMatching: pairMatchingList) {
+      for (PairMatching pairMatching : pairMatchingList) {
         JSONObject reviewer = new JSONObject();
         JSONArray reviewDetailArray = new JSONArray();
         int order = reviewRecordDbManager.getLatestReviewOrder(pairMatching.getId());
@@ -225,7 +219,7 @@ public class PeerReviewService {
           reviewer.put("status", false);
         } else {
           reviewer.put("status", true);
-          for (ReviewRecord reviewRecord: reviewRecordList) {
+          for (ReviewRecord reviewRecord : reviewRecordList) {
             JSONObject ob = new JSONObject();
             int metricsId = reviewSettingMetricsDbManager
                 .getReviewMetricsIdByRsmId(reviewRecord.getRsmId());
@@ -258,10 +252,10 @@ public class PeerReviewService {
   /**
    * get user's hw detail which had been reviewed
    *
-   * @param username user name
+   * @param username       user name
    * @param assignmentName assignment name
-   * @param reviewId review id
-   * @param page page
+   * @param reviewId       review id
+   * @param page           page
    */
   @GET
   @Path("record/detail/page")
@@ -287,7 +281,7 @@ public class PeerReviewService {
 
       result.put("id", pairMatching.getReviewId());
       result.put("name", userDbManager.getUsername(pairMatching.getReviewId()));
-      for (ReviewRecord reviewRecord: reviewRecordList) {
+      for (ReviewRecord reviewRecord : reviewRecordList) {
         JSONObject ob = new JSONObject();
         int metricsId = reviewSettingMetricsDbManager
             .getReviewMetricsIdByRsmId(reviewRecord.getRsmId());
@@ -323,7 +317,7 @@ public class PeerReviewService {
       JSONArray array = new JSONArray();
       JSONObject result = new JSONObject();
       List<User> users = getStudents();
-      for (User user: users) {
+      for (User user : users) {
         String username = user.getUsername();
         Response reviewStatus = getReviewStatus(username);
         JSONObject ob = new JSONObject();
@@ -360,7 +354,7 @@ public class PeerReviewService {
       int reviewId = userDbManager.getUserIdByUsername(username);
       JSONArray array = new JSONArray();
 
-      for (Assignment assignment: assignmentList) {
+      for (Assignment assignment : assignmentList) {
         ReviewSetting reviewSetting = reviewSettingDbManager.getReviewSetting(assignment.getId());
         JSONObject ob = new JSONObject();
         ob.put("assignmentName", assignment.getName());
@@ -388,7 +382,7 @@ public class PeerReviewService {
   /**
    * get review details from specific reviewer and assignment name
    *
-   * @param username user name
+   * @param username       user name
    * @param assignmentName assignment name
    */
   @GET
@@ -406,7 +400,7 @@ public class PeerReviewService {
       List<PairMatching> pairMatchingList = pairMatchingDbManager
           .getPairMatchingByAidAndReviewId(assignmentId, reviewId);
 
-      for (PairMatching pairMatching: pairMatchingList) {
+      for (PairMatching pairMatching : pairMatchingList) {
         JSONObject reviewed = new JSONObject();
         JSONArray reviewDetailArray = new JSONArray();
         int order = reviewRecordDbManager.getLatestReviewOrder(pairMatching.getId());
@@ -420,7 +414,7 @@ public class PeerReviewService {
           reviewed.put("status", false);
         } else {
           reviewed.put("status", true);
-          for (ReviewRecord reviewRecord: reviewRecordList) {
+          for (ReviewRecord reviewRecord : reviewRecordList) {
             JSONObject ob = new JSONObject();
             int metricsId = reviewSettingMetricsDbManager
                 .getReviewMetricsIdByRsmId(reviewRecord.getRsmId());
@@ -452,10 +446,10 @@ public class PeerReviewService {
   /**
    * get review details from specific reviewer, assignment name and page
    *
-   * @param username user name
+   * @param username       user name
    * @param assignmentName assignment name
-   * @param userId user id
-   * @param page page
+   * @param userId         user id
+   * @param page           page
    */
   @GET
   @Path("status/detail/page")
@@ -481,7 +475,7 @@ public class PeerReviewService {
 
       result.put("id", userId);
       result.put("name", userDbManager.getUsername(userId));
-      for (ReviewRecord reviewRecord: reviewRecordList) {
+      for (ReviewRecord reviewRecord : reviewRecordList) {
         JSONObject ob = new JSONObject();
         int metricsId = reviewSettingMetricsDbManager
             .getReviewMetricsIdByRsmId(reviewRecord.getRsmId());
@@ -590,7 +584,8 @@ public class PeerReviewService {
     return destFile;
   }
 
-  public static void decompressGzip(java.nio.file.Path source, java.nio.file.Path target) throws IOException {
+  public static void decompressGzip(java.nio.file.Path source, java.nio.file.Path target)
+      throws IOException {
 
     try (GZIPInputStream gis = new GZIPInputStream(
         new FileInputStream(source.toFile()));
@@ -610,10 +605,10 @@ public class PeerReviewService {
   /**
    * insert review record by specific user, reviewed and assignment name
    *
-   * @param username user name
-   * @param reviewedName reviewed name
+   * @param username       user name
+   * @param reviewedName   reviewed name
    * @param assignmentName assignment name
-   * @param reviewRecord review record
+   * @param reviewRecord   review record
    */
   @POST
   @Path("create")
@@ -622,6 +617,7 @@ public class PeerReviewService {
   public Response createReviewRecord(@FormDataParam("username") String username,
                                      @FormDataParam("reviewedName") String reviewedName,
                                      @FormDataParam("assignmentName") String assignmentName,
+                                     @FormDataParam("time") String createTime,
                                      @FormDataParam("reviewRecord") String reviewRecord) {
     Response response = null;
 
@@ -629,16 +625,34 @@ public class PeerReviewService {
       int userId = userDbManager.getUserIdByUsername(username);
       int reviewedId = userDbManager.getUserIdByUsername(reviewedName);
       int assignmentId = assignmentDbManager.getAssignmentIdByName(assignmentName);
-      int reviewSettingId = reviewSettingDbManager.getReviewSettingIdByAid(assignmentId);
+      ReviewSetting reviewSetting = reviewSettingDbManager.getReviewSetting(assignmentId);
+      int reviewSettingId = reviewSetting.getId();
       int auId = assignmentUserDbManager.getAuid(assignmentId, reviewedId);
       int pmId = pairMatchingDbManager.getPairMatchingIdByAuIdReviewId(auId, userId);
       int reviewOrder = 1;
-      JSONObject jsonObject = new JSONObject(reviewRecord);
-      JSONArray jsonArray = jsonObject.getJSONArray("allReviewRecord");
+      DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+      Date createDate = dateFormat.parse(createTime);
 
+      // 1. Check this review record is expired or not,
+      //    if it's expired, it won't create new review record
+      if (createDate.compareTo(reviewSetting.getDeadline()) >= 0) {
+        response = Response.serverError().entity("This review has been expired.").build();
+        return response;
+      }
+
+      // 2. Upload the status of pair matching
+      int status = reviewStatusDbManager
+          .getReviewStatusIdByStatus(ReviewStatusEnum.COMPLETED.getTypeName());
+      pairMatchingDbManager.uploadPairMatchingById(status, pmId);
+
+      // 3. Check which time have been reviewed, and upload the review order
       if (!reviewRecordDbManager.isFirstTimeReviewRecord(pmId)) {
         reviewOrder = reviewRecordDbManager.getLatestReviewOrder(pmId) + 1;
       }
+
+      // 4. Insert new review record onto db
+      JSONObject jsonObject = new JSONObject(reviewRecord);
+      JSONArray jsonArray = jsonObject.getJSONArray("allReviewRecord");
 
       for (int i = 0; i < jsonArray.length(); i++) {
         JSONObject object = jsonArray.getJSONObject(i);
@@ -646,9 +660,7 @@ public class PeerReviewService {
         int score = object.getInt("score");
         String time = object.getString("time");
         String feedback = object.getString("feedback");
-        Date date = new Date();
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        date = dateFormat.parse(time);
+        Date date = dateFormat.parse(time);
         int rsmId = reviewSettingMetricsDbManager
             .getReviewSettingMetricsIdByRsIdRsmId(reviewSettingId, id);
 
@@ -668,7 +680,7 @@ public class PeerReviewService {
   /**
    * check which reviewed status of specific assignment_user
    *
-   * @param auId assignment_user id
+   * @param auId              assignment_user id
    * @param commitRecordCount commit record count
    */
   public String reviewedRecordStatus(int auId, int commitRecordCount)
@@ -680,7 +692,7 @@ public class PeerReviewService {
       return resultStatus;
     }
 
-    for (PairMatching pairMatching: pairMatchingList) {
+    for (PairMatching pairMatching : pairMatchingList) {
       if (pairMatching.getReviewStatusEnum().equals(ReviewStatusEnum.UNCOMPLETED)) {
         resultStatus = "DONE";
         break;
@@ -693,9 +705,9 @@ public class PeerReviewService {
   }
 
   /**
-   *  check reviewer status of his/her review job
+   * check reviewer status of his/her review job
    *
-   * @param aid assignment id
+   * @param aid      assignment id
    * @param reviewId user id
    */
   public ReviewStatusEnum reviewerStatus(int aid, int reviewId, int amount) throws SQLException {
@@ -704,7 +716,7 @@ public class PeerReviewService {
     ReviewStatusEnum resultStatus = ReviewStatusEnum.INIT;
     int initCount = 0;
 
-    for (PairMatching pairMatching: pairMatchingList) {
+    for (PairMatching pairMatching : pairMatchingList) {
       if (pairMatching.getReviewStatusEnum().equals(ReviewStatusEnum.UNCOMPLETED)) {
         resultStatus = ReviewStatusEnum.UNCOMPLETED;
         break;
@@ -725,7 +737,7 @@ public class PeerReviewService {
   /**
    * get count about how many hw have reviewer reviewed
    *
-   * @param aid assignment id
+   * @param aid      assignment id
    * @param reviewId user id
    */
   public int getReviewCompletedCount(int aid, int reviewId) throws SQLException {
@@ -733,7 +745,7 @@ public class PeerReviewService {
         pairMatchingDbManager.getPairMatchingByAidAndReviewId(aid, reviewId);
     int count = 0;
 
-    for (PairMatching pairMatching: pairMatchingList) {
+    for (PairMatching pairMatching : pairMatchingList) {
       if (pairMatching.getReviewStatusEnum().equals(ReviewStatusEnum.COMPLETED)) {
         count++;
       }
