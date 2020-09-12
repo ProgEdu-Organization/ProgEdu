@@ -1,15 +1,23 @@
 package fcu.selab.progedu.service;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
@@ -63,6 +71,8 @@ public class PeerReviewService {
       ReviewSettingMetricsDbManager.getInstance();
   private ScoreModeDbManager scoreModeDbManager = ScoreModeDbManager.getInstance();
   private UserDbManager userDbManager = UserDbManager.getInstance();
+  private final String tempDir = "E:/";
+  private final String downloadDir = tempDir + "/download/";
 
   private static final Logger LOGGER = LoggerFactory.getLogger(PeerReviewService.class);
 
@@ -508,7 +518,38 @@ public class PeerReviewService {
       GitlabProject gitlabProject = gitlabService.getProject(username, assignmentName);
       GitlabAPI gitlabApi = gitlabService.getGitlab();
       byte[] buffer = gitlabApi.getFileArchive(gitlabProject);
-      byte[] test = {65,66,67,68,69};
+      byte[] unzip = new byte[1024];
+      String filePath = downloadDir + "/" + username + "/test.gzip";
+      String target = downloadDir + "/" + username;
+      File destDir = new File(target);
+      FileUtils.writeByteArrayToFile(new File(filePath), buffer);
+      java.nio.file.Path source = Paths.get(filePath);
+      java.nio.file.Path goal = Paths.get(target);
+      if (Files.notExists(source)) {
+        System.err.printf("The path %s doesn't exist!", source);
+      }
+
+      try {
+
+        decompressGzip(source, goal);
+
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+//      ZipInputStream zis = new ZipInputStream(new FileInputStream(filePath));
+//      ZipEntry zipEntry = zis.getNextEntry();
+//      while (zipEntry != null) {
+//        File newFile = newFile(destDir, zipEntry);
+//        FileOutputStream fos = new FileOutputStream(newFile);
+//        int len;
+//        while ((len = zis.read(buffer)) > 0) {
+//          fos.write(buffer, 0, len);
+//        }
+//        fos.close();
+//        zipEntry = zis.getNextEntry();
+//      }
+//      zis.closeEntry();
+//      zis.close();
 //      String filePath = "E://test.zip";
 //      File file = new File(filePath);
 //      OutputStream os = new FileOutputStream(file);
@@ -516,8 +557,17 @@ public class PeerReviewService {
 //      os.close();
 //      FileUtils.writeByteArrayToFile(new File("E://test"), buffer);
 
-      response = Response.ok().entity(buffer).type("application/zip")
-          .header("Content-Disposition", "inline; filename=\"test.zip\"").build();
+//      InputStream inputStream = new ByteArrayInputStream(buffer);
+//      ZipInputStream zipInputStream = new ZipInputStream(inputStream);
+//      ZipEntry zipEntry;
+//
+//      while ((zipEntry = zipInputStream.getNextEntry()) != null) {
+//        System.out.println("zipEntry: " + zipEntry.getName() + ", " + zipEntry.getSize());
+//      }
+
+//      response = Response.ok().entity(buffer).type("application/zip")
+//          .header("Content-Disposition", "inline; filename=\"test.zip\"").build();
+      response = Response.ok().build();
     } catch (Exception e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
@@ -525,6 +575,36 @@ public class PeerReviewService {
     }
 
     return response;
+  }
+
+  public static File newFile(File destinationDir, ZipEntry zipEntry) throws IOException {
+    File destFile = new File(destinationDir, zipEntry.getName());
+
+    String destDirPath = destinationDir.getCanonicalPath();
+    String destFilePath = destFile.getCanonicalPath();
+
+    if (!destFilePath.startsWith(destDirPath + File.separator)) {
+      throw new IOException("Entry is outside of the target dir: " + zipEntry.getName());
+    }
+
+    return destFile;
+  }
+
+  public static void decompressGzip(java.nio.file.Path source, java.nio.file.Path target) throws IOException {
+
+    try (GZIPInputStream gis = new GZIPInputStream(
+        new FileInputStream(source.toFile()));
+         FileOutputStream fos = new FileOutputStream(target.toFile())) {
+
+      // copy GZIPInputStream to FileOutputStream
+      byte[] buffer = new byte[1024];
+      int len;
+      while ((len = gis.read(buffer)) > 0) {
+        fos.write(buffer, 0, len);
+      }
+
+    }
+
   }
 
   /**
@@ -537,7 +617,8 @@ public class PeerReviewService {
    */
   @POST
   @Path("create")
-  @Consumes(MediaType.APPLICATION_JSON)
+  @Consumes(MediaType.MULTIPART_FORM_DATA)
+  @Produces(MediaType.APPLICATION_JSON)
   public Response createReviewRecord(@FormDataParam("username") String username,
                                      @FormDataParam("reviewedName") String reviewedName,
                                      @FormDataParam("assignmentName") String assignmentName,
