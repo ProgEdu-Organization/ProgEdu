@@ -640,17 +640,24 @@ public class PeerReviewService {
         return response;
       }
 
-      // 2. Upload the status of pair matching
+      // 2. Check this review record has been release or not.
+      //    PS. this won't happened, unless the student used this api in correct way
+      if (createDate.compareTo(reviewSetting.getReleaseTime()) < 0) {
+        response = Response.serverError().entity("This review hasn't been released.").build();
+        return response;
+      }
+
+      // 3. Upload the status of pair matching
       int status = reviewStatusDbManager
           .getReviewStatusIdByStatus(ReviewStatusEnum.COMPLETED.getTypeName());
       pairMatchingDbManager.updatePairMatchingById(status, pmId);
 
-      // 3. Check which time have been reviewed, and upload the review order
+      // 4. Check which time have been reviewed, and upload the review order
       if (!reviewRecordDbManager.isFirstTimeReviewRecord(pmId)) {
         reviewOrder = reviewRecordDbManager.getLatestReviewOrder(pmId) + 1;
       }
 
-      // 4. Insert new review record onto db
+      // 5. Insert new review record onto db
       JSONObject jsonObject = new JSONObject(reviewRecord);
       JSONArray jsonArray = jsonObject.getJSONArray("allReviewRecord");
 
