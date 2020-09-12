@@ -643,7 +643,7 @@ public class PeerReviewService {
       // 2. Upload the status of pair matching
       int status = reviewStatusDbManager
           .getReviewStatusIdByStatus(ReviewStatusEnum.COMPLETED.getTypeName());
-      pairMatchingDbManager.uploadPairMatchingById(status, pmId);
+      pairMatchingDbManager.updatePairMatchingById(status, pmId);
 
       // 3. Check which time have been reviewed, and upload the review order
       if (!reviewRecordDbManager.isFirstTimeReviewRecord(pmId)) {

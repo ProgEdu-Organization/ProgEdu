@@ -294,7 +294,7 @@ public class PairMatchingDbManager {
    * @param status review status
    * @param id pair matching id
    */
-  public void uploadPairMatchingById(int status, int id) throws SQLException {
+  public void updatePairMatchingById(int status, int id) throws SQLException {
     String query = "UPDATE ProgEdu.Pair_Matching SET status = ? WHERE id = ?";
 
     try (Connection conn = database.getConnection();
