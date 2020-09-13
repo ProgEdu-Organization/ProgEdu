@@ -1,9 +1,7 @@
 version: "3.7"
 services:
   db:
-    # image: mysql:5.7
-    image: fcumselab/progedu-mysql:latest
-    build: ./mysql
+    image: fcumselab/fcu-progedu-mysql:release-0.6.2
     ports:
       - "${DB_PORT}:3306"
     restart: always
