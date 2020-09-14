@@ -480,12 +480,8 @@ public class AssignmentService {
 
     try {
       Linux linuxApi = new Linux();
+      
       // delete tomcat test file
-    String removeZipTestFileCommand = testDir + name + ".zip";
-    tomcatService.deleteFile(new File(removeZipTestFileCommand));
-    // delete db
-    deleteAssignmentDatabase(name);
-
       String removeZipTestFileCommand = testDir + name + ".zip";
       tomcatService.removeFile(removeZipTestFileCommand);
 
