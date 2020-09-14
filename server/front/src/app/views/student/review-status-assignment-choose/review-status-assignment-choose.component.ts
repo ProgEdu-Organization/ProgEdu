@@ -1,3 +1,4 @@
+import { EmitStudentEvent, StudentEvent } from './../../../services/emit-student-event';
 import { ReviewRecord } from './ReviewRecord';
 import { ReviewStatusAssignmentChooseService } from './review-status-assignment-choose.service';
 import { Component, OnInit, ViewChildren } from '@angular/core';
@@ -10,7 +11,7 @@ import { HttpErrorResponse } from '@angular/common/http';
   templateUrl: './review-status-assignment-choose.component.html',
   styleUrls: ['./review-status-assignment-choose.component.scss']
 })
-export class ReviewStatusAssignmentChooseComponent implements OnInit {
+export class ReviewStatusAssignmentChooseComponent implements OnInit, EmitStudentEvent {
 
   assignment = { type: '', deadline: new Date() };
   username: string;
@@ -30,6 +31,9 @@ export class ReviewStatusAssignmentChooseComponent implements OnInit {
   errorTitle: string;
 
   constructor(private route: ActivatedRoute, private reviewStatusAssignmentChooseService: ReviewStatusAssignmentChooseService) {
+  }
+  emitStudentEvent(event: StudentEvent) {
+    throw new Error("Method not implemented.");
   }
 
 
@@ -94,14 +98,14 @@ export class ReviewStatusAssignmentChooseComponent implements OnInit {
     for (let i = 0; i < this.metricsCount; i++) {
       const reviewRecord: ReviewRecord = {
         feedback: feedbacks[i].nativeElement.value,
-        id: this.reviewMetrics[i].id, score: 1, time: nowDate.getFullYear() + '-' + (nowDate.getUTCMonth() + 1)
-          + '-' + (nowDate.getUTCDate()) + ' ' + nowDate.getHours() + ':' + nowDate.getMinutes() + ':' + nowDate.getSeconds()
+        id: this.reviewMetrics[i].id, score: 1, time: ''
       };
       this.reviewRecords[i] = reviewRecord;
     }
     this.reviewStatusAssignmentChooseService.createReviewRecord(this.username, this.allReviewDetail[this.reviewOne].name,
       this.assignmentName, { allReviewRecord: this.reviewRecords }).subscribe(
         response => {
+          window.location.reload();
         },
         error => {
           this.errorTitle = 'This assignment has been expired';

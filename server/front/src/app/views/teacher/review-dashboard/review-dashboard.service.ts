@@ -8,8 +8,8 @@ import { environment } from '../../../../environments/environment';
 })
 export class ReviewDashboardService {
 
-  ALL_COMMIT_API = 'http://140.134.26.66:22000' + '/webapi/peerReview/record/allUsers';
-  ALL_ASSIGNMENT_API = 'http://140.134.26.66:22000/webapi/assignment/peerReview/allAssignment';
+  ALL_COMMIT_API = environment.SERVER_URL + '/webapi/peerReview/record/allUsers';
+  ALL_ASSIGNMENT_API = environment.SERVER_URL + '/webapi/assignment/peerReview/allAssignment';
   constructor(private http: HttpClient) { }
 
   getAllStudentCommitRecord(): Observable<any> {

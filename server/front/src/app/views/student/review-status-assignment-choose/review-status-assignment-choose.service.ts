@@ -1,16 +1,17 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ReviewStatusAssignmentChooseService {
 
-  ALL_STATUS_DETAIL_API = 'http://140.134.26.66:22000/webapi/peerReview/status/detail';
-  REVIEW_METRICS_API = 'http://140.134.26.66:22000/webapi/peerReview/metrics';
-  REVIEW_STATUS_DETAIL_PAGE_API = 'http://140.134.26.66:22000/webapi/peerReview/status/detail/page';
-  CREATE_REVIEW_RECORD_API = 'http://140.134.26.62:8080/webapi/peerReview/create';
+  ALL_STATUS_DETAIL_API = environment.SERVER_URL + '/webapi/peerReview/status/detail';
+  REVIEW_METRICS_API = environment.SERVER_URL + '/webapi/peerReview/metrics';
+  REVIEW_STATUS_DETAIL_PAGE_API = environment.SERVER_URL + '/webapi/peerReview/status/detail/page';
+  CREATE_REVIEW_RECORD_API = environment.SERVER_URL + '/webapi/peerReview/create';
   constructor(private http: HttpClient) { }
 
   getReviewDetail(username: string, assignmentName: string): Observable<any> {
@@ -40,7 +41,6 @@ export class ReviewStatusAssignmentChooseService {
     formData.append('username', username);
     formData.append('reviewedName', reviewedName);
     formData.append('assignmentName', assignmentName);
-    formData.append('time', reviewRecord.allReviewRecord[0].time);
     formData.append('reviewRecord',  JSON.stringify(reviewRecord).toString());
     return this.http.post<any>(this.CREATE_REVIEW_RECORD_API, formData  );
   }

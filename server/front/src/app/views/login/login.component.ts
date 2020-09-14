@@ -1,3 +1,4 @@
+import { EmitStudentEvent } from './../../services/emit-student-event';
 import { StudentEventsService } from './../../services/student-events-log.service';
 import { Component, ViewChild, SystemJsNgModuleLoader, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
@@ -5,12 +6,13 @@ import { LoginAuthService } from '../../services/login-auth.service';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { JwtService } from '../../services/jwt.service';
+import { StudentEvent } from '../../services/emit-student-event';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: 'login.component.html'
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, EmitStudentEvent {
 
   private errors;
   public loginForm: FormGroup;
@@ -18,6 +20,10 @@ export class LoginComponent implements OnInit {
 
   constructor(private router: Router, private _loginAuthService: LoginAuthService, private fb: FormBuilder,
     private jwtService: JwtService, private studentEventsService: StudentEventsService) { }
+
+  emitStudentEvent(event: StudentEvent) {
+    this.studentEventsService.createReviewRecord(event);
+  }
 
   ngOnInit() {
     this.loginForm = this.fb.group({
@@ -70,9 +76,9 @@ export class LoginComponent implements OnInit {
             this.router.navigate(['dashboard']);
           } else if (response.role === 'student') {
             // login event emit
-            const event = {event: 'progedu.login', event_type: 'login', context: 'test',
-              username: this.getUsername(), page: this.router.url, time: new Date().toISOString()};
-            this.studentEventsService.createReviewRecord(event).subscribe();
+            const event: StudentEvent = {name: 'progedu.login',
+              page: this.router.url, event: '{}' };
+            this.emitStudentEvent(event);
             this.router.navigate(['studashboard']);
           }
         }

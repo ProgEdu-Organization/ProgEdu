@@ -1,6 +1,6 @@
 import { Category, Assessment } from './../review-metrics-management/Category';
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { FormGroup } from '@angular/forms';
 import { environment } from '../../../../environments/environment';
@@ -14,7 +14,9 @@ const createAssigmentOptions = ({
 })
 export class CreateAssignmentService {
   CREATE_ASSIGNMENT_API = environment.SERVER_URL + 'webapi/assignment/create';
-  GET_ALL_CATEGORY_API = `http://140.134.26.66:22000/webapi/categoryMetrics/category`;
+  GET_ALL_CATEGORY_API = environment.SERVER_URL + `/webapi/categoryMetrics/category`;
+  GET_METRICS_API = environment.SERVER_URL + '/webapi/categoryMetrics/metrics?';
+  CREATE_REVIEW_ASSIGNMENT_API = environment.SERVER_URL + '/webapi/categoryMetrics/metrics?';
   constructor(private http: HttpClient) { }
 
   createAssignment(assigememt: FormGroup): Observable<any> {
@@ -34,8 +36,10 @@ export class CreateAssignmentService {
     return this.http.get(this.GET_ALL_CATEGORY_API);
   }
   getMetrics(category: Category): Observable<any> {
-    const GET_METRICS_API = `http://140.134.26.66:22000/webapi/categoryMetrics/metrics?category=${category.id.toString()}`;
-    return this.http.get(GET_METRICS_API);
+
+    const param = new HttpParams();
+    param.set('category', category.id.toString());
+    return this.http.get(this.GET_METRICS_API + param.toString());
   }
 
   createPeerReviewAssignment(assigememt: FormGroup, metrics: number[]): Observable<any> {
@@ -52,6 +56,6 @@ export class CreateAssignmentService {
     formData.append('reviewEndTime', new Date(assigememt.value.reviewDeadline).toUTCString());
     formData.append('metrics', metrics.toString());
 
-    return this.http.post('http://140.134.26.62:8080/webapi/assignment/peerReview/create', formData, createAssigmentOptions);
+    return this.http.post( this.CREATE_REVIEW_ASSIGNMENT_API, formData, createAssigmentOptions);
   }
 }

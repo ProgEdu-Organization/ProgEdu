@@ -20,11 +20,14 @@
           <hr />
           <span class="h2">Deadline</span>
           <p style="margin: 10px;">{{assignment.deadline | date:'short'}}</p>
+          <hr />
+          <span class="h2">Review End Time</span>
+          <p style="margin: 10px;">{{assignment.reviewDeadline | date:'short'}}</p>
         </div>
       </div>
       <hr>
       <app-review-commit-record [type]=assignment.type [commits]=commits [feedbacks]=feedbacks [screenshotUrls]=screenshotUrls [reviewFeedbacks]=reviewFeedbacks
-        (messageToEmit)="updateFeedback($event)"></app-review-commit-record>
+        (messageToEmit)="updateFeedback($event)" [username]=username [assignmentName]=assignmentName ></app-review-commit-record>
     </div>
   </div>
 </div>

@@ -10,14 +10,14 @@ import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 })
 export class ReviewMetricsManagementService {
 
-  GET_ALL_CATEGORY_API = `http://140.134.26.66:22000/webapi/categoryMetrics/category`;
-  GET_METRICS_API = 'http://140.134.26.66:22000/webapi/categoryMetrics/metrics';
-  CREATE_CATEGORY_API = 'http://140.134.26.66:22000/webapi/categoryMetrics/category/create?';
-  EDIT_CATEGORY_API = 'http://140.134.26.66:22000/webapi/categoryMetrics/category/edit?';
-  DELETE_CATEGORY_API = 'http://140.134.26.66:22000/webapi/categoryMetrics/category/delete?';
-  CREATE_METRICS_API = 'http://140.134.26.66:22000/webapi/categoryMetrics/metrics/create?';
-  EDIT_METRICS_API = 'http://140.134.26.66:22000/webapi/categoryMetrics/metrics/edit?';
-  DELETE_METRICS_API = 'http://140.134.26.66:22000/webapi/categoryMetrics/metrics/delete?';
+  GET_ALL_CATEGORY_API = environment.SERVER_URL + '/webapi/categoryMetrics/category';
+  GET_METRICS_API = environment.SERVER_URL + '/webapi/categoryMetrics/metrics';
+  CREATE_CATEGORY_API = environment.SERVER_URL + '/webapi/categoryMetrics/category/create?';
+  EDIT_CATEGORY_API = environment.SERVER_URL + '/webapi/categoryMetrics/category/edit?';
+  DELETE_CATEGORY_API = environment.SERVER_URL + '/webapi/categoryMetrics/category/delete?';
+  CREATE_METRICS_API = environment.SERVER_URL + '/webapi/categoryMetrics/metrics/create?';
+  EDIT_METRICS_API = environment.SERVER_URL + '/webapi/categoryMetrics/metrics/edit?';
+  DELETE_METRICS_API = environment.SERVER_URL + '/webapi/categoryMetrics/metrics/delete?';
 
   constructor(private http: HttpClient) { }
 

@@ -32,18 +32,11 @@ import { SharedModule } from '../shared/shared.module';
 import { EditGroupManagementComponent } from './edit-group-management/edit-group-management.component';
 import { CreateGroupComponent } from './create-group/create-group.component';
 
-// Chart Module
-import * as PlotlyJS from 'plotly.js/dist/plotly.js';
-import { PlotlyModule } from 'angular-plotly.js';
-PlotlyModule.plotlyjs = PlotlyJS;
-
-
 
 @NgModule({
     imports: [
         FormsModule,
         CommonModule,
-        PlotlyModule,
         BsDropdownModule,
         TeacherRoutingModule,
         ReactiveFormsModule,

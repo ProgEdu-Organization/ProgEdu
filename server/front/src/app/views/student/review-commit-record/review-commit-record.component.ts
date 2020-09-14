@@ -16,6 +16,8 @@ export class ReviewCommitRecordComponent implements OnInit, OnChanges {
   @Input() screenshotUrls: Array<any>;
   @Output() messageToEmit = new EventEmitter<string>();
   @Input() reviewFeedbacks: JSON;
+  @Input() assignmentName: string;
+  @Input() username: string;
   displayCommits: Array<any>;
   currentPagination: number = 1;
   currentReviewPagination: Array<number>;
@@ -39,6 +41,9 @@ export class ReviewCommitRecordComponent implements OnInit, OnChanges {
     for (let i = 0 ; i < count ; i++) {
       this.currentReviewPagination[i] = 1;
       this.maxReviewPagination[i] = this.reviewFeedbacks[i].totalCount;
+      if (this.maxReviewPagination[i] === undefined) {
+        this.maxReviewPagination[i] = 1;
+      }
     }
   }
 
@@ -91,7 +96,7 @@ export class ReviewCommitRecordComponent implements OnInit, OnChanges {
     if (pageNumber <= 0 || pageNumber > this.maxReviewPagination[index]) {
       return;
     }
-    this.reviewCommitRecordService.getReviewPageDetail('HW4', 'M0863451', this.reviewFeedbacks[index].id.toString(),
+    this.reviewCommitRecordService.getReviewPageDetail(this.assignmentName, this.username, this.reviewFeedbacks[index].id.toString(),
      pageNumber.toString() ).subscribe(response => {
       this.reviewFeedbacks[index] = response;
     });

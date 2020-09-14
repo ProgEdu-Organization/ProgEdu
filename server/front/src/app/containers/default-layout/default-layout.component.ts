@@ -1,3 +1,4 @@
+import { EmitStudentEvent, StudentEvent } from './../../services/emit-student-event';
 import { Component, OnDestroy, Inject, OnInit, ViewChild, HostListener } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { navItems } from './_nav';
@@ -15,7 +16,7 @@ import { StudentEventsService } from './../../services/student-events-log.servic
   selector: 'app-dashboard',
   templateUrl: './default-layout.component.html'
 })
-export class DefaultLayoutComponent implements OnDestroy, OnInit {
+export class DefaultLayoutComponent implements OnDestroy, OnInit, EmitStudentEvent {
   public navData: Array<any> = new Array<any>();
   public _navItems = navItems;
   public sidebarMinimized = true;
@@ -50,6 +51,9 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
       attributeFilter: ['class']
     });
 
+  }
+  emitStudentEvent(event: StudentEvent) {
+    this.studentEventsService.createReviewRecord(event);
   }
 
   ngOnInit() {
@@ -145,13 +149,15 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
   logout() {
     // logout event emit
     if (this.user.isStudent) {
-      const event = {
-        event: 'progedu.logout', event_type: 'login', context: 'logout',
-        username: this.user.getUsername(), page: this.router.url, time: new Date().toISOString()
+      const event: StudentEvent = {
+        name: 'progedu.logout',
+        event: '{}',
+        page: this.router.url
       };
-      this.studentEventsService.createReviewRecord(event);
+      this.emitStudentEvent(event);
     }
     this.jwtService.removeToken();
+    this.router.navigate(['login']);
   }
 
   modifySecret() {
@@ -188,9 +194,10 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
   @HostListener('window:beforeunload', ['$event'])
   beforeunloadHandler(event): void {
     const exit_event = {
-      event: 'progedu.exit', event_type: 'exit', context: 'exit',
-      username: this.user.getUsername(), page: this.router.url, time: new Date().toISOString()
+      name: 'progedu.exit',
+      page: this.router.url,
+      event: { original_page: this.router.url }.toString()
     };
-    this.studentEventsService.createReviewRecord(exit_event).subscribe();
+    this.emitStudentEvent(exit_event);
   }
 }

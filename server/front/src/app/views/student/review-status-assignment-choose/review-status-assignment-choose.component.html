@@ -14,7 +14,7 @@
               (click)="reviewFormFillModal.show();setReviewOne(i);">
           </div>
           <div class="col-lg-6">
-            <p>Deadline: {{assignment.deadline | date:'mediumDate'}}</p>
+            <p>Deadline: {{assignment.reviewDeadline | date:'mediumDate'}}</p>
           </div>
           <div class="col-lg-6">
             <p>Review Form Unfinished, Please fill it before deadline.</p>
@@ -146,6 +146,40 @@
             <button type="button" class="btn btn-primary"
               (click)="createReviewForm();reviewFormFillModal.hide();">Submit</button>
           </div>
+        </div>
+      </form>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+<!-- Review Form Modal -->
+<div bsModal #reviewFormModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title col-md-6">Review Form</h4>
+        <button type="button" class="close" (click)="reviewFormModal.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <!--Review Form Main-->
+      <form class="form-horizontal" *ngIf="onClickedReviewDetail">
+        <div class="modal-body">
+          <div class="form-group row">
+            <label class="col-md-9 col-form-label" for="description"> {{onClickedReviewDetail.metrics}}</label>
+            <div class="form-check form-check-inline mr-1">
+              Yes
+            </div>
+          </div>
+          <div class="col-md-12">
+            <p>FeedBack:</p>
+            <div class="col-md-12">
+              <p id="feedback" name="feedback" rows="3" >{{onClickedReviewDetail.feedback}}</p>
+            </div>
+          </div>
+          <br>
         </div>
       </form>
     </div><!-- /.modal-content -->

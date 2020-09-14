@@ -23,7 +23,7 @@
             <tr>
               <th width="10%" class='text-left'>學生</th>
               <ng-container *ngFor='let col of assignmentTable'>
-                <th width="10%" *ngIf='isRelease(col.releaseTime)'>
+                <th width="10%" *ngIf='isRelease(col.reviewReleaseTime)'>
                   <div>{{col.name}}</div>
                 </th>
               </ng-container>

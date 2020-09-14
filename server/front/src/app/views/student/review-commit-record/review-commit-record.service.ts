@@ -8,7 +8,7 @@ import { environment } from '../../../../environments/environment';
 })
 export class ReviewCommitRecordService {
 
-  REVIEW_DETAIL_PAGE_API = 'http://140.134.26.66:22000/webapi/peerReview/record/detail/page';
+  REVIEW_DETAIL_PAGE_API = environment.SERVER_URL + '/webapi/peerReview/record/detail/page';
 
   constructor(private http: HttpClient) { }
 

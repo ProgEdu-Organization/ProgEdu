@@ -13,7 +13,7 @@ export class ReviewAssignmentChooseService {
   GITLAB_URL_API = environment.SERVER_URL + '/webapi/commits/gitLab';
   FEEDBACK_API = environment.SERVER_URL + '/webapi/commits/feedback';
   SCREENSHOT_API = environment.SERVER_URL + '/webapi/commits/screenshot/getScreenshotURL';
-  REVIEW_FEEDBACK_API = 'http://140.134.26.66:22000/webapi/peerReview/record/detail';
+  REVIEW_FEEDBACK_API = environment.SERVER_URL + '/webapi/peerReview/record/detail';
   constructor(private http: HttpClient) { }
 
   getCommitDetail(assignmentName: string, username: string): Observable<any> {

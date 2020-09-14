@@ -7,13 +7,13 @@ import { environment } from '../../../../environments/environment';
   providedIn: 'root'
 })
 export class StudashboardService {
-  ALL_COMMIT_API = 'http://140.134.26.66:22000/webapi/commits/autoAssessment';
-  ALL_ASSIGNMENT_API = 'http://140.134.26.66:22000/webapi/assignment/autoAssessment/allAssignment';
+  ALL_COMMIT_API =  environment.SERVER_URL + '/webapi/commits/autoAssessment';
+  ALL_ASSIGNMENT_API = environment.SERVER_URL + '/webapi/assignment/autoAssessment/allAssignment';
   constructor(private http: HttpClient) { }
 
   getStudentCommitRecord(username: string): Observable<any> {
     const params = new HttpParams()
-      .set('username', 'M0863451');
+      .set('username', username);
     return this.http.get<any>(this.ALL_COMMIT_API, { params });
   }
 
