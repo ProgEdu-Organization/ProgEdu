@@ -2,21 +2,40 @@
   [navbarBrandFull]="{src: 'assets/img/logo.png', width: '80%', alt: 'ProgEdu', style:'object-fit: scale-down'}"
   [navbarBrandMinimized]="{src: 'assets/img/logo.png', width: 30, height: 30, alt: 'ProgEdu'}" [sidebarToggler]="'lg'"
   [asideMenuToggler]="''">
+
+  <ul class="nav navbar-nav d-md-down-none">
+    <li class="nav-item dropdown" dropdown placement="bottom right">
+      <a class="nav-link dropdown-toggle nav-item px-3" data-toggle="dropdown" href="#" role="button"
+        aria-haspopup="true" aria-expanded="false" dropdownToggle (click)="false">
+        Dashboard
+      </a>
+      <div class="dropdown-menu dropdown-menu-right" *dropdownMenu aria-labelledby="simple-dropdown" >
+        <li role="menuitem" ><a class="dropdown-item" href="javascript:void(0);" (click)='changeToDashboard()'>Assignment DashBoard</a></li>
+        <!-- Student DashBoard -->
+        <li role="menuitem" *ngIf="isStudent"><a class="dropdown-item" href="#/{{dashboard}}/reviewDashboard">Review DashBoard</a></li>
+        <li role="menuitem" *ngIf="isStudent"><a class="dropdown-item" href="#/{{dashboard}}/peerReviewDashboard">Peer Review DashBoard</a></li>
+        <!-- Teacher DashBoard -->
+        <li role="menuitem" *ngIf="isTeacher"><a class="dropdown-item" href="#/{{dashboard}}/reviewDashboard">Review DashBoard</a></li>
+        <li role="menuitem" *ngIf="isTeacher"><a class="dropdown-item" href="#/{{dashboard}}/reviewStatusDashboard">Review Status DashBoard</a></li>
+      </div>
+    </li>
+  </ul>
   <ul class="nav navbar-nav d-md-down-none">
     <div class="btn-group" dropdown [isOpen]="status.isOpen" (isOpenChange)="change($event)" placement="top">
-      <li class="nav-item px-3">
-        <a class="nav-link" href="javascript:void(0);" (click)='changeToDashboard()'>Dashboard</a>
-      </li>
       <li class="nav-item px-3" *ngIf="isTeacher">
-        <a dropdownToggle class="nav-link dropdown-toggle" href="javascript:void(0);"> Management</a>
+        <a dropdownToggle class="nav-link dropdown-toggle" href="javascript:void(0);">Management</a>
         <ul *dropdownMenu class="dropdown-menu" role="menu">
           <li role="menuitem"><a class="dropdown-item" href="#/dashboard/assignmentManagement">Assignment Management</a>
           </li>
           <li role="menuitem"><a class="dropdown-item" href="#/dashboard/studentManagement">Student
               Management</a> </li>
           <li role="menuitem"><a class="dropdown-item" href="#/dashboard/groupManagement">Group Management</a></li>
+          <li role="menuitem"><a class="dropdown-item" href="#/dashboard/reviewMetricsManagement">Review Metrics
+              Management</a></li>
         </ul>
       </li>
+
+
       <li class="nav-item px-3" *ngIf="isTeacher">
         <a class="nav-link" href="#/{{dashboard}}/groupDashboard">Group Dashboard</a>
       </li>
@@ -24,6 +43,7 @@
         <a class="nav-link" href="#/{{dashboard}}/groupStuDashboard?username={{user.getUsername()}}">Group Dashboard</a>
       </li>
     </div>
+
   </ul>
   <ul class="nav navbar-nav ml-auto">
     <li class="nav-item dropdown" dropdown placement="bottom right">

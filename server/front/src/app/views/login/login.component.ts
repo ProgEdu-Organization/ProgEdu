@@ -1,9 +1,11 @@
+import { StudentEventsService } from './../../services/student-events-log.service';
 import { Component, ViewChild, SystemJsNgModuleLoader, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { LoginAuthService } from '../../services/login-auth.service';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { JwtService } from '../../services/jwt.service';
+
 @Component({
   selector: 'app-dashboard',
   templateUrl: 'login.component.html'
@@ -15,7 +17,7 @@ export class LoginComponent implements OnInit {
   @ViewChild('dangerModal', { static: false }) public dangerModal: ModalDirective;
 
   constructor(private router: Router, private _loginAuthService: LoginAuthService, private fb: FormBuilder,
-    private jwtService: JwtService) { }
+    private jwtService: JwtService, private studentEventsService: StudentEventsService) { }
 
   ngOnInit() {
     this.loginForm = this.fb.group({
@@ -67,6 +69,10 @@ export class LoginComponent implements OnInit {
           if (response.role === 'teacher') {
             this.router.navigate(['dashboard']);
           } else if (response.role === 'student') {
+            // login event emit
+            const event = {event: 'progedu.login', event_type: 'login', context: 'test',
+              username: this.getUsername(), page: this.router.url, time: new Date().toISOString()};
+            this.studentEventsService.createReviewRecord(event).subscribe();
             this.router.navigate(['studashboard']);
           }
         }

@@ -1,3 +1,9 @@
+import { ReviewCommitRecordComponent } from './review-commit-record/review-commit-record.component';
+import { ReviewAssignmentChooseComponent } from './review-assignment-choose/review-assignment-choose.component';
+import { ReviewStatusDashboardComponent } from './review-status-dashboard/review-status-dashboard.component';
+import { ReviewDashboardComponent } from './review-dashboard/review-dashboard.component';
+import { HttpClientModule } from '@angular/common/http';
+import { ReviewMetricsManagementComponent } from './review-metrics-management/review-metrics-management.component';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
@@ -26,11 +32,18 @@ import { SharedModule } from '../shared/shared.module';
 import { EditGroupManagementComponent } from './edit-group-management/edit-group-management.component';
 import { CreateGroupComponent } from './create-group/create-group.component';
 
-import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
+// Chart Module
+import * as PlotlyJS from 'plotly.js/dist/plotly.js';
+import { PlotlyModule } from 'angular-plotly.js';
+PlotlyModule.plotlyjs = PlotlyJS;
+
+
+
 @NgModule({
     imports: [
         FormsModule,
         CommonModule,
+        PlotlyModule,
         BsDropdownModule,
         TeacherRoutingModule,
         ReactiveFormsModule,
@@ -41,8 +54,8 @@ import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
         CollapseModule,
         CarouselModule,
         SharedModule,
-        CKEditorModule,
-        TabsModule.forRoot()
+        TabsModule.forRoot(),
+        HttpClientModule
     ],
     declarations: [
         DashboardComponent,
@@ -53,6 +66,11 @@ import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
         GroupManagementComponent,
         EditGroupManagementComponent,
         CreateGroupComponent,
+        ReviewMetricsManagementComponent,
+        ReviewDashboardComponent,
+        ReviewStatusDashboardComponent,
+        ReviewAssignmentChooseComponent,
+        ReviewCommitRecordComponent
     ]
 })
 export class TeacherModule { }

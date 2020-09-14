@@ -1,20 +1,19 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
-import { templateJitUrl } from '@angular/compiler';
 
 @Injectable({
   providedIn: 'root'
 })
 export class StudashboardService {
-  ALL_COMMIT_API = environment.SERVER_URL + '/webapi/commits/oneUser';
-  ALL_ASSIGNMENT_API = environment.SERVER_URL + '/webapi/assignment/getAllAssignments';
+  ALL_COMMIT_API = 'http://140.134.26.66:22000/webapi/commits/autoAssessment';
+  ALL_ASSIGNMENT_API = 'http://140.134.26.66:22000/webapi/assignment/autoAssessment/allAssignment';
   constructor(private http: HttpClient) { }
 
   getStudentCommitRecord(username: string): Observable<any> {
     const params = new HttpParams()
-      .set('username', username);
+      .set('username', 'M0863451');
     return this.http.get<any>(this.ALL_COMMIT_API, { params });
   }
 

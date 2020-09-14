@@ -1,3 +1,4 @@
+import { ModalModule } from 'ngx-bootstrap/modal';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
@@ -7,6 +8,12 @@ import { FormsModule } from '@angular/forms';
 import { ChartsModule } from 'ng2-charts';
 import { SharedModule } from '../shared/shared.module';
 import { GroupStudashboardComponent } from './group-studashboard/group-studashboard.component';
+import { ReviewStatusStudashboardComponent } from './review-status-studashboard/review-status-studashboard.component';
+import { ReviewStudashboardComponent } from './review-studashboard/review-studashboard.component';
+
+import { ReviewAssignmentChooseComponent } from './review-assignment-choose/review-assignment-choose.component';
+import { ReviewCommitRecordComponent } from './review-commit-record/review-commit-record.component';
+import { ReviewStatusAssignmentChooseComponent } from './review-status-assignment-choose/review-status-assignment-choose.component';
 
 @NgModule({
   imports: [
@@ -14,8 +21,18 @@ import { GroupStudashboardComponent } from './group-studashboard/group-studashbo
     CommonModule,
     ChartsModule,
     StudentRoutingModule,
+    ModalModule.forRoot(),
     SharedModule,
+
   ],
-  declarations: [StudashboardComponent, GroupStudashboardComponent],
+  declarations: [
+    StudashboardComponent,
+    GroupStudashboardComponent,
+    ReviewStatusStudashboardComponent,
+    ReviewStudashboardComponent,
+    ReviewAssignmentChooseComponent,
+    ReviewCommitRecordComponent,
+    ReviewStatusAssignmentChooseComponent
+  ],
 })
 export class StudentModule { }

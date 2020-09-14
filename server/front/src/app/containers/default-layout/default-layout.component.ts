@@ -1,4 +1,4 @@
-import { Component, OnDestroy, Inject, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, Inject, OnInit, ViewChild, HostListener } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { navItems } from './_nav';
 import { JwtService } from '../../services/jwt.service';
@@ -9,6 +9,7 @@ import { ModalDirective } from 'ngx-bootstrap/modal';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import * as $ from 'jquery';
 import { ɵangular_packages_platform_browser_platform_browser_d } from '@angular/platform-browser';
+import { StudentEventsService } from './../../services/student-events-log.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -35,7 +36,9 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
   isConfirm: boolean = false;
   @ViewChild('modifySecretModal', { static: false }) public modifySecretModal: ModalDirective;
 
+  toggle_use: number = 0;
   constructor(@Inject(DOCUMENT) _document?: any, private defaultLayoutService?: DefaultLayoutService,
+    private studentEventsService?: StudentEventsService,
     private fb?: FormBuilder,
     private jwtService?: JwtService, private router?: Router) {
     this.changes = new MutationObserver((mutations) => {
@@ -140,6 +143,14 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
   }
 
   logout() {
+    // logout event emit
+    if (this.user.isStudent) {
+      const event = {
+        event: 'progedu.logout', event_type: 'login', context: 'logout',
+        username: this.user.getUsername(), page: this.router.url, time: new Date().toISOString()
+      };
+      this.studentEventsService.createReviewRecord(event);
+    }
     this.jwtService.removeToken();
   }
 
@@ -165,11 +176,21 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
 
   change(value: boolean): void {
     this.status.isOpen = value;
+    this.toggle_use++;
   }
 
 
   ngOnDestroy(): void {
     this.changes.disconnect();
     this.status.isOpen = false;
+  }
+
+  @HostListener('window:beforeunload', ['$event'])
+  beforeunloadHandler(event): void {
+    const exit_event = {
+      event: 'progedu.exit', event_type: 'exit', context: 'exit',
+      username: this.user.getUsername(), page: this.router.url, time: new Date().toISOString()
+    };
+    this.studentEventsService.createReviewRecord(exit_event).subscribe();
   }
 }

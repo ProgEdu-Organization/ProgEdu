@@ -1,7 +1,6 @@
 import { Component, OnInit, NgModule } from '@angular/core';
 import { allStudentDatas } from '../../../containers/default-layout/_nav';
 import { DashboardService } from './dashboard.service';
-import { controllers } from 'chart.js';
 
 @Component({
   templateUrl: 'dashboard.component.html'

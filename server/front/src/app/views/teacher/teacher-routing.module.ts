@@ -1,3 +1,7 @@
+import { ReviewStatusDashboardComponent } from './review-status-dashboard/review-status-dashboard.component';
+import { ReviewAssignmentChooseComponent } from './review-assignment-choose/review-assignment-choose.component';
+import { ReviewDashboardComponent } from './review-dashboard/review-dashboard.component';
+import { ReviewMetricsManagementComponent } from './review-metrics-management/review-metrics-management.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { DashboardComponent } from './dashboard/dashboard.component';
@@ -13,6 +17,8 @@ import { AssignmentChooseComponent } from '../shared/assignment-choose/assignmen
 import { ProjectChooseComponent } from '../shared/project-choose/project-choose.component';
 import { EditGroupManagementComponent } from './edit-group-management/edit-group-management.component';
 import { CreateGroupComponent } from './create-group/create-group.component';
+
+
 const routes: Routes = [
   {
     path: '',
@@ -22,10 +28,31 @@ const routes: Routes = [
     },
   },
   {
+    path: 'reviewDashboard',
+    component: ReviewDashboardComponent,
+    data: {
+      title: 'ReviewDashboard'
+    }
+  },
+  {
+    path: 'reviewStatusDashboard',
+    component: ReviewStatusDashboardComponent,
+    data: {
+      title: 'ReviewStatusDashboard'
+    }
+  },
+  {
     path: 'assignmentChoose',
     component: AssignmentChooseComponent,
     data: {
       title: 'Assignment Choose'
+    }
+  },
+  {
+    path: 'reviewAssignmentChoose',
+    component: ReviewAssignmentChooseComponent,
+    data: {
+      title: 'AssignmentChoose'
     }
   },
   {
@@ -90,6 +117,13 @@ const routes: Routes = [
     ]
   },
   {
+    path: 'reviewMetricsManagement',
+    component: ReviewMetricsManagementComponent,
+    data: {
+      title: 'Review Metrics Management'
+    }
+  },
+  {
     path: 'chart',
     component: ChartComponent,
     data: {
@@ -102,7 +136,7 @@ const routes: Routes = [
     data: {
       title: 'Group Dashboard'
     }
-  }
+  },
 ];
 
 @NgModule({
