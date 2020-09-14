@@ -1,3 +1,4 @@
+import { ReviewAssignmentChooseComponent } from './review-assignment-choose/review-assignment-choose.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { StudashboardComponent } from './studashboard/studashboard.component';
@@ -5,6 +6,10 @@ import { SharedModule } from '../shared/shared.module';
 import { AssignmentChooseComponent } from '../shared/assignment-choose/assignment-choose.component';
 import { ProjectChooseComponent } from '../shared/project-choose/project-choose.component';
 import { GroupStudashboardComponent } from './group-studashboard/group-studashboard.component';
+import { ReviewStatusStudashboardComponent } from './review-status-studashboard/review-status-studashboard.component';
+import { ReviewStudashboardComponent } from './review-studashboard/review-studashboard.component';
+import { ReviewStatusAssignmentChooseComponent } from './review-status-assignment-choose/review-status-assignment-choose.component';
+
 const routes: Routes = [
   {
     path: '',
@@ -14,10 +19,38 @@ const routes: Routes = [
     }
   },
   {
+    path: 'peerReviewDashboard',
+    component: ReviewStatusStudashboardComponent,
+    data: {
+      title: 'Peer Review Dashboard'
+    }
+  },
+  {
+    path: 'reviewDashboard',
+    component: ReviewStudashboardComponent,
+    data: {
+      title: 'Review Dashboard'
+    }
+  },
+  {
     path: 'assignmentChoose',
     component: AssignmentChooseComponent,
     data: {
       title: 'Assignment Choose'
+    }
+  },
+  {
+    path: 'reviewAssignmentChoose',
+    component: ReviewAssignmentChooseComponent,
+    data: {
+      title: 'Assignment Choose'
+    }
+  },
+  {
+    path: 'reviewStatusAssignmentChoose',
+    component: ReviewStatusAssignmentChooseComponent,
+    data: {
+      title: 'Review Assignment Choose'
     }
   },
   {
@@ -34,6 +67,14 @@ const routes: Routes = [
       title: 'Project Choosed'
     }
   },
+  {
+    path: 'reviewAssignmentChoose',
+    component: ReviewAssignmentChooseComponent,
+    data: {
+      title: 'AssignmentChoose'
+    }
+  },
+  
 ];
 
 @NgModule({

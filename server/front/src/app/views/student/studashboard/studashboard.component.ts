@@ -1,19 +1,34 @@
+import { EmitStudentEvent, StudentEvent } from './../../../services/emit-student-event';
+import { StudentEventsService } from './../../../services/student-events-log.service';
+import { Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { StudashboardService } from './studashboard.service';
 import { JwtService } from '../../../services/jwt.service';
 import { User } from '../../../models/user';
 import { TimeService } from '../../../services/time.service';
+
 @Component({
   selector: 'app-studashboard',
   templateUrl: './studashboard.component.html'
 })
-export class StudashboardComponent implements OnInit {
+export class StudashboardComponent implements OnInit, EmitStudentEvent {
   public assignmentTable: Array<any> = new Array<any>();
   public studentCommitRecord: JSON;
   public username: string;
-  constructor(private studashboardService: StudashboardService,private timeService: TimeService,
-     private jwtService?: JwtService) { }
-     
+  constructor(private studashboardService: StudashboardService, private timeService: TimeService,
+    private jwtService?: JwtService, private router?: Router, private studentEventsService?: StudentEventsService) {
+    this.emitStudentEvent();
+  }
+  emitStudentEvent() {
+    // assignment dasgboard viewed event emit
+    const event = {
+      name: 'progedu.dashboard.assignment.viewed',
+      page: this.router.url,
+      event: '{}'
+    };
+    this.studentEventsService.createReviewRecord(event);
+  }
+
   async ngOnInit() {
     this.username = new User(this.jwtService).getUsername();
     await this.getAllAssignments();
@@ -22,7 +37,7 @@ export class StudashboardComponent implements OnInit {
 
   async getAllAssignments() {
     this.studashboardService.getAllAssignments().subscribe(response => {
-      this.assignmentTable = response.allAssignments;
+      this.assignmentTable = response.allAutoAssessment;
     });
   }
 
@@ -30,6 +45,7 @@ export class StudashboardComponent implements OnInit {
     // clear student array
     this.studashboardService.getStudentCommitRecord(this.username).subscribe(response => {
       this.studentCommitRecord = response;
+      console.log(this.studentCommitRecord);
     });
   }
 

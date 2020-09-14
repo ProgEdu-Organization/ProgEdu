@@ -24,8 +24,9 @@ export class ErrorModalComponent implements OnInit, OnChanges {
   ngOnChanges() {
     if (this.errorResponse) {
       this.status = this.errorResponse.status;
+      console.log(this.errorResponse.status);
       if (this.errorResponse.status === 500) {
-        this.errorMsg = this.help;
+        this.errorMsg = this.errorResponse.error;
         this.errorModal.show();
       } else {
         this.errorMsg = this.errorResponse.message;

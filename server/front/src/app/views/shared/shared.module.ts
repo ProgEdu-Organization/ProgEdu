@@ -20,6 +20,7 @@ import { ErrorModalComponent } from './error-modal/error-modal.component';
 import { ModalModule } from 'ngx-bootstrap';
 import { ChartComponent } from './chart/chart.component';
 
+
 // Tabs Component
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { BarChartComponent } from './chart/bar-chart/bar-chart.component';
@@ -31,14 +32,11 @@ import { PaginationModule } from 'ngx-bootstrap/pagination';
 
 // Dropdowns Component
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
-
-import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     ChartsModule,
-    CKEditorModule,
     TabsModule.forRoot(),
     ModalModule.forRoot(),
     CollapseModule.forRoot(),
