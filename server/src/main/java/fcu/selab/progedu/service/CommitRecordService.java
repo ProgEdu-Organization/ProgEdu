@@ -137,7 +137,7 @@ public class CommitRecordService {
 
   /**
    * get student build detail info
-   * 
+   *
    * @param username       student id
    * @param assignmentName assignment name
    * @return build detail
@@ -146,7 +146,7 @@ public class CommitRecordService {
   @Path("commitRecords")
   @Produces(MediaType.APPLICATION_JSON)
   public Response getCommitRecord(@QueryParam("username") String username,
-      @QueryParam("assignmentName") String assignmentName) {
+                                  @QueryParam("assignmentName") String assignmentName) {
     JSONArray array = new JSONArray();
     String jobName = username + "_" + assignmentName;
     int auId = auDb.getAuid(assignmentDb.getAssignmentIdByName(assignmentName),
@@ -171,7 +171,7 @@ public class CommitRecordService {
 
   /**
    * update user assignment commit record to DB.
-   * 
+   *
    * @param username       username
    * @param assignmentName assignment name
    * @throws ParseException (to do)
@@ -180,7 +180,8 @@ public class CommitRecordService {
   @Path("update")
   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
   @Produces(MediaType.APPLICATION_JSON)
-  public Response updateCommitResult(@FormParam("user") String username,
+  public Response updateCommitResult(
+      @FormParam("user") String username,
       @FormParam("proName") String assignmentName) throws ParseException {
 
     JSONObject ob = new JSONObject();
@@ -207,7 +208,7 @@ public class CommitRecordService {
 
   /**
    * (to do)
-   * 
+   *
    * @param assignmentName (to do)
    */
   public void deleteRecord(String assignmentName) {
@@ -222,7 +223,7 @@ public class CommitRecordService {
 
   /**
    * update user assignment commit record to DB.
-   * 
+   *
    * @param username       username
    * @param assignmentName assignment name
    * @throws ParseException (to do)
@@ -230,8 +231,10 @@ public class CommitRecordService {
   @GET
   @Path("feedback")
   @Produces(MediaType.APPLICATION_JSON)
-  public Response getFeedback(@QueryParam("username") String username,
-      @QueryParam("assignmentName") String assignmentName, @QueryParam("number") int number) {
+  public Response getFeedback(
+      @QueryParam("username") String username,
+      @QueryParam("assignmentName") String assignmentName,
+      @QueryParam("number") int number) {
     JenkinsService js = JenkinsService.getInstance();
     AssignmentType assignmentType = getAssignmentType(assignmentName);
     String jobName = username + "_" + assignmentName;
@@ -247,7 +250,7 @@ public class CommitRecordService {
 
   /**
    * get GitLab project url
-   * 
+   *
    * @param username       username
    * @param assignmentName assignmentName
    */
@@ -255,7 +258,7 @@ public class CommitRecordService {
   @Path("gitLab")
   @Produces(MediaType.APPLICATION_JSON)
   public Response getGitLabProjectUrl(@QueryParam("username") String username,
-      @QueryParam("assignmentName") String assignmentName) {
+                                      @QueryParam("assignmentName") String assignmentName) {
     JSONObject ob = new JSONObject();
     String projectUrl = gs.getProjectUrl(username, assignmentName);
     ob.put("url", projectUrl);
@@ -283,7 +286,7 @@ public class CommitRecordService {
 
   /**
    * Get all user which role is student
-   * 
+   *
    * @return all GitLab users
    */
   public List<User> getStudents() {

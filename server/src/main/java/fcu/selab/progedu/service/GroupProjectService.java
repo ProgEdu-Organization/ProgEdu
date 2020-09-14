@@ -1,5 +1,6 @@
 package fcu.selab.progedu.service;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.gitlab.api.models.GitlabProject;
@@ -98,7 +99,7 @@ public class GroupProjectService {
     gitlabService.pushProject(cloneDirectoryPath);
 
     // 7. remove project file in linux
-    tomcatService.removeFile(uploadDir);
+    tomcatService.deleteDirectory(new File(uploadDir));
 
     // 8. import project infomation to database
     addProject(groupName, projectName, readMe, projectTypeEnum);
