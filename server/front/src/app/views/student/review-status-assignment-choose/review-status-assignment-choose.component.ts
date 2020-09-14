@@ -54,7 +54,7 @@ export class ReviewStatusAssignmentChooseComponent implements OnInit, EmitStuden
     // get metrics
     this.reviewStatusAssignmentChooseService.getReviewMetrics(this.assignmentName).subscribe(response => {
       this.reviewMetrics = response.allMetrics;
-      this.metricsCount = this.reviewMetrics.length;
+      this.metricsCount = Object.keys(this.reviewMetrics).length;
     });
 
   }
