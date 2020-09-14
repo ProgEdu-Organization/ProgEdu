@@ -203,6 +203,7 @@ public class PeerReviewService {
       JSONArray array = new JSONArray();
       int userId = userDbManager.getUserIdByUsername(username);
       int assignmentId = assignmentDbManager.getAssignmentIdByName(assignmentName);
+      ReviewSetting reviewSetting = reviewSettingDbManager.getReviewSetting(assignmentId);
       int auId = assignmentUserDbManager.getAuid(assignmentId, userId);
       List<PairMatching> pairMatchingList = pairMatchingDbManager.getPairMatchingByAuId(auId);
 
@@ -234,6 +235,7 @@ public class PeerReviewService {
           reviewer.put("totalCount", order);
           reviewer.put("Detail", reviewDetailArray);
         }
+        reviewer.put("reviewDeadline", reviewSetting.getDeadline());
 
         array.put(reviewer);
       }
@@ -397,6 +399,7 @@ public class PeerReviewService {
       JSONArray array = new JSONArray();
       int reviewId = userDbManager.getUserIdByUsername(username);
       int assignmentId = assignmentDbManager.getAssignmentIdByName(assignmentName);
+      ReviewSetting reviewSetting = reviewSettingDbManager.getReviewSetting(assignmentId);
       List<PairMatching> pairMatchingList = pairMatchingDbManager
           .getPairMatchingByAidAndReviewId(assignmentId, reviewId);
 
@@ -429,6 +432,7 @@ public class PeerReviewService {
           reviewed.put("totalCount", order);
           reviewed.put("Detail", reviewDetailArray);
         }
+        reviewed.put("reviewDeadline", reviewSetting.getDeadline());
 
         array.put(reviewed);
       }
@@ -523,13 +527,13 @@ public class PeerReviewService {
         System.err.printf("The path %s doesn't exist!", source);
       }
 
-      try {
-
-        decompressGzip(source, goal);
-
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
+//      try {
+//
+//        decompressGzip(source, goal);
+//
+//      } catch (IOException e) {
+//        e.printStackTrace();
+//      }
 //      ZipInputStream zis = new ZipInputStream(new FileInputStream(filePath));
 //      ZipEntry zipEntry = zis.getNextEntry();
 //      while (zipEntry != null) {
@@ -559,9 +563,9 @@ public class PeerReviewService {
 //        System.out.println("zipEntry: " + zipEntry.getName() + ", " + zipEntry.getSize());
 //      }
 
-//      response = Response.ok().entity(buffer).type("application/zip")
-//          .header("Content-Disposition", "inline; filename=\"test.zip\"").build();
-      response = Response.ok().build();
+      response = Response.ok().entity(buffer).type("application/tar")
+          .header("Content-Disposition", "inline; filename=\"test.tar\"").build();
+//      response = Response.ok().build();
     } catch (Exception e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
@@ -571,36 +575,36 @@ public class PeerReviewService {
     return response;
   }
 
-  public static File newFile(File destinationDir, ZipEntry zipEntry) throws IOException {
-    File destFile = new File(destinationDir, zipEntry.getName());
-
-    String destDirPath = destinationDir.getCanonicalPath();
-    String destFilePath = destFile.getCanonicalPath();
-
-    if (!destFilePath.startsWith(destDirPath + File.separator)) {
-      throw new IOException("Entry is outside of the target dir: " + zipEntry.getName());
-    }
-
-    return destFile;
-  }
-
-  public static void decompressGzip(java.nio.file.Path source, java.nio.file.Path target)
-      throws IOException {
-
-    try (GZIPInputStream gis = new GZIPInputStream(
-        new FileInputStream(source.toFile()));
-         FileOutputStream fos = new FileOutputStream(target.toFile())) {
-
-      // copy GZIPInputStream to FileOutputStream
-      byte[] buffer = new byte[1024];
-      int len;
-      while ((len = gis.read(buffer)) > 0) {
-        fos.write(buffer, 0, len);
-      }
-
-    }
-
-  }
+//  public static File newFile(File destinationDir, ZipEntry zipEntry) throws IOException {
+//    File destFile = new File(destinationDir, zipEntry.getName());
+//
+//    String destDirPath = destinationDir.getCanonicalPath();
+//    String destFilePath = destFile.getCanonicalPath();
+//
+//    if (!destFilePath.startsWith(destDirPath + File.separator)) {
+//      throw new IOException("Entry is outside of the target dir: " + zipEntry.getName());
+//    }
+//
+//    return destFile;
+//  }
+//
+//  public static void decompressGzip(java.nio.file.Path source, java.nio.file.Path target)
+//      throws IOException {
+//
+//    try (GZIPInputStream gis = new GZIPInputStream(
+//        new FileInputStream(source.toFile()));
+//         FileOutputStream fos = new FileOutputStream(target.toFile())) {
+//
+//      // copy GZIPInputStream to FileOutputStream
+//      byte[] buffer = new byte[1024];
+//      int len;
+//      while ((len = gis.read(buffer)) > 0) {
+//        fos.write(buffer, 0, len);
+//      }
+//
+//    }
+//
+//  }
 
   /**
    * insert review record by specific user, reviewed and assignment name
@@ -617,7 +621,6 @@ public class PeerReviewService {
   public Response createReviewRecord(@FormDataParam("username") String username,
                                      @FormDataParam("reviewedName") String reviewedName,
                                      @FormDataParam("assignmentName") String assignmentName,
-                                     @FormDataParam("time") String createTime,
                                      @FormDataParam("reviewRecord") String reviewRecord) {
     Response response = null;
 
@@ -630,8 +633,7 @@ public class PeerReviewService {
       int auId = assignmentUserDbManager.getAuid(assignmentId, reviewedId);
       int pmId = pairMatchingDbManager.getPairMatchingIdByAuIdReviewId(auId, userId);
       int reviewOrder = 1;
-      DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-      Date createDate = dateFormat.parse(createTime);
+      Date createDate = new Date();
 
       // 1. Check this review record is expired or not,
       //    if it's expired, it won't create new review record
@@ -665,13 +667,12 @@ public class PeerReviewService {
         JSONObject object = jsonArray.getJSONObject(i);
         int id = object.getInt("id");
         int score = object.getInt("score");
-        String time = object.getString("time");
         String feedback = object.getString("feedback");
-        Date date = dateFormat.parse(time);
         int rsmId = reviewSettingMetricsDbManager
             .getReviewSettingMetricsIdByRsIdRsmId(reviewSettingId, id);
 
-        reviewRecordDbManager.insertReviewRecord(pmId, rsmId, score, date, feedback, reviewOrder);
+        reviewRecordDbManager
+            .insertReviewRecord(pmId, rsmId, score, createDate, feedback, reviewOrder);
       }
 
       response = Response.ok().build();

@@ -84,8 +84,8 @@ public class ReviewSettingDbManager {
           int id = rs.getInt("id");
           int aid = rs.getInt("aId");
           int amount = rs.getInt("amount");
-          Date releaseTime = rs.getDate("releaseTime");
-          Date deadline = rs.getDate("deadline");
+          Date releaseTime = rs.getTimestamp("releaseTime");
+          Date deadline = rs.getTimestamp("deadline");
           reviewSetting.setId(id);
           reviewSetting.setaId(aid);
           reviewSetting.setAmount(amount);
@@ -114,8 +114,8 @@ public class ReviewSettingDbManager {
         while (rs.next()) {
           int id = rs.getInt("id");
           int amount = rs.getInt("amount");
-          Date releaseTime = rs.getDate("releaseTime");
-          Date deadline = rs.getDate("deadline");
+          Date releaseTime = rs.getTimestamp("releaseTime");
+          Date deadline = rs.getTimestamp("deadline");
           reviewSetting.setId(id);
           reviewSetting.setaId(aid);
           reviewSetting.setAmount(amount);
@@ -148,6 +148,31 @@ public class ReviewSettingDbManager {
       }
     }
     return amount;
+  }
+
+  /**
+   * check is the assignment is assign as pair review
+   *
+   * @param assignmentName assignment name
+   */
+  public boolean checkAssignmentByAid(String assignmentName) throws SQLException {
+    String query = "SELECT COUNT(*) AS count FROM Review_Setting AS rs, Assignment AS assign "
+        + "WHERE rs.aId = assign.id AND assign.name = ?;";
+    boolean exist = false;
+
+    try (Connection conn = database.getConnection();
+         PreparedStatement preStmt = conn.prepareStatement(query)) {
+      preStmt.setString(1, assignmentName);
+      try (ResultSet rs = preStmt.executeQuery()) {
+        while (rs.next()) {
+          int count = rs.getInt("count");
+          if (count > 0) {
+            exist = true;
+          }
+        }
+      }
+    }
+    return exist;
   }
 
   /**

@@ -29,10 +29,14 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 
 import fcu.selab.progedu.data.AssignmentUser;
 import fcu.selab.progedu.data.PairMatching;
+import fcu.selab.progedu.data.ReviewRecord;
+import fcu.selab.progedu.data.ReviewSetting;
 import fcu.selab.progedu.db.PairMatchingDbManager;
+import fcu.selab.progedu.db.ReviewRecordDbManager;
 import fcu.selab.progedu.db.ReviewSettingDbManager;
 import fcu.selab.progedu.db.ReviewSettingMetricsDbManager;
 import fcu.selab.progedu.db.ReviewStatusDbManager;
+import org.json.JSONArray;
 import org.jsoup.nodes.Document;
 import org.gitlab.api.models.GitlabProject;
 import org.gitlab.api.models.GitlabUser;
@@ -94,6 +98,7 @@ public class AssignmentService {
   private ReviewSettingDbManager rsDbManager = ReviewSettingDbManager.getInstance();
   private PairMatchingDbManager pmDbManager = PairMatchingDbManager.getInstance();
   private ReviewSettingMetricsDbManager rsmDbManager = ReviewSettingMetricsDbManager.getInstance();
+  private ReviewRecordDbManager rrDbManager = ReviewRecordDbManager.getInstance();
   private ReviewStatusDbManager reviewStatusDbManager = ReviewStatusDbManager.getInstance();
   private final String tempDir = System.getProperty("java.io.tmpdir");
   private final String uploadDir = tempDir + "/uploads/";
@@ -290,10 +295,25 @@ public class AssignmentService {
           updatePairMatchingStatusByAid(assignment.getId());
         }
       }
-      JSONObject ob = new JSONObject();
-      ob.put("allReviewAssignments", assignmentList);
+      JSONObject result = new JSONObject();
+      JSONArray array = new JSONArray();
+      for (Assignment assignment : assignmentList) {
+        JSONObject ob = new JSONObject();
+        ReviewSetting reviewSetting = rsDbManager.getReviewSetting(assignment.getId());
+        ob.put("id", assignment.getId());
+        ob.put("name", assignment.getName());
+        ob.put("createTime", assignment.getCreateTime());
+        ob.put("deadline", assignment.getDeadline());
+        ob.put("releaseTime", assignment.getReleaseTime());
+        ob.put("display", assignment.isDisplay());
+        ob.put("description", assignment.getDescription());
+        ob.put("reviewReleaseTime", reviewSetting.getReleaseTime());
+        ob.put("reviewDeadline", reviewSetting.getDeadline());
+        array.put(ob);
+      }
+      result.put("allReviewAssignments", array);
 
-      response = Response.ok().entity(ob.toString()).build();
+      response = Response.ok().entity(result.toString()).build();
     } catch (Exception e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
@@ -450,26 +470,41 @@ public class AssignmentService {
   @Path("delete")
   @Produces(MediaType.APPLICATION_JSON)
   public Response deleteProject(@FormDataParam("assignmentName") String name) {
-    Linux linuxApi = new Linux();
-    // delete tomcat test file
+    Response response = null;
 
-    String removeZipTestFileCommand = testDir + name + ".zip";
-    tomcatService.removeFile(removeZipTestFileCommand);
-    // delete db
-    deleteAssignmentDatabase(name);
+    try {
+      Linux linuxApi = new Linux();
+      // delete tomcat test file
 
-    // delete gitlab
-    gitlabService.deleteProjects(name);
+      String removeZipTestFileCommand = testDir + name + ".zip";
+      tomcatService.removeFile(removeZipTestFileCommand);
 
-    // delete Jenkins
+      // if this assignment was assigned as pair review, delete review db
+      if (rsDbManager.checkAssignmentByAid(name)) {
+        deleteReviewDatabase(name);
+      }
 
-    List<User> users = userService.getStudents();
+      // delete db
+      deleteAssignmentDatabase(name);
 
-    for (User user : users) {
-      String jobName = jenkins.getJobName(user.getUsername(), name);
-      jenkins.deleteJob(jobName);
+      // delete gitlab
+      gitlabService.deleteProjects(name);
+
+      // delete Jenkins
+
+      List<User> users = userService.getStudents();
+
+      for (User user : users) {
+        String jobName = jenkins.getJobName(user.getUsername(), name);
+        jenkins.deleteJob(jobName);
+      }
+      response = Response.ok().build();
+    } catch (Exception e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+      response = Response.serverError().entity(e.getMessage()).build();
     }
-    return Response.ok().build();
+    return response;
   }
 
   /**
@@ -615,6 +650,26 @@ public class AssignmentService {
     auDbManager.deleteAssignmentUserByAid(aid);// Assignment_User
     dbManager.deleteAssignment(name);// Assignment
 
+  }
+
+  /**
+   *  delete assignment form pair review db
+   */
+  public void deleteReviewDatabase(String assignmentName) throws SQLException {
+    int aid = dbManager.getAssignmentIdByName(assignmentName);
+    int reviewSettingId = rsDbManager.getReviewSettingIdByAid(aid);
+    List<AssignmentUser> auList = auDbManager.getAssignmentUserListByAid(aid);
+
+    for (AssignmentUser au : auList) {
+      List<PairMatching> pmList = pmDbManager.getPairMatchingByAuId(au.getId());
+      for (PairMatching pm : pmList) {
+        rrDbManager.deleteReviewRecordByPmId(pm.getId());
+        pmDbManager.deletePairMatchingById(pm.getId());
+      }
+    }
+
+    rsmDbManager.deleteReviewSettingMetricsByAssignmentId(reviewSettingId);
+    rsDbManager.deleteReviewSettingByAId(aid);
   }
 
   private void createAssignmentSettings(String username, String assignmentName) {

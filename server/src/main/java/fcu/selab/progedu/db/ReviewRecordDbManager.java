@@ -68,7 +68,7 @@ public class ReviewRecordDbManager {
           int pmId = rs.getInt("pmId");
           int rsmId = rs.getInt("rsmId");
           int score = rs.getInt("score");
-          Date time = rs.getDate("time");
+          Date time = rs.getTimestamp("time");
           String feedback = rs.getString("feedback");
           int reviewOrder = rs.getInt("reviewOrder");
           reviewRecord.setId(id);
@@ -105,7 +105,7 @@ public class ReviewRecordDbManager {
           int id = rs.getInt("id");
           int rsmId = rs.getInt("rsmId");
           int score = rs.getInt("score");
-          Date time = rs.getDate("time");
+          Date time = rs.getTimestamp("time");
           String feedback = rs.getString("feedback");
           int reviewOrder = rs.getInt("reviewOrder");
           ReviewRecord reviewRecord = new ReviewRecord();
@@ -170,6 +170,22 @@ public class ReviewRecordDbManager {
       }
     }
     return latestCount;
+  }
+
+  /**
+   * delete review record by pair matching id
+   *
+   * @param pmId pair matching id
+   * @throws SQLException SQLException
+   */
+  public void deleteReviewRecordByPmId(int pmId) throws SQLException {
+    String query = "DELETE FROM Review_Record WHERE pmId = ?";
+
+    try (Connection conn = database.getConnection();
+         PreparedStatement preStmt = conn.prepareStatement(query)) {
+      preStmt.setInt(1, pmId);
+      preStmt.executeUpdate();
+    }
   }
 
 }
