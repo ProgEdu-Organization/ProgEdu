@@ -1,5 +1,4 @@
 import { environment } from './../../../../environments/environment.prod';
-import { EmitStudentEvent, StudentEvent } from './../../../services/emit-student-event';
 import { ReviewRecord } from './ReviewRecord';
 import { ReviewStatusAssignmentChooseService } from './review-status-assignment-choose.service';
 import { Component, OnInit, ViewChildren } from '@angular/core';
@@ -12,7 +11,7 @@ import { HttpErrorResponse } from '@angular/common/http';
   templateUrl: './review-status-assignment-choose.component.html',
   styleUrls: ['./review-status-assignment-choose.component.scss']
 })
-export class ReviewStatusAssignmentChooseComponent implements OnInit, EmitStudentEvent {
+export class ReviewStatusAssignmentChooseComponent implements OnInit {
 
   assignment = { type: '', deadline: new Date() };
   username: string;
@@ -33,10 +32,6 @@ export class ReviewStatusAssignmentChooseComponent implements OnInit, EmitStuden
 
   constructor(private route: ActivatedRoute, private reviewStatusAssignmentChooseService: ReviewStatusAssignmentChooseService) {
   }
-  emitStudentEvent(event: StudentEvent) {
-    //throw new Error("Method not implemented.");
-  }
-
 
   async ngOnInit() {
     this.username = this.route.snapshot.queryParamMap.get('username');

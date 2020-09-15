@@ -34,6 +34,13 @@ const routes: Routes = [
     }
   },
   {
+    path: 'reviewAssignmentChoose',
+    component: ReviewAssignmentChooseComponent,
+    data: {
+      title: 'AssignmentChoose'
+    }
+  },
+  {
     path: 'projectChoose',
     component: ProjectChooseComponent,
     data: {

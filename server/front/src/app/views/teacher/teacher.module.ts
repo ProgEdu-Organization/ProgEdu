@@ -1,3 +1,9 @@
+import { ReviewCommitRecordComponent } from './review-commit-record/review-commit-record.component';
+import { ReviewAssignmentChooseComponent } from './review-assignment-choose/review-assignment-choose.component';
+import { ReviewStatusDashboardComponent } from './review-status-dashboard/review-status-dashboard.component';
+import { ReviewDashboardComponent } from './review-dashboard/review-dashboard.component';
+import { HttpClientModule } from '@angular/common/http';
+import { ReviewMetricsManagementComponent } from './review-metrics-management/review-metrics-management.component';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
@@ -6,11 +12,6 @@ import { CommonModule } from '@angular/common';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { TeacherRoutingModule } from './teacher-routing.module';
 import { AssignmentManagementComponent } from './assignment-management/assignment-management.component';
-import { ReviewMetricsManagementComponent } from './review-metrics-management/review-metrics-management.component';
-import { ReviewStatusDashboardComponent } from './review-status-dashboard/review-status-dashboard.component';
-import { ReviewDashboardComponent } from './review-dashboard/review-dashboard.component';
-import { ReviewCommitRecordComponent } from './review-commit-record/review-commit-record.component';
-import { ReviewAssignmentChooseComponent } from './review-assignment-choose/review-assignment-choose.component';
 
 import { AlertModule } from 'ngx-bootstrap/alert';
 import { CreateAssignmentComponent } from './create-assignment/create-assignment.component';
@@ -30,9 +31,9 @@ import { CarouselModule } from 'ngx-bootstrap/carousel';
 import { SharedModule } from '../shared/shared.module';
 import { EditGroupManagementComponent } from './edit-group-management/edit-group-management.component';
 import { CreateGroupComponent } from './create-group/create-group.component';
-import { HttpClientModule } from '@angular/common/http';
 
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
+
 @NgModule({
     imports: [
         FormsModule,
@@ -47,8 +48,8 @@ import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
         CollapseModule,
         CarouselModule,
         SharedModule,
-        CKEditorModule,
         TabsModule.forRoot(),
+        CKEditorModule,
         HttpClientModule
     ],
     declarations: [
@@ -63,6 +64,8 @@ import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
         ReviewMetricsManagementComponent,
         ReviewDashboardComponent,
         ReviewStatusDashboardComponent,
+        ReviewAssignmentChooseComponent,
+        ReviewCommitRecordComponent
     ]
 })
 export class TeacherModule { }
