@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { TeacherRoutingModule } from './teacher-routing.module';
 import { AssignmentManagementComponent } from './assignment-management/assignment-management.component';
+import { ReviewMetricsManagementComponent } from './review-metrics-management/review-metrics-management.component';
 
 import { AlertModule } from 'ngx-bootstrap/alert';
 import { CreateAssignmentComponent } from './create-assignment/create-assignment.component';
@@ -42,7 +43,7 @@ import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
         CarouselModule,
         SharedModule,
         CKEditorModule,
-        TabsModule.forRoot()
+        TabsModule.forRoot(),
     ],
     declarations: [
         DashboardComponent,
@@ -53,6 +54,7 @@ import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
         GroupManagementComponent,
         EditGroupManagementComponent,
         CreateGroupComponent,
+        ReviewMetricsManagementComponent,
     ]
 })
 export class TeacherModule { }

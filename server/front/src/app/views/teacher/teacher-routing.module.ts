@@ -13,6 +13,7 @@ import { AssignmentChooseComponent } from '../shared/assignment-choose/assignmen
 import { ProjectChooseComponent } from '../shared/project-choose/project-choose.component';
 import { EditGroupManagementComponent } from './edit-group-management/edit-group-management.component';
 import { CreateGroupComponent } from './create-group/create-group.component';
+import { ReviewMetricsManagementComponent } from './review-metrics-management/review-metrics-management.component';
 const routes: Routes = [
   {
     path: '',
@@ -88,6 +89,13 @@ const routes: Routes = [
         }
       }
     ]
+  },
+  {
+    path: 'reviewMetricsManagement',
+    component: ReviewMetricsManagementComponent,
+    data: {
+      title: 'Review Metrics Management'
+    }
   },
   {
     path: 'chart',

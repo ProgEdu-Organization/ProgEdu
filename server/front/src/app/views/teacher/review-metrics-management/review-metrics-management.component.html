@@ -1,0 +1,303 @@
+<div class="animated fadeIn">
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-body">
+        <!-- Metrics Category Table -->
+        <h2>Metrics Category Table</h2>
+        <!-- Metrics Category Button Group-->
+        <div class="form-group">
+          <button type="button" class="btn btn-primary mr-2" (click)="metricsCategoryAddModal.show();">Add</button>
+          <button type="button" class="btn btn-warning mr-2" (click)="metricsCategoryEditModal.show()"
+            [disabled]="selectedCategory==null?true:null">Edit</button>
+          <button type="button" class="btn btn-danger mr-2" (click)="metricsCategoryDeleteModal.show()"
+            [disabled]="(selectedCategory==null||assessments==null||assessments.length!=0)?true:null">Delete</button>
+        </div>
+        <div style="height: 200px;overflow: auto;">
+          <table class="table table-bordered" [style.text-align]="'center'">
+            <thead style="overflow:inherit;">
+              <tr>
+                <th width="15%">Name</th>
+                <th>Metrics</th>
+              </tr>
+            </thead>
+            <tbody *ngFor="let category of categories">
+              <tr class="category" [class.selected]="category === selectedCategory"
+                (click)="onSelectCategory(category)">
+                <td width="15%">{{category.name}}</td>
+                <td>{{category.metrics}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-body">
+        <!-- Assessment Metrics Table -->
+        <h2>Assessment Metrics Table</h2>
+        <!-- Assessment Metrics Button Group-->
+        <div class="form-group">
+          <button type="button" class="btn btn-primary mr-2" (click)="assessmentMetricsAddModal.show();"
+            [disabled]="selectedCategory==null?true:null">Add</button>
+          <button type="button" class="btn btn-warning mr-2" (click)="assessmentMetricsEditModal.show()"
+            [disabled]="selectedAssessment==null?true:null">Edit</button>
+          <button type="button" class="btn btn-danger mr-2" (click)="assessmentMetricsDeleteModal.show()"
+            [disabled]="selectedAssessment==null?true:null">Delete</button>
+        </div>
+        <div style="height: 200px;overflow: auto;">
+          <table class="table table-bordered" [style.text-align]="'center'">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Link</th>
+                <th>Grade Mode</th>
+              </tr>
+            </thead>
+            <tbody *ngFor="let assessment of assessments">
+              <tr class="assessment" [class.selected]="assessment === selectedAssessment"
+                (click)="onSelectAssessment(assessment)">
+                <td>{{assessment.metrics}}</td>
+                <td>{{assessment.description}}</td>
+                <td>{{assessment.link}}</td>
+                <td>{{assessment.mode==1?'Yes':'No'}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Metrcis Category Add Modal -->
+<div bsModal #metricsCategoryAddModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Metrics Category Table - Add</h4>
+        <button type="button" class="close" (click)="metricsCategoryAddModal.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <!--Metrcis Category Add Main-->
+      <form class="form-horizontal">
+        <div class="modal-body">
+          <div class="form-group row">
+            <label class="col-md-2 col-form-label" for="description"> Name : </label>
+            <div class="col-md-9">
+              <textarea id="name" name="name" rows="1" class="form-control" #namebox type="text"
+                placeholder="Write down new Category..."></textarea>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-md-2 col-form-label" for="description"> Metrics : </label>
+            <div class="col-md-9">
+              <textarea id="Metrics" name="Metrics" rows="3" class="form-control" #addmetricbox type="text"
+                placeholder="Write down new Metrics..."></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary"
+            (click)="metricsCategoryAddModal.hide();addCategory(namebox.value,addmetricbox.value)">Submit</button>
+        </div>
+      </form>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<!-- Metrcis Category Edit Modal -->
+<div bsModal #metricsCategoryEditModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Metrics Category Table - Edit</h4>
+        <button type="button" class="close" (click)="metricsCategoryEditModal.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <!--Metrcis Category Edit Main-->
+      <form class="form-horizontal">
+        <div class="modal-body">
+          <div class="form-group row">
+            <label class="col-md-2 col-form-label" for="description"> Name : </label>
+            <label class="col-md-2 col-form-label" for="description">{{selectedCategory.name}}</label>
+          </div>
+          <div class="form-group row">
+            <label class="col-md-2 col-form-label" for="description"> Metrics : </label>
+            <div class="col-md-9">
+              <textarea id="Metrics" name="Metrics" rows="3" class="form-control" #metricsbox type="text"
+                [value]=selectedCategory.metrics placeholder="Write down new Metrics..."></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary"
+            (click)="metricsCategoryEditModal.hide();editCategory(metricsbox.value)">Submit</button>
+        </div>
+      </form>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<!--Alert Delete Metrcis Category Modal-->
+<div bsModal #metricsCategoryDeleteModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="dangerModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-danger " role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Metrics Category Table - Delete</h4>
+        <button type="button" class="close" (click)="metricsCategoryDeleteModal.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <!--Delete Metrcis Category Main-->
+      <div class="modal-body">
+        <p>Are you sure deleting this Category?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger"
+          (click)="metricsCategoryDeleteModal.hide();deleteCategory()">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Assessment Metrcis Add Modal -->
+<div bsModal #assessmentMetricsAddModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Assessment Metrics Table - Add</h4>
+        <button type="button" class="close" (click)="assessmentMetricsAddModal.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <!-- Assessment Metrcis Add Main-->
+      <form class="form-horizontal">
+        <div class="modal-body">
+          <div class="form-group row">
+            <label class="col-md-2 col-form-label" for="description"> Name : </label>
+            <div class="col-md-9">
+              <textarea id="Name" name="Name" rows="1" class="form-control" #assementNameBox type="text"
+                placeholder="Write down new assessment..."></textarea>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-md-2 col-form-label" for="description"> Description : </label>
+            <div class="col-md-9">
+              <textarea id="Description" name="Description" rows="3" class="form-control" #assementDescriptionBox
+                type="text" placeholder="Write down new Description..."></textarea>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-md-2 col-form-label" for="Link"> Link : </label>
+            <div class="col-md-9">
+              <textarea id="Link" name="Link" rows="1" class="form-control" #assementLinkBox type="text"
+                placeholder="Write down new Link..."></textarea>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-md-2 col-form-label" for="Mode"> Mode : </label>
+            <div class="col-md-9">
+              <select name="cars" class="custom-select mb-3" placeholder="Select Category" #assementModeBox type="text">
+                <option [ngValue]="null" [disabled]="true">Select Mode</option>
+                <option>Yes</option>
+                <option>No</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary" (click)="assessmentMetricsAddModal.hide();addAssessment(assementNameBox.value,assementDescriptionBox.value
+            ,assementLinkBox.value,assementModeBox.value)">Submit</button>
+        </div>
+      </form>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<!-- Assessment Metrcis Edit Modal -->
+<div bsModal #assessmentMetricsEditModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Assessment Metrics Table - Edit</h4>
+        <button type="button" class="close" (click)="assessmentMetricsEditModal.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <!-- Assessment Metrcis Edit Main-->
+      <form class="form-horizontal">
+        <div class="modal-body">
+          <div class="form-group row">
+            <label class="col-md-2 col-form-label" for="description"> Name : </label>
+            <label class="col-md-2 col-form-label" for="description">{{selectedAssessment.metrics}}</label>
+          </div>
+          <div class="form-group row">
+            <label class="col-md-2 col-form-label" for="description"> Description : </label>
+            <div class="col-md-9">
+              <textarea id="Description" name="Description" rows="3" class="form-control" #assementDescriptionEditBox
+                type="text" [value]=selectedAssessment.description
+                placeholder="Write down new Description..."></textarea>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-md-2 col-form-label" for="Link"> Link : </label>
+            <div class="col-md-9">
+              <textarea id="Link" name="Link" rows="1" class="form-control" #assementLinkEditBox type="text"
+                [value]=selectedAssessment.link placeholder="Write down new Link..."></textarea>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-md-2 col-form-label" for="Mode"> Mode : </label>
+            <div class="col-md-9">
+              <select name="cars" class="custom-select mb-3" placeholder="Select Category" #assementModeEditBox
+                type="text" [value]=selectedAssessment.mode>
+                <option [disabled]="true">Select Mode</option>
+                <option>1</option>
+                <option>2</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" (click)="assessmentMetricsEditModal.hide();editAssessment(assementDescriptionEditBox.value
+          ,assementLinkEditBox.value,assementModeEditBox.value)">Submit</button>
+        </div>
+      </form>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<!--Alert Delete Assessment Metrics Modal-->
+<div bsModal #assessmentMetricsDeleteModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="dangerModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-danger " role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Assessment Metrics Table - Delete</h4>
+        <button type="button" class="close" (click)="assessmentMetricsDeleteModal.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <!--Delete Assessment Metrcis Main-->
+      <div class="modal-body">
+        <p>Are you sure deleting this Assessment Metrics?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger"
+          (click)="assessmentMetricsDeleteModal.hide();deleteAssessment()">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<progedu-error-modal [errorTitle]='errorTitle' [errorResponse]="errorResponse"></progedu-error-modal>
