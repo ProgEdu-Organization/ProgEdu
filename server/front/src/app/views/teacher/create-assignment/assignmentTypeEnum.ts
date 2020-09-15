@@ -5,3 +5,9 @@ export enum assignmentTypeEnum {
   Android = 'android',
   Web = 'web'
 }
+
+export enum assignmentGradingEnum {
+  Peer = 'Peer Review',
+  Auto = 'Auto Assessment',
+}
+
