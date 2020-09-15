@@ -1,3 +1,5 @@
+import { ReviewStudashboardComponent } from './review-studashboard/review-studashboard.component';
+import { ReviewStatusStudashboardComponent } from './review-status-studashboard/review-status-studashboard.component';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
@@ -16,6 +18,11 @@ import { GroupStudashboardComponent } from './group-studashboard/group-studashbo
     StudentRoutingModule,
     SharedModule,
   ],
-  declarations: [StudashboardComponent, GroupStudashboardComponent],
+  declarations: [
+    StudashboardComponent,
+    GroupStudashboardComponent,
+    ReviewStudashboardComponent,
+    ReviewStatusStudashboardComponent
+  ],
 })
 export class StudentModule { }

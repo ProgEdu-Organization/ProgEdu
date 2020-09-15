@@ -9,6 +9,8 @@ import { AssignmentManagementComponent } from './assignment-management/assignmen
 import { ReviewMetricsManagementComponent } from './review-metrics-management/review-metrics-management.component';
 import { ReviewStatusDashboardComponent } from './review-status-dashboard/review-status-dashboard.component';
 import { ReviewDashboardComponent } from './review-dashboard/review-dashboard.component';
+import { ReviewCommitRecordComponent } from './review-commit-record/review-commit-record.component';
+import { ReviewAssignmentChooseComponent } from './review-assignment-choose/review-assignment-choose.component';
 
 import { AlertModule } from 'ngx-bootstrap/alert';
 import { CreateAssignmentComponent } from './create-assignment/create-assignment.component';
@@ -28,6 +30,7 @@ import { CarouselModule } from 'ngx-bootstrap/carousel';
 import { SharedModule } from '../shared/shared.module';
 import { EditGroupManagementComponent } from './edit-group-management/edit-group-management.component';
 import { CreateGroupComponent } from './create-group/create-group.component';
+import { HttpClientModule } from '@angular/common/http';
 
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 @NgModule({
@@ -46,6 +49,7 @@ import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
         SharedModule,
         CKEditorModule,
         TabsModule.forRoot(),
+        HttpClientModule
     ],
     declarations: [
         DashboardComponent,

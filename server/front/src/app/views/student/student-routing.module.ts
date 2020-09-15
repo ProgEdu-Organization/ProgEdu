@@ -5,6 +5,8 @@ import { SharedModule } from '../shared/shared.module';
 import { AssignmentChooseComponent } from '../shared/assignment-choose/assignment-choose.component';
 import { ProjectChooseComponent } from '../shared/project-choose/project-choose.component';
 import { GroupStudashboardComponent } from './group-studashboard/group-studashboard.component';
+import { ReviewStudashboardComponent } from './review-studashboard/review-studashboard.component';
+import { ReviewStatusStudashboardComponent } from './review-status-studashboard/review-status-studashboard.component';
 const routes: Routes = [
   {
     path: '',
@@ -25,6 +27,20 @@ const routes: Routes = [
     component: GroupStudashboardComponent,
     data: {
       title: 'Project Dashboard'
+    }
+  },
+  {
+    path: 'peerReviewDashboard',
+    component: ReviewStatusStudashboardComponent,
+    data: {
+      title: 'Peer Review Dashboard'
+    }
+  },
+  {
+    path: 'reviewDashboard',
+    component: ReviewStudashboardComponent,
+    data: {
+      title: 'Review Dashboard'
     }
   },
   {

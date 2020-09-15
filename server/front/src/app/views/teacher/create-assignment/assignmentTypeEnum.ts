@@ -6,8 +6,3 @@ export enum assignmentTypeEnum {
   Web = 'web'
 }
 
-export enum assignmentGradingEnum {
-  Peer = 'Peer Review',
-  Auto = 'Auto Assessment',
-}
-
