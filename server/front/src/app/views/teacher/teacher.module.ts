@@ -7,6 +7,8 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { TeacherRoutingModule } from './teacher-routing.module';
 import { AssignmentManagementComponent } from './assignment-management/assignment-management.component';
 import { ReviewMetricsManagementComponent } from './review-metrics-management/review-metrics-management.component';
+import { ReviewStatusDashboardComponent } from './review-status-dashboard/review-status-dashboard.component';
+import { ReviewDashboardComponent } from './review-dashboard/review-dashboard.component';
 
 import { AlertModule } from 'ngx-bootstrap/alert';
 import { CreateAssignmentComponent } from './create-assignment/create-assignment.component';
@@ -55,6 +57,8 @@ import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
         EditGroupManagementComponent,
         CreateGroupComponent,
         ReviewMetricsManagementComponent,
+        ReviewDashboardComponent,
+        ReviewStatusDashboardComponent,
     ]
 })
 export class TeacherModule { }

@@ -14,6 +14,9 @@ import { ProjectChooseComponent } from '../shared/project-choose/project-choose.
 import { EditGroupManagementComponent } from './edit-group-management/edit-group-management.component';
 import { CreateGroupComponent } from './create-group/create-group.component';
 import { ReviewMetricsManagementComponent } from './review-metrics-management/review-metrics-management.component';
+import { ReviewStatusDashboardComponent } from './review-status-dashboard/review-status-dashboard.component';
+import { ReviewDashboardComponent } from './review-dashboard/review-dashboard.component';
+
 const routes: Routes = [
   {
     path: '',
@@ -110,7 +113,21 @@ const routes: Routes = [
     data: {
       title: 'Group Dashboard'
     }
-  }
+  },
+  {
+    path: 'reviewDashboard',
+    component: ReviewDashboardComponent,
+    data: {
+      title: 'ReviewDashboard'
+    }
+  },
+  {
+    path: 'reviewStatusDashboard',
+    component: ReviewStatusDashboardComponent,
+    data: {
+      title: 'ReviewStatusDashboard'
+    }
+  },
 ];
 
 @NgModule({
