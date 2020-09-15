@@ -67,7 +67,7 @@ const routes: Routes = [
       title: 'Project Choosed'
     }
   },
-  
+
 ];
 
 @NgModule({

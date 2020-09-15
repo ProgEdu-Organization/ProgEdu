@@ -38,6 +38,7 @@ export class ScreenshotComponent implements OnInit, OnChanges {
     const screenshotName = url_split[url_split.length - 1];
     let name = '';
     // Change png to html. Ex: index.png -> index.html
+    console.log(this.type);
     if (this.type === 'WEB') {
       name = screenshotName.substring(0, screenshotName.indexOf('.png')) + '.html';
     } else if (this.type === 'ANDROID') {

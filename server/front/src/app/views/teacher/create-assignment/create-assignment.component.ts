@@ -241,5 +241,5 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
     this.androidTabStatus.isOpen = false;
   }
 
-  
+
 }

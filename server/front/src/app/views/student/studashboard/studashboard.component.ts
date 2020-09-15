@@ -14,7 +14,7 @@ export class StudashboardComponent implements OnInit {
   public studentCommitRecord: JSON;
   public username: string;
   constructor(private studashboardService: StudashboardService, private timeService: TimeService,
-    private jwtService?: JwtService, private router?: Router) {
+              private jwtService?: JwtService, private router?: Router) {
   }
 
   async ngOnInit() {
