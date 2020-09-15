@@ -1,4 +1,4 @@
-import { EmitStudentEvent, StudentEvent } from './../../../services/emit-student-event';
+import { environment } from './../../../../environments/environment.prod';
 import { ReviewRecord } from './ReviewRecord';
 import { ReviewStatusAssignmentChooseService } from './review-status-assignment-choose.service';
 import { Component, OnInit, ViewChildren } from '@angular/core';
@@ -11,7 +11,7 @@ import { HttpErrorResponse } from '@angular/common/http';
   templateUrl: './review-status-assignment-choose.component.html',
   styleUrls: ['./review-status-assignment-choose.component.scss']
 })
-export class ReviewStatusAssignmentChooseComponent implements OnInit, EmitStudentEvent {
+export class ReviewStatusAssignmentChooseComponent implements OnInit {
 
   assignment = { type: '', deadline: new Date() };
   username: string;
@@ -24,7 +24,7 @@ export class ReviewStatusAssignmentChooseComponent implements OnInit, EmitStuden
   metricsCount: number;
   reviewRecords: Array<ReviewRecord>;
   reviewOne: number;
-  @ViewChildren('radioYes') public reviewForm: any;
+  @ViewChildren('radioYes') public reviewAnswers: any;
   @ViewChildren('feedbackInput') public feedbackInput: any;
 
   errorResponse: HttpErrorResponse;
@@ -32,10 +32,6 @@ export class ReviewStatusAssignmentChooseComponent implements OnInit, EmitStuden
 
   constructor(private route: ActivatedRoute, private reviewStatusAssignmentChooseService: ReviewStatusAssignmentChooseService) {
   }
-  emitStudentEvent(event: StudentEvent) {
-    throw new Error("Method not implemented.");
-  }
-
 
   async ngOnInit() {
     this.username = this.route.snapshot.queryParamMap.get('username');
@@ -93,12 +89,13 @@ export class ReviewStatusAssignmentChooseComponent implements OnInit, EmitStuden
 
   createReviewForm() {
     const feedbacks = this.feedbackInput.toArray();
+    const scores = this.reviewAnswers.toArray();
     this.reviewRecords = new Array<ReviewRecord>(this.metricsCount);
     const nowDate = new Date();
     for (let i = 0; i < this.metricsCount; i++) {
       const reviewRecord: ReviewRecord = {
         feedback: feedbacks[i].nativeElement.value,
-        id: this.reviewMetrics[i].id, score: 1, time: ''
+        id: this.reviewMetrics[i].id, score: (scores[i].nativeElement.checked === true ? 1 : 2), time: ''
       };
       this.reviewRecords[i] = reviewRecord;
     }
@@ -115,7 +112,7 @@ export class ReviewStatusAssignmentChooseComponent implements OnInit, EmitStuden
   }
 
   downloadSourceCode() {
-    window.open('http://140.134.26.66:22000/webapi/peerReview/sourceCode?username='
+    window.open( environment.SERVER_URL + '/webapi/peerReview/sourceCode?username='
       + this.username + '&assignmentName=' + this.assignmentName, '_blank');
   }
   setReviewOne(index: number) {

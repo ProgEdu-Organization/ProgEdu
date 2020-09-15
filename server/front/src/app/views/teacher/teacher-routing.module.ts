@@ -17,7 +17,10 @@ import { AssignmentChooseComponent } from '../shared/assignment-choose/assignmen
 import { ProjectChooseComponent } from '../shared/project-choose/project-choose.component';
 import { EditGroupManagementComponent } from './edit-group-management/edit-group-management.component';
 import { CreateGroupComponent } from './create-group/create-group.component';
-
+import { ReviewMetricsManagementComponent } from './review-metrics-management/review-metrics-management.component';
+import { ReviewStatusDashboardComponent } from './review-status-dashboard/review-status-dashboard.component';
+import { ReviewDashboardComponent } from './review-dashboard/review-dashboard.component';
+import { ReviewAssignmentChooseComponent } from './review-assignment-choose/review-assignment-choose.component';
 
 const routes: Routes = [
   {
@@ -135,6 +138,20 @@ const routes: Routes = [
     component: GroupDashboardComponent,
     data: {
       title: 'Group Dashboard'
+    }
+  },
+  {
+    path: 'reviewDashboard',
+    component: ReviewDashboardComponent,
+    data: {
+      title: 'ReviewDashboard'
+    }
+  },
+  {
+    path: 'reviewStatusDashboard',
+    component: ReviewStatusDashboardComponent,
+    data: {
+      title: 'ReviewStatusDashboard'
     }
   },
 ];

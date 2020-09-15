@@ -1,5 +1,3 @@
-import { EmitStudentEvent, StudentEvent } from './../../../services/emit-student-event';
-import { StudentEventsService } from './../../../services/student-events-log.service';
 import { Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { StudashboardService } from './studashboard.service';
@@ -16,17 +14,7 @@ export class StudashboardComponent implements OnInit, EmitStudentEvent {
   public studentCommitRecord: JSON;
   public username: string;
   constructor(private studashboardService: StudashboardService, private timeService: TimeService,
-    private jwtService?: JwtService, private router?: Router, private studentEventsService?: StudentEventsService) {
-    this.emitStudentEvent();
-  }
-  emitStudentEvent() {
-    // assignment dasgboard viewed event emit
-    const event = {
-      name: 'progedu.dashboard.assignment.viewed',
-      page: this.router.url,
-      event: '{}'
-    };
-    this.studentEventsService.createReviewRecord(event);
+    private jwtService?: JwtService, private router?: Router) {
   }
 
   async ngOnInit() {

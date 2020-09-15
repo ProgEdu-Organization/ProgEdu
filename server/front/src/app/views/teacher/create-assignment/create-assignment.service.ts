@@ -14,8 +14,8 @@ const createAssigmentOptions = ({
 })
 export class CreateAssignmentService {
   CREATE_ASSIGNMENT_API = environment.SERVER_URL + 'webapi/assignment/create';
-  GET_ALL_CATEGORY_API = environment.SERVER_URL + `/webapi/categoryMetrics/category`;
-  GET_METRICS_API = environment.SERVER_URL + '/webapi/categoryMetrics/metrics?';
+  GET_ALL_CATEGORY_API = environment.SERVER_URL + '/webapi/categoryMetrics/category';
+  GET_METRICS_API = environment.SERVER_URL + '/webapi/categoryMetrics/metrics';
   CREATE_REVIEW_ASSIGNMENT_API = environment.SERVER_URL + '/webapi/categoryMetrics/metrics?';
   constructor(private http: HttpClient) { }
 
@@ -36,10 +36,9 @@ export class CreateAssignmentService {
     return this.http.get(this.GET_ALL_CATEGORY_API);
   }
   getMetrics(category: Category): Observable<any> {
-
-    const param = new HttpParams();
-    param.set('category', category.id.toString());
-    return this.http.get(this.GET_METRICS_API + param.toString());
+    const params = new HttpParams().
+    set('category', category.id.toString());
+    return this.http.get(this.GET_METRICS_API , { params });
   }
 
   createPeerReviewAssignment(assigememt: FormGroup, metrics: number[]): Observable<any> {

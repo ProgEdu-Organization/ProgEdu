@@ -1,6 +1,6 @@
 import { Component, OnInit, SystemJsNgModuleLoader } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { TimeService } from '../../../services/time.service'
+import { TimeService } from '../../../services/time.service';
 import { ReviewAssignmentChooseService } from './review-assignment-choose.service';
 @Component({
   selector: 'app-review-assignment-choose',

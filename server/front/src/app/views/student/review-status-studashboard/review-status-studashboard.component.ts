@@ -1,10 +1,9 @@
-import { EmitStudentEvent, StudentEvent } from './../../../services/emit-student-event';
+
 import { ReviewStatusStudashboardService } from './review-status-studashboard.service';
 import { Component, OnInit } from '@angular/core';
 import { JwtService } from '../../../services/jwt.service';
 import { User } from '../../../models/user';
 import { TimeService } from '../../../services/time.service';
-import { StudentEventsService } from './../../../services/student-events-log.service';
 import { Router } from '@angular/router';
 
 
@@ -14,23 +13,13 @@ import { Router } from '@angular/router';
   templateUrl: './review-status-studashboard.component.html',
   styleUrls: ['./review-status-studashboard.component.scss']
 })
-export class ReviewStatusStudashboardComponent implements OnInit, EmitStudentEvent {
+export class ReviewStatusStudashboardComponent implements OnInit {
 
   public assignmentTable: Array<any> = new Array<any>();
   public studentCommitRecord: JSON;
   public username: string;
   constructor(private reviewStatusStudashboardService: ReviewStatusStudashboardService, private timeService: TimeService,
-    private jwtService?: JwtService, private router?: Router, private studentEventsService?: StudentEventsService) {
-      this.emitStudentEvent();
-  }
-  emitStudentEvent() {
-    // review status dashboard viewed event emit
-    const viewed_event = {
-      name: 'progedu.dashboard.review_status.viewed',
-      page: this.router.url,
-      event: '{}'
-    };
-    this.studentEventsService.createReviewRecord(viewed_event);
+    private jwtService?: JwtService, private router?: Router) {
   }
 
   async ngOnInit() {

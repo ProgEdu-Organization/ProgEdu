@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
+import { param } from 'jquery';
 
 
 @Injectable({
@@ -11,7 +12,7 @@ import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 export class ReviewMetricsManagementService {
 
   GET_ALL_CATEGORY_API = environment.SERVER_URL + '/webapi/categoryMetrics/category';
-  GET_METRICS_API = environment.SERVER_URL + '/webapi/categoryMetrics/metrics';
+  GET_METRICS_API = environment.SERVER_URL + '/webapi/categoryMetrics/metrics?';
   CREATE_CATEGORY_API = environment.SERVER_URL + '/webapi/categoryMetrics/category/create?';
   EDIT_CATEGORY_API = environment.SERVER_URL + '/webapi/categoryMetrics/category/edit?';
   DELETE_CATEGORY_API = environment.SERVER_URL + '/webapi/categoryMetrics/category/delete?';
@@ -27,7 +28,7 @@ export class ReviewMetricsManagementService {
   getMetrics(category: Category): Observable<any> {
     const params = new HttpParams()
     .set('category', category.id.toString());
-    return this.http.get(this.GET_METRICS_API, { params } );
+    return this.http.get(this.GET_METRICS_API + params.toString() );
   }
   createCategory(category: Category): Observable<any> {
     const params = new HttpParams()

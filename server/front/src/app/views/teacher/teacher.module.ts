@@ -32,6 +32,7 @@ import { SharedModule } from '../shared/shared.module';
 import { EditGroupManagementComponent } from './edit-group-management/edit-group-management.component';
 import { CreateGroupComponent } from './create-group/create-group.component';
 
+import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 
 @NgModule({
     imports: [
@@ -48,6 +49,7 @@ import { CreateGroupComponent } from './create-group/create-group.component';
         CarouselModule,
         SharedModule,
         TabsModule.forRoot(),
+        CKEditorModule,
         HttpClientModule
     ],
     declarations: [

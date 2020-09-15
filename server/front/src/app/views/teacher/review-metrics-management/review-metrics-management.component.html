@@ -3,7 +3,7 @@
     <div class="card">
       <div class="card-body">
         <!-- Metrics Category Table -->
-        <h2>Metrics Category Table</h2>
+        <h2>Metrics Category</h2>
         <!-- Metrics Category Button Group-->
         <div class="form-group">
           <button type="button" class="btn btn-primary mr-2" (click)="metricsCategoryAddModal.show();">Add</button>
@@ -12,8 +12,8 @@
           <button type="button" class="btn btn-danger mr-2" (click)="metricsCategoryDeleteModal.show()"
             [disabled]="(selectedCategory==null||assessments==null||assessments.length!=0)?true:null">Delete</button>
         </div>
-        <div style="height: 200px;overflow: auto;">
-          <table class="table table-bordered" [style.text-align]="'center'">
+        <div style="height: 300px;overflow: auto;">
+          <table class="table table-bordered" >
             <thead style="overflow:inherit;">
               <tr>
                 <th width="15%">Name</th>
@@ -36,7 +36,7 @@
     <div class="card">
       <div class="card-body">
         <!-- Assessment Metrics Table -->
-        <h2>Assessment Metrics Table</h2>
+        <h2>Assessment Metrics</h2>
         <!-- Assessment Metrics Button Group-->
         <div class="form-group">
           <button type="button" class="btn btn-primary mr-2" (click)="assessmentMetricsAddModal.show();"
@@ -46,14 +46,14 @@
           <button type="button" class="btn btn-danger mr-2" (click)="assessmentMetricsDeleteModal.show()"
             [disabled]="selectedAssessment==null?true:null">Delete</button>
         </div>
-        <div style="height: 200px;overflow: auto;">
-          <table class="table table-bordered" [style.text-align]="'center'">
+        <div style="height: 300px;overflow: auto;">
+          <table class="table table-bordered">
             <thead>
               <tr>
                 <th>Name</th>
                 <th>Description</th>
                 <th>Link</th>
-                <th>Grade Mode</th>
+                <th>Score Mode</th>
               </tr>
             </thead>
             <tbody *ngFor="let assessment of assessments">
@@ -62,7 +62,7 @@
                 <td>{{assessment.metrics}}</td>
                 <td>{{assessment.description}}</td>
                 <td>{{assessment.link}}</td>
-                <td>{{assessment.mode==1?'Yes':'No'}}</td>
+                <td>{{assessment.mode==1?'Yes No mode':'Number Score'}}</td>
               </tr>
             </tbody>
           </table>

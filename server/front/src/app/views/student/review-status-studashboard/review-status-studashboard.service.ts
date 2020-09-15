@@ -14,7 +14,7 @@ export class ReviewStatusStudashboardService {
 
   getStudentCommitRecord(username: string): Observable<any> {
     const params = new HttpParams()
-      .set('username', 'M0863451');
+      .set('username', username);
     return this.http.get<any>(this.ALL_COMMIT_API, { params });
   }
 

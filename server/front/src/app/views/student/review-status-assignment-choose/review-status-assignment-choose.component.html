@@ -26,8 +26,8 @@
           <span class="h2">
             <div class="form-group row">
               <label class="h2 col-md-10">Review Student {{i+1}}</label>
-              <input type="button" class="btn btn-outline-primary col-sm-1" value="Fill Review Form"
-                (click)="reviewFormFillModal.show();setReviewOne(i);">
+              <!--<input type="button" class="btn btn-outline-primary col-sm-1" value="Fill Review Form"
+                (click)="reviewFormFillModal.show();setReviewOne(i);">-->
             </div>
           </span>
           <div class="card-body" id='reviewFeedback-bar'>
@@ -62,7 +62,7 @@
               </tr>
             </table>
             <hr>
-            <div class="col-lg-12 h-25 mw-5">
+            <!--<div class="col-lg-12 h-25 mw-5">
               <ul class="pagination">
                 <li class="page-item"><a class="page-link" href="javascript:void(0);"
                     (click)="preReviewPage(i);">Prev</a></li>
@@ -74,7 +74,7 @@
                     (click)="nextReviewPage(i);">Next</a></li>
               </ul>
             </div>
-            <hr>
+            <hr>-->
           </div>
         </div>
       </ng-container>
@@ -170,7 +170,7 @@
           <div class="form-group row">
             <label class="col-md-9 col-form-label" for="description"> {{onClickedReviewDetail.metrics}}</label>
             <div class="form-check form-check-inline mr-1">
-              Yes
+              {{onClickedReviewDetail.score === 1 ? 'Yes' : 'No'}}
             </div>
           </div>
           <div class="col-md-12">

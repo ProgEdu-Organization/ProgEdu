@@ -1,4 +1,4 @@
-import { ReviewCommitRecordService } from './../../student/review-commit-record/review-commit-record.service';
+import { ReviewCommitRecordService } from './review-commit-record.service';
 import { Component, OnInit, OnChanges, Input, Output, EventEmitter } from '@angular/core';
 const commitRow = 5;
 
