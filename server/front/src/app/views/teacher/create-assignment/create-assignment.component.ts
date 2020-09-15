@@ -117,6 +117,9 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
     this.assignment.get(reviewReleaseTime).valueChanges.subscribe(
       val => {
         val.length !== 0 ? this.showIsValidById(reviewReleaseTime) : this.hideIsInvalidById(reviewReleaseTime);
+        if (Date.parse(val) < Date.parse(this.assignment.get(deadline).value)) {
+          this.hideIsInvalidById(reviewReleaseTime);
+        }
       }
     );
     this.assignment.get(reviewDeadline).valueChanges.subscribe(
