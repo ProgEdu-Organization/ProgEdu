@@ -516,20 +516,9 @@ public class PeerReviewService {
       GitlabProject gitlabProject = gitlabService.getProject(username, assignmentName);
       GitlabAPI gitlabApi = gitlabService.getGitlab();
       byte[] buffer = gitlabApi.getFileArchive(gitlabProject);
-      byte[] unzip = new byte[1024];
-      String filePath = downloadDir + "/" + username + "/test.gzip";
-      String target = downloadDir + "/" + username;
-      File destDir = new File(target);
-      FileUtils.writeByteArrayToFile(new File(filePath), buffer);
-      java.nio.file.Path source = Paths.get(filePath);
-      java.nio.file.Path goal = Paths.get(target);
-      if (Files.notExists(source)) {
-        System.err.printf("The path %s doesn't exist!", source);
-      }
 
-      response = Response.ok().entity(buffer).type("application/tar")
-          .header("Content-Disposition", "inline; filename=\"test.tar\"").build();
-//      response = Response.ok().build();
+      response = Response.ok().entity(buffer).type("application/gzip")
+          .header("Content-Disposition", "inline; filename=\"hw.gzip\"").build();
     } catch (Exception e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
