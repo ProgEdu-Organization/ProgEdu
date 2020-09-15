@@ -1,4 +1,3 @@
-import { ReviewAssignmentChooseComponent } from './review-assignment-choose/review-assignment-choose.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { StudashboardComponent } from './studashboard/studashboard.component';
@@ -17,20 +16,6 @@ const routes: Routes = [
     component: StudashboardComponent,
     data: {
       title: 'Student Dashboard'
-    }
-  },
-  {
-    path: 'peerReviewDashboard',
-    component: ReviewStatusStudashboardComponent,
-    data: {
-      title: 'Peer Review Dashboard'
-    }
-  },
-  {
-    path: 'reviewDashboard',
-    component: ReviewStudashboardComponent,
-    data: {
-      title: 'Review Dashboard'
     }
   },
   {
@@ -82,7 +67,7 @@ const routes: Routes = [
       title: 'Project Choosed'
     }
   },
-  
+
 ];
 
 @NgModule({

@@ -14,10 +14,6 @@ import { SharedModule } from '../shared/shared.module';
 import { GroupStudashboardComponent } from './group-studashboard/group-studashboard.component';
 import { ReviewStatusAssignmentChooseComponent } from './review-status-assignment-choose/review-status-assignment-choose.component';
 
-import { ReviewAssignmentChooseComponent } from './review-assignment-choose/review-assignment-choose.component';
-import { ReviewCommitRecordComponent } from './review-commit-record/review-commit-record.component';
-import { ReviewStatusAssignmentChooseComponent } from './review-status-assignment-choose/review-status-assignment-choose.component';
-
 @NgModule({
   imports: [
     FormsModule,
@@ -26,7 +22,6 @@ import { ReviewStatusAssignmentChooseComponent } from './review-status-assignmen
     StudentRoutingModule,
     ModalModule.forRoot(),
     SharedModule,
-
   ],
   declarations: [
     StudashboardComponent,

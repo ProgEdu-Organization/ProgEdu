@@ -9,12 +9,12 @@ import { TimeService } from '../../../services/time.service';
   selector: 'app-studashboard',
   templateUrl: './studashboard.component.html'
 })
-export class StudashboardComponent implements OnInit, EmitStudentEvent {
+export class StudashboardComponent implements OnInit {
   public assignmentTable: Array<any> = new Array<any>();
   public studentCommitRecord: JSON;
   public username: string;
   constructor(private studashboardService: StudashboardService, private timeService: TimeService,
-    private jwtService?: JwtService, private router?: Router) {
+              private jwtService?: JwtService, private router?: Router) {
   }
 
   async ngOnInit() {

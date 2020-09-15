@@ -1,7 +1,3 @@
-import { ReviewStatusDashboardComponent } from './review-status-dashboard/review-status-dashboard.component';
-import { ReviewAssignmentChooseComponent } from './review-assignment-choose/review-assignment-choose.component';
-import { ReviewDashboardComponent } from './review-dashboard/review-dashboard.component';
-import { ReviewMetricsManagementComponent } from './review-metrics-management/review-metrics-management.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { DashboardComponent } from './dashboard/dashboard.component';
@@ -29,20 +25,6 @@ const routes: Routes = [
     data: {
       title: 'Dashboard'
     },
-  },
-  {
-    path: 'reviewDashboard',
-    component: ReviewDashboardComponent,
-    data: {
-      title: 'ReviewDashboard'
-    }
-  },
-  {
-    path: 'reviewStatusDashboard',
-    component: ReviewStatusDashboardComponent,
-    data: {
-      title: 'ReviewStatusDashboard'
-    }
   },
   {
     path: 'assignmentChoose',

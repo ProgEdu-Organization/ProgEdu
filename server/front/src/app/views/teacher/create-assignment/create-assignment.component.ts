@@ -1,8 +1,7 @@
-import { assignmentGradingEnum } from './assignmentGradingEnum.enum';
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { environment } from '../../../../environments/environment';
 import { Router } from '@angular/router';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { CreateAssignmentService } from './create-assignment.service';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { assignmentTypeEnum } from './assignmentTypeEnum';
@@ -184,39 +183,6 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
     }
   }
 
-  selectedAssignmentGradingMethod(method: string) {
-    if (method !== undefined) {
-      this.assignment.get('method').setValue(assignmentGradingEnum[method]);
-      if (assignmentGradingEnum[method] === assignmentGradingEnum.Auto) {
-        this.autoAssignmentStatus.isOpen = true;
-        this.peerReviewStatus.isOpen = false;
-        const now_time = Date.now() - (new Date().getTimezoneOffset() * 60 * 1000);
-        // ReSet Peer Review Form Control
-        this.assignment.patchValue({commitRecordCount: 0});
-        this.assignment.patchValue({reviewReleaseTime: new Date(now_time).toISOString().slice(0, 17) + '00'});
-        this.assignment.patchValue({reviewDeadline: new Date(now_time).toISOString().slice(0, 17) + '00'});
-      } else {
-        this.autoAssignmentStatus.isOpen = false;
-        this.peerReviewStatus.isOpen = true;
-      }
-    }
-  }
-
-  addReviewMetrics() {
-    this.reviewMetricsNums = Array(this.reviewMetricsNums.length + 1).fill(0).map((x, i) => i);
-  }
-
-  removeReviewMetrics(index: number) {
-    for (index; index < this.reviewMetricsNums.length - 1; index++) {
-      this.onSelectedCategory[index] = this.onSelectedCategory[index + 1];
-      this.onSelectedMetrics[index] = this.onSelectedMetrics[index + 1];
-    }
-    this.onSelectedCategory.splice(this.reviewMetricsNums.length - 1, 1);
-    this.onSelectedMetrics.splice(this.reviewMetricsNums.length - 1, 1);
-    this.reviewMetricsNums.splice(this.reviewMetricsNums.length - 1, 1);
-    this.reviewMetricsNums = Array(this.reviewMetricsNums.length).fill(0).map((x, i) => i);
-  }
-
   showIsValidById(id: string) {
     $('#' + id).addClass('is-valid');
     $('#' + id).removeClass('is-invalid');
@@ -273,9 +239,7 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
     this.javaTabStatus.isOpen = false;
     this.webTabStatus.isOpen = false;
     this.androidTabStatus.isOpen = false;
-    this.autoAssignmentStatus.isOpen = false;
-    this.peerReviewStatus.isOpen = false;
   }
 
-  
+
 }
