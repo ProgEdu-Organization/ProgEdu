@@ -7,6 +7,9 @@ import { ProjectChooseComponent } from '../shared/project-choose/project-choose.
 import { GroupStudashboardComponent } from './group-studashboard/group-studashboard.component';
 import { ReviewStudashboardComponent } from './review-studashboard/review-studashboard.component';
 import { ReviewStatusStudashboardComponent } from './review-status-studashboard/review-status-studashboard.component';
+import { ReviewAssignmentChooseComponent } from './review-assignment-choose/review-assignment-choose.component';
+import { ReviewStatusAssignmentChooseComponent } from './review-status-assignment-choose/review-status-assignment-choose.component';
+
 const routes: Routes = [
   {
     path: '',
@@ -20,6 +23,20 @@ const routes: Routes = [
     component: AssignmentChooseComponent,
     data: {
       title: 'Assignment Choose'
+    }
+  },
+  {
+    path: 'reviewAssignmentChoose',
+    component: ReviewAssignmentChooseComponent,
+    data: {
+      title: 'Assignment Choose'
+    }
+  },
+  {
+    path: 'reviewStatusAssignmentChoose',
+    component: ReviewStatusAssignmentChooseComponent,
+    data: {
+      title: 'Review Assignment Choose'
     }
   },
   {
@@ -50,6 +67,7 @@ const routes: Routes = [
       title: 'Project Choosed'
     }
   },
+  
 ];
 
 @NgModule({
