@@ -8,8 +8,8 @@ import { templateJitUrl } from '@angular/compiler';
   providedIn: 'root'
 })
 export class StudashboardService {
-  ALL_COMMIT_API = environment.SERVER_URL + '/webapi/commits/oneUser';
-  ALL_ASSIGNMENT_API = environment.SERVER_URL + '/webapi/assignment/getAllAssignments';
+  ALL_COMMIT_API = environment.SERVER_URL + '/webapi/commits/autoAssessment';
+  ALL_ASSIGNMENT_API = environment.SERVER_URL + '/webapi/assignment/autoAssessment/allAssignment';
   constructor(private http: HttpClient) { }
 
   getStudentCommitRecord(username: string): Observable<any> {
