@@ -23,13 +23,16 @@
 
 .red,
 .CPF,
-.cpf {
+.cpf,
+.uncompleted {
   background: #ff6284;
 }
 
 .blue,
 .BS,
-.bs {
+.bs,
+.completed,
+.REVIEWED {
   background: #1e90ff;
 }
 
@@ -40,7 +43,9 @@
 }
 
 .INI,
-.ini {
+.ini,
+.INIT,
+.initialization {
   background: #878787;
 }
 
@@ -52,9 +57,7 @@
 .WSF,
 .wsf,
 .WEF,
-.wef,
-.ALF,
-.alf {
+.wef {
   background: #ffc229;
 }
 
@@ -62,7 +65,8 @@
 .UTF,
 .utf,
 .UITF,
-.uitf {
+.uitf,
+.DONE {
   background: #26cedf;
 }
 

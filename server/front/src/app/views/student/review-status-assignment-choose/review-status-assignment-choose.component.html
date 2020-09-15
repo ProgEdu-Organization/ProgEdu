@@ -1,0 +1,189 @@
+<div class="animated fadeIn">
+  <div *ngIf='assignment' class="card">
+    <div class="card-header">
+      <i class="cui-pencil icons"></i>
+      <label>{{assignmentName}}</label>
+    </div>
+    <div class="card-body">
+      <ng-container *ngFor="let review of allReviewDetail;index as i">
+        <!-- Review Form -->
+        <div *ngIf="!review.status && !review.pagination">
+          <div class="form-group row">
+            <span class="h2 col-md-10 ">Review Student {{i+1}}</span>
+            <input type="button" class="btn btn-outline-primary col-sm-1" value="Fill Review Form"
+              (click)="reviewFormFillModal.show();setReviewOne(i);">
+          </div>
+          <div class="col-lg-6">
+            <p>Deadline: {{assignment.reviewDeadline | date:'mediumDate'}}</p>
+          </div>
+          <div class="col-lg-6">
+            <p>Review Form Unfinished, Please fill it before deadline.</p>
+          </div>
+          <hr>
+        </div>
+        <!-- Review Form End -->
+        <div *ngIf="review.status || review.pagination">
+          <span class="h2">
+            <div class="form-group row">
+              <label class="h2 col-md-10">Review Student {{i+1}}</label>
+              <!--<input type="button" class="btn btn-outline-primary col-sm-1" value="Fill Review Form"
+                (click)="reviewFormFillModal.show();setReviewOne(i);">-->
+            </div>
+          </span>
+          <div class="card-body" id='reviewFeedback-bar'>
+            <table class='table table-responsive-sm table-bordered table-hover table-outline'>
+              <thead class="thead-light">
+                <tr>
+                  <th class='w-60'>Topic</th>
+                  <th class='w-30'>Time</th>
+                  <th class='w-10'>Score Mode</th>
+                  <th class='w-10'>Answer</th>
+                  <th class='w-20'>Feedback</th>
+                </tr>
+              </thead>
+              <tr *ngFor="let reviewDetail of review.Detail" id='reviewFeedback-bar'>
+                <td>
+                  {{reviewDetail.metrics}}
+                </td>
+                <td>
+                  {{ reviewDetail.time}}
+                </td>
+                <td>
+                  {{ reviewDetail.scoreMode}}
+                </td>
+                <td>
+                  {{ reviewDetail.scoreMode === 'yesNoMode'?(reviewDetail.score === 1?'Yes':'No'):reviewDetail.score}}
+                </td>
+                <td>
+                  <button type="button" class="btn btn-secondary"
+                    (click)="openReviewFeedbackModal(reviewDetail);reviewFormModal.show()">Feedback
+                    Information</button>
+                </td>
+              </tr>
+            </table>
+            <hr>
+            <!--<div class="col-lg-12 h-25 mw-5">
+              <ul class="pagination">
+                <li class="page-item"><a class="page-link" href="javascript:void(0);"
+                    (click)="preReviewPage(i);">Prev</a></li>
+                <li class="page-item active">
+                  <a class="page-link" href="javascript:void(0);"
+                    (click)="currentReviewPagination[i] = currentReviewPagination[i]">{{currentReviewPagination[i]}}</a>
+                </li>
+                <li class="page-item"><a class="page-link" href="javascript:void(0);"
+                    (click)="nextReviewPage(i);">Next</a></li>
+              </ul>
+            </div>
+            <hr>-->
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- Review Form Fill Modal -->
+<div bsModal #reviewFormFillModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title col-md-6">Review Form</h4>
+        <button type="button" class="btn btn-outline-primary col-md-3" (click)="downloadSourceCode()">Download Source Code</button>
+        <button type="button" class="close" (click)="reviewFormFillModal.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <!--Review Form Fill Main-->
+      <form class="form-horizontal">
+        <div class="modal-body" >
+          <ng-container *ngFor="let metric of reviewMetrics;index as i" >
+            <div class="form-group row">
+              <label class="col-md-10 col-form-label" for="description"> {{i+1}}. {{metric.description}} ?</label>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="method{{i}}" #radioYes id="methodRadio1"
+                  type="radio">Yes
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="method{{i}}" #radioNo id="methodRadio2"
+                  type="radio">No
+              </div>
+              <ng-container *ngIf="metric.mode === 'SCOREMODE'" >
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="method{{i}}" #radioScore id="methodRadio1"
+                    type="radio">1
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="method{{i}}" #radioScore id="methodRadio2"
+                    type="radio">2
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="method{{i}}" #radioScore id="methodRadio2"
+                    type="radio">3
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="method{{i}}" #radioScore id="methodRadio2"
+                    type="radio">4
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="method{{i}}" #radioScore id="methodRadio2"
+                    type="radio">5
+                </div>
+              </ng-container>
+            </div>
+            <div class="col-md-12">
+              <p>FeedBack:</p>
+              <div class="col-md-12">
+                <textarea id="feedback" name="feedback{{i}}" rows="3" class="form-control" #feedbackInput type="text"
+                  placeholder="Write down new suggest..."></textarea>
+              </div>
+            </div>
+            <br>
+          </ng-container>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary"
+              (click)="createReviewForm();reviewFormFillModal.hide();">Submit</button>
+          </div>
+        </div>
+      </form>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+<!-- Review Form Modal -->
+<div bsModal #reviewFormModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title col-md-6">Review Form</h4>
+        <button type="button" class="close" (click)="reviewFormModal.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <!--Review Form Main-->
+      <form class="form-horizontal" *ngIf="onClickedReviewDetail">
+        <div class="modal-body">
+          <div class="form-group row">
+            <label class="col-md-9 col-form-label" for="description"> {{onClickedReviewDetail.metrics}}</label>
+            <div class="form-check form-check-inline mr-1">
+              {{onClickedReviewDetail.score === 1 ? 'Yes' : 'No'}}
+            </div>
+          </div>
+          <div class="col-md-12">
+            <p>FeedBack:</p>
+            <div class="col-md-12">
+              <p id="feedback" name="feedback" rows="3" >{{onClickedReviewDetail.feedback}}</p>
+            </div>
+          </div>
+          <br>
+        </div>
+      </form>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<progedu-error-modal [errorTitle]='errorTitle' [errorResponse]="errorResponse"></progedu-error-modal>

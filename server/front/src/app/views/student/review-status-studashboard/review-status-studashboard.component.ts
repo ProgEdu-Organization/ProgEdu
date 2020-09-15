@@ -1,19 +1,24 @@
-import { Router } from '@angular/router';
+
+import { ReviewStatusStudashboardService } from './review-status-studashboard.service';
 import { Component, OnInit } from '@angular/core';
-import { StudashboardService } from './studashboard.service';
 import { JwtService } from '../../../services/jwt.service';
 import { User } from '../../../models/user';
 import { TimeService } from '../../../services/time.service';
+import { Router } from '@angular/router';
+
+
 
 @Component({
-  selector: 'app-studashboard',
-  templateUrl: './studashboard.component.html'
+  selector: 'app-review-status-studashboard',
+  templateUrl: './review-status-studashboard.component.html',
+  styleUrls: ['./review-status-studashboard.component.scss']
 })
-export class StudashboardComponent implements OnInit {
+export class ReviewStatusStudashboardComponent implements OnInit {
+
   public assignmentTable: Array<any> = new Array<any>();
   public studentCommitRecord: JSON;
   public username: string;
-  constructor(private studashboardService: StudashboardService, private timeService: TimeService,
+  constructor(private reviewStatusStudashboardService: ReviewStatusStudashboardService, private timeService: TimeService,
     private jwtService?: JwtService, private router?: Router) {
   }
 
@@ -24,16 +29,15 @@ export class StudashboardComponent implements OnInit {
   }
 
   async getAllAssignments() {
-    this.studashboardService.getAllAssignments().subscribe(response => {
-      this.assignmentTable = response.allAutoAssessment;
+    this.reviewStatusStudashboardService.getAllAssignments().subscribe(response => {
+      this.assignmentTable = response.allReviewAssignments;
     });
   }
 
   async getStudentCommitRecords() {
     // clear student array
-    this.studashboardService.getStudentCommitRecord(this.username).subscribe(response => {
+    this.reviewStatusStudashboardService.getStudentCommitRecord(this.username).subscribe(response => {
       this.studentCommitRecord = response;
-      console.log(this.studentCommitRecord);
     });
   }
 
@@ -52,5 +56,6 @@ export class StudashboardComponent implements OnInit {
     }
     return true;
   }
+
 
 }

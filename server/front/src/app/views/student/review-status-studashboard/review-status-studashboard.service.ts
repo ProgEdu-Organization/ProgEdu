@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
-import { templateJitUrl } from '@angular/compiler';
 
 @Injectable({
   providedIn: 'root'
 })
-export class StudashboardService {
-  ALL_COMMIT_API = environment.SERVER_URL + '/webapi/commits/autoAssessment';
-  ALL_ASSIGNMENT_API = environment.SERVER_URL + '/webapi/assignment/autoAssessment/allAssignment';
+export class ReviewStatusStudashboardService {
+
+  ALL_COMMIT_API = environment.SERVER_URL + '/webapi/peerReview/status/oneUser';
+  ALL_ASSIGNMENT_API = environment.SERVER_URL + '/webapi/assignment/peerReview/allAssignment';
   constructor(private http: HttpClient) { }
 
   getStudentCommitRecord(username: string): Observable<any> {
@@ -21,6 +21,4 @@ export class StudashboardService {
   getAllAssignments(): Observable<any> {
     return this.http.get<any>(this.ALL_ASSIGNMENT_API);
   }
-
-
 }

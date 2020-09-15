@@ -1,19 +1,23 @@
-import { Router } from '@angular/router';
+
+import { ReviewStudashboardService } from './review-studashboard.service';
 import { Component, OnInit } from '@angular/core';
-import { StudashboardService } from './studashboard.service';
 import { JwtService } from '../../../services/jwt.service';
 import { User } from '../../../models/user';
 import { TimeService } from '../../../services/time.service';
+import { Router } from '@angular/router';
+
 
 @Component({
-  selector: 'app-studashboard',
-  templateUrl: './studashboard.component.html'
+  selector: 'app-review-studashboard',
+  templateUrl: './review-studashboard.component.html',
+  styleUrls: ['./review-studashboard.component.scss']
 })
-export class StudashboardComponent implements OnInit {
+export class ReviewStudashboardComponent implements OnInit {
+
   public assignmentTable: Array<any> = new Array<any>();
   public studentCommitRecord: JSON;
   public username: string;
-  constructor(private studashboardService: StudashboardService, private timeService: TimeService,
+  constructor(private reviewStudashboardService: ReviewStudashboardService, private timeService: TimeService,
     private jwtService?: JwtService, private router?: Router) {
   }
 
@@ -24,16 +28,15 @@ export class StudashboardComponent implements OnInit {
   }
 
   async getAllAssignments() {
-    this.studashboardService.getAllAssignments().subscribe(response => {
-      this.assignmentTable = response.allAutoAssessment;
+    this.reviewStudashboardService.getAllAssignments().subscribe(response => {
+      this.assignmentTable = response.allReviewAssignments;
     });
   }
 
   async getStudentCommitRecords() {
     // clear student array
-    this.studashboardService.getStudentCommitRecord(this.username).subscribe(response => {
+    this.reviewStudashboardService.getStudentCommitRecord(this.username).subscribe(response => {
       this.studentCommitRecord = response;
-      console.log(this.studentCommitRecord);
     });
   }
 
