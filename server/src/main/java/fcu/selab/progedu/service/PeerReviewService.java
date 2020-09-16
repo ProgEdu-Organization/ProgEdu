@@ -20,6 +20,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipEntry;
 import fcu.selab.progedu.conn.GitlabService;
@@ -551,11 +552,12 @@ public class PeerReviewService {
       int reviewedId = userDbManager.getUserIdByUsername(reviewedName);
       int assignmentId = assignmentDbManager.getAssignmentIdByName(assignmentName);
       ReviewSetting reviewSetting = reviewSettingDbManager.getReviewSetting(assignmentId);
+      TimeZone.setDefault(TimeZone.getTimeZone("Asia/Taipei"));
+      Date createDate = new Date();
       int reviewSettingId = reviewSetting.getId();
       int auId = assignmentUserDbManager.getAuid(assignmentId, reviewedId);
       int pmId = pairMatchingDbManager.getPairMatchingIdByAuIdReviewId(auId, userId);
       int reviewOrder = 1;
-      Date createDate = new Date();
 
       // 1. Check this review record is expired or not,
       //    if it's expired, it won't create new review record
