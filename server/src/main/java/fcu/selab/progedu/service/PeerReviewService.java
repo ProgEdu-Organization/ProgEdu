@@ -517,8 +517,8 @@ public class PeerReviewService {
       GitlabAPI gitlabApi = gitlabService.getGitlab();
       byte[] buffer = gitlabApi.getFileArchive(gitlabProject);
 
-      response = Response.ok().entity(buffer).type("application/gzip")
-          .header("Content-Disposition", "inline; filename=\"hw.gzip\"").build();
+      response = Response.ok().entity(buffer).type("application/tar.gz")
+          .header("Content-Disposition", "inline; filename=\"hw.tar.gz\"").build();
     } catch (Exception e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
