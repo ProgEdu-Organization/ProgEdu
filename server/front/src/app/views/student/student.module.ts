@@ -1,5 +1,3 @@
-import { ReviewAssignmentChooseComponent } from './review-assignment-choose/review-assignment-choose.component';
-import { ReviewCommitRecordComponent } from './review-commit-record/review-commit-record.component';
 import { ReviewStudashboardComponent } from './review-studashboard/review-studashboard.component';
 import { ReviewStatusStudashboardComponent } from './review-status-studashboard/review-status-studashboard.component';
 import { NgModule } from '@angular/core';
@@ -28,8 +26,6 @@ import { ReviewStatusAssignmentChooseComponent } from './review-status-assignmen
     GroupStudashboardComponent,
     ReviewStudashboardComponent,
     ReviewStatusStudashboardComponent,
-    ReviewCommitRecordComponent,
-    ReviewAssignmentChooseComponent,
     ReviewStatusAssignmentChooseComponent
   ],
 })

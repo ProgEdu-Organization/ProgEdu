@@ -27,7 +27,7 @@
       </div>
       <hr>
       <app-review-commit-record [type]=assignment.type [commits]=commits [feedbacks]=feedbacks [screenshotUrls]=screenshotUrls [reviewFeedbacks]=reviewFeedbacks
-        (messageToEmit)="updateFeedback($event)" [username]=username [assignmentName]=assignmentName></app-review-commit-record>
+        (messageToEmit)="updateFeedback($event)" [username]=username [assignmentName]=assignmentName [isTeacher]=isTeacher ></app-review-commit-record>
     </div>
   </div>
 </div>

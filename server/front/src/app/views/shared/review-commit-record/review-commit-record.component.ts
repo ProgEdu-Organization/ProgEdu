@@ -18,6 +18,7 @@ export class ReviewCommitRecordComponent implements OnInit, OnChanges {
   @Input() reviewFeedbacks: JSON;
   @Input() assignmentName: string;
   @Input() username: string;
+  @Input() isTeacher: boolean;
   displayCommits: Array<any>;
   currentPagination: number = 1;
   currentReviewPagination: Array<number>;

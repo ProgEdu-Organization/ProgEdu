@@ -1,5 +1,7 @@
-import { Component, OnInit, SystemJsNgModuleLoader } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { User } from '../../../models/user';
+import { JwtService } from '../../../services/jwt.service';
 import { TimeService } from '../../../services/time.service';
 import { ReviewAssignmentChooseService } from './review-assignment-choose.service';
 @Component({
@@ -11,6 +13,8 @@ export class ReviewAssignmentChooseComponent implements OnInit {
 
   username: string;
   assignmentName: string;
+  isTeacher: boolean = false;
+  user: User;
 
   assignment = { type: '', deadline: new Date(), reviewDeadline: new Date() };
 
@@ -22,11 +26,18 @@ export class ReviewAssignmentChooseComponent implements OnInit {
   reviewFeedbacks: JSON;
 
   constructor(private route: ActivatedRoute, private assignmentService: ReviewAssignmentChooseService,
-    private timeService: TimeService) { }
+    private timeService: TimeService, private jwtService?: JwtService,) { }
 
   async ngOnInit() {
     this.username = this.route.snapshot.queryParamMap.get('username');
     this.assignmentName = this.route.snapshot.queryParamMap.get('assignmentName');
+    this.user = new User(this.jwtService);
+    if (this.user.isTeacher) {
+      this.isTeacher = true;
+    } else {
+      this.isTeacher = false;
+    }
+
     await this.getAssignment();
     await this.getGitAssignmentURL();
     await this.getCommitDetail();
