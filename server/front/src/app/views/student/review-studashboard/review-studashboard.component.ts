@@ -1,3 +1,4 @@
+import { StudentEvent } from './../../../services/student-event';
 
 import { ReviewStudashboardService } from './review-studashboard.service';
 import { Component, OnInit } from '@angular/core';
@@ -24,7 +25,7 @@ export class ReviewStudashboardComponent implements OnInit {
   }
   emitStudentEvent() {
     // review record dashboard viewed event emit
-    const event = {
+    const event: StudentEvent = {
       name: 'progedu.dashboard.review_record.viewed',
       page: this.router.url,
       event: '{}'

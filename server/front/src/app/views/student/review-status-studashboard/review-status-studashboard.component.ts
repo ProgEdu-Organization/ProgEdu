@@ -1,4 +1,4 @@
-
+import { StudentEvent } from '../../../services/student-event';
 import { ReviewStatusStudashboardService } from './review-status-studashboard.service';
 import { Component, OnInit } from '@angular/core';
 import { JwtService } from '../../../services/jwt.service';
@@ -25,7 +25,7 @@ export class ReviewStatusStudashboardComponent implements OnInit {
   }
   emitStudentEvent() {
     // review status dashboard viewed event emit
-    const viewed_event = {
+    const viewed_event: StudentEvent = {
       name: 'progedu.dashboard.review_status.viewed',
       page: this.router.url,
       event: {}

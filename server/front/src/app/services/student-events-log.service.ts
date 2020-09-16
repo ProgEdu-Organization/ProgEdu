@@ -3,7 +3,7 @@ import { JwtService } from './jwt.service';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { StudentEvent } from './emit-student-event';
+import { StudentEvent } from './student-event';
 
 const getIpOptions = ({
   headers: new HttpHeaders().set('Access-Control-Allow-Origin' , '*')

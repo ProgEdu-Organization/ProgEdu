@@ -1,4 +1,4 @@
-import { EmitStudentEvent, StudentEvent } from './../../services/emit-student-event';
+import { StudentEvent } from '../../services/student-event';
 import { Component, OnDestroy, Inject, OnInit, ViewChild, HostListener } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { navItems } from './_nav';
@@ -16,7 +16,7 @@ import { StudentEventsService } from './../../services/student-events-log.servic
   selector: 'app-dashboard',
   templateUrl: './default-layout.component.html'
 })
-export class DefaultLayoutComponent implements OnDestroy, OnInit, EmitStudentEvent {
+export class DefaultLayoutComponent implements OnDestroy, OnInit {
   public navData: Array<any> = new Array<any>();
   public _navItems = navItems;
   public sidebarMinimized = true;

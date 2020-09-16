@@ -1,4 +1,4 @@
-import { EmitStudentEvent, StudentEvent } from './../../../services/emit-student-event';
+import { StudentEvent } from '../../../services/student-event';
 import { Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { StudashboardService } from './studashboard.service';
