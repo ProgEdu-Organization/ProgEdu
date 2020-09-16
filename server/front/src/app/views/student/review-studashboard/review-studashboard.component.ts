@@ -5,6 +5,7 @@ import { JwtService } from '../../../services/jwt.service';
 import { User } from '../../../models/user';
 import { TimeService } from '../../../services/time.service';
 import { Router } from '@angular/router';
+import { StudentEventsService } from '../../../services/student-events-log.service';
 
 
 @Component({
@@ -18,9 +19,18 @@ export class ReviewStudashboardComponent implements OnInit {
   public studentCommitRecord: JSON;
   public username: string;
   constructor(private reviewStudashboardService: ReviewStudashboardService, private timeService: TimeService,
-    private jwtService?: JwtService, private router?: Router) {
+    private jwtService?: JwtService, private router?: Router, private studentEventsService?: StudentEventsService) {
+      this.emitStudentEvent();
   }
-
+  emitStudentEvent() {
+    // review record dashboard viewed event emit
+    const event = {
+      name: 'progedu.dashboard.review_record.viewed',
+      page: this.router.url,
+      event: '{}'
+    };
+    this.studentEventsService.createReviewRecord(event);
+  }
   async ngOnInit() {
     this.username = new User(this.jwtService).getUsername();
     await this.getAllAssignments();
