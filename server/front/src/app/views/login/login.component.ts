@@ -77,7 +77,7 @@ export class LoginComponent implements OnInit, EmitStudentEvent {
           } else if (response.role === 'student') {
             // login event emit
             const event: StudentEvent = {name: 'progedu.login',
-              page: this.router.url, event: '{}' };
+              page: this.router.url, event: {} };
             this.emitStudentEvent(event);
             this.router.navigate(['studashboard']);
           }

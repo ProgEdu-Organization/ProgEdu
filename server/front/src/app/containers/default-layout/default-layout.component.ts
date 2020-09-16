@@ -151,7 +151,7 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit, EmitStudentEve
     if (this.user.isStudent) {
       const event: StudentEvent = {
         name: 'progedu.logout',
-        event: '{}',
+        event: {},
         page: this.router.url
       };
       this.emitStudentEvent(event);
@@ -196,7 +196,7 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit, EmitStudentEve
     const exit_event = {
       name: 'progedu.exit',
       page: this.router.url,
-      event: { original_page: this.router.url }.toString()
+      event: { original_page: this.router.url }
     };
     this.emitStudentEvent(exit_event);
   }
