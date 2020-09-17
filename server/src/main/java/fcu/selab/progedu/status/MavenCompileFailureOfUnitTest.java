@@ -49,16 +49,16 @@ public class MavenCompileFailureOfUnitTest implements Status {
         String line = matcher.group(5).replaceAll(",", ":").trim();
         String symptom = matcher.group(6).trim();
         feedbackList.add(new FeedBack(
-            StatusEnum.COMPILE_ERROR_OF_UNIT_TEST, fileName, line, "", symptom, suggest));
+            StatusEnum.COMPILE_FAILURE_OF_UNIT_TEST, fileName, line, "", symptom, suggest));
       }
       if (feedbackList.isEmpty()) {
         feedbackList.add(
-            new FeedBack(StatusEnum.COMPILE_ERROR_OF_UNIT_TEST,
+            new FeedBack(StatusEnum.COMPILE_FAILURE_OF_UNIT_TEST,
                 "Please notify teacher or assistant this situation, thank you!", ""));
       }
     } catch (Exception e) {
       feedbackList.add(
-          new FeedBack(StatusEnum.COMPILE_ERROR_OF_UNIT_TEST,
+          new FeedBack(StatusEnum.COMPILE_FAILURE_OF_UNIT_TEST,
               "CompileFailure ArrayList error", e.getMessage()));
     }
     return feedbackList;
