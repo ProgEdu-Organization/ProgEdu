@@ -126,14 +126,14 @@ const routes: Routes = [
     path: 'reviewDashboard',
     component: ReviewDashboardComponent,
     data: {
-      title: 'ReviewDashboard'
+      title: 'Review Dashboard'
     }
   },
   {
     path: 'reviewStatusDashboard',
     component: ReviewStatusDashboardComponent,
     data: {
-      title: 'ReviewStatusDashboard'
+      title: 'Review Status Dashboard'
     }
   },
 ];

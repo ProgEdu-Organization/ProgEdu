@@ -50,14 +50,14 @@ const routes: Routes = [
     path: 'peerReviewDashboard',
     component: ReviewStatusStudashboardComponent,
     data: {
-      title: 'Peer Review Dashboard'
+      title: 'Peer Review Status Dashboard'
     }
   },
   {
     path: 'reviewDashboard',
     component: ReviewStudashboardComponent,
     data: {
-      title: 'Review Dashboard'
+      title: 'Peer Review Dashboard'
     }
   },
   {
