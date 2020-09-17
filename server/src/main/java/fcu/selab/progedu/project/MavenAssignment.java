@@ -113,6 +113,8 @@ public class MavenAssignment extends AssignmentType {
         status = StatusEnum.UNIT_TEST_FAILURE;
       } else if (statusService.isMavenCheckstyleFailure(console)) {
         status = StatusEnum.CHECKSTYLE_FAILURE;
+      } else if (statusService.isMavenCompileFailureOfUnitTest(console)) {
+        status = StatusEnum.COMPILE_FAILURE_OF_UNIT_TEST;
       } else {
         status = StatusEnum.COMPILE_FAILURE;
       }
