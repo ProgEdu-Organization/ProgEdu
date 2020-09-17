@@ -86,42 +86,6 @@ export class CommitRecordComponent implements OnInit, OnChanges {
     );
   }
 
-  /*nextPage() {
-    if (this.currentPagination >= this.maxPagination) {
-      return;
-    }
-    this.currentPagination++;
-    this.changePagination(this.currentPagination);
-    this.getPartCommitDetail();
-  }
-
-  prePage() {
-    if (this.currentPagination == 1) {
-      return;
-    }
-    this.currentPagination--;
-    this.changePagination(this.currentPagination);
-    this.getPartCommitDetail();
-  }
-
-  firstPage() {
-    if (this.currentPagination == 1) {
-      return;
-    }
-    this.currentPagination = 1;
-    this.changePagination(this.currentPagination);
-    this.getPartCommitDetail();
-  }
-
-  lastPage() {
-    if (this.currentPagination == this.maxPagination) {
-      return;
-    }
-    this.currentPagination = this.maxPagination;
-    this.changePagination(this.currentPagination);
-    this.getPartCommitDetail();
-  }*/
-
   changePagination(pageNumber: number) {
     if (pageNumber <= 0 || pageNumber > this.maxPagination) {
       return;
