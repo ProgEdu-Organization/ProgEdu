@@ -3,7 +3,8 @@
     <span class="h2">
       <div class="form-group row">
         <label class="col-md-7 col-form-label">Peer Review Score</label>
-        <label class="col-md-5 col-form-label" style="text-align: right;">Scorer： {{reviewFeedback.name}}</label>
+        <label class="col-md-5 col-form-label" style="text-align: right;" *ngIf=isTeacher>Scorer：
+          {{reviewFeedback.name}}</label>
       </div>
     </span>
     <div class="card-body" id='reviewFeedback-bar'>
@@ -22,7 +23,7 @@
             {{reviewDetail.metrics}}
           </td>
           <td>
-            {{ reviewDetail.time}}
+            {{ reviewDetail.time | date:'short'}}
           </td>
           <td>
             {{ reviewDetail.scoreMode}}
@@ -31,7 +32,8 @@
             {{ reviewDetail.scoreMode === 'yesNoMode'?(reviewDetail.score === 1?'Yes':'No'):reviewDetail.score}}
           </td>
           <td>
-            <button type="button" class="btn btn-secondary" (click)="openReviewFeedbackModal(reviewDetail);reviewFormModal.show()">Feedback Information</button>
+            <button type="button" class="btn btn-secondary"
+              (click)="openReviewFeedbackModal(reviewDetail);reviewFormModal.show()">Feedback Information</button>
           </td>
         </tr>
       </table>
@@ -53,7 +55,7 @@
 <div *ngIf='displayCommits'>
   <span class="h2">Commit Record</span>
   <div class="card-body">
-    <div class='col-md-12 d-flex flex-row text'>
+    <div class='col-md-12 d-flex flex-row text' *ngIf=isTeacher>
       <span class="ovol NB ">
         Not Build
       </span>
@@ -88,7 +90,7 @@
         <thead class="thead-light">
           <tr>
             <th>Commit </th>
-            <th>Light </th>
+            <th *ngIf=isTeacher>Light </th>
             <th>Date</th>
             <th>Commit Message</th>
             <th *ngIf='showCommiter'>Committer</th>
@@ -98,7 +100,7 @@
         <tbody>
           <tr *ngFor="let commit of displayCommits" id='feedback-bar' (click)='updateFeedback(commit.number)'>
             <td class='w-10'>{{commit.number}}</td>
-            <td>
+            <td *ngIf=isTeacher>
               <p class="circle {{commit.status}}"></p>
             </td>
             <td class='w-25'>{{commit.time | date:'short'}}</td>
@@ -119,43 +121,45 @@
       </ul>
     </div>
     <hr>
-    <span><a>
-        <h3>Feedback Information {{commitNumber}}</h3>
-      </a></span>
-    <table class='table table-responsive-sm table-bordered table-hover table-outline'>
-      <thead class="thead-light">
-        <tr>
-          <th class='w-20'>fileName</th>
-          <th class='w-10'>Line</th>
-          <th class='w-30'>Message</th>
-          <th class='w-30'>Symptom</th>
-          <th>Suggest</th>
+    <ng-container *ngIf=isTeacher>
+      <span><a>
+          <h3>Feedback Information {{commitNumber}}</h3>
+        </a></span>
+      <table class='table table-responsive-sm table-bordered table-hover table-outline'>
+        <thead class="thead-light">
+          <tr>
+            <th class='w-20'>fileName</th>
+            <th class='w-10'>Line</th>
+            <th class='w-30'>Message</th>
+            <th class='w-30'>Symptom</th>
+            <th>Suggest</th>
+          </tr>
+        </thead>
+        <tr *ngFor="let feedback of feedbacks" id='feedback-bar'>
+          <td>
+            <pre>{{feedback.fileName}}</pre>
+          </td>
+          <td>
+            <pre>{{feedback.line}}</pre>
+          </td>
+          <td>
+            <pre [innerHTML]='feedback.message | lineBreaks'></pre>
+          </td>
+          <td>
+            <pre>{{feedback.symptom}}</pre>
+          </td>
+          <td>
+            <pre><a href='{{feedback.suggest}}' target="blank">{{feedback.suggest}}</a></pre>
+          </td>
         </tr>
-      </thead>
-      <tr *ngFor="let feedback of feedbacks" id='feedback-bar'>
-        <td>
-          <pre>{{feedback.fileName}}</pre>
-        </td>
-        <td>
-          <pre>{{feedback.line}}</pre>
-        </td>
-        <td>
-          <pre [innerHTML]='feedback.message | lineBreaks'></pre>
-        </td>
-        <td>
-          <pre>{{feedback.symptom}}</pre>
-        </td>
-        <td>
-          <pre><a href='{{feedback.suggest}}' target="blank">{{feedback.suggest}}</a></pre>
-        </td>
-      </tr>
-    </table>
+      </table>
+    </ng-container>
   </div>
 </div>
 
 <!-- Review Form Modal -->
-<div bsModal #reviewFormModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
-  aria-labelledby="myModalLabel" aria-hidden="true">
+<div bsModal #reviewFormModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+  aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -176,7 +180,7 @@
           <div class="col-md-12">
             <p>FeedBack:</p>
             <div class="col-md-12">
-              <p id="feedback" name="feedback" rows="3" >{{onClickedReviewDetail.feedback}}</p>
+              <p id="feedback" name="feedback" rows="3">{{onClickedReviewDetail.feedback}}</p>
             </div>
           </div>
           <br>

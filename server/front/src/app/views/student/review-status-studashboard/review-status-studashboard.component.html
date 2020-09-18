@@ -36,10 +36,10 @@
                 {{username}}
               </th>
               <ng-container *ngFor='let review of studentCommitRecord'>
-                <th *ngIf='isRelease(review.releaseTime)'>
+                <th *ngIf='isRelease(review.reviewReleaseTime)'>
                   <p id="{{username}}_{{review.assignmentName}}" class="circle {{review.status}}">
                     <a *ngIf='!isNA(review)' id="{{username}}_{{review.hw}}_{{review.count}}"
-                      href="#/studashboard/reviewStatusAssignmentChoose?username={{username}}&assignmentName={{review.assignmentName}}">{{review.count}}</a>
+                      href="#/studashboard/reviewStatusAssignmentChoose?username={{username}}&assignmentName={{review.assignmentName}}">{{review.count}}/{{review.amount}}</a>
                     <a *ngIf='isNA(review)'>N/A</a>
                   </p>
                 </th>

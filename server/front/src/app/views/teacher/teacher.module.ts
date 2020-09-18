@@ -1,5 +1,3 @@
-import { ReviewCommitRecordComponent } from './review-commit-record/review-commit-record.component';
-import { ReviewAssignmentChooseComponent } from './review-assignment-choose/review-assignment-choose.component';
 import { ReviewStatusDashboardComponent } from './review-status-dashboard/review-status-dashboard.component';
 import { ReviewDashboardComponent } from './review-dashboard/review-dashboard.component';
 import { HttpClientModule } from '@angular/common/http';
@@ -64,8 +62,6 @@ import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
         ReviewMetricsManagementComponent,
         ReviewDashboardComponent,
         ReviewStatusDashboardComponent,
-        ReviewAssignmentChooseComponent,
-        ReviewCommitRecordComponent
     ]
 })
 export class TeacherModule { }

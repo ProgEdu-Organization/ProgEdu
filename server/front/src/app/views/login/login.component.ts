@@ -1,4 +1,3 @@
-import { EmitStudentEvent } from './../../services/emit-student-event';
 import { StudentEventsService } from './../../services/student-events-log.service';
 import { Component, ViewChild, SystemJsNgModuleLoader, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
@@ -6,13 +5,13 @@ import { LoginAuthService } from '../../services/login-auth.service';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { JwtService } from '../../services/jwt.service';
-import { StudentEvent } from '../../services/emit-student-event';
+import { StudentEvent } from '../../services/student-event';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: 'login.component.html'
 })
-export class LoginComponent implements OnInit, EmitStudentEvent {
+export class LoginComponent implements OnInit {
 
   private errors;
   public loginForm: FormGroup;
@@ -77,7 +76,7 @@ export class LoginComponent implements OnInit, EmitStudentEvent {
           } else if (response.role === 'student') {
             // login event emit
             const event: StudentEvent = {name: 'progedu.login',
-              page: this.router.url, event: '{}' };
+              page: this.router.url, event: {} };
             this.emitStudentEvent(event);
             this.router.navigate(['studashboard']);
           }

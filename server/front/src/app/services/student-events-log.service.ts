@@ -1,10 +1,13 @@
 import { User } from './../models/user';
 import { JwtService } from './jwt.service';
-import { environment } from './../../environments/environment';
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { StudentEvent } from './emit-student-event';
+import { StudentEvent } from './student-event';
+
+const getIpOptions = ({
+  headers: new HttpHeaders().set('Access-Control-Allow-Origin' , '*')
+});
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +16,6 @@ export class StudentEventsService {
 
   private ADD_STUDENT_LOGIN_EVENT_API = 'http://140.134.26.63:23000/webapi/student_events/logStudentEvent';
   private username = '';
-  private ip;
 
   constructor(private http: HttpClient, private jwtService?: JwtService) {
   }
@@ -26,7 +28,7 @@ export class StudentEventsService {
     formData.append('username', this.username);
     formData.append('page', event.page);
     formData.append('name', event.name);
-    formData.append('event', event.event);
+    formData.append('event', JSON.stringify(event.event));
     this.getIPAddress().subscribe(
       (res) => {
         formData.append('ip', res.ip);
@@ -40,6 +42,6 @@ export class StudentEventsService {
   }
 
   getIPAddress(): Observable<any> {
-    return this.http.get('http://ip.jsontest.com/');
+    return this.http.get('https://jsonip.com', getIpOptions);
   }
 }

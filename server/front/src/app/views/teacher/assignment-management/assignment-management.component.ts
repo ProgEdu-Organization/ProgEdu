@@ -1,10 +1,13 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, SystemJsNgModuleLoader } from '@angular/core';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { Router } from '@angular/router';
 import { AssignmentManagementService } from './assignment-management.service';
 import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { TimeService } from '../../../services/time.service'
 import { HttpErrorResponse } from '@angular/common/http';
+
+import { environment } from '../../../../environments/environment';
+import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 @Component({
   selector: 'app-assignment-management',
@@ -25,6 +28,14 @@ export class AssignmentManagementComponent implements OnInit {
   dynamic: number = 0;
   type: string = 'Waiting';
   isDeleteProgress = false;
+  public Editor = ClassicEditor;
+  public editorConfig = {
+    placeholder: 'Write the assignment description in here!',
+    ckfinder: {
+      // Upload the images to the server using the CKFinder QuickUpload command.
+      uploadUrl: environment.SERVER_URL + `/webapi/assignment/uploadImage`
+    }
+  };
 
   constructor(private assignmentService: AssignmentManagementService, private router: Router,
     private fb: FormBuilder, private timeService: TimeService) { }

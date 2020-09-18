@@ -16,7 +16,7 @@ import { CreateGroupComponent } from './create-group/create-group.component';
 import { ReviewMetricsManagementComponent } from './review-metrics-management/review-metrics-management.component';
 import { ReviewStatusDashboardComponent } from './review-status-dashboard/review-status-dashboard.component';
 import { ReviewDashboardComponent } from './review-dashboard/review-dashboard.component';
-import { ReviewAssignmentChooseComponent } from './review-assignment-choose/review-assignment-choose.component';
+import { ReviewAssignmentChooseComponent } from '../shared/review-assignment-choose/review-assignment-choose.component';
 
 const routes: Routes = [
   {
@@ -126,14 +126,14 @@ const routes: Routes = [
     path: 'reviewDashboard',
     component: ReviewDashboardComponent,
     data: {
-      title: 'ReviewDashboard'
+      title: 'Review Dashboard'
     }
   },
   {
     path: 'reviewStatusDashboard',
     component: ReviewStatusDashboardComponent,
     data: {
-      title: 'ReviewStatusDashboard'
+      title: 'Review Status Dashboard'
     }
   },
 ];
