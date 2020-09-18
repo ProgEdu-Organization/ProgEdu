@@ -28,7 +28,7 @@ export class ReviewStudashboardComponent implements OnInit {
     const event: StudentEvent = {
       name: 'progedu.dashboard.review_record.viewed',
       page: this.router.url,
-      event: '{}'
+      event: {}
     };
     this.studentEventsService.createReviewRecord(event);
   }
@@ -53,7 +53,7 @@ export class ReviewStudashboardComponent implements OnInit {
 
   isRelease(release: Date) {
     const now_time = new Date().getTime();
-    const realease_time = new Date(this.timeService.getUTCTime(release)).getTime();
+    const realease_time = new Date(release).getTime();
     if (now_time >= realease_time) {
       return true;
     }

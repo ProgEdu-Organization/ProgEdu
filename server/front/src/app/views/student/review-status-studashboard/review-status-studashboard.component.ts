@@ -55,7 +55,7 @@ export class ReviewStatusStudashboardComponent implements OnInit {
 
   isRelease(release: Date) {
     const now_time = new Date().getTime();
-    const realease_time = new Date(this.timeService.getUTCTime(release)).getTime();
+    const realease_time = new Date(release).getTime();
     if (now_time >= realease_time) {
       return true;
     }
