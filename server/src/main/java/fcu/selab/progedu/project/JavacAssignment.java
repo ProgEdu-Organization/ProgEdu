@@ -203,6 +203,10 @@ public class JavacAssignment extends AssignmentType {
     for (String absolutePath : fileList) {
       String subPath = absolutePath
           .substring(absolutePath.indexOf(assignmentName) + assignmentName.length() + 1);
+      
+      // For windows to linux, todo [change to use Path()]
+      subPath = subPath.replace("\\", "/"); 
+
       command += "javac " + subPath + "\n";
     }
     command += "echo \"BUILD SUCCESS\"";
