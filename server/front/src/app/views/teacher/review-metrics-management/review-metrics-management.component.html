@@ -131,8 +131,8 @@
           <div class="form-group row">
             <label class="col-md-2 col-form-label" for="description"> Metrics : </label>
             <div class="col-md-9">
-              <textarea id="Metrics" name="Metrics" rows="3" class="form-control" #metricsbox type="text" *ngIf="selectedCategory"
-                [value]=selectedCategory.metrics placeholder="Write down new Metrics..."></textarea>
+              <textarea id="Metrics" name="Metrics" rows="3" class="form-control" #metricsbox type="text" 
+                [value]=selectedCategory?selectedCategory.metrics:none  placeholder="Write down new Metrics..."></textarea>
             </div>
           </div>
         </div>
@@ -208,8 +208,8 @@
             <div class="col-md-9">
               <select name="cars" class="custom-select mb-3" placeholder="Select Category" #assementModeBox type="text">
                 <option [ngValue]="null" [disabled]="true">Select Mode</option>
-                <option>Yes</option>
-                <option>No</option>
+                <option>Yes No mode</option>
+                <option>Score mode</option>
               </select>
             </div>
           </div>
@@ -245,7 +245,7 @@
             <label class="col-md-2 col-form-label" for="description"> Description : </label>
             <div class="col-md-9">
               <textarea id="Description" name="Description" rows="3" class="form-control" #assementDescriptionEditBox
-                type="text" [value]=selectedAssessment.description *ngIf="selectedAssessment"
+                type="text" [value]=selectedAssessment?selectedAssessment.description:none  
                 placeholder="Write down new Description..."></textarea>
             </div>
           </div>
@@ -253,17 +253,17 @@
             <label class="col-md-2 col-form-label" for="Link"> Link : </label>
             <div class="col-md-9">
               <textarea id="Link" name="Link" rows="1" class="form-control" #assementLinkEditBox type="text"
-                [value]=selectedAssessment.link  *ngIf="selectedAssessment" placeholder="Write down new Link..."></textarea>
+                [value]=selectedAssessment?selectedAssessment.link:none   placeholder="Write down new Link..."></textarea>
             </div>
           </div>
           <div class="form-group row">
             <label class="col-md-2 col-form-label" for="Mode"> Mode : </label>
             <div class="col-md-9">
               <select name="cars" class="custom-select mb-3" placeholder="Select Category" #assementModeEditBox
-                type="text" [value]=selectedAssessment.mode *ngIf="selectedAssessment">
+                type="text" [value]=selectedAssessment?selectedAssessment.mode:none  >
                 <option [disabled]="true">Select Mode</option>
-                <option>1</option>
-                <option>2</option>
+                <option>Yes No mode</option>
+                <option>Score mode</option>
               </select>
             </div>
           </div>
