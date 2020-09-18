@@ -1,5 +1,5 @@
 <div class="animated fadeIn">
-  <div *ngIf='assignment' class="card">
+  <div *ngIf='reviewMetrics' class="card">
     <div class="card-header">
       <i class="cui-pencil icons"></i>
       <label>{{assignmentName}}</label>
@@ -11,10 +11,10 @@
           <div class="form-group row">
             <span class="h2 col-md-10 ">Review Student {{i+1}}</span>
             <input type="button" class="btn btn-outline-primary col-sm-1" value="Fill Review Form"
-              (click)="reviewFormFillModal.show();setReviewOne(i);">
+              (click)="reviewFormFillModal.show();setReviewOne(i);emitReviewFormOpenedEvent();">
           </div>
           <div class="col-lg-6">
-            <p>Deadline: {{assignment.reviewDeadline | date:'mediumDate'}}</p>
+            <p>Deadline: {{review.reviewDeadline | date:'short'}}</p>
           </div>
           <div class="col-lg-6">
             <p>Review Form Unfinished, Please fill it before deadline.</p>
@@ -46,7 +46,7 @@
                   {{reviewDetail.metrics}}
                 </td>
                 <td>
-                  {{ reviewDetail.time}}
+                  {{ reviewDetail.time | date:'short'}}
                 </td>
                 <td>
                   {{ reviewDetail.scoreMode}}
@@ -56,7 +56,7 @@
                 </td>
                 <td>
                   <button type="button" class="btn btn-secondary"
-                    (click)="openReviewFeedbackModal(reviewDetail);reviewFormModal.show()">Feedback
+                    (click)="openReviewFeedbackModal(reviewDetail);reviewFormModal.show();reviewFeedbackEvent(reviewDetail,review.name)">Feedback
                     Information</button>
                 </td>
               </tr>
@@ -97,7 +97,7 @@
         </button>
       </div>
       <!--Review Form Fill Main-->
-      <form class="form-horizontal">
+      <form class="form-horizontal" >
         <div class="modal-body" >
           <ng-container *ngFor="let metric of reviewMetrics;index as i" >
             <div class="form-group row">
@@ -137,7 +137,7 @@
               <p>FeedBack:</p>
               <div class="col-md-12">
                 <textarea id="feedback" name="feedback{{i}}" rows="3" class="form-control" #feedbackInput type="text"
-                  placeholder="Write down new suggest..."></textarea>
+                  placeholder="Write down new suggest..." (change)="feedbackChanged($event)" ></textarea>
               </div>
             </div>
             <br>

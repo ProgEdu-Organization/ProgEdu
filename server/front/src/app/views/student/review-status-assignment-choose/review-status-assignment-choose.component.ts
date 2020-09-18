@@ -1,10 +1,14 @@
+import { FormControl } from '@angular/forms';
+import { StudentEvent } from '../../../services/student-event';
 import { environment } from './../../../../environments/environment.prod';
 import { ReviewRecord } from './ReviewRecord';
 import { ReviewStatusAssignmentChooseService } from './review-status-assignment-choose.service';
-import { Component, OnInit, ViewChildren } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { now } from 'jquery';
+import { Component, OnInit, ViewChild, ViewChildren, OnChanges, Renderer2 } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
+import { StudentEventsService } from '../../../services/student-events-log.service';
+import { ModalDirective } from 'ngx-bootstrap/modal';
+
 
 @Component({
   selector: 'app-review-status-assignment-choose',
@@ -13,30 +17,60 @@ import { HttpErrorResponse } from '@angular/common/http';
 })
 export class ReviewStatusAssignmentChooseComponent implements OnInit {
 
-  assignment = { type: '', deadline: new Date() };
   username: string;
   assignmentName: string;
   allReviewDetail: JSON;
   reviewMetrics: JSON; // Queston
   currentReviewPagination: Array<number>;
   maxReviewPagination: number[];
-  onClickedReviewDetail: JSON;
+  onClickedReviewDetail: any;
   metricsCount: number;
   reviewRecords: Array<ReviewRecord>;
   reviewOne: number;
-  @ViewChildren('radioYes') public reviewAnswers: any;
+  feedbackInputLast: any;
+  feedbackInit: boolean = false;
+  @ViewChildren('radioYes') public reviewYesRadio: any;
+  @ViewChildren('radioNo') public reviewNoRadio: any;
   @ViewChildren('feedbackInput') public feedbackInput: any;
+  @ViewChild('reviewFormFillModal', { static: false }) public reviewFormFillModal: ModalDirective;
+  @ViewChild('reviewFormModal', { static: false }) public reviewFormModal: ModalDirective;
 
   errorResponse: HttpErrorResponse;
   errorTitle: string;
 
-  constructor(private route: ActivatedRoute, private reviewStatusAssignmentChooseService: ReviewStatusAssignmentChooseService) {
+  constructor(private route: ActivatedRoute, private reviewStatusAssignmentChooseService: ReviewStatusAssignmentChooseService,
+    private router?: Router, private studentEventsService?: StudentEventsService, private renderer?: Renderer2) {
+  }
+
+  emitStudentEvent(event: StudentEvent) {
+    this.studentEventsService.createReviewRecord(event);
+  }
+  emitReviewFormOpenedEvent() {
+    // progedu review_status review_form opened event emit
+    const review_form_event: StudentEvent = {
+      name: 'progedu.review_status.review_form.opened',
+      page: this.router.url,
+      event: { assignment_name: this.assignmentName, reviewed_name: this.allReviewDetail[this.reviewOne].name }
+    };
+    this.emitStudentEvent(review_form_event);
+    /*const oldFeedbacks = this.feedbackInput.toArray();
+    this.feedbackInputLast = new Array(oldFeedbacks.length);
+    for (let i = 0; i < Object.keys(oldFeedbacks).length; i++) {
+      this.feedbackInputLast[i] = oldFeedbacks[i].nativeElement.value;
+    }*/
   }
 
   async ngOnInit() {
     this.username = this.route.snapshot.queryParamMap.get('username');
     this.assignmentName = this.route.snapshot.queryParamMap.get('assignmentName');
-    // review log
+    // review status assignment viewed event emit
+    const viewed_event: StudentEvent = {
+      name: 'progedu.review_status.assignment.viewed',
+      page: this.router.url,
+      event: { assignment_name: this.assignmentName }
+    };
+    this.emitStudentEvent(viewed_event);
+    // review record
     this.reviewStatusAssignmentChooseService.getReviewDetail(this.username, this.assignmentName).subscribe(response => {
       this.allReviewDetail = response.allStatusDetail;
       const count = Object(this.allReviewDetail).length;
@@ -47,15 +81,44 @@ export class ReviewStatusAssignmentChooseComponent implements OnInit {
         this.maxReviewPagination[i] = this.allReviewDetail[i].totalCount;
       }
     });
-    // get metrics
+    // get review metrics
     this.reviewStatusAssignmentChooseService.getReviewMetrics(this.assignmentName).subscribe(response => {
       this.reviewMetrics = response.allMetrics;
       this.metricsCount = Object.keys(this.reviewMetrics).length;
+      // reviewFormFill hide listener
+      this.reviewFormFillModal.onHidden.subscribe(
+        res => {
+          // review status review form canceled
+          const review_form_event: StudentEvent = {
+            name: 'progedu.review_status.review_form.canceled',
+            page: this.router.url,
+            event: { assignment_name: this.assignmentName, reviewed_name: this.allReviewDetail[this.reviewOne].name }
+          };
+          this.emitStudentEvent(review_form_event);
+        }
+      );
     });
-
   }
 
-
+  feedbackChanged(event) {
+    //console.log(event.target.value);
+    /*const oldFeedbacks = this.feedbackInput.toArray();
+    this.feedbackInputLast = new Array(oldFeedbacks.length);
+    for (let i = 0; i < Object.keys(oldFeedbacks).length; i++) {
+      this.feedbackInputLast[i] = oldFeedbacks[i].nativeElement.value;
+    }
+    console.log(oldFeedbacks);
+    // feedback listener
+    if (!this.feedbackInit) {
+      const feedbacks = this.feedbackInput.toArray();
+      for (let i = 0; i < Object.keys(feedbacks).length; i++) {
+        (feedbacks[i].nativeElement as FormControl).valueChanges.subscribe( value => {
+          console.log('changed', value);
+        });
+      }
+      this.feedbackInit = true;
+    }*/
+  }
   nextReviewPage(index: number) {
     if (this.currentReviewPagination[index] >= this.maxReviewPagination[index]) {
       return;
@@ -83,21 +146,34 @@ export class ReviewStatusAssignmentChooseComponent implements OnInit {
       });
   }
 
-  openReviewFeedbackModal(detail: JSON) {
+  openReviewFeedbackModal(detail: any) {
     this.onClickedReviewDetail = detail;
+  }
+
+  reviewFeedbackEvent(detail: any, reviewed_name: any) {
+    // review status review record feedback viewed
+    const review_form_event: StudentEvent = {
+      name: 'progedu.review_status.review_record.feedback.viewed',
+      page: this.router.url,
+      event: {
+        assignment_name: this.assignmentName, reviewed_name: reviewed_name,
+        record_time: detail.time
+      }
+    };
+    this.emitStudentEvent(review_form_event);
   }
 
   createReviewForm() {
     const feedbacks = this.feedbackInput.toArray();
-    const scores = this.reviewAnswers.toArray();
+    const yesRadios = this.reviewYesRadio.toArray();
+    const noRadios = this.reviewNoRadio.toArray();
     this.reviewRecords = new Array<ReviewRecord>(this.metricsCount);
     const nowDate = new Date();
     for (let i = 0; i < this.metricsCount; i++) {
       const reviewRecord: ReviewRecord = {
         feedback: feedbacks[i].nativeElement.value,
-        id: this.reviewMetrics[i].id, score: (scores[i].nativeElement.checked === true ? 1 : 2), time: ''
+        id: this.reviewMetrics[i].id, score: (yesRadios[i].nativeElement.checked === true ? 1 : 2), time: nowDate.toLocaleString()
       };
-      this.reviewRecords[i] = reviewRecord;
     }
     this.reviewStatusAssignmentChooseService.createReviewRecord(this.username, this.allReviewDetail[this.reviewOne].name,
       this.assignmentName, { allReviewRecord: this.reviewRecords }).subscribe(
@@ -108,12 +184,30 @@ export class ReviewStatusAssignmentChooseComponent implements OnInit {
           this.errorTitle = 'This assignment has been expired';
           this.errorResponse = error;
         }
-        );
+      );
+    // progedu review_status review_form opened event emit
+    const review_form_event: StudentEvent = {
+      name: 'progedu.review_status.review_form.submitted',
+      page: this.router.url,
+      event: {
+        assignment_name: this.assignmentName, reviewed_name: this.allReviewDetail[this.reviewOne].name,
+        review_record: this.reviewRecords
+      }
+    };
+    this.emitStudentEvent(review_form_event);
   }
 
   downloadSourceCode() {
-    window.open( environment.SERVER_URL + '/webapi/peerReview/sourceCode?username='
-      + this.username + '&assignmentName=' + this.assignmentName, '_blank');
+    // progedu review_status review_form source_code downloaded event emit
+    const review_form_event: StudentEvent = {
+      name: 'progedu.review_status.review_form.source_code.downloaded',
+      page: this.router.url,
+      event: { assignment_name: this.assignmentName, reviewed_name: this.allReviewDetail[this.reviewOne].name }
+    };
+    this.emitStudentEvent(review_form_event);
+    // open source code link
+    window.open(environment.SERVER_URL + '/webapi/peerReview/sourceCode?username='
+      + this.allReviewDetail[this.reviewOne].name + '&assignmentName=' + this.assignmentName, '_blank');
   }
   setReviewOne(index: number) {
     this.reviewOne = index;
