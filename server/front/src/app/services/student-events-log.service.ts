@@ -42,6 +42,6 @@ export class StudentEventsService {
   }
 
   getIPAddress(): Observable<any> {
-    return this.http.get('https://jsonip.com', getIpOptions);
+    return this.http.get('http://ip.jsontest.com/', getIpOptions);
   }
 }
