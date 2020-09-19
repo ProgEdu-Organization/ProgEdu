@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
+import java.util.TimeZone;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -295,6 +296,7 @@ public class AssignmentService {
 
     try {
       List<Assignment> assignmentList = dbManager.getAllReviewAssignment();
+      TimeZone.setDefault(TimeZone.getTimeZone("Asia/Taipei"));
       Date current = new Date();
       for (Assignment assignment : assignmentList) {
         if (current.compareTo(assignment.getReleaseTime()) >= 0) {
