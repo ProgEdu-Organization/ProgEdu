@@ -104,11 +104,11 @@
               <label class="col-md-10 col-form-label" for="description"> {{i+1}}. {{metric.description}} ?</label>
               <div class="form-check form-check-inline">
                 <input class="form-check-input" type="radio" name="method{{i}}" #radioYes id="methodRadio1"
-                  type="radio">Yes
+                  type="radio" (change)="answerChanged($event,metric)">Yes
               </div>
               <div class="form-check form-check-inline">
                 <input class="form-check-input" type="radio" name="method{{i}}" #radioNo id="methodRadio2"
-                  type="radio">No
+                  type="radio" (change)="answerChanged($event,metric)">No
               </div>
               <ng-container *ngIf="metric.mode === 'SCOREMODE'" >
                 <div class="form-check form-check-inline">

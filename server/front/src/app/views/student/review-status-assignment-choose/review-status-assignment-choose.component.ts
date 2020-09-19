@@ -105,9 +105,9 @@ export class ReviewStatusAssignmentChooseComponent implements OnInit {
     const after_feedback = String(event.target.value);
     console.log(metrics);
     let action_type = '';
-    if ( after_feedback.length > before_feedback.length) {
+    if (after_feedback.length > before_feedback.length) {
       action_type = 'add';
-    } else if ( after_feedback.length < before_feedback.length) {
+    } else if (after_feedback.length < before_feedback.length) {
       action_type = 'delete';
     } else {
       action_type = 'edit';
@@ -124,6 +124,29 @@ export class ReviewStatusAssignmentChooseComponent implements OnInit {
         action_type: action_type,
         before_feedback: before_feedback,
         after_feedback: after_feedback,
+        metrics: metrics.metrics
+      }
+    };
+    this.emitStudentEvent(review_form_event);
+  }
+
+  answerChanged(event, metrics: any) {
+    let answer;
+    // filled answer yes
+    if (event.target.id === 'methodRadio1') {
+      answer = 'Yes';
+    } else {
+      answer = 'No';
+    }
+    // emit answer filled event
+    // review status review form answer filled
+    const review_form_event: StudentEvent = {
+      name: 'progedu.review_status.review_form.answer.filled',
+      page: this.router.url,
+      event: {
+        assignment_name: this.assignmentName,
+        reviewed_name: this.allReviewDetail[this.reviewOne].name,
+        answer: answer,
         metrics: metrics.metrics
       }
     };
