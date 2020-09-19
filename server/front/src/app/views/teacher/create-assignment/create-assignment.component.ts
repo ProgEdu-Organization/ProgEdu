@@ -93,43 +93,45 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
     const commitRecordCount = 'commitRecordCount';
     this.assignment.get(name).valueChanges.subscribe(
       () => {
-        this.assignment.get(name).valid ? this.showIsValidById(name) : this.hideIsInvalidById(name);
+        this.assignment.get(name).valid ? this.showIsValidById(name) : this.showIsInvalidById(name);
       }
     );
 
     this.assignment.get(releaseTime).valueChanges.subscribe(
       val => {
-        val.length !== 0 ? this.showIsValidById(releaseTime) : this.hideIsInvalidById(releaseTime);
+        val.length !== 0 ? this.showIsValidById(releaseTime) : this.showIsInvalidById(releaseTime);
+        this.assignmentTimeCheck();
       }
     );
     this.assignment.get(deadline).valueChanges.subscribe(
       val => {
-        val.length !== 0 ? this.showIsValidById(deadline) : this.hideIsInvalidById(deadline);
+        val.length !== 0 ? this.showIsValidById(deadline) : this.showIsInvalidById(deadline);
+        this.assignmentTimeCheck();
       }
     );
 
     this.assignment.get(description).valueChanges.subscribe(
       val => {
-        val.length !== 0 ? this.showIsValidById(description) : this.hideIsInvalidById(description);
+        val.length !== 0 ? this.showIsValidById(description) : this.showIsInvalidById(description);
       }
     );
     // Peer Review Options
     this.assignment.get(reviewReleaseTime).valueChanges.subscribe(
       val => {
-        val.length !== 0 ? this.showIsValidById(reviewReleaseTime) : this.hideIsInvalidById(reviewReleaseTime);
-        if (Date.parse(val) < Date.parse(this.assignment.get(deadline).value)) {
-          this.hideIsInvalidById(reviewReleaseTime);
-        }
+        val.length !== 0 ? this.showIsValidById(reviewReleaseTime) : this.showIsInvalidById(reviewReleaseTime);
+        this.assignmentTimeCheck();
       }
     );
     this.assignment.get(reviewDeadline).valueChanges.subscribe(
       val => {
-        val.length !== 0 ? this.showIsValidById(reviewDeadline) : this.hideIsInvalidById(reviewDeadline);
+        val.length !== 0 ? this.showIsValidById(reviewDeadline) : this.showIsInvalidById(reviewDeadline);
+
+        this.assignmentTimeCheck();
       }
     );
     this.assignment.get(commitRecordCount).valueChanges.subscribe(
       val => {
-        val.length !== 0 ? this.showIsValidById(commitRecordCount) : this.hideIsInvalidById(commitRecordCount);
+        val.length !== 0 ? this.showIsValidById(commitRecordCount) : this.showIsInvalidById(commitRecordCount);
       }
     );
   }
@@ -142,9 +144,9 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
         this.peerReviewStatus.isOpen = false;
         const now_time = Date.now() - (new Date().getTimezoneOffset() * 60 * 1000);
         // ReSet Peer Review Form Control
-        this.assignment.patchValue({commitRecordCount: 0});
-        this.assignment.patchValue({reviewReleaseTime: new Date(now_time).toISOString().slice(0, 17) + '00'});
-        this.assignment.patchValue({reviewDeadline: new Date(now_time).toISOString().slice(0, 17) + '00'});
+        this.assignment.patchValue({ commitRecordCount: 0 });
+        this.assignment.patchValue({ reviewReleaseTime: new Date(now_time).toISOString().slice(0, 17) + '00' });
+        this.assignment.patchValue({ reviewDeadline: new Date(now_time).toISOString().slice(0, 17) + '00' });
       } else {
         this.autoAssignmentStatus.isOpen = false;
         this.peerReviewStatus.isOpen = true;
@@ -188,7 +190,7 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
     $('#' + id).removeClass('is-invalid');
   }
 
-  hideIsInvalidById(id: string) {
+  showIsInvalidById(id: string) {
     $('#' + id).removeClass('is-valid');
     $('#' + id).addClass('is-invalid');
   }
@@ -199,6 +201,25 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
 
   fileListener($event) {
     this.assignment.controls['file'].setValue($event.target.files[0]);
+  }
+
+  assignmentTimeCheck() {
+    const releaseTime = 'releaseTime';
+    const deadline = 'deadline';
+    const reviewReleaseTime = 'reviewReleaseTime';
+    const reviewDeadline = 'reviewDeadline';
+    // deadline should be after release time
+    if (Date.parse(this.assignment.get(deadline).value) < Date.parse(this.assignment.get(releaseTime).value)) {
+      this.showIsInvalidById(deadline);
+    }
+    // review start time should be after deadline
+    if (Date.parse(this.assignment.get(reviewReleaseTime).value) < Date.parse(this.assignment.get(deadline).value)) {
+      this.showIsInvalidById(reviewReleaseTime);
+    }
+    // review end time should be after review start time
+    if (Date.parse(this.assignment.get(reviewDeadline).value) < Date.parse(this.assignment.get(reviewReleaseTime).value)) {
+      this.showIsInvalidById(reviewDeadline);
+    }
   }
 
   public submit() {
@@ -216,7 +237,7 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
           });
       } else {
         const selectedMetrics = [];
-        for (let i = 0 ; i < this.reviewMetricsNums.length ; i++ ) {
+        for (let i = 0; i < this.reviewMetricsNums.length; i++) {
           selectedMetrics[i] = this.categories[this.onSelectedCategory[i]].allMetrics[this.onSelectedMetrics[i]].id;
         }
         this.createService.createPeerReviewAssignment(this.assignment, selectedMetrics).subscribe(

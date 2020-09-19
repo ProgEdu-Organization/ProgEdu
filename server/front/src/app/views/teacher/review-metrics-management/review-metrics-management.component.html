@@ -78,7 +78,7 @@
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title">Metrics Category Table - Add</h4>
+        <h4 class="modal-title">Metrics Category - Add</h4>
         <button type="button" class="close" (click)="metricsCategoryAddModal.hide()" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -116,7 +116,7 @@
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title">Metrics Category Table - Edit</h4>
+        <h4 class="modal-title">Metrics Category - Edit</h4>
         <button type="button" class="close" (click)="metricsCategoryEditModal.hide()" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -151,7 +151,7 @@
   <div class="modal-dialog modal-danger " role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title">Metrics Category Table - Delete</h4>
+        <h4 class="modal-title">Metrics Category - Delete</h4>
         <button type="button" class="close" (click)="metricsCategoryDeleteModal.hide()" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -174,7 +174,7 @@
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title">Assessment Metrics Table - Add</h4>
+        <h4 class="modal-title">Assessment Metrics - Add</h4>
         <button type="button" class="close" (click)="assessmentMetricsAddModal.hide()" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -229,7 +229,7 @@
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title">Assessment Metrics Table - Edit</h4>
+        <h4 class="modal-title">Assessment Metrics - Edit</h4>
         <button type="button" class="close" (click)="assessmentMetricsEditModal.hide()" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -260,10 +260,10 @@
             <label class="col-md-2 col-form-label" for="Mode"> Mode : </label>
             <div class="col-md-9">
               <select name="cars" class="custom-select mb-3" placeholder="Select Category" #assementModeEditBox
-                type="text" [value]="selectedAssessment?selectedAssessment.mode:''">
+                type="text" [value]="selectedAssessment?(selectedAssessment.mode === 1?'Yes No mode':'Number Score'):''">
                 <option [disabled]="true">Select Mode</option>
                 <option>Yes No mode</option>
-                <option>Score mode</option>
+                <option>Number Score</option>
               </select>
             </div>
           </div>
@@ -283,7 +283,7 @@
   <div class="modal-dialog modal-danger " role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title">Assessment Metrics Table - Delete</h4>
+        <h4 class="modal-title">Assessment Metrics - Delete</h4>
         <button type="button" class="close" (click)="assessmentMetricsDeleteModal.hide()" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
