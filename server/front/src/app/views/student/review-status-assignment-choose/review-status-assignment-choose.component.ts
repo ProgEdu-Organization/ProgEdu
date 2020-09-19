@@ -190,7 +190,7 @@ export class ReviewStatusAssignmentChooseComponent implements OnInit {
       page: this.router.url,
       event: {
         assignment_name: this.assignmentName, reviewed_name: reviewed_name,
-        record_time: detail.time
+        record_detail: detail
       }
     };
     this.emitStudentEvent(review_form_event);

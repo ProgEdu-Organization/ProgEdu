@@ -196,7 +196,7 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
     const exit_event = {
       name: 'progedu.exit',
       page: this.router.url,
-      event: { original_page: this.router.url }
+      event: {}
     };
     this.emitStudentEvent(exit_event);
   }
