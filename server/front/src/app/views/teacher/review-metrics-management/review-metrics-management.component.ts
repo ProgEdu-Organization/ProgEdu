@@ -77,7 +77,7 @@ export class ReviewMetricsManagementComponent implements OnInit {
   addAssessment(name: string, description: string, link: string, mode: string): void {
     const new_assessment = {
       id: 0, metrics: name,
-      description: description, link: link, mode: mode === 'Yes' ? 1 : 2, category: this.selectedCategory.id
+      description: description, link: link, mode: mode === 'Yes No mode' ? 1 : 2, category: this.selectedCategory.id
     };
     this.reviewMetricsManagementService.createMetrics(this.selectedCategory, new_assessment).subscribe(
       response => {
@@ -90,10 +90,10 @@ export class ReviewMetricsManagementComponent implements OnInit {
       }
     );
   }
-  editAssessment(description: string, link: string, mode: number): void {
+  editAssessment(description: string, link: string, mode: string): void {
     this.selectedAssessment.description = description;
     this.selectedAssessment.link = link;
-    this.selectedAssessment.mode = mode;
+    this.selectedAssessment.mode = (mode === 'Yes No mode' ? 1 : 2);
     this.reviewMetricsManagementService.editMetrics(this.selectedAssessment).subscribe();
   }
   deleteAssessment(): void {
