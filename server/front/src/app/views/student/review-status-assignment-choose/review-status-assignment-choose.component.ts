@@ -53,11 +53,11 @@ export class ReviewStatusAssignmentChooseComponent implements OnInit {
       event: { assignment_name: this.assignmentName, reviewed_name: this.allReviewDetail[this.reviewOne].name }
     };
     this.emitStudentEvent(review_form_event);
-    /*const oldFeedbacks = this.feedbackInput.toArray();
+    const oldFeedbacks = this.feedbackInput.toArray();
     this.feedbackInputLast = new Array(oldFeedbacks.length);
     for (let i = 0; i < Object.keys(oldFeedbacks).length; i++) {
       this.feedbackInputLast[i] = oldFeedbacks[i].nativeElement.value;
-    }*/
+    }
   }
 
   async ngOnInit() {
@@ -100,24 +100,34 @@ export class ReviewStatusAssignmentChooseComponent implements OnInit {
     });
   }
 
-  feedbackChanged(event) {
-    //console.log(event.target.value);
-    /*const oldFeedbacks = this.feedbackInput.toArray();
-    this.feedbackInputLast = new Array(oldFeedbacks.length);
-    for (let i = 0; i < Object.keys(oldFeedbacks).length; i++) {
-      this.feedbackInputLast[i] = oldFeedbacks[i].nativeElement.value;
+  feedbackChanged(event, id, metrics: any) {
+    const before_feedback = String(this.feedbackInputLast[id]);
+    const after_feedback = String(event.target.value);
+    console.log(metrics);
+    let action_type = '';
+    if ( after_feedback.length > before_feedback.length) {
+      action_type = 'add';
+    } else if ( after_feedback.length < before_feedback.length) {
+      action_type = 'delete';
+    } else {
+      action_type = 'edit';
     }
-    console.log(oldFeedbacks);
-    // feedback listener
-    if (!this.feedbackInit) {
-      const feedbacks = this.feedbackInput.toArray();
-      for (let i = 0; i < Object.keys(feedbacks).length; i++) {
-        (feedbacks[i].nativeElement as FormControl).valueChanges.subscribe( value => {
-          console.log('changed', value);
-        });
+    this.feedbackInputLast[id] = event.target.value;
+    // emit feedback filled event
+    // review status review form feedback filled
+    const review_form_event: StudentEvent = {
+      name: 'progedu.review_status.review_form.feedback.filled',
+      page: this.router.url,
+      event: {
+        assignment_name: this.assignmentName,
+        reviewed_name: this.allReviewDetail[this.reviewOne].name,
+        action_type: action_type,
+        before_feedback: before_feedback,
+        after_feedback: after_feedback,
+        metrics: metrics.metrics
       }
-      this.feedbackInit = true;
-    }*/
+    };
+    this.emitStudentEvent(review_form_event);
   }
   nextReviewPage(index: number) {
     if (this.currentReviewPagination[index] >= this.maxReviewPagination[index]) {
@@ -174,6 +184,7 @@ export class ReviewStatusAssignmentChooseComponent implements OnInit {
         feedback: feedbacks[i].nativeElement.value,
         id: this.reviewMetrics[i].id, score: (yesRadios[i].nativeElement.checked === true ? 1 : 2), time: nowDate.toLocaleString()
       };
+      this.reviewRecords[i] = reviewRecord;
     }
     this.reviewStatusAssignmentChooseService.createReviewRecord(this.username, this.allReviewDetail[this.reviewOne].name,
       this.assignmentName, { allReviewRecord: this.reviewRecords }).subscribe(

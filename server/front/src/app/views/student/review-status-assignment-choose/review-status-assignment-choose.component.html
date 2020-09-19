@@ -137,7 +137,7 @@
               <p>FeedBack:</p>
               <div class="col-md-12">
                 <textarea id="feedback" name="feedback{{i}}" rows="3" class="form-control" #feedbackInput type="text"
-                  placeholder="Write down new suggest..." (change)="feedbackChanged($event)" ></textarea>
+                  placeholder="Write down new suggest..." (change)="feedbackChanged($event,i,metric)" ></textarea>
               </div>
             </div>
             <br>
