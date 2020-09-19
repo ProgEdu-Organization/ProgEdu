@@ -91,26 +91,27 @@
     <div class="modal-content">
       <div class="modal-header">
         <h4 class="modal-title col-md-6">Review Form</h4>
-        <button type="button" class="btn btn-outline-primary col-md-3" (click)="downloadSourceCode()">Download Source Code</button>
+        <button type="button" class="btn btn-outline-primary col-md-3" (click)="downloadSourceCode()">Download Source
+          Code</button>
         <button type="button" class="close" (click)="reviewFormFillModal.hide()" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <!--Review Form Fill Main-->
-      <form class="form-horizontal" >
-        <div class="modal-body" >
-          <ng-container *ngFor="let metric of reviewMetrics;index as i" >
+      <form class="form-horizontal">
+        <div class="modal-body">
+          <ng-container *ngFor="let metric of reviewMetrics;index as i">
             <div class="form-group row">
-              <label class="col-md-10 col-form-label" for="description"> {{i+1}}. {{metric.description}} ?</label>
+              <label class="col-md-10 col-form-label" for="metrics"> {{i+1}}. {{metric.metrics}} ?</label>
               <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="method{{i}}" #radioYes id="methodRadio1"
-                  type="radio" (change)="answerChanged($event,metric)">Yes
+                <input class="form-check-input" type="radio" name="method{{i}}" #radioYes id="methodRadio1" type="radio"
+                  (change)="answerChanged($event,metric)">Yes
               </div>
               <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="method{{i}}" #radioNo id="methodRadio2"
-                  type="radio" (change)="answerChanged($event,metric)">No
+                <input class="form-check-input" type="radio" name="method{{i}}" #radioNo id="methodRadio2" type="radio"
+                  (change)="answerChanged($event,metric)">No
               </div>
-              <ng-container *ngIf="metric.mode === 'SCOREMODE'" >
+              <ng-container *ngIf="metric.mode === 'SCOREMODE'">
                 <div class="form-check form-check-inline">
                   <input class="form-check-input" type="radio" name="method{{i}}" #radioScore id="methodRadio1"
                     type="radio">1
@@ -132,12 +133,19 @@
                     type="radio">5
                 </div>
               </ng-container>
+              <div class="col-md-12">
+                <div class="col-md-12">
+                  <div class="col-md-12">
+                    <p>{{metric.description}}</p>
+                  </div>
+                </div>
+              </div>
             </div>
             <div class="col-md-12">
               <p>FeedBack:</p>
               <div class="col-md-12">
                 <textarea id="feedback" name="feedback{{i}}" rows="3" class="form-control" #feedbackInput type="text"
-                  placeholder="Write down new suggest..." (change)="feedbackChanged($event,i,metric)" ></textarea>
+                  placeholder="Write down new suggest..." (change)="feedbackChanged($event,i,metric)"></textarea>
               </div>
             </div>
             <br>
@@ -154,8 +162,8 @@
 
 
 <!-- Review Form Modal -->
-<div bsModal #reviewFormModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
-  aria-labelledby="myModalLabel" aria-hidden="true">
+<div bsModal #reviewFormModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+  aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -176,7 +184,7 @@
           <div class="col-md-12">
             <p>FeedBack:</p>
             <div class="col-md-12">
-              <p id="feedback" name="feedback" rows="3" >{{onClickedReviewDetail.feedback}}</p>
+              <p id="feedback" name="feedback" rows="3">{{onClickedReviewDetail.feedback}}</p>
             </div>
           </div>
           <br>
