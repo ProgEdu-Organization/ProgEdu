@@ -121,8 +121,8 @@ export class ReviewStatusAssignmentChooseComponent implements OnInit {
       event: {
         assignment_name: this.assignmentName,
         reviewed_name: this.allReviewDetail[this.reviewOne].name,
-        action_type: action_type,
         metrics: metrics.metrics,
+        action_type: action_type,
         before_feedback: before_feedback,
         after_feedback: after_feedback
       }

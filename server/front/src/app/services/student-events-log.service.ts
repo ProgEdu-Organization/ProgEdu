@@ -41,6 +41,19 @@ export class StudentEventsService {
     );
   }
 
+  createReviewRecordWithIP(event: StudentEvent, ip: string): Observable<any> {
+    const formData = new FormData();
+    if (this.username === '') {
+      this.username = new User(this.jwtService).getUsername();
+    }
+    formData.append('username', this.username);
+    formData.append('page', event.page);
+    formData.append('name', event.name);
+    formData.append('event', JSON.stringify(event.event));
+    formData.append('ip', ip);
+    return this.http.post<any>(this.ADD_STUDENT_LOGIN_EVENT_API, formData);
+  }
+
   getIPAddress(): Observable<any> {
     return this.http.get('http://ip.jsontest.com/', getIpOptions);
   }
