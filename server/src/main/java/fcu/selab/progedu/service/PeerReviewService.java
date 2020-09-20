@@ -236,6 +236,7 @@ public class PeerReviewService {
           reviewer.put("totalCount", order);
           reviewer.put("Detail", reviewDetailArray);
         }
+        reviewer.put("reviewReleaseTime", reviewSetting.getReleaseTime());
         reviewer.put("reviewDeadline", reviewSetting.getDeadline());
 
         array.put(reviewer);
