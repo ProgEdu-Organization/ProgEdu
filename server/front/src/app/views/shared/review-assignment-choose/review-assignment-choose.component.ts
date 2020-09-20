@@ -16,7 +16,7 @@ export class ReviewAssignmentChooseComponent implements OnInit {
   isTeacher: boolean = false;
   user: User;
 
-  assignment = { type: '', deadline: new Date(), reviewDeadline: new Date() };
+  assignment = { type: '', deadline: new Date()};
 
   commits: Array<any> = [];
   gitlabAssignmentURL: string;
@@ -78,7 +78,6 @@ export class ReviewAssignmentChooseComponent implements OnInit {
     this.assignmentService.getAssignment(this.assignmentName).subscribe(response => {
       this.assignment = response;
       this.assignment.deadline = this.timeService.getUTCTime(this.assignment.deadline);
-      this.assignment.reviewDeadline = this.timeService.getUTCTime(this.assignment.reviewDeadline);
     });
   }
 

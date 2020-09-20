@@ -21,6 +21,9 @@
           <span class="h2">Deadline</span>
           <p style="margin: 10px;">{{assignment.deadline | date:'short'}}</p>
           <hr />
+          <span class="h2">Review Start Time</span>
+          <p style="margin: 10px;">{{reviewFeedbacks[0].reviewReleaseTime | date:'short'}}</p>
+          <hr />
           <span class="h2">Review End Time</span>
           <p style="margin: 10px;">{{reviewFeedbacks[0].reviewDeadline | date:'short'}}</p>
         </div>
