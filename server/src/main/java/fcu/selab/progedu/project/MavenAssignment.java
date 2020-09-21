@@ -2,6 +2,8 @@ package fcu.selab.progedu.project;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.TimeZone;
 
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
@@ -23,6 +25,7 @@ import fcu.selab.progedu.config.CourseConfig;
 import fcu.selab.progedu.config.GitlabConfig;
 import fcu.selab.progedu.conn.JenkinsService;
 import fcu.selab.progedu.db.AssignmentDbManager;
+import fcu.selab.progedu.db.UserDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.service.StatusService;
 import fcu.selab.progedu.status.StatusEnum;
@@ -69,9 +72,9 @@ public class MavenAssignment extends AssignmentType {
       String checksumUrl = progEduApiUrl + "/assignment/checksum?proName=" + projectName;
       String testFileUrl = AssignmentDbManager.getInstance().getTestFileUrl(projectName);
 
-      Document doc = docBuilder.parse(jenkinsJobConfigPath);
       String jobName = username + "_" + projectName;
 
+      Document doc = docBuilder.parse(jenkinsJobConfigPath);
       doc.getElementsByTagName("url").item(0).setTextContent(projectUrl);
       doc.getElementsByTagName("jobName").item(0).setTextContent(jobName);
       doc.getElementsByTagName("testFileName").item(0).setTextContent(projectName);
@@ -80,6 +83,19 @@ public class MavenAssignment extends AssignmentType {
       doc.getElementsByTagName("testFileUrl").item(0).setTextContent(testFileUrl);
       doc.getElementsByTagName("user").item(0).setTextContent(username);
       doc.getElementsByTagName("proName").item(0).setTextContent(projectName);
+
+
+      // Send mail
+      String studentMail = UserDbManager.getInstance().getUser(username).getEmail();
+      SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+      ft.setTimeZone(TimeZone.getTimeZone("Asia/Taipei"));
+      String releaseTime = ft.format(
+              AssignmentDbManager.getInstance().getAssignmentByName(projectName).getReleaseTime());
+      String progEduUrl = courseConfig.getTomcatServerIp() + courseConfig.getBaseuri();
+
+      doc.getElementsByTagName("studentEmail").item(0).setTextContent(studentMail);
+      doc.getElementsByTagName("releaseTime").item(0).setTextContent(releaseTime);
+      doc.getElementsByTagName("progEduURL").item(0).setTextContent(progEduUrl);
 
       // write the content into xml file
       TransformerFactory transformerFactory = TransformerFactory.newInstance();

@@ -14,11 +14,15 @@ WORKDIR /workdir
 RUN git clone https://github.com/fcumselab/screenshotjenkinsplugin.git
 RUN git clone https://github.com/fcumselab/UpdatePngToDBJenkinsPlugin.git
 RUN git clone https://github.com/fcumselab/ProgEduJenkinsPlugin.git
+RUN git clone https://github.com/fcumselab/ProgExtractor.git
+RUN git clone https://github.com/fcumselab/ProgEduMailPlugin.git
 RUN git clone https://github.com/fcumselab/AndroidScreenshotPlugin.git
 
 RUN cd ProgEduJenkinsPlugin && mvn package
 RUN cd screenshotjenkinsplugin && mvn package
 RUN cd UpdatePngToDBJenkinsPlugin && mvn package
+RUN cd ProgExtractor && mvn assembly:assembly && cd target && mvn install:install-file -Dfile="ProgExtractor-1.0-jar-with-dependencies.jar" -DgroupId="fcu.selab.progextractor" -DartifactId=ProgExtractor -Dversion="1.0" -Dpackaging=jar
+RUN cd ProgEduMailPlugin && mvn package
 RUN cd AndroidScreenshotPlugin && mvn package
 
 FROM jenkins/jenkins:lts
@@ -32,6 +36,7 @@ RUN /usr/local/bin/install-plugins.sh < /usr/share/jenkins/ref/plugins.txt
 COPY --from=builder /workdir/ProgEduJenkinsPlugin/target/jenkins-progedu.hpi /usr/share/jenkins/ref/plugins/jenkins-progedu.jpi
 COPY --from=builder /workdir/screenshotjenkinsplugin/target/screenshot.hpi /usr/share/jenkins/ref/plugins/screenshot.jpi
 COPY --from=builder /workdir/UpdatePngToDBJenkinsPlugin/target/progeduDB.hpi /usr/share/jenkins/ref/plugins/progeduDB.jpi
+COPY --from=builder /workdir/ProgEduMailPlugin/target/ProgEduMailPlugin.hpi /usr/share/jenkins/ref/plugins/ProgEduMailPlugin.jpi
 COPY --from=builder /workdir/AndroidScreenshotPlugin/target/android-screenshot.hpi /usr/share/jenkins/ref/plugins/android-screenshot.jpi
 
 ###########################################################################

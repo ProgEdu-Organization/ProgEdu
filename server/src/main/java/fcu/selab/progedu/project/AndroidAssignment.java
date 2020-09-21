@@ -2,6 +2,8 @@ package fcu.selab.progedu.project;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.TimeZone;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -24,6 +26,7 @@ import fcu.selab.progedu.config.GitlabConfig;
 import fcu.selab.progedu.config.JenkinsConfig;
 import fcu.selab.progedu.conn.JenkinsService;
 import fcu.selab.progedu.db.AssignmentDbManager;
+import fcu.selab.progedu.db.UserDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.service.StatusService;
 import fcu.selab.progedu.status.StatusEnum;
@@ -95,6 +98,19 @@ public class AndroidAssignment extends AssignmentType {
 
       // AndroidEmulator
       doc.getElementsByTagName("avdNameSuffix").item(0).setTextContent(jobName);
+
+      // Send mail
+      String studentMail = UserDbManager.getInstance().getUser(username).getEmail();
+      SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+      ft.setTimeZone(TimeZone.getTimeZone("Asia/Taipei"));
+      String releaseTime = ft.format(
+              AssignmentDbManager.getInstance().getAssignmentByName(projectName).getReleaseTime());
+      String progEduUrl = courseConfig.getTomcatServerIp() + courseConfig.getBaseuri();
+
+      doc.getElementsByTagName("studentEmail").item(0).setTextContent(studentMail);
+      doc.getElementsByTagName("releaseTime").item(0).setTextContent(releaseTime);
+      doc.getElementsByTagName("progEduURL").item(0).setTextContent(progEduUrl);
+
 
       // write the content into xml file
       TransformerFactory transformerFactory = TransformerFactory.newInstance();

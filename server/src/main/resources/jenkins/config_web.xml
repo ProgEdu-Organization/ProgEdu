@@ -111,6 +111,13 @@ npm run eslint</command>
       <jenkinsAssignmentName>web</jenkinsAssignmentName>
       <pngPath>/target/screenshot</pngPath>
     </io.jenkins.plugins.progupdatetodb.UpdateToDbPublisher>
+    <progedu.plugins.mail.SendMailNotifier plugin="ProgEduMailPlugin@1.0-SNAPSHOT">
+      <studentEmail>D0123456@o365.fcu.edu.tw</studentEmail>
+      <credentialsId>email</credentialsId>
+      <releaseTime>2020-01-01 00:00</releaseTime>
+      <progEduURL>http://140.134.0.0:22000</progEduURL>
+      <assignmentType>web</assignmentType>
+    </progedu.plugins.mail.SendMailNotifier>
     <hudson.plugins.ws__cleanup.WsCleanup plugin="ws-cleanup@0.37">
       <patterns class="empty-list" />
       <deleteDirs>false</deleteDirs>
