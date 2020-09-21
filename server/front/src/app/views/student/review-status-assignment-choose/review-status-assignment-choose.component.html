@@ -151,7 +151,7 @@
             <br>
           </ng-container>
           <div class="modal-footer">
-            <button type="button" class="btn btn-primary"
+            <button type="button" class="btn btn-primary" [disabled]='submitDisabled'
               (click)="createReviewForm();reviewFormFillModal.hide();">Submit</button>
           </div>
         </div>

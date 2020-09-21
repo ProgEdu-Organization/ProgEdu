@@ -29,6 +29,7 @@ export class ReviewStatusAssignmentChooseComponent implements OnInit {
   reviewOne: number;
   feedbackInputLast: any;
   feedbackInit: boolean = false;
+  submitDisabled: boolean = true;
   @ViewChildren('radioYes') public reviewYesRadio: any;
   @ViewChildren('radioNo') public reviewNoRadio: any;
   @ViewChildren('feedbackInput') public feedbackInput: any;
@@ -103,7 +104,6 @@ export class ReviewStatusAssignmentChooseComponent implements OnInit {
   feedbackChanged(event, id, metrics: any) {
     const before_feedback = String(this.feedbackInputLast[id]);
     const after_feedback = String(event.target.value);
-    console.log(metrics);
     let action_type = '';
     if (after_feedback.length > before_feedback.length) {
       action_type = 'add';
@@ -128,6 +128,7 @@ export class ReviewStatusAssignmentChooseComponent implements OnInit {
       }
     };
     this.emitStudentEvent(review_form_event);
+    this.checkReviewForm();
   }
 
   answerChanged(event, metrics: any) {
@@ -151,7 +152,32 @@ export class ReviewStatusAssignmentChooseComponent implements OnInit {
       }
     };
     this.emitStudentEvent(review_form_event);
+    this.checkReviewForm();
   }
+
+  checkReviewForm() {
+    // check if feedback is empty
+    let i = 0;
+    for (i = 0 ; i < this.feedbackInputLast.length ; i++) {
+      if (this.feedbackInputLast[i] === '') {
+        this.submitDisabled = true;
+        return;
+      }
+    }
+    // check if anser is empty
+    const yesRadios = this.reviewYesRadio.toArray();
+    const noRadios = this.reviewNoRadio.toArray();
+    for (i = 0 ; i < yesRadios.length ; i++ ) {
+      if (yesRadios[i].nativeElement.checked === false && noRadios[i].nativeElement.checked === false) {
+          this.submitDisabled = true;
+          return;
+      }
+    }
+    if ( i === yesRadios.length ) {
+      this.submitDisabled = false;
+    }
+  }
+
   nextReviewPage(index: number) {
     if (this.currentReviewPagination[index] >= this.maxReviewPagination[index]) {
       return;
