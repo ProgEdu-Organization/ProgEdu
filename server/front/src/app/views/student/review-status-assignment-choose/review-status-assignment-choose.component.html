@@ -35,10 +35,9 @@
               <thead class="thead-light">
                 <tr>
                   <th class='w-60'>Topic</th>
-                  <th class='w-30'>Time</th>
-                  <th class='w-10'>Score Mode</th>
-                  <th class='w-10'>Answer</th>
-                  <th class='w-20'>Feedback</th>
+                  <th class='w-10'>Time</th>
+                  <th class='w-10'>Result</th>
+                  <th class='w-60'>Feedback</th>
                 </tr>
               </thead>
               <tr *ngFor="let reviewDetail of review.Detail" id='reviewFeedback-bar'>
@@ -48,11 +47,16 @@
                 <td>
                   {{ reviewDetail.time | date:'short'}}
                 </td>
-                <td>
-                  {{ reviewDetail.scoreMode}}
-                </td>
-                <td>
-                  {{ reviewDetail.scoreMode === 'yesNoMode'?(reviewDetail.score === 1?'Yes':'No'):reviewDetail.score}}
+                <ng-container *ngIf="reviewDetail.scoreMode === 'yesNoMode'">
+                  <td *ngIf="reviewDetail.score===1">
+                    Yes
+                  </td>
+                  <td *ngIf="reviewDetail.score===2" style="color:red;">
+                    No
+                  </td>
+                </ng-container>
+                <td *ngIf="reviewDetail.scoreMode === 'numberScore'">
+                  {{ reviewDetail.score}}
                 </td>
                 <td>
                   <button type="button" class="btn btn-secondary"
@@ -142,7 +146,7 @@
               </div>
             </div>
             <div class="col-md-12">
-              <p>FeedBack:</p>
+              <p>Feedback:</p>
               <div class="col-md-12">
                 <textarea id="feedback" name="feedback{{i}}" rows="3" class="form-control" #feedbackInput type="text"
                   placeholder="Write down new suggest..." (change)="feedbackChanged($event,i,metric)"></textarea>
@@ -167,7 +171,7 @@
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title col-md-6">Review Form</h4>
+        <h4 class="modal-title col-md-6">Review Result</h4>
         <button type="button" class="close" (click)="reviewFormModal.hide()" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -184,7 +188,8 @@
           <div class="col-md-12">
             <p>FeedBack:</p>
             <div class="col-md-12">
-              <p id="feedback" name="feedback" rows="3">{{onClickedReviewDetail.feedback}}</p>
+              <textarea readonly id="feedback" name="feedback" rows="3" class="form-control" type="text" 
+              >{{onClickedReviewDetail.feedback}}</textarea>
             </div>
           </div>
           <br>

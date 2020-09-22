@@ -2,7 +2,7 @@
   <ng-container *ngFor="let reviewFeedback of reviewFeedbacks;index as i;">
     <span class="h2">
       <div class="form-group row">
-        <label class="col-md-7 col-form-label">Peer Review Score</label>
+        <label class="col-md-7 col-form-label">Peer Review Result</label>
         <label class="col-md-5 col-form-label" style="text-align: right;" *ngIf=isTeacher>Scorer：
           {{reviewFeedback.name}}</label>
       </div>
@@ -13,9 +13,9 @@
           <tr>
             <th class='w-60'>Topic</th>
             <th class='w-30'>Time</th>
-            <th class='w-10'>Score Mode</th>
-            <th class='w-10'>Answer</th>
-            <th class='w-20'>Feedback</th>
+            <th class='w-10' *ngIf="isTeacher">Score Mode</th>
+            <th class='w-10'>Result</th>
+            <th class='w-60'>Feedback</th>
           </tr>
         </thead>
         <tr *ngFor="let reviewDetail of reviewFeedback.Detail" id='reviewFeedback-bar'>
@@ -25,11 +25,19 @@
           <td>
             {{ reviewDetail.time | date:'short'}}
           </td>
-          <td>
+          <td *ngIf="isTeacher">
             {{ reviewDetail.scoreMode}}
           </td>
-          <td>
-            {{ reviewDetail.scoreMode === 'yesNoMode'?(reviewDetail.score === 1?'Yes':'No'):reviewDetail.score}}
+          <ng-container *ngIf="reviewDetail.scoreMode === 'yesNoMode'">
+            <td *ngIf="reviewDetail.score===1">
+              Yes
+            </td>
+            <td *ngIf="reviewDetail.score===2" style="color:red;">
+              No
+            </td>
+          </ng-container>
+          <td *ngIf="reviewDetail.scoreMode === 'numberScore'">
+            {{ reviewDetail.score}}
           </td>
           <td>
             <button type="button" class="btn btn-secondary"
@@ -163,7 +171,7 @@
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title col-md-6">Review Form</h4>
+        <h4 class="modal-title col-md-6">Review Result</h4>
         <button type="button" class="close" (click)="reviewFormModal.hide()" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -178,7 +186,7 @@
             </div>
           </div>
           <div class="col-md-12">
-            <p>FeedBack:</p>
+            <p>Feedback:</p>
             <div class="col-md-12">
               <p id="feedback" name="feedback" rows="3">{{onClickedReviewDetail.feedback}}</p>
             </div>
