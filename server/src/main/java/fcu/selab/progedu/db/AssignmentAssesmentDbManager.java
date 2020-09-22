@@ -7,26 +7,28 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import sun.rmi.runtime.LoggerLogFactory;
 import fcu.selab.progedu.data.Assignment;
 import fcu.selab.progedu.utils.ExceptionUtil;
-import fcu.selab.progedu.project.status.StatusEnum;
+import fcu.selab.progedu.status.StatusEnum;
 
 public class AssignmentAssesmentDbManager {
 
   public static AssignmentAssesmentDbManager dbManager = new AssignmentAssesmentDbManager();
   private static CommitStatusDbManager csDb = CommitStatusDbManager.getInstance(); 
+  
   public static AssignmentAssesmentDbManager getInstance() {
     return dbManager;
   }
 
   private IDatabase database = new MySqlDatabase();
 
-  private static final Logger LOGGER = LoggerLogFactory.getLogger(AssignmentAssesmentDbManager.class);
+  private static final Logger LOGGER = LoggerFactory
+      .getLogger(AssignmentAssesmentDbManager.class);
 
   /**
    * Add AssignmentAssesment to database
@@ -37,9 +39,9 @@ public class AssignmentAssesmentDbManager {
    */
   public void addAssignmentAssesment(int aid,StatusEnum status,int order) {
     String sql = "INSTERT INTO Assignment_Assesment"
-        +"(aId, status, order) "
+        + "(aId, status, order) "
         + "VALUES(?, ?, ?, ?)";
-    int statusId = csDb.getStatusNameById(status.getType());
+    int statusId = csDb.getStatusIdByName(status.getType());
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
       preStmt.setInt(1, aid);
@@ -58,14 +60,14 @@ public class AssignmentAssesmentDbManager {
    * @param aid Assignment Id
    */
   public List<Assignment> getAssignmentOrder(int aid) {
-    List<Assignment> Isorders = new ArrayList<>();
+    List<Assignment> orders = new ArrayList<>();
     String sql = "SELECT status,order FROM Assignment_Assesment"
-        +" WHERE aId = ?";
+        + " WHERE aId = ?";
 
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
       preStmt.setInt(1, aid);
-      try(ResultSet rs = preStmt.executeQuery()) {
+      try (ResultSet rs = preStmt.executeQuery()) {
         while (rs.next()) {
           Assignment assignment = new Assignment();
           int status = rs.getInt("status");
@@ -73,13 +75,13 @@ public class AssignmentAssesmentDbManager {
           StatusEnum statusEnum = csDb.getStatusNameById(status);
           assignment.setStatus(statusEnum);
           assignment.getOrder(order);
-          Isorders.add(assignment);
+          orders.add(assignment);
         }
       }
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
-      LOGGER(e.getMessage());
+      LOGGER.error(e.getMessage());
     }
-    return Isorders;
+    return orders;
   } 
 }

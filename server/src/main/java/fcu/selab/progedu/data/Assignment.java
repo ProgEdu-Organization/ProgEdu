@@ -146,5 +146,7 @@ public class Assignment {
     this.status = status;
   }
 
-  public int getOrder(int order) { this.order = order; }
+  public void getOrder(int order) {
+    this.order = order;
+  }
 }
