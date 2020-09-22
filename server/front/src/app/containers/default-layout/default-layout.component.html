@@ -1,22 +1,41 @@
 <app-header [navbarBrandRouterLink]="[dashboard]" [fixed]="true"
-            [navbarBrandFull]="{src: 'assets/img/logo.png', width: '80%', alt: 'ProgEdu', style:'object-fit: scale-down'}"
-            [navbarBrandMinimized]="{src: 'assets/img/logo.png', width: 30, height: 30, alt: 'ProgEdu'}" [sidebarToggler]="'lg'"
-            [asideMenuToggler]="''">
+  [navbarBrandFull]="{src: 'assets/img/logo.png', width: '80%', alt: 'ProgEdu', style:'object-fit: scale-down'}"
+  [navbarBrandMinimized]="{src: 'assets/img/logo.png', width: 30, height: 30, alt: 'ProgEdu'}" [sidebarToggler]="'lg'"
+  [asideMenuToggler]="''">
   <ul class="nav navbar-nav d-md-down-none">
     <div class="btn-group" dropdown [isOpen]="status.isOpen" (isOpenChange)="change($event)" placement="top">
       <li class="nav-item dropdown" dropdown placement="bottom right">
         <a class="nav-link dropdown-toggle nav-item px-3" data-toggle="dropdown" href="#" role="button"
-           aria-haspopup="true" aria-expanded="false" dropdownToggle (click)="false">
+          aria-haspopup="true" aria-expanded="false" dropdownToggle (click)="false">
           Dashboard
         </a>
-        <div class="dropdown-menu dropdown-menu-right" *dropdownMenu aria-labelledby="simple-dropdown" >
-      <li role="menuitem" ><a class="dropdown-item" href="javascript:void(0);" (click)='changeToDashboard()'>Auto Assessment</a></li>
+        <div class="dropdown-menu dropdown-menu-right" *dropdownMenu aria-labelledby="simple-dropdown">
+      <li role="menuitem"><a class="dropdown-item" href="javascript:void(0);" (click)='changeToDashboard()'>Auto
+          Assessment</a></li>
       <!-- Student DashBoard -->
-      <li role="menuitem" *ngIf="isStudent"><a class="dropdown-item" href="#/{{dashboard}}/reviewDashboard">Peer Review</a></li>
-      <li role="menuitem" *ngIf="isStudent"><a class="dropdown-item" href="#/{{dashboard}}/peerReviewDashboard">Peer Review Status</a></li>
+      <!--<li role="menuitem" *ngIf="isStudent"><a class="dropdown-item" href="#/{{dashboard}}/reviewDashboard">Peer
+          Review</a></li>
+      <li role="menuitem" *ngIf="isStudent"><a class="dropdown-item" href="#/{{dashboard}}/peerReviewDashboard">Peer
+          Review Status</a></li>-->
       <!-- Teacher DashBoard -->
-      <li role="menuitem" *ngIf="isTeacher"><a class="dropdown-item" href="#/{{dashboard}}/reviewDashboard">Peer Review</a></li>
-      <li role="menuitem" *ngIf="isTeacher"><a class="dropdown-item" href="#/{{dashboard}}/reviewStatusDashboard">Peer Review Status</a></li>
+      <!--<li role="menuitem" *ngIf="isTeacher"><a class="dropdown-item" href="#/{{dashboard}}/reviewDashboard">Peer
+          Review</a></li>
+      <li role="menuitem" *ngIf="isTeacher"><a class="dropdown-item" href="#/{{dashboard}}/reviewStatusDashboard">Peer
+          Review Status</a></li>-->
+      <li>
+        <ul class="dropdown-item mainMenu">
+          <li><a href="#" class="dropdown-item" (click)="false">Peer Review</a>
+            <ul class="subMenu dropdown-item">
+              <li>
+                <a href="#" class="dropdown-item " href="#/{{dashboard}}/reviewDashboard">Reviewed</a>
+                <a *ngIf="isTeacher" href="#" class="dropdown-item" href="#/{{dashboard}}/reviewStatusDashboard">Review Status</a>
+                <a *ngIf="isStudent" href="#" class="dropdown-item" href="#/{{dashboard}}/peerReviewDashboard">Review Status</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      
     </div>
     </li>
     <li class="nav-item px-3" *ngIf="isTeacher">
@@ -25,10 +44,10 @@
         <li role="menuitem"><a class="dropdown-item" href="#/dashboard/assignmentManagement">Assignment Management</a>
         </li>
         <li role="menuitem"><a class="dropdown-item" href="#/dashboard/studentManagement">Student
-          Management</a> </li>
+            Management</a> </li>
         <li role="menuitem"><a class="dropdown-item" href="#/dashboard/groupManagement">Group Management</a></li>
         <li role="menuitem"><a class="dropdown-item" href="#/dashboard/reviewMetricsManagement">Review Metrics
-          Management</a></li>
+            Management</a></li>
       </ul>
     </li>
     <li class="nav-item px-3" *ngIf="isTeacher">
@@ -42,13 +61,13 @@
   <ul class="nav navbar-nav ml-auto">
     <li class="nav-item dropdown" dropdown placement="bottom right">
       <a class="nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"
-         dropdownToggle (click)="false">
+        dropdownToggle (click)="false">
         Hi, {{user.getName()}}
         <i class='img-avatar icon-user icons font-2xl mt-4'></i>
       </a>
       <div class="dropdown-menu dropdown-menu-right" *dropdownMenu aria-labelledby="simple-dropdown">
         <a class="dropdown-item" href="javascript:void(0);" (click)="modifySecretModal.show();"><i
-          class="fa fa-lock"></i>
+            class="fa fa-lock"></i>
           Modify
           Password</a>
         <a class="dropdown-item" href (click)="logout()"><i class="fa fa-lock"></i>Logout</a>
@@ -74,7 +93,7 @@
 </div>
 <!-- register secret area  -->
 <div bsModal #modifySecretModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-     aria-hidden="true">
+  aria-hidden="true">
   <div class="modal-dialog modal-danger" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -91,14 +110,14 @@
               <span class="input-group-text"><i class="icon-user"></i></span>
             </div>
             <input type="text" matInput class="form-control" placeholder="Username" autocomplete="username"
-                   formControlName="username" readonly>
+              formControlName="username" readonly>
           </div>
           <div class="input-group mb-4">
             <div class="input-group-prepend">
               <span class="input-group-text"><i class="icon-lock"></i></span>
             </div>
             <input id='currentPassword' type="password" matInput class="form-control" placeholder="Current Password"
-                   autocomplete="currentPassword" formControlName="currentPassword">
+              autocomplete="currentPassword" formControlName="currentPassword">
             <span *ngIf="!modifySecretForm.get('currentPassword').valid" class="invalid-feedback">Your username must be
               more
               than or equals 8</span>
@@ -109,7 +128,7 @@
               <span class="input-group-text"><i class="icon-lock"></i></span>
             </div>
             <input id='newPassword' type="password" matInput class="form-control" placeholder="New Password"
-                   autocomplete="current-password" formControlName="newPassword">
+              autocomplete="current-password" formControlName="newPassword">
             <span *ngIf="!modifySecretForm.get('newPassword').valid" class="invalid-feedback">Your username must be more
               than or equals 8</span>
           </div>
@@ -119,7 +138,7 @@
               <span class="input-group-text"><i class="icon-lock"></i></span>
             </div>
             <input id='confirmPassword' type="password" matInput class="form-control" placeholder="Confirm New Password"
-                   autocomplete="current-password" formControlName="confirmPassword">
+              autocomplete="current-password" formControlName="confirmPassword">
             <span *ngIf="!modifySecretForm.get('confirmPassword').valid" class="invalid-feedback">Your username must be
               more
               than or equals 8</span>

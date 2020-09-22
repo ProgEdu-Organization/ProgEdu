@@ -14,7 +14,8 @@ import { StudentEventsService } from './../../services/student-events-log.servic
 
 @Component({
   selector: 'app-dashboard',
-  templateUrl: './default-layout.component.html'
+  templateUrl: './default-layout.component.html',
+  styleUrls: ['./default-layout.component.scss']
 })
 export class DefaultLayoutComponent implements OnDestroy, OnInit {
   public navData: Array<any> = new Array<any>();
