@@ -7,6 +7,14 @@
   margin: 0px auto;
 }
 
+.square {
+  border-radius: 5px;
+  height: 20px;
+  font-weight: bold;
+  width: 60px;
+  margin: 0px auto;
+}
+
 .ovol {
   border-radius: 5px;
   font-weight: bold;
@@ -73,6 +81,11 @@
 .circle a {
   color: #fff;
   line-height: 30px;
+}
+
+.square a {
+  color: #fff;
+  line-height: 10px;
 }
 
 #Screenshots-area {
