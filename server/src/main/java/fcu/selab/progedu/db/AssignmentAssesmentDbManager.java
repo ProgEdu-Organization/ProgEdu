@@ -83,5 +83,23 @@ public class AssignmentAssesmentDbManager {
       LOGGER.error(e.getMessage());
     }
     return orders;
-  } 
+  }
+
+  /**
+   * Delete AssignmentAssesment to database
+   * 
+   * @param aid Assignment Id
+   */
+  public void deleteAssignmentAssesment(int aid) {
+    String sql = "DELETE FROM Assignment_Assesment WHERE aId = ?";
+
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+      preStmt.setInt(1, aid);
+      preStmt.executeUpdate();
+    } catch (SQLException e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    }
+  }
 }
