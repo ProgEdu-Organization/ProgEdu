@@ -155,7 +155,7 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
         event: {},
         page: this.router.url
       };
-      this.studentEventsService.createReviewRecordWithIP(event, 'unknown').subscribe();
+      this.emitStudentEvent(event);
     }
     this.jwtService.removeToken();
     this.router.navigate(['login']);

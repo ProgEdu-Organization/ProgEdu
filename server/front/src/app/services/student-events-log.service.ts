@@ -1,13 +1,9 @@
 import { User } from './../models/user';
 import { JwtService } from './jwt.service';
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { StudentEvent } from './student-event';
-
-const getIpOptions = ({
-  headers: new HttpHeaders().set('Access-Control-Allow-Origin' , '*')
-});
 
 @Injectable({
   providedIn: 'root'
@@ -29,32 +25,6 @@ export class StudentEventsService {
     formData.append('page', event.page);
     formData.append('name', event.name);
     formData.append('event', JSON.stringify(event.event));
-    this.getIPAddress().subscribe(
-      (res) => {
-        formData.append('ip', res.ip);
-        return this.http.post<any>(this.ADD_STUDENT_LOGIN_EVENT_API, formData).subscribe();
-      },
-      (error) => {
-        formData.append('ip', 'unknown');
-        return this.http.post<any>(this.ADD_STUDENT_LOGIN_EVENT_API, formData).subscribe();
-      }
-    );
-  }
-
-  createReviewRecordWithIP(event: StudentEvent, ip: string): Observable<any> {
-    const formData = new FormData();
-    if (this.username === '') {
-      this.username = new User(this.jwtService).getUsername();
-    }
-    formData.append('username', this.username);
-    formData.append('page', event.page);
-    formData.append('name', event.name);
-    formData.append('event', JSON.stringify(event.event));
-    formData.append('ip', ip);
-    return this.http.post<any>(this.ADD_STUDENT_LOGIN_EVENT_API, formData);
-  }
-
-  getIPAddress(): Observable<any> {
-    return this.http.get('http://ip.jsontest.com/', getIpOptions);
+    return this.http.post<any>(this.ADD_STUDENT_LOGIN_EVENT_API, formData).subscribe();
   }
 }
