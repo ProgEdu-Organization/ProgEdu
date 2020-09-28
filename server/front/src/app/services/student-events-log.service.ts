@@ -1,3 +1,4 @@
+import { environment } from './../../environments/environment.prod';
 import { User } from './../models/user';
 import { JwtService } from './jwt.service';
 import { Injectable } from '@angular/core';
@@ -10,7 +11,7 @@ import { StudentEvent } from './student-event';
 })
 export class StudentEventsService {
 
-  private ADD_STUDENT_LOGIN_EVENT_API = 'http://140.134.26.63:23000/webapi/student_events/logStudentEvent';
+  private ADD_STUDENT_LOGIN_EVENT_API = environment.SERVER_URL + '/webapi/student_events/logStudentEvent';
   private username = '';
 
   constructor(private http: HttpClient, private jwtService?: JwtService) {
