@@ -1,9 +1,7 @@
 version: "3.7"
 services:
   db:
-    # image: mysql:5.7
-    image: fcumselab/progedu-mysql:latest
-    build: ./mysql
+    image: fcumselab/fcu-progedu-mysql:release-1.0.0
     ports:
       - "${DB_PORT}:3306"
     restart: always
@@ -84,16 +82,15 @@ services:
   mongo:
     build:
       context: ./mongo
-      args:
-        - MONGO_USER=${MONGO_USER}
-        - MONGO_PASSWORD=${MONGO_PASSWORD}
-        - MONGO_DATABASE=${MONGO_DATABASE}
     ports:
       - "${MONGO_PORT}:27017"
     restart: always
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
+      MONGO_USER: ${MONGO_USER}
+      MONGO_PASSWORD: ${MONGO_PASSWORD}
+      MONGO_DATABASE: ${MONGO_DATABASE}
     volumes:
       - ${DATA_PATH_HOST}/mongo:/data/db
     command: mongod --auth
