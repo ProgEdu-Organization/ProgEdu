@@ -45,11 +45,11 @@ export class AssignmentChooseComponent implements OnInit {
       this.selectedCommitNumber = this.commits.length;
       this.getFeedback();
       if (this.commits) {
-        for (const commit in this.commits) {
+        /*for (const commit in this.commits) {
           if (commit) {
             this.commits[commit].time = this.timeService.getUTCTime(this.commits[commit].time);
           }
-        }
+        }*/
 
         this.commits.reverse();
 
