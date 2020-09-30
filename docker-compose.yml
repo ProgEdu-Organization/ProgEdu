@@ -1,7 +1,7 @@
 version: "3.7"
 services:
   db:
-    image: fcumselab/fcu-progedu-mysql:release-1.0.0
+    image: fcumselab/fcu-progedu-mysql:release-2.0.1
     ports:
       - "${DB_PORT}:3306"
     restart: always
@@ -80,8 +80,7 @@ services:
     volumes:
       - ${DATA_PATH_HOST}/jenkins/workspace:/var/lib/workspace
   mongo:
-    build:
-      context: ./mongo
+    image: llssf258/fcu-progedu-mongo:release-1.0.0
     ports:
       - "${MONGO_PORT}:27017"
     restart: always
