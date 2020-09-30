@@ -199,6 +199,8 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
       page: this.router.url,
       event: {}
     };
-    this.emitStudentEvent(exit_event);
+    if ( this.isStudent === true) {
+      this.emitStudentEvent(exit_event);
+    }
   }
 }
