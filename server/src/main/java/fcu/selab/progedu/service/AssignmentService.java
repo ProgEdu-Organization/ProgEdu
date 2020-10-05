@@ -3,6 +3,7 @@ package fcu.selab.progedu.service;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -164,8 +165,9 @@ public class AssignmentService {
       String targetPath = path.replace("temp_images", "images");
       tomcatService.copyFileToTarget(projectDir + path, projectDir + targetPath);
     }
-    // Delete all images of temp_images folder
-    tomcatService.removeFile(imageTempDir + "*");
+
+    // Delete all images of temp_images folder, but not temp_images folder
+    tomcatService.deleteFileInDirectory(new File(imageTempDir));
 
     // 7. If README is not null
     // First, we need to modify images path
@@ -184,7 +186,8 @@ public class AssignmentService {
     gitlabService.pushProject(cloneDirectoryPath);
 
     // 9. String removeTestDirectoryCommand = "rm -rf tests/" + name;
-    tomcatService.removeFile(testDir + assignmentName);
+    java.nio.file.Path projectTestDirectory = Paths.get(testDir, assignmentName);
+    tomcatService.deleteDirectory(projectTestDirectory.toFile());
 
     // 10. import project infomation to database
     boolean hasTemplate = false;
@@ -198,7 +201,7 @@ public class AssignmentService {
     }
 
     // 11. remove project file in linux
-    tomcatService.removeFile(uploadDir);
+    tomcatService.deleteDirectory(new File(uploadDir));
     return Response.ok().build();
   }
 
@@ -331,7 +334,7 @@ public class AssignmentService {
     // delete tomcat test file
 
     String removeZipTestFileCommand = testDir + name + ".zip";
-    tomcatService.removeFile(removeZipTestFileCommand);
+    tomcatService.deleteFile(new File(removeZipTestFileCommand));
     // delete db
     deleteAssignmentDatabase(name);
 
@@ -376,15 +379,15 @@ public class AssignmentService {
       String testCasePath = testDir + assignmentName;
       String testCaseZipPath = testCasePath + ".zip";
       // remove current test case
-      tomcatService.removeFile(testCaseZipPath);
+      tomcatService.deleteFile(new File(testCaseZipPath));
       tomcatService.storeFileToUploadsFolder(file, assignmentName);
 
       zipHandler.unzipFile(tempFilePath, testCasePath);
       assignment.createTestCase(testCasePath);
       zipHandler.zipTestFolder(testCasePath);
       long checksum = zipHandler.getChecksum();
-      tomcatService.removeFile(uploadDir);
-      tomcatService.removeFile(testCasePath);
+      tomcatService.deleteDirectory(new File(uploadDir));
+      tomcatService.deleteDirectory(new File(testCasePath));
 
       dbManager.editAssignment(deadline, releaseTime, readMe, checksum, id);
     }

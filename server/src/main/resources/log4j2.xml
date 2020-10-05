@@ -3,7 +3,7 @@
     <properties>
         <property name="LOG_HOME">logsFile</property>
         <property name="FILE_NAME">mylog</property>
-        <property name="log.level">${env:LOG_LEVEL}</property>
+        <property name="log.level">${env:LOG_LEVEL:-DEBUG}</property>
     </properties>
 
 

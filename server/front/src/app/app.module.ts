@@ -54,6 +54,7 @@ import { SharedModule } from './views/shared/shared.module';
 
 // Loading Component
 import { NgxLoadingModule, ngxLoadingAnimationTypes } from 'ngx-loading';
+import { PaginationModule } from 'ngx-bootstrap/pagination';
 
 @NgModule({
   imports: [
@@ -76,7 +77,8 @@ import { NgxLoadingModule, ngxLoadingAnimationTypes } from 'ngx-loading';
     ReactiveFormsModule,
     CollapseModule.forRoot(),
     CarouselModule.forRoot(),
-    SharedModule
+    SharedModule,
+    PaginationModule.forRoot()
   ],
   declarations: [
     AppComponent,
