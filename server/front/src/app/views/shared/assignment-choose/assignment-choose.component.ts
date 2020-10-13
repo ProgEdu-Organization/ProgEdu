@@ -62,7 +62,7 @@ export class AssignmentChooseComponent implements OnInit {
   getAssignment() {
     this.assignmentService.getAssignment(this.assignmentName).subscribe(response => {
       this.assignment = response;
-      this.assignment.deadline = this.timeService.getUTCTime(this.assignment.deadline);
+      //this.assignment.deadline = this.timeService.getUTCTime(this.assignment.deadline);
     });
   }
 
