@@ -29,7 +29,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
-import fcu.selab.progedu.db.*;
 import org.jsoup.nodes.Document;
 import org.gitlab.api.models.GitlabProject;
 import org.gitlab.api.models.GitlabUser;
@@ -57,6 +56,12 @@ import fcu.selab.progedu.project.ProjectTypeEnum;
 import fcu.selab.progedu.utils.ExceptionUtil;
 import fcu.selab.progedu.utils.Linux;
 import fcu.selab.progedu.utils.ZipHandler;
+import fcu.selab.progedu.db.AssignmentDbManager;
+import fcu.selab.progedu.db.AssignmentUserDbManager;
+import fcu.selab.progedu.db.AssignmentAssessmentDbManager;
+import fcu.selab.progedu.db.UserDbManager;
+import fcu.selab.progedu.db.CommitRecordDbManager;
+import fcu.selab.progedu.db.ScreenshotRecordDbManager;
 
 @Path("assignment/")
 public class AssignmentService {

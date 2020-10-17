@@ -18,17 +18,17 @@ import fcu.selab.progedu.status.StatusEnum;
 
 public class AssignmentAssessmentDbManager {
 
-  public static AssignmentAssesmentDbManager dbManager = new AssignmentAssesmentDbManager();
+  public static AssignmentAssessmentDbManager dbManager = new AssignmentAssessmentDbManager();
   private static CommitStatusDbManager csDb = CommitStatusDbManager.getInstance(); 
   
-  public static AssignmentAssesmentDbManager getInstance() {
+  public static AssignmentAssessmentDbManager getInstance() {
     return dbManager;
   }
 
   private IDatabase database = new MySqlDatabase();
 
   private static final Logger LOGGER = LoggerFactory
-      .getLogger(AssignmentAssesmentDbManager.class);
+      .getLogger(AssignmentAssessmentDbManager.class);
 
   /**
    * Add AssignmentAssessment to database

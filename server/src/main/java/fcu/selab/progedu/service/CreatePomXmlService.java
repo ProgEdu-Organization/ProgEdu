@@ -22,7 +22,7 @@ public class CreatePomXmlService {
    * @param order List Order
    * 
    */
-  public void createPomXml(List<String> order, String name) {
+  public void createPomXml(List<String> order,String name) throws IOException {
     final MavenXpp3Writer writer = new MavenXpp3Writer();
     final List<PluginExecution> checkStyleExecutions = new ArrayList<>();
     Model model = new Model();
@@ -121,7 +121,7 @@ public class CreatePomXmlService {
     checkStyleExecution.setConfiguration(configCheckStyle);
     List<String> checkStyleExecutionGoals = new ArrayList<>();
     String checkStyleExecutionGoal = new String("check");
-        
+      
     checkStyleExecutionGoals.add(checkStyleExecutionGoal);
     checkStyleExecution.setGoals(checkStyleExecutionGoals);
     checkStyleExecutions.add(checkStyleExecution);
