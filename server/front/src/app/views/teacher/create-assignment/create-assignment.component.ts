@@ -7,9 +7,13 @@ import { ModalDirective } from 'ngx-bootstrap/modal';
 import { assignmentTypeEnum } from './assignmentTypeEnum';
 import { HttpErrorResponse } from '@angular/common/http';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import { SortablejsOptions } from 'ngx-sortablejs';
+import { reduce } from 'rxjs/operators';
+
 @Component({
   selector: 'app-create-assignment',
-  templateUrl: './create-assignment.component.html'
+  templateUrl: './create-assignment.component.html',
+  styleUrls: ['./create-assignment.component.scss']
 })
 export class CreateAssignmentComponent implements OnInit, OnDestroy {
   javaTabStatus: { isOpen: boolean } = { isOpen: false };
@@ -28,6 +32,25 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
   showWarning: boolean;
   dynamic: number = 60;
   type: string = 'Waiting';
+  finalIndex: number;
+  orderString: string = 'Compile Failure'
+
+  status = [
+    "Unit Test Failure",
+    "Coding Style Failure"
+  ];
+
+  order = [
+    
+  ];
+
+  finalOrder = [
+    "Compile Failure",
+  ]
+
+  normalOptions: SortablejsOptions = {
+    group: 'normal-group',
+  };
 
   public Editor = ClassicEditor;
   public editorConfig = {
@@ -51,6 +74,7 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
       description: [undefined],
       type: [undefined, Validators.required],
       file: [undefined, Validators.required],
+      assOrder: [undefined],
       rememberMe: [true]
     });
     this.onChanges();
@@ -102,6 +126,11 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
   }
 
   public submit() {
+    for (this.finalIndex=1;this.finalIndex<this.order.length+1;this.finalIndex++) {
+      this.finalOrder[this.finalIndex] = this.order[this.finalIndex-1];
+      this.orderString = this.orderString + ', ' + this.order[this.finalIndex-1]
+    }
+    this.assignment.get('assOrder').setValue(this.orderString);
     if (this.assignment.dirty && this.assignment.valid) {
       this.progressModal.show();
       this.createService.createAssignment(this.assignment).subscribe(

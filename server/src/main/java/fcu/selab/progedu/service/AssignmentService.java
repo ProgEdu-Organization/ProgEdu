@@ -51,7 +51,9 @@ import fcu.selab.progedu.data.Assignment;
 import fcu.selab.progedu.data.User;
 import fcu.selab.progedu.db.AssignmentDbManager;
 import fcu.selab.progedu.db.AssignmentUserDbManager;
+import fcu.selab.progedu.db.AssignmentAssessmentDbManager;
 import fcu.selab.progedu.db.CommitRecordDbManager;
+import fcu.selab.progedu.db.CommitStatusDbManager;
 import fcu.selab.progedu.db.ScreenshotRecordDbManager;
 import fcu.selab.progedu.db.UserDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
@@ -84,8 +86,10 @@ public class AssignmentService {
   private String gitlabRootUsername;
   private AssignmentDbManager dbManager = AssignmentDbManager.getInstance();
   private AssignmentUserDbManager auDbManager = AssignmentUserDbManager.getInstance();
+  private AssignmentAssessmentDbManager aaDbManager = AssignmentAssessmentDbManager.getInstance();
   private UserDbManager userDbManager = UserDbManager.getInstance();
   private CommitRecordDbManager crDbManager = CommitRecordDbManager.getInstance();
+  private CommitStatusDbManager csDbManager = CommitStatusDbManager.getInstance();
   private ScreenshotRecordDbManager srDbManager = ScreenshotRecordDbManager.getInstance();
   private final String tempDir = System.getProperty("java.io.tmpdir");
   private final String uploadDir = tempDir + "/uploads/";
@@ -133,7 +137,8 @@ public class AssignmentService {
       @FormDataParam("releaseTime") Date releaseTime, @FormDataParam("deadline") Date deadline,
       @FormDataParam("readMe") String readMe, @FormDataParam("fileRadio") String assignmentType,
       @FormDataParam("file") InputStream file,
-      @FormDataParam("file") FormDataContentDisposition fileDetail) {
+      @FormDataParam("file") FormDataContentDisposition fileDetail,
+      @FormDataParam("order") String order) {
 
     final AssignmentType assignment = AssignmentFactory.getAssignmentType(assignmentType);
     final ProjectTypeEnum projectTypeEnum = ProjectTypeEnum.getProjectTypeEnum(assignmentType);
@@ -194,6 +199,21 @@ public class AssignmentService {
 
     addProject(assignmentName, releaseTime, deadline, readMe, projectTypeEnum, hasTemplate,
         testZipChecksum, testZipUrl);
+    
+    String[] items = order.split(", ");
+    for (int i = 0; i < items.length; i++ ) {
+      if (items[i] == "Compile Failure") {
+        items[i] = "cpf";
+      } else if (items[i] == "Unit Test Failure") {
+        items[i] = "utf";
+      } else if (items[i] == "Coding Style Failure") {
+        items[i] = "csf";
+      }
+    }
+    for (int i = 0; i < items.length; i++) {
+      aaDbManager.addAssignmentAssessment(dbManager.getAssignmentIdByName(assignmentName),
+          csDbManager.getStatusIdByName(items[i]), i + 1);
+    }
 
     List<User> users = userService.getStudents();
     for (User user : users) {
@@ -307,6 +327,17 @@ public class AssignmentService {
     dbManager.addAssignment(assignment);
   }
 
+  /**
+   * Add a project to database
+   *
+   * @param aid        Assignment name
+   * @param sid     status name
+   * @param order      order
+   */
+  public void addOrder(int aid, int sid, int order) {
+    aaDbManager.addAssignmentAssessment(aid, sid, order);
+  }
+  
   /**
    * Add auid to database
    *
