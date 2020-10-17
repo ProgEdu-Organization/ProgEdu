@@ -26,7 +26,7 @@ public class CreateJenkinsSettingsService {
     final MavenXpp3Writer writer = new MavenXpp3Writer();
     final List<PluginExecution> checkStyleExecutions = new ArrayList<>();
     Model model = new Model();
-        
+    
     model.setModelVersion("4.0.0");
     model.setGroupId("myApp");
     model.setArtifactId("HelloMaven");
@@ -148,6 +148,6 @@ public class CreateJenkinsSettingsService {
         
     reporting.setPlugins(reportingPlugins);
     model.setReporting(reporting);
-    writer.write(new FileWriter("\\pom.xml"), model);
+    writer.write(new FileWriter(".\\pom.xml"), model);
   }
 }
