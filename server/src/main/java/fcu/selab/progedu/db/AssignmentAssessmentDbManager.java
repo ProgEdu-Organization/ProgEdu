@@ -16,7 +16,7 @@ import fcu.selab.progedu.data.Assignment;
 import fcu.selab.progedu.utils.ExceptionUtil;
 import fcu.selab.progedu.status.StatusEnum;
 
-public class AssignmentAssesmentDbManager {
+public class AssignmentAssessmentDbManager {
 
   public static AssignmentAssesmentDbManager dbManager = new AssignmentAssesmentDbManager();
   private static CommitStatusDbManager csDb = CommitStatusDbManager.getInstance(); 
@@ -31,7 +31,7 @@ public class AssignmentAssesmentDbManager {
       .getLogger(AssignmentAssesmentDbManager.class);
 
   /**
-   * Add AssignmentAssesment to database
+   * Add AssignmentAssessment to database
    * 
    * @param aid Assignment Id
    * @param status status Id
@@ -55,7 +55,7 @@ public class AssignmentAssesmentDbManager {
   }
   
   /**
-   * Add AssignmentAssesment to database
+   * Add AssignmentAssessment to database
    * 
    * @param aid Assignment Id
    */
