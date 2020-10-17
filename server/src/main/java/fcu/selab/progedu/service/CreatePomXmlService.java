@@ -15,24 +15,24 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class CreateJenkinsSettingsService {
+public class CreatePomXmlService {
 
   /**
    * 
    * @param order List Order
    * 
    */
-  public void createPomXml(List<String> order) {
+  public void createPomXml(List<String> order, String name) {
     final MavenXpp3Writer writer = new MavenXpp3Writer();
     final List<PluginExecution> checkStyleExecutions = new ArrayList<>();
     Model model = new Model();
     
     model.setModelVersion("4.0.0");
     model.setGroupId("myApp");
-    model.setArtifactId("HelloMaven");
+    model.setArtifactId(name);
     model.setPackaging("jar");
     model.setVersion("1.0-SNAPSHOT");
-    model.setName("HelloMaven");
+    model.setName(name);
     model.setUrl("http://maven.apache.org");
       
     Dependency dependency = new Dependency();
