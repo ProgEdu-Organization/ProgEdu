@@ -29,6 +29,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
+import fcu.selab.progedu.db.*;
 import org.jsoup.nodes.Document;
 import org.gitlab.api.models.GitlabProject;
 import org.gitlab.api.models.GitlabUser;
@@ -49,11 +50,6 @@ import fcu.selab.progedu.conn.JenkinsService;
 import fcu.selab.progedu.conn.TomcatService;
 import fcu.selab.progedu.data.Assignment;
 import fcu.selab.progedu.data.User;
-import fcu.selab.progedu.db.AssignmentDbManager;
-import fcu.selab.progedu.db.AssignmentUserDbManager;
-import fcu.selab.progedu.db.CommitRecordDbManager;
-import fcu.selab.progedu.db.ScreenshotRecordDbManager;
-import fcu.selab.progedu.db.UserDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.project.AssignmentFactory;
 import fcu.selab.progedu.project.AssignmentType;
@@ -87,6 +83,7 @@ public class AssignmentService {
   private UserDbManager userDbManager = UserDbManager.getInstance();
   private CommitRecordDbManager crDbManager = CommitRecordDbManager.getInstance();
   private ScreenshotRecordDbManager srDbManager = ScreenshotRecordDbManager.getInstance();
+  private AssignmentAssessmentDbManager aaDbManager = AssignmentAssessmentDbManager.getInstance();
   private final String tempDir = System.getProperty("java.io.tmpdir");
   private final String uploadDir = tempDir + "/uploads/";
   private final String testDir = tempDir + "/tests/";
@@ -492,6 +489,7 @@ public class AssignmentService {
       }
       crDbManager.deleteRecord(auid);
     }
+    aaDbManager.deleteAssignmentAssessment(aid);
     auDbManager.deleteAssignmentUserByAid(aid);// Assignment_User
     dbManager.deleteAssignment(name);// Assignment
 
