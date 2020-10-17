@@ -37,9 +37,9 @@ public class AssignmentAssesmentDbManager {
    * @param status status Id
    * @param order Assignment order
    */
-  public void addAssignmentAssesment(int aid,StatusEnum status,int order) {
-    String sql = "INSTERT INTO Assignment_Assesment"
-        + "(aId, status, order) "
+  public void addAssignmentAssessment(int aid,StatusEnum status,int order) {
+    String sql = "INSERT INTO Assignment_Assessment"
+        + "(`aId`, `status`, `order`) "
         + "VALUES(?, ?, ?, ?)";
     int statusId = csDb.getStatusIdByName(status.getType());
     try (Connection conn = database.getConnection();
@@ -61,7 +61,7 @@ public class AssignmentAssesmentDbManager {
    */
   public List<Assignment> getAssignmentOrder(int aid) {
     List<Assignment> orders = new ArrayList<>();
-    String sql = "SELECT status,order FROM Assignment_Assesment"
+    String sql = "SELECT status,order FROM Assignment_Assessment"
         + " WHERE aId = ?";
 
     try (Connection conn = database.getConnection();
@@ -90,8 +90,8 @@ public class AssignmentAssesmentDbManager {
    * 
    * @param aid Assignment Id
    */
-  public void deleteAssignmentAssesment(int aid) {
-    String sql = "DELETE FROM Assignment_Assesment WHERE aId = ?";
+  public void deleteAssignmentAssessment(int aid) {
+    String sql = "DELETE FROM Assignment_Assessment WHERE aId = ?";
 
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
