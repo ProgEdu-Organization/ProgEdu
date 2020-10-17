@@ -39,7 +39,7 @@ public class AssignmentAssessmentDbManager {
    */
   public void addAssignmentAssessment(int aid,StatusEnum status,int order) {
     String sql = "INSERT INTO Assignment_Assessment"
-        + "(`aId`, `status`, `order`) "
+        + " (`aId`, `status`, `order`) "
         + "VALUES(?, ?, ?, ?)";
     int statusId = csDb.getStatusIdByName(status.getType());
     try (Connection conn = database.getConnection();
