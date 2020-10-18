@@ -38,9 +38,7 @@ public class AssignmentAssessmentDbManager {
    * @param order Assessment order
    */
   public void addAssignmentAssessment(int aid,int sid,int order) {
-    String sql = "INSERT INTO Assignment_Assessment"
-        + "(aid, status, order)"
-        + "VALUES(?, ?, ?)";
+    String sql = "INSERT INTO Assignment_Assessment(`aId`, `status`, `order`) VALUES(?, ?, ?)";
     try (Connection conn = this.database.getConnection();
          PreparedStatement preStmt = conn.prepareStatement(sql)) {
       preStmt.setInt(1, aid);
