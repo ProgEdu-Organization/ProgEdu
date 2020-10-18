@@ -27,6 +27,8 @@ import { EditGroupManagementComponent } from './edit-group-management/edit-group
 import { CreateGroupComponent } from './create-group/create-group.component';
 
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
+import { SortablejsModule } from 'ngx-sortablejs';
+
 @NgModule({
     imports: [
         FormsModule,
@@ -42,7 +44,8 @@ import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
         CarouselModule,
         SharedModule,
         CKEditorModule,
-        TabsModule.forRoot()
+        TabsModule.forRoot(),
+        SortablejsModule.forRoot({})
     ],
     declarations: [
         DashboardComponent,

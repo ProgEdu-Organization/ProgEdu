@@ -87,6 +87,39 @@
                 <input type="file" name="file-input" (change)='fileListener($event)'>
               </div>
             </div>
+            <div class="form-group row">
+              <div class="col-md-3">Assignment Assessment</div>
+              <div class="col-md-3">Status :</div>
+              <div class="col-md-3">Order :</div>                
+            </div>
+            <div class="form-group row">
+              <div class="col-md-3"></div>
+              <div class="col-md-3">
+                <ul class="list-group sortable" [sortablejs]="status" [sortablejsOptions]="normalOptions">
+                  <li class="list-group-item" *ngFor="let item of status">{{ item }}</li>
+                </ul>
+              </div>
+              <div class="col-md-3">
+                <li class="list-group-item sortable" draggable="false" style="cursor: not-allowed; 
+                    background-color: white;">1.&nbsp;{{ finalOrder[0] }}</li>
+                <ul class="list-group sortable" [sortablejs]="order" [sortablejsOptions]="normalOptions">
+                  <li class="list-group-item" *ngFor="let item of order; let i = index;">{{ i+2 }}. {{ item }}</li>
+                </ul>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-md-3"></div>
+              <div class="col-md-3">
+                <div>status = [</div>
+                <div *ngFor="let item of status">&nbsp;&nbsp;&nbsp;&nbsp;{{ item }},</div>
+                <div>]</div>
+              </div>
+              <div class="col-md-3">
+                <div>order = [</div>
+                <div *ngFor="let item of order">&nbsp;&nbsp;&nbsp;&nbsp;{{ item }},</div>
+                <div>]</div>
+              </div>
+            </div>
           </tab>
           <!---- App ---->
           <tab heading="App" (click)="selectedAssignmentType('Android')">

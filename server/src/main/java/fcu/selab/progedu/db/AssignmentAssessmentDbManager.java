@@ -32,20 +32,19 @@ public class AssignmentAssessmentDbManager {
 
   /**
    * Add AssignmentAssessment to database
-   * 
+   *
    * @param aid Assignment Id
-   * @param status status Id
-   * @param order Assignment order
+   * @param sid status name
+   * @param order Assessment order
    */
-  public void addAssignmentAssessment(int aid,StatusEnum status,int order) {
+  public void addAssignmentAssessment(int aid,int sid,int order) {
     String sql = "INSERT INTO Assignment_Assessment"
-        + " (`aId`, `status`, `order`) "
-        + "VALUES(?, ?, ?, ?)";
-    int statusId = csDb.getStatusIdByName(status.getType());
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+        + "(aid, status, order)"
+        + "VALUES(?, ?, ?)";
+    try (Connection conn = this.database.getConnection();
+         PreparedStatement preStmt = conn.prepareStatement(sql)) {
       preStmt.setInt(1, aid);
-      preStmt.setInt(2, statusId);
+      preStmt.setInt(2, sid);
       preStmt.setInt(3, order);
       preStmt.executeUpdate();
     } catch (SQLException e) {
@@ -59,7 +58,7 @@ public class AssignmentAssessmentDbManager {
    * 
    * @param aid Assignment Id
    */
-  public List<Assignment> getAssignmentOrder(int aid) {
+  /*public List<Assignment> getAssignmentOrder(int aid) {
     List<Assignment> orders = new ArrayList<>();
     String sql = "SELECT status,order FROM Assignment_Assessment"
         + " WHERE aId = ?";
@@ -83,7 +82,7 @@ public class AssignmentAssessmentDbManager {
       LOGGER.error(e.getMessage());
     }
     return orders;
-  }
+  }*/
 
   /**
    * Delete AssignmentAssesment to database

@@ -52,6 +52,8 @@ import fcu.selab.progedu.data.User;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.project.AssignmentFactory;
 import fcu.selab.progedu.project.AssignmentType;
+import fcu.selab.progedu.db.AssignmentAssessmentDbManager;
+import fcu.selab.progedu.db.CommitStatusDbManager;
 import fcu.selab.progedu.project.ProjectTypeEnum;
 import fcu.selab.progedu.utils.ExceptionUtil;
 import fcu.selab.progedu.utils.Linux;
@@ -84,11 +86,12 @@ public class AssignmentService {
   private String mailPassword;
   private String gitlabRootUsername;
   private AssignmentDbManager dbManager = AssignmentDbManager.getInstance();
+  private AssignmentAssessmentDbManager aaDbManager = AssignmentAssessmentDbManager.getInstance();
   private AssignmentUserDbManager auDbManager = AssignmentUserDbManager.getInstance();
   private UserDbManager userDbManager = UserDbManager.getInstance();
+  private CommitStatusDbManager csDbManager = CommitStatusDbManager.getInstance();
   private CommitRecordDbManager crDbManager = CommitRecordDbManager.getInstance();
   private ScreenshotRecordDbManager srDbManager = ScreenshotRecordDbManager.getInstance();
-  private AssignmentAssessmentDbManager aaDbManager = AssignmentAssessmentDbManager.getInstance();
   private final String tempDir = System.getProperty("java.io.tmpdir");
   private final String uploadDir = tempDir + "/uploads/";
   private final String testDir = tempDir + "/tests/";
@@ -135,7 +138,8 @@ public class AssignmentService {
       @FormDataParam("releaseTime") Date releaseTime, @FormDataParam("deadline") Date deadline,
       @FormDataParam("readMe") String readMe, @FormDataParam("fileRadio") String assignmentType,
       @FormDataParam("file") InputStream file,
-      @FormDataParam("file") FormDataContentDisposition fileDetail) {
+      @FormDataParam("file") FormDataContentDisposition fileDetail,
+      @FormDataParam("order") String order) {
 
     final AssignmentType assignment = AssignmentFactory.getAssignmentType(assignmentType);
     final ProjectTypeEnum projectTypeEnum = ProjectTypeEnum.getProjectTypeEnum(assignmentType);
@@ -196,6 +200,21 @@ public class AssignmentService {
 
     addProject(assignmentName, releaseTime, deadline, readMe, projectTypeEnum, hasTemplate,
         testZipChecksum, testZipUrl);
+
+    String[] items = order.split(", ");
+    for (int i = 0; i < items.length; i++ ) {
+      if (items[i].equals("Compile Failure")) {
+        items[i] = "cpf";
+      } else if (items[i].equals("Unit Test Failure")) {
+        items[i] = "utf";
+      } else if (items[i].equals("Coding Style Failure")) {
+        items[i] = "csf";
+      }
+    }
+    for (int i = 0; i < items.length; i++) {
+      aaDbManager.addAssignmentAssessment(dbManager.getAssignmentIdByName(assignmentName),
+          csDbManager.getStatusIdByName(items[i]), i + 1);
+    }
 
     List<User> users = userService.getStudents();
     for (User user : users) {
@@ -307,6 +326,17 @@ public class AssignmentService {
     assignment.setTestZipUrl(testZipUrl);
 
     dbManager.addAssignment(assignment);
+  }
+
+  /**
+   * Add a project to database
+   *
+   * @param aid        Assignment name
+   * @param sid     status name
+   * @param order      order
+   */
+  public void addOrder(int aid, int sid, int order) {
+    aaDbManager.addAssignmentAssessment(aid, sid, order);
   }
 
   /**
@@ -486,7 +516,8 @@ public class AssignmentService {
 
     int aid = dbManager.getAssignmentIdByName(name);
     List<Integer> auidList = auDbManager.getAuids(aid);
-
+    
+    aaDbManager.deleteAssignmentAssessment(aid); //Assignment_Assessment
     for (int auid : auidList) { // CommitRecord
       List<Integer> cridList = crDbManager.getCommitRecordId(auid);
       for (int crid : cridList) { // ScreenShot
@@ -494,7 +525,7 @@ public class AssignmentService {
       }
       crDbManager.deleteRecord(auid);
     }
-    aaDbManager.deleteAssignmentAssessment(aid);
+    
     auDbManager.deleteAssignmentUserByAid(aid);// Assignment_User
     dbManager.deleteAssignment(name);// Assignment
 
