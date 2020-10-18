@@ -148,8 +148,8 @@ public class AssignmentService {
     // 2. Clone the project to C:\\Users\\users\\AppData\\Temp\\uploads
     final String cloneDirectoryPath = gitlabService.cloneProject(gitlabRootUsername,
         assignmentName);
-//
-//    // 3. Store Zip File to folder if file is not empty
+
+    // 3. Store Zip File to folder if file is not empty
     String filePath = tomcatService.storeFileToServer(file, fileDetail, assignment);
 
     // 4. Unzip the uploaded file to tests folder and uploads folder on tomcat,
@@ -202,14 +202,15 @@ public class AssignmentService {
     
     String[] items = order.split(", ");
     for (int i = 0; i < items.length; i++ ) {
-      if (items[i] == "Compile Failure") {
+      if (items[i].equals("Compile Failure")) {
         items[i] = "cpf";
-      } else if (items[i] == "Unit Test Failure") {
+      } else if (items[i].equals("Unit Test Failure")) {
         items[i] = "utf";
-      } else if (items[i] == "Coding Style Failure") {
+      } else if (items[i].equals("Coding Style Failure")) {
         items[i] = "csf";
       }
     }
+
     for (int i = 0; i < items.length; i++) {
       aaDbManager.addAssignmentAssessment(dbManager.getAssignmentIdByName(assignmentName),
           csDbManager.getStatusIdByName(items[i]), i + 1);
