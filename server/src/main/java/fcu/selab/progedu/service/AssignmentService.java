@@ -64,6 +64,7 @@ import fcu.selab.progedu.db.AssignmentAssessmentDbManager;
 import fcu.selab.progedu.db.UserDbManager;
 import fcu.selab.progedu.db.CommitRecordDbManager;
 import fcu.selab.progedu.db.ScreenshotRecordDbManager;
+import fcu.selab.progedu.service.GetAssignmentSettingService;
 
 @Path("assignment/")
 public class AssignmentService {
