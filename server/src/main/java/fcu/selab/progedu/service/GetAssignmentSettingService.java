@@ -8,6 +8,7 @@ import fcu.selab.progedu.setting.AssignmentSettings;
 public class GetAssignmentSettingService {
 
   public void getSetting(AssignmentSettings as, List<String> order,String name) {
+    as.unZipAssignmenToTmp();
     as.createAssignmentSetting(order, name);
   }
 }

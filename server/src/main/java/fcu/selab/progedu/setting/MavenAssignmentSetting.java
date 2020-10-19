@@ -20,15 +20,50 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fcu.selab.progedu.utils.ExceptionUtil;
+import fcu.selab.progedu.utils.ZipHandler;
 
 public class MavenAssignmentSetting implements AssignmentSettings {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(MavenAssignmentSetting.class);
+  private static final Logger LOGGER = LoggerFactory
+      .getLogger(MavenAssignmentSetting.class);
+  private String AssignmentPath;
+  private String AssignmentZipPath;
+
+  public MavenAssignmentSetting() {
+    setZipPath();
+    setAssignmentPath();
+    zipHandler = new ZipHandler();
+  }
+
+  @Override
+  public void setZipPath(){
+    this.AssignmentZipPath = "..\\resources\\MvnQuickStart.zip";
+  }
+
+  @Override
+  public void setAssignmentPath(){
+    this.AssignmentPath = "..\\resources\\tmp";
+  }
+
+  @Override
+  public String getZipPath(){
+    return this.AssignmentZipPath;
+  }
+
+  @Override
+  public String getAssignmentPath(){
+    return this.AssignmentPath;
+  }
+
+  @Override
+  public void unZipAssignmenToTmp(){
+    zipHandler.unZipFile(getZipPath(), getAssignmentPath());
+  }
 
   /**
    * 
    * @param order List Order
-   * 
+   * @param name AssignmentName
    */
   @Override
   public void createAssignmentSetting(List<String> order,String name) {
@@ -158,7 +193,7 @@ public class MavenAssignmentSetting implements AssignmentSettings {
         
       reporting.setPlugins(reportingPlugins);
       model.setReporting(reporting);
-      writer.write(new FileWriter(".\\pom.xml"), model);   
+      writer.write(new FileWriter("..\\resources\\tmp\\pom.xml"), model);   
     } catch (IOException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());

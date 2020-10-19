@@ -558,7 +558,7 @@ public class AssignmentService {
     for (String assignmentName : assignmentNames) {
       createAssignmentSettings(username, assignmentName);
     }
-
   }
 
+  @Post
 }
