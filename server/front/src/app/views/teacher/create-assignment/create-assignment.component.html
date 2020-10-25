@@ -46,18 +46,18 @@
         <!-- Nav tabs -->
         <tabset>
           <!---- Java ---->
-          <tab heading="Javac" (click)="initialAllOrders();">
+          <tab heading="Javac">
             <div class="form-group row">
               <label class="col-md-3 col-form-label" for="type">Type Radios</label>
               <div class="col-md-9">
                 <div class="form-check form-check-inline mr-1">
                   <input class="form-check-input" type="radio" name="type" id="inlineRadio1" value="javac"
-                    formControlName='type' (click)="isShowOrder(true)">
+                    formControlName='type' (click)="isShowOrder(false)">
                   <label class="form-check-label" for="inlineRadio1">Java</label>
                 </div>
                 <div class="form-check form-check-inline mr-1">
                   <input class="form-check-input" type="radio" name="type" id="inlineRadio2" value="maven"
-                    formControlName='type' (click)="isShowOrder(false)">
+                    formControlName='type' (click)="isShowOrder(true)">
                   <label class="form-check-label" for="inlineRadio2">Maven</label>
                 </div>
               </div>
@@ -77,7 +77,7 @@
                 </div>
                 <div class="col-md-3">
                   <li class="list-group-item sortable" draggable="false" style="cursor: not-allowed; 
-                      background-color: white;">1.&nbsp;{{ finalOrder[0] }}</li>
+                      background-color: white;">1.&nbsp;Compile Failure</li>
                   <ul class="list-group sortable" [sortablejs]="order" [sortablejsOptions]="normalOptions">
                     <li class="list-group-item" *ngFor="let item of order; let i = index;">{{ i+2 }}. {{ item }}</li>
                   </ul>
@@ -85,18 +85,13 @@
               </div>
               <div class="form-group row">
                 <div class="col-md-3"></div>
-                <div class="col-md-3">
-                  <div>status = [</div>
-                  <div *ngFor="let item of javacStatus">&nbsp;&nbsp;&nbsp;&nbsp;{{ item }},</div>
-                  <div>]</div>
+                <div class="col-md-3"></div>
+                <div class="col-md-3"></div>
+                <div class="col-md-1">
+                  <button class="btn btn-primary" [disabled] = "isEnabledConfirm()" (click)="confirm()">confirm</button>
                 </div>
-                <div class="col-md-3">
-                  <div>order = [</div>
-                  <div *ngFor="let item of order">&nbsp;&nbsp;&nbsp;&nbsp;{{ item }},</div>
-                  <div>]</div>
-                </div>
-                <div class="col-md-3">
-                  <button (click)="confirm()">confirm</button>
+                <div class="col-md-2">
+                  <button class="btn btn-primary" (click)="reset()">&ensp;reset&ensp;</button>
                 </div>
               </div>
               </div>
@@ -127,10 +122,10 @@
             </div>
           </tab>
           <!---- App ---->
-          <tab heading="App" (click)="selectedAssignmentType('Android'); initialAllOrders()">
+          <tab heading="App" (click)="selectedAssignmentType('Android')">
             <div *ngIf="isShow === true">
               <div class="form-group row">
-                <div class="col-md-3">Assignment Assessment</div>
+                <div class="col-md-3">Assessment Order</div>
                 <div class="col-md-3">Status :</div>
                 <div class="col-md-3">Order :</div>                
               </div>
@@ -143,7 +138,7 @@
                 </div>
                 <div class="col-md-3">
                   <li class="list-group-item sortable" draggable="false" style="cursor: not-allowed; 
-                      background-color: white;">1.&nbsp;{{ finalOrder[0] }}</li>
+                      background-color: white;">1.&nbsp;Compile Failure</li>
                   <ul class="list-group sortable" [sortablejs]="order" [sortablejsOptions]="normalOptions">
                     <li class="list-group-item" *ngFor="let item of order; let i = index;">{{ i+2 }}. {{ item }}</li>
                   </ul>
@@ -151,18 +146,13 @@
               </div>
               <div class="form-group row">
                 <div class="col-md-3"></div>
-                <div class="col-md-3">
-                  <div>status = [</div>
-                  <div *ngFor="let item of appStatus">&nbsp;&nbsp;&nbsp;&nbsp;{{ item }},</div>
-                  <div>]</div>
+                <div class="col-md-3"></div>
+                <div class="col-md-3"></div>
+                <div class="col-md-1">
+                  <button class="btn btn-primary" [disabled]="isEnabledConfirm()" (click)="confirm()">confirm</button>
                 </div>
-                <div class="col-md-3">
-                  <div>order = [</div>
-                  <div *ngFor="let item of order">&nbsp;&nbsp;&nbsp;&nbsp;{{ item }},</div>
-                  <div>]</div>
-                </div>
-                <div class="col-md-3">
-                  <button (click)="confirm()">confirm</button>
+                <div class="col-md-2">
+                  <button class="btn btn-primary" (click)="reset()">&ensp;reset&ensp;</button>
                 </div>
               </div>
             </div>
@@ -190,7 +180,7 @@
             </div>
           </tab>
           <!---- Web ---->
-          <tab heading="Web" (click)="selectedAssignmentType('Web'); initialAllOrders()">
+          <tab heading="Web" (click)="selectedAssignmentType('Web')">
             <div *ngIf="isShow === true">
               <div class="form-group row">
                 <div class="col-md-3">Assignment Assessment</div>
@@ -206,7 +196,7 @@
                 </div>
                 <div class="col-md-3">
                   <li class="list-group-item sortable" draggable="false" style="cursor: not-allowed; 
-                      background-color: white;">1.&nbsp;{{ finalOrder[0] }}</li>
+                      background-color: white;">1.&nbsp;Compile Failure</li>
                   <ul class="list-group sortable" [sortablejs]="order" [sortablejsOptions]="normalOptions">
                     <li class="list-group-item" *ngFor="let item of order; let i = index;">{{ i+2 }}. {{ item }}</li>
                   </ul>
@@ -214,18 +204,13 @@
               </div>
               <div class="form-group row">
                 <div class="col-md-3"></div>
-                <div class="col-md-3">
-                  <div>status = [</div>
-                  <div *ngFor="let item of webStatus">&nbsp;&nbsp;&nbsp;&nbsp;{{ item }},</div>
-                  <div>]</div>
+                <div class="col-md-3"></div>
+                <div class="col-md-3"></div>
+                <div class="col-md-1">
+                  <button class="btn btn-primary" [disabled]="isEnabledConfirm()" (click)="confirm()">confirm</button>
                 </div>
-                <div class="col-md-3">
-                  <div>order = [</div>
-                  <div *ngFor="let item of order">&nbsp;&nbsp;&nbsp;&nbsp;{{ item }},</div>
-                  <div>]</div>
-                </div>
-                <div class="col-md-3">
-                  <button (click)="confirm()">confirm</button>
+                <div class="col-md-2">
+                  <button class="btn btn-primary" (click)="reset()">&ensp;reset&ensp;</button>
                 </div>
               </div>
             </div>

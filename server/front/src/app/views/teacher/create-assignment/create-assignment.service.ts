@@ -34,7 +34,8 @@ export class CreateAssignmentService {
   modifyOrder(assignment: FormGroup): Observable<any> {
 
     const formData = new FormData();
-
+    
+    formData.append('assignmentName', assignment.value.name);
     formData.append('fileRadio', assignment.value.type);
     formData.append('order',assignment.value.assOrder);
     

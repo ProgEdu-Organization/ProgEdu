@@ -9,6 +9,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { SortablejsOptions } from 'ngx-sortablejs';
 import { reduce } from 'rxjs/operators';
+import { stringify } from 'querystring';
 
 @Component({
   selector: 'app-create-assignment',
@@ -35,6 +36,8 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
   finalIndex: number;
   orderString: string = 'Compile Failure'
   isShow: boolean = true;
+  isDis: boolean = true;
+  isNull: boolean = true;
 
   javacStatus = [
     "Unit Test Failure",
@@ -55,13 +58,7 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
     "E2E Test Failure"
   ];
 
-  order = [
-    
-  ];
-
-  finalOrder = [
-    "Compile Failure",
-  ]
+  order = [];
 
   normalOptions: SortablejsOptions = {
     group: 'normal-group',
@@ -99,6 +96,7 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
     const name = 'name';
     const releaseTime = 'releaseTime';
     const deadline = 'deadline';
+    const type = 'type';
     this.assignment.get(name).valueChanges.subscribe(
       () => {
         this.assignment.get(name).valid ? this.showIsValidById(name) : this.hideIsInvalidById(name);
@@ -114,39 +112,23 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
         val.length !== 0 ? this.showIsValidById(deadline) : this.hideIsInvalidById(deadline);
       }
     );
+    this.assignment.get(type).valueChanges.subscribe(
+      () => {
+        this.reset();
+      }
+    );
   }
 
   isShowOrder(isShow: boolean) {
-    if(isShow == true)
-      this.isShow = false;
-    else
-      this.isShow = true;
+    this.isShow = isShow;
   }
 
-  initialAllOrders() {
-
-    this.order = [
-      
-    ];
-    
-    this.javacStatus = [
-      "Unit Test Failure",
-      "Coding Style Failure"
-    ];
-  
-    this.webStatus = [
-      "Coding Style Failure",
-      "HTML Failure",
-      "CSS Failure",
-      "Javascript Failure",
-      "Unit Test Failure"
-    ];
-  
-    this.appStatus = [
-      "Coding Style Failure",
-      "Unit Test Failure",
-      "E2E Test Failure"
-    ];
+  isEnabledConfirm() {
+    if(!(this.assignment.get('name').valid && this.assignment.get('type').valid)) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   selectedAssignmentType(type: string) {
@@ -192,15 +174,37 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
 
   public confirm() {
     for (this.finalIndex=1;this.finalIndex<this.order.length+1;this.finalIndex++) {
-      this.finalOrder[this.finalIndex] = this.order[this.finalIndex-1];
-      this.orderString = this.orderString + ', ' + this.order[this.finalIndex-1]
+      this.orderString = this.orderString + ', ' + this.order[this.finalIndex-1];
     }
     this.assignment.get('assOrder').setValue(this.orderString);
     this.createService.modifyOrder(this.assignment).subscribe(
+      (response) => {
+
+      },
       error => {
         this.errorResponse = error;
         this.errorTitle = 'Send Order Error';
       });
+  }
+
+  public reset() {
+    this.order = [];
+    this.javacStatus = [
+      "Unit Test Failure",
+      "Coding Style Failure"
+    ];
+    this.webStatus = [
+      "Coding Style Failure",
+      "HTML Failure",
+      "CSS Failure",
+      "Javascript Failure",
+      "Unit Test Failure"
+    ];
+    this.appStatus = [
+      "Coding Style Failure",
+      "Unit Test Failure",
+      "E2E Test Failure"
+    ];
   }
 
 
