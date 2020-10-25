@@ -13,6 +13,7 @@ const createAssigmentOptions = ({
 })
 export class CreateAssignmentService {
   CREATE_ASSIGNMENT_API = environment.SERVER_URL + '/webapi/assignment/create';
+  MODIFY_ORDER_API = environment.SERVER_URL + '/webapi/assignment/order';
   constructor(private http: HttpClient) { }
 
   createAssignment(assignment: FormGroup): Observable<any> {
@@ -29,4 +30,15 @@ export class CreateAssignmentService {
 
     return this.http.post(this.CREATE_ASSIGNMENT_API, formData, createAssigmentOptions);
   }
+
+  modifyOrder(assignment: FormGroup): Observable<any> {
+
+    const formData = new FormData();
+
+    formData.append('fileRadio', assignment.value.type);
+    formData.append('order',assignment.value.assOrder);
+    
+    return this.http.post(this.MODIFY_ORDER_API, formData, createAssigmentOptions);
+  }
+
 }

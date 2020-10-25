@@ -34,10 +34,25 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
   type: string = 'Waiting';
   finalIndex: number;
   orderString: string = 'Compile Failure'
+  isShow: boolean = true;
 
-  status = [
+  javacStatus = [
     "Unit Test Failure",
     "Coding Style Failure"
+  ];
+
+  webStatus = [
+    "Coding Style Failure",
+    "HTML Failure",
+    "CSS Failure",
+    "Javascript Failure",
+    "Unit Test Failure"
+  ];
+
+  appStatus = [
+    "Coding Style Failure",
+    "Unit Test Failure",
+    "E2E Test Failure"
   ];
 
   order = [
@@ -101,6 +116,39 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
     );
   }
 
+  isShowOrder(isShow: boolean) {
+    if(isShow == true)
+      this.isShow = false;
+    else
+      this.isShow = true;
+  }
+
+  initialAllOrders() {
+
+    this.order = [
+      
+    ];
+    
+    this.javacStatus = [
+      "Unit Test Failure",
+      "Coding Style Failure"
+    ];
+  
+    this.webStatus = [
+      "Coding Style Failure",
+      "HTML Failure",
+      "CSS Failure",
+      "Javascript Failure",
+      "Unit Test Failure"
+    ];
+  
+    this.appStatus = [
+      "Coding Style Failure",
+      "Unit Test Failure",
+      "E2E Test Failure"
+    ];
+  }
+
   selectedAssignmentType(type: string) {
     if (type !== undefined) {
       this.assignment.get('type').setValue(assignmentTypeEnum[type]);
@@ -126,11 +174,6 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
   }
 
   public submit() {
-    for (this.finalIndex=1;this.finalIndex<this.order.length+1;this.finalIndex++) {
-      this.finalOrder[this.finalIndex] = this.order[this.finalIndex-1];
-      this.orderString = this.orderString + ', ' + this.order[this.finalIndex-1]
-    }
-    this.assignment.get('assOrder').setValue(this.orderString);
     if (this.assignment.dirty && this.assignment.valid) {
       this.progressModal.show();
       this.createService.createAssignment(this.assignment).subscribe(
@@ -145,6 +188,19 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
     } else {
       return;
     }
+  }
+
+  public confirm() {
+    for (this.finalIndex=1;this.finalIndex<this.order.length+1;this.finalIndex++) {
+      this.finalOrder[this.finalIndex] = this.order[this.finalIndex-1];
+      this.orderString = this.orderString + ', ' + this.order[this.finalIndex-1]
+    }
+    this.assignment.get('assOrder').setValue(this.orderString);
+    this.createService.modifyOrder(this.assignment).subscribe(
+      error => {
+        this.errorResponse = error;
+        this.errorTitle = 'Send Order Error';
+      });
   }
 
 
