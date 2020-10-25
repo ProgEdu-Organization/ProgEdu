@@ -71,6 +71,11 @@ public class MavenAssignmentSetting implements AssignmentSettings {
     zipHandler.unzipFile(this.getZipPath(), this.getAssignmentPath());
   }
 
+  @Override
+  public void packUpAssignment() {
+    zipHandler.zipTestFolder(getAssignmentPath());
+  }
+
   /**
    * 
    * @param order List Order

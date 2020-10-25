@@ -573,7 +573,6 @@ public class AssignmentService {
   @GET
   @Path("order")
   @Consumes(MediaType.MULTIPART_FORM_DATA)
-  @Produces(MediaType.APPLICATION_JSON)
   public Response getOrderFile(
       @QueryParam("fileRadio") String fileType, 
       @QueryParam("order") String orders,
@@ -586,7 +585,13 @@ public class AssignmentService {
     List<String> ordersList = new ArrayList<>();
     String[] tokens = orders.split(", ");
     for (String token:tokens) {
-      ordersList.add(token);
+      if (token.equals("Compiler Failure")) {
+        ordersList.add("compilerFailure");
+      } else if (token.equals("Coding Style Failure")) {
+        ordersList.add("codingStyle");
+      } else if (token.equals("Unit Test Failure")) {
+        ordersList.add("test");
+      }
     }
     //------------------------
     if (fileType.equals("maven")) {

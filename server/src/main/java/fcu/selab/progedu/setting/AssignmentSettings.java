@@ -14,4 +14,6 @@ public interface AssignmentSettings {
   public void unZipAssignmenToTmp();
 
   public void createAssignmentSetting(List<String> order,String name);
+
+  public void packUpAssignment();
 }
