@@ -1,5 +1,6 @@
 package fcu.selab.progedu.setting;
 
+import fcu.selab.progedu.exception.LoadConfigFailureException;
 import org.apache.maven.model.Build;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
@@ -26,38 +27,48 @@ public class MavenAssignmentSetting implements AssignmentSettings {
 
   private static final Logger LOGGER = LoggerFactory
       .getLogger(MavenAssignmentSetting.class);
-  private String AssignmentPath;
-  private String AssignmentZipPath;
+  private static String AssignmentPath;
+  private static String AssignmentZipPath;
+  private ZipHandler zipHandler;
 
+  /**
+   * Setting making maven Assignment setting
+   * 
+   */
   public MavenAssignmentSetting() {
-    setZipPath();
-    setAssignmentPath();
-    zipHandler = new ZipHandler();
+    try {
+      setZipPath();
+      setAssignmentPath();
+      zipHandler = new ZipHandler();
+    } catch (LoadConfigFailureException e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    }
   }
 
   @Override
-  public void setZipPath(){
-    this.AssignmentZipPath = "..\\resources\\MvnQuickStart.zip";
+  public void setZipPath() {
+    this.AssignmentZipPath = "..\\..\\..\\..\\..\\resources\\sample\\MvnQuickStart.zip";
   }
 
   @Override
-  public void setAssignmentPath(){
-    this.AssignmentPath = "..\\resources\\tmp";
+  public void setAssignmentPath() {
+    this.AssignmentPath = "..\\..\\..\\..\\..\\resources\\tmp";
   }
 
   @Override
-  public String getZipPath(){
+  public String getZipPath() {
     return this.AssignmentZipPath;
   }
 
   @Override
-  public String getAssignmentPath(){
+  public String getAssignmentPath() {
     return this.AssignmentPath;
   }
 
   @Override
-  public void unZipAssignmenToTmp(){
-    zipHandler.unZipFile(getZipPath(), getAssignmentPath());
+  public void unZipAssignmenToTmp() {
+    zipHandler.unzipFile(this.getZipPath(), this.getAssignmentPath());
   }
 
   /**

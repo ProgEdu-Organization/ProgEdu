@@ -65,6 +65,9 @@ import fcu.selab.progedu.db.UserDbManager;
 import fcu.selab.progedu.db.CommitRecordDbManager;
 import fcu.selab.progedu.db.ScreenshotRecordDbManager;
 import fcu.selab.progedu.service.GetAssignmentSettingService;
+import fcu.selab.progedu.setting.MavenAssignmentSetting;
+import fcu.selab.progedu.setting.AssignmentSettings;
+import fcu.selab.progedu.service.GetAssignmentSettingService;
 
 @Path("assignment/")
 public class AssignmentService {
@@ -560,5 +563,39 @@ public class AssignmentService {
     }
   }
 
-  @Post
+  /**
+   * create previous Assignemnt
+   *
+   * @param fileType fileType
+   * @param orders orders
+   * @param assignmentName assignmentName
+   */
+  @GET
+  @Path("order")
+  @Consumes(MediaType.MULTIPART_FORM_DATA)
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response getOrderFile(
+      @QueryParam("fileRadio") String fileType, 
+      @QueryParam("order") String orders,
+      @QueryParam("assignmentName") String assignmentName) {
+
+    GetAssignmentSettingService gass = new GetAssignmentSettingService();
+    File file;
+    ResponseBuilder response = null;
+    //---------cut order
+    List<String> ordersList = new ArrayList<>();
+    String[] tokens = orders.split(", ");
+    for (String token:tokens) {
+      ordersList.add(token);
+    }
+    //------------------------
+    if (fileType.equals("maven")) {
+      MavenAssignmentSetting mas = new MavenAssignmentSetting();
+      file = new File(mas.getZipPath());
+      response = Response.ok((Object) file);
+      response.header("Content-Disposition", "attachment;filename=");
+      gass.getSetting(mas, ordersList, assignmentName);
+    }
+    return response.build();
+  }
 }
