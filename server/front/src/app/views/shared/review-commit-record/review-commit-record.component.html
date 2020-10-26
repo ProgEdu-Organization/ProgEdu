@@ -181,17 +181,27 @@
         <div class="modal-body">
           <div class="form-group row">
             <label class="col-md-9 col-form-label" for="description"> {{onClickedReviewDetail.metrics}}</label>
-            <div class="form-check form-check-inline mr-1">
-              Yes
+            <ng-container *ngIf="onClickedReviewDetail.scoreMode === 'yesNoMode'">
+              <ng-container *ngIf="onClickedReviewDetail.score===1">
+                Yes
+              </ng-container>
+              <ng-container *ngIf="onClickedReviewDetail.score===2">
+                <div class="form-check form-check-inline mr-1" style="color:red;">
+                  No
+                </div>
+              </ng-container>
+            </ng-container>
+            <div class="form-check form-check-inline mr-1" *ngIf="onClickedReviewDetail.scoreMode === 'numberScore'">
+              {{ onClickedReviewDetail.score}}
             </div>
           </div>
           <div class="col-md-12">
             <p>Feedback:</p>
             <div class="col-md-12">
-              <textarea readonly id="feedback" name="feedback" rows="3" class="form-control" type="text" 
-              >{{onClickedReviewDetail.feedback}}</textarea>
+              <textarea readonly id="feedback" name="feedback" rows="3" class="form-control"
+                type="text">{{onClickedReviewDetail.feedback}}</textarea>
             </div>
-            
+
           </div>
           <br>
         </div>
