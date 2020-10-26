@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
+import javax.lang.model.element.Name;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
@@ -570,17 +571,16 @@ public class AssignmentService {
    * @param orders orders
    * @param assignmentName assignmentName
    */
-  @GET
+  @POST
   @Path("order")
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   public Response getOrderFile(
-      @QueryParam("fileRadio") String fileType, 
-      @QueryParam("order") String orders,
-      @QueryParam("assignmentName") String assignmentName) {
+      @FormDataParam("fileRadio") String fileType, 
+      @FormDataParam("order") String orders,
+      @FormDataParam("assignmentName") String assignmentName) {
 
     GetAssignmentSettingService gass = new GetAssignmentSettingService();
     File file;
-    ResponseBuilder response = null;
     //---------cut order
     List<String> ordersList = new ArrayList<>();
     String[] tokens = orders.split(", ");
@@ -597,10 +597,7 @@ public class AssignmentService {
     if (fileType.equals("maven")) {
       MavenAssignmentSetting mas = new MavenAssignmentSetting();
       gass.getSetting(mas, ordersList, assignmentName);
-      file = new File(mas.getZipPath());
-      response = Response.ok((Object) file);
-      response.header("Content-Disposition", "attachment;filename=");
     }
-    return response.build();
+    return Response.ok().build();
   }
 }

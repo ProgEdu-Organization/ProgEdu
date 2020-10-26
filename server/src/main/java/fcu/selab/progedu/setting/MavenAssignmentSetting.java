@@ -48,12 +48,12 @@ public class MavenAssignmentSetting implements AssignmentSettings {
 
   @Override
   public void setZipPath() {
-    this.AssignmentZipPath = "..\\..\\..\\..\\..\\resources\\sample\\MvnQuickStart.zip";
+    this.AssignmentZipPath = "/usr/local/tomcat/webapps/ROOT/resources/MvnQuickStart.zip";
   }
 
   @Override
   public void setAssignmentPath() {
-    this.AssignmentPath = "..\\..\\..\\..\\..\\resources\\tmp";
+    this.AssignmentPath = "/usr/local/tomcat/webapps/ROOT/resources/tmp";
   }
 
   @Override
@@ -209,7 +209,8 @@ public class MavenAssignmentSetting implements AssignmentSettings {
         
       reporting.setPlugins(reportingPlugins);
       model.setReporting(reporting);
-      writer.write(new FileWriter("..\\resources\\tmp\\pom.xml"), model);   
+      writer.write(new FileWriter("/usr/local/tomcat/webapps/"
+          + "ROOT/resources/tmp/pom.xml"), model);   
     } catch (IOException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
