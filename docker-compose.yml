@@ -80,7 +80,7 @@ services:
     volumes:
       - ${DATA_PATH_HOST}/jenkins/workspace:/var/lib/workspace
   mongo:
-    image: llssf258/fcu-progedu-mongo:release-1.0.1
+    image: fcumselab/progedu-mongo:release-1.0.1
     ports:
       - "${MONGO_PORT}:27017"
     restart: always
