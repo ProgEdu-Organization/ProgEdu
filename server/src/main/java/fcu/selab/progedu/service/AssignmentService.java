@@ -596,10 +596,10 @@ public class AssignmentService {
     //------------------------
     if (fileType.equals("maven")) {
       MavenAssignmentSetting mas = new MavenAssignmentSetting();
+      gass.getSetting(mas, ordersList, assignmentName);
       file = new File(mas.getZipPath());
       response = Response.ok((Object) file);
       response.header("Content-Disposition", "attachment;filename=");
-      gass.getSetting(mas, ordersList, assignmentName);
     }
     return response.build();
   }
