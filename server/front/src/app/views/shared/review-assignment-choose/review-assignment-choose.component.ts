@@ -4,6 +4,7 @@ import { User } from '../../../models/user';
 import { JwtService } from '../../../services/jwt.service';
 import { TimeService } from '../../../services/time.service';
 import { ReviewAssignmentChooseService } from './review-assignment-choose.service';
+import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 @Component({
   selector: 'app-review-assignment-choose',
   templateUrl: './review-assignment-choose.component.html',
@@ -25,8 +26,11 @@ export class ReviewAssignmentChooseComponent implements OnInit {
   screenshotUrls: Array<string>;
   reviewFeedbacks: JSON;
 
+  public Editor = ClassicEditor;
+  public editorConfig = { toolbar: [] };
+
   constructor(private route: ActivatedRoute, private assignmentService: ReviewAssignmentChooseService,
-    private timeService: TimeService, private jwtService?: JwtService,) { }
+    private timeService: TimeService, private jwtService?: JwtService) { }
 
   async ngOnInit() {
     this.username = this.route.snapshot.queryParamMap.get('username');

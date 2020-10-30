@@ -16,7 +16,10 @@
           </div>
           <hr />
           <span class="h2">Assignment Description</span>
-          <p style="border-bottom: 1rem;margin: 10px;">{{assignment.description}}</p>
+          <div style="margin: 10px;">
+            <ckeditor [(ngModel)]="assignment.description" [editor]="Editor" [disabled]="true" [config]='editorConfig'>
+            </ckeditor>
+          </div>
           <hr />
           <span class="h2">Deadline</span>
           <p style="margin: 10px;">{{assignment.deadline | date:'short'}}</p>

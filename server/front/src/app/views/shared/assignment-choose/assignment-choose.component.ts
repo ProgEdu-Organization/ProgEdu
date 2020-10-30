@@ -2,6 +2,7 @@ import { Component, OnInit, SystemJsNgModuleLoader } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { TimeService } from '../../../services/time.service'
 import { AssignmentChoosedService } from './assignment-choose.service';
+import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 @Component({
   selector: 'app-assignment-choose',
@@ -17,6 +18,9 @@ export class AssignmentChooseComponent implements OnInit {
   feedbacks: JSON;
   selectedCommitNumber;
   screenshotUrls: Array<string>;
+
+  public Editor = ClassicEditor;
+  public editorConfig = { toolbar: [] };
 
   constructor(private route: ActivatedRoute, private assignmentService: AssignmentChoosedService,
     private timeService: TimeService) { }
