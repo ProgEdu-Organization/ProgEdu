@@ -8,8 +8,6 @@ import { assignmentTypeEnum } from './assignmentTypeEnum';
 import { HttpErrorResponse } from '@angular/common/http';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { SortablejsOptions } from 'ngx-sortablejs';
-import { reduce } from 'rxjs/operators';
-import { stringify } from 'querystring';
 
 @Component({
   selector: 'app-create-assignment',
@@ -179,12 +177,14 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
     this.assignment.get('assOrder').setValue(this.orderString);
     this.createService.modifyOrder(this.assignment).subscribe(
       (response) => {
-
+        console.log("Success");
       },
       error => {
         this.errorResponse = error;
         this.errorTitle = 'Send Order Error';
       });
+      this.orderString = 'Compile Failure';
+      this.reset();
   }
 
   public reset() {

@@ -46,7 +46,7 @@
         <!-- Nav tabs -->
         <tabset>
           <!---- Java ---->
-          <tab heading="Javac">
+          <tab heading="Java">
             <div class="form-group row">
               <label class="col-md-3 col-form-label" for="type">Type Radios</label>
               <div class="col-md-9">
@@ -66,7 +66,7 @@
               <div class="form-group row">
                 <div class="col-md-3">Assignment Assessment</div>
                 <div class="col-md-3">Status :</div>
-                <div class="col-md-3">Order :</div>             
+                <div class="col-md-2">Order & Score :</div>          
               </div>
               <div class="form-group row">
                 <div class="col-md-3"></div>
@@ -75,12 +75,31 @@
                     <li class="list-group-item" *ngFor="let item of javacStatus">{{ item }}</li>
                   </ul>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-2">
                   <li class="list-group-item sortable" draggable="false" style="cursor: not-allowed; 
-                      background-color: white;">1.&nbsp;Compile Failure</li>
+                      background-color: white;">1.&nbsp;Compile Failure
+                      <select class="form-control">
+                        <option>10%</option>
+                        <option>20%</option>
+                        <option>30%</option>
+                        <option>40%</option>
+                        <option>50%</option>
+                      </select>
+                  </li>
                   <ul class="list-group sortable" [sortablejs]="order" [sortablejsOptions]="normalOptions">
-                    <li class="list-group-item" *ngFor="let item of order; let i = index;">{{ i+2 }}. {{ item }}</li>
+                    <li class="list-group-item" *ngFor="let item of order; let i = index;">{{ i+2 }}. {{ item }}
+                      <select class="form-control">
+                        <option>10%</option>
+                        <option>20%</option>
+                        <option>30%</option>
+                        <option>40%</option>
+                        <option>50%</option>
+                      </select>
+                    </li>
                   </ul>
+                </div>
+                <div class="col-md-1">
+                  
                 </div>
               </div>
               <div class="form-group row">
@@ -91,12 +110,12 @@
                   <button class="btn btn-primary" [disabled] = "isEnabledConfirm()" (click)="confirm()">confirm</button>
                 </div>
                 <div class="col-md-2">
-                  <button class="btn btn-primary" (click)="reset()">&ensp;reset&ensp;</button>
+                  <button class="btn btn-primary" (click)="reset()">&nbsp;reset&nbsp;</button>
                 </div>
               </div>
               </div>
             <div class="form-group row">
-              <label class="col-md-3 col-form-label" for="inline-radios">Javac File</label>
+              <label class="col-md-3 col-form-label" for="inline-radios">Java File</label>
               <div class="col-md-9">
                 <div class="btn-group" dropdown [isOpen]="javaTabStatus.isOpen" placement="top">
                   <button dropdownToggle type="button" class="btn btn-primary dropdown-toggle">
