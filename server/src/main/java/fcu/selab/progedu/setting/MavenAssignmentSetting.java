@@ -49,7 +49,7 @@ public class MavenAssignmentSetting implements AssignmentSettings {
       LOGGER.error(e.getMessage());
     }
   }
-
+  
   public void setAssignmentName(String name) {
     this.AssignmentName = name;
   }
@@ -65,7 +65,8 @@ public class MavenAssignmentSetting implements AssignmentSettings {
 
   @Override
   public void setAssignmentPath() {
-    this.AssignmentPath = this.settingDir + getAssignmentName();
+    this.AssignmentPath = "/usr/local/tomcat/temp/assignmentSetting/"
+        + getAssignmentName();
   }
 
   @Override
