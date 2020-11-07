@@ -595,7 +595,7 @@ public class AssignmentService {
     }
     //------------------------
     if (fileType.equals("maven")) {
-      MavenAssignmentSetting mas = new MavenAssignmentSetting();
+      MavenAssignmentSetting mas = new MavenAssignmentSetting(assignmentName);
       gass.getSetting(mas, ordersList, assignmentName);
     }
     return Response.ok().build();

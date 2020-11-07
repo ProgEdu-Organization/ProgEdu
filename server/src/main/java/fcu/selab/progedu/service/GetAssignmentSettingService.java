@@ -15,11 +15,11 @@ public class GetAssignmentSettingService {
    * @param name name
    */
   public void getSetting(AssignmentSettings as, List<String> order,String name) {
-    //-------unZip
+    //-------1.unZip
     as.unZipAssignmenToTmp();
-    //------------get settings
+    //--------2.change settings
     as.createAssignmentSetting(order, name);
-    //--------------pack up the zip
+    //---------3.pack up the zip
     as.packUpAssignment();
   }
 }

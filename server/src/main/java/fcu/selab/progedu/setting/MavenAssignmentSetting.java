@@ -30,13 +30,17 @@ public class MavenAssignmentSetting implements AssignmentSettings {
   private static String AssignmentPath;
   private static String AssignmentZipPath;
   private ZipHandler zipHandler;
+  private final String tempDir = System.getProperty("java.io.tmpdir");
+  private final String settingDir = tempDir + "/assignmentSetting/";
+  private static String AssignmentName;
 
   /**
-   * Setting making maven Assignment setting
+   * init maven assignment setting
    * 
    */
-  public MavenAssignmentSetting() {
+  public MavenAssignmentSetting(String name) {
     try {
+      setAssignmentName(name);
       setZipPath();
       setAssignmentPath();
       zipHandler = new ZipHandler();
@@ -46,6 +50,14 @@ public class MavenAssignmentSetting implements AssignmentSettings {
     }
   }
 
+  public void setAssignmentName(String name) {
+    this.AssignmentName = name;
+  }
+
+  public String getAssignmentName() {
+    return this.AssignmentName;
+  }
+
   @Override
   public void setZipPath() {
     this.AssignmentZipPath = "/usr/local/tomcat/webapps/ROOT/resources/MvnQuickStart.zip";
@@ -53,7 +65,7 @@ public class MavenAssignmentSetting implements AssignmentSettings {
 
   @Override
   public void setAssignmentPath() {
-    this.AssignmentPath = "/usr/local/tomcat/webapps/ROOT/resources/tmp";
+    this.AssignmentPath = this.settingDir + getAssignmentName();
   }
 
   @Override
@@ -87,7 +99,7 @@ public class MavenAssignmentSetting implements AssignmentSettings {
       final MavenXpp3Writer writer = new MavenXpp3Writer();
       final List<PluginExecution> checkStyleExecutions = new ArrayList<>();
       Model model = new Model();
-    
+        
       model.setModelVersion("4.0.0");
       model.setGroupId("myApp");
       model.setArtifactId(name);
@@ -95,7 +107,7 @@ public class MavenAssignmentSetting implements AssignmentSettings {
       model.setVersion("1.0-SNAPSHOT");
       model.setName(name);
       model.setUrl("http://maven.apache.org");
-      
+        
       Dependency dependency = new Dependency();
       dependency.setGroupId("junit");
       dependency.setArtifactId("junit");
@@ -105,6 +117,7 @@ public class MavenAssignmentSetting implements AssignmentSettings {
         
       Build build = new Build();
       build.setFinalName("ProgEdu");
+      //-------------compiler settings
       Plugin pluginCompiler = new Plugin();
       pluginCompiler.setGroupId(" org.apache.maven.plugins ");
       pluginCompiler.setArtifactId("maven-compiler-plugin");
@@ -123,7 +136,7 @@ public class MavenAssignmentSetting implements AssignmentSettings {
         
       pluginCompiler.setConfiguration(configCompiler);
       build.addPlugin(pluginCompiler);
-        
+      //---------------------unit test settings
       Plugin pluginTest = new Plugin();
       pluginTest.setGroupId(" org.apache.maven.plugins ");
       pluginTest.setArtifactId("maven-surefire-plugin");
@@ -135,62 +148,64 @@ public class MavenAssignmentSetting implements AssignmentSettings {
       Xpp3Dom testConfigUseSystemClassLoader = new Xpp3Dom("useSystemClassLoader");
       testConfigUseSystemClassLoader.setValue("false");
       configTest.addChild(testConfigUseSystemClassLoader);
-       
+        
       if (order.contains("test") == false) {
         Xpp3Dom testConfigSkip = new Xpp3Dom("skipTests");
         testConfigSkip.setValue("true");
         configTest.addChild(testConfigSkip);
       }
-        
-        
+  
       pluginTest.setConfiguration(configTest);
       build.addPlugin(pluginTest);
+      //----------------coding style settings
+      if (order.contains("codingStyle") == true) { 
+        Plugin pluginCheckStyle = new Plugin();
+        pluginCheckStyle.setGroupId(" org.apache.maven.plugins ");
+        pluginCheckStyle.setArtifactId("maven-checkstyle-plugin");
+        pluginCheckStyle.setVersion("2.17");
+        PluginExecution checkStyleExecution = new PluginExecution();
+        System.out.println(order.indexOf("codingStyle"));
+        if (order.indexOf("test") < order.indexOf("codingStyle")) {
+          checkStyleExecution.setId("test");
+          checkStyleExecution.setPhase("test");
+        } else if (order.indexOf("test") > order.indexOf("codingStyle")) {
+          checkStyleExecution.setId("compile");
+          checkStyleExecution.setPhase("compile");
+        }
         
-      Plugin pluginCheckStyle = new Plugin();
-      pluginCheckStyle.setGroupId(" org.apache.maven.plugins ");
-      pluginCheckStyle.setArtifactId("maven-checkstyle-plugin");
-      pluginCheckStyle.setVersion("2.17");
-    
-      PluginExecution checkStyleExecution = new PluginExecution();
-      if (order.indexOf("test") < order.indexOf("codingStyle")) {
-        checkStyleExecution.setId("test");
-        checkStyleExecution.setPhase("test");
-      } else if (order.indexOf("test") > order.indexOf("codingStyle")) {
-        checkStyleExecution.setId("compile");
-        checkStyleExecution.setPhase("compile");
+        Xpp3Dom configCheckStyle = (Xpp3Dom) pluginCheckStyle.getConfiguration();
+        if (configCheckStyle == null) {
+          configCheckStyle = new Xpp3Dom("configuration");
+        }
+        Xpp3Dom checkStyleConfigLocation = new Xpp3Dom("configLocation");
+        checkStyleConfigLocation.setValue("${project.basedir}/config/checks.xml");
+        configCheckStyle.addChild(checkStyleConfigLocation);
+        Xpp3Dom checkStyleConfigEncoding = new Xpp3Dom("encoding");
+        checkStyleConfigEncoding.setValue("UTF-8");
+        configCheckStyle.addChild(checkStyleConfigEncoding);
+        Xpp3Dom checkStyleConfigConsoleOutput = new Xpp3Dom("consoleOutput");
+        checkStyleConfigConsoleOutput.setValue("true");
+        configCheckStyle.addChild(checkStyleConfigConsoleOutput);
+        Xpp3Dom checkStyleConfigFailsOnError = new Xpp3Dom("failsOnError");
+        checkStyleConfigFailsOnError.setValue("true");
+        configCheckStyle.addChild(checkStyleConfigFailsOnError);
+        Xpp3Dom checkStyleLinkXRef = new Xpp3Dom("linkXRef");
+        checkStyleLinkXRef.setValue("false");
+        configCheckStyle.addChild(checkStyleLinkXRef);
+        checkStyleExecution.setConfiguration(configCheckStyle);
+        List<String> checkStyleExecutionGoals = new ArrayList<>();
+        String checkStyleExecutionGoal = new String("check");
+        
+        checkStyleExecutionGoals.add(checkStyleExecutionGoal);
+        checkStyleExecution.setGoals(checkStyleExecutionGoals);
+        checkStyleExecutions.add(checkStyleExecution);
+        pluginCheckStyle.setExecutions(checkStyleExecutions);
+        build.addPlugin(pluginCheckStyle);
       }
-        
-      Xpp3Dom configCheckStyle = (Xpp3Dom) pluginCheckStyle.getConfiguration();
-      if (configCheckStyle == null) {
-        configCheckStyle = new Xpp3Dom("configuration");
-      }
-      Xpp3Dom checkStyleConfigLocation = new Xpp3Dom("configLocation");
-      checkStyleConfigLocation.setValue("${project.basedir}/config/checks.xml");
-      configCheckStyle.addChild(checkStyleConfigLocation);
-      Xpp3Dom checkStyleConfigEncoding = new Xpp3Dom("encoding");
-      checkStyleConfigEncoding.setValue("UTF-8");
-      configCheckStyle.addChild(checkStyleConfigEncoding);
-      Xpp3Dom checkStyleConfigConsoleOutput = new Xpp3Dom("consoleOutput");
-      checkStyleConfigConsoleOutput.setValue("true");
-      configCheckStyle.addChild(checkStyleConfigConsoleOutput);
-      Xpp3Dom checkStyleConfigFailsOnError = new Xpp3Dom("failsOnError");
-      checkStyleConfigFailsOnError.setValue("true");
-      configCheckStyle.addChild(checkStyleConfigFailsOnError);
-      Xpp3Dom checkStyleLinkXRef = new Xpp3Dom("linkXRef");
-      checkStyleLinkXRef.setValue("false");
-      configCheckStyle.addChild(checkStyleLinkXRef);
-      checkStyleExecution.setConfiguration(configCheckStyle);
-      List<String> checkStyleExecutionGoals = new ArrayList<>();
-      String checkStyleExecutionGoal = new String("check");
-      
-      checkStyleExecutionGoals.add(checkStyleExecutionGoal);
-      checkStyleExecution.setGoals(checkStyleExecutionGoals);
-      checkStyleExecutions.add(checkStyleExecution);
-      pluginCheckStyle.setExecutions(checkStyleExecutions);
-      build.addPlugin(pluginCheckStyle);
-        
+      //-----------------update all build
       model.setBuild(build);
         
+      //---------------------reporting settings
       final Reporting reporting = new Reporting();
       final List<ReportPlugin> reportingPlugins  = new ArrayList<>();;
       ReportPlugin reportingPlugin = new ReportPlugin();
@@ -209,8 +224,8 @@ public class MavenAssignmentSetting implements AssignmentSettings {
         
       reporting.setPlugins(reportingPlugins);
       model.setReporting(reporting);
-      writer.write(new FileWriter("/usr/local/tomcat/webapps/"
-          + "ROOT/resources/tmp/pom.xml"), model);   
+      writer.write(new FileWriter(getAssignmentPath()
+          + "/pom.xml"), model);   
     } catch (IOException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
