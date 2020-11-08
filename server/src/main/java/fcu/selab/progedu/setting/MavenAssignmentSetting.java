@@ -65,8 +65,7 @@ public class MavenAssignmentSetting implements AssignmentSettings {
 
   @Override
   public void setAssignmentPath() {
-    this.AssignmentPath = "/usr/local/tomcat/temp/assignmentSetting/"
-        + getAssignmentName();
+    this.AssignmentPath = this.settingDir + getAssignmentName();
   }
 
   @Override

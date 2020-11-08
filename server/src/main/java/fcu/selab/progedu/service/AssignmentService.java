@@ -100,6 +100,7 @@ public class AssignmentService {
   private final String tempDir = System.getProperty("java.io.tmpdir");
   private final String uploadDir = tempDir + "/uploads/";
   private final String testDir = tempDir + "/tests/";
+  private final String assignmentDir = tempDir + "/assignmentSetting/";
   private final String projectDir = System.getProperty("catalina.base");
   private final String imageTempName = "/temp_images/";
   private final String imageTempDir = projectDir + imageTempName;
@@ -578,9 +579,7 @@ public class AssignmentService {
       @FormDataParam("fileRadio") String fileType, 
       @FormDataParam("order") String orders,
       @FormDataParam("assignmentName") String assignmentName) {
-
     GetAssignmentSettingService gass = new GetAssignmentSettingService();
-    File file;
     //---------cut order
     List<String> ordersList = new ArrayList<>();
     String[] tokens = orders.split(", ");
@@ -599,5 +598,25 @@ public class AssignmentService {
       gass.getSetting(mas, ordersList, assignmentName);
     }
     return Response.ok().build();
+  }
+
+  /**
+   * create get assignemnt file
+   *
+   * @param fileName fileName
+   * @return zip file
+   * 
+   */
+  @GET
+  @Path("getAssignmentFile")
+  public Response getAssignmentFile(@QueryParam("fileName") String fileName) {
+    String filePath = assignmentDir + fileName + ".zip";
+    
+    File file = new File(filePath);
+
+    ResponseBuilder response = Response.ok((Object) file);
+    response.header("Content-Disposition", "attachment;filename=" + fileName + ".zip");
+    
+    return response.build();
   }
 }
