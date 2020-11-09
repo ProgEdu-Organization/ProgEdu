@@ -34,11 +34,11 @@ export class ChartComponent implements OnInit {
   public labels: string[] = [];
   public barChartData: any[] = [
     {
-      data: [], label: Status.initial.name,
-      backgroundColor: Status.initial.color,
-      borderColor: Status.initial.color,
-      hoverBackgroundColor: Status.initial.color,
-      hoverBorderColor: Status.initial.color,
+      data: [], label: Status.notBuild.name,
+      backgroundColor: Status.notBuild.color,
+      borderColor: Status.notBuild.color,
+      hoverBackgroundColor: Status.notBuild.color,
+      hoverBorderColor: Status.notBuild.color,
     },
     {
       data: [], label: Status.compilerFailure.name,
@@ -73,11 +73,11 @@ export class ChartComponent implements OnInit {
 
   public mixedChartData: Array<any> = [
     {
-      data: [], label: Status.initial.name, fill: false, type: 'line',
-      backgroundColor: Status.initial.color,
-      borderColor: Status.initial.color,
-      hoverBackgroundColor: Status.initial.color,
-      hoverBorderColor: Status.initial.color,
+      data: [], label: Status.notBuild.name, fill: false, type: 'line',
+      backgroundColor: Status.notBuild.color,
+      borderColor: Status.notBuild.color,
+      hoverBackgroundColor: Status.notBuild.color,
+      hoverBorderColor: Status.notBuild.color,
     },
     {
       data: [], label: Status.compilerFailure.name, fill: false, type: 'line',
@@ -124,7 +124,7 @@ export class ChartComponent implements OnInit {
     this.chartService.getAllCommits().subscribe(
       (response) => {
         this.commits = response.allCommitRecord;
-        this.getMixedChartData();
+        this.getStatusResultData();
         this.selectedAssignment = this.commits[0].name;
       },
       (error) => {
@@ -138,7 +138,7 @@ export class ChartComponent implements OnInit {
 
     if (commits) {
       for (let i = 0; i < commits.length; i++) {
-        if (Status.initial.status.includes(commits[i].status)) {
+        if (Status.notBuild.status.includes(commits[i].status)) {
           statusCount[0] = statusCount[0] + 1;
         } else if (Status.compilerFailure.status.includes(commits[i].status)) {
           statusCount[1] = statusCount[1] + 1;
@@ -215,8 +215,8 @@ export class ChartComponent implements OnInit {
         if (chartData.data[0].x === this.bubbleChartData[j].data[0].x &&
           chartData.data[0].y === this.bubbleChartData[j].data[0].y) {
           // limit max radius = 40
-          if (this.bubbleChartData[j].radius <= 40) {
-            this.bubbleChartData[j].radius += 2;
+          if (this.bubbleChartData[j].radius !== 40) {
+            this.bubbleChartData[j].radius += 1;
           }
           isDataDuplicate = true;
           break;

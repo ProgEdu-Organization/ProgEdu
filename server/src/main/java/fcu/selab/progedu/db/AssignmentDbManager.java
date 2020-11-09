@@ -240,6 +240,62 @@ public class AssignmentDbManager {
   }
 
   /**
+   * get all peer review assignment form assignment
+   *
+   */
+  public List<Assignment> getAllReviewAssignment() throws SQLException {
+    String query = "SELECT assign.id, assign.name, assign.createTime, assign.deadline, "
+        + "assign.releaseTime, assign.display, assign.description "
+        + "FROM Assignment AS assign, Review_Setting AS review "
+        + "WHERE assign.id = review.aId ORDER BY assign.id";
+    List<Assignment> assignmentList = new ArrayList<>();
+
+    try (Connection conn = database.getConnection();
+         Statement stmt = conn.createStatement();
+         ResultSet rs = stmt.executeQuery(query)) {
+      while (rs.next()) {
+        Assignment assignment = new Assignment();
+        assignment.setId(rs.getInt("id"));
+        assignment.setName(rs.getString("name"));
+        assignment.setCreateTime(rs.getTimestamp("createTime"));
+        assignment.setDeadline(rs.getTimestamp("deadline"));
+        assignment.setReleaseTime(rs.getTimestamp("releaseTime"));
+        assignment.setDisplay(rs.getBoolean("display"));
+        assignment.setDescription(rs.getString("description"));
+        assignmentList.add(assignment);
+      }
+    }
+    return assignmentList;
+  }
+
+  /**
+   * get auto assessment which is not assign as peer review
+   */
+  public List<Assignment> getAutoAssessment() throws SQLException {
+    String query = "SELECT id, name, createTime, deadline, releaseTime, display, description "
+        + "FROM Assignment WHERE id NOT IN (SELECT aId FROM Review_Setting);";
+    List<Assignment> assignmentList = new ArrayList<>();
+
+    try (Connection conn = database.getConnection();
+         Statement stmt = conn.createStatement();
+         ResultSet rs = stmt.executeQuery(query)) {
+      while (rs.next()) {
+        Assignment assignment = new Assignment();
+        assignment.setId(rs.getInt("id"));
+        assignment.setName(rs.getString("name"));
+        assignment.setCreateTime(rs.getTimestamp("createTime"));
+        assignment.setDeadline(rs.getTimestamp("deadline"));
+        assignment.setReleaseTime(rs.getTimestamp("releaseTime"));
+        assignment.setDisplay(rs.getBoolean("display"));
+        assignment.setDescription(rs.getString("description"));
+        assignmentList.add(assignment);
+      }
+    }
+    return assignmentList;
+  }
+
+
+  /**
    * list all assignment names;
    * 
    * @return all names

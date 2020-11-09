@@ -11,6 +11,8 @@ import { FilterPipe } from './../../pipe/filter.pipe';
 import { LineBreaksPipe } from './../../pipe/line-breaks.pipe';
 
 import { AssignmentChooseComponent } from './assignment-choose/assignment-choose.component';
+import { ReviewAssignmentChooseComponent } from './review-assignment-choose/review-assignment-choose.component';
+import { ReviewCommitRecordComponent } from './review-commit-record/review-commit-record.component';
 import { ProjectChooseComponent } from './project-choose/project-choose.component';
 import { GroupDashboardComponent } from '../teacher/group-dashboard/group-dashboard.component';
 import { CommitRecordComponent } from './commit-record/commit-record.component';
@@ -33,6 +35,7 @@ import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
+
 @NgModule({
   imports: [
     CommonModule,
@@ -46,10 +49,10 @@ import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
     PaginationModule.forRoot(),
     BsDropdownModule.forRoot(),
   ],
-  declarations: [AssignmentChooseComponent, ProjectChooseComponent, GroupDashboardComponent,
+  declarations: [AssignmentChooseComponent, ReviewAssignmentChooseComponent, ProjectChooseComponent, GroupDashboardComponent,
     GroupFilterPipe, FilterPipe, CommitRecordComponent, DashboardStatusComponent, ScreenshotComponent, ErrorModalComponent,
-    BarChartComponent, BubbleChartComponent, MixedChartComponent, ChartComponent, LineBreaksPipe],
-  exports: [AssignmentChooseComponent, GroupDashboardComponent, ProjectChooseComponent, GroupFilterPipe,
+    BarChartComponent, BubbleChartComponent, MixedChartComponent, ChartComponent, LineBreaksPipe, ReviewCommitRecordComponent ],
+  exports: [AssignmentChooseComponent, ReviewAssignmentChooseComponent, GroupDashboardComponent, ProjectChooseComponent, GroupFilterPipe,
     FilterPipe, DashboardStatusComponent, ScreenshotComponent, ErrorModalComponent, LineBreaksPipe]
 })
 export class SharedModule { }

@@ -15,7 +15,6 @@ import fcu.selab.progedu.utils.ExceptionUtil;
 import fcu.selab.progedu.data.GroupProject;
 import fcu.selab.progedu.data.User;
 
-
 public class GroupDbManager {
 
   private static GroupDbManager dbManager = new GroupDbManager();
@@ -30,20 +29,21 @@ public class GroupDbManager {
 
   private UserDbManager udb = UserDbManager.getInstance();
 
-  private GroupDbManager() {}
+  private GroupDbManager() {
+  }
 
   /**
    * add groupinto db
    *
-   * @param gitlabId gitlabId
+   * @param gitlabId  gitlabId
    * @param groupName groupName
-   * @param leaderId leaderId
+   * @param leaderId  leaderId
    */
   public void addGroup(int gitlabId, String groupName, int leaderId) {
     String sql = "INSERT INTO ProgEdu.Group(gitLabId, name, leader) " + "VALUES(?, ?, ?)";
 
     try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+         PreparedStatement preStmt = conn.prepareStatement(sql)) {
       preStmt.setInt(1, gitlabId);
       preStmt.setString(2, groupName);
       preStmt.setInt(3, leaderId);
@@ -64,7 +64,7 @@ public class GroupDbManager {
     String statement = "SELECT id FROM ProgEdu.Group WHERE name = ?";
 
     try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(statement)) {
+         PreparedStatement preStmt = conn.prepareStatement(statement)) {
       preStmt.setString(1, name);
       try (ResultSet rs = preStmt.executeQuery()) {
         if (rs.next()) {
@@ -84,7 +84,7 @@ public class GroupDbManager {
    * @param id group id
    */
   public String getName(int id) {
-    String groupName =  "";
+    String groupName = "";
     String statement = "SELECT name FROM ProgEdu.Group WHERE id = ?";
 
     try (Connection conn = database.getConnection();
@@ -111,7 +111,7 @@ public class GroupDbManager {
     String statement = "SELECT gitLabId FROM ProgEdu.Group WHERE name = ?";
 
     try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(statement)) {
+         PreparedStatement preStmt = conn.prepareStatement(statement)) {
       preStmt.setString(1, name);
       try (ResultSet rs = preStmt.executeQuery()) {
         if (rs.next()) {
@@ -135,7 +135,7 @@ public class GroupDbManager {
     String statement = "SELECT leader FROM ProgEdu.Group WHERE name = ?";
 
     try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(statement)) {
+         PreparedStatement preStmt = conn.prepareStatement(statement)) {
       preStmt.setString(1, name);
       try (ResultSet rs = preStmt.executeQuery()) {
         if (rs.next()) {
@@ -152,13 +152,13 @@ public class GroupDbManager {
   /**
    * update leader
    *
-   * @param id group id
+   * @param id     group id
    * @param leader leader uid
    */
   public void updateLeader(int id, int leader) {
     String sql = "UPDATE ProgEdu.Group SET leader = ? WHERE id = ?";
     try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+         PreparedStatement preStmt = conn.prepareStatement(sql)) {
       preStmt.setInt(1, leader);
       preStmt.setInt(2, id);
       preStmt.executeUpdate();
@@ -177,7 +177,7 @@ public class GroupDbManager {
     String statement = "SELECT name FROM ProgEdu.Group";
     List<Group> groups = new ArrayList<>();
     try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(statement)) {
+         PreparedStatement preStmt = conn.prepareStatement(statement)) {
       try (ResultSet rs = preStmt.executeQuery()) {
         while (rs.next()) {
           String name = rs.getString("name");
@@ -202,29 +202,29 @@ public class GroupDbManager {
     String statement = "SELECT * FROM ProgEdu.Group WHERE name=?";
     Group group = new Group();
     try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(statement)) {
+         PreparedStatement preStmt = conn.prepareStatement(statement)) {
       preStmt.setString(1, name);
       try (ResultSet rs = preStmt.executeQuery()) {
         while (rs.next()) {
-          group.setGroupName( rs.getString("name") );
-          group.setId( rs.getInt("id") );
-          group.setGitlabId( rs.getInt("gitLabId") );
-          group.setLeader( Integer.parseInt( rs.getString("leader") ) );
+          group.setGroupName(rs.getString("name"));
+          group.setId(rs.getInt("id"));
+          group.setGitlabId(rs.getInt("gitLabId"));
+          group.setLeader(Integer.parseInt(rs.getString("leader")));
         }
 
         // setMembers
         List<User> members = new ArrayList<>();
-        List<Integer> userIds = GroupUserDbManager.getInstance().getUids( group.getId() );
-        for (int userId:userIds) {
-          members.add( UserDbManager.getInstance().getUser(userId) );
+        List<Integer> userIds = GroupUserDbManager.getInstance().getUids(group.getId());
+        for (int userId : userIds) {
+          members.add(UserDbManager.getInstance().getUser(userId));
         }
         group.setMembers(members);
 
         // setProjects
         List<GroupProject> groupProjectList = new ArrayList<>();
-        List<Integer> projectIds = ProjectGroupDbManager.getInstance().getPids( group.getId() );
-        for (int projectId:projectIds) {
-          groupProjectList.add( ProjectDbManager.getInstance().getGroupProjectById(projectId) );
+        List<Integer> projectIds = ProjectGroupDbManager.getInstance().getPids(group.getId());
+        for (int projectId : projectIds) {
+          groupProjectList.add(ProjectDbManager.getInstance().getGroupProjectById(projectId));
         }
         group.setProjects(groupProjectList);
 
@@ -243,7 +243,7 @@ public class GroupDbManager {
    * @return group info
    */
   public Group getGroup(int id) {
-    return getGroup( getName(id) );
+    return getGroup(getName(id));
   }
 
   /**
@@ -254,7 +254,7 @@ public class GroupDbManager {
   public void remove(int id) {
     String sql = "DELETE FROM ProgEdu.Group WHERE id=?";
     try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+         PreparedStatement preStmt = conn.prepareStatement(sql)) {
       preStmt.setInt(1, id);
       preStmt.executeUpdate();
     } catch (SQLException e) {

@@ -5,3 +5,4 @@ export enum assignmentTypeEnum {
   Android = 'android',
   Web = 'web'
 }
+

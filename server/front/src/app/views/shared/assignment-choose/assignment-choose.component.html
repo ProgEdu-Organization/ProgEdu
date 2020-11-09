@@ -5,21 +5,27 @@
       <label>{{assignmentName}}</label>
     </div>
     <div class="card-body">
-      <div class='col-md-9'>
-        <span class="h2">Git Project</span>
-        <button style="margin: 10px;" (click)='copyToClipboard()'><i class="fa fa-copy fa-lg"></i></button>
-        <input class="form-control" type="text" value="{{gitlabAssignmentURL}}" readonly>
-        <hr />
-        <span class="h2">Deadline</span>
-        <p style="margin: 10px;"><strong>{{assignment.deadline | date:'short'}}</strong></p>
-        <hr />
-        <span class="h2">Assignment Description</span>
-        <div style="margin: 10px;">
-          <ckeditor [(ngModel)]="assignment.description" [editor]="Editor" [disabled]="true" [config]='editorConfig'>
-          </ckeditor>
+      <div class='row'>
+        <div class="col-lg-6">
+          <span class="h2">Git Project</span>
+          <div class='row'>
+            <div class="col-md-8">
+              <input type="text" class="form-control" value="{{gitlabAssignmentURL}}" readonly>
+            </div>
+            <button button (click)='copyToClipboard()'><i class="fa fa-copy fa-lg"></i></button>
+          </div>
+          <hr />
+          <span class="h2">Assignment Description</span>
+          <div style="margin: 10px;">
+            <ckeditor [(ngModel)]="assignment.description" [editor]="Editor" [disabled]="true" [config]='editorConfig'>
+            </ckeditor>
+          </div>
+          <hr />
+          <span class="h2">Deadline</span>
+          <p style="margin: 10px;">{{assignment.deadline | date:'short'}}</p>
         </div>
       </div>
-      <hr />
+      <hr>
       <app-commit-record [type]=assignment.type [commits]=commits [feedbacks]=feedbacks [screenshotUrls]=screenshotUrls
         (messageToEmit)="updateFeedback($event)"></app-commit-record>
     </div>

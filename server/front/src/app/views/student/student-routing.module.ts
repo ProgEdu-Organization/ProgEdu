@@ -5,6 +5,11 @@ import { SharedModule } from '../shared/shared.module';
 import { AssignmentChooseComponent } from '../shared/assignment-choose/assignment-choose.component';
 import { ProjectChooseComponent } from '../shared/project-choose/project-choose.component';
 import { GroupStudashboardComponent } from './group-studashboard/group-studashboard.component';
+import { ReviewStudashboardComponent } from './review-studashboard/review-studashboard.component';
+import { ReviewStatusStudashboardComponent } from './review-status-studashboard/review-status-studashboard.component';
+import { ReviewAssignmentChooseComponent } from '../shared/review-assignment-choose/review-assignment-choose.component';
+import { ReviewStatusAssignmentChooseComponent } from './review-status-assignment-choose/review-status-assignment-choose.component';
+
 const routes: Routes = [
   {
     path: '',
@@ -21,10 +26,38 @@ const routes: Routes = [
     }
   },
   {
+    path: 'reviewAssignmentChoose',
+    component: ReviewAssignmentChooseComponent,
+    data: {
+      title: 'Assignment Choose'
+    }
+  },
+  {
+    path: 'reviewStatusAssignmentChoose',
+    component: ReviewStatusAssignmentChooseComponent,
+    data: {
+      title: 'Review Assignment Choose'
+    }
+  },
+  {
     path: 'groupStuDashboard',
     component: GroupStudashboardComponent,
     data: {
       title: 'Project Dashboard'
+    }
+  },
+  {
+    path: 'peerReviewDashboard',
+    component: ReviewStatusStudashboardComponent,
+    data: {
+      title: 'Peer Review Status Dashboard'
+    }
+  },
+  {
+    path: 'reviewDashboard',
+    component: ReviewStudashboardComponent,
+    data: {
+      title: 'Peer Review Dashboard'
     }
   },
   {
@@ -34,6 +67,7 @@ const routes: Routes = [
       title: 'Project Choosed'
     }
   },
+
 ];
 
 @NgModule({
