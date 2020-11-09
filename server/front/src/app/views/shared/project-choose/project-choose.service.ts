@@ -17,6 +17,11 @@ export class ProjectChoosedService {
     return this.http.get<any>(GROUP_COMMITS_RESULT_API);
   }
 
+  getPartCommitResult(groupName: string, projectName: string, currentPage: string): Observable<any> {
+    const GROUP_PART_COMMITS_RESULT_API: string = environment.SERVER_URL + `/webapi/groups/${groupName}/projects/${projectName}/partCommits/${currentPage}`;
+    return this.http.get<any>(GROUP_PART_COMMITS_RESULT_API);
+  }
+
   getGroup(groupName): Observable<any> {
     const GROUP_MEMBER_API: string = environment.SERVER_URL + `/webapi/groups/${groupName}`;
     return this.http.get<any>(GROUP_MEMBER_API);

@@ -20,6 +20,9 @@ public class MavenStatusFactory implements StatusFactory {
       case BUILD_SUCCESS: {
         return new BuildSuccess();
       }
+      case COMPILE_FAILURE_OF_UNIT_TEST: {
+        return new MavenCompileFailureOfUnitTest();
+      }
       default: {
         return null;
       }

@@ -17,6 +17,7 @@ export class AssignmentChooseComponent implements OnInit {
   gitlabAssignmentURL: string;
   feedbacks: JSON;
   selectedCommitNumber;
+  currentPage: string = "1";
   screenshotUrls: Array<string>;
 
   public Editor = ClassicEditor;
@@ -30,10 +31,12 @@ export class AssignmentChooseComponent implements OnInit {
     this.assignmentName = this.route.snapshot.queryParamMap.get('assignmentName');
     await this.getAssignment();
     await this.getGitAssignmentURL();
-    await this.getCommitDetail();
+    //await this.getCommitDetail();
+    await this.getPartCommitDetail();
     // this.selectedScreenshotName = $('#screenshot:visible').attr('src');
     // console.log(this.selectedScreenshotName);
   }
+
   getGitAssignmentURL() {
     this.assignmentService.getGitAssignmentURL(this.assignmentName, this.username).subscribe(
       response => {
@@ -43,6 +46,7 @@ export class AssignmentChooseComponent implements OnInit {
         console.log(error);
       });
   }
+
   getCommitDetail() {
     this.assignmentService.getCommitDetail(this.assignmentName, this.username).subscribe(response => {
       this.commits = response;
@@ -63,6 +67,26 @@ export class AssignmentChooseComponent implements OnInit {
       }
     });
   }
+
+  getPartCommitDetail() {
+    this.assignmentService.getPartCommitDetail(this.assignmentName, this.username, this.currentPage).subscribe(response => {
+      this.commits = response;
+      this.selectedCommitNumber = this.commits.length;
+      this.getFeedback();
+      if (this.commits) {
+        for (const commit in this.commits) {
+          if (commit) {
+            this.commits[commit].time = this.timeService.getUTCTime(this.commits[commit].time);
+          }
+        }
+        this.commits.reverse();
+      }
+      if (this.isWebOrAndroid()) {
+        this.getScreenshotUrls();
+      }
+    });
+  }
+
   getAssignment() {
     this.assignmentService.getAssignment(this.assignmentName).subscribe(response => {
       this.assignment = response;
@@ -82,7 +106,7 @@ export class AssignmentChooseComponent implements OnInit {
   }
 
   getFeedback() {
-    this.assignmentService.getFeedback(this.assignmentName, this.username, this.commits.length.toString()).subscribe(
+    this.assignmentService.getFeedback(this.assignmentName, this.username, this.commits[0].totalCommit.toString()).subscribe(
       response => {
         this.feedbacks = response;
         for (let i in this.feedbacks) {

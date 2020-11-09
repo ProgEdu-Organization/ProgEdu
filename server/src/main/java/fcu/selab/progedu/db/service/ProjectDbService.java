@@ -87,6 +87,16 @@ public class ProjectDbService {
     int statusId = pcrdb.getProjectCommitRecordStatus(pgid, num);
     return ctdb.getStatusNameById(statusId);
   }
+  
+  /**
+   * get part commit records
+   * 
+   * @param pgid project_group id
+   * @return commit count
+   */
+  public int getCommitCount(int pgid) {
+    return pcrdb.getProjectCommitCount(pgid);
+  }
 
   /**
    * get commit records
@@ -96,6 +106,17 @@ public class ProjectDbService {
    */
   public List<CommitRecord> getCommitRecords(int pgid) {
     return pcrdb.getProjectCommitRecords(pgid);
+  }
+
+  /**
+   * get part commit records
+   * 
+   * @param pgid project_group id
+   * @param currentPage current page
+   * @return part commit records
+   */
+  public List<CommitRecord> getPartCommitRecords(int pgid,int currentPage) {
+    return pcrdb.getPartProjectCommitRecords(pgid,currentPage);
   }
 
   /**
