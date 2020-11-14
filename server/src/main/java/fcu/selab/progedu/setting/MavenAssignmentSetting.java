@@ -21,71 +21,28 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fcu.selab.progedu.utils.ExceptionUtil;
-import fcu.selab.progedu.utils.ZipHandler;
 
-public class MavenAssignmentSetting implements AssignmentSettings {
+public class MavenAssignmentSetting extends SettingZipHandler implements AssignmentSettings {
 
   private static final Logger LOGGER = LoggerFactory
       .getLogger(MavenAssignmentSetting.class);
-  private static String AssignmentPath;
-  private static String AssignmentZipPath;
-  private ZipHandler zipHandler;
-  private final String tempDir = System.getProperty("java.io.tmpdir");
-  private final String settingDir = tempDir + "/assignmentSetting/";
-  private static String AssignmentName;
 
   /**
    * init maven assignment setting
    * 
    */
   public MavenAssignmentSetting(String name) {
-    try {
-      setAssignmentName(name);
-      setZipPath();
-      setAssignmentPath();
-      zipHandler = new ZipHandler();
-    } catch (LoadConfigFailureException e) {
-      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
-      LOGGER.error(e.getMessage());
-    }
+    super("maven", name);
   }
   
-  public void setAssignmentName(String name) {
-    this.AssignmentName = name;
-  }
-
-  public String getAssignmentName() {
-    return this.AssignmentName;
-  }
-
-  @Override
-  public void setZipPath() {
-    this.AssignmentZipPath = "/usr/local/tomcat/webapps/ROOT/resources/MvnQuickStart.zip";
-  }
-
-  @Override
-  public void setAssignmentPath() {
-    this.AssignmentPath = this.settingDir + getAssignmentName();
-  }
-
-  @Override
-  public String getZipPath() {
-    return this.AssignmentZipPath;
-  }
-
-  @Override
-  public String getAssignmentPath() {
-    return this.AssignmentPath;
-  }
-
   @Override
   public void unZipAssignmenToTmp() {
-    zipHandler.unzipFile(this.getZipPath(), this.getAssignmentPath());
+    super.unZipAssignmenToTmp();
   }
 
   @Override
   public void packUpAssignment() {
-    zipHandler.zipTestFolder(getAssignmentPath());
+    super.packUpAssignment();
   }
 
   /**
@@ -224,7 +181,7 @@ public class MavenAssignmentSetting implements AssignmentSettings {
         
       reporting.setPlugins(reportingPlugins);
       model.setReporting(reporting);
-      writer.write(new FileWriter(getAssignmentPath()
+      writer.write(new FileWriter(super.getAssignmentPath()
           + "/pom.xml"), model);   
     } catch (IOException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
