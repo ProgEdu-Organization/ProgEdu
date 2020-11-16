@@ -186,7 +186,6 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
         this.errorTitle = 'Send Order Error';
       });
       this.orderString = 'Compile Failure';
-      this.reset();
   }
 
   public reset() {

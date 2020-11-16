@@ -93,11 +93,9 @@ public class AssignmentService {
   private AssignmentDbManager dbManager = AssignmentDbManager.getInstance();
   private AssignmentAssessmentDbManager aaDbManager = AssignmentAssessmentDbManager.getInstance();
   private AssignmentUserDbManager auDbManager = AssignmentUserDbManager.getInstance();
-  private AssignmentAssessmentDbManager aaDbManager = AssignmentAssessmentDbManager.getInstance();
   private UserDbManager userDbManager = UserDbManager.getInstance();
   private CommitStatusDbManager csDbManager = CommitStatusDbManager.getInstance();
   private CommitRecordDbManager crDbManager = CommitRecordDbManager.getInstance();
-  private CommitStatusDbManager csDbManager = CommitStatusDbManager.getInstance();
   private ScreenshotRecordDbManager srDbManager = ScreenshotRecordDbManager.getInstance();
   private final String tempDir = System.getProperty("java.io.tmpdir");
   private final String uploadDir = tempDir + "/uploads/";
@@ -220,16 +218,6 @@ public class AssignmentService {
       }
     }
 
-    String[] items = order.split(", ");
-    for (int i = 0; i < items.length; i++ ) {
-      if (items[i].equals("Compile Failure")) {
-        items[i] = "cpf";
-      } else if (items[i].equals("Unit Test Failure")) {
-        items[i] = "utf";
-      } else if (items[i].equals("Coding Style Failure")) {
-        items[i] = "csf";
-      }
-    }
     for (int i = 0; i < items.length; i++) {
       aaDbManager.addAssignmentAssessment(dbManager.getAssignmentIdByName(assignmentName),
           csDbManager.getStatusIdByName(items[i]), i + 1);
