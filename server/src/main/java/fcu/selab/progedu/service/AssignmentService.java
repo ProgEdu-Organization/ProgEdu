@@ -197,7 +197,7 @@ public class AssignmentService {
 
     List<User> users = userService.getStudents();
     for (User user : users) {
-      createAssignmentSettings(user.getUsername(), assignmentName);
+      createAssignmentSettings(user.getGitLabUsername(), assignmentName);
     }
 
     // 11. remove project file in linux
