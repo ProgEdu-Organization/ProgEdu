@@ -19,8 +19,8 @@ import fcu.selab.progedu.status.StatusEnum;
 public class AssignmentAssessmentDbManager {
 
   public static AssignmentAssessmentDbManager dbManager = new AssignmentAssessmentDbManager();
-  private static CommitStatusDbManager csDb = CommitStatusDbManager.getInstance();
-
+  private static CommitStatusDbManager csDb = CommitStatusDbManager.getInstance(); 
+  
   public static AssignmentAssessmentDbManager getInstance() {
     return dbManager;
   }
@@ -38,7 +38,9 @@ public class AssignmentAssessmentDbManager {
    * @param order Assessment order
    */
   public void addAssignmentAssessment(int aid,int sid,int order) {
-    String sql = "INSERT INTO Assignment_Assessment(`aId`, `status`, `order`) VALUES(?, ?, ?)";
+    String sql = "INSERT INTO Assignment_Assessment"
+        + " (`aid`, `status`, `order`)"
+        + " VALUES(?, ?, ?)";
     try (Connection conn = this.database.getConnection();
          PreparedStatement preStmt = conn.prepareStatement(sql)) {
       preStmt.setInt(1, aid);
@@ -50,10 +52,10 @@ public class AssignmentAssessmentDbManager {
       LOGGER.error(e.getMessage());
     }
   }
-
+  
   /**
    * Add AssignmentAssessment to database
-   *
+   * 
    * @param aid Assignment Id
    */
   /*public List<Assignment> getAssignmentOrder(int aid) {
@@ -62,7 +64,7 @@ public class AssignmentAssessmentDbManager {
         + " WHERE aId = ?";
 
     try (Connection conn = database.getConnection();
-         PreparedStatement preStmt = conn.prepareStatement(sql)) {
+        PreparedStatement preStmt = conn.prepareStatement(sql)) {
       preStmt.setInt(1, aid);
       try (ResultSet rs = preStmt.executeQuery()) {
         while (rs.next()) {
@@ -83,15 +85,15 @@ public class AssignmentAssessmentDbManager {
   }*/
 
   /**
-   * Delete AssignmentAssessment to database
-   *
+   * Delete AssignmentAssesment to database
+   * 
    * @param aid Assignment Id
    */
   public void deleteAssignmentAssessment(int aid) {
     String sql = "DELETE FROM Assignment_Assessment WHERE aId = ?";
 
     try (Connection conn = database.getConnection();
-         PreparedStatement preStmt = conn.prepareStatement(sql)) {
+        PreparedStatement preStmt = conn.prepareStatement(sql)) {
       preStmt.setInt(1, aid);
       preStmt.executeUpdate();
     } catch (SQLException e) {

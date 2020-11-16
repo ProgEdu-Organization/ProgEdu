@@ -3,10 +3,16 @@ package fcu.selab.progedu.data;
 import java.util.Date;
 
 import fcu.selab.progedu.project.ProjectTypeEnum;
+import fcu.selab.progedu.status.Status;
+import fcu.selab.progedu.status.StatusEnum;
 
 public class Assignment {
 
   private int id = 0;
+
+  private StatusEnum status;
+
+  private int order = 0;
 
   private String name = "";
 
@@ -134,5 +140,13 @@ public class Assignment {
 
   public void setDisplay(boolean display) {
     this.display = display;
+  }
+
+  public void setStatus(StatusEnum status) {
+    this.status = status;
+  }
+
+  public void getOrder(int order) {
+    this.order = order;
   }
 }

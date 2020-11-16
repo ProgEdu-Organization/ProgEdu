@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
+import javax.lang.model.element.Name;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
@@ -49,20 +50,25 @@ import fcu.selab.progedu.conn.JenkinsService;
 import fcu.selab.progedu.conn.TomcatService;
 import fcu.selab.progedu.data.Assignment;
 import fcu.selab.progedu.data.User;
-import fcu.selab.progedu.db.AssignmentDbManager;
-import fcu.selab.progedu.db.AssignmentUserDbManager;
-import fcu.selab.progedu.db.AssignmentAssessmentDbManager;
-import fcu.selab.progedu.db.CommitRecordDbManager;
-import fcu.selab.progedu.db.CommitStatusDbManager;
-import fcu.selab.progedu.db.ScreenshotRecordDbManager;
-import fcu.selab.progedu.db.UserDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.project.AssignmentFactory;
 import fcu.selab.progedu.project.AssignmentType;
+import fcu.selab.progedu.db.AssignmentAssessmentDbManager;
+import fcu.selab.progedu.db.CommitStatusDbManager;
 import fcu.selab.progedu.project.ProjectTypeEnum;
 import fcu.selab.progedu.utils.ExceptionUtil;
 import fcu.selab.progedu.utils.Linux;
 import fcu.selab.progedu.utils.ZipHandler;
+import fcu.selab.progedu.db.AssignmentDbManager;
+import fcu.selab.progedu.db.AssignmentUserDbManager;
+import fcu.selab.progedu.db.AssignmentAssessmentDbManager;
+import fcu.selab.progedu.db.UserDbManager;
+import fcu.selab.progedu.db.CommitRecordDbManager;
+import fcu.selab.progedu.db.ScreenshotRecordDbManager;
+import fcu.selab.progedu.service.GetAssignmentSettingService;
+import fcu.selab.progedu.setting.MavenAssignmentSetting;
+import fcu.selab.progedu.setting.AssignmentSettings;
+import fcu.selab.progedu.service.GetAssignmentSettingService;
 
 @Path("assignment/")
 public class AssignmentService {
@@ -85,15 +91,18 @@ public class AssignmentService {
   private String mailPassword;
   private String gitlabRootUsername;
   private AssignmentDbManager dbManager = AssignmentDbManager.getInstance();
+  private AssignmentAssessmentDbManager aaDbManager = AssignmentAssessmentDbManager.getInstance();
   private AssignmentUserDbManager auDbManager = AssignmentUserDbManager.getInstance();
   private AssignmentAssessmentDbManager aaDbManager = AssignmentAssessmentDbManager.getInstance();
   private UserDbManager userDbManager = UserDbManager.getInstance();
+  private CommitStatusDbManager csDbManager = CommitStatusDbManager.getInstance();
   private CommitRecordDbManager crDbManager = CommitRecordDbManager.getInstance();
   private CommitStatusDbManager csDbManager = CommitStatusDbManager.getInstance();
   private ScreenshotRecordDbManager srDbManager = ScreenshotRecordDbManager.getInstance();
   private final String tempDir = System.getProperty("java.io.tmpdir");
   private final String uploadDir = tempDir + "/uploads/";
   private final String testDir = tempDir + "/tests/";
+  private final String assignmentDir = tempDir + "/assignmentSetting/";
   private final String projectDir = System.getProperty("catalina.base");
   private final String imageTempName = "/temp_images/";
   private final String imageTempDir = projectDir + imageTempName;
@@ -211,6 +220,16 @@ public class AssignmentService {
       }
     }
 
+    String[] items = order.split(", ");
+    for (int i = 0; i < items.length; i++ ) {
+      if (items[i].equals("Compile Failure")) {
+        items[i] = "cpf";
+      } else if (items[i].equals("Unit Test Failure")) {
+        items[i] = "utf";
+      } else if (items[i].equals("Coding Style Failure")) {
+        items[i] = "csf";
+      }
+    }
     for (int i = 0; i < items.length; i++) {
       aaDbManager.addAssignmentAssessment(dbManager.getAssignmentIdByName(assignmentName),
           csDbManager.getStatusIdByName(items[i]), i + 1);
@@ -338,7 +357,7 @@ public class AssignmentService {
   public void addOrder(int aid, int sid, int order) {
     aaDbManager.addAssignmentAssessment(aid, sid, order);
   }
-  
+
   /**
    * Add auid to database
    *
@@ -516,7 +535,8 @@ public class AssignmentService {
 
     int aid = dbManager.getAssignmentIdByName(name);
     List<Integer> auidList = auDbManager.getAuids(aid);
-
+    
+    aaDbManager.deleteAssignmentAssessment(aid); //Assignment_Assessment
     for (int auid : auidList) { // CommitRecord
       List<Integer> cridList = crDbManager.getCommitRecordId(auid);
       for (int crid : cridList) { // ScreenShot
@@ -524,6 +544,7 @@ public class AssignmentService {
       }
       crDbManager.deleteRecord(auid);
     }
+    
     auDbManager.deleteAssignmentUserByAid(aid);// Assignment_User
     dbManager.deleteAssignment(name);// Assignment
 
@@ -555,7 +576,60 @@ public class AssignmentService {
     for (String assignmentName : assignmentNames) {
       createAssignmentSettings(username, assignmentName);
     }
-
   }
 
+  /**
+   * create previous Assignemnt
+   *
+   * @param fileType fileType
+   * @param orders orders
+   * @param assignmentName assignmentName
+   */
+  @POST
+  @Path("order")
+  @Consumes(MediaType.MULTIPART_FORM_DATA)
+  public Response getOrderFile(
+      @FormDataParam("fileRadio") String fileType, 
+      @FormDataParam("order") String orders,
+      @FormDataParam("assignmentName") String assignmentName) {
+    GetAssignmentSettingService gass = new GetAssignmentSettingService();
+    //---------cut order
+    List<String> ordersList = new ArrayList<>();
+    String[] tokens = orders.split(", ");
+    for (String token:tokens) {
+      if (token.equals("Compiler Failure")) {
+        ordersList.add("compilerFailure");
+      } else if (token.equals("Coding Style Failure")) {
+        ordersList.add("codingStyle");
+      } else if (token.equals("Unit Test Failure")) {
+        ordersList.add("test");
+      }
+    }
+    //------------------------
+    if (fileType.equals("maven")) {
+      MavenAssignmentSetting mas = new MavenAssignmentSetting(assignmentName);
+      gass.getSetting(mas, ordersList, assignmentName);
+    }
+    return Response.ok().build();
+  }
+
+  /**
+   * create get assignemnt file
+   *
+   * @param fileName fileName
+   * @return zip file
+   * 
+   */
+  @GET
+  @Path("getAssignmentFile")
+  public Response getAssignmentFile(@QueryParam("fileName") String fileName) {
+    String filePath = assignmentDir + fileName + ".zip";
+    
+    File file = new File(filePath);
+
+    ResponseBuilder response = Response.ok((Object) file);
+    response.header("Content-Disposition", "attachment;filename=" + fileName + ".zip");
+    
+    return response.build();
+  }
 }
