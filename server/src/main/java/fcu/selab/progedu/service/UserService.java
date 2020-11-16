@@ -100,7 +100,7 @@ public class UserService {
         String email = csvReader.get("Email");
 
         newUser.setDisplay(true);
-        newUser.setUsername(username);
+        newUser.setUsername("S" + username);
         newUser.setPassword(password);
         newUser.setName(name);
         newUser.setEmail(email);
@@ -117,7 +117,7 @@ public class UserService {
       if (errorMessage == null || errorMessage.isEmpty()) {
         for (User user : users) {
           register(user);
-          createPreviousAssginment(user.getUsername(), user.getRole());
+          createPreviousAssginment(user.getGitLabUsername(), user.getRole());
         }
         response = Response.ok().build();
       } else {
@@ -136,6 +136,7 @@ public class UserService {
    * @param username id
    * @param email email
    * @param password password
+   *
    * @return response
    */
   @POST
@@ -156,12 +157,12 @@ public class UserService {
     RoleEnum roleEnum = RoleEnum.getRoleEnum(role);
     roleList.add(roleEnum);
 
-    User user = new User(username, name, email, password, roleList, isDisplayed);
+    User user = new User(username, name, email, password, "S"+username,roleList, isDisplayed);
     String errorMessage = getErrorMessage(user);
     if (errorMessage.isEmpty()) {
       try {
         register(user);
-        createPreviousAssginment(username, roleList);
+        createPreviousAssginment(user.getGitLabUsername(), roleList);
         response = Response.ok().build();
       } catch (IOException e) {
         response = Response.serverError().entity("Failed !").build();
@@ -345,7 +346,7 @@ public class UserService {
   private void register(User user) throws IOException {
     GitlabUser gitlabUser =
         gitlabService.createUser(
-            user.getEmail(), user.getPassword(), user.getUsername(), user.getName());
+            user.getEmail(), user.getPassword(), user.getGitLabUsername(), user.getName());
     user.setGitLabToken(gitlabUser.getPrivateToken());
     user.setGitLabId(gitlabUser.getId());
 

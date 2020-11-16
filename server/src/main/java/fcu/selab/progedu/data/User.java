@@ -23,6 +23,8 @@ public class User implements Serializable {
 
   private String gitLabToken;
 
+  private String gitLabUsername;
+
   private boolean display;
 
   private List<RoleEnum> roleList;
@@ -39,12 +41,13 @@ public class User implements Serializable {
    * @param password    (to do)
    * @param isDisplayed (to do)
    */
-  public User(String username, String name, String email, String password, List<RoleEnum> role,
-      boolean isDisplayed) {
+  public User(String username, String name, String email, String password, String gitLabUsername,
+              List<RoleEnum> role, boolean isDisplayed) {
     this.username = username;
     this.name = name;
     this.email = email;
     this.password = password;
+    this.gitLabUsername = gitLabUsername;
     this.roleList = role;
     this.display = isDisplayed;
   }
@@ -130,4 +133,11 @@ public class User implements Serializable {
     this.roleList = role;
   }
 
+  public String getGitLabUsername() {
+    return gitLabUsername;
+  }
+
+  public void setGitLabUsername(String gitLabUsername) {
+    this.gitLabUsername = gitLabUsername;
+  }
 }
