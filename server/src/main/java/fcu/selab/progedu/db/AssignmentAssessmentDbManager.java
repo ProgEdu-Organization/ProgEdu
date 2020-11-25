@@ -36,16 +36,18 @@ public class AssignmentAssessmentDbManager {
    * @param aid Assignment Id
    * @param sid status name
    * @param order Assessment order
+   * @param score Assessment score
    */
-  public void addAssignmentAssessment(int aid,int sid,int order) {
+  public void addAssignmentAssessment(int aid, int sid, int order, int score) {
     String sql = "INSERT INTO Assignment_Assessment"
         + " (`aid`, `status`, `order`)"
         + " VALUES(?, ?, ?)";
     try (Connection conn = this.database.getConnection();
-         PreparedStatement preStmt = conn.prepareStatement(sql)) {
+        PreparedStatement preStmt = conn.prepareStatement(sql)) {
       preStmt.setInt(1, aid);
       preStmt.setInt(2, sid);
       preStmt.setInt(3, order);
+      preStmt.setInt(4, score);
       preStmt.executeUpdate();
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
@@ -53,6 +55,53 @@ public class AssignmentAssessmentDbManager {
     }
   }
   
+  /**
+   * update score to database
+   *
+   * @param aid Assignment Id
+   * @param order Assessment order
+   * @param score Assessment score
+   */
+  public void updateScore(int aid, int order, int score) {
+    String sql = "UPDATE ProgEdu.Assignment_Assessment"
+				+ "SET `score` = ? WHERE `id` = ?";
+		int id = getAssignmentAssessmentId(aid, order);
+    try (Connection conn = this.database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+      preStmt.setInt(1, score);
+      preStmt.setInt(2, id);
+      preStmt.executeUpdate();
+    } catch (SQLException e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    }
+  }
+
+	/**
+   * get AssignmentAssessment id in database
+   * 
+   * @param aid Assignment Id
+	 * @param order Assignment order
+	 * @return AssignmentAssessmentId AssignmentAssessmentId
+   */
+  public int getAssignmentAssessmentId(int aid, int order) {
+    String sql = "SELECT `id` FROM ProgEdu.Assignment_Assessment"
+      + "WHERE `aId` = ? AND `order` = ?";
+    try (Connection conn = this.database.getConnection();
+      	PreparedStatement preStmt = conn.prepareStatement(sql)) {
+    	preStmt.setInt(1, aid);
+    	preStmt.setInt(2, order);
+    	try (ResultSet rs = preStmt.executeQuery()) {
+				while (rs.next()) {
+					int AssignmentAssessmentId = rs.getInt("id");
+				}
+			}
+  	} catch (SQLException e) {
+    	LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+    	LOGGER.error(e.getMessage());
+		}
+		return AssignmentAssessmentId;
+  }
   /**
    * Add AssignmentAssessment to database
    * 

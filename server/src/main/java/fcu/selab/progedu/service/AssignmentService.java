@@ -207,14 +207,22 @@ public class AssignmentService {
     addProject(assignmentName, releaseTime, deadline, readMe, projectTypeEnum, hasTemplate,
         testZipChecksum, testZipUrl);
 
-    String[] items = order.split(", ");
-    for (int i = 0; i < items.length; i++ ) {
+    String[] ordersAndScores = order.split(", ");
+    for (String orderAndScore : ordersAndScores) {
       if (items[i].equals("Compile Failure")) {
         items[i] = "cpf";
       } else if (items[i].equals("Unit Test Failure")) {
         items[i] = "utf";
       } else if (items[i].equals("Coding Style Failure")) {
         items[i] = "csf";
+      }
+      String[] tocken = orderAndScore.split(":");
+      if(tocken[0].equals("Compile Failure")) {
+
+      } else if (tocken[0].equals("Unit Test Failure")) {
+
+      } else if (tocken[0].equals("Coding Style Failure")) {
+        
       }
     }
     for (int i = 0; i < items.length; i++) {
