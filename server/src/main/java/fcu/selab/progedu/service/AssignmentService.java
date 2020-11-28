@@ -206,29 +206,8 @@ public class AssignmentService {
 
     addProject(assignmentName, releaseTime, deadline, readMe, projectTypeEnum, hasTemplate,
         testZipChecksum, testZipUrl);
-
-    String[] ordersAndScores = order.split(", ");
-    for (String orderAndScore : ordersAndScores) {
-      if (items[i].equals("Compile Failure")) {
-        items[i] = "cpf";
-      } else if (items[i].equals("Unit Test Failure")) {
-        items[i] = "utf";
-      } else if (items[i].equals("Coding Style Failure")) {
-        items[i] = "csf";
-      }
-      String[] tocken = orderAndScore.split(":");
-      if(tocken[0].equals("Compile Failure")) {
-
-      } else if (tocken[0].equals("Unit Test Failure")) {
-
-      } else if (tocken[0].equals("Coding Style Failure")) {
-        
-      }
-    }
-    for (int i = 0; i < items.length; i++) {
-      aaDbManager.addAssignmentAssessment(dbManager.getAssignmentIdByName(assignmentName),
-          csDbManager.getStatusIdByName(items[i]), i + 1);
-    }
+    
+    addOrder(order, assignmentName);
 
     List<User> users = userService.getStudents();
     for (User user : users) {
@@ -345,12 +324,32 @@ public class AssignmentService {
   /**
    * Add a project to database
    *
-   * @param aid        Assignment name
-   * @param sid     status name
-   * @param order      order
+   * @param order   order
    */
-  public void addOrder(int aid, int sid, int order) {
-    aaDbManager.addAssignmentAssessment(aid, sid, order);
+  public void addOrder(String order, String assignmentName) {
+    List<String> ordersList = new ArrayList<>();
+    List<String> scoresList = new ArrayList<>();
+
+    String[] ordersAndScores = order.split(", ");
+    for (String orderAndScore : ordersAndScores) {
+      String[] tocken = orderAndScore.split(":");
+
+      if (tocken[0].equals("Compile Failure")) {
+        ordersList.add("cpf");
+      } else if (tocken[0].equals("Unit Test Failure")) {
+        ordersList.add("utf");
+      } else if (tocken[0].equals("Coding Style Failure")) {
+        ordersList.add("csf");
+      }
+      scoresList.add(tocken[1]);
+    }
+    //write assignment assessment in to data base
+    //addAssignmentAssessment(int aid, int sid, int order, int score)
+    for (int i = 0; i < ordersAndScores.length; i++) {
+      aaDbManager.addAssignmentAssessment(dbManager.getAssignmentIdByName(assignmentName),
+          csDbManager.getStatusIdByName(ordersList.get(i)),
+          i + 1, Integer.valueOf(scoresList.get(i)));
+    }
   }
 
   /**
@@ -412,10 +411,19 @@ public class AssignmentService {
       @FormDataParam("assignmentName") String assignmentName,
       @FormDataParam("releaseTime") Date releaseTime, @FormDataParam("deadline") Date deadline,
       @FormDataParam("readMe") String readMe, @FormDataParam("file") InputStream file,
-      @FormDataParam("file") FormDataContentDisposition fileDetail) {
+      @FormDataParam("file") FormDataContentDisposition fileDetail,
+      @FormDataParam("order") String order) {
     int id = dbManager.getAssignmentIdByName(assignmentName);
     if (fileDetail.getFileName() == null) {
       dbManager.editAssignment(deadline, releaseTime, readMe, id);
+      //delete old assessment first
+      List<Integer> aaIds = aaDbManager.getAssignmentAssessmentIdByaId(id);
+
+      for (int i = 0; i < aaIds.size(); i++) {
+        aaDbManager.deleteAssignmentAssessment(aaIds.get(i));
+      }
+      //add new assessment
+      addOrder(order, assignmentName);
     } else {
       ProjectTypeEnum assignmentType = dbManager.getAssignmentType(assignmentName);
       final AssignmentType assignment = AssignmentFactory
@@ -436,6 +444,14 @@ public class AssignmentService {
       tomcatService.deleteDirectory(new File(testCasePath));
 
       dbManager.editAssignment(deadline, releaseTime, readMe, checksum, id);
+      //delete old assessment first
+      List<Integer> aaIds = aaDbManager.getAssignmentAssessmentIdByaId(id);
+
+      for (int i = 0; i < aaIds.size(); i++) {
+        aaDbManager.deleteAssignmentAssessment(aaIds.get(i));
+      }
+      //add new assessment
+      addOrder(order, assignmentName);
     }
     return Response.ok().build();
   }

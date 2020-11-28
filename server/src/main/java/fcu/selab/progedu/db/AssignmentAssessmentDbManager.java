@@ -40,8 +40,8 @@ public class AssignmentAssessmentDbManager {
    */
   public void addAssignmentAssessment(int aid, int sid, int order, int score) {
     String sql = "INSERT INTO Assignment_Assessment"
-        + " (`aid`, `status`, `order`)"
-        + " VALUES(?, ?, ?)";
+        + " (`aid`, `status`, `order`, `score`)"
+        + " VALUES(?, ?, ?, ?)";
     try (Connection conn = this.database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
       preStmt.setInt(1, aid);
@@ -64,8 +64,8 @@ public class AssignmentAssessmentDbManager {
    */
   public void updateScore(int aid, int order, int score) {
     String sql = "UPDATE ProgEdu.Assignment_Assessment"
-				+ "SET `score` = ? WHERE `id` = ?";
-		int id = getAssignmentAssessmentId(aid, order);
+        + "SET `score` = ? WHERE `id` = ?";
+    int id = getAssignmentAssessmentId(aid, order);
     try (Connection conn = this.database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
       preStmt.setInt(1, score);
@@ -77,73 +77,70 @@ public class AssignmentAssessmentDbManager {
     }
   }
 
-	/**
-   * get AssignmentAssessment id in database
+  /**
+   * get AssignmentAssessment id from database
    * 
    * @param aid Assignment Id
-	 * @param order Assignment order
-	 * @return AssignmentAssessmentId AssignmentAssessmentId
+   * @param order Assignment order
+   * @return AssignmentAssessmentId AssignmentAssessmentId
    */
   public int getAssignmentAssessmentId(int aid, int order) {
+    int id = -1;
     String sql = "SELECT `id` FROM ProgEdu.Assignment_Assessment"
-      + "WHERE `aId` = ? AND `order` = ?";
+        + "WHERE `aId` = ? AND `order` = ?";
     try (Connection conn = this.database.getConnection();
-      	PreparedStatement preStmt = conn.prepareStatement(sql)) {
-    	preStmt.setInt(1, aid);
-    	preStmt.setInt(2, order);
-    	try (ResultSet rs = preStmt.executeQuery()) {
-				while (rs.next()) {
-					int AssignmentAssessmentId = rs.getInt("id");
-				}
-			}
-  	} catch (SQLException e) {
-    	LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
-    	LOGGER.error(e.getMessage());
-		}
-		return AssignmentAssessmentId;
-  }
-  /**
-   * Add AssignmentAssessment to database
-   * 
-   * @param aid Assignment Id
-   */
-  /*public List<Assignment> getAssignmentOrder(int aid) {
-    List<Assignment> orders = new ArrayList<>();
-    String sql = "SELECT status,order FROM Assignment_Assessment"
-        + " WHERE aId = ?";
-
-    try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
       preStmt.setInt(1, aid);
+      preStmt.setInt(2, order);
       try (ResultSet rs = preStmt.executeQuery()) {
         while (rs.next()) {
-          Assignment assignment = new Assignment();
-          int status = rs.getInt("status");
-          int order = rs.getInt("order");
-          StatusEnum statusEnum = csDb.getStatusNameById(status);
-          assignment.setStatus(statusEnum);
-          assignment.getOrder(order);
-          orders.add(assignment);
+          id = rs.getInt("id");
         }
       }
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
     }
-    return orders;
-  }*/
+    return id;
+  }
+
+  /**
+   * get AssignmentAssessment ids by aid from database
+   * 
+   * @param aid Assignment Id
+   * @return aaIds AssignmentAssessmentIds
+   */
+  public List<Integer> getAssignmentAssessmentIdByaId(int aid) {
+    List<Integer> aaIds = new ArrayList<>();
+    String sql = "SELECT `id` FROM ProgEdu.Assignment_Assessment"
+        + "WHERE `aId` = ?";
+    try (Connection conn = this.database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+      preStmt.setInt(1, aid);
+      
+      try (ResultSet rs = preStmt.executeQuery()) {
+        while (rs.next()) {
+          aaIds.add(rs.getInt("id"));
+        }
+      }
+    } catch (SQLException e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    }
+    return aaIds;
+  }
 
   /**
    * Delete AssignmentAssesment to database
    * 
-   * @param aid Assignment Id
+   * @param id Assignment Assessment Id
    */
-  public void deleteAssignmentAssessment(int aid) {
-    String sql = "DELETE FROM Assignment_Assessment WHERE aId = ?";
+  public void deleteAssignmentAssessment(int id) {
+    String sql = "DELETE FROM Assignment_Assessment WHERE `id` = ?";
 
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
-      preStmt.setInt(1, aid);
+      preStmt.setInt(1, id);
       preStmt.executeUpdate();
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
