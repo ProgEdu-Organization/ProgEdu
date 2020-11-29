@@ -616,7 +616,7 @@ public class AssignmentService {
         ordersList.add("test");
       }
     }
-    //------------------------
+    //------------------------make pom.xml
     if (fileType.equals("maven")) {
       MavenAssignmentSetting mas = new MavenAssignmentSetting(assignmentName);
       gass.getSetting(mas, ordersList, assignmentName);

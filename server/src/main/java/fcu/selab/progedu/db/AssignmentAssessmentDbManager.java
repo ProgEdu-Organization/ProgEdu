@@ -120,7 +120,8 @@ public class AssignmentAssessmentDbManager {
       
       try (ResultSet rs = preStmt.executeQuery()) {
         while (rs.next()) {
-          aaIds.add(rs.getInt("id"));
+          int aaId = rs.getInt("id");
+          aaIds.add(aaId);
         }
       }
     } catch (SQLException e) {
@@ -136,7 +137,7 @@ public class AssignmentAssessmentDbManager {
    * @param id Assignment Assessment Id
    */
   public void deleteAssignmentAssessment(int id) {
-    String sql = "DELETE FROM Assignment_Assessment WHERE `id` = ?";
+    String sql = "DELETE FROM ProgEdu.Assignment_Assessment WHERE `id` = ?";
 
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
