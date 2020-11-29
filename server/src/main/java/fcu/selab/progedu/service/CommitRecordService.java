@@ -90,10 +90,15 @@ public class CommitRecordService {
     JSONArray array = new JSONArray();
     for (Assignment assignment : assignmentDb.getAllAssignment()) {
       int auId = auDb.getAuid(assignment.getId(), userId);
+      int statusId = db.getLastStatus(auId);
+      String status = csdb.getStatusNameById(statusId).getType();
+      int score = totalScore(assignmentDb.getAssignmentIdByName(assignment.getName()),
+          status);
       JSONObject ob = new JSONObject();
       ob.put("assignmentName", assignment.getName());
       ob.put("releaseTime", assignment.getReleaseTime());
       ob.put("commitRecord", db.getLastCommitRecord(auId));
+      ob.put("score", score);
       array.put(ob);
     }
     return Response.ok(array.toString()).build();
@@ -311,12 +316,18 @@ public class CommitRecordService {
    * @return score
    */
   public int totalScore(int aid, String status) {
+    int score = 0;
     //1. turn status from string to status id
     int statusId = csdb.getStatusIdByName(status);
     //2. get that status order
-    int order = aaDb.getAssessmentOrder(aid, statusId);
-    //3. total score is less than that order all score
-    int score = aaDb.getScore(aid, order);
+    if (statusId == 1) {
+      //if status == build success
+      score = 100;
+    } else {
+      int order = aaDb.getAssessmentOrder(aid, statusId);
+      //3. total score is less than that order all score
+      score = aaDb.getScore(aid, order);
+    }
 
     return score;
   }
