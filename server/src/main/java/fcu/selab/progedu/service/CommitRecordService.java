@@ -32,6 +32,7 @@ import fcu.selab.progedu.db.AssignmentUserDbManager;
 import fcu.selab.progedu.db.CommitRecordDbManager;
 import fcu.selab.progedu.db.CommitStatusDbManager;
 import fcu.selab.progedu.db.UserDbManager;
+import fcu.selab.progedu.db.AssignmentAssessmentDbManager;
 import fcu.selab.progedu.project.AssignmentFactory;
 import fcu.selab.progedu.project.AssignmentType;
 import fcu.selab.progedu.project.ProjectTypeEnum;
@@ -41,6 +42,7 @@ import fcu.selab.progedu.status.StatusEnum;
 public class CommitRecordService {
   private CommitRecordDbManager db = CommitRecordDbManager.getInstance();
   private AssignmentUserDbManager auDb = AssignmentUserDbManager.getInstance();
+  private AssignmentAssessmentDbManager aaDb = AssignmentAssessmentDbManager.getInstance();
   private UserDbManager userDb = UserDbManager.getInstance();
   private AssignmentDbManager assignmentDb = AssignmentDbManager.getInstance();
   private AssignmentTypeDbManager atDb = AssignmentTypeDbManager.getInstance();
@@ -157,10 +159,13 @@ public class CommitRecordService {
       String message = js.getCommitMessage(jobName, number);
       Date time = commitRecord.getTime();
       String status = commitRecord.getStatus().getType();
+      int score = totalScore(assignmentDb.getAssignmentIdByName(assignmentName),
+          status);
       JSONObject ob = new JSONObject();
       ob.put("totalCommit", totalCommit);
       ob.put("number", number);
       ob.put("status", status.toUpperCase());
+      ob.put("score", score);
       ob.put("time", time);
       ob.put("message", message);
       
@@ -299,4 +304,20 @@ public class CommitRecordService {
     return studentUsers;
   }
 
+  /**
+   * Get score
+   * @param aid assignment ID
+   * @param status String status
+   * @return score
+   */
+  public int totalScore(int aid, String status) {
+    //1. turn status from string to status id
+    int statusId = csdb.getStatusIdByName(status);
+    //2. get that status order
+    int order = aaDb.getAssessmentOrder(aid, statusId);
+    //3. total score is less than that order all score
+    int score = aaDb.getScore(aid, order);
+
+    return score;
+  }
 }

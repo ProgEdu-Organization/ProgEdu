@@ -419,8 +419,8 @@ public class AssignmentService {
       //delete old assessment first
       List<Integer> aaIds = aaDbManager.getAssignmentAssessmentIdByaId(id);
 
-      for (int i = 0; i < aaIds.size(); i++) {
-        aaDbManager.deleteAssignmentAssessment(aaIds.get(i));
+      for (int aaId : aaIds) {
+        aaDbManager.deleteAssignmentAssessment(aaId);
       }
       //add new assessment
       addOrder(order, assignmentName);

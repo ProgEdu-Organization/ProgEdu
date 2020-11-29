@@ -64,7 +64,7 @@ public class AssignmentAssessmentDbManager {
    */
   public void updateScore(int aid, int order, int score) {
     String sql = "UPDATE ProgEdu.Assignment_Assessment"
-        + "SET `score` = ? WHERE `id` = ?";
+        + " SET `score` = ? WHERE `id` = ?";
     int id = getAssignmentAssessmentId(aid, order);
     try (Connection conn = this.database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
@@ -87,7 +87,7 @@ public class AssignmentAssessmentDbManager {
   public int getAssignmentAssessmentId(int aid, int order) {
     int id = -1;
     String sql = "SELECT `id` FROM ProgEdu.Assignment_Assessment"
-        + "WHERE `aId` = ? AND `order` = ?";
+        + " WHERE `aId` = ? AND `order` = ?";
     try (Connection conn = this.database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
       preStmt.setInt(1, aid);
@@ -113,7 +113,7 @@ public class AssignmentAssessmentDbManager {
   public List<Integer> getAssignmentAssessmentIdByaId(int aid) {
     List<Integer> aaIds = new ArrayList<>();
     String sql = "SELECT `id` FROM ProgEdu.Assignment_Assessment"
-        + "WHERE `aId` = ?";
+        + " WHERE `aId` = ?";
     try (Connection conn = this.database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
       preStmt.setInt(1, aid);
@@ -132,7 +132,7 @@ public class AssignmentAssessmentDbManager {
   }
 
   /**
-   * Delete AssignmentAssesment to database
+   * Delete AssignmentAssesment from database
    * 
    * @param id Assignment Assessment Id
    */
@@ -147,5 +147,59 @@ public class AssignmentAssessmentDbManager {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
     }
+  }
+
+  /**
+   * get Assignment order from database
+   * 
+   * @param aid Assignment Id
+   * @param status status
+   * @return assessment order
+   */
+  public int getAssessmentOrder(int aid, int status) {
+    String sql = "SELECT `order` FROM ProgEdu.Assignment_Assessment" 
+        + " WHERE `aId` = ? AND `status` = ?";
+    int order = -1;
+    try (Connection conn = this.database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+      preStmt.setInt(1, aid);
+      preStmt.setInt(2, status);
+      try (ResultSet rs = preStmt.executeQuery()) {
+        while (rs.next()) {
+          order = rs.getInt("order");
+        }
+      }
+    } catch (SQLException e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    }
+    return order;
+  }
+
+  /**
+   * get Assignment score from database
+   * 
+   * @param aid Assignment Id
+   * @param order order
+   * @return total score
+   */
+  public int getScore(int aid, int order) {
+    String sql = "SELECT SUM(`score`) FROM ProgEdu.Assignment_Assessment"
+        + " WHERE `aId` = ? AND `order` < ?";
+    int score = 0;
+    try (Connection conn = this.database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+      preStmt.setInt(1, aid);
+      preStmt.setInt(2, order);
+      try (ResultSet rs = preStmt.executeQuery()) {
+        while (rs.next()) {
+          score = rs.getInt("SUM(`score`)");
+        }
+      }
+    } catch (SQLException e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    }
+    return score;
   }
 }
