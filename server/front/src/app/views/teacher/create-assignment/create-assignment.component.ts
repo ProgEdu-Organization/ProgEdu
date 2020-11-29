@@ -37,7 +37,10 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
   isDis: boolean = true;
   isNull: boolean = true;
 
-  javacStatus = [
+  score = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
+  statusScore = new Map([["Compile Failure", "0"]])
+
+  javaStatus = [
     "Unit Test Failure",
     "Coding Style Failure"
   ];
@@ -129,6 +132,11 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
     }
   }
 
+  selectChangeHandler(status:string, $event) {
+    this.statusScore.set(status, $event.target.value);
+    console.log(this.statusScore);
+  }
+
   selectedAssignmentType(type: string) {
     if (type !== undefined) {
       this.assignment.get('type').setValue(assignmentTypeEnum[type]);
@@ -154,6 +162,13 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
   }
 
   public submit() {
+    this.orderString = "Compile Failure";
+    this.orderString = this.orderString + ':' + this.statusScore.get("Compile Failure");
+    for(let i = 0; i < this.order.length; i++) {
+      this.orderString = this.orderString + ', ' + this.order[i] + ':' + this.statusScore.get(this.order[i]);
+    }
+    console.log(this.orderString);
+    this.assignment.get('assOrder').setValue(this.orderString);
     if (this.assignment.dirty && this.assignment.valid) {
       this.progressModal.show();
       this.createService.createAssignment(this.assignment).subscribe(
@@ -190,7 +205,7 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
 
   public reset() {
     this.order = [];
-    this.javacStatus = [
+    this.javaStatus = [
       "Unit Test Failure",
       "Coding Style Failure"
     ];
