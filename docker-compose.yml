@@ -57,8 +57,7 @@ services:
       - ${DATA_PATH_HOST}/server/images:/usr/local/tomcat/images
 
   jenkins:
-    # image: jenkins/jenkins:lts
-    image: fcumselab/fcu-progedu-jenkins:latest
+    image: fcumselab/fcu-progedu-jenkins:release-1.0.0
     deploy:
       resources:
         limits:
