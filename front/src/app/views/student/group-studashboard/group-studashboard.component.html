@@ -1,0 +1,65 @@
+<div class="animated fadeIn">
+  <div class="col-md-10">
+    <div class='card'>
+      <div class='card-header'>
+        <div class='input-group'>
+          <span class="input-group-prepend">
+            <button class="btn btn-primary" type="button" [disabled]='true'><i class="fa fa-search"></i>
+              Search</button></span>
+          <input type='text' class='form-control col-md-2' [(ngModel)]='search'>
+          <div class='ml-auto'>
+            <span class="ovol NB">
+              Not Build
+            </span>
+            <span class="ovol CPF">
+              Compile Failure
+            </span>
+            <span class="ovol CSF">
+              Coding Style Failure
+            </span>
+            <!-- <p class="ovol plagirism" style="padding: 5px 10px;"><fmt:message key="dashboard_p_plagiarism"/></p> -->
+            <span class="ovol UTF">
+              Unit Test Failure
+            </span>
+            <span class="ovol BS">
+              Build Success
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class='card-body' style="overflow-x:auto;">
+        <table class='table table-striped' style="text-align:center;">
+          <thead>
+            <tr>
+              <th width="15%" class='text-left'>Group Name</th>
+              <th>Project</th>
+              <th>Status</th>
+              <th class='text-left'></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor='let group of groups  | groupFilter:search'>
+              <td width="15%" class='text-left'>{{group.groupName}}</td>
+              <ng-container *ngIf="group.commitRecord">
+                <ng-container *ngFor='let project of group.commitRecord'>
+                  <td>{{project.name}}</td>
+                  <td>
+                    <p id="{{project.name}}" class="circle {{project.status}}">
+                      <a
+                        href="#/studashboard/projectChoose?groupName={{group.groupName}}&&projectName={{project.name}}">{{project.number}}</a>
+                    </p>
+                  </td>
+                </ng-container>
+              </ng-container>
+              <ng-container *ngIf="isNA(group.commitRecord)">
+                <td>N/A</td>
+                <td>N/A</td>
+              </ng-container>
+              <td class='text-left'></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

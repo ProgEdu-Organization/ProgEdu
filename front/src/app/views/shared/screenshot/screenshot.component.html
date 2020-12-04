@@ -1,0 +1,29 @@
+<!--Screenshot Modal-->
+<div bsModal #screenshotModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="dangerModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class='modal-body'>
+        <button type="button" class="close" (click)="screenshotModal.hide();" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <div *ngIf='screenshotUrls && screenshotUrls.length !== 0' [collapse]="false">
+          <span class="h2">#{{commitNumber}} {{selectedScreenshotName}}</span>
+          <hr>
+          <div style="border:2px #000000 solid;" (click)="updateScreenshotName()">
+            <carousel [interval]="false" style="background:black">
+              <slide *ngFor='let url of screenshotUrls'>
+                <a *ngIf='url' href='{{url}}' target="_blank">
+                  <img class='screenshot rounded' src="{{url}}" alt="Screenshot" style="display: block;height: 768px;">
+                </a>
+              </slide>
+            </carousel>
+          </div>
+        </div>
+        <div *ngIf='screenshotUrls && screenshotUrls.length === 0' class='text-center'>
+          <span class="h1">No Screenshot</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

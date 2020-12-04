@@ -1,0 +1,17 @@
+<div *ngIf='bubbleChartData && bubbleChartLabels' class="card">
+  <div class="card-header">
+    {{title}}
+    <div class="card-header-actions">
+      <a href="http://www.chartjs.org">
+        <small class="text-muted">docs</small>
+      </a>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="chart-wrapper">
+      <canvas baseChart class="chart" [datasets]="bubbleChartData" [labels]="bubbleChartLabels"
+        [options]="bubbleChartOptions" [legend]="bubbleChartLegend" [chartType]="bubbleChartType"
+        (chartHover)="chartHovered($event)" (chartClick)="chartClicked($event)"></canvas>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,149 @@
+<div class="animated fadeIn">
+  <div class="row">
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-header">
+          <strong>Basic Form</strong> Elements
+        </div>
+        <form [formGroup]="group" (ngSubmit)="groupSubmit()">
+          <div class="card-body">
+            <div class="form-group row">
+              <label class="col-md-3 col-form-label" for="name">Group Name</label>
+              <div class="col-md-9">
+                <input type="text" id="name" name="name" class="form-control" formControlName='name'>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-md-3 col-form-label" for="projectName">Project Name</label>
+              <div class="col-md-9">
+                <input type="text" id="projectName" name="projectName" class="form-control"
+                  formControlName='projectName'>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-md-3 col-form-label" for="projectType">ProjectType</label>
+              <div class="col-md-9">
+                <select class="form-control" id="projectType" formControlName="projectType">
+                  <option [value]="type" *ngFor="let type of projectTypes"> {{type}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-md-3 col-form-label" for="leader">Leader</label>
+              <div class="col-md-9">
+                <input type="text" id="leader" name="leader" class="form-control" formControlName='leader' readonly>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-md-3 col-form-label" for="member">Group Member</label>
+              <div class="col-md-9">
+                <table class="table">
+                  <tr *ngFor="let member of group.get('member').value;let recordIndex=index;">
+                    <td>
+                      <p class="col-form-label assigned" (click)="setLeader(member)">
+                        {{recordIndex+1}}. {{member[0]}} {{member[1]}}</p>
+                    </td>
+                    <td><button class="badge badge-danger" type='button'
+                        (click)='removeGroupMemberByUsername(member);'>Remove</button>
+                    </td>
+                  </tr>
+                </table>
+                <p class='alert alert-danger' *ngIf="group.get('member').value.length === 0">No member</p>
+              </div>
+            </div>
+          </div>
+          <div class="card-footer">
+            <button class="btn btn-sm btn-primary" [disabled]='!group.valid' type='submit'>Submit</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card">
+        <div class='card-header'>
+          <div class='input-group'>
+            <span>
+              <button class="btn btn-primary" type="button" [disabled]='true'><i class="fa fa-search"></i>
+                Search</button></span>
+            <input type='text' class='form-control col-md-6' [(ngModel)]='search'>
+          </div>
+        </div>
+        <div class="card-body">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Username</th>
+                <th>Name</th>
+                <th>Add To Group</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let user of users | filter:search">
+                <td>{{user.username}}</td>
+                <td>{{user.name}}</td>
+                <td>
+                  <button class="badge badge-success"
+                    (click)='addGroupMemberByUsername(user.username,user.name);'>Add</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-5">
+      <div class="card">
+        <div class="card-body">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Group</th>
+                <th>Leader</th>
+                <th>Members</th>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngFor='let g of exitsGroups'>
+                <tr id="feedback-bar" (click)='switchToGroupDetail(g.name)'>
+                  <td>{{g.name}}</td>
+                  <ng-container *ngFor='let member of g.members'>
+                    <td *ngIf="member.id === g.leader">{{member.name}}</td>
+                  </ng-container>
+                  <td>
+                    <ng-container *ngFor='let member of g.members;let lastMember = last'>
+                      <span *ngIf="member.id !== g.leader">{{member.name}}
+                        <span *ngIf="!lastMember">,</span>
+                      </span>
+                    </ng-container>
+                  </td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--  Wating Create Group -->
+  <div bsModal #myModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Creating Group</h4>
+        </div>
+        <div class="modal-body">
+          <progressbar class="progress-bar progress-bar-striped progress-bar-animated" [value]="dynamic" [max]="max"
+            [type]="type">
+            {{type}}
+          </progressbar>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="switchToGroupDetail()">Back</button>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
+  <progedu-error-modal [errorTitle]='errorTitle' [errorResponse]="errorResponse"></progedu-error-modal>
+</div>
