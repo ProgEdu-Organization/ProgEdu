@@ -15,6 +15,10 @@ services:
 
   gitlab:
     image: gitlab/gitlab-ce:12.5.6-ce.0
+    deploy:
+      resources:
+        limits:
+          memory: 2050M
     ports:
       - "${GITLAB_HTTP_PORT}:80"
       - "${GITLAB_SSH_PORT}:22"
@@ -54,16 +58,13 @@ services:
 
   jenkins:
     # image: jenkins/jenkins:lts
-    image: fcumselab/progedu-jenkins:latest
-    build:
-      context: ./jenkins
-      args:
-        - SDK_SETUP=${SDK_SETUP}
-        - SDK_PLATFORMS=${SDK_PLATFORMS}
-        - SDK_BUILD_TOOLS=${SDK_BUILD_TOOLS}
+    image: fcumselab/fcu-progedu-jenkins:latest
+    deploy:
+      resources:
+        limits:
+          memory: 1024M
     ports:
       - "${JENKINS_PORT}:8080"
-      # - "30000:50000"
     restart: always
     privileged: true
     environment:
@@ -79,6 +80,7 @@ services:
     restart: always
     volumes:
       - ${DATA_PATH_HOST}/jenkins/workspace:/var/lib/workspace
+
   mongo:
     image: fcumselab/progedu-mongo:release-1.0.1
     ports:
