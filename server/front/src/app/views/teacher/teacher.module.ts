@@ -50,7 +50,7 @@ import { SortablejsModule } from 'ngx-sortablejs';
         TabsModule.forRoot(),
         CKEditorModule,
         TabsModule.forRoot(),
-        SortablejsModule.forRoot({})
+        SortablejsModule.forRoot({}),
         HttpClientModule
     ],
     declarations: [
