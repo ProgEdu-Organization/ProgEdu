@@ -95,7 +95,7 @@ public class CommitRecordService {
     for (Assignment assignment : assignmentDb.getAllAssignment()) {
       int auId = auDb.getAuid(assignment.getId(), userId);
       int statusId = db.getLastStatus(auId);
-      String status = csdb.getStatusNameById(statusId).getType();
+      String status = csDb.getStatusNameById(statusId).getType();
       int score = totalScore(assignmentDb.getAssignmentIdByName(assignment.getName()),
           status);
       JSONObject ob = new JSONObject();
@@ -356,7 +356,7 @@ public class CommitRecordService {
   public int totalScore(int aid, String status) {
     int score = 0;
     //1. turn status from string to status id
-    int statusId = csdb.getStatusIdByName(status);
+    int statusId = csDb.getStatusIdByName(status);
     //2. get that status order
     if (statusId == 1) {
       //if status == build success

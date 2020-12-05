@@ -273,8 +273,8 @@ public class AssignmentService {
     try {
 
       // 1. create assignment
-      createAssignment(assignmentName,
-          releaseTime, deadline, readMe, assignmentType, file, fileDetail);
+      createAssignment(assignmentName, releaseTime, deadline,
+          readMe, assignmentType, file, fileDetail, "");
 
       // 2. create peer review setting
       int assignmentId = dbManager.getAssignmentIdByName(assignmentName);
@@ -826,6 +826,7 @@ public class AssignmentService {
     
     return response.build();
   }
+
   /**
    * improvise random student to review different student's hw
    *
