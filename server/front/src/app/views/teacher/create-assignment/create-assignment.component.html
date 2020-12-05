@@ -136,9 +136,24 @@
           <!-- Nav tabs -->
           <tabset>
             <!---- Java ---->
-            <tab heading="Javac">
+            <tab heading="Java">
               <div class="form-group row">
-                <label class="col-md-3 col-form-label" for="inline-radios">Javac File</label>
+                <label class="col-md-3 col-form-label" for="type">Type Radios</label>
+                <div class="col-md-9">
+                  <div class="form-check form-check-inline mr-1">
+                    <input class="form-check-input" type="radio" name="type" id="inlineRadio1" value="javac"
+                      formControlName='type'>
+                    <label class="form-check-label" for="inlineRadio1">Java</label>
+                  </div>
+                  <div class="form-check form-check-inline mr-1">
+                    <input class="form-check-input" type="radio" name="type" id="inlineRadio2" value="maven"
+                      formControlName='type'>
+                    <label class="form-check-label" for="inlineRadio2">Maven</label>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-md-3 col-form-label" for="inline-radios">Java File</label>
                 <div class="col-md-9">
                   <div class="btn-group" dropdown [isOpen]="javaTabStatus.isOpen" placement="top">
                     <button dropdownToggle type="button" class="btn btn-primary dropdown-toggle">
@@ -152,21 +167,6 @@
                           download>MvnQuickStart.zip</a>
                       </li>
                     </ul>
-                  </div>
-                </div>
-              </div>
-              <div class="form-group row">
-                <label class="col-md-3 col-form-label" for="type">Type Radios</label>
-                <div class="col-md-9">
-                  <div class="form-check form-check-inline mr-1">
-                    <input class="form-check-input" type="radio" name="type" id="inlineRadio1" value="javac"
-                      formControlName='type'>
-                    <label class="form-check-label" for="inlineRadio1">Java</label>
-                  </div>
-                  <div class="form-check form-check-inline mr-1">
-                    <input class="form-check-input" type="radio" name="type" id="inlineRadio2" value="maven"
-                      formControlName='type'>
-                    <label class="form-check-label" for="inlineRadio2">Maven</label>
                   </div>
                 </div>
               </div>
