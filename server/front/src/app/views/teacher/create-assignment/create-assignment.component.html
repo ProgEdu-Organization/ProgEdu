@@ -152,6 +152,36 @@
                   </div>
                 </div>
               </div>
+              <div *ngIf="isShow === true">
+                <div class="form-group row">
+                  <div class="col-md-3">Assignment Assessment</div>
+                  <div class="col-md-3">Status :</div>
+                  <div class="col-md-2">Order & Score :</div>          
+                </div>
+                <div class="form-group row">
+                  <div class="col-md-3"></div>
+                  <div class="col-md-3">
+                    <ul class="list-group sortable" [sortablejs]="javaStatus" [sortablejsOptions]="normalOptions">
+                      <li class="list-group-item" *ngFor="let item of javaStatus">{{ item }}</li>
+                    </ul>
+                  </div>
+                  <div class="col-md-2">
+                    <li class="list-group-item sortable" draggable="false" style="cursor: not-allowed; 
+                        background-color: white;">1.&nbsp;Compile Failure
+                        <select class="form-control" (change)="selectChangeHandler('Compile Failure', $event)">
+                          <option *ngFor="let op of score" value="{{ op }}">{{ op }}%</option>
+                        </select>
+                    </li>
+                    <ul class="list-group sortable" [sortablejs]="order" [sortablejsOptions]="normalOptions">
+                      <li class="list-group-item" *ngFor="let item of order; let i = index;">{{ i+2 }}. {{ item }}
+                        <select class="form-control" (change)="selectChangeHandler(item, $event)">
+                          <option *ngFor="let op of score" value="{{ op }}">{{ op }}%</option>
+                        </select>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
               <div class="form-group row">
                 <label class="col-md-3 col-form-label" for="inline-radios">Java File</label>
                 <div class="col-md-9">
@@ -163,7 +193,7 @@
                       <li role="menuitem"><a class="dropdown-item" href="{{SERVER_URL}}/resources/JavacQuickStart.zip"
                           download>JavacQuickStart.zip</a>
                       </li>
-                      <li role="menuitem"><a class="dropdown-item" href="{{SERVER_URL}}/resources/MvnQuickStart.zip"
+                      <li role="menuitem"><a class="dropdown-item" href="" (click)="confirm()"
                           download>MvnQuickStart.zip</a>
                       </li>
                     </ul>
