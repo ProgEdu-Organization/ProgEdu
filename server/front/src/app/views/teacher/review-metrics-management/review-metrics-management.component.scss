@@ -1,0 +1,29 @@
+tr.category:hover{
+    background-color: #DDD;
+    cursor:pointer;
+}
+tr.category.selected {
+    background-color: #DDD;
+    color: gray;
+}
+
+tr.assessment:hover{
+    background-color: #DDD;
+    cursor:pointer;
+}
+tr.assessment.selected {
+    background-color: #DDD;
+    color: gray;
+}
+
+table {
+    text-align: left;
+    position: relative;
+    border-collapse: collapse; 
+  }
+  th {
+    background: white;
+    position: sticky;
+    top: 0;
+    box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
+  }

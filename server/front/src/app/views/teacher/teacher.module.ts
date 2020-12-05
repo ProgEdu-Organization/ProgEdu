@@ -1,3 +1,7 @@
+import { ReviewStatusDashboardComponent } from './review-status-dashboard/review-status-dashboard.component';
+import { ReviewDashboardComponent } from './review-dashboard/review-dashboard.component';
+import { HttpClientModule } from '@angular/common/http';
+import { ReviewMetricsManagementComponent } from './review-metrics-management/review-metrics-management.component';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
@@ -43,9 +47,11 @@ import { SortablejsModule } from 'ngx-sortablejs';
         CollapseModule,
         CarouselModule,
         SharedModule,
+        TabsModule.forRoot(),
         CKEditorModule,
         TabsModule.forRoot(),
         SortablejsModule.forRoot({})
+        HttpClientModule
     ],
     declarations: [
         DashboardComponent,
@@ -56,6 +62,9 @@ import { SortablejsModule } from 'ngx-sortablejs';
         GroupManagementComponent,
         EditGroupManagementComponent,
         CreateGroupComponent,
+        ReviewMetricsManagementComponent,
+        ReviewDashboardComponent,
+        ReviewStatusDashboardComponent,
     ]
 })
 export class TeacherModule { }

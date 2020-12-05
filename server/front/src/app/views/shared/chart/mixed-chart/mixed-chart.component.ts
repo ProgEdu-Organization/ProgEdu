@@ -31,7 +31,7 @@ export class MixedChartComponent implements OnInit {
         data: [18, 48, 77, 9, 100, 27, 40], label: this.status.checkStyleError.name, fill: false, type: 'line',
       },
       {
-        data: [18, 48, 77, 9, 100, 27, 40], label: this.status.initial.name, fill: false, type: 'line',
+        data: [18, 48, 77, 9, 100, 27, 40], label: this.status.notBuild.name, fill: false, type: 'line',
       },
       {
         data: [18, 22, 77, 9, 31, 27, 40], label: this.status.testFailure.name, fill: false, type: 'line',

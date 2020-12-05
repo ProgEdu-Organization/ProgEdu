@@ -1,4 +1,5 @@
-import { Component, OnDestroy, Inject, OnInit, ViewChild } from '@angular/core';
+import { StudentEvent } from '../../services/student-event';
+import { Component, OnDestroy, Inject, OnInit, ViewChild, HostListener } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { navItems } from './_nav';
 import { JwtService } from '../../services/jwt.service';
@@ -9,10 +10,12 @@ import { ModalDirective } from 'ngx-bootstrap/modal';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import * as $ from 'jquery';
 import { ɵangular_packages_platform_browser_platform_browser_d } from '@angular/platform-browser';
+import { StudentEventsService } from './../../services/student-events-log.service';
 
 @Component({
   selector: 'app-dashboard',
-  templateUrl: './default-layout.component.html'
+  templateUrl: './default-layout.component.html',
+  styleUrls: ['./default-layout.component.scss']
 })
 export class DefaultLayoutComponent implements OnDestroy, OnInit {
   public navData: Array<any> = new Array<any>();
@@ -35,7 +38,9 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
   isConfirm: boolean = false;
   @ViewChild('modifySecretModal', { static: false }) public modifySecretModal: ModalDirective;
 
+  toggle_use: number = 0;
   constructor(@Inject(DOCUMENT) _document?: any, private defaultLayoutService?: DefaultLayoutService,
+    private studentEventsService?: StudentEventsService,
     private fb?: FormBuilder,
     private jwtService?: JwtService, private router?: Router) {
     this.changes = new MutationObserver((mutations) => {
@@ -47,6 +52,9 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
       attributeFilter: ['class']
     });
 
+  }
+  emitStudentEvent(event: StudentEvent) {
+    this.studentEventsService.createReviewRecord(event);
   }
 
   ngOnInit() {
@@ -140,7 +148,17 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
   }
 
   logout() {
+    // logout event emit
+    if (this.user.isStudent) {
+      const event: StudentEvent = {
+        name: 'progedu.logout',
+        event: {},
+        page: this.router.url
+      };
+      this.emitStudentEvent(event);
+    }
     this.jwtService.removeToken();
+    this.router.navigate(['login']);
   }
 
   modifySecret() {
@@ -165,11 +183,24 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
 
   change(value: boolean): void {
     this.status.isOpen = value;
+    this.toggle_use++;
   }
 
 
   ngOnDestroy(): void {
     this.changes.disconnect();
     this.status.isOpen = false;
+  }
+
+  @HostListener('window:beforeunload', ['$event'])
+  beforeunloadHandler(event): void {
+    const exit_event = {
+      name: 'progedu.exit',
+      page: this.router.url,
+      event: {}
+    };
+    if ( this.isStudent === true) {
+      this.emitStudentEvent(exit_event);
+    }
   }
 }
