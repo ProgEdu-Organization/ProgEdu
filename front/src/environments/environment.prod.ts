@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  SERVER_URL: ''
+  SERVER_URL: '$BACK_END_URL'
 };

@@ -55,6 +55,17 @@ services:
       - ${DATA_PATH_HOST}/server/temp:/usr/local/tomcat/temp
       - ${DATA_PATH_HOST}/server/logs:/usr/local/tomcat/logs
       - ${DATA_PATH_HOST}/server/images:/usr/local/tomcat/images
+  
+      
+  front-end:
+    build:
+      context: ./front
+      args:
+        - BACK_END_URL=${WEB_EXTERNAL_URL}
+    ports:
+      - "${FRONT_END_PORT}:80"
+    restart: always
+    
 
   jenkins:
     image: fcumselab/fcu-progedu-jenkins:release-1.0.0
