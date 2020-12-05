@@ -183,7 +183,8 @@ public class RoleUserDbManager {
       preStmt.executeUpdate();
 
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
   }
 

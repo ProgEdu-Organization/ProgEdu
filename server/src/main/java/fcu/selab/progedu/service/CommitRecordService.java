@@ -18,8 +18,11 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import fcu.selab.progedu.utils.ExceptionUtil;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fcu.selab.progedu.conn.GitlabService;
 import fcu.selab.progedu.conn.JenkinsService;
@@ -46,9 +49,10 @@ public class CommitRecordService {
   private UserDbManager userDb = UserDbManager.getInstance();
   private AssignmentDbManager assignmentDb = AssignmentDbManager.getInstance();
   private AssignmentTypeDbManager atDb = AssignmentTypeDbManager.getInstance();
-  private CommitStatusDbManager csdb = CommitStatusDbManager.getInstance();
+  private CommitStatusDbManager csDb = CommitStatusDbManager.getInstance();
   private JenkinsService js = JenkinsService.getInstance();
   private GitlabService gs = GitlabService.getInstance();
+  private static final Logger LOGGER = LoggerFactory.getLogger(CommitRecordService.class);
 
   /**
    * get all commit result.
@@ -91,7 +95,7 @@ public class CommitRecordService {
     for (Assignment assignment : assignmentDb.getAllAssignment()) {
       int auId = auDb.getAuid(assignment.getId(), userId);
       int statusId = db.getLastStatus(auId);
-      String status = csdb.getStatusNameById(statusId).getType();
+      String status = csDb.getStatusNameById(statusId).getType();
       int score = totalScore(assignmentDb.getAssignmentIdByName(assignment.getName()),
           status);
       JSONObject ob = new JSONObject();
@@ -102,6 +106,40 @@ public class CommitRecordService {
       array.put(ob);
     }
     return Response.ok(array.toString()).build();
+  }
+
+  /**
+   * get all commit record from auto assessment of one student
+   *
+   * @return homework, commit status, commit number
+   */
+  @GET
+  @Path("autoAssessment")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response getAutoAssessment(@QueryParam("username") String username) {
+    Response response = null;
+
+    try {
+      int userId = userDb.getUserIdByUsername(username);
+      JSONArray array = new JSONArray();
+
+      for (Assignment assignment: assignmentDb.getAutoAssessment()) {
+        int auId = auDb.getAuid(assignment.getId(), userId);
+        JSONObject ob = new JSONObject();
+        ob.put("assignmentName", assignment.getName());
+        ob.put("releaseTime", assignment.getReleaseTime());
+        ob.put("commitRecord", db.getLastCommitRecord(auId));
+        array.put(ob);
+      }
+
+      response = Response.ok(array.toString()).build();
+    } catch (Exception e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+      response = Response.serverError().entity(e.getMessage()).build();
+    }
+
+    return response;
   }
 
   /**
@@ -289,7 +327,7 @@ public class CommitRecordService {
 
   private String getStatusTypeName(int auId, int number) {
     int statusId = db.getCommitRecordStatus(auId, number);
-    return csdb.getStatusNameById(statusId).getType();
+    return csDb.getStatusNameById(statusId).getType();
   }
 
   /**
@@ -318,7 +356,7 @@ public class CommitRecordService {
   public int totalScore(int aid, String status) {
     int score = 0;
     //1. turn status from string to status id
-    int statusId = csdb.getStatusIdByName(status);
+    int statusId = csDb.getStatusIdByName(status);
     //2. get that status order
     if (statusId == 1) {
       //if status == build success

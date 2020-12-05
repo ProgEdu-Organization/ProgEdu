@@ -3,7 +3,7 @@
   <div class="card-body">
     <div class='col-md-12 d-flex flex-row text'>
       <span class="ovol NB ">
-        Initial
+        Not Build
       </span>
       <span *ngIf="type !== 'WEB'" class="ovol CPF">
         Compile Failure
@@ -25,7 +25,7 @@
         Unit Test Failure
       </span>
       <span *ngIf="type === 'ANDROID'" class="ovol UITF">
-        E2E Test Failure
+        UI Test Failure
       </span>
       <span class="ovol BS">
         Build Success
@@ -38,6 +38,7 @@
           <tr>
             <th>Commit</th>
             <th>Light</th>
+            <th>Score</th>
             <th>Date</th>
             <th>Commit Message</th>
             <th *ngIf='showCommiter'>Committer</th>
@@ -50,10 +51,9 @@
             <td>
               <p class="circle {{commit.status}}"></p>
             </td>
+            <td class='w-10'>{{commit.score}}</td>
             <td class='w-25'>{{commit.time | date:'short'}}</td>
-            <td class='w-50'>
-              {{commit.message | lineBreaks}}
-            </td>
+            <td class='w-50'>{{commit.message}}</td>
             <td *ngIf='showCommiter'>{{commit.committer}}</td>
             <td *ngIf="isShowScreenshot()"><button class="btn btn-primary" (click)='screenshot.screenshotModal.show();'>
                 <i class="cui-screen-desktop"></i></button></td>
@@ -63,46 +63,36 @@
       <pagination [totalItems]="totalCommits"  [(ngModel)]="currentPage"  [itemsPerPage]="5" 
       [maxSize]="10" (pageChanged)="pageChanged($event)"  previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;" 
       lastText="&raquo;" [boundaryLinks]="true"></pagination>
-      <!--<ul class="pagination">
-        <li class="page-item"><a class="page-link" href="javascript:void(0);" (click)="firstPage();">&lt;&lt;</a></li>
-        <li class="page-item"><a class="page-link" href="javascript:void(0);" (click)="prePage();">Prev</a></li>
-        <li class="page-item active">
-          <a class="page-link" href="javascript:void(0);"
-            (click)="currentPagination = currentPagination">{{currentPagination}}</a>
-        </li>
-        <li class="page-item"><a class="page-link" href="javascript:void(0);" (click)="nextPage();">Next</a></li>
-        <li class="page-item"><a class="page-link" href="javascript:void(0);" (click)="lastPage();">&gt;&gt;</a></li>
-      </ul>-->
     </div>
     <hr>
     <span><a>
-        <h3>Feedback Information #{{commitNumber}}</h3>
+        <h3>Feedback Information {{commitNumber}}</h3>
       </a></span>
     <table class='table table-responsive-sm table-bordered table-hover table-outline'>
       <thead class="thead-light">
         <tr>
-          <th>fileName</th>
-          <th>Line</th>
-          <th>Message</th>
-          <th>Symptom</th>
+          <th class='w-20'>fileName</th>
+          <th class='w-10'>Line</th>
+          <th class='w-30'>Message</th>
+          <th class='w-30'>Symptom</th>
           <th>Suggest</th>
         </tr>
       </thead>
       <tr *ngFor="let feedback of feedbacks" id='feedback-bar'>
-        <td class='w-5'>
+        <td>
           <pre>{{feedback.fileName}}</pre>
         </td>
-        <td class='w-5'>
+        <td>
           <pre>{{feedback.line}}</pre>
         </td>
-        <td class='w-40'>
-          <pre style="white-space:pre-wrap;">{{feedback.message}}</pre>
-        </td>
-        <td class='w-20'>
-          <pre style="white-space:pre-wrap;">{{feedback.symptom}}</pre>
+        <td>
+          <pre [innerHTML]='feedback.message | lineBreaks'></pre>
         </td>
         <td>
-          <pre><a href='{{feedback.suggest}}' target=" blank">Click Me</a></pre>
+          <pre>{{feedback.symptom}}</pre>
+        </td>
+        <td>
+          <pre><a href='{{feedback.suggest}}' target="blank">{{feedback.suggest}}</a></pre>
         </td>
       </tr>
     </table>

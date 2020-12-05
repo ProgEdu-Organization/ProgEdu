@@ -1,0 +1,28 @@
+li:hover>a{
+    cursor: pointer;
+}
+.subMenu{
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: white;
+    -ms-transform: translate(100%,0);
+    -webkit-transform: translate(100%,0);
+    transform:translate(100%,0);
+    display: none;
+
+}
+.subMenu li{
+    background-color: white;
+    border: 1px solid rgb(200, 206, 211);
+    border-radius: 5px;
+    position: absolute;
+}
+.mainMenu>li:hover .subMenu{
+    display: block;
+}
+ul{
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}

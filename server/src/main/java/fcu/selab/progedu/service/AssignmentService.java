@@ -6,10 +6,12 @@ import java.io.InputStream;
 import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.text.DateFormat;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
+import java.util.TimeZone;
 
 import javax.lang.model.element.Name;
 import javax.mail.Message;
@@ -30,6 +32,16 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
+import fcu.selab.progedu.data.AssignmentUser;
+import fcu.selab.progedu.data.PairMatching;
+import fcu.selab.progedu.data.ReviewRecord;
+import fcu.selab.progedu.data.ReviewSetting;
+import fcu.selab.progedu.db.PairMatchingDbManager;
+import fcu.selab.progedu.db.ReviewRecordDbManager;
+import fcu.selab.progedu.db.ReviewSettingDbManager;
+import fcu.selab.progedu.db.ReviewSettingMetricsDbManager;
+import fcu.selab.progedu.db.ReviewStatusDbManager;
+import org.json.JSONArray;
 import org.jsoup.nodes.Document;
 import org.gitlab.api.models.GitlabProject;
 import org.gitlab.api.models.GitlabUser;
@@ -97,6 +109,11 @@ public class AssignmentService {
   private CommitStatusDbManager csDbManager = CommitStatusDbManager.getInstance();
   private CommitRecordDbManager crDbManager = CommitRecordDbManager.getInstance();
   private ScreenshotRecordDbManager srDbManager = ScreenshotRecordDbManager.getInstance();
+  private ReviewSettingDbManager rsDbManager = ReviewSettingDbManager.getInstance();
+  private PairMatchingDbManager pmDbManager = PairMatchingDbManager.getInstance();
+  private ReviewSettingMetricsDbManager rsmDbManager = ReviewSettingMetricsDbManager.getInstance();
+  private ReviewRecordDbManager rrDbManager = ReviewRecordDbManager.getInstance();
+  private ReviewStatusDbManager reviewStatusDbManager = ReviewStatusDbManager.getInstance();
   private final String tempDir = System.getProperty("java.io.tmpdir");
   private final String uploadDir = tempDir + "/uploads/";
   private final String testDir = tempDir + "/tests/";
@@ -127,11 +144,12 @@ public class AssignmentService {
   }
 
   /**
-   * @param assignmentName abc
-   * @param readMe         abc
-   * @param assignmentType abc
-   * @param file           abc
-   * @param fileDetail     abc
+   * @param assignmentName assignment name
+   * @param releaseTime    release time
+   * @param readMe         read me
+   * @param assignmentType assignment type
+   * @param file           file
+   * @param fileDetail     file detail
    * @return abc
    * @throws Exception abc
    */
@@ -155,8 +173,8 @@ public class AssignmentService {
     // 2. Clone the project to C:\\Users\\users\\AppData\\Temp\\uploads
     final String cloneDirectoryPath = gitlabService.cloneProject(gitlabRootUsername,
         assignmentName);
-//
-//    // 3. Store Zip File to folder if file is not empty
+
+    // 3. Store Zip File to folder if file is not empty
     String filePath = tomcatService.storeFileToServer(file, fileDetail, assignment);
 
     // 4. Unzip the uploaded file to tests folder and uploads folder on tomcat,
@@ -201,7 +219,7 @@ public class AssignmentService {
     java.nio.file.Path projectTestDirectory = Paths.get(testDir, assignmentName);
     tomcatService.deleteDirectory(projectTestDirectory.toFile());
 
-    // 10. import project infomation to database
+    // 10. import project information to database
     boolean hasTemplate = false;
 
     addProject(assignmentName, releaseTime, deadline, readMe, projectTypeEnum, hasTemplate,
@@ -217,6 +235,136 @@ public class AssignmentService {
     // 11. remove project file in linux
     tomcatService.deleteDirectory(new File(uploadDir));
     return Response.ok().build();
+  }
+
+  /**
+   * @param assignmentName    assignment name
+   * @param releaseTime       release time
+   * @param readMe            read me
+   * @param assignmentType    assignment type
+   * @param file              file
+   * @param fileDetail        file detail
+   * @param amount            amount
+   * @param reviewStartTime   review release time
+   * @param reviewEndTime     review deadline
+   * @param metrics           metrics
+   * @return response
+   * @throws Exception abc
+   */
+  @POST
+  @Path("peerReview/create")
+  @Consumes(MediaType.MULTIPART_FORM_DATA)
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response createPeerReview(
+      @FormDataParam("assignmentName") String assignmentName,
+      @FormDataParam("releaseTime") Date releaseTime,
+      @FormDataParam("deadline") Date deadline,
+      @FormDataParam("readMe") String readMe,
+      @FormDataParam("fileRadio") String assignmentType,
+      @FormDataParam("file") InputStream file,
+      @FormDataParam("file") FormDataContentDisposition fileDetail,
+      @FormDataParam("amount") int amount,
+      @FormDataParam("reviewStartTime") Date reviewStartTime,
+      @FormDataParam("reviewEndTime") Date reviewEndTime,
+      @FormDataParam("metrics") String metrics
+  ) {
+    Response response = null;
+
+    try {
+
+      // 1. create assignment
+      createAssignment(assignmentName, releaseTime, deadline,
+          readMe, assignmentType, file, fileDetail, "");
+
+      // 2. create peer review setting
+      int assignmentId = dbManager.getAssignmentIdByName(assignmentName);
+      rsDbManager.insertReviewSetting(assignmentId, amount, reviewStartTime, reviewEndTime);
+
+      // 3. set review metrics for specific peer review
+      int reviewSettingId = rsDbManager.getReviewSettingIdByAid(assignmentId);
+      int[] array = arrayStringToIntArray(metrics);
+      for (int item: array) {
+        rsmDbManager.insertReviewSettingMetrics(reviewSettingId, item);
+      }
+
+      // 4. set random reviewer and review status for each assignment_user
+      randomPairMatching(amount, assignmentName);
+
+      response = Response.ok().build();
+    } catch (Exception e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+      response = Response.serverError().entity(e.getMessage()).build();
+    }
+    return response;
+  }
+
+  /**
+   * Get all assignment which is assign as pair review
+   */
+  @GET
+  @Path("peerReview/allAssignment")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response getAllReviewAssignment() {
+    Response response = null;
+
+    try {
+      List<Assignment> assignmentList = dbManager.getAllReviewAssignment();
+      TimeZone.setDefault(TimeZone.getTimeZone("Asia/Taipei"));
+      Date current = new Date();
+      for (Assignment assignment : assignmentList) {
+        if (current.compareTo(assignment.getReleaseTime()) >= 0) {
+          updatePairMatchingStatusByAid(assignment.getId());
+        }
+      }
+      JSONObject result = new JSONObject();
+      JSONArray array = new JSONArray();
+      for (Assignment assignment : assignmentList) {
+        JSONObject ob = new JSONObject();
+        ReviewSetting reviewSetting = rsDbManager.getReviewSetting(assignment.getId());
+        ob.put("id", assignment.getId());
+        ob.put("name", assignment.getName());
+        ob.put("createTime", assignment.getCreateTime());
+        ob.put("deadline", assignment.getDeadline());
+        ob.put("releaseTime", assignment.getReleaseTime());
+        ob.put("display", assignment.isDisplay());
+        ob.put("description", assignment.getDescription());
+        ob.put("reviewReleaseTime", reviewSetting.getReleaseTime());
+        ob.put("reviewDeadline", reviewSetting.getDeadline());
+        array.put(ob);
+      }
+      result.put("allReviewAssignments", array);
+
+      response = Response.ok().entity(result.toString()).build();
+    } catch (Exception e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+      response = Response.serverError().entity(e.getMessage()).build();
+    }
+    return response;
+  }
+
+  /**
+   * Get all assignment which is assign as auto assessment
+   */
+  @GET
+  @Path("autoAssessment/allAssignment")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response getAllAutoAssignment() {
+    Response response = null;
+
+    try {
+      List<Assignment> assignmentList = dbManager.getAutoAssessment();
+      JSONObject ob = new JSONObject();
+      ob.put("allAutoAssessment", assignmentList);
+
+      response = Response.ok().entity(ob.toString()).build();
+    } catch (Exception e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+      response = Response.serverError().entity(e.getMessage()).build();
+    }
+    return response;
   }
 
   private void createRootProject(String name) {
@@ -375,26 +523,41 @@ public class AssignmentService {
   @Path("delete")
   @Produces(MediaType.APPLICATION_JSON)
   public Response deleteProject(@FormDataParam("assignmentName") String name) {
-    Linux linuxApi = new Linux();
-    // delete tomcat test file
+    Response response = null;
 
-    String removeZipTestFileCommand = testDir + name + ".zip";
-    tomcatService.deleteFile(new File(removeZipTestFileCommand));
-    // delete db
-    deleteAssignmentDatabase(name);
+    try {
+      Linux linuxApi = new Linux();
+      
+      // delete tomcat test file
+      String removeZipTestFileCommand = testDir + name + ".zip";
+      tomcatService.removeFile(removeZipTestFileCommand);
 
-    // delete gitlab
-    gitlabService.deleteProjects(name);
+      // if this assignment was assigned as pair review, delete review db
+      if (rsDbManager.checkAssignmentByAid(name)) {
+        deleteReviewDatabase(name);
+      }
 
-    // delete Jenkins
+      // delete db
+      deleteAssignmentDatabase(name);
 
-    List<User> users = userService.getStudents();
+      // delete gitlab
+      gitlabService.deleteProjects(name);
 
-    for (User user : users) {
-      String jobName = jenkins.getJobName(user.getUsername(), name);
-      jenkins.deleteJob(jobName);
+      // delete Jenkins
+
+      List<User> users = userService.getStudents();
+
+      for (User user : users) {
+        String jobName = jenkins.getJobName(user.getUsername(), name);
+        jenkins.deleteJob(jobName);
+      }
+      response = Response.ok().build();
+    } catch (Exception e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+      response = Response.serverError().entity(e.getMessage()).build();
     }
-    return Response.ok().build();
+    return response;
   }
 
   /**
@@ -565,6 +728,26 @@ public class AssignmentService {
 
   }
 
+  /**
+   *  delete assignment form pair review db
+   */
+  public void deleteReviewDatabase(String assignmentName) throws SQLException {
+    int aid = dbManager.getAssignmentIdByName(assignmentName);
+    int reviewSettingId = rsDbManager.getReviewSettingIdByAid(aid);
+    List<AssignmentUser> auList = auDbManager.getAssignmentUserListByAid(aid);
+
+    for (AssignmentUser au : auList) {
+      List<PairMatching> pmList = pmDbManager.getPairMatchingByAuId(au.getId());
+      for (PairMatching pm : pmList) {
+        rrDbManager.deleteReviewRecordByPmId(pm.getId());
+        pmDbManager.deletePairMatchingById(pm.getId());
+      }
+    }
+
+    rsmDbManager.deleteReviewSettingMetricsByAssignmentId(reviewSettingId);
+    rsDbManager.deleteReviewSettingByAId(aid);
+  }
+
   private void createAssignmentSettings(String username, String assignmentName) {
     ProjectTypeEnum assignmentTypeEnum = dbManager.getAssignmentType(assignmentName);
     AssignmentType assignment = AssignmentFactory
@@ -646,5 +829,90 @@ public class AssignmentService {
     response.header("Content-Disposition", "attachment;filename=" + fileName + ".zip");
     
     return response.build();
+  }
+
+  /**
+   * improvise random student to review different student's hw
+   *
+   * @param amount number of reviewer
+   * @param assignmentName assignment name
+   */
+  public void randomPairMatching(int amount, String assignmentName) throws SQLException {
+    int aid = dbManager.getAssignmentIdByName(assignmentName);
+    List<User> userList = userService.getStudents();
+    List<AssignmentUser> assignmentUserList = auDbManager.getAssignmentUserListByAid(aid);
+    int randomNumber;
+
+    while (true) {
+      randomNumber = (int) (Math.random() * userList.size());
+      if (assignmentUserList.get(randomNumber).getUid() != userList.get(0).getId()) {
+        break;
+      }
+    }
+
+    for (int count = 0; count < amount; count++) {
+      int userSize = userList.size();
+      List<PairMatching> insertPairMatchingList = new ArrayList<>();
+      for (int order = 0; order < userSize; order++) {
+        int totalCount = randomNumber + order + count;
+        int mod = totalCount % userSize;
+
+        if (assignmentUserList.get(mod).getUid() == userList.get(order).getId()) {
+          randomNumber++;
+          totalCount = randomNumber + order + count;
+          mod = totalCount % userSize;
+        }
+
+        PairMatching pairMatching = new PairMatching();
+        pairMatching.setAuId(assignmentUserList.get(mod).getId());
+        pairMatching.setReviewId(userList.get(order).getId());
+        pairMatching.setReviewStatusEnum(ReviewStatusEnum.INIT);
+
+        insertPairMatchingList.add(pairMatching);
+      }
+
+      pmDbManager.insertPairMatchingList(insertPairMatchingList);
+    }
+  }
+
+  /**
+   * split string to array
+   *
+   * @param metrics metrics
+   */
+  public int[] arrayStringToIntArray(String metrics) {
+    String[] items = metrics.split(",");
+    int[] array = new int[items.length];
+
+    for (int i = 0; i < items.length; i++) {
+      array[i] = Integer.parseInt(items[i].trim());
+    }
+
+    return array;
+  }
+
+  /**
+   * update status in pair matching
+   *
+   * @param aid assignment id
+   */
+  public void updatePairMatchingStatusByAid(int aid) throws SQLException {
+    List<AssignmentUser> assignmentUserList = auDbManager.getAssignmentUserListByAid(aid);
+
+    for (AssignmentUser assignmentUser : assignmentUserList) {
+
+      if (!pmDbManager.checkStatusUpdated(assignmentUser.getId())) {
+        List<PairMatching> pmList = pmDbManager.getPairMatchingByAuId(assignmentUser.getId());
+
+        for (PairMatching pairMatching: pmList) {
+
+          if (pairMatching.getReviewStatusEnum().equals(ReviewStatusEnum.INIT)) {
+            int status = reviewStatusDbManager
+                .getReviewStatusIdByStatus(ReviewStatusEnum.UNCOMPLETED.getTypeName());
+            pmDbManager.updatePairMatchingById(status, pairMatching.getId());
+          }
+        }
+      }
+    }
   }
 }

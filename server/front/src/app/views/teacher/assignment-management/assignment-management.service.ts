@@ -37,6 +37,7 @@ export class AssignmentManagementService {
     form.append('deadline', new Date(assignment.get('deadline').value).toUTCString());
     form.append('readMe', assignment.get('description').value);
     form.append('file', assignment.get('file').value);
+    form.append('order', assignment.get('order').value);
 
     return this.http.post<any>(this.EDIT_ASSIGNMENT_API, form, editAssignmentOptions);
   }

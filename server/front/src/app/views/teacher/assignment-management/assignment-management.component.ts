@@ -8,10 +8,12 @@ import { HttpErrorResponse } from '@angular/common/http';
 
 import { environment } from '../../../../environments/environment';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import { SortablejsOptions } from 'ngx-sortablejs';
 
 @Component({
   selector: 'app-assignment-management',
-  templateUrl: './assignment-management.component.html'
+  templateUrl: './assignment-management.component.html',
+  styleUrls: ['../create-assignment/create-assignment.component.scss']
 })
 export class AssignmentManagementComponent implements OnInit {
   @ViewChild('editModal', { static: true }) public editModal: ModalDirective;
@@ -28,6 +30,18 @@ export class AssignmentManagementComponent implements OnInit {
   dynamic: number = 0;
   type: string = 'Waiting';
   isDeleteProgress = false;
+
+  javaStatus = [
+    "Unit Test Failure",
+    "Coding Style Failure"
+  ];
+  normalOptions: SortablejsOptions = {
+    group: 'normal-group',
+  };
+  order = [];
+  score = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
+  statusScore = new Map([["Compile Failure", "0"]]);
+
   public Editor = ClassicEditor;
   public editorConfig = {
     placeholder: 'Write the assignment description in here!',
@@ -49,7 +63,8 @@ export class AssignmentManagementComponent implements OnInit {
       deadline: [, Validators.required],
       description: ['', Validators.required],
       file: [],
-      rememberMe: [true]
+      rememberMe: [true],
+      order: ['']
     });
 
     this.onChange();
@@ -82,6 +97,11 @@ export class AssignmentManagementComponent implements OnInit {
     if ($event.target.files) {
       this.assignmentForm.get('file').setValue($event.target.files[0]);
     }
+  }
+
+  selectChangeHandler(status:string, $event) {
+    this.statusScore.set(status, $event.target.value);
+    console.log(this.statusScore);
   }
 
   getAllAssignments() {
@@ -133,7 +153,13 @@ export class AssignmentManagementComponent implements OnInit {
   }
 
   editAssignment() {
-
+    let orderString = "Compile Failure";
+    orderString = orderString + ':' + this.statusScore.get("Compile Failure");
+    for(let i = 0; i < this.order.length; i++) {
+      orderString = orderString + ', ' + this.order[i] + ':' + this.statusScore.get(this.order[i]);
+    }
+    console.log(orderString);
+    this.assignmentForm.get('order').setValue(orderString);
     if (this.assignmentForm.valid) {
       this.assignmentForm.get('name').setValue(this.assignmentName);
       this.assignmentService.editAssignment(this.assignmentForm).subscribe(

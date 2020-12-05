@@ -14,7 +14,7 @@
             <input type="text" class="form-control" id="name" formControlName='name'
               placeholder="Enter Your Assignment Name">
             <div *ngIf="!assignment.get('name').valid" class='invalid-feedback'><span>Your assignment must be less
-                than 12 and must be English</span></div>
+                than 10 and must be English</span></div>
           </div>
         </div>
         <div class="form-group row">
@@ -35,143 +35,231 @@
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-md-3 col-form-label" for="description">Assignment Description</label>
+          <label class="col-md-3 col-form-label" for="description"> Assignment Description</label>
           <div class="col-md-9">
             <ckeditor [config]="editorConfig" name='description' id="description" formControlName='description'
               [editor]="Editor">
             </ckeditor>
           </div>
         </div>
-        <!--tabs-->
-        <!-- Nav tabs -->
-        <tabset>
-          <!---- Java ---->
-          <tab heading="Javac">
-            <div class="form-group row">
-              <label class="col-md-3 col-form-label" for="inline-radios">Javac File</label>
-              <div class="col-md-9">
-                <div class="btn-group" dropdown [isOpen]="javaTabStatus.isOpen" placement="top">
-                  <button dropdownToggle type="button" class="btn btn-primary dropdown-toggle">
-                    <i class="icon-cloud-download"></i><span class="caret"> template</span>
-                  </button>
-                  <ul *dropdownMenu class="dropdown-menu" role="menu">
-                    <li role="menuitem"><a class="dropdown-item" href="{{SERVER_URL}}/resources/JavacQuickStart.zip"
-                        download>JavacQuickStart.zip</a>
+        <div class="form-group row">
+          <label class="col-md-3 col-form-label" for="method">Assessment Method</label>
+          <div class="col-md-9">
+            <div class="form-check form-check-inline mr-1">
+              <input class="form-check-input" type="radio" name="method" id="methodRadio2" value="Auto Assessment"
+                formControlName='method' (click)="selectedAssignmentGradingMethod('Auto')">
+              <label class="form-check-label" for="methodRadio2">Auto Assessment</label>
+            </div>
+            <div class="form-check form-check-inline mr-1">
+              <input class="form-check-input" type="radio" name="method" id="methodRadio1" value="Peer Review"
+                formControlName='method' (click)="selectedAssignmentGradingMethod('Peer')">
+              <label class="form-check-label" for="methodRadio1">Peer Review</label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Review Metrics -->
+        <div class="grading-method-group" *ngIf="peerReviewStatus.isOpen">
+          <div class="form-group row">
+            <label class="col-md-3 col-form-label" for="reviewReleaseTime">Review Start Time</label>
+            <div class="col-md-9">
+              <input class="form-control is-valid" id="reviewReleaseTime" type="datetime-local" name="reviewReleaseTime"
+                formControlName='reviewReleaseTime' placeholder="date">
+              <span *ngIf="!assignment.get('reviewReleaseTime').valid" class="invalid-feedback">Please enter a valid
+                date</span>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-md-3 col-form-label" for="reviewDeadline">Review End Time</label>
+            <div class="col-md-9">
+              <input class="form-control is-valid" id="reviewDeadline" type="datetime-local" name="reviewDeadline"
+                formControlName='reviewDeadline' placeholder="date">
+              <span *ngIf="!assignment.get('reviewDeadline').valid" class="invalid-feedback">Please enter a valid date</span>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-md-3 col-form-label" for="commitRecordCount">Number of Reviewers</label>
+            <div class="col-md-9">
+              <input type="text" class="form-control" id="commitRecordCount" formControlName='commitRecordCount' placeholder="Enter Your Number">
+              <div *ngIf="!assignment.get('commitRecordCount').valid" class='invalid-feedback'><span>Your must enter right number of reviewers</span></div>
+            </div>
+          </div>
+
+          <!-- Selection Head -->
+          <div class="form-group row">
+            <label class="col-md-3 col-form-label" for="method">Review Metrics</label>
+            <label class="col-md-2 col-form-label text-center" for="method">Category</label>
+            <label class="col-md-6 col-form-label text-center" for="method">Metrics</label>
+          </div>
+          <!-- Selections -->
+          <div class="form-group row" *ngFor="let number of reviewMetricsNums">
+            <div class="col-md-3"></div>
+            <div class="col-md-2 container mt-3">
+              <select #selectCategory name="category" class="custom-select mb-3" placeholder="Select Category"
+                [(ngModel)]="onSelectedCategory[number]" [ngModelOptions]="{standalone: true}"
+                (change)="setCategory(number,selectCategory.value)">
+                <option [ngValue]="null" [disabled]="true">Select Category</option>
+                <option *ngFor="let category of categories; index as i" [value]="i">
+                  {{category.name}}
+                </option>
+              </select>
+            </div>
+            <div class="col-md-6 container mt-3">
+              <select #selectMetrics name="metrics" class="custom-select mb-3" placeholder="Select Metrics"
+                [(ngModel)]="onSelectedMetrics[number]" [ngModelOptions]="{standalone: true}"
+                (change)="setMetrics(number,selectMetrics.value)">
+                <option [ngValue]="null" [disabled]="true">Select Metrics</option>
+                <ng-container *ngIf="onSelectedCategory[number] != undefined">
+                  <option *ngFor="let assessment of categories[onSelectedCategory[number]].allMetrics; index as j"
+                    [value]="j">
+                    {{assessment.metrics}}
+                  </option>
+                </ng-container>
+              </select>
+            </div>
+            <div class="col-md-1 container mt-3">
+              <button class="btn" (click)="removeReviewMetrics(number)"><i class="fa fa-trash"></i>
+              </button>
+            </div>
+          </div>
+          <!-- Review Metrics Buttons-->
+          <div class="form-group row">
+            <div class="col-md-3"></div>
+            <div *ngIf="reviewMetricsNums.length < 6">
+              <button class="btn btn-sm" (click)="addReviewMetrics()">+</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="grading-method-group">
+          <!--tabs-->
+          <!-- Nav tabs -->
+          <tabset>
+            <!---- Java ---->
+            <tab heading="Java">
+              <div class="form-group row">
+                <label class="col-md-3 col-form-label" for="type">Type Radios</label>
+                <div class="col-md-9">
+                  <div class="form-check form-check-inline mr-1">
+                    <input class="form-check-input" type="radio" name="type" id="inlineRadio1" value="javac"
+                      formControlName='type'>
+                    <label class="form-check-label" for="inlineRadio1">Java</label>
+                  </div>
+                  <div class="form-check form-check-inline mr-1">
+                    <input class="form-check-input" type="radio" name="type" id="inlineRadio2" value="maven"
+                      formControlName='type'>
+                    <label class="form-check-label" for="inlineRadio2">Maven</label>
+                  </div>
+                </div>
+              </div>
+              <div *ngIf="isShow === true">
+                <div class="form-group row">
+                  <div class="col-md-3">Assignment Assessment</div>
+                  <div class="col-md-3">Status :</div>
+                  <div class="col-md-2">Order & Score :</div>          
+                </div>
+                <div class="form-group row">
+                  <div class="col-md-3"></div>
+                  <div class="col-md-3">
+                    <ul class="list-group sortable" [sortablejs]="javaStatus" [sortablejsOptions]="normalOptions">
+                      <li class="list-group-item" *ngFor="let item of javaStatus">{{ item }}</li>
+                    </ul>
+                  </div>
+                  <div class="col-md-2">
+                    <li class="list-group-item sortable" draggable="false" style="cursor: not-allowed; 
+                        background-color: white;">1.&nbsp;Compile Failure
+                        <select class="form-control" (change)="selectChangeHandler('Compile Failure', $event)">
+                          <option *ngFor="let op of score" value="{{ op }}">{{ op }}%</option>
+                        </select>
                     </li>
-                    <li role="menuitem"><a class="dropdown-item" href="{{SERVER_URL}}/resources/MvnQuickStart.zip"
-                        download>MvnQuickStart.zip</a>
-                    </li>
-                  </ul>
+                    <ul class="list-group sortable" [sortablejs]="order" [sortablejsOptions]="normalOptions">
+                      <li class="list-group-item" *ngFor="let item of order; let i = index;">{{ i+2 }}. {{ item }}
+                        <select class="form-control" (change)="selectChangeHandler(item, $event)">
+                          <option *ngFor="let op of score" value="{{ op }}">{{ op }}%</option>
+                        </select>
+                      </li>
+                    </ul>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div class="form-group row">
-              <label class="col-md-3 col-form-label" for="type">Type Radios</label>
-              <div class="col-md-9">
-                <div class="form-check form-check-inline mr-1">
-                  <input class="form-check-input" type="radio" name="type" id="inlineRadio1" value="javac"
-                    formControlName='type'>
-                  <label class="form-check-label" for="inlineRadio1">Java</label>
-                </div>
-                <div class="form-check form-check-inline mr-1">
-                  <input class="form-check-input" type="radio" name="type" id="inlineRadio2" value="maven"
-                    formControlName='type'>
-                  <label class="form-check-label" for="inlineRadio2">Maven</label>
-                </div>
-              </div>
-            </div>
-            <div class="form-group row">
-              <label class="col-md-3 col-form-label" for="file-input">Upload your Assignment example (accept zip)
-              </label>
-              <div class="col-md-9">
-                <input type="file" name="file-input" (change)='fileListener($event)'>
-              </div>
-            </div>
-            <div class="form-group row">
-              <div class="col-md-3">Assignment Assessment</div>
-              <div class="col-md-3">Status :</div>
-              <div class="col-md-3">Order :</div>                
-            </div>
-            <div class="form-group row">
-              <div class="col-md-3"></div>
-              <div class="col-md-3">
-                <ul class="list-group sortable" [sortablejs]="status" [sortablejsOptions]="normalOptions">
-                  <li class="list-group-item" *ngFor="let item of status">{{ item }}</li>
-                </ul>
-              </div>
-              <div class="col-md-3">
-                <li class="list-group-item sortable" draggable="false" style="cursor: not-allowed; 
-                    background-color: white;">1.&nbsp;{{ finalOrder[0] }}</li>
-                <ul class="list-group sortable" [sortablejs]="order" [sortablejsOptions]="normalOptions">
-                  <li class="list-group-item" *ngFor="let item of order; let i = index;">{{ i+2 }}. {{ item }}</li>
-                </ul>
-              </div>
-            </div>
-            <div class="form-group row">
-              <div class="col-md-3"></div>
-              <div class="col-md-3">
-                <div>status = [</div>
-                <div *ngFor="let item of status">&nbsp;&nbsp;&nbsp;&nbsp;{{ item }},</div>
-                <div>]</div>
-              </div>
-              <div class="col-md-3">
-                <div>order = [</div>
-                <div *ngFor="let item of order">&nbsp;&nbsp;&nbsp;&nbsp;{{ item }},</div>
-                <div>]</div>
-              </div>
-            </div>
-          </tab>
-          <!---- App ---->
-          <tab heading="App" (click)="selectedAssignmentType('Android')">
-            <div class="form-group row">
-              <label class="col-md-3 col-form-label">Android File</label>
-              <div class="col-md-9">
-                <div class="btn-group" dropdown [isOpen]="webTabStatus.isOpen" placement="top">
-                  <button dropdownToggle type="button" class="btn btn-primary dropdown-toggle">
-                    <i class="icon-cloud-download"></i><span class="caret"> template</span>
-                  </button>
-                  <ul *dropdownMenu class="dropdown-menu" role="menu">
-                    <li role="menuitem"><a class="dropdown-item" href="{{SERVER_URL}}/resources/AndroidQuickStart.zip"
-                        download>AndroidQuickStart.zip</a>
-                    </li>
-                  </ul>
+              <div class="form-group row">
+                <label class="col-md-3 col-form-label" for="inline-radios">Java File</label>
+                <div class="col-md-9">
+                  <div class="btn-group" dropdown [isOpen]="javaTabStatus.isOpen" placement="top">
+                    <button dropdownToggle type="button" class="btn btn-primary dropdown-toggle">
+                      <i class="icon-cloud-download"></i><span class="caret"> template</span>
+                    </button>
+                    <ul *dropdownMenu class="dropdown-menu" role="menu">
+                      <li role="menuitem"><a class="dropdown-item" href="{{SERVER_URL}}/resources/JavacQuickStart.zip"
+                          download>JavacQuickStart.zip</a>
+                      </li>
+                      <li role="menuitem"><a class="dropdown-item" href="" (click)="confirm()"
+                          download>MvnQuickStart.zip</a>
+                      </li>
+                    </ul>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div class="form-group row">
-              <label class="col-md-3 col-form-label" for="file-input">Upload your Assignment example (accept zip)
-              </label>
-              <div class="col-md-9">
-                <input type="file" name="file-input" (change)='fileListener($event)'>
-              </div>
-            </div>
-          </tab>
-          <!---- Web ---->
-          <tab heading="Web" (click)="selectedAssignmentType('Web')">
-            <div class="form-group row">
-              <label class="col-md-3 col-form-label">Web File</label>
-              <div class="col-md-9">
-                <div class="btn-group" dropdown [isOpen]="androidTabStatus.isOpen" placement="top">
-                  <button dropdownToggle type="button" class="btn btn-primary dropdown-toggle">
-                    <i class="icon-cloud-download"></i><span class="caret"> template</span>
-                  </button>
-                  <ul *dropdownMenu class="dropdown-menu" role="menu">
-                    <li role="menuitem"><a class="dropdown-item" href="{{SERVER_URL}}/resources/WebQuickStart.zip"
-                        download>WebQuickStart.zip</a>
-                    </li>
-                  </ul>
+              <div class="form-group row">
+                <label class="col-md-3 col-form-label" for="file-input">Upload your Assignment example (accept zip)
+                </label>
+                <div class="col-md-9">
+                  <input type="file" name="file-input" (change)='fileListener($event)'>
                 </div>
               </div>
-            </div>
-            <div class="form-group row">
-              <label class="col-md-3 col-form-label" for="file-input">Upload your Assignment example (accept zip)
-              </label>
-              <div class="col-md-9">
-                <input type="file" name="file-input" (change)='fileListener($event)'>
+            </tab>
+            <!---- App ---->
+            <tab heading="App" (click)="selectedAssignmentType('Android')">
+              <div class="form-group row">
+                <label class="col-md-3 col-form-label">Android File</label>
+                <div class="col-md-9">
+                  <div class="btn-group" dropdown [isOpen]="webTabStatus.isOpen" placement="top">
+                    <button dropdownToggle type="button" class="btn btn-primary dropdown-toggle">
+                      <i class="icon-cloud-download"></i><span class="caret"> template</span>
+                    </button>
+                    <ul *dropdownMenu class="dropdown-menu" role="menu">
+                      <li role="menuitem"><a class="dropdown-item" href="{{SERVER_URL}}/resources/AndroidQuickStart.zip"
+                          download>AndroidQuickStart.zip</a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
               </div>
-            </div>
-          </tab>
-        </tabset>
+              <div class="form-group row">
+                <label class="col-md-3 col-form-label" for="file-input">Upload your Assignment example (accept zip)
+                </label>
+                <div class="col-md-9">
+                  <input type="file" name="file-input" (change)='fileListener($event)'>
+                </div>
+              </div>
+            </tab>
+            <!---- Web ---->
+            <tab heading="Web" (click)="selectedAssignmentType('Web')">
+              <div class="form-group row">
+                <label class="col-md-3 col-form-label">Web File</label>
+                <div class="col-md-9">
+                  <div class="btn-group" dropdown [isOpen]="androidTabStatus.isOpen" placement="top">
+                    <button dropdownToggle type="button" class="btn btn-primary dropdown-toggle">
+                      <i class="icon-cloud-download"></i><span class="caret"> template</span>
+                    </button>
+                    <ul *dropdownMenu class="dropdown-menu" role="menu">
+                      <li role="menuitem"><a class="dropdown-item" href="{{SERVER_URL}}/resources/WebQuickStart.zip"
+                          download>WebQuickStart.zip</a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-md-3 col-form-label" for="file-input">Upload your Assignment example (accept zip)
+                </label>
+                <div class="col-md-9">
+                  <input type="file" name="file-input" (change)='fileListener($event)'>
+                </div>
+              </div>
+            </tab>
+          </tabset>
+        </div>
         <!--/.col-->
       </div>
       <div class="card-footer">
@@ -180,6 +268,8 @@
       <input type="hidden" name="fileHidden" formControlName="file" />
     </form>
   </div>
+
+
   <!--  Wating Crete Assignment  -->
   <div bsModal #myModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
     aria-hidden="true">
