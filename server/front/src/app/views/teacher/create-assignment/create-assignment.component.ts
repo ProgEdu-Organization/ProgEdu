@@ -38,7 +38,7 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
   isNull: boolean = true;
 
   score = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
-  statusScore = new Map([["Compile Failure", "0"]])
+  statusScore = new Map([["Compile Failure", 0]])
 
   javaStatus = [
     "Unit Test Failure",
@@ -130,6 +130,15 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
     } else {
       return false;
     }
+  }
+
+  checkIsFill() {
+    let sum = 0;
+    for(let i=0; i<this.statusScore.size; i++) {
+      sum += Number(this.statusScore[i]);
+    }
+    if(sum>100) return false;
+    else return true;
   }
 
   selectChangeHandler(status:string, $event) {

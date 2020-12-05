@@ -38,6 +38,7 @@
           <tr>
             <th>Commit</th>
             <th>Light</th>
+            <th>Score</th>
             <th>Date</th>
             <th>Commit Message</th>
             <th *ngIf='showCommiter'>Committer</th>
@@ -50,6 +51,7 @@
             <td>
               <p class="circle {{commit.status}}"></p>
             </td>
+            <td class='w-10'>{{commit.score}}</td>
             <td class='w-25'>{{commit.time | date:'short'}}</td>
             <td class='w-50'>
               {{commit.message | lineBreaks}}

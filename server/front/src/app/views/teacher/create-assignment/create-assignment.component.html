@@ -98,26 +98,20 @@
                 <div class="col-md-3"></div>
                 <div class="col-md-3"></div>
                 <div class="col-md-3"></div>
-                <div class="col-md-1">
-                  <button class="btn btn-primary" [disabled] = "isEnabledConfirm()" (click)="confirm()">confirm</button>
-                </div>
-                <div class="col-md-2">
-                  <button class="btn btn-primary" (click)="reset()">&nbsp;reset&nbsp;</button>
-                </div>
               </div>
               </div>
             <div class="form-group row">
               <label class="col-md-3 col-form-label" for="inline-radios">Java File</label>
               <div class="col-md-9">
                 <div class="btn-group" dropdown [isOpen]="javaTabStatus.isOpen" placement="top">
-                  <button dropdownToggle type="button" class="btn btn-primary dropdown-toggle">
+                  <button dropdownToggle type="button" class="btn btn-primary dropdown-toggle" [disabled]="isEnabledConfirm()">
                     <i class="icon-cloud-download"></i><span class="caret"> template</span>
                   </button>
                   <ul *dropdownMenu class="dropdown-menu" role="menu">
                     <li role="menuitem"><a class="dropdown-item" href="{{SERVER_URL}}/resources/JavacQuickStart.zip"
                         download>JavacQuickStart.zip</a>
                     </li>
-                    <li role="menuitem"><a class="dropdown-item" href="{{SERVER_URL}}/resources/MvnQuickStart.zip"
+                    <li role="menuitem"><a class="dropdown-item" href="" (click)="confirm()"
                         download>MvnQuickStart.zip</a>
                     </li>
                   </ul>
@@ -134,39 +128,6 @@
           </tab>
           <!---- App ---->
           <tab heading="App" (click)="selectedAssignmentType('Android')">
-            <div *ngIf="isShow === true">
-              <div class="form-group row">
-                <div class="col-md-3">Assessment Order</div>
-                <div class="col-md-3">Status :</div>
-                <div class="col-md-3">Order :</div>                
-              </div>
-              <div class="form-group row">
-                <div class="col-md-3"></div>
-                <div class="col-md-3">
-                  <ul class="list-group sortable" [sortablejs]="appStatus" [sortablejsOptions]="normalOptions">
-                    <li class="list-group-item" *ngFor="let item of appStatus">{{ item }}</li>
-                  </ul>
-                </div>
-                <div class="col-md-3">
-                  <li class="list-group-item sortable" draggable="false" style="cursor: not-allowed; 
-                      background-color: white;">1.&nbsp;Compile Failure</li>
-                  <ul class="list-group sortable" [sortablejs]="order" [sortablejsOptions]="normalOptions">
-                    <li class="list-group-item" *ngFor="let item of order; let i = index;">{{ i+2 }}. {{ item }}</li>
-                  </ul>
-                </div>
-              </div>
-              <div class="form-group row">
-                <div class="col-md-3"></div>
-                <div class="col-md-3"></div>
-                <div class="col-md-3"></div>
-                <div class="col-md-1">
-                  <button class="btn btn-primary" [disabled]="isEnabledConfirm()" (click)="confirm()">confirm</button>
-                </div>
-                <div class="col-md-2">
-                  <button class="btn btn-primary" (click)="reset()">&ensp;reset&ensp;</button>
-                </div>
-              </div>
-            </div>
             <div class="form-group row">
               <label class="col-md-3 col-form-label">Android File</label>
               <div class="col-md-9">
@@ -192,39 +153,6 @@
           </tab>
           <!---- Web ---->
           <tab heading="Web" (click)="selectedAssignmentType('Web')">
-            <div *ngIf="isShow === true">
-              <div class="form-group row">
-                <div class="col-md-3">Assignment Assessment</div>
-                <div class="col-md-3">Status :</div>
-                <div class="col-md-3">Order :</div>                
-              </div>
-              <div class="form-group row">
-                <div class="col-md-3"></div>
-                <div class="col-md-3">
-                  <ul class="list-group sortable" [sortablejs]="webStatus" [sortablejsOptions]="normalOptions">
-                    <li class="list-group-item" *ngFor="let item of webStatus">{{ item }}</li>
-                  </ul>
-                </div>
-                <div class="col-md-3">
-                  <li class="list-group-item sortable" draggable="false" style="cursor: not-allowed; 
-                      background-color: white;">1.&nbsp;Compile Failure</li>
-                  <ul class="list-group sortable" [sortablejs]="order" [sortablejsOptions]="normalOptions">
-                    <li class="list-group-item" *ngFor="let item of order; let i = index;">{{ i+2 }}. {{ item }}</li>
-                  </ul>
-                </div>
-              </div>
-              <div class="form-group row">
-                <div class="col-md-3"></div>
-                <div class="col-md-3"></div>
-                <div class="col-md-3"></div>
-                <div class="col-md-1">
-                  <button class="btn btn-primary" [disabled]="isEnabledConfirm()" (click)="confirm()">confirm</button>
-                </div>
-                <div class="col-md-2">
-                  <button class="btn btn-primary" (click)="reset()">&ensp;reset&ensp;</button>
-                </div>
-              </div>
-            </div>
             <div class="form-group row">
               <label class="col-md-3 col-form-label">Web File</label>
               <div class="col-md-9">
