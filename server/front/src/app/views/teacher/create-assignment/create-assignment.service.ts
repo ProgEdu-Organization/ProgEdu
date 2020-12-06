@@ -13,7 +13,7 @@ const createAssigmentOptions = ({
   providedIn: 'root'
 })
 export class CreateAssignmentService {
-  CREATE_ASSIGNMENT_API = environment.SERVER_URL + 'webapi/assignment/create';
+  CREATE_ASSIGNMENT_API = environment.SERVER_URL + '/webapi/assignment/create';
   GET_ALL_CATEGORY_API = environment.SERVER_URL + '/webapi/categoryMetrics/category';
   GET_METRICS_API = environment.SERVER_URL + '/webapi/categoryMetrics/metrics';
   CREATE_REVIEW_ASSIGNMENT_API = environment.SERVER_URL + '/webapi/assignment/peerReview/create';
