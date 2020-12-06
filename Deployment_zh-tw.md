@@ -7,7 +7,7 @@ docker -v // 19.03.11
 ## 初步部屬步驟
 1. 在linux系統中 clone 此專案後, cd進入專案的根目錄
 ```
-git clone --depth 1  --branch master --single-branch https://github.com/fcumselab/ProgEdu.git ProgEdu
+git clone --branch master https://github.com/fcumselab/ProgEdu.git ProgEdu
 cd ProgEdu
 ```
 
@@ -31,7 +31,7 @@ cd ProgEdu
 
 4. 在專案的根目錄執行 `sudo docker-compose up -d` 即可完成初步建置。
 
-5. 初步建置步驟結束,接下來需要各別設定 GitLab 和 Jenkins 的一些權限，這樣ProgEdu才能跟這兩個服務連動。
+5. 初步建置步驟結束,接下來需要各別設定 GitLab 和 Jenkins 的權限，這樣ProgEdu才能跟這兩個服務連動。
 
 ## **設定 GitLab 流程**
 ### 1. 登入
@@ -91,7 +91,7 @@ WEB_JENKINS_ADMIN_PASSWORD=admin
 
 7. 設定 **GitLab API Token**
 
-因為jenkins也必須要跟GitLab請求程式碼，所以必須給他gitlab的token。
+因為jenkinsc會跟GitLab請求程式碼，所以必須給他gitlab的token。
    1. `管理Jenkins > 設定系統` 找到 GitLab後，
 先把(Enable authentication for ... connection) 的勾取消
    2. 設定 Connection name = gitlab
@@ -117,9 +117,9 @@ WEB_JENKINS_ADMIN_PASSWORD=admin
     
    1. 管理Jenkins > Manage Credentials
    ![](/readme-images/Jenins_step1.PNG) 
-   2. 在Stores scoped to Jenkins 下按一下Jenkins
+   2. 在Stores scoped to Jenkins 下方的第一欄位的Jenkins(也就是它左邊有個房子的圖標), 按該Jenkins的連結
    ![](/readme-images/Jenins_step2.PNG)
-   3. 按一下 Global credentials (unrestricted)
+   3. 按一下 Global credentials (unrestricted) 連結
    ![](/readme-images/Jenins_step3.PNG)
    4. 按一下 在左上角的 Add Credentials
    ![](/readme-images/Jenins_step4.PNG)
@@ -136,10 +136,10 @@ WEB_JENKINS_ADMIN_PASSWORD=admin
 
 ## 設定完成
 ### 重新佈署server服務
-1. 儲存.env檔，然後重新下 `docker-compose up -d` 指令，目的是用新的設定重新建置一次
+1. 儲存.env檔，接著重新下 `docker-compose up -d` 指令，目的是用新的設定重新建置一次
 
 ### 登入ProgEdu系統
-1. 進入 `.env` 所設定的 `WEB_EXTERNAL_URL` 的網址
+1. 使用 `.env` 所設定的埠號 `FRONT_END_PORT`, 搭配電腦IP進入系統前端頁面  
 2. 輸入帳號: root, 密碼: `.env` 的 `GITLAB_ROOT_PASSWORD` 的值
 
 ## 推薦開發ProgEdu的重要工具

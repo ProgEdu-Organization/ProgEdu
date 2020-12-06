@@ -10,5 +10,9 @@ Checkstyle > Build > Deploy
 
 ------
 
+## 架構
+![](./readme-main-page-img/Architecture_V1.png)
+
+
 ## 文件
 [安裝與部屬流程說明](./Deployment_zh-tw.md)
