@@ -165,4 +165,18 @@ public class StatusService {
   public boolean isAndroidLintFailure(String console) {
     return console.contains("lint FAILED");
   }
+
+  /**
+  * Check is JUnit error
+  *
+  * @param console jenkins job build console
+  * @return boolean
+  */
+  public boolean isMavenCompileFailureOfUnitTest(String console) {
+    boolean isCompileFailureOfUnitTestError = false;
+    if (console.contains("testCompile") && console.contains("[ERROR] COMPILATION ERROR : ")) {
+      isCompileFailureOfUnitTestError = true;
+    }
+    return isCompileFailureOfUnitTestError;
+  }
 }

@@ -1,0 +1,47 @@
+<div class="animated fadeIn">
+  <div class="card">
+    <div *ngIf="group">
+      <div class="card-header">
+        <i class="cui-pencil icons"></i>
+        <label>{{projectName}}</label>
+      </div>
+      <div class="card-body">
+        <div class='row'>
+          <div class="col-lg-6">
+            <span class="h2">Git Project</span>
+            <div class='row'>
+              <div class="col-md-8">
+                <input type="text" class="form-control" value="{{gitlabprojectUrl}}" readonly>
+              </div>
+              <button button (click)='copyToClipboard()'><i class="fa fa-copy fa-lg"></i></button>
+            </div>
+            <hr />
+            <span class="h2">Members</span>
+            <div class="col-lg-10">
+              <table class='table table-bordered'>
+                <thead>
+                  <td>Leader</td>
+                  <td>Username</td>
+                  <td>Name</td>
+                </thead>
+                <tbody>
+                  <ng-container *ngIf='group'>
+                    <tr *ngFor='let member of group.members'>
+                      <td *ngIf="member.id === group.leader"><span class="badge badge-success">Leader</span></td>
+                      <td *ngIf="member.id !== group.leader"></td>
+                      <td>{{member.username}}</td>
+                      <td>{{member.name}}</td>
+                    <tr>
+                  </ng-container>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <hr>
+        <app-commit-record [type]=projectType [commits]=commits [feedbacks]=feedbacks [showCommiter]='true'
+          [screenshotUrls]=screenshotUrls (messageToEmit)="updateFeedback($event)"></app-commit-record>
+      </div>
+    </div>
+  </div>
+</div>

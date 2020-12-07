@@ -13,11 +13,16 @@ GITLAB_SSH_PORT=22022
 WEB_PORT=22000
 WEB_EXTERNAL_URL=http://example.com:22000
 
+FRONT_END_PORT=22001
+
 JENKINS_PORT=8080
 WEB_JENKINS_URL=http://example.com:8080
 
 SELENIUM_PORT=4444
 WEB_SELENIUM_URL=http://example.com:4444
+
+MONGO_PORT=10017
+MONGO_HOST_URL=example.com:10017
 
 #########################################################################
 
@@ -31,6 +36,15 @@ DB_ROOT_PASSWORD=123456
 DB_DATABASE=ProgEdu
 DB_CONNECTION_OPTION=?relaxAutoCommit=true&useSSL=false&useUnicode=true&characterEncoding=utf-8
 
+###### Mongo Config 
+
+MONGO_ROOT_USER=root
+MONGO_ROOT_PASSWORD=123456
+MONGO_DATABASE=progedu
+# This should not the same as MONGO_ROOT_USER
+MONGO_USER=progedu_root
+MONGO_PASSWORD=123456
+MONGO_DB_CONNECTION_OPTION=&readPreference=primary&ssl=false
 
 ###### Gitlab Config
 
@@ -69,3 +83,8 @@ LOG_LEVEL=error
 
 
 #########################################################################
+
+
+
+
+

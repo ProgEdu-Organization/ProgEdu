@@ -1,0 +1,109 @@
+<div class="animated fadeIn">
+  <div class="col-md-10" *ngIf='group && groupForm'>
+    <div class='row'>
+      <div class="col-md-6">
+        <div class='card'>
+          <form [formGroup]="groupForm">
+            <div class='card-header'>
+            </div>
+            <div class='card-body'>
+              <div class="form-group row">
+                <label class="col-md-3 col-form-label" for="name">Group Name</label>
+                <div class="col-md-9">
+                  <input type="text" id="name" name="name" class="form-control" formControlName='name' readonly>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-md-3 col-form-label" for="leader">Leader</label>
+                <div class="col-md-5">
+                  <input type="text" id="leader" name="leader" class="form-control" formControlName='leader' readonly>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-md-3 col-form-label" for="members">Members</label>
+                <div class="col-md-9">
+                  <table class="table">
+                    <tr *ngFor="let member of groupForm.get('members').value;let recordIndex=index;">
+                      <td>
+                        <p class="col-form-label assigned"
+                          (click)="selectedUser = member;showConfirmModal('set-leader');">
+                          {{recordIndex+1}}. {{member[0]}} {{member[1]}}</p>
+                      </td>
+                      <td><button class="badge badge-danger" type='button'
+                          (click)="selectedUser = member;showConfirmModal('remove-member');">Remove</button>
+                      </td>
+                    </tr>
+                  </table>
+                  <p class='alert alert-danger' *ngIf="groupForm.get('members').value.length === 0">No member</p>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card">
+          <div class='card-header'>
+            <div class='input-group'>
+              <span>
+                <button class="btn btn-primary" type="button" [disabled]='true'><i
+                    class="fa fa-search"></i></button></span>
+              <input type='text' placeholder="Search" class='form-control col-md-6' [(ngModel)]='search'>
+            </div>
+          </div>
+          <div class="card-body">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Username</th>
+                  <th>Name</th>
+                  <th [style.text-align]="'center'">Add To Group</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let user of users | filter:search">
+                  <td>{{user.username}}</td>
+                  <td>{{user.name}}</td>
+                  <td [style.text-align]="'center'">
+                    <button class="badge badge-success"
+                      (click)="selectedUser = user;showConfirmModal('add-member');">Add</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--Edit Group Modal-->
+<div bsModal #confirmModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Edit Group "{{groupName}}"</h4>
+        <button type="button" class="close" (click)="confirmModal.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <!--Edit Group Main-->
+      <div *ngIf="confirmModalMsg" class="modal-body">
+        {{confirmModalMsg}}
+      </div>
+      <div class="modal-footer">
+        <button *ngIf="mode === 'add-member'" type="button" class="btn btn-primary"
+          (click)="addGroupMemberByUsername();">Update</button>
+        <button *ngIf="mode === 'remove-member'" type="button" class="btn btn-primary"
+          (click)="removeGroupMemberByUsername();">Update</button>
+        <button *ngIf="mode === 'set-leader'" type="button" class="btn btn-primary"
+          (click)="updateLeaderSubmit();">Update</button>
+        <button type="button" class="btn btn-secondary" (click)="confirmModal.hide()">Close</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<progedu-error-modal [errorTitle]='errorTitle' [errorResponse]="errorResponse"></progedu-error-modal>

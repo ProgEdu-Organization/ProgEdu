@@ -1,0 +1,14 @@
+#The username of MONGODB
+MONGO_USER =
+#eg. progedu_root
+
+MONGO_PASSWORD =
+
+#The datbase of
+MONGO_DATABASE =
+#eg. progedu
+
+MONGO_HOST_URL =
+#eg. 140.134.26.63:27017
+
+MONGO_DB_CONNECTION_OPTION = &readPreference=primary&appname=MongoDB%20Compass&ssl=false
