@@ -10,8 +10,7 @@
     "build": "ng build --prod --aot --buildOptimizer --commonChunk --vendorChunk --optimization --progress",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "BDD_test": "cucumber-js BDD_test/features",
-    "BDD_test_report": "cucumber-js BDD_test/features -f json:BDD_test/report/cucumber_report.json & node BDD_test/report/generate-test-report-html.js"
+    "bdd_test": "cucumber-js BDD_test/features -f json:BDD_test/report/cucumber_report.json & node BDD_test/report/generate-test-report-html.js"
   },
   "private": true,
   "dependencies": {
