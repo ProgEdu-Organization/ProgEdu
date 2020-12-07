@@ -25,5 +25,6 @@ Then("dashboard page should be displayed", {timeout: 10 * 1000}, async function 
     
     const helloText = await driver.wait(until.elementLocated(By.xpath("//a[contains(text(),'Hi, root')]")), 10 * 1000);
     assert.strictEqual(await helloText.getText(), "Hi, root");
+    driver.quit();
 });
 
