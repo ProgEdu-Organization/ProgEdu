@@ -915,4 +915,26 @@ public class AssignmentService {
       }
     }
   }
+
+  /**
+  * get assignemnt order
+  *
+  * @param fileName fileName
+  * @return assignmnet order
+  * 
+  */
+  @GET
+  @Path("getAssignmentOrder")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response getAssignmentOrder(@QueryParam("fileName") String fileName) {
+    int aid = dbManager.getAssignmentIdByName(fileName);
+    String orders = aaDbManager.getAssignmentOrder(aid);
+    if (orders.isEmpty()) {
+      orders = "None";
+    }
+    JSONObject ob = new JSONObject();
+    ob.put("orders", orders);
+    
+    return Response.ok().entity(ob.toString()).build();
+  }
 }
