@@ -21,7 +21,7 @@ When('user logged in using username as {string} and password as {string}', funct
 });
 
 // The default timeout in async function with cucumber is 5000ms  
-Then("dashboard page should be displayed", {timeout: 10 * 1000}, async function () {
+Then("I will see Hi,root", {timeout: 10 * 1000}, async function () {
     
     const helloText = await driver.wait(until.elementLocated(By.xpath("//a[contains(text(),'Hi, root')]")), 10 * 1000);
     assert.strictEqual(await helloText.getText(), "Hi, root");

@@ -4,4 +4,4 @@ Feature: Login Feature File
   Scenario: login ProgEdu
     Given navigate to login page
     When user logged in using username as "root" and password as "rootrootrootroot" 
-    Then dashboard page should be displayed
+    Then I will see Hi,root
