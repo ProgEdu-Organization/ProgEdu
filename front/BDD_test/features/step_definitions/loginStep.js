@@ -3,11 +3,16 @@ const { Given, When, Then } = require('@cucumber/cucumber');
 const {Builder, By, until} = require('selenium-webdriver');
 require('dotenv').config( {path:__dirname + '/../../.env'} ); // __dirname is this file dir path
 
+const { SingletDriver } = require(__dirname + '/util.js');
+
+let singletDriver;
 let driver;
 
 Given('navigate to login page', function () {
-    driver =  new Builder().forBrowser('chrome').build();
-    driver.get(process.env["ProgEdu_HOST"]);
+
+    singletDriver =  SingletDriver.getDriver();
+    driver = singletDriver;
+    singletDriver.get(process.env["ProgEdu_HOST"]);
 });
 
 When('user logged in using username as {string} and password as {string}', function (username, password) {
