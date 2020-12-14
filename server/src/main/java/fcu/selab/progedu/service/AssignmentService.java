@@ -246,10 +246,10 @@ public class AssignmentService {
    * @throws Exception abc
    */
   @POST
-  @Path("autoAssignment/create")
+  @Path("autoAssessment/create")
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   @Produces(MediaType.APPLICATION_JSON)
-  public Response createAutoAssignment(
+  public Response createAutoAssessment(
       @FormDataParam("assignmentName") String assignmentName,
       @FormDataParam("releaseTime") Date releaseTime, @FormDataParam("deadline") Date deadline,
       @FormDataParam("readMe") String readMe, @FormDataParam("fileRadio") String assignmentType,
@@ -266,7 +266,6 @@ public class AssignmentService {
 
       response = Response.ok().build();
     } catch (Exception e) {
-      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
       response = Response.serverError().entity(e.getMessage()).build();
     }
