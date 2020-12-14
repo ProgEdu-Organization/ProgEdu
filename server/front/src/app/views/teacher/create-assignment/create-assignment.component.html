@@ -169,13 +169,13 @@
                     <li class="list-group-item sortable" draggable="false" style="cursor: not-allowed; 
                         background-color: white;">1.&nbsp;Compile Failure
                         <select class="form-control" (change)="selectChangeHandler('Compile Failure', $event)">
-                          <option *ngFor="let op of score" value="{{ op }}">{{ op }}%</option>
+                          <option *ngFor="let op of getScoreOptions('Compile Failure')" value="{{ op }}">{{ op }}%</option>
                         </select>
                     </li>
                     <ul class="list-group sortable" [sortablejs]="order" [sortablejsOptions]="normalOptions">
                       <li class="list-group-item" *ngFor="let item of order; let i = index;">{{ i+2 }}. {{ item }}
                         <select class="form-control" (change)="selectChangeHandler(item, $event)">
-                          <option *ngFor="let op of score" value="{{ op }}">{{ op }}%</option>
+                          <option *ngFor="let op of getScoreOptions(item)" value="{{ op }}">{{ op }}%</option>
                         </select>
                       </li>
                     </ul>
@@ -193,7 +193,7 @@
                       <li role="menuitem"><a class="dropdown-item" href="{{SERVER_URL}}/resources/JavacQuickStart.zip"
                           download>JavacQuickStart.zip</a>
                       </li>
-                      <li role="menuitem"><a class="dropdown-item" href="" (click)="confirm()"
+                      <li role="menuitem"><a class="dropdown-item" (click)="confirm()"
                           download>MvnQuickStart.zip</a>
                       </li>
                     </ul>

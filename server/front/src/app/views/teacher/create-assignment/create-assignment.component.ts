@@ -48,7 +48,7 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
   onSelectedMetrics: number[] = [0, 0, 0];
 
   score = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
-  statusScore = new Map([["Compile Failure", 0]])
+  statusScore = new Map([["Compile Failure", "0"]])
 
   javaStatus = [
     "Unit Test Failure",
@@ -199,6 +199,27 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
     else return true;
   }
 
+  getScoreOptions(status:string) {
+    let max = 100;
+    let sum = 0;
+    let options : string[] = [];
+    sum += Number(this.statusScore.get("Compile Failure"));
+    if(this.order.length !== 0){
+      for(let i=0; i<this.order.length; i++){
+        if(this.statusScore.get(this.order[i]) !== undefined)
+          sum += Number(this.statusScore.get(this.order[i]));
+      }
+    }
+    if(this.statusScore.get(status) !== undefined)
+      sum -= Number(this.statusScore.get(status));
+    max = max - sum;
+    for(let i=0; i <= 100; i++) {
+      if(i <= max)
+        options.push(String(i));
+    }
+    return options;
+  }
+
   selectChangeHandler(status:string, $event) {
     this.statusScore.set(status, $event.target.value);
     console.log(this.statusScore);
@@ -294,7 +315,10 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
     this.orderString = "Compile Failure";
     this.orderString = this.orderString + ':' + this.statusScore.get("Compile Failure");
     for(let i = 0; i < this.order.length; i++) {
-      this.orderString = this.orderString + ', ' + this.order[i] + ':' + this.statusScore.get(this.order[i]);
+      if(this.statusScore.get(this.order[i]) == undefined)
+        this.orderString = this.orderString + ', ' + this.order[i] + ':0';
+      else
+        this.orderString = this.orderString + ', ' + this.order[i] + ':' + this.statusScore.get(this.order[i]);
     }
     console.log(this.orderString);
     this.assignment.get('assOrder').setValue(this.orderString);
@@ -375,5 +399,5 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
     this.androidTabStatus.isOpen = false;
   }
 
-
+  
 }

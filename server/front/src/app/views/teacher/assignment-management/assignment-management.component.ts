@@ -21,6 +21,7 @@ export class AssignmentManagementComponent implements OnInit {
   assignments: Array<any>;
   assignmentName: string;
   assignmentForm: FormGroup;
+  assignmentOrder: string;
 
   errorResponse: HttpErrorResponse;
   errorTitle: string;
@@ -115,6 +116,34 @@ export class AssignmentManagementComponent implements OnInit {
         }
       }
     });
+  }
+
+  getAssignmentOrder() {
+    this.order = [];
+    this.statusScore = new Map();
+    this.assignmentService.getAssignmentOrder(this.assignmentName).subscribe(
+      response => {
+        this.assignmentOrder = response.orders;
+        var splited = this.assignmentOrder.split(', ');
+        for(let i=0; i<splited.length; i++) {
+          var statusScore = splited[i].split(':');
+          if(statusScore[0] == 'COMPILE_FAILURE') {
+            this.statusScore.set("Compile Failure", statusScore[1]);
+            this.order.push("Compile Failure");
+          }
+          else if(statusScore[0] == 'UNIT_TEST_FAILURE') {
+            this.statusScore.set("Unit Test Failure", statusScore[1]);
+            this.order.push("Unit Test Failure");
+          }
+          else if(statusScore[0] == 'CHECKSTYLE_FAILURE') {
+            this.statusScore.set("Coding Style Failure", statusScore[1]);
+            this.order.push("Coding Style Failure");
+          }
+        }
+        console.log(this.statusScore);
+        console.log(this.order);
+      }
+    )
   }
 
   deleteAssignment() {

@@ -26,7 +26,7 @@
             <td>{{assignment.releaseTime | date:'short'}}</td>
             <td>{{assignment.deadline | date:'short'}}</td>
             <td><button id="{{assignment.name}}" class="btn btn-info" data-toggle="modal"
-                (click)="editModal.show();setSelectAssignment(assignment)"><i class="cui-pencil icons"></i></button>
+                (click)="editModal.show();setSelectAssignment(assignment);getAssignmentOrder()"><i class="cui-pencil icons"></i></button>
             </td>
             <td>
               <button id="{{assignment.name}}" class="btn btn-danger" type="button" data-toggle="modal"
@@ -110,30 +110,17 @@
           </div>
           <div class="form-group row">
             <div class="col-md-3">Assignment Assessment</div>
-            <div class="col-md-3">Status :</div>
             <div class="col-md-2">Order & Score :</div>          
           </div>
           <div class="form-group row">
             <div class="col-md-3"></div>
-            <div class="col-md-3">
-              <ul class="list-group sortable" [sortablejs]="javaStatus" [sortablejsOptions]="normalOptions">
-                <li class="list-group-item" *ngFor="let item of javaStatus">{{ item }}</li>
-              </ul>
-            </div>
             <div class="col-md-2">
               <li class="list-group-item sortable" draggable="false" style="cursor: not-allowed; 
-                  background-color: white;">1.&nbsp;Compile Failure
-                  <select class="form-control" (change)="selectChangeHandler('Compile Failure', $event)">
-                    <option *ngFor="let op of score" value="{{ op }}">{{ op }}%</option>
+                  background-color: white;" *ngFor="let item of order; let i = index;">{{ i+1 }}. {{ item }}
+                  <select class="form-control" (change)="selectChangeHandler(item, $event)">
+                    <option *ngFor="let op of score" value="{{ op }}" [selected]="statusScore.get(item) == op">{{ op }}%</option>
                   </select>
               </li>
-              <ul class="list-group sortable" [sortablejs]="order" [sortablejsOptions]="normalOptions">
-                <li class="list-group-item" *ngFor="let item of order; let i = index;">{{ i+2 }}. {{ item }}
-                  <select class="form-control" (change)="selectChangeHandler(item, $event)">
-                    <option *ngFor="let op of score" value="{{ op }}">{{ op }}%</option>
-                  </select>
-                </li>
-              </ul>
             </div>
           </div>
           <div class="form-group row">

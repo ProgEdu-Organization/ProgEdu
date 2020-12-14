@@ -274,7 +274,7 @@ public class AssignmentService {
 
       // 1. create assignment
       createAssignment(assignmentName, releaseTime, deadline,
-          readMe, assignmentType, file, fileDetail, "");
+          readMe, assignmentType, file, fileDetail);
 
       // 2. create peer review setting
       int assignmentId = dbManager.getAssignmentIdByName(assignmentName);
