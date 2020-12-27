@@ -162,8 +162,7 @@ public class AssignmentService {
       @FormDataParam("releaseTime") Date releaseTime, @FormDataParam("deadline") Date deadline,
       @FormDataParam("readMe") String readMe, @FormDataParam("fileRadio") String assignmentType,
       @FormDataParam("file") InputStream file,
-      @FormDataParam("file") FormDataContentDisposition fileDetail,
-      @FormDataParam("order") String order) {
+      @FormDataParam("file") FormDataContentDisposition fileDetail) {
 
     final AssignmentType assignment = AssignmentFactory.getAssignmentType(assignmentType);
     final ProjectTypeEnum projectTypeEnum = ProjectTypeEnum.getProjectTypeEnum(assignmentType);
@@ -224,8 +223,6 @@ public class AssignmentService {
 
     addProject(assignmentName, releaseTime, deadline, readMe, projectTypeEnum, hasTemplate,
         testZipChecksum, testZipUrl);
-    
-    addOrder(order, assignmentName);
 
     List<User> users = userService.getStudents();
     for (User user : users) {
@@ -235,6 +232,44 @@ public class AssignmentService {
     // 11. remove project file in linux
     tomcatService.deleteDirectory(new File(uploadDir));
     return Response.ok().build();
+  }
+
+   /**
+   * @param assignmentName assignment name
+   * @param releaseTime    release time
+   * @param readMe         read me
+   * @param assignmentType assignment type
+   * @param file           file
+   * @param fileDetail     file detail
+   * @param order          assignment order
+   * @return abc
+   * @throws Exception abc
+   */
+  @POST
+  @Path("autoAssessment/create")
+  @Consumes(MediaType.MULTIPART_FORM_DATA)
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response createAutoAssessment(
+      @FormDataParam("assignmentName") String assignmentName,
+      @FormDataParam("releaseTime") Date releaseTime, @FormDataParam("deadline") Date deadline,
+      @FormDataParam("readMe") String readMe, @FormDataParam("fileRadio") String assignmentType,
+      @FormDataParam("file") InputStream file,
+      @FormDataParam("file") FormDataContentDisposition fileDetail,
+      @FormDataParam("order") String order) {
+    
+    Response response = null;
+    
+    try {
+      createAssignment(assignmentName, releaseTime, deadline, readMe,
+          assignmentType, file, fileDetail);
+      addOrder(order, assignmentName);
+
+      response = Response.ok().build();
+    } catch (Exception e) {
+      LOGGER.error(e.getMessage());
+      response = Response.serverError().entity(e.getMessage()).build();
+    }
+    return response;
   }
 
   /**
@@ -914,5 +949,27 @@ public class AssignmentService {
         }
       }
     }
+  }
+
+  /**
+  * get assignemnt order
+  *
+  * @param fileName fileName
+  * @return assignmnet order
+  * 
+  */
+  @GET
+  @Path("getAssignmentOrder")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response getAssignmentOrder(@QueryParam("fileName") String fileName) {
+    int aid = dbManager.getAssignmentIdByName(fileName);
+    String orders = aaDbManager.getAssignmentOrder(aid);
+    if (orders.isEmpty()) {
+      orders = "None";
+    }
+    JSONObject ob = new JSONObject();
+    ob.put("orders", orders);
+    
+    return Response.ok().entity(ob.toString()).build();
   }
 }

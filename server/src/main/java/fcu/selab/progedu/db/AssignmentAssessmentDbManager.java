@@ -202,4 +202,38 @@ public class AssignmentAssessmentDbManager {
     }
     return score;
   }
+
+  /**
+  * Add AssignmentAssessment to database
+  * 
+  * @param aid Assignment Id
+  */
+  public String getAssignmentOrder(int aid) {
+    String orders = "";
+    String sql = "SELECT `status`,`order`,`score` FROM ProgEdu.Assignment_Assessment"
+        + " WHERE `aId` = ?";
+
+    try (Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+      preStmt.setInt(1, aid);
+      try (ResultSet rs = preStmt.executeQuery()) {
+        while (rs.next()) {
+          if (!orders.isEmpty()) {
+            orders = orders + ", ";
+          }
+          Assignment assignment = new Assignment();
+          int status = rs.getInt("status");
+          int order = rs.getInt("order");
+          int score = rs.getInt("score"); 
+          StatusEnum statusEnum = csDb.getStatusNameById(status);
+          orders = orders + statusEnum.toString()
+            + ":" + Integer.toString(score);
+        }
+      }
+    } catch (SQLException e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    }
+    return orders;
+  }
 }
