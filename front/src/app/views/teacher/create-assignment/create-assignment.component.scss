@@ -1,0 +1,11 @@
+.sortable {
+    width: 190px;
+    background: #eee;
+    border-radius: 0.25rem;
+    min-height: 40px;
+}
+
+.list-group-item {
+    cursor: move;
+    width: 190px;
+}

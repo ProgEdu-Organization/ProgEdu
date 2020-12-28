@@ -7,12 +7,14 @@ import { ModalDirective } from 'ngx-bootstrap/modal';
 import { assignmentTypeEnum } from './assignmentTypeEnum';
 import { HttpErrorResponse } from '@angular/common/http';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import { SortablejsOptions } from 'ngx-sortablejs';
 import { assignmentGradingEnum } from './assignmentGradingEnum.enum';
 import { Category, Assessment } from './../review-metrics-management/Category';
 
 @Component({
   selector: 'app-create-assignment',
-  templateUrl: './create-assignment.component.html'
+  templateUrl: './create-assignment.component.html',
+  styleUrls: ['./create-assignment.component.scss']
 })
 export class CreateAssignmentComponent implements OnInit, OnDestroy {
   javaTabStatus: { isOpen: boolean } = { isOpen: false };
@@ -33,12 +35,44 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
   showWarning: boolean;
   dynamic: number = 60;
   type: string = 'Waiting';
+  finalIndex: number;
+  orderString: string = 'Compile Failure'
+  isShow: boolean = true;
+  isDis: boolean = true;
+  isNull: boolean = true;
 
   reviewMetricsNums = [0, 1, 2];
   assessments: Assessment[][] = [[], [], []];
   categories: Category[];
   onSelectedCategory: number[] = [0, 1, 2];
   onSelectedMetrics: number[] = [0, 0, 0];
+
+  score = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
+  statusScore = new Map([["Compile Failure", "0"]])
+
+  javaStatus = [
+    "Unit Test Failure",
+    "Coding Style Failure"
+  ];
+
+  webStatus = [
+    "HTML Failure",
+    "CSS Failure",
+    "Javascript Failure",
+    "Unit Test Failure"
+  ];
+
+  appStatus = [
+    "Coding Style Failure",
+    "Unit Test Failure",
+    "E2E Test Failure"
+  ];
+
+  order = [];
+
+  normalOptions: SortablejsOptions = {
+    group: 'normal-group',
+  };
 
   public Editor = ClassicEditor;
   public editorConfig = {
@@ -66,6 +100,7 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
       type: [undefined, Validators.required],
       file: [undefined, Validators.required],
       method: [assignmentGradingEnum['Auto']],
+      assOrder: [undefined],
       rememberMe: [true]
     });
     this.onChanges();
@@ -91,6 +126,7 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
     const reviewReleaseTime = 'reviewReleaseTime';
     const reviewDeadline = 'reviewDeadline';
     const commitRecordCount = 'commitRecordCount';
+    const type = 'type';
     this.assignment.get(name).valueChanges.subscribe(
       () => {
         this.assignment.get(name).valid ? this.showIsValidById(name) : this.showIsInvalidById(name);
@@ -107,6 +143,11 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
       val => {
         val.length !== 0 ? this.showIsValidById(deadline) : this.showIsInvalidById(deadline);
         this.assignmentTimeCheck();
+      }
+    );
+    this.assignment.get(type).valueChanges.subscribe(
+      () => {
+        this.reset();
       }
     );
 
@@ -134,6 +175,53 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
         val.length !== 0 ? this.showIsValidById(commitRecordCount) : this.showIsInvalidById(commitRecordCount);
       }
     );
+  }
+
+  isShowOrder(isShow: boolean) {
+    this.isShow = isShow;
+  }
+
+  isEnabledConfirm() {
+    if(!(this.assignment.get('name').valid && this.assignment.get('type').valid)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  checkIsFill() {
+    let sum = 0;
+    for(let i=0; i<this.statusScore.size; i++) {
+      sum += Number(this.statusScore[i]);
+    }
+    if(sum>100) return false;
+    else return true;
+  }
+
+  getScoreOptions(status:string) {
+    let max = 100;
+    let sum = 0;
+    let options : string[] = [];
+    sum += Number(this.statusScore.get("Compile Failure"));
+    if(this.order.length !== 0){
+      for(let i=0; i<this.order.length; i++){
+        if(this.statusScore.get(this.order[i]) !== undefined)
+          sum += Number(this.statusScore.get(this.order[i]));
+      }
+    }
+    if(this.statusScore.get(status) !== undefined)
+      sum -= Number(this.statusScore.get(status));
+    max = max - sum;
+    for(let i=0; i <= 100; i++) {
+      if(i <= max)
+        options.push(String(i));
+    }
+    return options;
+  }
+
+  selectChangeHandler(status:string, $event) {
+    this.statusScore.set(status, $event.target.value);
+    console.log(this.statusScore);
   }
 
   selectedAssignmentGradingMethod(method: string) {
@@ -223,6 +311,16 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
   }
 
   public submit() {
+    this.orderString = "Compile Failure";
+    this.orderString = this.orderString + ':' + this.statusScore.get("Compile Failure");
+    for(let i = 0; i < this.order.length; i++) {
+      if(this.statusScore.get(this.order[i]) == undefined)
+        this.orderString = this.orderString + ', ' + this.order[i] + ':0';
+      else
+        this.orderString = this.orderString + ', ' + this.order[i] + ':' + this.statusScore.get(this.order[i]);
+    }
+    console.log(this.orderString);
+    this.assignment.get('assOrder').setValue(this.orderString);
     if (this.assignment.dirty && this.assignment.valid) {
       this.progressModal.show();
       if (!this.peerReviewStatus.isOpen) {
@@ -255,6 +353,43 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
     }
   }
 
+  public confirm() {
+    for (this.finalIndex=1;this.finalIndex<this.order.length+1;this.finalIndex++) {
+      this.orderString = this.orderString + ', ' + this.order[this.finalIndex-1];
+    }
+    this.assignment.get('assOrder').setValue(this.orderString);
+    this.createService.modifyOrder(this.assignment).subscribe(
+      (response) => {
+        console.log("Success");
+        window.open(environment.SERVER_URL + 
+          '/webapi/assignment/getAssignmentFile?fileName=' + this.assignment.value.name);
+      },
+      error => {
+        this.errorResponse = error;
+        this.errorTitle = 'Send Order Error';
+      });
+      this.orderString = 'Compile Failure';
+  }
+
+  public reset() {
+    this.order = [];
+    this.javaStatus = [
+      "Unit Test Failure",
+      "Coding Style Failure"
+    ];
+    this.webStatus = [
+      "HTML Failure",
+      "CSS Failure",
+      "Javascript Failure",
+      "Unit Test Failure"
+    ];
+    this.appStatus = [
+      "Coding Style Failure",
+      "Unit Test Failure",
+      "E2E Test Failure"
+    ];
+  }
+
 
   ngOnDestroy() {
     this.javaTabStatus.isOpen = false;
@@ -262,5 +397,5 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
     this.androidTabStatus.isOpen = false;
   }
 
-
+  
 }
