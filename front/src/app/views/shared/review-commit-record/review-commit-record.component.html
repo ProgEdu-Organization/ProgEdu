@@ -1,0 +1,214 @@
+<div *ngIf='displayCommits'>
+  <ng-container *ngFor="let reviewFeedback of reviewFeedbacks;index as i;">
+    <span class="h2">
+      <div class="form-group row">
+        <label class="col-md-7 col-form-label">Peer Review Result</label>
+        <label class="col-md-5 col-form-label" style="text-align: right;" *ngIf=isTeacher>Scorer：
+          {{reviewFeedback.name}}</label>
+      </div>
+    </span>
+    <div class="card-body" id='reviewFeedback-bar'>
+      <table class='table table-responsive-sm table-bordered table-hover table-outline'>
+        <thead class="thead-light">
+          <tr>
+            <th class='w-60'>Topic</th>
+            <th class='w-30'>Time</th>
+            <th class='w-10' *ngIf="isTeacher">Score Mode</th>
+            <th class='w-10'>Result</th>
+            <th class='w-60'>Feedback</th>
+          </tr>
+        </thead>
+        <tr *ngFor="let reviewDetail of reviewFeedback.Detail" id='reviewFeedback-bar'>
+          <td>
+            {{reviewDetail.metrics}}
+          </td>
+          <td>
+            {{ reviewDetail.time | date:'short'}}
+          </td>
+          <td *ngIf="isTeacher">
+            {{ reviewDetail.scoreMode}}
+          </td>
+          <ng-container *ngIf="reviewDetail.scoreMode === 'yesNoMode'">
+            <td *ngIf="reviewDetail.score===1">
+              Yes
+            </td>
+            <td *ngIf="reviewDetail.score===2" style="color:red;">
+              No
+            </td>
+          </ng-container>
+          <td *ngIf="reviewDetail.scoreMode === 'numberScore'">
+            {{ reviewDetail.score}}
+          </td>
+          <td>
+            <button type="button" class="btn btn-secondary"
+              (click)="openReviewFeedbackModal(reviewDetail);reviewFormModal.show()">Feedback Information</button>
+          </td>
+        </tr>
+      </table>
+      <hr>
+      <!--<div class="col-lg-12 h-25 mw-5">
+        <ul class="pagination">
+          <li class="page-item"><a class="page-link" href="javascript:void(0);" (click)="preReviewPage(i);">Prev</a></li>
+          <li class="page-item active">
+            <a class="page-link" href="javascript:void(0);"
+              (click)="currentReviewPagination[i] = currentReviewPagination[i]">{{currentReviewPagination[i]}}</a>
+          </li>
+          <li class="page-item"><a class="page-link" href="javascript:void(0);" (click)="nextReviewPage(i);">Next</a></li>
+        </ul>
+      </div>
+      <hr>-->
+    </div>
+  </ng-container>
+</div>
+<div *ngIf='displayCommits'>
+  <span class="h2">Commit Record</span>
+  <div class="card-body">
+    <div class='col-md-12 d-flex flex-row text' *ngIf=isTeacher>
+      <span class="ovol NB ">
+        Not Build
+      </span>
+      <span *ngIf="type !== 'WEB'" class="ovol CPF">
+        Compile Failure
+      </span>
+      <span class="ovol CSF">
+        Coding Style Failure
+      </span>
+      <span *ngIf="type === 'WEB'" class="ovol WHF">
+        HTML Failure
+      </span>
+      <span *ngIf="type === 'WEB'" class="ovol WSF">
+        CSS Failure
+      </span>
+      <span *ngIf="type === 'WEB'" class="ovol WEF">
+        JavaScript Failure
+      </span>
+      <span class="ovol UTF">
+        Unit Test Failure
+      </span>
+      <span *ngIf="type === 'ANDROID'" class="ovol UITF">
+        UI Test Failure
+      </span>
+      <span class="ovol BS">
+        Build Success
+      </span>
+    </div>
+    <hr>
+    <div class="col-lg-12 h-25 mw-5">
+      <table class='table table-striped table-responsive-sm text-center'>
+        <thead class="thead-light">
+          <tr>
+            <th>Commit </th>
+            <th *ngIf=isTeacher>Light </th>
+            <th>Date</th>
+            <th>Commit Message</th>
+            <th *ngIf='showCommiter'>Committer</th>
+            <th *ngIf="isShowScreenshot()">Screenshot</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let commit of displayCommits" id='feedback-bar' (click)='updateFeedback(commit.number)'>
+            <td class='w-10'>{{commit.number}}</td>
+            <td *ngIf=isTeacher>
+              <p class="circle {{commit.status}}"></p>
+            </td>
+            <td class='w-25'>{{commit.time | date:'short'}}</td>
+            <td class='w-50'>{{commit.message}}</td>
+            <td *ngIf='showCommiter'>{{commit.committer}}</td>
+            <td *ngIf="isShowScreenshot()"><button class="btn btn-primary" (click)='screenshot.screenshotModal.show();'>
+                <i class="cui-screen-desktop"></i></button></td>
+          </tr>
+        </tbody>
+      </table>
+      <ul class="pagination">
+        <li class="page-item"><a class="page-link" href="javascript:void(0);" (click)="prePage();">Prev</a></li>
+        <li class="page-item active">
+          <a class="page-link" href="javascript:void(0);"
+            (click)="currentPagination = currentPagination">{{currentPagination}}</a>
+        </li>
+        <li class="page-item"><a class="page-link" href="javascript:void(0);" (click)="nextPage();">Next</a></li>
+      </ul>
+    </div>
+    <hr>
+    <ng-container *ngIf=isTeacher>
+      <span><a>
+          <h3>Feedback Information {{commitNumber}}</h3>
+        </a></span>
+      <table class='table table-responsive-sm table-bordered table-hover table-outline'>
+        <thead class="thead-light">
+          <tr>
+            <th class='w-20'>fileName</th>
+            <th class='w-10'>Line</th>
+            <th class='w-30'>Message</th>
+            <th class='w-30'>Symptom</th>
+            <th>Suggest</th>
+          </tr>
+        </thead>
+        <tr *ngFor="let feedback of feedbacks" id='feedback-bar'>
+          <td>
+            <pre>{{feedback.fileName}}</pre>
+          </td>
+          <td>
+            <pre>{{feedback.line}}</pre>
+          </td>
+          <td>
+            <pre [innerHTML]='feedback.message | lineBreaks'></pre>
+          </td>
+          <td>
+            <pre>{{feedback.symptom}}</pre>
+          </td>
+          <td>
+            <pre><a href='{{feedback.suggest}}' target="blank">{{feedback.suggest}}</a></pre>
+          </td>
+        </tr>
+      </table>
+    </ng-container>
+  </div>
+</div>
+
+<!-- Review Form Modal -->
+<div bsModal #reviewFormModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title col-md-6">Review Result</h4>
+        <button type="button" class="close" (click)="reviewFormModal.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <!--Review Form Main-->
+      <form class="form-horizontal" *ngIf="onClickedReviewDetail">
+        <div class="modal-body">
+          <div class="form-group row">
+            <label class="col-md-9 col-form-label" for="description"> {{onClickedReviewDetail.metrics}}</label>
+            <ng-container *ngIf="onClickedReviewDetail.scoreMode === 'yesNoMode'">
+              <ng-container *ngIf="onClickedReviewDetail.score===1">
+                Yes
+              </ng-container>
+              <ng-container *ngIf="onClickedReviewDetail.score===2">
+                <div class="form-check form-check-inline mr-1" style="color:red;">
+                  No
+                </div>
+              </ng-container>
+            </ng-container>
+            <div class="form-check form-check-inline mr-1" *ngIf="onClickedReviewDetail.scoreMode === 'numberScore'">
+              {{ onClickedReviewDetail.score}}
+            </div>
+          </div>
+          <div class="col-md-12">
+            <p>Feedback:</p>
+            <div class="col-md-12">
+              <textarea readonly id="feedback" name="feedback" rows="3" class="form-control"
+                type="text">{{onClickedReviewDetail.feedback}}</textarea>
+            </div>
+
+          </div>
+          <br>
+        </div>
+      </form>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<app-screenshot [screenshotUrls]=screenshotUrls [commitNumber]=commitNumber [type]=type #screenshot>
+</app-screenshot>
