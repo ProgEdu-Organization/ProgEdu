@@ -15,7 +15,7 @@ pipeline {
 
         stage('build') {
             steps {
-                sh 'docker-compose up -d --build'
+                sh "docker-compose --compatibility -p $BRANCH_NAME-progedu up -d --build"
             }
         }
     }
