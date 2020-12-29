@@ -11,7 +11,7 @@ services:
       # MYSQL_PASSWORD: ${DB_PASSWORD}
       # MYSQL_DATABASE: ${DB_DATABASE}
     volumes:
-      - ${DATA_PATH_HOST}/mysql:/var/lib/mysql
+      - mysql:/var/lib/mysql
 
   gitlab:
     image: gitlab/gitlab-ce:12.5.6-ce.0
@@ -32,9 +32,9 @@ services:
         gitlab_rails['initial_root_password'] = "${GITLAB_ROOT_PASSWORD}"
         gitlab_rails['gitlab_shell_ssh_port'] = ${GITLAB_SSH_PORT}
     volumes:
-      - ${DATA_PATH_HOST}/gitlab/config:/etc/gitlab
-      - ${DATA_PATH_HOST}/gitlab/logs:/var/log/gitlab
-      - ${DATA_PATH_HOST}/gitlab/data:/var/opt/gitlab
+      - gitlab-config:/etc/gitlab
+      - gitlab-logs:/var/log/gitlab
+      - gitlab-data:/var/opt/gitlab
 
   server:
     image: fcumselab/progedu-tomcat:latest
@@ -52,9 +52,9 @@ services:
       - jenkins
       - gitlab
     volumes:
-      - ${DATA_PATH_HOST}/server/temp:/usr/local/tomcat/temp
-      - ${DATA_PATH_HOST}/server/logs:/usr/local/tomcat/logs
-      - ${DATA_PATH_HOST}/server/images:/usr/local/tomcat/images
+      - server-temp:/usr/local/tomcat/temp
+      - server-logs:/usr/local/tomcat/logs
+      - server-images:/usr/local/tomcat/images
   
       
   front-end:
@@ -80,8 +80,9 @@ services:
     environment:
       WEB_SELENIUM_URL: ${WEB_SELENIUM_URL}
     volumes:
-      - ${DATA_PATH_HOST}/jenkins:/var/jenkins_home
-      - /dev/kvm:/dev/kvm
+      - jenkins_home:/var/jenkins_home
+      - jenkins_home-workspace:/var/jenkins_home/workspace
+      # - /dev/kvm:/dev/kvm // for android, but now it not need
 
   selenium:
     image: selenium/standalone-chrome
@@ -89,7 +90,7 @@ services:
       - "${SELENIUM_PORT}:4444"
     restart: always
     volumes:
-      - ${DATA_PATH_HOST}/jenkins/workspace:/var/lib/workspace
+      - jenkins_home-workspace:/var/lib/workspace
 
   mongo:
     image: fcumselab/progedu-mongo:release-1.0.1
@@ -103,5 +104,23 @@ services:
       MONGO_PASSWORD: ${MONGO_PASSWORD}
       MONGO_DATABASE: ${MONGO_DATABASE}
     volumes:
-      - ${DATA_PATH_HOST}/mongo:/data/db
+      - mongo:/data/db
     command: mongod --auth
+    
+    
+volumes:
+
+  mysql: {}
+  
+  gitlab-config: {}
+  gitlab-logs: {}
+  gitlab-data: {}
+  
+  server-temp: {}
+  server-logs: {}
+  server-images: {}
+  
+  jenkins_home: {}
+  jenkins_home-workspace: {}
+  
+  mongo: {}
