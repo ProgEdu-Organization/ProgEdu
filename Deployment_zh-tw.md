@@ -17,7 +17,7 @@ cd ProgEdu
    2. 修正 `GITLAB_HOST=http://example.com:22080` 成 
    `GITLAB_HOST=http://<你電腦的IP地址>:22080`。(22080 需要與 `.env` 裡的 `GITLAB_HTTP_PORT`設定一致)。
    
-   3. 如上一步, 去修正其它像右邊這種特徵的網址 `http://example.com` 成實際上ProgEdu要架設到的地方, 記得每個服務的 port 都要跟網址後面的 port 一致, 像是 `JENKINS_PORT=8080` 與 `WEB_JENKINS_URL=http://example.com:8080`,可以注意到後面的8080是一樣的, 所以如果因為port號被占用, 而想要把port號更換成38080, 則這兩個的設定要一起更改為 `JENKINS_PORT=38080` 與 `WEB_JENKINS_URL=http://example.com:38080` 。
+   3. 如上一步, 修正其它像右邊這種特徵的網址 `http://example.com` 成實際上ProgEdu要架設到的地方, 記得每個服務的 port 都要跟網址後面的 port 一致, 像是 `JENKINS_PORT=8080` 與 `WEB_JENKINS_URL=http://example.com:8080`,可以注意到後面的8080是一樣的, 所以如果因為port號被占用, 而想要把port號更換成38080, 則這兩個的設定要一起更改為 `JENKINS_PORT=38080` 與 `WEB_JENKINS_URL=http://example.com:38080` 。
 
 ## 
 
