@@ -1,7 +1,7 @@
-############################## Main Config ##############################
+
+# --------------------------- Main Config ---------------------------- #
 
 COMPOSE_PROJECT_NAME=progedu
-DATA_PATH_HOST=./.data
 
 DB_PORT=23306
 DB_HOST=db
@@ -9,6 +9,7 @@ DB_HOST=db
 GITLAB_HTTP_PORT=22080
 GITLAB_HOST=http://example.com:22080
 GITLAB_SSH_PORT=22022
+WEB_GITLAB_ADMIN_PERSONAL_TOKEN=
 
 WEB_PORT=22000
 WEB_EXTERNAL_URL=http://example.com:22000
@@ -17,6 +18,7 @@ FRONT_END_PORT=22001
 
 JENKINS_PORT=8080
 WEB_JENKINS_URL=http://example.com:8080
+WEB_JENKINS_API_TOKEN=
 
 SELENIUM_PORT=4444
 WEB_SELENIUM_URL=http://example.com:4444
@@ -24,9 +26,7 @@ WEB_SELENIUM_URL=http://example.com:4444
 MONGO_PORT=10017
 MONGO_HOST_URL=example.com:10017
 
-#########################################################################
-
-############################## Minor Config ##############################
+# --------------------------- Minor Config ---------------------------- #
 
 ###### Database Config 
 
@@ -53,11 +53,9 @@ GITLAB_ROOT_PASSWORD=rootrootrootroot
 ###### ProgEdu Gitlab Connection Config
 
 WEB_GITLAB_ADMIN_USERNAME=root
-WEB_GITLAB_ADMIN_PERSONAL_TOKEN=
 
 ###### ProgEdu Jenkins Connection Config
 
-WEB_JENKINS_API_TOKEN=
 WEB_JENKINS_ADMIN_USERNAME=admin
 WEB_JENKINS_ADMIN_PASSWORD=admin
 
@@ -65,11 +63,6 @@ WEB_JENKINS_ADMIN_PASSWORD=admin
 
 MAIL_USER=admin@example.com
 MAIL_PASSWORD=example-password
-
-###### Build Config
-
-# This need have empty value, so don't care about it, this will fix later
-WEB_API_BASEURI=
 
 ###### Download Android SDK
 
@@ -81,10 +74,8 @@ SDK_BUILD_TOOLS=28.0.3
 
 LOG_LEVEL=error
 
+# --------------------------- Deprecated ---------------------------- #
 
-#########################################################################
-
-
-
-
+# This need have empty value, so don't care about it, this will fix later
+WEB_API_BASEURI=
 
