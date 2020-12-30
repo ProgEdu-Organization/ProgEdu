@@ -57,6 +57,26 @@ bash getJenkinsUnlockPassword.sh
 ```
 ![](readme-images/unlock-jenkins.png)
 
+補充: 解鎖Jenkins的另一種方式
+
+利用portainer 解鎖 Jenkins
+
+step1: 切換至連接頁面
+
+![](readme-images/how-to-get-jenkins-init-from-portainer.png)
+
+step2: 連接且進入容器
+
+![](readme-images/how-to-get-jenkins-init-from-portainer_2.png)
+
+step3:
+輸入: `cat /var/jenkins_home/secrets/initialAdminPassword`
+
+![](readme-images/how-to-get-jenkins-init-from-portainer_3.png)
+
+============補充結束======================
+
+
 3. 安裝plug-in 選擇"Install suggested plugins"
 ![](/readme-images/jenkins-install-plugins.png)  
 
