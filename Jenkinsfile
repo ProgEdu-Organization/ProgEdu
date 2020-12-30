@@ -1,12 +1,25 @@
 pipeline {
     agent any
+    
+    environment {
+        NEXT_CLOUD_PASSWORD = credentials('next-cloud-password')
+    }
+    
+    
     stages {
-        stage('check .env file') {
+        
+        stage('download .env file') {
             steps {
                 script {
-                    if( fileExists("../../progedu-ci-cd/$BRANCH_NAME/.env") ) {
-                        sh "cp ../../progedu-ci-cd/$BRANCH_NAME/.env .env"
-                    } else {
+                    sh 'curl -u server:$NEXT_CLOUD_PASSWORD http://140.134.26.65:50603/remote.php/dav/files/server/ProgEdu-CI-CD/$BRANCH_NAME/.env -X GET -O'
+                }
+            }
+        }
+        
+        stage('check .env Exists file') {
+            steps {
+                script {
+                    if( ! fileExists(".env") ) {
                         error('not exists .env file')
                     }
                 }
