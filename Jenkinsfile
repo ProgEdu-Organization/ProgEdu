@@ -11,7 +11,7 @@ pipeline {
         stage('download .env file') {
             steps {
                 script {
-                    sh 'curl -u server:$NEXT_CLOUD_PASSWORD http://140.134.26.65:50603/remote.php/dav/files/server/ProgEdu-CI-CD/$BRANCH_NAME/.env -X GET -O'
+                    sh 'curl -u server:$NEXT_CLOUD_PASSWORD -f http://140.134.26.65:50603/remote.php/dav/files/server/ProgEdu-CI-CD/$BRANCH_NAME/.env -X GET -O'
                 }
             }
         }
