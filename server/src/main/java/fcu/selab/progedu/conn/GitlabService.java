@@ -322,7 +322,7 @@ public class GitlabService {
     return groups;
   }
 
-  /**
+  /**ProjectCommitRecordDbManager
    * Get a list of project from group
    *
    * @param group A group form Gitlab
