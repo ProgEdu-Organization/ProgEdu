@@ -29,6 +29,7 @@ import fcu.selab.progedu.conn.JenkinsService;
 import fcu.selab.progedu.data.Assignment;
 import fcu.selab.progedu.data.CommitRecord;
 import fcu.selab.progedu.data.User;
+import fcu.selab.progedu.db.AssignmentAssessmentDbManager;
 import fcu.selab.progedu.db.AssignmentDbManager;
 import fcu.selab.progedu.db.AssignmentTypeDbManager;
 import fcu.selab.progedu.db.AssignmentUserDbManager;
@@ -44,6 +45,7 @@ import fcu.selab.progedu.status.StatusEnum;
 public class CommitRecordService {
   private CommitRecordDbManager db = CommitRecordDbManager.getInstance();
   private AssignmentUserDbManager auDb = AssignmentUserDbManager.getInstance();
+  private AssignmentAssessmentDbManager aaDb = AssignmentAssessmentDbManager.getInstance();
   private UserDbManager userDb = UserDbManager.getInstance();
   private AssignmentDbManager assignmentDb = AssignmentDbManager.getInstance();
   private AssignmentTypeDbManager atDb = AssignmentTypeDbManager.getInstance();
@@ -92,10 +94,15 @@ public class CommitRecordService {
     JSONArray array = new JSONArray();
     for (Assignment assignment : assignmentDb.getAllAssignment()) {
       int auId = auDb.getAuid(assignment.getId(), userId);
+      int statusId = db.getLastStatus(auId);
+      String status = csDb.getStatusNameById(statusId).getType();
+      int score = totalScore(assignmentDb.getAssignmentIdByName(assignment.getName()),
+          status);
       JSONObject ob = new JSONObject();
       ob.put("assignmentName", assignment.getName());
       ob.put("releaseTime", assignment.getReleaseTime());
       ob.put("commitRecord", db.getLastCommitRecord(auId));
+      ob.put("score", score);
       array.put(ob);
     }
     return Response.ok(array.toString()).build();
@@ -337,4 +344,26 @@ public class CommitRecordService {
     return studentUsers;
   }
 
+  /**
+   * Get score
+   * @param aid assignment ID
+   * @param status String status
+   * @return score
+   */
+  public int totalScore(int aid, String status) {
+    int score = 0;
+    //1. turn status from string to status id
+    int statusId = csDb.getStatusIdByName(status);
+    //2. get that status order
+    if (statusId == 1) {
+      //if status == build success
+      score = 100;
+    } else {
+      int order = aaDb.getAssessmentOrder(aid, statusId);
+      //3. total score is less than that order all score
+      score = aaDb.getScore(aid, order);
+    }
+
+    return score;
+  }
 }

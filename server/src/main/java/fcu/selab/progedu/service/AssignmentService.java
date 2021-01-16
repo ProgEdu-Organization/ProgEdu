@@ -63,7 +63,9 @@ import fcu.selab.progedu.data.Assignment;
 import fcu.selab.progedu.data.User;
 import fcu.selab.progedu.db.AssignmentDbManager;
 import fcu.selab.progedu.db.AssignmentUserDbManager;
+import fcu.selab.progedu.db.AssignmentAssessmentDbManager;
 import fcu.selab.progedu.db.CommitRecordDbManager;
+import fcu.selab.progedu.db.CommitStatusDbManager;
 import fcu.selab.progedu.db.ScreenshotRecordDbManager;
 import fcu.selab.progedu.db.UserDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
@@ -73,6 +75,8 @@ import fcu.selab.progedu.project.ProjectTypeEnum;
 import fcu.selab.progedu.utils.ExceptionUtil;
 import fcu.selab.progedu.utils.Linux;
 import fcu.selab.progedu.utils.ZipHandler;
+import fcu.selab.progedu.setting.MavenAssignmentSetting;
+import fcu.selab.progedu.setting.AssignmentSettings;
 
 @Path("assignment/")
 public class AssignmentService {
@@ -95,8 +99,10 @@ public class AssignmentService {
   private String mailPassword;
   private String gitlabRootUsername;
   private AssignmentDbManager dbManager = AssignmentDbManager.getInstance();
+  private AssignmentAssessmentDbManager aaDbManager = AssignmentAssessmentDbManager.getInstance();
   private AssignmentUserDbManager auDbManager = AssignmentUserDbManager.getInstance();
   private UserDbManager userDbManager = UserDbManager.getInstance();
+  private CommitStatusDbManager csDbManager = CommitStatusDbManager.getInstance();
   private CommitRecordDbManager crDbManager = CommitRecordDbManager.getInstance();
   private ScreenshotRecordDbManager srDbManager = ScreenshotRecordDbManager.getInstance();
   private ReviewSettingDbManager rsDbManager = ReviewSettingDbManager.getInstance();
@@ -107,6 +113,7 @@ public class AssignmentService {
   private final String tempDir = System.getProperty("java.io.tmpdir");
   private final String uploadDir = tempDir + "/uploads/";
   private final String testDir = tempDir + "/tests/";
+  private final String assignmentDir = tempDir + "/assignmentSetting/";
   private final String projectDir = System.getProperty("catalina.base");
   private final String imageTempName = "/temp_images/";
   private final String imageTempDir = projectDir + imageTempName;
@@ -221,6 +228,44 @@ public class AssignmentService {
     // 11. remove project file in linux
     tomcatService.deleteDirectory(new File(uploadDir));
     return Response.ok().build();
+  }
+
+  /**
+   * @param assignmentName assignment name
+   * @param releaseTime    release time
+   * @param readMe         read me
+   * @param assignmentType assignment type
+   * @param file           file
+   * @param fileDetail     file detail
+   * @param order          assignment order
+   * @return abc
+   * @throws Exception abc
+   */
+  @POST
+  @Path("autoAssessment/create")
+  @Consumes(MediaType.MULTIPART_FORM_DATA)
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response createAutoAssessment(
+      @FormDataParam("assignmentName") String assignmentName,
+      @FormDataParam("releaseTime") Date releaseTime, @FormDataParam("deadline") Date deadline,
+      @FormDataParam("readMe") String readMe, @FormDataParam("fileRadio") String assignmentType,
+      @FormDataParam("file") InputStream file,
+      @FormDataParam("file") FormDataContentDisposition fileDetail,
+      @FormDataParam("order") String order) {
+    
+    Response response = null;
+    
+    try {
+      createAssignment(assignmentName, releaseTime, deadline, readMe,
+          assignmentType, file, fileDetail);
+      addOrder(order, assignmentName);
+
+      response = Response.ok().build();
+    } catch (Exception e) {
+      LOGGER.error(e.getMessage());
+      response = Response.serverError().entity(e.getMessage()).build();
+    }
+    return response;
   }
 
   /**
@@ -453,6 +498,37 @@ public class AssignmentService {
     assignment.setTestZipUrl(testZipUrl);
 
     dbManager.addAssignment(assignment);
+  }
+
+  /**
+   * Add a project to database
+   *
+   * @param order   order
+   */
+  public void addOrder(String order, String assignmentName) {
+    List<String> ordersList = new ArrayList<>();
+    List<String> scoresList = new ArrayList<>();
+
+    String[] ordersAndScores = order.split(", ");
+    for (String orderAndScore : ordersAndScores) {
+      String[] tocken = orderAndScore.split(":");
+
+      if (tocken[0].equals("Compile Failure")) {
+        ordersList.add("cpf");
+      } else if (tocken[0].equals("Unit Test Failure")) {
+        ordersList.add("utf");
+      } else if (tocken[0].equals("Coding Style Failure")) {
+        ordersList.add("csf");
+      }
+      scoresList.add(tocken[1]);
+    }
+    //write assignment assessment in to data base
+    //addAssignmentAssessment(int aid, int sid, int order, int score)
+    for (int i = 0; i < ordersAndScores.length; i++) {
+      aaDbManager.addAssignmentAssessment(dbManager.getAssignmentIdByName(assignmentName),
+          csDbManager.getStatusIdByName(ordersList.get(i)),
+          i + 1, Integer.valueOf(scoresList.get(i)));
+    }
   }
 
   /**
@@ -792,5 +868,82 @@ public class AssignmentService {
         }
       }
     }
+  }
+
+  /**
+   * create previous Assignemnt
+   *
+   * @param fileType fileType
+   * @param orders orders
+   * @param assignmentName assignmentName
+   */
+  @POST
+  @Path("order")
+  @Consumes(MediaType.MULTIPART_FORM_DATA)
+  public Response getOrderFile(
+      @FormDataParam("fileRadio") String fileType, 
+      @FormDataParam("order") String orders,
+      @FormDataParam("assignmentName") String assignmentName) {
+    GetAssignmentSettingService gass = new GetAssignmentSettingService();
+    //---------cut order
+    List<String> ordersList = new ArrayList<>();
+    String[] tokens = orders.split(", ");
+    for (String token:tokens) {
+      if (token.equals("Compiler Failure")) {
+        ordersList.add("compilerFailure");
+      } else if (token.equals("Coding Style Failure")) {
+        ordersList.add("codingStyle");
+      } else if (token.equals("Unit Test Failure")) {
+        ordersList.add("test");
+      }
+    }
+    //------------------------make pom.xml
+    if (fileType.equals("maven")) {
+      MavenAssignmentSetting mas = new MavenAssignmentSetting(assignmentName);
+      gass.getSetting(mas, ordersList, assignmentName);
+    }
+    return Response.ok().build();
+  }
+
+  /**
+   * create get assignemnt file
+   *
+   * @param fileName fileName
+   * @return zip file
+   * 
+   */
+  @GET
+  @Path("getAssignmentFile")
+  public Response getAssignmentFile(@QueryParam("fileName") String fileName) {
+    String filePath = assignmentDir + fileName + ".zip";
+    
+    File file = new File(filePath);
+
+    ResponseBuilder response = Response.ok((Object) file);
+    response.header("Content-Disposition", "attachment;filename=" + fileName + ".zip");
+    
+    return response.build();
+  }
+
+  /**
+  * get assignemnt order
+  *
+  * @param fileName fileName
+  * @return assignmnet order
+  * 
+  */
+  @GET
+  @Path("getAssignmentOrder")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response getAssignmentOrder(@QueryParam("fileName") String fileName) {
+    int aid = dbManager.getAssignmentIdByName(fileName);
+    String orders = aaDbManager.getAssignmentOrder(aid);
+    if (orders.isEmpty()) {
+      orders = "None";
+    }
+    JSONObject ob = new JSONObject();
+    ob.put("orders", orders);
+    
+    return Response.ok().entity(ob.toString()).build();
   }
 }
