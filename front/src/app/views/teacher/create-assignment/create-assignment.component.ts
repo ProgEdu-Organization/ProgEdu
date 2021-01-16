@@ -56,7 +56,6 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
   ];
 
   webStatus = [
-    "Coding Style Failure",
     "HTML Failure",
     "CSS Failure",
     "Javascript Failure",
@@ -379,7 +378,6 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
       "Coding Style Failure"
     ];
     this.webStatus = [
-      "Coding Style Failure",
       "HTML Failure",
       "CSS Failure",
       "Javascript Failure",
