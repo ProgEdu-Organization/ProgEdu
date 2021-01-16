@@ -125,6 +125,10 @@ public class CommitRecordService {
 
       for (Assignment assignment: assignmentDb.getAutoAssessment()) {
         int auId = auDb.getAuid(assignment.getId(), userId);
+        int statusId = db.getLastStatus(auId);
+        String status = csDb.getStatusNameById(statusId).getType();
+        int score = totalScore(assignmentDb.getAssignmentIdByName(assignment.getName()),
+            status);
         JSONObject ob = new JSONObject();
         ob.put("assignmentName", assignment.getName());
         ob.put("releaseTime", assignment.getReleaseTime());
@@ -202,10 +206,13 @@ public class CommitRecordService {
       String message = js.getCommitMessage(jobName, number);
       Date time = commitRecord.getTime();
       String status = commitRecord.getStatus().getType();
+      int score = totalScore(assignmentDb.getAssignmentIdByName(assignmentName),
+          status);
       JSONObject ob = new JSONObject();
       ob.put("totalCommit", totalCommit);
       ob.put("number", number);
       ob.put("status", status.toUpperCase());
+      ob.put("score", score);
       ob.put("time", time);
       ob.put("message", message);
       
