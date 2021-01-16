@@ -133,6 +133,7 @@ public class CommitRecordService {
         ob.put("assignmentName", assignment.getName());
         ob.put("releaseTime", assignment.getReleaseTime());
         ob.put("commitRecord", db.getLastCommitRecord(auId));
+        ob.put("score", score);
         array.put(ob);
       }
 
