@@ -39,7 +39,7 @@ public class AssignmentAssessmentDbManager {
    * @param score Assessment score
    */
   public void addAssignmentAssessment(int aid, int sid, int order, int score) {
-    String sql = "INSERT INTO Assignment_Assessment"
+    String sql = "INSERT INTO ProgEdu.Assignment_Assessment"
         + " (`aid`, `status`, `order`, `score`)"
         + " VALUES(?, ?, ?, ?)";
     try (Connection conn = this.database.getConnection();
