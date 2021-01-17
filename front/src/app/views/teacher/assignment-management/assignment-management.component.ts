@@ -8,10 +8,12 @@ import { HttpErrorResponse } from '@angular/common/http';
 
 import { environment } from '../../../../environments/environment';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import { SortablejsOptions } from 'ngx-sortablejs';
 
 @Component({
   selector: 'app-assignment-management',
-  templateUrl: './assignment-management.component.html'
+  templateUrl: './assignment-management.component.html',
+  styleUrls: ['../create-assignment/create-assignment.component.scss']
 })
 export class AssignmentManagementComponent implements OnInit {
   @ViewChild('editModal', { static: true }) public editModal: ModalDirective;
@@ -19,6 +21,7 @@ export class AssignmentManagementComponent implements OnInit {
   assignments: Array<any>;
   assignmentName: string;
   assignmentForm: FormGroup;
+  assignmentOrder: string;
 
   errorResponse: HttpErrorResponse;
   errorTitle: string;
@@ -28,6 +31,18 @@ export class AssignmentManagementComponent implements OnInit {
   dynamic: number = 0;
   type: string = 'Waiting';
   isDeleteProgress = false;
+
+  javaStatus = [
+    "Unit Test Failure",
+    "Coding Style Failure"
+  ];
+  normalOptions: SortablejsOptions = {
+    group: 'normal-group',
+  };
+  order = [];
+  score = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
+  statusScore = new Map([["Compile Failure", "0"]]);
+
   public Editor = ClassicEditor;
   public editorConfig = {
     placeholder: 'Write the assignment description in here!',
@@ -49,7 +64,8 @@ export class AssignmentManagementComponent implements OnInit {
       deadline: [, Validators.required],
       description: ['', Validators.required],
       file: [],
-      rememberMe: [true]
+      rememberMe: [true],
+      order: ['']
     });
 
     this.onChange();
@@ -84,6 +100,11 @@ export class AssignmentManagementComponent implements OnInit {
     }
   }
 
+  selectChangeHandler(status:string, $event) {
+    this.statusScore.set(status, $event.target.value);
+    console.log(this.statusScore);
+  }
+
   getAllAssignments() {
     this.assignmentService.getAllAssignments().subscribe(response => {
       this.assignments = response.allAssignments;
@@ -95,6 +116,34 @@ export class AssignmentManagementComponent implements OnInit {
         }
       }
     });
+  }
+
+  getAssignmentOrder() {
+    this.order = [];
+    this.statusScore = new Map();
+    this.assignmentService.getAssignmentOrder(this.assignmentName).subscribe(
+      response => {
+        this.assignmentOrder = response.orders;
+        var splited = this.assignmentOrder.split(', ');
+        for(let i=0; i<splited.length; i++) {
+          var statusScore = splited[i].split(':');
+          if(statusScore[0] == 'COMPILE_FAILURE') {
+            this.statusScore.set("Compile Failure", statusScore[1]);
+            this.order.push("Compile Failure");
+          }
+          else if(statusScore[0] == 'UNIT_TEST_FAILURE') {
+            this.statusScore.set("Unit Test Failure", statusScore[1]);
+            this.order.push("Unit Test Failure");
+          }
+          else if(statusScore[0] == 'CHECKSTYLE_FAILURE') {
+            this.statusScore.set("Coding Style Failure", statusScore[1]);
+            this.order.push("Coding Style Failure");
+          }
+        }
+        console.log(this.statusScore);
+        console.log(this.order);
+      }
+    )
   }
 
   deleteAssignment() {
@@ -133,7 +182,13 @@ export class AssignmentManagementComponent implements OnInit {
   }
 
   editAssignment() {
-
+    let orderString = "Compile Failure";
+    orderString = orderString + ':' + this.statusScore.get("Compile Failure");
+    for(let i = 0; i < this.order.length; i++) {
+      orderString = orderString + ', ' + this.order[i] + ':' + this.statusScore.get(this.order[i]);
+    }
+    console.log(orderString);
+    this.assignmentForm.get('order').setValue(orderString);
     if (this.assignmentForm.valid) {
       this.assignmentForm.get('name').setValue(this.assignmentName);
       this.assignmentService.editAssignment(this.assignmentForm).subscribe(

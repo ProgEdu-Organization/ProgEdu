@@ -49,6 +49,7 @@
                       href="#/studashboard/assignmentChoose?username={{username}}&assignmentName={{commit.assignmentName}}">{{commit.commitRecord.commitNumber}}</a>
                     <a *ngIf='isNA(commit)'>N/A</a>
                   </p>
+                  <p>{{commit.score}}</p>
                 </th>
               </ng-container>
               <th class='text-left'></th>

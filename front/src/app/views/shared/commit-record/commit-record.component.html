@@ -38,6 +38,7 @@
           <tr>
             <th>Commit</th>
             <th>Light</th>
+            <th>Score</th>
             <th>Date</th>
             <th>Commit Message</th>
             <th *ngIf='showCommiter'>Committer</th>
@@ -50,6 +51,7 @@
             <td>
               <p class="circle {{commit.status}}"></p>
             </td>
+            <td class='w-10'>{{commit.score}}</td>
             <td class='w-25'>{{commit.time | date:'short'}}</td>
             <td class='w-50'>{{commit.message}}</td>
             <td *ngIf='showCommiter'>{{commit.committer}}</td>
@@ -61,16 +63,6 @@
       <pagination [totalItems]="totalCommits"  [(ngModel)]="currentPage"  [itemsPerPage]="5" 
       [maxSize]="10" (pageChanged)="pageChanged($event)"  previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;" 
       lastText="&raquo;" [boundaryLinks]="true"></pagination>
-      <!--<ul class="pagination">
-        <li class="page-item"><a class="page-link" href="javascript:void(0);" (click)="firstPage();">&lt;&lt;</a></li>
-        <li class="page-item"><a class="page-link" href="javascript:void(0);" (click)="prePage();">Prev</a></li>
-        <li class="page-item active">
-          <a class="page-link" href="javascript:void(0);"
-            (click)="currentPagination = currentPagination">{{currentPagination}}</a>
-        </li>
-        <li class="page-item"><a class="page-link" href="javascript:void(0);" (click)="nextPage();">Next</a></li>
-        <li class="page-item"><a class="page-link" href="javascript:void(0);" (click)="lastPage();">&gt;&gt;</a></li>
-      </ul>-->
     </div>
     <hr>
     <span><a>
