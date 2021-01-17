@@ -31,7 +31,7 @@ export class CreateAssignmentService {
     formData.append('readMe', assignment.value.description);
     formData.append('fileRadio', assignment.value.type);
     formData.append('file', assignment.value.file);
-    formData.append('order',assignment.value.assOrder);
+    //formData.append('order',assignment.value.assOrder);
 
     return this.http.post(this.CREATE_ASSIGNMENT_API, formData, createAssigmentOptions);
   }
