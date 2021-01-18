@@ -66,18 +66,11 @@ public class MavenAssignment extends AssignmentType {
       DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 
       String updateDbUrl = progEduApiUrl + "/commits/update";
-      String checksumUrl = progEduApiUrl + "/assignment/checksum?proName=" + projectName;
-      String testFileUrl = AssignmentDbManager.getInstance().getTestFileUrl(projectName);
 
       Document doc = docBuilder.parse(jenkinsJobConfigPath);
-      String jobName = username + "_" + projectName;
 
       doc.getElementsByTagName("url").item(0).setTextContent(projectUrl);
-//      doc.getElementsByTagName("jobName").item(0).setTextContent(jobName);
-//      doc.getElementsByTagName("testFileName").item(0).setTextContent(projectName);
-//      doc.getElementsByTagName("proDetailUrl").item(0).setTextContent(checksumUrl);
       doc.getElementsByTagName("progeduDbUrl").item(0).setTextContent(updateDbUrl);
-//      doc.getElementsByTagName("testFileUrl").item(0).setTextContent(testFileUrl);
       doc.getElementsByTagName("user").item(0).setTextContent(username);
       doc.getElementsByTagName("proName").item(0).setTextContent(projectName);
 

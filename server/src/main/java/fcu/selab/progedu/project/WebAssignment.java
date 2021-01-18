@@ -75,17 +75,12 @@ public class WebAssignment extends AssignmentType {
 
       Document doc = docBuilder.parse(jenkinsJobConfigPath);
 
-      String jobName = username + "_" + projectName;
       doc.getElementsByTagName("url").item(0).setTextContent(projectUrl);
-      doc.getElementsByTagName("jobName").item(0).setTextContent(jobName);
-      doc.getElementsByTagName("testFileName").item(0).setTextContent(projectName);
-      doc.getElementsByTagName("proDetailUrl").item(0).setTextContent(checksumUrl);
       doc.getElementsByTagName("seleniumUrl").item(0).setTextContent(seleniumUrl);
       doc.getElementsByTagName("progeduDbUrl").item(0).setTextContent(updateDbUrl);
       doc.getElementsByTagName("user").item(0).setTextContent(username);
       doc.getElementsByTagName("proName").item(0).setTextContent(projectName);
       doc.getElementsByTagName("progeduAPIUrl").item(0).setTextContent(progEduApiUrl);
-      doc.getElementsByTagName("testFileUrl").item(0).setTextContent(testFileUrl);
       doc.getElementsByTagName("jenkinsUsername").item(0).setTextContent(username);
       doc.getElementsByTagName("jenkinsAssignmentName").item(0).setTextContent(projectName);
       doc.getElementsByTagName("secretToken").item(0).setTextContent(stringEmpty);
