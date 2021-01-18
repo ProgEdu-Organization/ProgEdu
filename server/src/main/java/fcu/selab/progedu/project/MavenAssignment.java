@@ -73,11 +73,11 @@ public class MavenAssignment extends AssignmentType {
       String jobName = username + "_" + projectName;
 
       doc.getElementsByTagName("url").item(0).setTextContent(projectUrl);
-      doc.getElementsByTagName("jobName").item(0).setTextContent(jobName);
-      doc.getElementsByTagName("testFileName").item(0).setTextContent(projectName);
-      doc.getElementsByTagName("proDetailUrl").item(0).setTextContent(checksumUrl);
+//      doc.getElementsByTagName("jobName").item(0).setTextContent(jobName);
+//      doc.getElementsByTagName("testFileName").item(0).setTextContent(projectName);
+//      doc.getElementsByTagName("proDetailUrl").item(0).setTextContent(checksumUrl);
       doc.getElementsByTagName("progeduDbUrl").item(0).setTextContent(updateDbUrl);
-      doc.getElementsByTagName("testFileUrl").item(0).setTextContent(testFileUrl);
+//      doc.getElementsByTagName("testFileUrl").item(0).setTextContent(testFileUrl);
       doc.getElementsByTagName("user").item(0).setTextContent(username);
       doc.getElementsByTagName("proName").item(0).setTextContent(projectName);
 

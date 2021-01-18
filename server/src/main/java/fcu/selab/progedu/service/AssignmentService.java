@@ -114,8 +114,7 @@ public class AssignmentService {
 
   boolean isSave = true;
 
-  private long testZipChecksum = 0;
-  private String testZipUrl = "";
+
 
   /**
    * Constuctor
@@ -162,17 +161,21 @@ public class AssignmentService {
     final String cloneDirectoryPath = gitlabService.cloneProject(gitlabRootUsername,
         assignmentName);
 //
-//    // 3. Store Zip File to folder if file is not empty
-    String filePath = tomcatService.storeFileToServer(file, fileDetail, assignment);
+//    // 3. Store Zip File to uploads folder if file is not empty
+    String filePath = tomcatService.storeFileToUploadsFolder(file, fileDetail.getFileName());
 
     // 4. Unzip the uploaded file to tests folder and uploads folder on tomcat,
     // extract main method from tests folder, then zip as root project
-    String testDirectory = testDir + assignmentName;
-    zipHandler.unzipFile(filePath, cloneDirectoryPath);
-    zipHandler.unzipFile(filePath, testDirectory);
-    assignment.createTemplate(cloneDirectoryPath);
-    testZipChecksum = assignment.createTestCase(testDirectory).getChecksum();
-    testZipUrl = assignment.createTestCase(testDirectory).getZipFileUrl();
+
+//    String testDirectory = testDir + assignmentName;
+//    zipHandler.unzipFile(filePath, cloneDirectoryPath);
+//    zipHandler.unzipFile(filePath, testDirectory);
+//    assignment.createTemplate(cloneDirectoryPath);
+
+//     testZipChecksum = 0;
+//     testZipUrl = "";
+//    long testZipChecksum = assignment.createTestCase(testDirectory).getChecksum();
+//    String testZipUrl = assignment.createTestCase(testDirectory).getZipFileUrl();
 
     // 5. Add .gitkeep if folder is empty.
     tomcatService.findEmptyFolder(cloneDirectoryPath);
@@ -204,14 +207,12 @@ public class AssignmentService {
     gitlabService.pushProject(cloneDirectoryPath);
 
     // 9. String removeTestDirectoryCommand = "rm -rf tests/" + name;
-    java.nio.file.Path projectTestDirectory = Paths.get(testDir, assignmentName);
-    tomcatService.deleteDirectory(projectTestDirectory.toFile());
+//    java.nio.file.Path projectTestDirectory = Paths.get(testDir, assignmentName);
+//    tomcatService.deleteDirectory(projectTestDirectory.toFile());
 
     // 10. import project information to database
-    boolean hasTemplate = false;
-
-    addProject(assignmentName, releaseTime, deadline, readMe, projectTypeEnum, hasTemplate,
-        testZipChecksum, testZipUrl);
+    addProject(assignmentName, releaseTime, deadline, readMe, projectTypeEnum, false,
+        0, "");
 
     List<User> users = userService.getStudents();
     for (User user : users) {
