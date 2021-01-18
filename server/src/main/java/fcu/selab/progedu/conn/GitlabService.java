@@ -488,7 +488,7 @@ public class GitlabService {
    * Create a root project
    *
    * @param proName Project name
-   * @return true or false
+   * @return GitlabProject
    */
   public GitlabProject createRootProject(String proName) {
     GitlabProject project = null;
@@ -500,6 +500,25 @@ public class GitlabService {
     }
     return project;
   }
+
+  /**
+   * Delete a root project
+   *
+   * @param proName Project name
+   * @return true or false
+   */
+  public Boolean deleteRootProject(String proName) {
+    try {
+      GitlabProject gitlabProject = gitlab.getProject("root", proName);
+      gitlab.deleteProject(gitlabProject.getId());
+    } catch (IOException e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+      return false;
+    }
+    return true;
+  }
+
 
   /**
    * Get commit counts from project
