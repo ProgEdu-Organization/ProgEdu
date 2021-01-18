@@ -3,6 +3,8 @@ package fcu.selab.progedu.conn;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -653,12 +655,17 @@ public class GitlabService {
    * @return target
    */
   public String cloneProject(String username, String projectName) {
-    String repoUrl = rootUrl + "/" + username + "/" + projectName + ".git";
-    String target = System.getProperty("java.io.tmpdir") + "/uploads/" + projectName;
-    String cloneCommand = "git clone " + repoUrl + " " + target;
+
+    String repositoryUrl = rootUrl + "/" + username + "/" + projectName + ".git";
+
+    String targetPathString = System.getProperty("java.io.tmpdir") + "/uploads/" + projectName;
+    Path targetPath = Paths.get(targetPathString);
+
+    String cloneCommand = "git clone " + repositoryUrl + " " + targetPath.toString();
     Linux linux = new Linux();
     linux.execLinuxCommand(cloneCommand);
-    return target;
+
+    return targetPath.toString();
   }
 
   /**
