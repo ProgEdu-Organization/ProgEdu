@@ -3,6 +3,9 @@ package fcu.selab.progedu.conn;
 import org.gitlab.api.models.GitlabProject;
 import org.junit.Test;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import static org.junit.Assert.*;
 
 public class GitlabServiceTest {
@@ -27,6 +30,26 @@ public class GitlabServiceTest {
         String targetPath = gitlabService.cloneProject("root", projectName);
         System.out.print("targetPath: ");
         System.out.println(targetPath);
+
+    }
+
+    @Test
+    public void cloneProjectToTargetPath() {
+        String projectName = "unit-test-for-create-root-project";
+        gitlabService.createRootProject(projectName);
+
+        String targetParentPathString = System.getProperty("java.io.tmpdir") + "/" +  "unit-test-for-ProgEdu-cloneProjectToTargetPath";
+        String targetPathString = targetParentPathString + "/" + projectName;
+
+        Path targetPath = Paths.get(targetPathString);
+
+        assertTrue( gitlabService.cloneProject("root", projectName, targetPath) );
+
+        // after test delete this project
+        assertTrue( gitlabService.deleteRootProject(projectName) );
+
+        TomcatService tomcatService = TomcatService.getInstance();
+        assertTrue( tomcatService.deleteDirectory(Paths.get(targetParentPathString).toFile()) );
 
     }
 }
