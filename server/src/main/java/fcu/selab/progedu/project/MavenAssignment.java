@@ -22,7 +22,6 @@ import org.slf4j.LoggerFactory;
 import fcu.selab.progedu.config.CourseConfig;
 import fcu.selab.progedu.config.GitlabConfig;
 import fcu.selab.progedu.conn.JenkinsService;
-import fcu.selab.progedu.db.AssignmentDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.service.StatusService;
 import fcu.selab.progedu.status.StatusEnum;
@@ -113,16 +112,6 @@ public class MavenAssignment extends AssignmentType {
       }
     }
     return status;
-  }
-
-  @Override
-  public void createTemplate(String cloneDirectoryPath) {
-    try {
-      FileUtils.deleteDirectory(new File(cloneDirectoryPath + "/src/test"));
-    } catch (IOException e) {
-      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
-      LOGGER.error(e.getMessage());
-    }
   }
 
   @Override

@@ -101,16 +101,6 @@ public class WebAssignment extends AssignmentType {
   }
 
   @Override
-  public void createTemplate(String uploadDirectory) {
-    try {
-      FileUtils.deleteDirectory(new File(uploadDirectory + "/src/test"));
-    } catch (IOException e) {
-      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
-      LOGGER.error(e.getMessage());
-    }
-  }
-
-  @Override
   public ZipFileInfo createTestCase(String testDirectory) {
     ZipHandler zipHandler;
     ZipFileInfo zipFileInfo = null;

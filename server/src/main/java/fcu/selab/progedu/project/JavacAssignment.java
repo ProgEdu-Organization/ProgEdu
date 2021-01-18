@@ -119,10 +119,6 @@ public class JavacAssignment extends AssignmentType {
   }
 
   @Override
-  public void createTemplate(String uploadDirectory) {
-  }
-
-  @Override
   public ZipFileInfo createTestCase(String testDirectory) {
     long testZipChecksum = 0;
     String testZipUrl = "";
