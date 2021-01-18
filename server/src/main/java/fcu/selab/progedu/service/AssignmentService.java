@@ -172,10 +172,10 @@ public class AssignmentService {
     zipHandler.unzipFile(filePath, testDirectory);
     assignment.createTemplate(cloneDirectoryPath);
     testZipChecksum = assignment.createTestCase(testDirectory).getChecksum();
-    testZipUrl = assignment.createTestCase(testDirectory).getZipFileUrl();
+    testZipUrl = assignment.createTestCase(testDirectory).getZipFileUrl();// 以上幹嘛執行兩次 違反DRY
 
     // 5. Add .gitkeep if folder is empty.
-    tomcatService.findEmptyFolder(cloneDirectoryPath);
+    tomcatService.findEmptyFolder(cloneDirectoryPath); // 這裡命名不清楚, find的函數竟然有加檔案
 
     // 6. Copy all description image to temp/images
     ArrayList<String> paths = findAllDescriptionImagePaths(readMe);
