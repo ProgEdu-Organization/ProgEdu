@@ -168,7 +168,7 @@ public class AssignmentService {
     // extract main method from tests folder, then zip as root project
 
 //    String testDirectory = testDir + assignmentName;
-//    zipHandler.unzipFile(filePath, cloneDirectoryPath);
+    zipHandler.unzipFile(filePath, cloneDirectoryPath);
 //    zipHandler.unzipFile(filePath, testDirectory);
 //    assignment.createTemplate(cloneDirectoryPath);
 
