@@ -9,10 +9,10 @@ public class ExceptionUtil {
    */
   public static String getErrorInfoFromException(Exception exception) {
     try {
-      StringWriter stringwiter = new StringWriter();
-      PrintWriter printwriter = new PrintWriter(stringwiter);
+      StringWriter stringWriter = new StringWriter();
+      PrintWriter printwriter = new PrintWriter(stringWriter);
       exception.printStackTrace(printwriter);
-      return stringwiter.toString();
+      return stringWriter.toString();
     } catch (Exception e) {
       return e.getMessage();
     }
