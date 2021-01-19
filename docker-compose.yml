@@ -52,7 +52,6 @@ services:
       - jenkins
       - gitlab
     volumes:
-      - $HOME/.m2/repository:/root/.m2/repository
       - server-temp:/usr/local/tomcat/temp
       - server-logs:/usr/local/tomcat/logs
       - server-images:/usr/local/tomcat/images

@@ -1,4 +1,4 @@
-FROM maven:3-jdk-8 as builder
+FROM fcumselab/progedu-server-maven-env:latest as builder
 
 RUN mkdir /workdir
 
