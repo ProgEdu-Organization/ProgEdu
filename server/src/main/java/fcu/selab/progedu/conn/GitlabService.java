@@ -650,24 +650,25 @@ public class GitlabService {
   }
 
   /**
-   * get commits from gitlab project. (to do)
+   * Clone GitLab project
+   * if not success clone, return ""
    *
    * @param username    project's (to do)
    * @param projectName project name
-   * @return target
+   * @return target path
    */
   public String cloneProject(String username, String projectName) {
-
-    String repositoryUrl = rootUrl + "/" + username + "/" + projectName + ".git";
 
     String targetPathString = System.getProperty("java.io.tmpdir") + "/uploads/" + projectName;
     Path targetPath = Paths.get(targetPathString);
 
-    String cloneCommand = "git clone " + repositoryUrl + " " + targetPath.toString();
-    Linux linux = new Linux();
-    linux.execLinuxCommand(cloneCommand);
+    boolean isSuccess = cloneProject(username, projectName, targetPath);
 
-    return targetPath.toString();
+    if (isSuccess) {
+      return targetPath.toString();
+    } else {
+      return "";
+    }
   }
 
   /**

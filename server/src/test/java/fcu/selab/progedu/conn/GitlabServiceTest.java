@@ -28,8 +28,16 @@ public class GitlabServiceTest {
         String projectName = "unit-test-for-create-root-project";
         gitlabService.createRootProject(projectName);
         String targetPath = gitlabService.cloneProject("root", projectName);
-        System.out.print("targetPath: ");
-        System.out.println(targetPath);
+
+        assertNotEquals(targetPath, "");
+
+        if (targetPath != "") {
+            TomcatService tomcatService = TomcatService.getInstance();
+            assertTrue( tomcatService.deleteDirectory(Paths.get(targetPath).toFile()) );
+        } else {
+            fail();
+        }
+
 
     }
 
