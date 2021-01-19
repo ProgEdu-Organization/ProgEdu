@@ -1,7 +1,5 @@
 package fcu.selab.progedu.project;
 
-import fcu.selab.progedu.data.ZipFileInfo;
-
 public abstract class AssignmentType extends ProjectTypeImp {
-
+  // This class need to delete
 }
