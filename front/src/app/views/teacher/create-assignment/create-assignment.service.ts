@@ -13,7 +13,7 @@ const createAssigmentOptions = ({
   providedIn: 'root'
 })
 export class CreateAssignmentService {
-  CREATE_ASSIGNMENT_API = environment.SERVER_URL + '/webapi/assignment/create';
+  CREATE_ASSIGNMENT_API = environment.SERVER_URL + '/webapi/assignment/autoAssessment/create';
   MODIFY_ORDER_API = environment.SERVER_URL + '/webapi/assignment/order';
   GET_ORDER_API = environment.SERVER_URL + '/webapi/assignment/getAssignmentFile';
   GET_ALL_CATEGORY_API = environment.SERVER_URL + '/webapi/categoryMetrics/category';
@@ -31,7 +31,7 @@ export class CreateAssignmentService {
     formData.append('readMe', assignment.value.description);
     formData.append('fileRadio', assignment.value.type);
     formData.append('file', assignment.value.file);
-    //formData.append('order',assignment.value.assOrder);
+    formData.append('order',assignment.value.assOrder);
 
     return this.http.post(this.CREATE_ASSIGNMENT_API, formData, createAssigmentOptions);
   }
