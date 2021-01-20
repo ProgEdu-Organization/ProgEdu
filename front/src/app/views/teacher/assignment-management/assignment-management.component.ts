@@ -184,7 +184,7 @@ export class AssignmentManagementComponent implements OnInit {
   editAssignment() {
     let orderString = "Compile Failure";
     orderString = orderString + ':' + this.statusScore.get("Compile Failure");
-    for(let i = 0; i < this.order.length; i++) {
+    for(let i = 1; i < this.order.length; i++) {
       orderString = orderString + ', ' + this.order[i] + ':' + this.statusScore.get(this.order[i]);
     }
     console.log(orderString);
