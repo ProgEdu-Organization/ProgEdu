@@ -740,6 +740,11 @@ public class AssignmentService {
 
     int aid = dbManager.getAssignmentIdByName(name);
     List<Integer> auidList = auDbManager.getAuids(aid);
+    List<Integer> aaidList = aaDbManager.getAssignmentAssessmentIdByaId(aid);
+    
+    for (int aaid : aaidList) {  //Assignment_Assessment
+      aaDbManager.deleteAssignmentAssessment(aaid); 
+    }
 
     for (int auid : auidList) { // CommitRecord
       List<Integer> cridList = crDbManager.getCommitRecordId(auid);
