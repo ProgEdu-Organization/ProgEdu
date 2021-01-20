@@ -1,17 +1,14 @@
 package fcu.selab.progedu.setting;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.annotation.Annotation;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
-import java.util.Properties;
-import fcu.selab.progedu.status.AndroidLintFailureTest;
-import fcu.selab.progedu.utils.ExceptionUtil;
-import junit.framework.TestCase;
+
+import org.apache.maven.model.Dependency;
+import org.apache.maven.model.Plugin;
+import org.apache.maven.plugin.lifecycle.Execution;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.Properties;
 
 public class MavenAssignmentSettingTest {
 
@@ -21,7 +18,16 @@ public class MavenAssignmentSettingTest {
     order.add("compilerFailure");
     order.add("codingStyle");
     order.add("test");
-    System.out.println(MavenAssignmentSetting.createAssignmentSettingTest(order, "test").getModelEncoding());
+    List<Dependency> dependencyList = MavenAssignmentSetting.createAssignmentSettingTest(order, "test").getDependencies();
+    for (Dependency dependency : dependencyList) {
+      System.out.println(dependency.toString());
+    }
+    List<Plugin> pluginList = MavenAssignmentSetting.createAssignmentSettingTest(order, "test").getBuild().getPlugins();
+    for (Plugin plugin : pluginList) {
+      System.out.println(plugin.getGroupId());
+      System.out.println(plugin.getArtifactId());
+      System.out.println(plugin.getVersion());
+    }
   }
 
 }

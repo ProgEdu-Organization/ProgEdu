@@ -605,10 +605,19 @@ public class AssignmentService {
       @FormDataParam("assignmentName") String assignmentName,
       @FormDataParam("releaseTime") Date releaseTime, @FormDataParam("deadline") Date deadline,
       @FormDataParam("readMe") String readMe, @FormDataParam("file") InputStream file,
-      @FormDataParam("file") FormDataContentDisposition fileDetail) {
+      @FormDataParam("file") FormDataContentDisposition fileDetail,
+      @FormDataParam("order") String order) {
     int id = dbManager.getAssignmentIdByName(assignmentName);
     if (fileDetail.getFileName() == null) {
       dbManager.editAssignment(deadline, releaseTime, readMe, id);
+      //delete old assessment first
+      List<Integer> aaIds = aaDbManager.getAssignmentAssessmentIdByaId(id);
+
+      for (int aaId : aaIds) {
+        aaDbManager.deleteAssignmentAssessment(aaId);
+      }
+      //add new assessment
+      addOrder(order, assignmentName);
     } else {
       ProjectTypeEnum assignmentType = dbManager.getAssignmentType(assignmentName);
       final AssignmentType assignment = AssignmentFactory
@@ -629,6 +638,14 @@ public class AssignmentService {
       tomcatService.deleteDirectory(new File(testCasePath));
 
       dbManager.editAssignment(deadline, releaseTime, readMe, checksum, id);
+      //delete old assessment first
+      List<Integer> aaIds = aaDbManager.getAssignmentAssessmentIdByaId(id);
+
+      for (int i = 0; i < aaIds.size(); i++) {
+        aaDbManager.deleteAssignmentAssessment(aaIds.get(i));
+      }
+      //add new assessment
+      addOrder(order, assignmentName);
     }
     return Response.ok().build();
   }
