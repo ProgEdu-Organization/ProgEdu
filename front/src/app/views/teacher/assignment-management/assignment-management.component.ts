@@ -40,7 +40,6 @@ export class AssignmentManagementComponent implements OnInit {
     group: 'normal-group',
   };
   order = [];
-  score = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
   statusScore = new Map([["Compile Failure", "0"]]);
 
   public Editor = ClassicEditor;
@@ -102,7 +101,7 @@ export class AssignmentManagementComponent implements OnInit {
 
   selectChangeHandler(status:string, $event) {
     this.statusScore.set(status, $event.target.value);
-    console.log(this.statusScore);
+    //console.log(this.statusScore);
   }
 
   getAllAssignments() {
@@ -140,10 +139,30 @@ export class AssignmentManagementComponent implements OnInit {
             this.order.push("Coding Style Failure");
           }
         }
-        console.log(this.statusScore);
-        console.log(this.order);
+        //console.log(this.statusScore);
+        //console.log(this.order);
       }
     )
+  }
+
+  getScoreOptions(status:string) {
+    let max = 100;
+    let sum = 0;
+    let options : string[] = [];
+    if(this.order.length !== 0){
+      for(let i=0; i<this.order.length; i++){
+        if(this.statusScore.get(this.order[i]) !== undefined)
+          sum += Number(this.statusScore.get(this.order[i]));
+      }
+    }
+    if(this.statusScore.get(status) !== undefined)
+      sum -= Number(this.statusScore.get(status));
+    max = max - sum;
+    for(let i=0; i <= 100; i++) {
+      if(i <= max)
+        options.push(String(i));
+    }
+    return options;
   }
 
   deleteAssignment() {
@@ -182,10 +201,12 @@ export class AssignmentManagementComponent implements OnInit {
   }
 
   editAssignment() {
-    let orderString = "Compile Failure";
-    orderString = orderString + ':' + this.statusScore.get("Compile Failure");
-    for(let i = 1; i < this.order.length; i++) {
-      orderString = orderString + ', ' + this.order[i] + ':' + this.statusScore.get(this.order[i]);
+    let orderString = "";
+    for(let i = 0; i < this.order.length; i++) {
+      orderString = orderString + this.order[i] + ':' + this.statusScore.get(this.order[i]);
+      if (i !== this.order.length-1) {
+        orderString = orderString + ", ";
+      }
     }
     console.log(orderString);
     this.assignmentForm.get('order').setValue(orderString);
