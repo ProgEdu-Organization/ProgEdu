@@ -52,9 +52,7 @@ public class MavenAssignmentSetting extends SettingZipHandler implements Assignm
    * @param name AssignmentName
    */
   @Override
-  public void createAssignmentSetting(List<String> order,String name) {
-    try {
-      final MavenXpp3Writer writer = new MavenXpp3Writer();
+  public Model createAssignmentSetting(List<String> order,String name) {
       final List<PluginExecution> checkStyleExecutions = new ArrayList<>();
       Model model = new Model();
         
@@ -182,11 +180,22 @@ public class MavenAssignmentSetting extends SettingZipHandler implements Assignm
         
       reporting.setPlugins(reportingPlugins);
       model.setReporting(reporting);
+      return model;
+  }
+
+  /**
+   * write
+   * @param model pom model
+   */
+  public void writeAssignmentSettingFile(Model model) {
+    try {
+      final MavenXpp3Writer writer = new MavenXpp3Writer();
       writer.write(new FileWriter(super.getAssignmentPath()
-          + "/pom.xml"), model);   
+          + "/pom.xml"), model);
     } catch (IOException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
     }
   }
+  
 }

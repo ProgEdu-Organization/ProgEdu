@@ -505,7 +505,7 @@ public class AssignmentService {
    *
    * @param order   order
    */
-  public void addOrder(String order, String assignmentName) {
+  private void addOrder(String order, String assignmentName) {
     List<String> ordersList = new ArrayList<>();
     List<String> scoresList = new ArrayList<>();
 
