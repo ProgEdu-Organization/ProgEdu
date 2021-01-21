@@ -926,7 +926,8 @@ public class AssignmentService {
     return Response.ok().build();
   }
 
-  private void getAssignmentSetting (AssignmentSettings as, List<String> ordersList, String assignmentName) {
+  private void getAssignmentSetting(AssignmentSettings as,
+                                     List<String> ordersList, String assignmentName) {
     as.unZipAssignmenToTmp();
     as.writeAssignmentSettingFile(as.createAssignmentSetting(ordersList, assignmentName));
     as.packUpAssignment();
