@@ -906,7 +906,6 @@ public class AssignmentService {
       @FormDataParam("fileRadio") String fileType, 
       @FormDataParam("order") String orders,
       @FormDataParam("assignmentName") String assignmentName) {
-    GetAssignmentSettingService gass = new GetAssignmentSettingService();
     //---------cut order
     List<String> ordersList = new ArrayList<>();
     String[] tokens = orders.split(", ");
@@ -922,9 +921,15 @@ public class AssignmentService {
     //------------------------make pom.xml
     if (fileType.equals("maven")) {
       MavenAssignmentSetting mas = new MavenAssignmentSetting(assignmentName);
-      gass.getSetting(mas, ordersList, assignmentName);
+      getAssignmentSetting(mas, ordersList, assignmentName);
     }
     return Response.ok().build();
+  }
+
+  private void getAssignmentSetting (AssignmentSettings as, List<String> ordersList, String assignmentName) {
+    as.unZipAssignmenToTmp();
+    as.writeAssignmentSettingFile(as.createAssignmentSetting(ordersList, assignmentName));
+    as.packUpAssignment();
   }
 
   /**
