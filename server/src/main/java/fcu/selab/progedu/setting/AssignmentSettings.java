@@ -7,7 +7,7 @@ public interface AssignmentSettings {
 
   public Model createAssignmentSetting(List<String> order,String name);
 
-  public void unZipAssignmenToTmp();
+  public void unZipAssignmentToTmp();
 
   public void packUpAssignment();
 

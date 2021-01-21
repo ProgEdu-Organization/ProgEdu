@@ -37,7 +37,7 @@ public class MavenAssignmentSetting extends SettingZipHandler implements Assignm
   }
   
   @Override
-  public void unZipAssignmenToTmp() {
+  public void unZipAssignmentToTmp() {
     super.unZipAssignmenToTmp();
   }
 
