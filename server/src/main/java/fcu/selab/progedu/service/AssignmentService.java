@@ -637,6 +637,13 @@ public class AssignmentService {
       addOrder(order, assignmentName);
     }*/
     dbManager.editAssignment(deadline, releaseTime, readMe, id);
+    List<Integer> aaIds = aaDbManager.getAssignmentAssessmentIdByaId(id);
+
+    for (int aaId : aaIds) {
+      aaDbManager.deleteAssignmentAssessment(aaId);
+    }
+    //add new assessment
+    addOrder(order, assignmentName);
     return Response.ok().build();
   }
 
