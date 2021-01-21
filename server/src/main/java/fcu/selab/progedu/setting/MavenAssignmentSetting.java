@@ -105,7 +105,7 @@ public class MavenAssignmentSetting extends SettingZipHandler implements Assignm
     testConfigUseSystemClassLoader.setValue("false");
     configTest.addChild(testConfigUseSystemClassLoader);
       
-    if (order.contains("test") == false) {
+    if (order.contains("Unit Test Failure") == false) {
       Xpp3Dom testConfigSkip = new Xpp3Dom("skipTests");
       testConfigSkip.setValue("true");
       configTest.addChild(testConfigSkip);
@@ -114,17 +114,16 @@ public class MavenAssignmentSetting extends SettingZipHandler implements Assignm
     pluginTest.setConfiguration(configTest);
     build.addPlugin(pluginTest);
     //----------------coding style settings
-    if (order.contains("codingStyle") == true) { 
+    if (order.contains("Coding Style Failure") == true) {
       Plugin pluginCheckStyle = new Plugin();
       pluginCheckStyle.setGroupId(" org.apache.maven.plugins ");
       pluginCheckStyle.setArtifactId("maven-checkstyle-plugin");
       pluginCheckStyle.setVersion("2.17");
       PluginExecution checkStyleExecution = new PluginExecution();
-      System.out.println(order.indexOf("codingStyle"));
-      if (order.indexOf("test") < order.indexOf("codingStyle")) {
+      if (order.indexOf("Unit Test Failure") < order.indexOf("Coding Style Failure")) {
         checkStyleExecution.setId("test");
         checkStyleExecution.setPhase("test");
-      } else if (order.indexOf("test") > order.indexOf("codingStyle")) {
+      } else if (order.indexOf("Unit Test Failure") > order.indexOf("Coding Style Failure")) {
         checkStyleExecution.setId("compile");
         checkStyleExecution.setPhase("compile");
       }

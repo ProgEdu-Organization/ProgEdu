@@ -910,13 +910,15 @@ public class AssignmentService {
     List<String> ordersList = new ArrayList<>();
     String[] tokens = orders.split(", ");
     for (String token:tokens) {
+      ordersList.add(token);
+      /*
       if (token.equals("Compiler Failure")) {
         ordersList.add("compilerFailure");
       } else if (token.equals("Coding Style Failure")) {
         ordersList.add("codingStyle");
       } else if (token.equals("Unit Test Failure")) {
         ordersList.add("test");
-      }
+      }*/
     }
     //------------------------make pom.xml
     if (fileType.equals("maven")) {
