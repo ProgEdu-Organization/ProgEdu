@@ -3,6 +3,9 @@ package fcu.selab.progedu.conn;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -167,6 +170,7 @@ public class GitlabService {
     } catch (IOException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+      return null;
     }
     return gitlabProject;
   }
@@ -488,7 +492,7 @@ public class GitlabService {
    * Create a root project
    *
    * @param proName Project name
-   * @return true or false
+   * @return GitlabProject
    */
   public GitlabProject createRootProject(String proName) {
     GitlabProject project = null;
@@ -500,6 +504,25 @@ public class GitlabService {
     }
     return project;
   }
+
+  /**
+   * Delete a root project
+   *
+   * @param proName Project name
+   * @return true or false
+   */
+  public Boolean deleteRootProject(String proName) {
+    try {
+      GitlabProject gitlabProject = gitlab.getProject("root", proName);
+      gitlab.deleteProject(gitlabProject.getId());
+    } catch (IOException e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+      return false;
+    }
+    return true;
+  }
+
 
   /**
    * Get commit counts from project
@@ -627,19 +650,54 @@ public class GitlabService {
   }
 
   /**
-   * get commits from gitlab project. (to do)
+   * Clone GitLab project
+   * if not success clone, return ""
    *
    * @param username    project's (to do)
    * @param projectName project name
-   * @return target
+   * @return target path
    */
   public String cloneProject(String username, String projectName) {
-    String repoUrl = rootUrl + "/" + username + "/" + projectName + ".git";
-    String target = System.getProperty("java.io.tmpdir") + "/uploads/" + projectName;
-    String cloneCommand = "git clone " + repoUrl + " " + target;
+
+    String targetPathString = System.getProperty("java.io.tmpdir") + "/uploads/" + projectName;
+    Path targetPath = Paths.get(targetPathString);
+
+    boolean isSuccess = cloneProject(username, projectName, targetPath);
+
+    if (isSuccess) {
+      return targetPath.toString();
+    } else {
+      return "";
+    }
+  }
+
+  /**
+   * clone project to not exist folder
+   *
+   * @param username    project's (to do)
+   * @param projectName project name
+   * @return boolean
+   */
+  public boolean cloneProject(String username, String projectName, Path targetPath) {
+
+    if (Files.exists(targetPath)) { // is exist
+      LOGGER.error("In cloneProject(), " + targetPath.toString() + " folder is exist.");
+      return false;
+    }
+
+    GitlabProject gitlabProject = getProject(username, projectName);
+    if (gitlabProject == null) {
+      LOGGER.error("In cloneProject(), username: " + username + " projectName: "
+              + projectName + " is not exist.");
+      return false;
+    }
+
+    String repositoryUrl = rootUrl + "/" + username + "/" + projectName + ".git";
+    String cloneCommand = "git clone " + repositoryUrl + " " + targetPath.toString();
     Linux linux = new Linux();
     linux.execLinuxCommand(cloneCommand);
-    return target;
+
+    return true;
   }
 
   /**

@@ -13,7 +13,6 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import fcu.selab.progedu.utils.ExceptionUtil;
-import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -27,8 +26,6 @@ import fcu.selab.progedu.db.AssignmentDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.service.StatusService;
 import fcu.selab.progedu.status.StatusEnum;
-import fcu.selab.progedu.data.ZipFileInfo;
-import fcu.selab.progedu.utils.ZipHandler;
 
 public class AndroidAssignment extends AssignmentType {
   private static final Logger LOGGER = LoggerFactory.getLogger(WebAssignment.class);
@@ -110,42 +107,6 @@ public class AndroidAssignment extends AssignmentType {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
     }
-  }
-
-  @Override
-  public void createTemplate(String uploadDirectory) {
-    try {
-      // UI test
-      FileUtils.deleteDirectory(new File(uploadDirectory + "/app/src/androidTest/java"));
-      // Unit Test
-      FileUtils.deleteDirectory(new File(uploadDirectory + "/app/src/test/java"));
-    } catch (IOException e) {
-      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
-      LOGGER.error(e.getMessage());
-    }
-  }
-
-  @Override
-  public ZipFileInfo createTestCase(String testDirectory) {
-    ZipHandler zipHandler;
-    ZipFileInfo zipFileInfo = null;
-
-    try {
-      FileUtils.deleteDirectory(new File(testDirectory + "/app/src/main"));
-    } catch (IOException e) {
-      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
-      LOGGER.error(e.getMessage());
-    }
-
-    try {
-      zipHandler = new ZipHandler();
-      zipFileInfo = zipHandler.getZipInfo(testDirectory);
-    } catch (LoadConfigFailureException e) {
-      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
-      LOGGER.error(e.getMessage());
-    }
-
-    return zipFileInfo;
   }
 
   @Override
