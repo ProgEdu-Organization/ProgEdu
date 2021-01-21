@@ -23,27 +23,28 @@ import org.slf4j.LoggerFactory;
 
 import fcu.selab.progedu.utils.ExceptionUtil;
 
-public class MavenAssignmentSetting extends SettingZipHandler implements AssignmentSettings {
+public class MavenAssignmentSetting implements AssignmentSettings {
 
   private static final Logger LOGGER = LoggerFactory
       .getLogger(MavenAssignmentSetting.class);
+  private SettingZipHandler settingZipHandler;
 
   /**
    * init web assignment setting
    * 
    */
   public MavenAssignmentSetting(String name) {
-    super("maven", name);
+    settingZipHandler = new SettingZipHandler("maven", name);
   }
   
   @Override
   public void unZipAssignmentToTmp() {
-    super.unZipAssignmenToTmp();
+    settingZipHandler.unZipAssignmenToTmp();
   }
 
   @Override
   public void packUpAssignment() {
-    super.packUpAssignment();
+    settingZipHandler.packUpAssignment();
   }
 
   /**
@@ -189,7 +190,7 @@ public class MavenAssignmentSetting extends SettingZipHandler implements Assignm
   public void writeAssignmentSettingFile(Model model) {
     try {
       final MavenXpp3Writer writer = new MavenXpp3Writer();
-      writer.write(new FileWriter(super.getAssignmentPath()
+      writer.write(new FileWriter(settingZipHandler.getAssignmentPath()
           + "/pom.xml"), model);
     } catch (IOException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));

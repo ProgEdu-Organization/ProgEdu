@@ -51,7 +51,7 @@ public class SettingZipHandler {
     return this.resourcesZipPath;
   }
   
-  public void setAssignmentName(String name) {
+  private void setAssignmentName(String name) {
     this.assignmentName = name;
   }
   
@@ -59,7 +59,7 @@ public class SettingZipHandler {
     return this.assignmentName;
   }
 
-  public void setAssignmentPath() {
+  private void setAssignmentPath() {
     this.assignmentPath = this.settingDir + getAssignmentName();
   }
   
