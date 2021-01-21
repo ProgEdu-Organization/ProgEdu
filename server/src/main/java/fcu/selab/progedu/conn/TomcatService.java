@@ -35,25 +35,29 @@ public class TomcatService {
   }
 
   /**
-   * (to do)
+   * if file exist, then will overwrite that file.
+   * if not success store, return ""
    *
    * @param file        (to do)
    * @param projectName (to do)
    * @return target
    */
   public String storeFileToUploadsFolder(InputStream file, String projectName) {
-    String uploadsDir = System.getProperty("java.io.tmpdir") + "/uploads/";
+    String uploadsDir = System.getProperty("java.io.tmpdir") + "/" +  "uploads";
     File uploadsFolder = new File(uploadsDir);
     if (!uploadsFolder.exists()) {
       uploadsFolder.mkdirs();
     }
-    String target = uploadsDir + projectName;
+
+    String target = uploadsDir + "/" + projectName;
     try {
       storeFile(file, target);
     } catch (SecurityException | IOException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+      return "";
     }
+
     return target;
   }
 

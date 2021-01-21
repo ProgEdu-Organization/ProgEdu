@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 public class BuildSuccess implements Status {
 
+  // Todo 提取Failure 怎麼會有 Success
   @Override
   public String extractFailureMsg(String consoleText) {
     return "Success";

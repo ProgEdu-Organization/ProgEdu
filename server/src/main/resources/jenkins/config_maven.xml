@@ -59,22 +59,6 @@
       <strategy class="hudson.plugins.build_timeout.impl.AbsoluteTimeOutStrategy">
         <timeoutMinutes>15</timeoutMinutes>
       </strategy>
-      <buildStep class="org.jenkinsci.plugins.AssessmentBuilder" plugin="jenkins-progedu@1.0-SNAPSHOT">
-        <jobName>D0121564_OOP-HW12</jobName>
-        <testFileName>OOP-HW12</testFileName>
-        <proDetailUrl>http://140.134.26.78:8818/ProgEdu/webapi/project/checksum?proName=OOP-HW12</proDetailUrl>
-        <testFileUrl>http://140.134.26.78:8818/ProgEdu/webapi/jenkins/getTestFile?filePath=/usr/local/tomcat/temp/tests/OOP-HW12.zip</testFileUrl>
-        <testFileChecksum>4017372255</testFileChecksum>
-        <testFilePath></testFilePath>
-      </buildStep>
-      <operationList>
-        <hudson.plugins.build__timeout.operations.FailOperation/>
-      </operationList>
-    </hudson.plugins.build__timeout.BuildStepWithTimeout>
-    <hudson.plugins.build__timeout.BuildStepWithTimeout plugin="build-timeout@1.19">
-      <strategy class="hudson.plugins.build_timeout.impl.AbsoluteTimeOutStrategy">
-        <timeoutMinutes>15</timeoutMinutes>
-      </strategy>
       <buildStep class="hudson.tasks.Maven">
         <targets>package</targets>
         <mavenName>Global</mavenName>

@@ -171,14 +171,7 @@ public class JenkinsService {
       post.addHeader(contentType, "application/x-www-form-urlencoded");
       post.addHeader(jenkinsCrumb, crumb);
 
-//      HttpResponse response = 
       client.execute(post);
-//      HttpEntity resEntity = response.getEntity();
-//      if (resEntity != null) {
-//        String result = EntityUtils.toString(response.getEntity());
-//        String result2 = resEntity.toString();
-//        System.out.println(jobName + " : " + result2);
-//      }
     } catch (Exception e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
@@ -208,13 +201,7 @@ public class JenkinsService {
       post.setEntity(ent);
 
       HttpClient client = new DefaultHttpClient();
-//      HttpResponse response = 
       client.execute(post);
-//      HttpEntity resEntity = response.getEntity();
-//      if (resEntity != null) {
-//        String result = resEntity.toString();
-//        System.out.println("httppost build " + jobName + " , result : " + result);
-//      }
     } catch (IOException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());

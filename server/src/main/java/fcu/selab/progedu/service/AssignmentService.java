@@ -114,8 +114,7 @@ public class AssignmentService {
 
   boolean isSave = true;
 
-  private long testZipChecksum = 0;
-  private String testZipUrl = "";
+
 
   /**
    * Constuctor
@@ -162,17 +161,11 @@ public class AssignmentService {
     final String cloneDirectoryPath = gitlabService.cloneProject(gitlabRootUsername,
         assignmentName);
 //
-//    // 3. Store Zip File to folder if file is not empty
-    String filePath = tomcatService.storeFileToServer(file, fileDetail, assignment);
+//    // 3. Store Zip File to uploads folder if file is not empty
+    String filePath = tomcatService.storeFileToUploadsFolder(file, fileDetail.getFileName());
 
-    // 4. Unzip the uploaded file to tests folder and uploads folder on tomcat,
-    // extract main method from tests folder, then zip as root project
-    String testDirectory = testDir + assignmentName;
+    // 4. Unzip the uploaded file to cloneDirectoryPath
     zipHandler.unzipFile(filePath, cloneDirectoryPath);
-    zipHandler.unzipFile(filePath, testDirectory);
-    assignment.createTemplate(cloneDirectoryPath);
-    testZipChecksum = assignment.createTestCase(testDirectory).getChecksum();
-    testZipUrl = assignment.createTestCase(testDirectory).getZipFileUrl();
 
     // 5. Add .gitkeep if folder is empty.
     tomcatService.findEmptyFolder(cloneDirectoryPath);
@@ -203,22 +196,16 @@ public class AssignmentService {
     // 8. git push
     gitlabService.pushProject(cloneDirectoryPath);
 
-    // 9. String removeTestDirectoryCommand = "rm -rf tests/" + name;
-    java.nio.file.Path projectTestDirectory = Paths.get(testDir, assignmentName);
-    tomcatService.deleteDirectory(projectTestDirectory.toFile());
-
-    // 10. import project information to database
-    boolean hasTemplate = false;
-
-    addProject(assignmentName, releaseTime, deadline, readMe, projectTypeEnum, hasTemplate,
-        testZipChecksum, testZipUrl);
+    // 9. import project information to database
+    addProject(assignmentName, releaseTime, deadline, readMe, projectTypeEnum, false,
+        0, "");// Todo testZipChecksums and testZipUrl is not needed.
 
     List<User> users = userService.getStudents();
     for (User user : users) {
       createAssignmentSettings(user.getUsername(), assignmentName);
     }
 
-    // 11. remove project file in linux
+    // 10. remove project file in linux
     tomcatService.deleteDirectory(new File(uploadDir));
     return Response.ok().build();
   }
@@ -516,7 +503,8 @@ public class AssignmentService {
   }
 
   /**
-   * edit projects
+   * ToDo
+   * The unitTest file options is not working now, so need to change the front-end web
    *
    * @param assignmentName project name
    * @return response
@@ -531,29 +519,8 @@ public class AssignmentService {
       @FormDataParam("readMe") String readMe, @FormDataParam("file") InputStream file,
       @FormDataParam("file") FormDataContentDisposition fileDetail) {
     int id = dbManager.getAssignmentIdByName(assignmentName);
-    if (fileDetail.getFileName() == null) {
-      dbManager.editAssignment(deadline, releaseTime, readMe, id);
-    } else {
-      ProjectTypeEnum assignmentType = dbManager.getAssignmentType(assignmentName);
-      final AssignmentType assignment = AssignmentFactory
-          .getAssignmentType(assignmentType.getTypeName());
+    dbManager.editAssignment(deadline, releaseTime, readMe, id);
 
-      String tempFilePath = uploadDir + assignmentName;
-      String testCasePath = testDir + assignmentName;
-      String testCaseZipPath = testCasePath + ".zip";
-      // remove current test case
-      tomcatService.deleteFile(new File(testCaseZipPath));
-      tomcatService.storeFileToUploadsFolder(file, assignmentName);
-
-      zipHandler.unzipFile(tempFilePath, testCasePath);
-      assignment.createTestCase(testCasePath);
-      zipHandler.zipTestFolder(testCasePath);
-      long checksum = zipHandler.getChecksum();
-      tomcatService.deleteDirectory(new File(uploadDir));
-      tomcatService.deleteDirectory(new File(testCasePath));
-
-      dbManager.editAssignment(deadline, releaseTime, readMe, checksum, id);
-    }
     return Response.ok().build();
   }
 

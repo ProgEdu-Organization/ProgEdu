@@ -33,7 +33,6 @@ import fcu.selab.progedu.conn.JenkinsService;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.service.StatusService;
 import fcu.selab.progedu.status.StatusEnum;
-import fcu.selab.progedu.data.ZipFileInfo;
 import fcu.selab.progedu.utils.ExceptionUtil;
 
 public class JavacAssignment extends AssignmentType {
@@ -116,21 +115,6 @@ public class JavacAssignment extends AssignmentType {
       }
     }
     return status;
-  }
-
-  @Override
-  public void createTemplate(String uploadDirectory) {
-  }
-
-  @Override
-  public ZipFileInfo createTestCase(String testDirectory) {
-    long testZipChecksum = 0;
-    String testZipUrl = "";
-
-    createCommandFile(testDirectory);
-    ZipFileInfo zipFileInfo = new ZipFileInfo(testZipChecksum, testZipUrl);
-
-    return zipFileInfo;
   }
 
   /**
