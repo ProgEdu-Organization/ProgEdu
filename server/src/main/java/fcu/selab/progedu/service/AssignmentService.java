@@ -596,6 +596,7 @@ public class AssignmentService {
       @FormDataParam("file") FormDataContentDisposition fileDetail,
       @FormDataParam("order") String order) {
     int id = dbManager.getAssignmentIdByName(assignmentName);
+    /*
     if (fileDetail.getFileName() == null) {
       dbManager.editAssignment(deadline, releaseTime, readMe, id);
       //delete old assessment first
@@ -634,7 +635,8 @@ public class AssignmentService {
       }
       //add new assessment
       addOrder(order, assignmentName);
-    }
+    }*/
+    dbManager.editAssignment(deadline, releaseTime, readMe, id);
     return Response.ok().build();
   }
 
