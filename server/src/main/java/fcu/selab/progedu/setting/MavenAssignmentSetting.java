@@ -1,7 +1,6 @@
 
 package fcu.selab.progedu.setting;
 
-import fcu.selab.progedu.exception.LoadConfigFailureException;
 import org.apache.maven.model.Build;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
