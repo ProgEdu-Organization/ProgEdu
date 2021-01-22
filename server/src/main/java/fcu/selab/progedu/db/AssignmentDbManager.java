@@ -40,27 +40,27 @@ public class AssignmentDbManager {
    * @param assignment Project
    */
   public void addAssignment(Assignment assignment) {
-    String sql = "INSERT INTO Assignment(name, createTime, deadline, description, hasTemplate"
-        + ", type, zipChecksum, zipUrl, releaseTime, display)  VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?,"
-        + "?)";
+    String sql = "INSERT INTO Assignment(`name`, `createTime`, `deadline`, `description`,"
+        + " `hasTemplate`, `type`, `zipChecksum`, `zipUrl`, `releaseTime`, `display`)"
+        + "  VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?,?)";
     // Todo above [hasTemplate, zipChecksum, zipUrl] is not need
 
     int typeId = atDb.getTypeIdByName(assignment.getType().getTypeName());
-    Timestamp createtimes = new Timestamp(assignment.getCreateTime().getTime());
-    Timestamp deadlinetimes = new Timestamp(assignment.getDeadline().getTime());
-    Timestamp releasetimes = new Timestamp(assignment.getReleaseTime().getTime());
+    Timestamp createTime = new Timestamp(assignment.getCreateTime().getTime());
+    Timestamp deadlineTime = new Timestamp(assignment.getDeadline().getTime());
+    Timestamp releaseTime = new Timestamp(assignment.getReleaseTime().getTime());
 
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
       preStmt.setString(1, assignment.getName());
-      preStmt.setTimestamp(2, createtimes);
-      preStmt.setTimestamp(3, deadlinetimes);
+      preStmt.setTimestamp(2, createTime);
+      preStmt.setTimestamp(3, deadlineTime);
       preStmt.setString(4, assignment.getDescription());
       preStmt.setBoolean(5, assignment.isHasTemplate());
       preStmt.setInt(6, typeId);
       preStmt.setLong(7, assignment.getTestZipChecksum());
       preStmt.setString(8, assignment.getTestZipUrl());
-      preStmt.setTimestamp(9, releasetimes);
+      preStmt.setTimestamp(9, releaseTime);
       preStmt.setBoolean(10, assignment.isDisplay());
       preStmt.executeUpdate();
     } catch (SQLException e) {
