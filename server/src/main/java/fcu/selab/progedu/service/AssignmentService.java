@@ -154,7 +154,6 @@ public class AssignmentService {
     // 2. Clone the project to C:\\Users\\users\\AppData\\Temp\\uploads
     final String cloneDirectoryPath = gitlabService.cloneProject(gitlabRootUsername,
         assignmentName);
-//
 //    // 3. Store Zip File to uploads folder if file is not empty
     String filePath = tomcatService.storeFileToUploadsFolder(file, fileDetail.getFileName());
 
@@ -428,11 +427,6 @@ public class AssignmentService {
     assignment.setDescription(readMe);
     assignment.setType(projectType);
 
-
-    assignment.setHasTemplate(false);// Todo no need
-    assignment.setTestZipChecksum(0);// Todo no need
-    assignment.setTestZipUrl("");// Todo no need
-
     dbManager.addAssignment(assignment);
   }
 
@@ -516,25 +510,6 @@ public class AssignmentService {
     dbManager.editAssignment(deadline, releaseTime, readMe, id);
 
     return Response.ok().build();
-  }
-
-  /**
-   * get project checksum
-   *
-   * @param assignmentName assignment name
-   * @return checksum
-   */
-  @GET
-  @Path("checksum")
-  @Produces(MediaType.APPLICATION_JSON)
-  public Response getProject(@QueryParam("proName") String assignmentName) {
-    Assignment assignment = dbManager.getAssignmentByName(assignmentName);
-    JSONObject ob = new JSONObject();
-
-    ob.put("testZipUrl", assignment.getTestZipUrl());
-    ob.put("testZipChecksum", assignment.getTestZipChecksum());
-    System.out.println(ob.toString());
-    return Response.ok().entity(ob.toString()).build();
   }
 
   /**

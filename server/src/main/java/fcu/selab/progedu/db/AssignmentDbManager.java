@@ -41,8 +41,8 @@ public class AssignmentDbManager {
    */
   public void addAssignment(Assignment assignment) {
     String sql = "INSERT INTO Assignment(`name`, `createTime`, `deadline`, `description`,"
-        + " `hasTemplate`, `type`, `zipChecksum`, `zipUrl`, `releaseTime`, `display`)"
-        + "  VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?,?)";
+        + " `type`, `releaseTime`, `display`)"
+        + " VALUES(?, ?, ?, ?, ?, ?, ?)";
     // Todo above [hasTemplate, zipChecksum, zipUrl] is not need
 
     int typeId = atDb.getTypeIdByName(assignment.getType().getTypeName());
@@ -56,12 +56,9 @@ public class AssignmentDbManager {
       preStmt.setTimestamp(2, createTime);
       preStmt.setTimestamp(3, deadlineTime);
       preStmt.setString(4, assignment.getDescription());
-      preStmt.setBoolean(5, assignment.isHasTemplate());
-      preStmt.setInt(6, typeId);
-      preStmt.setLong(7, assignment.getTestZipChecksum());
-      preStmt.setString(8, assignment.getTestZipUrl());
-      preStmt.setTimestamp(9, releaseTime);
-      preStmt.setBoolean(10, assignment.isDisplay());
+      preStmt.setInt(5, typeId);
+      preStmt.setTimestamp(6, releaseTime);
+      preStmt.setBoolean(7, assignment.isDisplay());
       preStmt.executeUpdate();
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
@@ -88,10 +85,7 @@ public class AssignmentDbManager {
           assignment.setCreateTime(rs.getTimestamp("createTime"));
           assignment.setDeadline( rs.getTimestamp("deadline"));
           assignment.setDescription(rs.getString("description"));
-          assignment.setHasTemplate(rs.getBoolean("hasTemplate"));
           assignment.setType(atDb.getTypeNameById(rs.getInt("type")));
-          assignment.setTestZipChecksum(rs.getLong("zipChecksum"));
-          assignment.setTestZipUrl(rs.getString("zipUrl"));
           assignment.setReleaseTime(rs.getTimestamp("releaseTime"));
           assignment.setDisplay(rs.getBoolean("display"));
         }

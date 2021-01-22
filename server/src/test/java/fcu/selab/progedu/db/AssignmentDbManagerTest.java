@@ -34,11 +34,6 @@ public class AssignmentDbManagerTest {
         assignment.setType(ProjectTypeEnum.getProjectTypeEnum("maven"));
 
 
-        assignment.setHasTemplate(false);// Todo no need
-        assignment.setTestZipChecksum(0);// Todo no need
-        assignment.setTestZipUrl("");// Todo no need
-
-
         AssignmentDbManager assignmentDbManager = AssignmentDbManager.getInstance();
         assignmentDbManager.addAssignment(assignment);
 
