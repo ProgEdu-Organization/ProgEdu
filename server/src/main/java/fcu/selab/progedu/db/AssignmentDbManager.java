@@ -43,6 +43,8 @@ public class AssignmentDbManager {
     String sql = "INSERT INTO Assignment(name, createTime, deadline, description, hasTemplate"
         + ", type, zipChecksum, zipUrl, releaseTime, display)  VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?,"
         + "?)";
+    // Todo above [hasTemplate, zipChecksum, zipUrl] is not need
+
     int typeId = atDb.getTypeIdByName(assignment.getType().getTypeName());
     Timestamp createtimes = new Timestamp(assignment.getCreateTime().getTime());
     Timestamp deadlinetimes = new Timestamp(assignment.getDeadline().getTime());

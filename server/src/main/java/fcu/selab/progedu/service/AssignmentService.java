@@ -191,8 +191,8 @@ public class AssignmentService {
     gitlabService.pushProject(cloneDirectoryPath);
 
     // 9. import project information to database
-    addProject(assignmentName, releaseTime, deadline, readMe, projectTypeEnum, false,
-        0, "");// Todo testZipChecksums and testZipUrl is not needed.
+    addProject(assignmentName, releaseTime, deadline, readMe, projectTypeEnum);
+
 
     List<User> users = userService.getStudents();
     for (User user : users) {
@@ -416,11 +416,9 @@ public class AssignmentService {
    * @param deadline    Project deadline
    * @param readMe      Project readme
    * @param projectType File type
-   * @param hasTemplate Has template
    */
   public void addProject(String name, Date releaseTime, Date deadline, String readMe,
-                         ProjectTypeEnum projectType, boolean hasTemplate,
-                         long testZipChecksum, String testZipUrl) {
+                         ProjectTypeEnum projectType) {
     Assignment assignment = new Assignment();
     Date date = tomcatService.getCurrentTime();
     assignment.setName(name);
@@ -429,9 +427,11 @@ public class AssignmentService {
     assignment.setDeadline(deadline);
     assignment.setDescription(readMe);
     assignment.setType(projectType);
-    assignment.setHasTemplate(hasTemplate);
-    assignment.setTestZipChecksum(testZipChecksum);
-    assignment.setTestZipUrl(testZipUrl);
+
+
+    assignment.setHasTemplate(false);// Todo no need
+    assignment.setTestZipChecksum(0);// Todo no need
+    assignment.setTestZipUrl("");// Todo no need
 
     dbManager.addAssignment(assignment);
   }
