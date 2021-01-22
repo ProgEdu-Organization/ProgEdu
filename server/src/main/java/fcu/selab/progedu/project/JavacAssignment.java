@@ -35,7 +35,7 @@ import fcu.selab.progedu.service.StatusService;
 import fcu.selab.progedu.status.StatusEnum;
 import fcu.selab.progedu.utils.ExceptionUtil;
 
-public class JavacAssignment extends AssignmentType {
+public class JavacAssignment extends ProjectType {
   private static final Logger LOGGER = LoggerFactory.getLogger(JavacAssignment.class);
 
   @Override
