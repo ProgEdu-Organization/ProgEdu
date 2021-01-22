@@ -26,7 +26,7 @@ import fcu.selab.progedu.service.StatusService;
 import fcu.selab.progedu.status.StatusEnum;
 import fcu.selab.progedu.utils.ExceptionUtil;
 
-public class MavenAssignment extends AssignmentType {
+public class MavenAssignment extends ProjectType {
   private static final Logger LOGGER = LoggerFactory.getLogger(MavenAssignment.class);
 
   @Override

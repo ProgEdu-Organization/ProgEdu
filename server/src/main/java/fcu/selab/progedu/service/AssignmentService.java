@@ -3,9 +3,6 @@ package fcu.selab.progedu.service;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Paths;
-import java.sql.Timestamp;
-import java.text.DateFormat;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -21,7 +18,6 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -33,13 +29,13 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 
 import fcu.selab.progedu.data.AssignmentUser;
 import fcu.selab.progedu.data.PairMatching;
-import fcu.selab.progedu.data.ReviewRecord;
 import fcu.selab.progedu.data.ReviewSetting;
 import fcu.selab.progedu.db.PairMatchingDbManager;
 import fcu.selab.progedu.db.ReviewRecordDbManager;
 import fcu.selab.progedu.db.ReviewSettingDbManager;
 import fcu.selab.progedu.db.ReviewSettingMetricsDbManager;
 import fcu.selab.progedu.db.ReviewStatusDbManager;
+import fcu.selab.progedu.project.ProjectType;
 import org.json.JSONArray;
 import org.jsoup.nodes.Document;
 import org.gitlab.api.models.GitlabProject;
@@ -67,8 +63,7 @@ import fcu.selab.progedu.db.CommitRecordDbManager;
 import fcu.selab.progedu.db.ScreenshotRecordDbManager;
 import fcu.selab.progedu.db.UserDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
-import fcu.selab.progedu.project.AssignmentFactory;
-import fcu.selab.progedu.project.AssignmentType;
+import fcu.selab.progedu.project.ProjectTypeFactory;
 import fcu.selab.progedu.project.ProjectTypeEnum;
 import fcu.selab.progedu.utils.ExceptionUtil;
 import fcu.selab.progedu.utils.Linux;
@@ -152,7 +147,6 @@ public class AssignmentService {
       @FormDataParam("file") InputStream file,
       @FormDataParam("file") FormDataContentDisposition fileDetail) {
 
-    final AssignmentType assignment = AssignmentFactory.getAssignmentType(assignmentType);
     final ProjectTypeEnum projectTypeEnum = ProjectTypeEnum.getProjectTypeEnum(assignmentType);
     // 1. Create root project and get project id and url
     createRootProject(assignmentName);
@@ -649,13 +643,19 @@ public class AssignmentService {
 
   private void createAssignmentSettings(String username, String assignmentName) {
     ProjectTypeEnum assignmentTypeEnum = dbManager.getAssignmentType(assignmentName);
-    AssignmentType assignment = AssignmentFactory
-        .getAssignmentType(assignmentTypeEnum.getTypeName());
+    ProjectType project = ProjectTypeFactory
+        .getProjectType(assignmentTypeEnum.getTypeName());
+    //Todo 以上 assignmentTypeEnum 要拿掉, 因為之後沒有 assignment
+
     addAuid(username, assignmentName);
+    //Todo 以上 addAuid 要改, 因為之後沒有 assignment
+
     try {
-      GitlabProject project = gitlabService.createPrivateProject(username, assignmentName, "root");
-      gitlabService.setGitlabWebhook(project);
-      assignment.createJenkinsJob(username, assignmentName);
+      GitlabProject gitlabProject = gitlabService.createPrivateProject(username,
+              assignmentName, "root"); // Todo assignment 要改
+
+      gitlabService.setGitlabWebhook(gitlabProject);
+      project.createJenkinsJob(username, assignmentName); // Todo assignment 要改
     } catch (IOException | LoadConfigFailureException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());

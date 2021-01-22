@@ -1,13 +1,13 @@
 package fcu.selab.progedu.project;
 
-public class AssignmentFactory {
+public class ProjectTypeFactory {
 
   /**
-   * getAssignmentType
+   * get projectType
    *
    * @param projectType assignmentType
    */
-  public static AssignmentType getAssignmentType(String projectType) {
+  public static ProjectType getProjectType(String projectType) {
     ProjectTypeEnum projectTypeEnum = ProjectTypeEnum.getProjectTypeEnum(projectType);
 
     switch (projectTypeEnum) {
