@@ -16,14 +16,14 @@ public abstract class ProjectType {
    */
   public void createJenkinsJob(String username, String projectName) {
 
-    // Todo 這會改變 "/jenkins/" + getJenkinsJobConfigSample() 這個設定檔
-    createJenkinsJobConfig(username, projectName);
+    // Todo 這會改變 getJenkinsJobConfigPath() 這個設定檔
+    createJenkinsJobConfig(username, projectName); // 子類實現
 
 
     JenkinsService jenkinsService = JenkinsService.getInstance();
 
     String jobName = jenkinsService.getJobName(username, projectName);
-    String jenkinsJobConfigPath = getJenkinsJobConfigPath();
+    String jenkinsJobConfigPath = getJenkinsJobConfigPath(); // 子類實現
 
     jenkinsService.createJob(jobName, jenkinsJobConfigPath);
     jenkinsService.buildJob(jobName);
@@ -31,7 +31,6 @@ public abstract class ProjectType {
 
   // Todo 模板方法只用到這個好處
   public abstract void createJenkinsJobConfig(String username, String projectName);
-
 
   public Status getStatus(String statusType) {
     return getStatusFactory().getStatus(statusType);
