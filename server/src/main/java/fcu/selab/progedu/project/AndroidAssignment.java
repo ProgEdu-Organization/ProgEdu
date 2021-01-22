@@ -27,7 +27,7 @@ import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.service.StatusService;
 import fcu.selab.progedu.status.StatusEnum;
 
-public class AndroidAssignment extends AssignmentType {
+public class AndroidAssignment extends ProjectType {
   private static final Logger LOGGER = LoggerFactory.getLogger(WebAssignment.class);
 
   @Override
