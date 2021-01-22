@@ -2,7 +2,6 @@ package fcu.selab.progedu.db;
 
 import fcu.selab.progedu.data.Assignment;
 import fcu.selab.progedu.project.ProjectTypeEnum;
-import fcu.selab.progedu.utils.ExceptionUtil;
 import org.junit.Test;
 
 import java.text.SimpleDateFormat;
