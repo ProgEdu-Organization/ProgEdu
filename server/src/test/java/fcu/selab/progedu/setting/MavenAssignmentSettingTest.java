@@ -18,7 +18,7 @@ public class MavenAssignmentSettingTest extends PatternSet implements java.io.Se
     order.add("Coding Style Failure");
     order.add("Unit Test Failure");
     Model model = MavenAssignmentSetting.createAssignmentSettingTest(order, "test");
-    Iterator<Dependency> iterator = model.;
+    Iterator<Dependency> iterator = model.getDependencies().listIterator();
 
     while(iterator.hasNext()) {
       System.out.println(iterator.next());
