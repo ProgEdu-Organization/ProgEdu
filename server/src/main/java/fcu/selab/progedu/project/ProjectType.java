@@ -23,14 +23,14 @@ public abstract class ProjectType {
     JenkinsService jenkinsService = JenkinsService.getInstance();
 
     String jobName = jenkinsService.getJobName(username, projectName);
-    String jenkinsJobConfigPath = this.getClass()
-            .getResource("/jenkins/" + getJenkinsJobConfigSample()).getPath();
+    String jenkinsJobConfigPath = getJenkinsJobConfigPath();
 
     jenkinsService.createJob(jobName, jenkinsJobConfigPath);
     jenkinsService.buildJob(jobName);
   }
 
-  public abstract void createJenkinsJobConfig(String username, String projectName); // 模板方法只有用到這個好處
+  // Todo 模板方法只用到這個好處
+  public abstract void createJenkinsJobConfig(String username, String projectName);
 
 
   public Status getStatus(String statusType) {
@@ -45,7 +45,8 @@ public abstract class ProjectType {
 
   public abstract String getSampleTemplate();
 
-  public abstract String getJenkinsJobConfigSample();
+  // Todo 模板方法只用到這個好處
+  public abstract String getJenkinsJobConfigPath();
 
   public abstract StatusEnum checkStatusType(int num, String username, String assignmentName);
 

@@ -3,6 +3,7 @@ package fcu.selab.progedu.project;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -49,16 +50,16 @@ public class JavacAssignment extends ProjectType {
   }
 
   @Override
-  public String getJenkinsJobConfigSample() {
-    return "config_javac.xml";
+  public String getJenkinsJobConfigPath() {
+    URL url = this.getClass().getResource("/jenkins/config_javac.xml");
+    return url.getPath();
   }
 
   @Override
   public void createJenkinsJobConfig(String username, String projectName) {
     try {
       GitlabConfig gitlabConfig = GitlabConfig.getInstance();
-      String jenkinsJobConfigPath = this.getClass()
-          .getResource("/jenkins/" + getJenkinsJobConfigSample()).getPath();
+      String jenkinsJobConfigPath = getJenkinsJobConfigPath();
 
       CourseConfig courseConfig = CourseConfig.getInstance();
       String progEduApiUrl = courseConfig.getTomcatServerIp() + courseConfig.getBaseuri()
