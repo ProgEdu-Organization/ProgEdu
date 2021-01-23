@@ -486,19 +486,19 @@ public class AssignmentService {
 
     String[] ordersAndScores = order.split(", ");
     for (String orderAndScore : ordersAndScores) {
-      String[] tocken = orderAndScore.split(":");
+      String[] token = orderAndScore.split(":");
 
-      if (tocken[0].equals("Compile Failure")) {
+      if (token[0].equals("Compile Failure")) {
         ordersList.add("cpf");
-      } else if (tocken[0].equals("Unit Test Failure")) {
+      } else if (token[0].equals("Unit Test Failure")) {
         ordersList.add("utf");
-      } else if (tocken[0].equals("Coding Style Failure")) {
+      } else if (token[0].equals("Coding Style Failure")) {
         ordersList.add("csf");
       }
-      scoresList.add(tocken[1]);
+      scoresList.add(token[1]);
     }
     //write assignment assessment in to data base
-    //addAssignmentAssessment(int aid, int sid, int order, int score)
+    //addAssignmentAssessment( aid, int sid, int order, int score)
     for (int i = 0; i < ordersAndScores.length; i++) {
       aaDbManager.addAssignmentAssessment(dbManager.getAssignmentIdByName(assignmentName),
           csDbManager.getStatusIdByName(ordersList.get(i)),
@@ -587,11 +587,25 @@ public class AssignmentService {
     dbManager.editAssignment(deadline, releaseTime, readMe, id);
     List<Integer> aaIds = aaDbManager.getAssignmentAssessmentIdByaId(id);
 
-    for (int aaId : aaIds) {
-      aaDbManager.deleteAssignmentAssessment(aaId);
+    List<String> ordersList = new ArrayList<>();
+    List<Integer> scoresList = new ArrayList<>();
+
+    String[] ordersAndScores = order.split(", ");
+    for (String orderAndScore : ordersAndScores) {
+      String[] token = orderAndScore.split(":");
+
+      if (token[0].equals("Compile Failure")) {
+        ordersList.add("cpf");
+      } else if (token[0].equals("Unit Test Failure")) {
+        ordersList.add("utf");
+      } else if (token[0].equals("Coding Style Failure")) {
+        ordersList.add("csf");
+      }
+      scoresList.add(Integer.valueOf(token[1]));
     }
-    //add new assessment
-    addOrder(order, assignmentName);
+    for(int i = 0; i < ordersList.size(); i++) {
+      aaDbManager.updateScore(id, aaDbManager.getAssessmentOrder(aaIds.get(i)), scoresList.get(i));
+    }
     return Response.ok().build();
   }
 
@@ -883,7 +897,7 @@ public class AssignmentService {
   * get assignment order
   *
   * @param fileName fileName
-  * @return assignmnet order
+  * @return assignment order
   * 
   */
   @GET
@@ -891,7 +905,7 @@ public class AssignmentService {
   @Produces(MediaType.APPLICATION_JSON)
   public Response getAssignmentOrder(@QueryParam("fileName") String fileName) {
     int aid = dbManager.getAssignmentIdByName(fileName);
-    String orders = aaDbManager.getAssignmentOrder(aid);
+    String orders = aaDbManager.getAssignmentOrderAndScore(aid);
     if (orders.isEmpty()) {
       orders = "None";
     }
