@@ -47,16 +47,12 @@ public class SettingZipHandler {
     }
   }
 
-  private String getResourcesZipPath() {
-    return this.resourcesZipPath;
-  }
-
   public String getAssignmentPath() {
     return this.assignmentPath;
   }
   
   public void unZipAssignmentToTmp() {
-    zipHandler.unzipFile(this.getResourcesZipPath(), this.getAssignmentPath());
+    zipHandler.unzipFile(resourcesZipPath, getAssignmentPath());
   }
   
   public void packUpAssignment() {
