@@ -583,7 +583,7 @@ public class AssignmentService {
       @FormDataParam("readMe") String readMe, @FormDataParam("file") InputStream file,
       @FormDataParam("file") FormDataContentDisposition fileDetail,
       @FormDataParam("order") String order) {
-    int id = dbManager.getAssignmentIdByName(assignmentName);
+    int aid = dbManager.getAssignmentIdByName(assignmentName);
     dbManager.editAssignment(deadline, releaseTime, readMe, id);
     List<Integer> aaIds = aaDbManager.getAssignmentAssessmentIdByaId(id);
 
@@ -595,7 +595,7 @@ public class AssignmentService {
       scoresList.add(Integer.valueOf(token[1]));
     }
     for (int i = 0; i < scoresList.size(); i++) {
-      aaDbManager.updateScore(id, aaDbManager.getAssessmentOrder(aaIds.get(i)), scoresList.get(i));
+      aaDbManager.updateScore(aid, aaDbManager.getAssessmentOrder(aaIds.get(i)), scoresList.get(i));
     }
     return Response.ok().build();
   }
