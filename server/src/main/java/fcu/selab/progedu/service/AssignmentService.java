@@ -476,9 +476,10 @@ public class AssignmentService {
   }
 
   /**
-   * Add a project to database
+   * Add the assignment's assessment order to database
    *
-   * @param order   order
+   * @param order          Order
+   * @param assignmentName Assignment name
    */
   private void addOrder(String order, String assignmentName) {
     List<String> ordersList = new ArrayList<>();

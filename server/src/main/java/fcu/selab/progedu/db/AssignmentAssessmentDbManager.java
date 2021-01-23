@@ -196,7 +196,6 @@ public class AssignmentAssessmentDbManager {
       LOGGER.error(e.getMessage());
     }
     return order;
-
   }
 
   /**

@@ -298,34 +298,5 @@ public class CommitRecordDbManager {
     return commitRecords;
   }
 
-  /**
-   * get last of commit record status
-   * 
-   * 
-   * @param auid auid
-   * @return lastStatus
-   */
-  public int getLastStatus(int auid) {
-    String sql = "SELECT `status` FROM ProgEdu.Commit_Record"
-        + " WHERE `auId` = ? AND `commitNumber` = " 
-        + "(SELECT max(`commitNumber`) FROM ProgEdu.Commit_Record"
-        + " WHERE `auid` = ?)";
-    int lastStatus = -1;
-
-    try (Connection conn = this.database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
-      preStmt.setInt(1, auid);
-      preStmt.setInt(2, auid);
-      try (ResultSet rs = preStmt.executeQuery()) {
-        while (rs.next()) {
-          lastStatus = rs.getInt("status");
-        }
-      }
-    } catch (SQLException e) {
-      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
-      LOGGER.error(e.getMessage());
-    }
-    return lastStatus;
-  }
 }
 
