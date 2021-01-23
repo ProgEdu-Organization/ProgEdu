@@ -587,23 +587,14 @@ public class AssignmentService {
     dbManager.editAssignment(deadline, releaseTime, readMe, id);
     List<Integer> aaIds = aaDbManager.getAssignmentAssessmentIdByaId(id);
 
-    List<String> ordersList = new ArrayList<>();
     List<Integer> scoresList = new ArrayList<>();
 
     String[] ordersAndScores = order.split(", ");
     for (String orderAndScore : ordersAndScores) {
       String[] token = orderAndScore.split(":");
-
-      if (token[0].equals("Compile Failure")) {
-        ordersList.add("cpf");
-      } else if (token[0].equals("Unit Test Failure")) {
-        ordersList.add("utf");
-      } else if (token[0].equals("Coding Style Failure")) {
-        ordersList.add("csf");
-      }
       scoresList.add(Integer.valueOf(token[1]));
     }
-    for(int i = 0; i < ordersList.size(); i++) {
+    for (int i = 0; i < scoresList.size(); i++) {
       aaDbManager.updateScore(id, aaDbManager.getAssessmentOrder(aaIds.get(i)), scoresList.get(i));
     }
     return Response.ok().build();
