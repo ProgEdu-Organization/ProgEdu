@@ -25,6 +25,7 @@ public class UserDbManager {
   private static final String TOKEN = "password";
   private static final String EMAIL = "email";
   private static final String GIT_LAB_TOKEN = "gitLabToken";
+  private static final String GIT_LAB_USERNAME = "gitLabUsername";
   private static final String ROLE = "role";
   private static final String DISPLAY = "display";
   private static UserDbManager dbManager = null;
@@ -56,8 +57,8 @@ public class UserDbManager {
    */
   public void addUser(User user) {
     String sql = "INSERT INTO " + "User(" + GIT_LAB_ID + "," + USERNAME + "," + NAME + ","
-        + TOKEN + "," + EMAIL + "," + GIT_LAB_TOKEN + "," + DISPLAY + ")"
-        + "VALUES(?, ?, ?, ?, ?, ?, ?)";
+        + TOKEN + "," + EMAIL + "," + GIT_LAB_USERNAME + "," + GIT_LAB_TOKEN + "," + DISPLAY + ")"
+        + "VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
 
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
@@ -66,8 +67,9 @@ public class UserDbManager {
       preStmt.setString(3, user.getName());
       preStmt.setString(4, passwordMD5(user.getPassword()));
       preStmt.setString(5, user.getEmail());
-      preStmt.setString(6, user.getGitLabToken());
-      preStmt.setBoolean(7, user.getDisplay());
+      preStmt.setString(6,user.getGitLabUsername());
+      preStmt.setString(7, user.getGitLabToken());
+      preStmt.setBoolean(8, user.getDisplay());
       preStmt.executeUpdate();
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
@@ -244,6 +246,7 @@ public class UserDbManager {
           String password = rs.getString(TOKEN);
           String email = rs.getString(EMAIL);
           String gitLabToken = rs.getString(GIT_LAB_TOKEN);
+          String gitLabUsername = rs.getString(GIT_LAB_USERNAME);
           boolean display = rs.getBoolean(DISPLAY);
 
           user.setGitLabId(gitLabId);
@@ -253,6 +256,7 @@ public class UserDbManager {
           user.setPassword(password);
           user.setEmail(email);
           user.setGitLabToken(gitLabToken);
+          user.setGitLabUsername(gitLabUsername);
           user.setDisplay(display);
           //not set Role
         }
@@ -328,6 +332,7 @@ public class UserDbManager {
           String password = rs.getString(TOKEN);
           String email = rs.getString(EMAIL);
           String gitLabToken = rs.getString(GIT_LAB_ID);
+          String gitLabUsername = rs.getString(GIT_LAB_USERNAME);
           boolean display = rs.getBoolean(DISPLAY);
           List<RoleEnum> roleList = rudb.getRoleList(id);
 
@@ -339,6 +344,7 @@ public class UserDbManager {
           user.setPassword(password);
           user.setEmail(email);
           user.setGitLabToken(gitLabToken);
+          user.setGitLabUsername(gitLabUsername);
           user.setDisplay(display);
           user.setRole(roleList);
           users.add(user);
