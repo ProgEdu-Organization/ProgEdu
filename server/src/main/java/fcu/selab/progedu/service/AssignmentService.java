@@ -584,8 +584,8 @@ public class AssignmentService {
       @FormDataParam("file") FormDataContentDisposition fileDetail,
       @FormDataParam("order") String order) {
     int aid = dbManager.getAssignmentIdByName(assignmentName);
-    dbManager.editAssignment(deadline, releaseTime, readMe, id);
-    List<Integer> aaIds = aaDbManager.getAssignmentAssessmentIdByaId(id);
+    dbManager.editAssignment(deadline, releaseTime, readMe, aid);
+    List<Integer> aaIds = aaDbManager.getAssignmentAssessmentIdByaId(aid);
 
     List<Integer> scoresList = new ArrayList<>();
 
