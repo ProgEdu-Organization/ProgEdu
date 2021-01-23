@@ -839,7 +839,7 @@ public class AssignmentService {
   @POST
   @Path("order")
   @Consumes(MediaType.MULTIPART_FORM_DATA)
-  public Response changeAssignmentCompileOrder(
+  public Response modifyAssignmentOrderFile(
       @FormDataParam("fileRadio") String fileType, 
       @FormDataParam("order") String orders,
       @FormDataParam("assignmentName") String assignmentName) {
@@ -852,12 +852,12 @@ public class AssignmentService {
     //------------------------make pom.xml
     if (fileType.equals("maven")) {
       MavenAssignmentSetting mas = new MavenAssignmentSetting(assignmentName);
-      makeAssignmentOrderCustomized(mas, ordersList, assignmentName);
+      modifyAssignmentFile(mas, ordersList, assignmentName);
     }
     return Response.ok().build();
   }
 
-  private void makeAssignmentOrderCustomized(AssignmentSettings as,
+  private void modifyAssignmentFile(AssignmentSettings as,
                                      List<String> ordersList, String assignmentName) {
     as.unZipAssignmentToTmp();
     as.writeAssignmentSettingFile(as.createAssignmentSetting(ordersList, assignmentName));
