@@ -726,7 +726,7 @@ public class AssignmentService {
   }
 
   /**
-   * create previous Assignemnt
+   * create previous Assignment
    *
    * @param username username
    */
@@ -825,7 +825,7 @@ public class AssignmentService {
   }
 
   /**
-   * create previous Assignemnt
+   * create previous Assignment
    *
    * @param fileType fileType
    * @param orders orders
@@ -860,7 +860,7 @@ public class AssignmentService {
   }
 
   /**
-   * create get assignemnt file
+   * create get assignment file
    *
    * @param fileName fileName
    * @return zip file
@@ -880,7 +880,7 @@ public class AssignmentService {
   }
 
   /**
-  * get assignemnt order
+  * get assignment order
   *
   * @param fileName fileName
   * @return assignmnet order
