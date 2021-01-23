@@ -47,7 +47,7 @@ public class SettingZipHandler {
     }
   }
 
-  public String getResourcesZipPath() {
+  private String getResourcesZipPath() {
     return this.resourcesZipPath;
   }
   
@@ -55,7 +55,7 @@ public class SettingZipHandler {
     this.assignmentName = name;
   }
   
-  public String getAssignmentName() {
+  private String getAssignmentName() {
     return this.assignmentName;
   }
 
@@ -67,7 +67,7 @@ public class SettingZipHandler {
     return this.assignmentPath;
   }
   
-  public void unZipAssignmenToTmp() {
+  public void unZipAssignmentToTmp() {
     zipHandler.unzipFile(this.getResourcesZipPath(), this.getAssignmentPath());
   }
   

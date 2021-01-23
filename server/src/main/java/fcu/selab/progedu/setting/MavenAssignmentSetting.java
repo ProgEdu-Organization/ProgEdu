@@ -35,13 +35,11 @@ public class MavenAssignmentSetting implements AssignmentSettings {
   public MavenAssignmentSetting(String name) {
     settingZipHandler = new SettingZipHandler("maven", name);
   }
-  
-  @Override
+
   public void unZipAssignmentToTmp() {
-    settingZipHandler.unZipAssignmenToTmp();
+    settingZipHandler.unZipAssignmentToTmp();
   }
 
-  @Override
   public void packUpAssignment() {
     settingZipHandler.packUpAssignment();
   }
