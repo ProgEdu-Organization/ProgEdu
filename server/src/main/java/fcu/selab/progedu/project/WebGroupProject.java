@@ -2,6 +2,7 @@ package fcu.selab.progedu.project;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
@@ -38,16 +39,16 @@ public class WebGroupProject extends GroupProjectType {
   }
 
   @Override
-  public String getJenkinsJobConfigSample() {
-    return "group_web_config.xml";
+  public String getJenkinsJobConfigPath() {
+    URL url = this.getClass().getResource("/jenkins/group_web_config.xml");
+    return url.getPath();
   }
 
   @Override
   public void createJenkinsJobConfig(String username, String projectName) {
     try {
       GitlabConfig gitlabConfig = GitlabConfig.getInstance();
-      String jenkinsJobConfigPath = this.getClass()
-          .getResource("/jenkins/" + getJenkinsJobConfigSample()).getPath();
+      String jenkinsJobConfigPath = getJenkinsJobConfigPath();
 
       CourseConfig courseConfig = CourseConfig.getInstance();
       String progEduApiUrl = courseConfig.getTomcatServerIp() + courseConfig.getBaseuri()

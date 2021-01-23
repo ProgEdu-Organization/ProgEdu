@@ -18,17 +18,11 @@ public class Assignment {
 
   private String description = "";
 
-  private boolean hasTemplate = false;
-
   private ProjectTypeEnum type;
 
   private String gitLabUrl = "";
 
   private String jenkinsUrl = "";
-
-  private long testZipChecksum = 0;
-
-  private String testZipUrl = "";
 
   private boolean display = true;
 
@@ -72,14 +66,6 @@ public class Assignment {
     this.description = description;
   }
 
-  public boolean isHasTemplate() {
-    return hasTemplate;
-  }
-
-  public void setHasTemplate(boolean hasTemplate) {
-    this.hasTemplate = hasTemplate;
-  }
-
   public ProjectTypeEnum getType() {
     return type;
   }
@@ -102,22 +88,6 @@ public class Assignment {
 
   public void setJenkinsUrl(String jenkinsUrl) {
     this.jenkinsUrl = jenkinsUrl;
-  }
-
-  public long getTestZipChecksum() {
-    return testZipChecksum;
-  }
-
-  public void setTestZipChecksum(long testZipChecksum) {
-    this.testZipChecksum = testZipChecksum;
-  }
-
-  public String getTestZipUrl() {
-    return testZipUrl;
-  }
-
-  public void setTestZipUrl(String testZipUrl) {
-    this.testZipUrl = testZipUrl;
   }
 
   public Date getReleaseTime() {

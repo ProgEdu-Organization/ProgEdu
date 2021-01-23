@@ -2,6 +2,7 @@ package fcu.selab.progedu.project;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -41,16 +42,16 @@ public class AndroidAssignment extends ProjectType {
   }
 
   @Override
-  public String getJenkinsJobConfigSample() {
-    return "config_android.xml";
+  public String getJenkinsJobConfigPath() {
+    URL url = this.getClass().getResource("/jenkins/config_android.xml");
+    return url.getPath();
   }
 
   @Override
   public void createJenkinsJobConfig(String username, String projectName) {
     try {
       GitlabConfig gitlabConfig = GitlabConfig.getInstance();
-      String jenkinsJobConfigPath =
-          this.getClass().getResource("/jenkins/" + getJenkinsJobConfigSample()).getPath();
+      String jenkinsJobConfigPath = getJenkinsJobConfigPath();
 
       CourseConfig courseConfig = CourseConfig.getInstance();
       String progEduApiUrl =
