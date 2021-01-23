@@ -25,9 +25,9 @@ public class SettingZipHandler {
    */
   public SettingZipHandler(String resources, String name) {
     try {
-      setAssignmentName(name);
+      assignmentName = name;
       setResourcesZipPath(resources);
-      setAssignmentPath();
+      assignmentPath = settingDir + assignmentName;
       zipHandler = new ZipHandler();
     } catch (LoadConfigFailureException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
@@ -39,7 +39,7 @@ public class SettingZipHandler {
    * set assignment zip path
    * @param resources which resources
    */
-  public void setResourcesZipPath(String resources) {
+  private void setResourcesZipPath(String resources) {
     if (resources.equals("maven")) {
       this.resourcesZipPath = "/usr/local/tomcat/webapps/ROOT/resources/MvnQuickStart.zip";
     } else if (resources.equals("web")) {
@@ -50,19 +50,7 @@ public class SettingZipHandler {
   private String getResourcesZipPath() {
     return this.resourcesZipPath;
   }
-  
-  private void setAssignmentName(String name) {
-    this.assignmentName = name;
-  }
-  
-  private String getAssignmentName() {
-    return this.assignmentName;
-  }
 
-  private void setAssignmentPath() {
-    this.assignmentPath = this.settingDir + getAssignmentName();
-  }
-  
   public String getAssignmentPath() {
     return this.assignmentPath;
   }
