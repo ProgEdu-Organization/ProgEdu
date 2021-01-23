@@ -1,4 +1,4 @@
-FROM maven:3-jdk-8 as builder
+FROM fcumselab/progedu-server-maven-env:latest as builder
 
 RUN mkdir /workdir
 
@@ -28,7 +28,7 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/* \
     && envsubst < front/src/environments/environment.docker.ts > front/src/environments/environment.prod.ts
 
-RUN mvn -T 1C clean package -DskipTests
+RUN mvn clean package -DskipTests
 
 FROM tomcat:8.5.53
 

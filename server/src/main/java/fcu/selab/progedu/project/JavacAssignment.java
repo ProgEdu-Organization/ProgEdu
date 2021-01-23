@@ -3,6 +3,7 @@ package fcu.selab.progedu.project;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -33,10 +34,9 @@ import fcu.selab.progedu.conn.JenkinsService;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.service.StatusService;
 import fcu.selab.progedu.status.StatusEnum;
-import fcu.selab.progedu.data.ZipFileInfo;
 import fcu.selab.progedu.utils.ExceptionUtil;
 
-public class JavacAssignment extends AssignmentType {
+public class JavacAssignment extends ProjectType {
   private static final Logger LOGGER = LoggerFactory.getLogger(JavacAssignment.class);
 
   @Override
@@ -50,16 +50,16 @@ public class JavacAssignment extends AssignmentType {
   }
 
   @Override
-  public String getJenkinsJobConfigSample() {
-    return "config_javac.xml";
+  public String getJenkinsJobConfigPath() {
+    URL url = this.getClass().getResource("/jenkins/config_javac.xml");
+    return url.getPath();
   }
 
   @Override
   public void createJenkinsJobConfig(String username, String projectName) {
     try {
       GitlabConfig gitlabConfig = GitlabConfig.getInstance();
-      String jenkinsJobConfigPath = this.getClass()
-          .getResource("/jenkins/" + getJenkinsJobConfigSample()).getPath();
+      String jenkinsJobConfigPath = getJenkinsJobConfigPath();
 
       CourseConfig courseConfig = CourseConfig.getInstance();
       String progEduApiUrl = courseConfig.getTomcatServerIp() + courseConfig.getBaseuri()
@@ -116,21 +116,6 @@ public class JavacAssignment extends AssignmentType {
       }
     }
     return status;
-  }
-
-  @Override
-  public void createTemplate(String uploadDirectory) {
-  }
-
-  @Override
-  public ZipFileInfo createTestCase(String testDirectory) {
-    long testZipChecksum = 0;
-    String testZipUrl = "";
-
-    createCommandFile(testDirectory);
-    ZipFileInfo zipFileInfo = new ZipFileInfo(testZipChecksum, testZipUrl);
-
-    return zipFileInfo;
   }
 
   /**

@@ -22,6 +22,7 @@ import fcu.selab.progedu.config.CourseConfig;
 import fcu.selab.progedu.config.GitlabConfig;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.utils.ExceptionUtil;
+import java.net.URL;
 
 public class MavenGroupProject extends GroupProjectType {
   private static final Logger LOGGER = LoggerFactory.getLogger(MavenGroupProject.class);
@@ -37,16 +38,16 @@ public class MavenGroupProject extends GroupProjectType {
   }
 
   @Override
-  public String getJenkinsJobConfigSample() {
-    return "group_maven_config.xml";
+  public String getJenkinsJobConfigPath() {
+    URL url = this.getClass().getResource("/jenkins/group_maven_config.xml");
+    return url.getPath();
   }
 
   @Override
   public void createJenkinsJobConfig(String username, String projectName) {
     try {
       GitlabConfig gitlabConfig = GitlabConfig.getInstance();
-      String jenkinsJobConfigPath = this.getClass()
-          .getResource("/jenkins/" + getJenkinsJobConfigSample()).getPath();
+      String jenkinsJobConfigPath = getJenkinsJobConfigPath();
 
       CourseConfig courseConfig = CourseConfig.getInstance();
       String progEduApiUrl = courseConfig.getTomcatServerIp() + courseConfig.getBaseuri()

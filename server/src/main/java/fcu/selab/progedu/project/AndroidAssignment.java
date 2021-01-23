@@ -2,6 +2,7 @@ package fcu.selab.progedu.project;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -13,7 +14,6 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import fcu.selab.progedu.utils.ExceptionUtil;
-import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -27,10 +27,8 @@ import fcu.selab.progedu.db.AssignmentDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.service.StatusService;
 import fcu.selab.progedu.status.StatusEnum;
-import fcu.selab.progedu.data.ZipFileInfo;
-import fcu.selab.progedu.utils.ZipHandler;
 
-public class AndroidAssignment extends AssignmentType {
+public class AndroidAssignment extends ProjectType {
   private static final Logger LOGGER = LoggerFactory.getLogger(WebAssignment.class);
 
   @Override
@@ -44,16 +42,16 @@ public class AndroidAssignment extends AssignmentType {
   }
 
   @Override
-  public String getJenkinsJobConfigSample() {
-    return "config_android.xml";
+  public String getJenkinsJobConfigPath() {
+    URL url = this.getClass().getResource("/jenkins/config_android.xml");
+    return url.getPath();
   }
 
   @Override
   public void createJenkinsJobConfig(String username, String projectName) {
     try {
       GitlabConfig gitlabConfig = GitlabConfig.getInstance();
-      String jenkinsJobConfigPath =
-          this.getClass().getResource("/jenkins/" + getJenkinsJobConfigSample()).getPath();
+      String jenkinsJobConfigPath = getJenkinsJobConfigPath();
 
       CourseConfig courseConfig = CourseConfig.getInstance();
       String progEduApiUrl =
@@ -110,42 +108,6 @@ public class AndroidAssignment extends AssignmentType {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
     }
-  }
-
-  @Override
-  public void createTemplate(String uploadDirectory) {
-    try {
-      // UI test
-      FileUtils.deleteDirectory(new File(uploadDirectory + "/app/src/androidTest/java"));
-      // Unit Test
-      FileUtils.deleteDirectory(new File(uploadDirectory + "/app/src/test/java"));
-    } catch (IOException e) {
-      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
-      LOGGER.error(e.getMessage());
-    }
-  }
-
-  @Override
-  public ZipFileInfo createTestCase(String testDirectory) {
-    ZipHandler zipHandler;
-    ZipFileInfo zipFileInfo = null;
-
-    try {
-      FileUtils.deleteDirectory(new File(testDirectory + "/app/src/main"));
-    } catch (IOException e) {
-      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
-      LOGGER.error(e.getMessage());
-    }
-
-    try {
-      zipHandler = new ZipHandler();
-      zipFileInfo = zipHandler.getZipInfo(testDirectory);
-    } catch (LoadConfigFailureException e) {
-      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
-      LOGGER.error(e.getMessage());
-    }
-
-    return zipFileInfo;
   }
 
   @Override

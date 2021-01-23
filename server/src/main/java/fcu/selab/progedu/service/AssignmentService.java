@@ -3,9 +3,6 @@ package fcu.selab.progedu.service;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Paths;
-import java.sql.Timestamp;
-import java.text.DateFormat;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -21,7 +18,6 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -33,13 +29,13 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 
 import fcu.selab.progedu.data.AssignmentUser;
 import fcu.selab.progedu.data.PairMatching;
-import fcu.selab.progedu.data.ReviewRecord;
 import fcu.selab.progedu.data.ReviewSetting;
 import fcu.selab.progedu.db.PairMatchingDbManager;
 import fcu.selab.progedu.db.ReviewRecordDbManager;
 import fcu.selab.progedu.db.ReviewSettingDbManager;
 import fcu.selab.progedu.db.ReviewSettingMetricsDbManager;
 import fcu.selab.progedu.db.ReviewStatusDbManager;
+import fcu.selab.progedu.project.ProjectType;
 import org.json.JSONArray;
 import org.jsoup.nodes.Document;
 import org.gitlab.api.models.GitlabProject;
@@ -69,8 +65,7 @@ import fcu.selab.progedu.db.CommitStatusDbManager;
 import fcu.selab.progedu.db.ScreenshotRecordDbManager;
 import fcu.selab.progedu.db.UserDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
-import fcu.selab.progedu.project.AssignmentFactory;
-import fcu.selab.progedu.project.AssignmentType;
+import fcu.selab.progedu.project.ProjectTypeFactory;
 import fcu.selab.progedu.project.ProjectTypeEnum;
 import fcu.selab.progedu.utils.ExceptionUtil;
 import fcu.selab.progedu.utils.Linux;
@@ -121,8 +116,7 @@ public class AssignmentService {
 
   boolean isSave = true;
 
-  private long testZipChecksum = 0;
-  private String testZipUrl = "";
+
 
   /**
    * Constuctor
@@ -160,7 +154,6 @@ public class AssignmentService {
       @FormDataParam("file") InputStream file,
       @FormDataParam("file") FormDataContentDisposition fileDetail) {
 
-    final AssignmentType assignment = AssignmentFactory.getAssignmentType(assignmentType);
     final ProjectTypeEnum projectTypeEnum = ProjectTypeEnum.getProjectTypeEnum(assignmentType);
     // 1. Create root project and get project id and url
     createRootProject(assignmentName);
@@ -168,18 +161,11 @@ public class AssignmentService {
     // 2. Clone the project to C:\\Users\\users\\AppData\\Temp\\uploads
     final String cloneDirectoryPath = gitlabService.cloneProject(gitlabRootUsername,
         assignmentName);
-//
-//    // 3. Store Zip File to folder if file is not empty
-    String filePath = tomcatService.storeFileToServer(file, fileDetail, assignment);
+//    // 3. Store Zip File to uploads folder if file is not empty
+    String filePath = tomcatService.storeFileToUploadsFolder(file, fileDetail.getFileName());
 
-    // 4. Unzip the uploaded file to tests folder and uploads folder on tomcat,
-    // extract main method from tests folder, then zip as root project
-    String testDirectory = testDir + assignmentName;
+    // 4. Unzip the uploaded file to cloneDirectoryPath
     zipHandler.unzipFile(filePath, cloneDirectoryPath);
-    zipHandler.unzipFile(filePath, testDirectory);
-    assignment.createTemplate(cloneDirectoryPath);
-    testZipChecksum = assignment.createTestCase(testDirectory).getChecksum();
-    testZipUrl = assignment.createTestCase(testDirectory).getZipFileUrl();
 
     // 5. Add .gitkeep if folder is empty.
     tomcatService.findEmptyFolder(cloneDirectoryPath);
@@ -210,22 +196,16 @@ public class AssignmentService {
     // 8. git push
     gitlabService.pushProject(cloneDirectoryPath);
 
-    // 9. String removeTestDirectoryCommand = "rm -rf tests/" + name;
-    java.nio.file.Path projectTestDirectory = Paths.get(testDir, assignmentName);
-    tomcatService.deleteDirectory(projectTestDirectory.toFile());
+    // 9. import project information to database
+    addProject(assignmentName, releaseTime, deadline, readMe, projectTypeEnum);
 
-    // 10. import project information to database
-    boolean hasTemplate = false;
-
-    addProject(assignmentName, releaseTime, deadline, readMe, projectTypeEnum, hasTemplate,
-        testZipChecksum, testZipUrl);
 
     List<User> users = userService.getStudents();
     for (User user : users) {
       createAssignmentSettings(user.getUsername(), assignmentName);
     }
 
-    // 11. remove project file in linux
+    // 10. remove project file in linux
     tomcatService.deleteDirectory(new File(uploadDir));
     return Response.ok().build();
   }
@@ -480,11 +460,9 @@ public class AssignmentService {
    * @param deadline    Project deadline
    * @param readMe      Project readme
    * @param projectType File type
-   * @param hasTemplate Has template
    */
   public void addProject(String name, Date releaseTime, Date deadline, String readMe,
-                         ProjectTypeEnum projectType, boolean hasTemplate,
-                         long testZipChecksum, String testZipUrl) {
+                         ProjectTypeEnum projectType) {
     Assignment assignment = new Assignment();
     Date date = tomcatService.getCurrentTime();
     assignment.setName(name);
@@ -493,9 +471,6 @@ public class AssignmentService {
     assignment.setDeadline(deadline);
     assignment.setDescription(readMe);
     assignment.setType(projectType);
-    assignment.setHasTemplate(hasTemplate);
-    assignment.setTestZipChecksum(testZipChecksum);
-    assignment.setTestZipUrl(testZipUrl);
 
     dbManager.addAssignment(assignment);
   }
@@ -505,7 +480,7 @@ public class AssignmentService {
    *
    * @param order   order
    */
-  public void addOrder(String order, String assignmentName) {
+  private void addOrder(String order, String assignmentName) {
     List<String> ordersList = new ArrayList<>();
     List<String> scoresList = new ArrayList<>();
 
@@ -592,7 +567,8 @@ public class AssignmentService {
   }
 
   /**
-   * edit projects
+   * ToDo
+   * The unitTest file options is not working now, so need to change the front-end web
    *
    * @param assignmentName project name
    * @return response
@@ -605,51 +581,18 @@ public class AssignmentService {
       @FormDataParam("assignmentName") String assignmentName,
       @FormDataParam("releaseTime") Date releaseTime, @FormDataParam("deadline") Date deadline,
       @FormDataParam("readMe") String readMe, @FormDataParam("file") InputStream file,
-      @FormDataParam("file") FormDataContentDisposition fileDetail) {
+      @FormDataParam("file") FormDataContentDisposition fileDetail,
+      @FormDataParam("order") String order) {
     int id = dbManager.getAssignmentIdByName(assignmentName);
-    if (fileDetail.getFileName() == null) {
-      dbManager.editAssignment(deadline, releaseTime, readMe, id);
-    } else {
-      ProjectTypeEnum assignmentType = dbManager.getAssignmentType(assignmentName);
-      final AssignmentType assignment = AssignmentFactory
-          .getAssignmentType(assignmentType.getTypeName());
+    dbManager.editAssignment(deadline, releaseTime, readMe, id);
+    List<Integer> aaIds = aaDbManager.getAssignmentAssessmentIdByaId(id);
 
-      String tempFilePath = uploadDir + assignmentName;
-      String testCasePath = testDir + assignmentName;
-      String testCaseZipPath = testCasePath + ".zip";
-      // remove current test case
-      tomcatService.deleteFile(new File(testCaseZipPath));
-      tomcatService.storeFileToUploadsFolder(file, assignmentName);
-
-      zipHandler.unzipFile(tempFilePath, testCasePath);
-      assignment.createTestCase(testCasePath);
-      zipHandler.zipTestFolder(testCasePath);
-      long checksum = zipHandler.getChecksum();
-      tomcatService.deleteDirectory(new File(uploadDir));
-      tomcatService.deleteDirectory(new File(testCasePath));
-
-      dbManager.editAssignment(deadline, releaseTime, readMe, checksum, id);
+    for (int aaId : aaIds) {
+      aaDbManager.deleteAssignmentAssessment(aaId);
     }
+    //add new assessment
+    addOrder(order, assignmentName);
     return Response.ok().build();
-  }
-
-  /**
-   * get project checksum
-   *
-   * @param assignmentName assignment name
-   * @return checksum
-   */
-  @GET
-  @Path("checksum")
-  @Produces(MediaType.APPLICATION_JSON)
-  public Response getProject(@QueryParam("proName") String assignmentName) {
-    Assignment assignment = dbManager.getAssignmentByName(assignmentName);
-    JSONObject ob = new JSONObject();
-
-    ob.put("testZipUrl", assignment.getTestZipUrl());
-    ob.put("testZipChecksum", assignment.getTestZipChecksum());
-    System.out.println(ob.toString());
-    return Response.ok().entity(ob.toString()).build();
   }
 
   /**
@@ -723,6 +666,11 @@ public class AssignmentService {
 
     int aid = dbManager.getAssignmentIdByName(name);
     List<Integer> auidList = auDbManager.getAuids(aid);
+    List<Integer> aaidList = aaDbManager.getAssignmentAssessmentIdByaId(aid);
+    
+    for (int aaid : aaidList) {  //Assignment_Assessment
+      aaDbManager.deleteAssignmentAssessment(aaid); 
+    }
 
     for (int auid : auidList) { // CommitRecord
       List<Integer> cridList = crDbManager.getCommitRecordId(auid);
@@ -758,13 +706,19 @@ public class AssignmentService {
 
   private void createAssignmentSettings(String username, String assignmentName) {
     ProjectTypeEnum assignmentTypeEnum = dbManager.getAssignmentType(assignmentName);
-    AssignmentType assignment = AssignmentFactory
-        .getAssignmentType(assignmentTypeEnum.getTypeName());
+    ProjectType project = ProjectTypeFactory
+        .getProjectType(assignmentTypeEnum.getTypeName());
+    //Todo 以上 assignmentTypeEnum 要拿掉, 因為之後沒有 assignment
+
     addAuid(username, assignmentName);
+    //Todo 以上 addAuid 要改, 因為之後沒有 assignment
+
     try {
-      GitlabProject project = gitlabService.createPrivateProject(username, assignmentName, "root");
-      gitlabService.setGitlabWebhook(project);
-      assignment.createJenkinsJob(username, assignmentName);
+      GitlabProject gitlabProject = gitlabService.createPrivateProject(username,
+              assignmentName, "root"); // Todo assignment 要改
+
+      gitlabService.setGitlabWebhook(gitlabProject);
+      project.createJenkinsJob(username, assignmentName); // Todo assignment 要改
     } catch (IOException | LoadConfigFailureException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
@@ -884,25 +838,25 @@ public class AssignmentService {
       @FormDataParam("fileRadio") String fileType, 
       @FormDataParam("order") String orders,
       @FormDataParam("assignmentName") String assignmentName) {
-    GetAssignmentSettingService gass = new GetAssignmentSettingService();
     //---------cut order
     List<String> ordersList = new ArrayList<>();
     String[] tokens = orders.split(", ");
     for (String token:tokens) {
-      if (token.equals("Compiler Failure")) {
-        ordersList.add("compilerFailure");
-      } else if (token.equals("Coding Style Failure")) {
-        ordersList.add("codingStyle");
-      } else if (token.equals("Unit Test Failure")) {
-        ordersList.add("test");
-      }
+      ordersList.add(token);
     }
     //------------------------make pom.xml
     if (fileType.equals("maven")) {
       MavenAssignmentSetting mas = new MavenAssignmentSetting(assignmentName);
-      gass.getSetting(mas, ordersList, assignmentName);
+      getAssignmentSetting(mas, ordersList, assignmentName);
     }
     return Response.ok().build();
+  }
+
+  private void getAssignmentSetting(AssignmentSettings as,
+                                     List<String> ordersList, String assignmentName) {
+    as.unZipAssignmentToTmp();
+    as.writeAssignmentSettingFile(as.createAssignmentSetting(ordersList, assignmentName));
+    as.packUpAssignment();
   }
 
   /**

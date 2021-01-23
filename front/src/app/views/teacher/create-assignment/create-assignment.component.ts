@@ -47,7 +47,6 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
   onSelectedCategory: number[] = [0, 1, 2];
   onSelectedMetrics: number[] = [0, 0, 0];
 
-  score = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
   statusScore = new Map([["Compile Failure", "0"]])
 
   javaStatus = [
