@@ -190,13 +190,18 @@
                       <i class="icon-cloud-download"></i><span class="caret"> template</span>
                     </button>
                     <ul *dropdownMenu class="dropdown-menu" role="menu">
-                      <li role="menuitem"><a class="dropdown-item" href="{{SERVER_URL}}/resources/JavacQuickStart.zip"
+                      <li *ngIf="assignment.get('name').valid && assignment.get('type').valid" role="menuitem">
+                        <a class="dropdown-item" href="{{SERVER_URL}}/resources/JavacQuickStart.zip"
                           download>JavacQuickStart.zip</a>
                       </li>
-                      <li role="menuitem"><a class="dropdown-item" (click)="confirm()"
+                      <li *ngIf="assignment.get('name').valid && assignment.get('type').valid" role="menuitem">
+                        <a class="dropdown-item" (click)="confirm()" style="cursor: pointer;"
                           download>MvnQuickStart.zip</a>
                       </li>
                     </ul>
+                    <div *ngIf="!assignment.get('name').valid">
+                      <span style="color:lightcoral">&emsp;Your assignment name and type cannot be null</span>
+                    </div>
                   </div>
                 </div>
               </div>

@@ -297,6 +297,5 @@ public class CommitRecordDbManager {
     }
     return commitRecords;
   }
-
 }
 

@@ -30,7 +30,6 @@ import fcu.selab.progedu.conn.JenkinsService;
 import fcu.selab.progedu.data.Assignment;
 import fcu.selab.progedu.data.CommitRecord;
 import fcu.selab.progedu.data.User;
-import fcu.selab.progedu.db.AssignmentAssessmentDbManager;
 import fcu.selab.progedu.db.AssignmentDbManager;
 import fcu.selab.progedu.db.AssignmentTypeDbManager;
 import fcu.selab.progedu.db.AssignmentUserDbManager;
@@ -45,7 +44,6 @@ import fcu.selab.progedu.status.StatusEnum;
 public class CommitRecordService {
   private CommitRecordDbManager db = CommitRecordDbManager.getInstance();
   private AssignmentUserDbManager auDb = AssignmentUserDbManager.getInstance();
-  private AssignmentAssessmentDbManager aaDb = AssignmentAssessmentDbManager.getInstance();
   private UserDbManager userDb = UserDbManager.getInstance();
   private AssignmentDbManager assignmentDb = AssignmentDbManager.getInstance();
   private AssignmentTypeDbManager atDb = AssignmentTypeDbManager.getInstance();
