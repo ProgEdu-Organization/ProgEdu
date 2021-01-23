@@ -234,7 +234,7 @@ public class AssignmentAssessmentDbManager {
   public String getAssignmentOrderAndScore(int aid) {
     String orders = "";
     String sql = "SELECT `status`,`score` FROM ProgEdu.Assignment_Assessment"
-        + " WHERE `aId` = ?";
+        + " WHERE `aId` = ? ORDER BY `order`";
 
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
@@ -248,7 +248,7 @@ public class AssignmentAssessmentDbManager {
           int score = rs.getInt("score"); 
           StatusEnum statusEnum = csDb.getStatusNameById(status);
           orders = orders + statusEnum.toString()
-            + ":" + Integer.toString(score);
+            + ":" + score;
         }
       }
     } catch (SQLException e) {
