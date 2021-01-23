@@ -590,46 +590,6 @@ public class AssignmentService {
       @FormDataParam("file") FormDataContentDisposition fileDetail,
       @FormDataParam("order") String order) {
     int id = dbManager.getAssignmentIdByName(assignmentName);
-    /*
-    if (fileDetail.getFileName() == null) {
-      dbManager.editAssignment(deadline, releaseTime, readMe, id);
-      //delete old assessment first
-      List<Integer> aaIds = aaDbManager.getAssignmentAssessmentIdByaId(id);
-
-      for (int aaId : aaIds) {
-        aaDbManager.deleteAssignmentAssessment(aaId);
-      }
-      //add new assessment
-      addOrder(order, assignmentName);
-    } else {
-      ProjectTypeEnum assignmentType = dbManager.getAssignmentType(assignmentName);
-      final AssignmentType assignment = AssignmentFactory
-          .getAssignmentType(assignmentType.getTypeName());
-
-      String tempFilePath = uploadDir + assignmentName;
-      String testCasePath = testDir + assignmentName;
-      String testCaseZipPath = testCasePath + ".zip";
-      // remove current test case
-      tomcatService.deleteFile(new File(testCaseZipPath));
-      tomcatService.storeFileToUploadsFolder(file, assignmentName);
-
-      zipHandler.unzipFile(tempFilePath, testCasePath);
-      assignment.createTestCase(testCasePath);
-      zipHandler.zipTestFolder(testCasePath);
-      long checksum = zipHandler.getChecksum();
-      tomcatService.deleteDirectory(new File(uploadDir));
-      tomcatService.deleteDirectory(new File(testCasePath));
-
-      dbManager.editAssignment(deadline, releaseTime, readMe, checksum, id);
-      //delete old assessment first
-      List<Integer> aaIds = aaDbManager.getAssignmentAssessmentIdByaId(id);
-
-      for (int i = 0; i < aaIds.size(); i++) {
-        aaDbManager.deleteAssignmentAssessment(aaIds.get(i));
-      }
-      //add new assessment
-      addOrder(order, assignmentName);
-    }*/
     dbManager.editAssignment(deadline, releaseTime, readMe, id);
     List<Integer> aaIds = aaDbManager.getAssignmentAssessmentIdByaId(id);
 
@@ -908,14 +868,6 @@ public class AssignmentService {
     String[] tokens = orders.split(", ");
     for (String token:tokens) {
       ordersList.add(token);
-      /*
-      if (token.equals("Compiler Failure")) {
-        ordersList.add("compilerFailure");
-      } else if (token.equals("Coding Style Failure")) {
-        ordersList.add("codingStyle");
-      } else if (token.equals("Unit Test Failure")) {
-        ordersList.add("test");
-      }*/
     }
     //------------------------make pom.xml
     if (fileType.equals("maven")) {
