@@ -586,17 +586,18 @@ public class AssignmentService {
       @FormDataParam("order") String order) {
     int aid = dbManager.getAssignmentIdByName(assignmentName);
     dbManager.editAssignment(deadline, releaseTime, readMe, aid);
-    List<Integer> aaIds = aaDbManager.getAssignmentAssessmentIdByaId(aid);
+    if (!order.isEmpty()) {
+      List<Integer> aaIds = aaDbManager.getAssignmentAssessmentIdByaId(aid);
+      List<Integer> scoresList = new ArrayList<>();
 
-    List<Integer> scoresList = new ArrayList<>();
-
-    String[] ordersAndScores = order.split(", ");
-    for (String orderAndScore : ordersAndScores) {
-      String[] token = orderAndScore.split(":");
-      scoresList.add(Integer.valueOf(token[1]));
-    }
-    for (int i = 0; i < scoresList.size(); i++) {
-      aaDbManager.updateScore(aid, aaDbManager.getAssessmentOrder(aaIds.get(i)), scoresList.get(i));
+      String[] ordersAndScores = order.split(", ");
+      for (String orderAndScore : ordersAndScores) {
+        String[] token = orderAndScore.split(":");
+        scoresList.add(Integer.valueOf(token[1]));
+      }
+      for (int i = 0; i < scoresList.size(); i++) {
+        aaDbManager.updateScore(aid, aaDbManager.getAssessmentOrder(aaIds.get(i)), scoresList.get(i));
+      }
     }
     return Response.ok().build();
   }
