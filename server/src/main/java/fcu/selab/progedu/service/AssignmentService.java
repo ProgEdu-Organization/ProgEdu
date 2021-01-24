@@ -596,7 +596,9 @@ public class AssignmentService {
         scoresList.add(Integer.valueOf(token[1]));
       }
       for (int i = 0; i < scoresList.size(); i++) {
-        aaDbManager.updateScore(aid, aaDbManager.getAssessmentOrder(aaIds.get(i)), scoresList.get(i));
+        aaDbManager.updateScore(aid,
+            aaDbManager.getAssessmentOrder(aaIds.get(i)),
+            scoresList.get(i));
       }
     }
     return Response.ok().build();
