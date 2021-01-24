@@ -14,7 +14,7 @@ const createAssigmentOptions = ({
 })
 export class CreateAssignmentService {
   CREATE_ASSIGNMENT_API = environment.SERVER_URL + '/webapi/assignment/create';
-  CREATE_ASSIGNMENT_API_WITH_ORDER = environment.SERVER_URL + '/webapi/assignment/autoAssessment/create';
+  CREATE_ASSIGNMENT_WITH_ORDER_API = environment.SERVER_URL + '/webapi/assignment/autoAssessment/create';
   MODIFY_ORDER_API = environment.SERVER_URL + '/webapi/assignment/order';
   GET_ORDER_API = environment.SERVER_URL + '/webapi/assignment/getAssignmentFile';
   GET_ALL_CATEGORY_API = environment.SERVER_URL + '/webapi/categoryMetrics/category';
@@ -48,7 +48,7 @@ export class CreateAssignmentService {
     formData.append('file', assignment.value.file);
     formData.append('order',assignment.value.assOrder);
 
-    return this.http.post(this.CREATE_ASSIGNMENT_API_WITH_ORDER, formData, createAssigmentOptions);
+    return this.http.post(this.CREATE_ASSIGNMENT_WITH_ORDER_API, formData, createAssigmentOptions);
   }
 
   modifyOrder(assignment: FormGroup): Observable<any> {
