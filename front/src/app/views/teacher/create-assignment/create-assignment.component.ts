@@ -36,7 +36,7 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
   dynamic: number = 60;
   type: string = 'Waiting';
   finalIndex: number;
-  orderString: string = 'Compile Failure'
+  orderString: string;
   isShow: boolean = true;
 
   reviewMetricsNums = [0, 1, 2];
@@ -308,8 +308,10 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
   }
 
   public submit() {
-    this.orderString = "Compile Failure";
-    this.orderString = this.orderString + ':' + this.statusScore.get("Compile Failure");
+    this.orderString = "";
+    if (this.assignment.get('type').value == 'maven') {
+      this.orderString = "Compile Failure:" + this.statusScore.get("Compile Failure");
+    }
     for(let i = 0; i < this.order.length; i++) {
       if(this.statusScore.get(this.order[i]) == undefined)
         this.orderString = this.orderString + ', ' + this.order[i] + ':0';
@@ -363,8 +365,11 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
   }
 
   public confirm() {
-    for (this.finalIndex=1;this.finalIndex<this.order.length+1;this.finalIndex++) {
-      this.orderString = this.orderString + ', ' + this.order[this.finalIndex-1];
+    if (this.assignment.get('type').value == 'maven') {
+      this.orderString = 'Compile Failure';
+    }
+    for (let i = 0; i < this.order.length; i++) {
+      this.orderString = this.orderString + ', ' + this.order[i];
     }
     this.assignment.get('assOrder').setValue(this.orderString);
     if (this.assignment.get('name').invalid) {
@@ -380,7 +385,7 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
           this.errorResponse = error;
           this.errorTitle = 'Send Order Error';
         });
-        this.orderString = 'Compile Failure';
+        this.orderString = '';
     }
   }
 

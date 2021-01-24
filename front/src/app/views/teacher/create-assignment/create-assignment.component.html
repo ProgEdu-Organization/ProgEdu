@@ -182,6 +182,8 @@
                   </div>
                 </div>
               </div>
+              <div>{{ assignment.value.type }}</div>
+              <div *ngFor="let i of order">{{ i }}</div>
               <div class="form-group row">
                 <label class="col-md-3 col-form-label" for="inline-radios">Java File</label>
                 <div class="col-md-9">
@@ -237,6 +239,32 @@
             </tab>
             <!---- Web ---->
             <tab heading="Web" (click)="selectedAssignmentType('Web')">
+              <div *ngIf="isShow === true">
+                <div class="form-group row">
+                  <div class="col-md-3">Assignment Assessment</div>
+                  <div class="col-md-3">Status :</div>
+                  <div class="col-md-2">Order & Score :</div>          
+                </div>
+                <div class="form-group row">
+                  <div class="col-md-3"></div>
+                  <div class="col-md-3">
+                    <ul class="list-group sortable" [sortablejs]="webStatus" [sortablejsOptions]="normalOptions">
+                      <li class="list-group-item" *ngFor="let item of webStatus">{{ item }}</li>
+                    </ul>
+                  </div>
+                  <div class="col-md-2">
+                    <ul class="list-group sortable" [sortablejs]="order" [sortablejsOptions]="normalOptions">
+                      <li class="list-group-item" *ngFor="let item of order; let i = index;">{{ i+1 }}. {{ item }}
+                        <select class="form-control" (change)="selectChangeHandler(item, $event)">
+                          <option *ngFor="let op of getScoreOptions(item)" value="{{ op }}">{{ op }}%</option>
+                        </select>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div>{{ assignment.value.type }}</div>
+              <div *ngFor="let i of order">{{ i }}</div>
               <div class="form-group row">
                 <label class="col-md-3 col-form-label">Web File</label>
                 <div class="col-md-9">
