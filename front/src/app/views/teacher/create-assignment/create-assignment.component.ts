@@ -38,8 +38,6 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
   finalIndex: number;
   orderString: string = 'Compile Failure'
   isShow: boolean = true;
-  isDis: boolean = true;
-  isNull: boolean = true;
 
   reviewMetricsNums = [0, 1, 2];
   assessments: Assessment[][] = [[], [], []];
@@ -323,15 +321,27 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
     if (this.assignment.dirty && this.assignment.valid) {
       this.progressModal.show();
       if (!this.peerReviewStatus.isOpen) {
-        this.createService.createAssignment(this.assignment).subscribe(
-          (response) => {
-            this.router.navigate(['./dashboard/assignmentManagement']);
-          },
-          error => {
-            this.errorResponse = error;
-            this.errorTitle = 'Create Assignment Error';
-            this.progressModal.hide();
-          });
+        if (this.assignment.get('type').value == 'maven') {
+          this.createService.createAssignmentWithOrder(this.assignment).subscribe(
+            (response) => {
+              this.router.navigate(['./dashboard/assignmentManagement']);
+            },
+            error => {
+              this.errorResponse = error;
+              this.errorTitle = 'Create Assignment Error';
+              this.progressModal.hide();
+            });
+        } else {
+          this.createService.createAssignment(this.assignment).subscribe(
+            (response) => {
+              this.router.navigate(['./dashboard/assignmentManagement']);
+            },
+            error => {
+              this.errorResponse = error;
+              this.errorTitle = 'Create Assignment Error';
+              this.progressModal.hide();
+            });
+        }
       } else {
         const selectedMetrics = [];
         for (let i = 0; i < this.reviewMetricsNums.length; i++) {
@@ -357,17 +367,21 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
       this.orderString = this.orderString + ', ' + this.order[this.finalIndex-1];
     }
     this.assignment.get('assOrder').setValue(this.orderString);
-    this.createService.modifyOrder(this.assignment).subscribe(
-      (response) => {
-        console.log("Success");
-        window.open(environment.SERVER_URL + 
-          '/webapi/assignment/getAssignmentFile?fileName=' + this.assignment.value.name);
-      },
-      error => {
-        this.errorResponse = error;
-        this.errorTitle = 'Send Order Error';
-      });
-      this.orderString = 'Compile Failure';
+    if (this.assignment.get('name').invalid) {
+      window.open(environment.SERVER_URL + '/resources/MvnQuickStart.zip');
+    } else {
+      this.createService.modifyOrder(this.assignment).subscribe(
+        (response) => {
+          console.log("Success");
+          window.open(environment.SERVER_URL + 
+            '/webapi/assignment/getAssignmentFile?fileName=' + this.assignment.value.name);
+        },
+        error => {
+          this.errorResponse = error;
+          this.errorTitle = 'Send Order Error';
+        });
+        this.orderString = 'Compile Failure';
+    }
   }
 
   public reset() {

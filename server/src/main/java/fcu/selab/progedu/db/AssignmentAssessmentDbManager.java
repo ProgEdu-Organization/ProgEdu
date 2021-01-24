@@ -1,10 +1,8 @@
 package fcu.selab.progedu.db;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +10,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fcu.selab.progedu.data.Assignment;
 import fcu.selab.progedu.utils.ExceptionUtil;
 import fcu.selab.progedu.status.StatusEnum;
 
@@ -54,7 +51,7 @@ public class AssignmentAssessmentDbManager {
       LOGGER.error(e.getMessage());
     }
   }
-  
+
   /**
    * update score to database
    *
@@ -132,7 +129,7 @@ public class AssignmentAssessmentDbManager {
   }
 
   /**
-   * Delete AssignmentAssesment from database
+   * Delete AssignmentAssessment from database
    * 
    * @param id Assignment Assessment Id
    */
@@ -177,6 +174,31 @@ public class AssignmentAssessmentDbManager {
   }
 
   /**
+   * get Assignment order from database
+   *
+   * @param aaid Assignment Assessment Id
+   * @return assessment order
+   */
+  public int getAssessmentOrder(int aaid) {
+    String sql = "SELECT `order` FROM ProgEdu.Assignment_Assessment"
+            + " WHERE `id` = ?";
+    int order = -1;
+    try (Connection conn = this.database.getConnection();
+         PreparedStatement preStmt = conn.prepareStatement(sql)) {
+      preStmt.setInt(1, aaid);
+      try (ResultSet rs = preStmt.executeQuery()) {
+        while (rs.next()) {
+          order = rs.getInt("order");
+        }
+      }
+    } catch (SQLException e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    }
+    return order;
+  }
+
+  /**
    * get Assignment score from database
    * 
    * @param aid Assignment Id
@@ -204,14 +226,14 @@ public class AssignmentAssessmentDbManager {
   }
 
   /**
-  * Add AssignmentAssessment to database
+  * get Assignment Assessment Order
   * 
   * @param aid Assignment Id
   */
-  public String getAssignmentOrder(int aid) {
+  public String getAssignmentOrderAndScore(int aid) {
     String orders = "";
-    String sql = "SELECT `status`,`order`,`score` FROM ProgEdu.Assignment_Assessment"
-        + " WHERE `aId` = ?";
+    String sql = "SELECT `status`,`score` FROM ProgEdu.Assignment_Assessment"
+        + " WHERE `aId` = ? ORDER BY `order`";
 
     try (Connection conn = database.getConnection();
         PreparedStatement preStmt = conn.prepareStatement(sql)) {
@@ -221,13 +243,11 @@ public class AssignmentAssessmentDbManager {
           if (!orders.isEmpty()) {
             orders = orders + ", ";
           }
-          Assignment assignment = new Assignment();
           int status = rs.getInt("status");
-          int order = rs.getInt("order");
           int score = rs.getInt("score"); 
           StatusEnum statusEnum = csDb.getStatusNameById(status);
           orders = orders + statusEnum.toString()
-            + ":" + Integer.toString(score);
+            + ":" + score;
         }
       }
     } catch (SQLException e) {

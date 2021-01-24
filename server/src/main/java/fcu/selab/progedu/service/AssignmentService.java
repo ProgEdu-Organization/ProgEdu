@@ -476,9 +476,10 @@ public class AssignmentService {
   }
 
   /**
-   * Add a project to database
+   * Add the assignment's assessment order to database
    *
-   * @param order   order
+   * @param order          Order
+   * @param assignmentName Assignment name
    */
   private void addOrder(String order, String assignmentName) {
     List<String> ordersList = new ArrayList<>();
@@ -486,19 +487,19 @@ public class AssignmentService {
 
     String[] ordersAndScores = order.split(", ");
     for (String orderAndScore : ordersAndScores) {
-      String[] tocken = orderAndScore.split(":");
+      String[] token = orderAndScore.split(":");
 
-      if (tocken[0].equals("Compile Failure")) {
+      if (token[0].equals("Compile Failure")) {
         ordersList.add("cpf");
-      } else if (tocken[0].equals("Unit Test Failure")) {
+      } else if (token[0].equals("Unit Test Failure")) {
         ordersList.add("utf");
-      } else if (tocken[0].equals("Coding Style Failure")) {
+      } else if (token[0].equals("Coding Style Failure")) {
         ordersList.add("csf");
       }
-      scoresList.add(tocken[1]);
+      scoresList.add(token[1]);
     }
     //write assignment assessment in to data base
-    //addAssignmentAssessment(int aid, int sid, int order, int score)
+    //addAssignmentAssessment( aid, int sid, int order, int score)
     for (int i = 0; i < ordersAndScores.length; i++) {
       aaDbManager.addAssignmentAssessment(dbManager.getAssignmentIdByName(assignmentName),
           csDbManager.getStatusIdByName(ordersList.get(i)),
@@ -583,15 +584,20 @@ public class AssignmentService {
       @FormDataParam("readMe") String readMe, @FormDataParam("file") InputStream file,
       @FormDataParam("file") FormDataContentDisposition fileDetail,
       @FormDataParam("order") String order) {
-    int id = dbManager.getAssignmentIdByName(assignmentName);
-    dbManager.editAssignment(deadline, releaseTime, readMe, id);
-    List<Integer> aaIds = aaDbManager.getAssignmentAssessmentIdByaId(id);
+    int aid = dbManager.getAssignmentIdByName(assignmentName);
+    dbManager.editAssignment(deadline, releaseTime, readMe, aid);
+    List<Integer> aaIds = aaDbManager.getAssignmentAssessmentIdByaId(aid);
 
-    for (int aaId : aaIds) {
-      aaDbManager.deleteAssignmentAssessment(aaId);
+    List<Integer> scoresList = new ArrayList<>();
+
+    String[] ordersAndScores = order.split(", ");
+    for (String orderAndScore : ordersAndScores) {
+      String[] token = orderAndScore.split(":");
+      scoresList.add(Integer.valueOf(token[1]));
     }
-    //add new assessment
-    addOrder(order, assignmentName);
+    for (int i = 0; i < scoresList.size(); i++) {
+      aaDbManager.updateScore(aid, aaDbManager.getAssessmentOrder(aaIds.get(i)), scoresList.get(i));
+    }
     return Response.ok().build();
   }
 
@@ -726,7 +732,7 @@ public class AssignmentService {
   }
 
   /**
-   * create previous Assignemnt
+   * create previous Assignment
    *
    * @param username username
    */
@@ -825,7 +831,7 @@ public class AssignmentService {
   }
 
   /**
-   * create previous Assignemnt
+   * change assignment compile order
    *
    * @param fileType fileType
    * @param orders orders
@@ -834,7 +840,7 @@ public class AssignmentService {
   @POST
   @Path("order")
   @Consumes(MediaType.MULTIPART_FORM_DATA)
-  public Response getOrderFile(
+  public Response modifyAssignmentOrderFile(
       @FormDataParam("fileRadio") String fileType, 
       @FormDataParam("order") String orders,
       @FormDataParam("assignmentName") String assignmentName) {
@@ -847,12 +853,12 @@ public class AssignmentService {
     //------------------------make pom.xml
     if (fileType.equals("maven")) {
       MavenAssignmentSetting mas = new MavenAssignmentSetting(assignmentName);
-      getAssignmentSetting(mas, ordersList, assignmentName);
+      modifyAssignmentFile(mas, ordersList, assignmentName);
     }
     return Response.ok().build();
   }
 
-  private void getAssignmentSetting(AssignmentSettings as,
+  private void modifyAssignmentFile(AssignmentSettings as,
                                      List<String> ordersList, String assignmentName) {
     as.unZipAssignmentToTmp();
     as.writeAssignmentSettingFile(as.createAssignmentSetting(ordersList, assignmentName));
@@ -860,7 +866,7 @@ public class AssignmentService {
   }
 
   /**
-   * create get assignemnt file
+   * create get assignment file
    *
    * @param fileName fileName
    * @return zip file
@@ -880,10 +886,10 @@ public class AssignmentService {
   }
 
   /**
-  * get assignemnt order
+  * get assignment order
   *
   * @param fileName fileName
-  * @return assignmnet order
+  * @return assignment order
   * 
   */
   @GET
@@ -891,7 +897,7 @@ public class AssignmentService {
   @Produces(MediaType.APPLICATION_JSON)
   public Response getAssignmentOrder(@QueryParam("fileName") String fileName) {
     int aid = dbManager.getAssignmentIdByName(fileName);
-    String orders = aaDbManager.getAssignmentOrder(aid);
+    String orders = aaDbManager.getAssignmentOrderAndScore(aid);
     if (orders.isEmpty()) {
       orders = "None";
     }
