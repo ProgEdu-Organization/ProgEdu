@@ -321,15 +321,27 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
     if (this.assignment.dirty && this.assignment.valid) {
       this.progressModal.show();
       if (!this.peerReviewStatus.isOpen) {
-        this.createService.createAssignment(this.assignment).subscribe(
-          (response) => {
-            this.router.navigate(['./dashboard/assignmentManagement']);
-          },
-          error => {
-            this.errorResponse = error;
-            this.errorTitle = 'Create Assignment Error';
-            this.progressModal.hide();
-          });
+        if (this.assignment.get('type').value == 'maven') {
+          this.createService.createAssignmentWithOrder(this.assignment).subscribe(
+            (response) => {
+              this.router.navigate(['./dashboard/assignmentManagement']);
+            },
+            error => {
+              this.errorResponse = error;
+              this.errorTitle = 'Create Assignment Error';
+              this.progressModal.hide();
+            });
+        } else {
+          this.createService.createAssignment(this.assignment).subscribe(
+            (response) => {
+              this.router.navigate(['./dashboard/assignmentManagement']);
+            },
+            error => {
+              this.errorResponse = error;
+              this.errorTitle = 'Create Assignment Error';
+              this.progressModal.hide();
+            });
+        }
       } else {
         const selectedMetrics = [];
         for (let i = 0; i < this.reviewMetricsNums.length; i++) {
