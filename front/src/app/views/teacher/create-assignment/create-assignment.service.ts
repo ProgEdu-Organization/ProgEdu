@@ -14,24 +14,54 @@ const createAssigmentOptions = ({
 })
 export class CreateAssignmentService {
   CREATE_ASSIGNMENT_API = environment.SERVER_URL + '/webapi/assignment/create';
+  CREATE_ASSIGNMENT_WITH_ORDER_API = environment.SERVER_URL + '/webapi/assignment/autoAssessment/create';
+  MODIFY_ORDER_API = environment.SERVER_URL + '/webapi/assignment/order';
+  GET_ORDER_API = environment.SERVER_URL + '/webapi/assignment/getAssignmentFile';
   GET_ALL_CATEGORY_API = environment.SERVER_URL + '/webapi/categoryMetrics/category';
   GET_METRICS_API = environment.SERVER_URL + '/webapi/categoryMetrics/metrics';
   CREATE_REVIEW_ASSIGNMENT_API = environment.SERVER_URL + '/webapi/assignment/peerReview/create';
   constructor(private http: HttpClient) { }
 
-  createAssignment(assigememt: FormGroup): Observable<any> {
+  createAssignment(assignment: FormGroup): Observable<any> {
 
     const formData = new FormData();
 
-    formData.append('assignmentName', assigememt.value.name);
-    formData.append('releaseTime', new Date(assigememt.value.releaseTime).toUTCString());
-    formData.append('deadline', new Date(assigememt.value.deadline).toUTCString());
-    formData.append('readMe', assigememt.value.description);
-    formData.append('fileRadio', assigememt.value.type);
-    formData.append('file', assigememt.value.file);
+    formData.append('assignmentName', assignment.value.name);
+    formData.append('releaseTime', new Date(assignment.value.releaseTime).toUTCString());
+    formData.append('deadline', new Date(assignment.value.deadline).toUTCString());
+    formData.append('readMe', assignment.value.description);
+    formData.append('fileRadio', assignment.value.type);
+    formData.append('file', assignment.value.file);
 
     return this.http.post(this.CREATE_ASSIGNMENT_API, formData, createAssigmentOptions);
   }
+
+  createAssignmentWithOrder(assignment: FormGroup): Observable<any> {
+
+    const formData = new FormData();
+
+    formData.append('assignmentName', assignment.value.name);
+    formData.append('releaseTime', new Date(assignment.value.releaseTime).toUTCString());
+    formData.append('deadline', new Date(assignment.value.deadline).toUTCString());
+    formData.append('readMe', assignment.value.description);
+    formData.append('fileRadio', assignment.value.type);
+    formData.append('file', assignment.value.file);
+    formData.append('order',assignment.value.assOrder);
+
+    return this.http.post(this.CREATE_ASSIGNMENT_WITH_ORDER_API, formData, createAssigmentOptions);
+  }
+
+  modifyOrder(assignment: FormGroup): Observable<any> {
+
+    const formData = new FormData();
+    
+    formData.append('assignmentName', assignment.value.name);
+    formData.append('fileRadio', assignment.value.type);
+    formData.append('order',assignment.value.assOrder);
+    
+    return this.http.post(this.MODIFY_ORDER_API, formData, createAssigmentOptions);
+  }
+
   getAllCategory(): Observable<any> {
     return this.http.get(this.GET_ALL_CATEGORY_API);
   }

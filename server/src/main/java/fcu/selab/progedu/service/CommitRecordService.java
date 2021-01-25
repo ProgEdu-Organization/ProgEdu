@@ -337,5 +337,4 @@ public class CommitRecordService {
     }
     return studentUsers;
   }
-
 }
