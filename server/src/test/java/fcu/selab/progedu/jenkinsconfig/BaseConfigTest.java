@@ -1,9 +1,7 @@
-package fcu.selab.progedu.jenkinsConfig;
+package fcu.selab.progedu.jenkinsconfig;
 
 import org.junit.Test;
 import org.w3c.dom.Document;
-
-import static org.junit.Assert.*;
 
 public class BaseConfigTest {
 
@@ -11,13 +9,11 @@ public class BaseConfigTest {
     public void getXMLConfig() {
         try {
             BaseConfig baseConfig = new BaseConfig();
-            String testOut = baseConfig.getXMLConfig();
+            String testOut = baseConfig.getXmlConfig();
             System.out.printf(testOut);
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
     }
 
 
@@ -25,7 +21,7 @@ public class BaseConfigTest {
     public void getXMLDocument() {
         try {
             BaseConfig baseConfig = new BaseConfig();
-            Document doc = baseConfig.getXMLDocument();
+            Document doc = baseConfig.getXmlDocument();
             System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
         } catch (Exception e) {
             e.printStackTrace();
@@ -36,16 +32,14 @@ public class BaseConfigTest {
     public void setXMLDocument() {
         try {
             BaseConfig baseConfig = new BaseConfig();
-            Document doc = baseConfig.getXMLDocument();
+            Document doc = baseConfig.getXmlDocument();
             doc.getElementsByTagName("url").item(0).setTextContent("unit-test");
 
-            baseConfig.setXMLDocument(doc);
-            System.out.printf(baseConfig.getXMLConfig());
+            baseConfig.setXmlDocument(doc);
+            System.out.printf(baseConfig.getXmlConfig());
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
     }
 }
