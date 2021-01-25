@@ -31,14 +31,8 @@ export class AssignmentManagementComponent implements OnInit {
   dynamic: number = 0;
   type: string = 'Waiting';
   isDeleteProgress = false;
+  showAssessment: boolean = false;
 
-  javaStatus = [
-    "Unit Test Failure",
-    "Coding Style Failure"
-  ];
-  normalOptions: SortablejsOptions = {
-    group: 'normal-group',
-  };
   order = [];
   statusScore = new Map([["Compile Failure", "0"]]);
 
@@ -104,6 +98,14 @@ export class AssignmentManagementComponent implements OnInit {
     //console.log(this.statusScore);
   }
 
+  setShowAssessment(show: boolean) {
+    if (show == true) {
+      this.showAssessment = true;
+    } else {
+      this.showAssessment = false;
+    }
+  }
+
   getAllAssignments() {
     this.assignmentService.getAllAssignments().subscribe(response => {
       this.assignments = response.allAssignments;
@@ -129,6 +131,7 @@ export class AssignmentManagementComponent implements OnInit {
           if(statusScore[0] == 'COMPILE_FAILURE') {
             this.statusScore.set("Compile Failure", statusScore[1]);
             this.order.push("Compile Failure");
+            this.setShowAssessment(true);
           }
           else if(statusScore[0] == 'UNIT_TEST_FAILURE') {
             this.statusScore.set("Unit Test Failure", statusScore[1]);
@@ -223,5 +226,6 @@ export class AssignmentManagementComponent implements OnInit {
           this.errorResponse = error;
         });
     }
+    this.setShowAssessment(false);
   }
 }

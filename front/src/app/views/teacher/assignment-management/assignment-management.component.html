@@ -108,7 +108,7 @@
               </ckeditor>
             </div>
           </div>
-          <div class="form-group row">
+          <div *ngIf="showAssessment == true" class="form-group row">
             <div class="col-md-3">Assignment Assessment</div>
             <div class="col-md-2">Order & Score :</div>          
           </div>
@@ -117,7 +117,7 @@
             <div class="col-md-2">
               <li class="list-group-item sortable" draggable="false" style="cursor: not-allowed; 
                   background-color: white;" *ngFor="let item of order; let i = index;">{{ i+1 }}. {{ item }}
-                <select class="form-control" (change)="selectChangeHandler(item, $event)">
+                <select class="form-control">
                   <option *ngFor="let op of getScoreOptions(item)" value="{{ op }}" [selected]="statusScore.get(item) == op">{{ op }}%</option>
                 </select>
               </li>
@@ -133,7 +133,7 @@
         </div>
 
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" (click)="editModal.hide()">Close</button>
+          <button type="button" class="btn btn-secondary" (click)="editModal.hide(); setShowAssessment(false);">Close</button>
           <button type="submit" class="btn btn-primary" [disabled]='!assignmentForm.valid'>Save changes</button>
         </div>
       </form>
