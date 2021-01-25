@@ -3,6 +3,10 @@ package fcu.selab.progedu.jenkinsconfig;
 import org.junit.Test;
 import org.w3c.dom.Document;
 
+import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 public class MavenConfigTest {
 
     @Test
@@ -50,6 +54,10 @@ public class MavenConfigTest {
             MavenConfig mavenConfig = new MavenConfig();
             mavenConfig.setAll("unit-url", "unit-db-url", "unit-username", "unit-project");
             System.out.printf(mavenConfig.getXmlConfig());
+
+            Path absolutePath = Paths.get("E:\\franky-test.xml");
+            mavenConfig.writeToFile(absolutePath);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
