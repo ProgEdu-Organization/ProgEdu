@@ -16,9 +16,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import javax.xml.transform.Transformer;
 
-public class BaseConfig extends JenkinsConfig {
+public class MavenConfig extends JenkinsConfig {
 
-  URL baseUrl = this.getClass().getResource("/jenkins/config_javac.xml");
+  URL baseUrl = this.getClass().getResource("/jenkins/config_maven.xml");
   Path basePath;
   File baseFile;
   Document xmlDocument;
@@ -26,7 +26,7 @@ public class BaseConfig extends JenkinsConfig {
   /**
    * init sample xml
    */
-  public BaseConfig() throws Exception {
+  public MavenConfig() throws Exception {
 
     this.basePath = Paths.get(this.baseUrl.toURI());
     this.baseFile = basePath.toFile();
@@ -86,4 +86,28 @@ public class BaseConfig extends JenkinsConfig {
   public void setXmlDocument(Document document) {
     this.xmlDocument = document;
   }
+
+  public void setAll(String projectUrl, String updateDbUrl, String username, String projectName) {
+    setGitLabProjectUrl(projectUrl);
+    setProgEduUpdateUrl(updateDbUrl);
+    setProgEduUpdateUsername(username);
+    setProgEduUpdateProjectName(projectName);
+  }
+
+  private void setGitLabProjectUrl(String projectUrl) {
+    this.xmlDocument.getElementsByTagName("url").item(0).setTextContent(projectUrl);
+  }
+
+  private void setProgEduUpdateUrl(String updateDbUrl) {
+    this.xmlDocument.getElementsByTagName("progeduDbUrl").item(0).setTextContent(updateDbUrl);
+  }
+
+  private void setProgEduUpdateUsername(String username) {
+    this.xmlDocument.getElementsByTagName("user").item(0).setTextContent(username);
+  }
+
+  private void setProgEduUpdateProjectName(String projectName) {
+    this.xmlDocument.getElementsByTagName("proName").item(0).setTextContent(projectName);
+  }
+
 }
