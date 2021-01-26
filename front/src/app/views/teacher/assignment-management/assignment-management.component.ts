@@ -95,7 +95,6 @@ export class AssignmentManagementComponent implements OnInit {
 
   selectChangeHandler(status:string, $event) {
     this.statusScore.set(status, $event.target.value);
-    //console.log(this.statusScore);
   }
 
   setShowAssessment(show: boolean) {
@@ -142,8 +141,6 @@ export class AssignmentManagementComponent implements OnInit {
             this.order.push("Coding Style Failure");
           }
         }
-        //console.log(this.statusScore);
-        //console.log(this.order);
       }
     )
   }
@@ -211,7 +208,6 @@ export class AssignmentManagementComponent implements OnInit {
         orderString = orderString + ", ";
       }
     }
-    console.log(orderString);
     this.assignmentForm.get('order').setValue(orderString);
     if (this.assignmentForm.valid) {
       this.assignmentForm.get('name').setValue(this.assignmentName);

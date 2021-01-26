@@ -209,7 +209,6 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
 
   selectChangeHandler(status:string, $event) {
     this.statusScore.set(status, $event.target.value);
-    console.log(this.statusScore);
   }
 
   selectedAssignmentGradingMethod(method: string) {
