@@ -8,7 +8,6 @@ import { HttpErrorResponse } from '@angular/common/http';
 
 import { environment } from '../../../../environments/environment';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import { SortablejsOptions } from 'ngx-sortablejs';
 
 @Component({
   selector: 'app-assignment-management',
@@ -125,18 +124,18 @@ export class AssignmentManagementComponent implements OnInit {
       response => {
         this.assignmentOrder = response.orders;
         var splited = this.assignmentOrder.split(', ');
-        for(let i=0; i<splited.length; i++) {
+        for (let i = 0; i < splited.length; i++) {
           var statusScore = splited[i].split(':');
-          if(statusScore[0] == 'COMPILE_FAILURE') {
+          if (statusScore[0] == 'COMPILE_FAILURE') {
             this.statusScore.set("Compile Failure", statusScore[1]);
             this.order.push("Compile Failure");
             this.setShowAssessment(true);
           }
-          else if(statusScore[0] == 'UNIT_TEST_FAILURE') {
+          else if (statusScore[0] == 'UNIT_TEST_FAILURE') {
             this.statusScore.set("Unit Test Failure", statusScore[1]);
             this.order.push("Unit Test Failure");
           }
-          else if(statusScore[0] == 'CHECKSTYLE_FAILURE') {
+          else if (statusScore[0] == 'CHECKSTYLE_FAILURE') {
             this.statusScore.set("Coding Style Failure", statusScore[1]);
             this.order.push("Coding Style Failure");
           }
@@ -149,18 +148,21 @@ export class AssignmentManagementComponent implements OnInit {
     let max = 100;
     let sum = 0;
     let options : string[] = [];
-    if(this.order.length !== 0){
-      for(let i=0; i<this.order.length; i++){
-        if(this.statusScore.get(this.order[i]) !== undefined)
+    if (this.order.length !== 0) {
+      for (let i = 0; i < this.order.length; i++) {
+        if (this.statusScore.get(this.order[i]) !== undefined) {
           sum += Number(this.statusScore.get(this.order[i]));
+        }
       }
     }
-    if(this.statusScore.get(status) !== undefined)
+    if (this.statusScore.get(status) !== undefined) {
       sum -= Number(this.statusScore.get(status));
+    }
     max = max - sum;
-    for(let i=0; i <= 100; i++) {
-      if(i <= max)
+    for (let i = 0; i <= 100; i++) {
+      if (i <= max) {
         options.push(String(i));
+      }
     }
     return options;
   }
@@ -202,9 +204,9 @@ export class AssignmentManagementComponent implements OnInit {
 
   editAssignment() {
     let orderString = "";
-    for(let i = 0; i < this.order.length; i++) {
+    for (let i = 0; i < this.order.length; i++) {
       orderString = orderString + this.order[i] + ':' + this.statusScore.get(this.order[i]);
-      if (i !== this.order.length-1) {
+      if (i !== this.order.length - 1) {
         orderString = orderString + ", ";
       }
     }
