@@ -182,8 +182,8 @@ public class MavenAssignmentSetting implements AssignmentSettings {
   }
 
   /**
-   * write
-   * @param model pom model
+   * write assignment setting file
+   *
    */
   public void writeAssignmentSettingFile() {
     try {
