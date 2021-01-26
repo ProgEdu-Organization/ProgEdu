@@ -864,7 +864,8 @@ public class AssignmentService {
   private void modifyAssignmentFile(AssignmentSettings as,
                                      List<String> ordersList, String assignmentName) {
     as.unZipAssignmentToTmp();
-    as.writeAssignmentSettingFile(as.createAssignmentSetting(ordersList, assignmentName));
+    as.createAssignmentSetting(ordersList, assignmentName);
+    as.writeAssignmentSettingFile();
     as.packUpAssignment();
   }
 

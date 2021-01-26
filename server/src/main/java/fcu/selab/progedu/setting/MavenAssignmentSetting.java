@@ -27,6 +27,7 @@ public class MavenAssignmentSetting implements AssignmentSettings {
   private static final Logger LOGGER = LoggerFactory
       .getLogger(MavenAssignmentSetting.class);
   private SettingZipHandler settingZipHandler;
+  private Model model;
 
   /**
    * init web assignment setting
@@ -50,7 +51,7 @@ public class MavenAssignmentSetting implements AssignmentSettings {
    * @param name AssignmentName
    */
   @Override
-  public Model createAssignmentSetting(List<String> order,String name) {
+  public void createAssignmentSetting(List<String> order,String name) {
     final List<PluginExecution> checkStyleExecutions = new ArrayList<>();
     Model model = new Model();
       
@@ -177,14 +178,14 @@ public class MavenAssignmentSetting implements AssignmentSettings {
       
     reporting.setPlugins(reportingPlugins);
     model.setReporting(reporting);
-    return model;
+    this.model = model;
   }
 
   /**
    * write
    * @param model pom model
    */
-  public void writeAssignmentSettingFile(Model model) {
+  public void writeAssignmentSettingFile() {
     try {
       final MavenXpp3Writer writer = new MavenXpp3Writer();
       writer.write(new FileWriter(settingZipHandler.getAssignmentPath()
