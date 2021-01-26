@@ -117,7 +117,7 @@
             <div class="col-md-2">
               <li class="list-group-item sortable" draggable="false" style="cursor: not-allowed; 
                   background-color: white;" *ngFor="let item of order; let i = index;">{{ i+1 }}. {{ item }}
-                <select class="form-control">
+                <select class="form-control" (change)="selectChangeHandler(item, $event)">
                   <option *ngFor="let op of getScoreOptions(item)" value="{{ op }}" [selected]="statusScore.get(item) == op">{{ op }}%</option>
                 </select>
               </li>
