@@ -30,7 +30,6 @@ public class LoginAuth extends HttpServlet {
   private static final long serialVersionUID = 1L;
   private static final String USERNAME = "username";
   private static final String USER_TOKEN = "password";
-  private GitlabService gitlabService = GitlabService.getInstance();
   private GitlabConfig gitlabConfig = GitlabConfig.getInstance();
   JwtConfig jwt = JwtConfig.getInstance();
   private static final Logger LOGGER = LoggerFactory.getLogger(LoginAuth.class);
