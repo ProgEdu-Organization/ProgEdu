@@ -12,7 +12,7 @@ public class MavenConfigTest {
     @Test
     public void getXMLConfig() {
         try {
-            MavenConfig mavenConfig = new MavenConfig();
+            MavenConfig mavenConfig = new MavenConfig("unit-url", "unit-db-url", "unit-username", "unit-project");
             String testOut = mavenConfig.getXmlConfig();
             System.out.printf(testOut);
         } catch (Exception e) {
@@ -24,7 +24,7 @@ public class MavenConfigTest {
     @Test
     public void getXMLDocument() {
         try {
-            MavenConfig mavenConfig = new MavenConfig();
+            MavenConfig mavenConfig = new MavenConfig("unit-url", "unit-db-url", "unit-username", "unit-project");
             Document doc = mavenConfig.getXmlDocument();
             System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
         } catch (Exception e) {
@@ -35,7 +35,7 @@ public class MavenConfigTest {
     @Test
     public void setXMLDocument() {
         try {
-            MavenConfig mavenConfig = new MavenConfig();
+            MavenConfig mavenConfig = new MavenConfig("unit-url", "unit-db-url", "unit-username", "unit-project");
             Document doc = mavenConfig.getXmlDocument();
             doc.getElementsByTagName("url").item(0).setTextContent("unit-test");
 
@@ -51,8 +51,7 @@ public class MavenConfigTest {
     public void setAll() {
 
         try {
-            MavenConfig mavenConfig = new MavenConfig();
-            mavenConfig.setAll("unit-url", "unit-db-url", "unit-username", "unit-project");
+            MavenConfig mavenConfig = new MavenConfig("unit-url", "unit-db-url", "unit-username", "unit-project");
             System.out.printf(mavenConfig.getXmlConfig());
 
             Path absolutePath = Paths.get("E:\\franky-test.xml");

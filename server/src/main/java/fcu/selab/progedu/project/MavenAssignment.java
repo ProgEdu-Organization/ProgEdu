@@ -3,6 +3,8 @@ package fcu.selab.progedu.project;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
@@ -14,6 +16,8 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import fcu.selab.progedu.jenkinsconfig.JenkinsConfig;
+import fcu.selab.progedu.jenkinsconfig.MavenConfig;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 import org.slf4j.Logger;
@@ -64,22 +68,12 @@ public class MavenAssignment extends ProjectType {
 
       String updateDbUrl = progEduApiUrl + "/commits/update";
 
-      Document doc = docBuilder.parse(jenkinsJobConfigPath);
+      JenkinsConfig jenkinsConfig = new MavenConfig(projectUrl, updateDbUrl, username, projectName);
 
-      doc.getElementsByTagName("url").item(0).setTextContent(projectUrl);
-      doc.getElementsByTagName("progeduDbUrl").item(0).setTextContent(updateDbUrl);
-      doc.getElementsByTagName("user").item(0).setTextContent(username);
-      doc.getElementsByTagName("proName").item(0).setTextContent(projectName);
+      Path jenkinsConfigPath = Paths.get(jenkinsJobConfigPath);
+      jenkinsConfig.writeToFile(jenkinsConfigPath);
 
-      // write the content into xml file
-      TransformerFactory transformerFactory = TransformerFactory.newInstance();
-      transformerFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
-      Transformer transformer = transformerFactory.newTransformer();
-      DOMSource source = new DOMSource(doc);
-      StreamResult result = new StreamResult(new File(jenkinsJobConfigPath));
-      transformer.transform(source, result);
-    } catch (LoadConfigFailureException | ParserConfigurationException | SAXException | IOException
-        | TransformerException e) {
+    } catch (Exception e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
     }

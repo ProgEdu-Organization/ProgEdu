@@ -26,7 +26,7 @@ public class MavenConfig extends JenkinsConfig {
   /**
    * init sample xml
    */
-  public MavenConfig() throws Exception {
+  public MavenConfig(String projectUrl, String updateDbUrl, String username, String projectName) throws Exception {
 
     this.basePath = Paths.get(this.baseUrl.toURI());
     this.baseFile = basePath.toFile();
@@ -34,6 +34,8 @@ public class MavenConfig extends JenkinsConfig {
     DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
     DocumentBuilder builder = factory.newDocumentBuilder();
     xmlDocument = builder.parse(this.baseFile);
+
+    setAll(projectUrl, updateDbUrl, username, projectName);
 
   }
 
@@ -87,7 +89,7 @@ public class MavenConfig extends JenkinsConfig {
     this.xmlDocument = document;
   }
 
-  public void setAll(String projectUrl, String updateDbUrl, String username, String projectName) {
+  private void setAll(String projectUrl, String updateDbUrl, String username, String projectName) {
     setGitLabProjectUrl(projectUrl);
     setProgEduUpdateUrl(updateDbUrl);
     setProgEduUpdateUsername(username);
