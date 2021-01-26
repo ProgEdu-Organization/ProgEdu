@@ -25,6 +25,11 @@ public abstract class JenkinsConfig {
 
   public abstract void setXmlDocument(Document document);
 
+  /**
+   * writeToFile
+   *
+   * @param filePath   filePath
+   */
   public void writeToFile(Path filePath) {
     // write the content into xml file
     try {

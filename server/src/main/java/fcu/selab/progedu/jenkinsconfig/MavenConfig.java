@@ -24,9 +24,15 @@ public class MavenConfig extends JenkinsConfig {
   Document xmlDocument;
 
   /**
-   * init sample xml
+   * MavenConfig
+   *
+   * @param projectUrl   projectUrl
+   * @param updateDbUrl  updateDbUrl
+   * @param username     username
+   * @param projectName  projectName
    */
-  public MavenConfig(String projectUrl, String updateDbUrl, String username, String projectName) throws Exception {
+  public MavenConfig(String projectUrl, String updateDbUrl,
+                     String username, String projectName) throws Exception {
 
     this.basePath = Paths.get(this.baseUrl.toURI());
     this.baseFile = basePath.toFile();
