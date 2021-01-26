@@ -36,6 +36,8 @@ import fcu.selab.progedu.db.ReviewSettingDbManager;
 import fcu.selab.progedu.db.ReviewSettingMetricsDbManager;
 import fcu.selab.progedu.db.ReviewStatusDbManager;
 import fcu.selab.progedu.project.ProjectType;
+import fcu.selab.progedu.project.WebAssignment;
+import fcu.selab.progedu.setting.WebAssignmentSetting;
 import org.json.JSONArray;
 import org.jsoup.nodes.Document;
 import org.gitlab.api.models.GitlabProject;
@@ -495,6 +497,14 @@ public class AssignmentService {
         ordersList.add("utf");
       } else if (token[0].equals("Coding Style Failure")) {
         ordersList.add("csf");
+      } else if (token[0].equals("")) {
+
+      } else if (token[0].equals("")) {
+
+      } else if (token[0].equals("")) {
+
+      } else if (token[0].equals("")) {
+
       }
       scoresList.add(token[1]);
     }
@@ -857,6 +867,9 @@ public class AssignmentService {
     if (fileType.equals("maven")) {
       MavenAssignmentSetting mas = new MavenAssignmentSetting(assignmentName);
       modifyAssignmentFile(mas, ordersList, assignmentName);
+    } else if (fileType.equals("web")) {
+      WebAssignmentSetting was = new WebAssignmentSetting(assignmentName);
+      modifyAssignmentFile(was, ordersList, assignmentName);
     }
     return Response.ok().build();
   }
