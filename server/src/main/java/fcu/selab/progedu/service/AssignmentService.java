@@ -211,13 +211,13 @@ public class AssignmentService {
   }
 
   /**
-   * @param assignmentName assignment name
-   * @param releaseTime    release time
-   * @param readMe         read me
-   * @param assignmentType assignment type
-   * @param file           file
-   * @param fileDetail     file detail
-   * @param order          assignment order
+   * @param assignmentName                     assignment name
+   * @param releaseTime                        release time
+   * @param readMe                             read me
+   * @param assignmentType                     assignment type
+   * @param file                               file
+   * @param fileDetail                         file detail
+   * @param assignmentCompileOrdersAndScore    assignment compile order & score
    * @return abc
    * @throws Exception abc
    */
@@ -231,14 +231,14 @@ public class AssignmentService {
       @FormDataParam("readMe") String readMe, @FormDataParam("fileRadio") String assignmentType,
       @FormDataParam("file") InputStream file,
       @FormDataParam("file") FormDataContentDisposition fileDetail,
-      @FormDataParam("order") String order) {
+      @FormDataParam("order") String assignmentCompileOrdersAndScore) {
     
     Response response = null;
     
     try {
       createAssignment(assignmentName, releaseTime, deadline, readMe,
           assignmentType, file, fileDetail);
-      addOrder(order, assignmentName);
+      addOrder(assignmentCompileOrdersAndScore, assignmentName);
 
       response = Response.ok().build();
     } catch (Exception e) {
@@ -481,11 +481,11 @@ public class AssignmentService {
    * @param order          Order
    * @param assignmentName Assignment name
    */
-  private void addOrder(String order, String assignmentName) {
+  private void addOrder(String assignmentCompileOrdersAndScore, String assignmentName) {
     List<String> ordersList = new ArrayList<>();
     List<String> scoresList = new ArrayList<>();
 
-    String[] ordersAndScores = order.split(", ");
+    String[] ordersAndScores = assignmentCompileOrdersAndScore.split(", ");
     for (String orderAndScore : ordersAndScores) {
       String[] token = orderAndScore.split(":");
 
@@ -583,14 +583,14 @@ public class AssignmentService {
       @FormDataParam("releaseTime") Date releaseTime, @FormDataParam("deadline") Date deadline,
       @FormDataParam("readMe") String readMe, @FormDataParam("file") InputStream file,
       @FormDataParam("file") FormDataContentDisposition fileDetail,
-      @FormDataParam("order") String order) {
+      @FormDataParam("order") String assignmentCompileOrdersAndScore) {
     int aid = dbManager.getAssignmentIdByName(assignmentName);
     dbManager.editAssignment(deadline, releaseTime, readMe, aid);
-    if (!order.isEmpty()) {
+    if (!assignmentCompileOrdersAndScore.isEmpty()) {
       List<Integer> aaIds = aaDbManager.getAssignmentAssessmentIdByaId(aid);
       List<Integer> scoresList = new ArrayList<>();
-
-      String[] ordersAndScores = order.split(", ");
+      //order: Compile Failure:10, Coding Style Failure:80, Unit Test Failure:10
+      String[] ordersAndScores = assignmentCompileOrdersAndScore.split(", ");
       for (String orderAndScore : ordersAndScores) {
         String[] token = orderAndScore.split(":");
         scoresList.add(Integer.valueOf(token[1]));
@@ -837,7 +837,7 @@ public class AssignmentService {
    * change assignment compile order
    *
    * @param fileType fileType
-   * @param orders orders
+   * @param assignmentCompileOrdersAndScore assignmentCompileOrdersAndScore
    * @param assignmentName assignmentName
    */
   @POST
@@ -845,15 +845,15 @@ public class AssignmentService {
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   public Response modifyAssignmentOrderFile(
       @FormDataParam("fileRadio") String fileType, 
-      @FormDataParam("order") String orders,
+      @FormDataParam("order") String assignmentCompileOrdersAndScore,
       @FormDataParam("assignmentName") String assignmentName) {
-    //---------cut order
+    //-----order: Compile Failure:10, Coding Style Failure:80, Unit Test Failure:10
     List<String> ordersList = new ArrayList<>();
-    String[] tokens = orders.split(", ");
+    String[] tokens = assignmentCompileOrdersAndScore.split(", ");
     for (String token:tokens) {
       ordersList.add(token);
     }
-    //------------------------make pom.xml
+    //---------make pom.xml
     if (fileType.equals("maven")) {
       MavenAssignmentSetting mas = new MavenAssignmentSetting(assignmentName);
       modifyAssignmentFile(mas, ordersList, assignmentName);

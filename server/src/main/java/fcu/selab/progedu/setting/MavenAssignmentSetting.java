@@ -33,8 +33,8 @@ public class MavenAssignmentSetting implements AssignmentSettings {
    * init web assignment setting
    * 
    */
-  public MavenAssignmentSetting(String name) {
-    settingZipHandler = new SettingZipHandler("maven", name);
+  public MavenAssignmentSetting(String assignmentName) {
+    settingZipHandler = new SettingZipHandler("maven", assignmentName);
   }
 
   public void unZipAssignmentToTmp() {
