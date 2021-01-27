@@ -480,8 +480,8 @@ public class AssignmentService {
   /**
    * Add the assignment's assessment order to database
    *
-   * @param order          Order
-   * @param assignmentName Assignment name
+   * @param assignmentCompileOrdersAndScore     Assignment order and score
+   * @param assignmentName                      Assignment name
    */
   private void addOrder(String assignmentCompileOrdersAndScore, String assignmentName) {
     List<String> ordersList = new ArrayList<>();
