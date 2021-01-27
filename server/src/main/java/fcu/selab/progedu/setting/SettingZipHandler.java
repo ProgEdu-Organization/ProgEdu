@@ -11,10 +11,8 @@ public class SettingZipHandler {
   
   private ZipHandler zipHandler;
   private final String tempDir = System.getProperty("java.io.tmpdir");
-  private final String settingDir = tempDir + "/assignmentSetting/";
-  // Todo 以上改名成 assignmentSettingDir
+  private final String assignmentSettingDir = tempDir + "/assignmentSetting/";
   private String resourcesZipPath;
-  private String assignmentName; // Todo 這變數不需要是這類別的屬性
   private String assignmentPath;
   private static final Logger LOGGER = LoggerFactory
       .getLogger(SettingZipHandler.class);
@@ -29,7 +27,6 @@ public class SettingZipHandler {
 
   public SettingZipHandler(String resources, String name) {
     try {
-      assignmentName = name;
 
       if (resources.equals("maven")) {
         this.resourcesZipPath = "/usr/local/tomcat/webapps/ROOT/resources/MvnQuickStart.zip";
@@ -37,7 +34,7 @@ public class SettingZipHandler {
         this.resourcesZipPath = "/usr/local/tomcat/webapps/ROOT/resources/WebQuickStart.zip";
       }
 
-      assignmentPath = settingDir + assignmentName; // Todo assignmentName 換成 name
+      assignmentPath = assignmentSettingDir + name;
       zipHandler = new ZipHandler();
     } catch (LoadConfigFailureException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
