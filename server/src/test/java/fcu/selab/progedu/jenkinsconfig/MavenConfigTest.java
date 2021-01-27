@@ -54,8 +54,9 @@ public class MavenConfigTest {
             MavenConfig mavenConfig = new MavenConfig("unit-url", "unit-db-url", "unit-username", "unit-project");
             System.out.printf(mavenConfig.getXmlConfig());
 
-            Path absolutePath = Paths.get("E:\\franky-test.xml");
-            mavenConfig.writeToFile(absolutePath);
+            Path jenkinsConfigPath = Paths.get("./config_maven-test.xml");
+            System.out.printf(jenkinsConfigPath.toString());
+            mavenConfig.writeToFile(jenkinsConfigPath);
 
         } catch (Exception e) {
             e.printStackTrace();

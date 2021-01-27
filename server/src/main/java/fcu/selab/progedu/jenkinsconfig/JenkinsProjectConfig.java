@@ -1,6 +1,5 @@
 package fcu.selab.progedu.jenkinsconfig;
 
-import fcu.selab.progedu.project.JavacAssignment;
 import fcu.selab.progedu.utils.ExceptionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,13 +10,12 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.io.File;
 import java.nio.file.Path;
 
 
-public abstract class JenkinsConfig {
+public abstract class JenkinsProjectConfig {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(JenkinsConfig.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(JenkinsProjectConfig.class);
 
   public abstract String getXmlConfig();
 

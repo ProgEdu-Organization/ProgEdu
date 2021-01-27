@@ -16,7 +16,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import javax.xml.transform.Transformer;
 
-public class MavenConfig extends JenkinsConfig {
+public class MavenConfig extends JenkinsProjectConfig {
 
   URL baseUrl = this.getClass().getResource("/jenkins/config_maven.xml");
   Path basePath;
@@ -41,14 +41,17 @@ public class MavenConfig extends JenkinsConfig {
     DocumentBuilder builder = factory.newDocumentBuilder();
     xmlDocument = builder.parse(this.baseFile);
 
-    setAll(projectUrl, updateDbUrl, username, projectName);
+    setGitLabProjectUrl(projectUrl);
+    setProgEduUpdateUrl(updateDbUrl);
+    setProgEduUpdateUsername(username);
+    setProgEduUpdateProjectName(projectName);
 
   }
 
   @Override
   public String getXmlConfig() {
 
-    String result = null;
+    String result = "";
 
     if (this.xmlDocument != null) {
       StringWriter strWtr = new StringWriter();
@@ -93,13 +96,6 @@ public class MavenConfig extends JenkinsConfig {
   @Override
   public void setXmlDocument(Document document) {
     this.xmlDocument = document;
-  }
-
-  private void setAll(String projectUrl, String updateDbUrl, String username, String projectName) {
-    setGitLabProjectUrl(projectUrl);
-    setProgEduUpdateUrl(updateDbUrl);
-    setProgEduUpdateUsername(username);
-    setProgEduUpdateProjectName(projectName);
   }
 
   private void setGitLabProjectUrl(String projectUrl) {

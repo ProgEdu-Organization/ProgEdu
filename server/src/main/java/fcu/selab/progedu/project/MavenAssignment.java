@@ -1,32 +1,20 @@
 package fcu.selab.progedu.project;
 
-import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 
-import fcu.selab.progedu.jenkinsconfig.JenkinsConfig;
+import fcu.selab.progedu.jenkinsconfig.JenkinsProjectConfig;
 import fcu.selab.progedu.jenkinsconfig.MavenConfig;
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fcu.selab.progedu.config.CourseConfig;
 import fcu.selab.progedu.config.GitlabConfig;
 import fcu.selab.progedu.conn.JenkinsService;
-import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.service.StatusService;
 import fcu.selab.progedu.status.StatusEnum;
 import fcu.selab.progedu.utils.ExceptionUtil;
@@ -68,10 +56,10 @@ public class MavenAssignment extends ProjectType {
 
       String updateDbUrl = progEduApiUrl + "/commits/update";
 
-      JenkinsConfig jenkinsConfig = new MavenConfig(projectUrl, updateDbUrl, username, projectName);
+      JenkinsProjectConfig jenkinsProjectConfig = new MavenConfig(projectUrl, updateDbUrl, username, projectName);
 
       Path jenkinsConfigPath = Paths.get(jenkinsJobConfigPath);
-      jenkinsConfig.writeToFile(jenkinsConfigPath);
+      jenkinsProjectConfig.writeToFile(jenkinsConfigPath);
 
     } catch (Exception e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
