@@ -19,8 +19,6 @@ import javax.xml.transform.Transformer;
 public class MavenConfig extends JenkinsProjectConfig {
 
   URL baseUrl = this.getClass().getResource("/jenkins/config_maven.xml");
-  Path basePath;
-  File baseFile;
   Document xmlDocument;
 
   /**
@@ -34,12 +32,12 @@ public class MavenConfig extends JenkinsProjectConfig {
   public MavenConfig(String projectUrl, String updateDbUrl,
                      String username, String projectName) throws Exception {
 
-    this.basePath = Paths.get(this.baseUrl.toURI());
-    this.baseFile = basePath.toFile();
+    Path basePath = Paths.get(this.baseUrl.toURI());
+    File baseFile = basePath.toFile();
 
     DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
     DocumentBuilder builder = factory.newDocumentBuilder();
-    xmlDocument = builder.parse(this.baseFile);
+    this.xmlDocument = builder.parse(baseFile);
 
     setGitLabProjectUrl(projectUrl);
     setProgEduUpdateUrl(updateDbUrl);
@@ -91,11 +89,6 @@ public class MavenConfig extends JenkinsProjectConfig {
   @Override
   public Document getXmlDocument() {
     return this.xmlDocument;
-  }
-
-  @Override
-  public void setXmlDocument(Document document) {
-    this.xmlDocument = document;
   }
 
   private void setGitLabProjectUrl(String projectUrl) {

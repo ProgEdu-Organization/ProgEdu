@@ -21,7 +21,6 @@ public abstract class JenkinsProjectConfig {
 
   public abstract Document getXmlDocument();
 
-  public abstract void setXmlDocument(Document document);
 
   /**
    * writeToFile
@@ -34,7 +33,7 @@ public abstract class JenkinsProjectConfig {
       TransformerFactory transformerFactory = TransformerFactory.newInstance();
       transformerFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
       Transformer transformer = transformerFactory.newTransformer();
-      DOMSource source = new DOMSource(getXmlDocument());
+      DOMSource source = new DOMSource(this.getXmlDocument());
       StreamResult result = new StreamResult(filePath.toFile());
       transformer.transform(source, result);
     } catch (Exception e) {

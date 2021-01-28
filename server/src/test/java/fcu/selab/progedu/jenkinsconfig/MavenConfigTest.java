@@ -32,20 +32,6 @@ public class MavenConfigTest {
         }
     }
 
-    @Test
-    public void setXMLDocument() {
-        try {
-            MavenConfig mavenConfig = new MavenConfig("unit-url", "unit-db-url", "unit-username", "unit-project");
-            Document doc = mavenConfig.getXmlDocument();
-            doc.getElementsByTagName("url").item(0).setTextContent("unit-test");
-
-            mavenConfig.setXmlDocument(doc);
-            System.out.printf(mavenConfig.getXmlConfig());
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     @Test
     public void setAll() {
