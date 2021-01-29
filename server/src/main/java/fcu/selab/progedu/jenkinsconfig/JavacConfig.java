@@ -1,5 +1,6 @@
 package fcu.selab.progedu.jenkinsconfig;
 
+import fcu.selab.progedu.utils.ExceptionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -27,24 +28,30 @@ public class JavacConfig extends JenkinsProjectConfig {
    * @param projectName  projectName
    */
   public JavacConfig(String projectUrl, String updateDbUrl,
-                     String username, String projectName) throws Exception {
+                     String username, String projectName) {
 
-    Path basePath = Paths.get(this.baseUrl.toURI());
-    File baseFile = basePath.toFile();
+    try {
+      Path basePath = Paths.get(this.baseUrl.toURI());
+      File baseFile = basePath.toFile();
 
-    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+      DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 //    factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl",true); // Todo 我不知道這個要不要刪掉, 先註解起來保留
-    DocumentBuilder builder = factory.newDocumentBuilder();
-    this.xmlDocument = builder.parse(baseFile);
+      DocumentBuilder builder = factory.newDocumentBuilder();
+      this.xmlDocument = builder.parse(baseFile);
 
-    setGitLabProjectUrl(projectUrl);
-    setProgEduUpdateUrl(updateDbUrl);
-    setProgEduUpdateUsername(username);
-    setProgEduUpdateProjectName(projectName);
+      setGitLabProjectUrl(projectUrl);
+      setProgEduUpdateUrl(updateDbUrl);
+      setProgEduUpdateUsername(username);
+      setProgEduUpdateProjectName(projectName);
 
-    // Todo 這目前無效, 已經沒有 test資料夾了
+      // Todo 這目前無效, 已經沒有 test資料夾了
 //    String assignmentPath = System.getProperty("java.io.tmpdir") + "/tests/" + projectName;
 //    String command = getCommandFromFile(assignmentPath);
+    } catch (Exception e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    }
+
 
   }
 

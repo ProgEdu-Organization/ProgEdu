@@ -2,6 +2,7 @@ package fcu.selab.progedu.jenkinsconfig;
 
 import fcu.selab.progedu.config.CourseConfig;
 import fcu.selab.progedu.config.JenkinsConfig;
+import fcu.selab.progedu.utils.ExceptionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -29,39 +30,46 @@ public class WebConfig extends JenkinsProjectConfig {
    * @param projectName  projectName
    */
   public WebConfig(String projectUrl, String updateDbUrl,
-                   String username, String projectName) throws Exception {
+                   String username, String projectName) {
 
-    Path basePath = Paths.get(this.baseUrl.toURI());
-    File baseFile = basePath.toFile();
+    try {
+      Path basePath = Paths.get(this.baseUrl.toURI());
+      File baseFile = basePath.toFile();
 
-    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+      DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 //    factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl",true); // Todo 我不知道這個要不要刪掉, 先註解起來保留
-    DocumentBuilder builder = factory.newDocumentBuilder();
-    this.xmlDocument = builder.parse(baseFile);
+      DocumentBuilder builder = factory.newDocumentBuilder();
+      this.xmlDocument = builder.parse(baseFile);
 
-    setGitLabProjectUrl(projectUrl);
-    setProgEduUpdateUrl(updateDbUrl);
-    setProgEduUpdateUsername(username);
-    setProgEduUpdateProjectName(projectName);
-
-
-    JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
-    String seleniumUrl = jenkinsData.getSeleniumHostUrl() + "/wd/hub";
-    this.xmlDocument.getElementsByTagName("seleniumUrl").item(0).setTextContent(seleniumUrl);
+      setGitLabProjectUrl(projectUrl);
+      setProgEduUpdateUrl(updateDbUrl);
+      setProgEduUpdateUsername(username);
+      setProgEduUpdateProjectName(projectName);
 
 
-    CourseConfig courseConfig = CourseConfig.getInstance();
-    String progEduApiUrl = courseConfig.getTomcatServerIp() + courseConfig.getBaseuri()
-            + "/webapi";
-    this.xmlDocument.getElementsByTagName("progeduAPIUrl").item(0).setTextContent(progEduApiUrl);
+      JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
+      String seleniumUrl = jenkinsData.getSeleniumHostUrl() + "/wd/hub";
+      this.xmlDocument.getElementsByTagName("seleniumUrl").item(0).setTextContent(seleniumUrl);
 
 
-    this.xmlDocument.getElementsByTagName("jenkinsUsername").item(0).setTextContent(username);
+      CourseConfig courseConfig = CourseConfig.getInstance();
+      String progEduApiUrl = courseConfig.getTomcatServerIp() + courseConfig.getBaseuri()
+              + "/webapi";
+      this.xmlDocument.getElementsByTagName("progeduAPIUrl").item(0).setTextContent(progEduApiUrl);
 
-    this.xmlDocument.getElementsByTagName("jenkinsAssignmentName").item(0)
-                                                                  .setTextContent(projectName);
 
-    this.xmlDocument.getElementsByTagName("secretToken").item(0).setTextContent("");
+      this.xmlDocument.getElementsByTagName("jenkinsUsername").item(0).setTextContent(username);
+
+      this.xmlDocument.getElementsByTagName("jenkinsAssignmentName").item(0)
+              .setTextContent(projectName);
+
+      this.xmlDocument.getElementsByTagName("secretToken").item(0).setTextContent("");
+
+    } catch (Exception e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    }
+
 
   }
 

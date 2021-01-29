@@ -7,17 +7,10 @@ import org.w3c.dom.Document;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 import java.io.File;
-import java.io.IOException;
-import java.io.StringWriter;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import javax.xml.transform.Transformer;
 
 public class MavenConfig extends JenkinsProjectConfig {
 
@@ -35,20 +28,26 @@ public class MavenConfig extends JenkinsProjectConfig {
    * @param projectName  projectName
    */
   public MavenConfig(String projectUrl, String updateDbUrl,
-                     String username, String projectName) throws Exception {
+                     String username, String projectName) {
 
-    Path basePath = Paths.get(this.baseUrl.toURI());
-    File baseFile = basePath.toFile();
+    try {
+      Path basePath = Paths.get(this.baseUrl.toURI());
+      File baseFile = basePath.toFile();
 
-    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+      DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 //    factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl",true); // Todo 我不知道這個要不要刪掉, 先註解起來保留
-    DocumentBuilder builder = factory.newDocumentBuilder();
-    this.xmlDocument = builder.parse(baseFile);
+      DocumentBuilder builder = factory.newDocumentBuilder();
+      this.xmlDocument = builder.parse(baseFile);
 
-    setGitLabProjectUrl(projectUrl);
-    setProgEduUpdateUrl(updateDbUrl);
-    setProgEduUpdateUsername(username);
-    setProgEduUpdateProjectName(projectName);
+      setGitLabProjectUrl(projectUrl);
+      setProgEduUpdateUrl(updateDbUrl);
+      setProgEduUpdateUsername(username);
+      setProgEduUpdateProjectName(projectName);
+
+    } catch (Exception e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    }
 
   }
 

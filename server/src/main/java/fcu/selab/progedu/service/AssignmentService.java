@@ -36,8 +36,7 @@ import fcu.selab.progedu.db.ReviewSettingDbManager;
 import fcu.selab.progedu.db.ReviewSettingMetricsDbManager;
 import fcu.selab.progedu.db.ReviewStatusDbManager;
 import fcu.selab.progedu.jenkinsconfig.JenkinsProjectConfig;
-import fcu.selab.progedu.jenkinsconfig.MavenConfig;
-import fcu.selab.progedu.jenkinsconfig.WebConfig;
+import fcu.selab.progedu.jenkinsconfig.JenkinsProjectConfigFactory;
 import fcu.selab.progedu.project.ProjectType;
 import org.json.JSONArray;
 import org.jsoup.nodes.Document;
@@ -740,66 +739,41 @@ public class AssignmentService {
 
   private void createAssignmentSettingsV2(String username, String assignmentName) {
     ProjectTypeEnum assignmentTypeEnum = dbManager.getAssignmentType(assignmentName);
-    ProjectType project = ProjectTypeFactory
-            .getProjectType(assignmentTypeEnum.getTypeName());
-    //Todo 以上 assignmentTypeEnum 要拿掉, 因為之後沒有 assignment
 
     addAuid(username, assignmentName);
     //Todo 以上 addAuid 要改, 因為之後沒有 assignment
 
-    if (   assignmentTypeEnum.getTypeName().equals("maven")
-        || assignmentTypeEnum.getTypeName().equals("web") ) {
+    GitlabProject gitlabProject = gitlabService.createPrivateProject(username,
+            assignmentName, "root"); // Todo assignment 要改
 
-      try {
-        GitlabProject gitlabProject = gitlabService.createPrivateProject(username,
-                assignmentName, "root"); // Todo assignment 要改
+    try {
+      gitlabService.setGitlabWebhook(gitlabProject);
 
-        gitlabService.setGitlabWebhook(gitlabProject);
+      GitlabConfig gitlabConfig = GitlabConfig.getInstance();
+      String projectUrl = gitlabConfig.getGitlabHostUrl() + "/" + username + "/" + assignmentName
+              + ".git";
 
-        GitlabConfig gitlabConfig = GitlabConfig.getInstance();
-        String projectUrl = gitlabConfig.getGitlabHostUrl() + "/" + username + "/" + assignmentName
-                + ".git";
+      CourseConfig courseConfig = CourseConfig.getInstance();
+      String progEduApiUrl = courseConfig.getTomcatServerIp() + courseConfig.getBaseuri()
+              + "/webapi";
+      String updateDbUrl = progEduApiUrl + "/commits/update";
 
-        CourseConfig courseConfig = CourseConfig.getInstance();
-        String progEduApiUrl = courseConfig.getTomcatServerIp() + courseConfig.getBaseuri()
-                + "/webapi";
-        String updateDbUrl = progEduApiUrl + "/commits/update";
+      JenkinsProjectConfig jenkinsProjectConfig = JenkinsProjectConfigFactory
+              .getJenkinsProjectConfig(assignmentTypeEnum.getTypeName(),projectUrl, updateDbUrl,
+                      username, assignmentName);
 
+      JenkinsService jenkinsService = JenkinsService.getInstance();
+      String jobName = username + "_" + assignmentName;
 
-        JenkinsProjectConfig jenkinsProjectConfig = null;
-        if (assignmentTypeEnum.getTypeName().equals("maven")) {
-          jenkinsProjectConfig = new MavenConfig(projectUrl, updateDbUrl,
-                  username, assignmentName);
-        } else if (assignmentTypeEnum.getTypeName().equals("web")) {
-          jenkinsProjectConfig = new WebConfig(projectUrl, updateDbUrl,
-                  username, assignmentName);
-        }
+      jenkinsService.createJobV2(jobName, jenkinsProjectConfig.getXmlConfig());
 
-        JenkinsService jenkinsService = JenkinsService.getInstance();
+      jenkinsService.buildJob(jobName);
 
-        String jobName = username + "_" + assignmentName;
-        jenkinsService.createJobV2(jobName, jenkinsProjectConfig.getXmlConfig());
-        jenkinsService.buildJob(jobName);
-
-      } catch (Exception e) {
-        LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
-        LOGGER.error(e.getMessage());
-      }
-
-    } else {
-      try {
-        GitlabProject gitlabProject = gitlabService.createPrivateProject(username,
-                assignmentName, "root"); // Todo assignment 要改
-
-        gitlabService.setGitlabWebhook(gitlabProject);
-        project.createJenkinsJob(username, assignmentName); // Todo assignment 要改
-
-      } catch (IOException | LoadConfigFailureException e) {
-        LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
-        LOGGER.error(e.getMessage());
-      }
-
+    } catch (Exception e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
     }
+
   }
 
   /**
