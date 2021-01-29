@@ -28,18 +28,14 @@ public class WebAssignmentSetting implements AssignmentSettings {
       "/usr/local/tomcat/webapps/ROOT/WEB-INF/classes/jenkins/config_web.xml";
   private Document doc;
 
-  public WebAssignmentSetting(String assignmentName) {
-    settingZipHandler = new SettingZipHandler("web", assignmentName);
+  @Override
+  public void unZipAssignmentToTmp(String assignmentName) {
+    settingZipHandler.unZipAssignmentToTmp("web", assignmentName);
   }
 
   @Override
-  public void unZipAssignmentToTmp() {
-    settingZipHandler.unZipAssignmentToTmp();
-  }
-
-  @Override
-  public void packUpAssignment() {
-    settingZipHandler.packUpAssignment();
+  public void packUpAssignment(String assignmentName) {
+    settingZipHandler.packUpAssignment(assignmentName);
 
   }
 
@@ -65,15 +61,6 @@ public class WebAssignmentSetting implements AssignmentSettings {
         Node wannaDel = (Node) value2.getElementsByTagName
             ("hudson.plugins.build__timeout.BuildStepWithTimeout").item(1);
         value2.removeChild(wannaDel);
-        /*
-        TransformerFactory transformerFactory = TransformerFactory.newInstance();
-        Transformer transformer = transformerFactory.newTransformer();
-        transformer.setOutputProperty(OutputKeys.INDENT,"yes");
-        transformer.transform(
-            new DOMSource(doc), new StreamResult(new File(configWebXmlPath)));
-
-         */
-
         BuildStepWithTimeoutCount = BuildStepWithTimeoutCount-2;
       }
 
