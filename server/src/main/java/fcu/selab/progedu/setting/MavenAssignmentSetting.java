@@ -26,23 +26,23 @@ public class MavenAssignmentSetting implements AssignmentSettings {
 
   private static final Logger LOGGER = LoggerFactory
       .getLogger(MavenAssignmentSetting.class);
-  private SettingZipHandler settingZipHandler;
+  private SettingZipHandler settingZipHandler = new SettingZipHandler();
   private Model model;
 
   /**
-   * init web assignment setting
-   * 
+   * unzip assignment to temp
+   * @param assignmentName Assignment Name
    */
-  public MavenAssignmentSetting(String assignmentName) {
-    settingZipHandler = new SettingZipHandler("maven", assignmentName);
+  public void unZipAssignmentToTmp(String assignmentName) {
+    settingZipHandler.unZipAssignmentToTmp("maven", assignmentName);
   }
 
-  public void unZipAssignmentToTmp() {
-    settingZipHandler.unZipAssignmentToTmp();
-  }
-
-  public void packUpAssignment() {
-    settingZipHandler.packUpAssignment();
+  /**
+   * pack up assignment
+   * @param assignmentName Assignment Name
+   */
+  public void packUpAssignment(String assignmentName) {
+    settingZipHandler.packUpAssignment(assignmentName);
   }
 
   /**
@@ -183,12 +183,12 @@ public class MavenAssignmentSetting implements AssignmentSettings {
 
   /**
    * write assignment setting file
-   *
+   * @param assignmentName Assignment Name
    */
-  public void writeAssignmentSettingFile() {
+  public void writeAssignmentSettingFile(String assignmentName) {
     try {
       final MavenXpp3Writer writer = new MavenXpp3Writer();
-      writer.write(new FileWriter(settingZipHandler.getAssignmentPath()
+      writer.write(new FileWriter(settingZipHandler.getAssignmentPath(assignmentName)
           + "/pom.xml"), model);
     } catch (IOException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));

@@ -7,9 +7,9 @@ public interface AssignmentSettings {
 
   public void createAssignmentSetting(List<String> order,String name);
 
-  public void unZipAssignmentToTmp();
+  public void unZipAssignmentToTmp(String assignmentName);
 
-  public void packUpAssignment();
+  public void packUpAssignment(String assignmentName);
 
-  public void writeAssignmentSettingFile();
+  public void writeAssignmentSettingFile(String assignmentName);
 }

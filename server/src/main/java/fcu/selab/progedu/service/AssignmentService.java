@@ -855,7 +855,7 @@ public class AssignmentService {
     }
     //---------make pom.xml
     if (fileType.equals("maven")) {
-      MavenAssignmentSetting mas = new MavenAssignmentSetting(assignmentName);
+      MavenAssignmentSetting mas = new MavenAssignmentSetting();
       modifyAssignmentFile(mas, ordersList, assignmentName);
     }
     return Response.ok().build();
@@ -863,10 +863,10 @@ public class AssignmentService {
 
   private void modifyAssignmentFile(AssignmentSettings as,
                                      List<String> ordersList, String assignmentName) {
-    as.unZipAssignmentToTmp();
+    as.unZipAssignmentToTmp(assignmentName);
     as.createAssignmentSetting(ordersList, assignmentName);
-    as.writeAssignmentSettingFile();
-    as.packUpAssignment();
+    as.writeAssignmentSettingFile(assignmentName);
+    as.packUpAssignment(assignmentName);
   }
 
   /**

@@ -13,21 +13,14 @@ public class SettingZipHandler {
   private final String tempDir = System.getProperty("java.io.tmpdir");
   private final String settingDir = tempDir + "/assignmentSetting/";
   private String resourcesZipPath;
-  private String assignmentName;
-  private String assignmentPath;
   private static final Logger LOGGER = LoggerFactory
       .getLogger(SettingZipHandler.class);
 
   /**
    * init assignment zip setting
-   * @param resources resources
-   * @param name name
    */
-  public SettingZipHandler(String resources, String name) {
+  public SettingZipHandler() {
     try {
-      assignmentName = name;
-      setResourcesZipPath(resources);
-      assignmentPath = settingDir + assignmentName;
       zipHandler = new ZipHandler();
     } catch (LoadConfigFailureException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
@@ -47,15 +40,30 @@ public class SettingZipHandler {
     }
   }
 
-  public String getAssignmentPath() {
-    return this.assignmentPath;
+  /**
+   * get assignment path
+   * @param assignmentName assignment
+   */
+  public String getAssignmentPath(String assignmentName) {
+    String assignmentPath = settingDir + assignmentName;
+    return assignmentPath;
   }
-  
-  public void unZipAssignmentToTmp() {
-    zipHandler.unzipFile(resourcesZipPath, getAssignmentPath());
+
+  /**
+   * unzip assignment to temp
+   * @param resources      which resources
+   * @param assignmentName Assignment Name
+   */
+  public void unZipAssignmentToTmp(String resources, String assignmentName) {
+    setResourcesZipPath(resources);
+    zipHandler.unzipFile(resourcesZipPath, getAssignmentPath(assignmentName));
   }
-  
-  public void packUpAssignment() {
-    zipHandler.zipTestFolder(getAssignmentPath());
+
+  /**
+   * pack up assignment
+   * @param assignmentName Assignment Name
+   */
+  public void packUpAssignment(String assignmentName) {
+    zipHandler.zipTestFolder(getAssignmentPath(assignmentName));
   }
 }
