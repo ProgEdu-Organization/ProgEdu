@@ -19,22 +19,9 @@ public class SettingZipHandler {
 
   /**
    * init assignment zip setting
-   * @param resources resources
-   * @param name name
-   * // Todo 這類別為什麼要傳入作業類別(resources) 跟 作業名子(name), 這跟他的名子意圖沒有關聯
-   * // Todo (設定壓縮檔處理程序), 這應該是一個工具, 跟不是他依賴於高層類別, 是高層類別依賴它, 請它做事情而已
    */
-
-  public SettingZipHandler(String resources, String name) {
+  public SettingZipHandler() {
     try {
-
-      if (resources.equals("maven")) {
-        this.resourcesZipPath = "/usr/local/tomcat/webapps/ROOT/resources/MvnQuickStart.zip";
-      } else if (resources.equals("web")) {
-        this.resourcesZipPath = "/usr/local/tomcat/webapps/ROOT/resources/WebQuickStart.zip";
-      }
-
-      assignmentPath = assignmentSettingDir + name;
       zipHandler = new ZipHandler();
     } catch (LoadConfigFailureException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
@@ -42,16 +29,34 @@ public class SettingZipHandler {
     }
   }
 
+  /**
+   * get assignment path
+   * @param assignmentName assignment
+   */
+  public String getAssignmentPath(String assignmentName) {
+    assignmentPath = assignmentSettingDir + assignmentName;
+    return assignmentPath;
+  }
 
-  public String getAssignmentPath() {
-    return this.assignmentPath;
+  /**
+   * unzip assignment to temp
+   * @param resources      which resources
+   * @param assignmentName Assignment Name
+   */
+  public void unZipAssignmentToTmp(String resources, String assignmentName) {
+    if (resources.equals("maven")) {
+      this.resourcesZipPath = "/usr/local/tomcat/webapps/ROOT/resources/MvnQuickStart.zip";
+    } else if (resources.equals("web")) {
+      this.resourcesZipPath = "/usr/local/tomcat/webapps/ROOT/resources/WebQuickStart.zip";
+    }
+    zipHandler.unzipFile(resourcesZipPath, getAssignmentPath(assignmentName));
   }
-  
-  public void unZipAssignmentToTmp() {
-    zipHandler.unzipFile(resourcesZipPath, this.assignmentPath);
-  }
-  
-  public void packUpAssignment() {
-    zipHandler.zipTestFolder(this.assignmentPath);
+
+  /**
+   * pack up assignment
+   * @param assignmentName Assignment Name
+   */
+  public void packUpAssignment(String assignmentName) {
+    zipHandler.zipTestFolder(getAssignmentPath(assignmentName));
   }
 }
