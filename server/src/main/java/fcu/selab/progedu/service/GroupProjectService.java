@@ -65,60 +65,7 @@ public class GroupProjectService {
       LOGGER.error(e.getMessage());
     }
   }
-
-  /**
-   * 
-   * @param groupName   group name
-   * @param projectName project name
-   * @param projectType projectType
-   */
-  public void createGroupProject(String groupName, String projectName, String projectType) {
-    String readMe = "Initialization";
-//    final GitlabService gitlabService = GitlabService.getInstance();
-    final GroupProjectType groupProject = GroupProjectFactory.getGroupProjectType(projectType);
-    final ProjectTypeEnum projectTypeEnum = ProjectTypeEnum.getProjectTypeEnum(projectType);
-    // 1. Create root project and get project id and url
-    int projectId = 0;
-    try {
-      projectId = gitlabService.createGroupProject(groupName, projectName);
-    } catch (IOException e) {
-      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
-      LOGGER.error(e.getMessage());
-    }
-
-    // 2. Clone the project to C:\\Users\\users\\AppData\\Temp\\uploads
-    String cloneDirectoryPath = gitlabService.cloneProject(groupName, projectName);
-    // 3. if README is not null
-    tomcatService.createReadmeFile(readMe, cloneDirectoryPath);
-
-    // 4 create template
-    String filePath = tomcatService.storeFileToServer(null, null, groupProject);
-    zipHandler.unzipFile(filePath, cloneDirectoryPath);
-
-    // 5. Add .gitkeep if folder is empty.
-    tomcatService.findEmptyFolder(cloneDirectoryPath);
-    // 6. git push
-    gitlabService.pushProject(cloneDirectoryPath);
-
-    // 7. remove project file in linux
-    tomcatService.deleteDirectory(new File(uploadDir));
-
-    // 8. import project infomation to database
-    addProject(groupName, projectName, readMe, projectTypeEnum);
-
-    // 9. set Gitlab webhook
-    try {
-      GitlabProject project = gitlabService.getProject(projectId);
-      gitlabService.setGitlabWebhook(project);
-    } catch (IOException | LoadConfigFailureException e) {
-      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
-      LOGGER.error(e.getMessage());
-    }
-
-    // 10. Create each Jenkins Jobs
-    groupProject.createJenkinsJob(groupName, projectName);
-  }
-
+  
 
   /**
    *

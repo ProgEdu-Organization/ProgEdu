@@ -43,7 +43,7 @@ public class MavenGroupProject extends GroupProjectType {
     return url.getPath();
   }
 
-  @Override
+  // Todo 這因為還未遷移, 所以先不刪,
   public void createJenkinsJobConfig(String username, String projectName) {
     try {
       GitlabConfig gitlabConfig = GitlabConfig.getInstance();
