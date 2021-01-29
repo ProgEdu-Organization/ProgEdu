@@ -20,7 +20,7 @@ public class ReviewRecordDbManager {
     return dbManager;
   }
 
-  private IDatabase database = new MySqlDatabase();
+  private IDatabase database = MySqlDatabase.getInstance();
 
   /**
    * Insert review record into db
