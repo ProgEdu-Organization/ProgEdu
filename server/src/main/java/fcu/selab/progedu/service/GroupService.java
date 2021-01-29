@@ -78,7 +78,7 @@ public class GroupService {
 
     // create project
     GroupProjectService gps = new GroupProjectService();
-    gps.createGroupProject(name, projectName, projectType);
+    gps.createGroupProjectV2(name, projectName, projectType);
 
     return Response.ok().build();
   }

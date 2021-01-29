@@ -3,6 +3,8 @@ package fcu.selab.progedu.service;
 import java.io.File;
 import java.io.IOException;
 
+import fcu.selab.progedu.jenkinsconfig.JenkinsProjectConfig;
+import fcu.selab.progedu.jenkinsconfig.WebGroupConfig;
 import org.gitlab.api.models.GitlabProject;
 import org.gitlab.api.models.GitlabUser;
 import org.slf4j.Logger;
@@ -115,6 +117,87 @@ public class GroupProjectService {
 
     // 10. Create each Jenkins Jobs
     groupProject.createJenkinsJob(groupName, projectName);
+  }
+
+
+  /**
+   *
+   * @param groupName   group name
+   * @param projectName project name
+   * @param projectType projectType
+   */
+  public void createGroupProjectV2(String groupName, String projectName, String projectType) {
+
+    if (!projectType.equals("web")) {
+      LOGGER.error("The createGroupProjectV2 not support" + projectType);
+      return;
+    }
+
+    String readMe = "Initialization";
+//    final GitlabService gitlabService = GitlabService.getInstance();
+    final GroupProjectType groupProject = GroupProjectFactory.getGroupProjectType(projectType);
+    final ProjectTypeEnum projectTypeEnum = ProjectTypeEnum.getProjectTypeEnum(projectType);
+    // 1. Create root project and get project id and url
+    int projectId = 0;
+    try {
+      projectId = gitlabService.createGroupProject(groupName, projectName);
+    } catch (IOException e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    }
+
+    // 2. Clone the project to C:\\Users\\users\\AppData\\Temp\\uploads
+    String cloneDirectoryPath = gitlabService.cloneProject(groupName, projectName);
+    // 3. if README is not null
+    tomcatService.createReadmeFile(readMe, cloneDirectoryPath);
+
+    // 4 create template
+    String filePath = tomcatService.storeFileToServer(null, null, groupProject);
+    zipHandler.unzipFile(filePath, cloneDirectoryPath);
+
+    // 5. Add .gitkeep if folder is empty.
+    tomcatService.findEmptyFolder(cloneDirectoryPath);
+    // 6. git push
+    gitlabService.pushProject(cloneDirectoryPath);
+
+    // 7. remove project file in linux
+    tomcatService.deleteDirectory(new File(uploadDir));
+
+    // 8. import project infomation to database
+    addProject(groupName, projectName, readMe, projectTypeEnum);
+
+    // 9. set Gitlab webhook
+    try {
+      GitlabProject project = gitlabService.getProject(projectId);
+      gitlabService.setGitlabWebhook(project);
+    } catch (IOException | LoadConfigFailureException e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    }
+
+    // 10. Create Jenkins Job
+    try {
+      GitlabConfig gitlabConfig = GitlabConfig.getInstance();
+
+      CourseConfig courseConfig = CourseConfig.getInstance();
+      String progEduApiUrl = courseConfig.getTomcatServerIp() + courseConfig.getBaseuri()
+              + "/webapi/groups";
+      String updateDbUrl = progEduApiUrl + "/commits/update";
+      String projectUrl = gitlabConfig.getGitlabHostUrl() + "/" + groupName + "/" + projectName
+              + ".git";
+
+      JenkinsProjectConfig jenkinsProjectConfig = new WebGroupConfig(projectUrl, updateDbUrl,
+                                                                     groupName, projectName);
+
+      JenkinsService jenkinsService = JenkinsService.getInstance();
+      String jobName = groupName + "_" +  projectName;
+      jenkinsService.createJobV2(jobName, jenkinsProjectConfig.getXmlConfig());
+      jenkinsService.buildJob(jobName);
+    } catch (Exception e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    }
+
   }
 
   /**
