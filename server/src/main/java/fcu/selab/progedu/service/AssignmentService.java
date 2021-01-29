@@ -868,7 +868,7 @@ public class AssignmentService {
       MavenAssignmentSetting mas = new MavenAssignmentSetting(assignmentName);
       modifyAssignmentFile(mas, ordersList, assignmentName);
     } else if (fileType.equals("web")) {
-      WebAssignmentSetting was = new WebAssignmentSetting();
+      WebAssignmentSetting was = new WebAssignmentSetting(assignmentName);
       modifyAssignmentFile(was, ordersList, assignmentName);
     }
     return Response.ok().build();

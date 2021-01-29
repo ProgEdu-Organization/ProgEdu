@@ -27,15 +27,21 @@ public class WebAssignmentSetting implements AssignmentSettings {
   private String configWebXmlPath =
       "/usr/local/tomcat/webapps/ROOT/WEB-INF/classes/jenkins/config_web.xml";
   private Document doc;
+  private String assignmentName;
 
-  @Override
-  public void unZipAssignmentToTmp(String assignmentName) {
-    settingZipHandler.unZipAssignmentToTmp("web", assignmentName);
+  public WebAssignmentSetting(String assignmentName) {
+    this.assignmentName = assignmentName;
+    settingZipHandler = new SettingZipHandler();
   }
 
   @Override
-  public void packUpAssignment(String assignmentName) {
-    settingZipHandler.packUpAssignment(assignmentName);
+  public void unZipAssignmentToTmp() {
+    settingZipHandler.unZipAssignmentToTmp("web", this.assignmentName);
+  }
+
+  @Override
+  public void packUpAssignment() {
+    settingZipHandler.packUpAssignment(this.assignmentName);
 
   }
 
