@@ -738,7 +738,7 @@ public class AssignmentService {
       String updateDbUrl = progEduApiUrl + "/commits/update";
 
       JenkinsProjectConfig jenkinsProjectConfig = JenkinsProjectConfigFactory
-              .getJenkinsProjectConfig(assignmentTypeEnum.getTypeName(),projectUrl, updateDbUrl,
+              .getJenkinsProjectConfig(assignmentTypeEnum.getTypeName(), projectUrl, updateDbUrl,
                       username, assignmentName);
 
       JenkinsService jenkinsService = JenkinsService.getInstance();
