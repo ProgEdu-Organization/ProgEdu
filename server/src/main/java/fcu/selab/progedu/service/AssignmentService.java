@@ -716,27 +716,6 @@ public class AssignmentService {
     rsDbManager.deleteReviewSettingByAId(aid);
   }
 
-  private void createAssignmentSettings(String username, String assignmentName) {
-    ProjectTypeEnum assignmentTypeEnum = dbManager.getAssignmentType(assignmentName);
-    ProjectType project = ProjectTypeFactory
-        .getProjectType(assignmentTypeEnum.getTypeName());
-    //Todo 以上 assignmentTypeEnum 要拿掉, 因為之後沒有 assignment
-
-    addAuid(username, assignmentName);
-    //Todo 以上 addAuid 要改, 因為之後沒有 assignment
-
-    try {
-      GitlabProject gitlabProject = gitlabService.createPrivateProject(username,
-              assignmentName, "root"); // Todo assignment 要改
-
-      gitlabService.setGitlabWebhook(gitlabProject);
-      project.createJenkinsJob(username, assignmentName); // Todo assignment 要改
-    } catch (IOException | LoadConfigFailureException e) {
-      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
-      LOGGER.error(e.getMessage());
-    }
-  }
-
   private void createAssignmentSettingsV2(String username, String assignmentName) {
     ProjectTypeEnum assignmentTypeEnum = dbManager.getAssignmentType(assignmentName);
 
