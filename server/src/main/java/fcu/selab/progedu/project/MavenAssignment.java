@@ -41,23 +41,20 @@ public class MavenAssignment extends ProjectType {
   @Override
   public void createJenkinsJobConfig(String username, String projectName) {
     try {
-      GitlabConfig gitlabConfig = GitlabConfig.getInstance();
-      String jenkinsJobConfigPath = getJenkinsJobConfigPath();
 
-      CourseConfig courseConfig = CourseConfig.getInstance();
-      String progEduApiUrl = courseConfig.getTomcatServerIp() + courseConfig.getBaseuri()
-          + "/webapi";
+      GitlabConfig gitlabConfig = GitlabConfig.getInstance();
       String projectUrl = gitlabConfig.getGitlabHostUrl() + "/" + username + "/" + projectName
           + ".git";
 
-      DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-      docFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl",true);
-      DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-
+      CourseConfig courseConfig = CourseConfig.getInstance();
+      String progEduApiUrl = courseConfig.getTomcatServerIp() + courseConfig.getBaseuri()
+              + "/webapi";
       String updateDbUrl = progEduApiUrl + "/commits/update";
 
-      JenkinsProjectConfig jenkinsProjectConfig = new MavenConfig(projectUrl, updateDbUrl, username, projectName);
+      JenkinsProjectConfig jenkinsProjectConfig = new MavenConfig(projectUrl, updateDbUrl,
+                                                                  username, projectName);
 
+      String jenkinsJobConfigPath = getJenkinsJobConfigPath();
       Path jenkinsConfigPath = Paths.get(jenkinsJobConfigPath);
       jenkinsProjectConfig.writeToFile(jenkinsConfigPath);
 

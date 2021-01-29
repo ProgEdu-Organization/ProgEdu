@@ -36,6 +36,7 @@ public class MavenConfig extends JenkinsProjectConfig {
     File baseFile = basePath.toFile();
 
     DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+//    factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl",true); // Todo 我不知道這個要不要刪掉, 先註解起來保留
     DocumentBuilder builder = factory.newDocumentBuilder();
     this.xmlDocument = builder.parse(baseFile);
 
