@@ -13,6 +13,7 @@ public class SettingZipHandler {
   private final String tempDir = System.getProperty("java.io.tmpdir");
   private final String assignmentSettingDir = tempDir + "/assignmentSetting/";
   private String resourcesZipPath;
+  private String assignmentPath;
   private static final Logger LOGGER = LoggerFactory
       .getLogger(SettingZipHandler.class);
 
@@ -33,7 +34,7 @@ public class SettingZipHandler {
    * @param assignmentName assignment
    */
   public String getAssignmentPath(String assignmentName) {
-    String assignmentPath = assignmentSettingDir + assignmentName;
+    assignmentPath = assignmentSettingDir + assignmentName;
     return assignmentPath;
   }
 
