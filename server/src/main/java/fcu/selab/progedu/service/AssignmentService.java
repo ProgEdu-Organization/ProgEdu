@@ -37,6 +37,7 @@ import fcu.selab.progedu.db.ReviewSettingMetricsDbManager;
 import fcu.selab.progedu.db.ReviewStatusDbManager;
 import fcu.selab.progedu.jenkinsconfig.JenkinsProjectConfig;
 import fcu.selab.progedu.jenkinsconfig.MavenConfig;
+import fcu.selab.progedu.jenkinsconfig.WebConfig;
 import fcu.selab.progedu.project.ProjectType;
 import org.json.JSONArray;
 import org.jsoup.nodes.Document;
@@ -746,7 +747,8 @@ public class AssignmentService {
     addAuid(username, assignmentName);
     //Todo 以上 addAuid 要改, 因為之後沒有 assignment
 
-    if ( assignmentTypeEnum.getTypeName().equals("maven") ) {
+    if (   assignmentTypeEnum.getTypeName().equals("maven")
+        || assignmentTypeEnum.getTypeName().equals("web") ) {
 
       try {
         GitlabProject gitlabProject = gitlabService.createPrivateProject(username,
@@ -763,8 +765,15 @@ public class AssignmentService {
                 + "/webapi";
         String updateDbUrl = progEduApiUrl + "/commits/update";
 
-        JenkinsProjectConfig jenkinsProjectConfig = new MavenConfig(projectUrl, updateDbUrl,
-                username, assignmentName);
+
+        JenkinsProjectConfig jenkinsProjectConfig = null;
+        if (assignmentTypeEnum.getTypeName().equals("maven")) {
+          jenkinsProjectConfig = new MavenConfig(projectUrl, updateDbUrl,
+                  username, assignmentName);
+        } else if (assignmentTypeEnum.getTypeName().equals("web")) {
+          jenkinsProjectConfig = new WebConfig(projectUrl, updateDbUrl,
+                  username, assignmentName);
+        }
 
         JenkinsService jenkinsService = JenkinsService.getInstance();
 

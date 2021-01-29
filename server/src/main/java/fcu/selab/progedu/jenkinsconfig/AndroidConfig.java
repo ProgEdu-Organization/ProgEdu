@@ -1,27 +1,19 @@
 package fcu.selab.progedu.jenkinsconfig;
 
-import fcu.selab.progedu.utils.ExceptionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 import java.io.File;
-import java.io.IOException;
-import java.io.StringWriter;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import javax.xml.transform.Transformer;
 
-public class MavenConfig extends JenkinsProjectConfig {
+public class AndroidConfig extends JenkinsProjectConfig {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(MavenConfig.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(AndroidConfig.class);
 
   URL baseUrl = this.getClass().getResource("/jenkins/config_maven.xml");
   Document xmlDocument;
@@ -34,8 +26,8 @@ public class MavenConfig extends JenkinsProjectConfig {
    * @param username     username
    * @param projectName  projectName
    */
-  public MavenConfig(String projectUrl, String updateDbUrl,
-                     String username, String projectName) throws Exception {
+  public AndroidConfig(String projectUrl, String updateDbUrl,
+                       String username, String projectName) throws Exception {
 
     Path basePath = Paths.get(this.baseUrl.toURI());
     File baseFile = basePath.toFile();

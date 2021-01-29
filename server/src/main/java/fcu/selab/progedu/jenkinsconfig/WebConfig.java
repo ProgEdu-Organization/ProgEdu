@@ -1,41 +1,35 @@
 package fcu.selab.progedu.jenkinsconfig;
 
-import fcu.selab.progedu.utils.ExceptionUtil;
+import fcu.selab.progedu.config.CourseConfig;
+import fcu.selab.progedu.config.JenkinsConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 import java.io.File;
-import java.io.IOException;
-import java.io.StringWriter;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import javax.xml.transform.Transformer;
 
-public class MavenConfig extends JenkinsProjectConfig {
+public class WebConfig extends JenkinsProjectConfig {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(MavenConfig.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(WebConfig.class);
 
-  URL baseUrl = this.getClass().getResource("/jenkins/config_maven.xml");
+  URL baseUrl = this.getClass().getResource("/jenkins/config_web.xml");
   Document xmlDocument;
 
   /**
-   * MavenConfig
+   * WebConfig
    *
    * @param projectUrl   projectUrl
    * @param updateDbUrl  updateDbUrl
    * @param username     username
    * @param projectName  projectName
    */
-  public MavenConfig(String projectUrl, String updateDbUrl,
-                     String username, String projectName) throws Exception {
+  public WebConfig(String projectUrl, String updateDbUrl,
+                   String username, String projectName) throws Exception {
 
     Path basePath = Paths.get(this.baseUrl.toURI());
     File baseFile = basePath.toFile();
@@ -49,6 +43,25 @@ public class MavenConfig extends JenkinsProjectConfig {
     setProgEduUpdateUrl(updateDbUrl);
     setProgEduUpdateUsername(username);
     setProgEduUpdateProjectName(projectName);
+
+
+    JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
+    String seleniumUrl = jenkinsData.getSeleniumHostUrl() + "/wd/hub";
+    this.xmlDocument.getElementsByTagName("seleniumUrl").item(0).setTextContent(seleniumUrl);
+
+
+    CourseConfig courseConfig = CourseConfig.getInstance();
+    String progEduApiUrl = courseConfig.getTomcatServerIp() + courseConfig.getBaseuri()
+            + "/webapi";
+    this.xmlDocument.getElementsByTagName("progeduAPIUrl").item(0).setTextContent(progEduApiUrl);
+
+
+    this.xmlDocument.getElementsByTagName("jenkinsUsername").item(0).setTextContent(username);
+
+    this.xmlDocument.getElementsByTagName("jenkinsAssignmentName").item(0)
+                                                                  .setTextContent(projectName);
+
+    this.xmlDocument.getElementsByTagName("secretToken").item(0).setTextContent("");
 
   }
 
