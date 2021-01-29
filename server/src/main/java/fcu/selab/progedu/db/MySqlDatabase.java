@@ -21,7 +21,20 @@ public class MySqlDatabase implements IDatabase {
   private static final Logger LOGGER = LoggerFactory.getLogger(MySqlDatabase.class);
 
   private static MySqlDatabase instance = new MySqlDatabase();
+
+  // BoneCP Connection Pooling Example
+  // https://www.javatips.net/blog/bonecp-connection-pooling-example
+  // useful tips
+  // https://bhaveshgadoya.wordpress.com/2015/07/08/bonecp-connection-pooling-some-useful-tips/
   private static BoneCP connectionPool = null;
+
+  private static int dbPoolPartitionCount = 2;
+
+  private static int dbPoolMaxConnectionsPerPartition = 5;
+
+  private static int dbPoolMinConnectionsPerPartition = 1;
+
+
 
   private MySqlDatabase() {
     try {
@@ -66,7 +79,6 @@ public class MySqlDatabase implements IDatabase {
       throwables.printStackTrace();
       throw new NullPointerException();
     }
-
     return connection;
   }
 
@@ -82,9 +94,9 @@ public class MySqlDatabase implements IDatabase {
       config.setUsername(user);
       config.setPassword(password);
 
-      config.setPartitionCount(2);
-      config.setMinConnectionsPerPartition(1);
-      config.setMaxConnectionsPerPartition(4);
+      config.setPartitionCount(dbPoolPartitionCount);
+      config.setMinConnectionsPerPartition(dbPoolMinConnectionsPerPartition);
+      config.setMaxConnectionsPerPartition(dbPoolMaxConnectionsPerPartition);
 
     } catch (LoadConfigFailureException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
