@@ -202,5 +202,4 @@ public class MavenAssignmentSetting implements AssignmentSettings {
       LOGGER.error(e.getMessage());
     }
   }
-
 }
