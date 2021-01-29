@@ -1,5 +1,8 @@
 package fcu.selab.progedu.jenkinsconfig;
 
+import fcu.selab.progedu.utils.ExceptionUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -17,6 +20,8 @@ import java.nio.file.Paths;
 import javax.xml.transform.Transformer;
 
 public class MavenConfig extends JenkinsProjectConfig {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(MavenConfig.class);
 
   URL baseUrl = this.getClass().getResource("/jenkins/config_maven.xml");
   Document xmlDocument;
@@ -70,7 +75,8 @@ public class MavenConfig extends JenkinsProjectConfig {
                 strResult);
 
       } catch (Exception e) {
-        System.err.println("XML.toString(Document): " + e);
+        LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+        LOGGER.error(e.getMessage());
       }
 
 
@@ -80,7 +86,8 @@ public class MavenConfig extends JenkinsProjectConfig {
       try {
         strWtr.close();
       } catch (IOException e) {
-        e.printStackTrace();
+        LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+        LOGGER.error(e.getMessage());
       }
 
     }
