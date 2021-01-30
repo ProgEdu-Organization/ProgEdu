@@ -1,6 +1,5 @@
 package fcu.selab.progedu.project;
 
-import fcu.selab.progedu.conn.JenkinsService;
 import fcu.selab.progedu.status.Status;
 import fcu.selab.progedu.status.StatusEnum;
 import fcu.selab.progedu.status.StatusFactory;
@@ -19,9 +18,6 @@ public abstract class ProjectType {
   public abstract ProjectTypeEnum getProjectType();
 
   public abstract String getSampleTemplate();
-
-  // Todo 模板方法只用到這個好處
-  public abstract String getJenkinsJobConfigPath();
 
   public abstract StatusEnum checkStatusType(int num, String username, String assignmentName);
 

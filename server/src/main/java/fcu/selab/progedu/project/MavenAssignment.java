@@ -1,6 +1,5 @@
 package fcu.selab.progedu.project;
 
-import java.net.URL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,12 +18,6 @@ public class MavenAssignment extends ProjectType {
   @Override
   public String getSampleTemplate() {
     return "MavenQuickStart.zip";
-  }
-
-  @Override
-  public String getJenkinsJobConfigPath() {
-    URL url = this.getClass().getResource("/jenkins/config_maven.xml");
-    return url.getPath();
   }
 
   @Override

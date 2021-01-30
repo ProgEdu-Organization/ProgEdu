@@ -1,7 +1,5 @@
 package fcu.selab.progedu.project;
 
-import java.net.URL;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,12 +18,6 @@ public class AndroidAssignment extends ProjectType {
   @Override
   public String getSampleTemplate() {
     return "AndroidQuickStart.zip";
-  }
-
-  @Override
-  public String getJenkinsJobConfigPath() {
-    URL url = this.getClass().getResource("/jenkins/config_android.xml");
-    return url.getPath();
   }
 
   @Override
