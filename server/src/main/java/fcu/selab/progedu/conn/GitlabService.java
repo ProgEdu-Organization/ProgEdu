@@ -736,7 +736,7 @@ public class GitlabService {
     String gitlabWebhookApi = hostUrl + API_NAMESPACE + "/projects/" + project.getId() + "/hooks";
 //    project.getPath()
     String jenkinsJobUrl = jenkinsConfig.getJenkinsHostUrl() + "/project/" + username + "_"
-        + projectName;
+        + projectName; // Todo 壞味道, 這設定隱含了Jenkins一定要用 username_projectName 才能運作
     HttpPost post = new HttpPost(gitlabWebhookApi);
     post.addHeader("PRIVATE-TOKEN", apiToken);
     // Request parameters

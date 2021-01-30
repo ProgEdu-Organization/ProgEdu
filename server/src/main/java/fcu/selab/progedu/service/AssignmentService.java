@@ -35,6 +35,8 @@ import fcu.selab.progedu.db.ReviewRecordDbManager;
 import fcu.selab.progedu.db.ReviewSettingDbManager;
 import fcu.selab.progedu.db.ReviewSettingMetricsDbManager;
 import fcu.selab.progedu.db.ReviewStatusDbManager;
+import fcu.selab.progedu.jenkinsconfig.JenkinsProjectConfig;
+import fcu.selab.progedu.jenkinsconfig.JenkinsProjectConfigFactory;
 import fcu.selab.progedu.project.ProjectType;
 import org.json.JSONArray;
 import org.jsoup.nodes.Document;
@@ -202,7 +204,8 @@ public class AssignmentService {
 
     List<User> users = userService.getStudents();
     for (User user : users) {
-      createAssignmentSettings(user.getUsername(), assignmentName);
+//      createAssignmentSettings(user.getUsername(), assignmentName);
+      createAssignmentSettingsV2(user.getUsername(), assignmentName);
     }
 
     // 10. remove project file in linux
@@ -713,25 +716,43 @@ public class AssignmentService {
     rsDbManager.deleteReviewSettingByAId(aid);
   }
 
-  private void createAssignmentSettings(String username, String assignmentName) {
+  private void createAssignmentSettingsV2(String username, String assignmentName) {
     ProjectTypeEnum assignmentTypeEnum = dbManager.getAssignmentType(assignmentName);
-    ProjectType project = ProjectTypeFactory
-        .getProjectType(assignmentTypeEnum.getTypeName());
-    //Todo 以上 assignmentTypeEnum 要拿掉, 因為之後沒有 assignment
 
     addAuid(username, assignmentName);
     //Todo 以上 addAuid 要改, 因為之後沒有 assignment
 
-    try {
-      GitlabProject gitlabProject = gitlabService.createPrivateProject(username,
-              assignmentName, "root"); // Todo assignment 要改
+    GitlabProject gitlabProject = gitlabService.createPrivateProject(username,
+            assignmentName, "root"); // Todo assignment 要改
 
+    try {
       gitlabService.setGitlabWebhook(gitlabProject);
-      project.createJenkinsJob(username, assignmentName); // Todo assignment 要改
-    } catch (IOException | LoadConfigFailureException e) {
+
+      GitlabConfig gitlabConfig = GitlabConfig.getInstance();
+      String projectUrl = gitlabConfig.getGitlabHostUrl() + "/" + username + "/" + assignmentName
+              + ".git";
+
+      CourseConfig courseConfig = CourseConfig.getInstance();
+      String progEduApiUrl = courseConfig.getTomcatServerIp() + courseConfig.getBaseuri()
+              + "/webapi";
+      String updateDbUrl = progEduApiUrl + "/commits/update";
+
+      JenkinsProjectConfig jenkinsProjectConfig = JenkinsProjectConfigFactory
+              .getJenkinsProjectConfig(assignmentTypeEnum.getTypeName(), projectUrl, updateDbUrl,
+                      username, assignmentName);
+
+      JenkinsService jenkinsService = JenkinsService.getInstance();
+      String jobName = username + "_" + assignmentName;
+
+      jenkinsService.createJobV2(jobName, jenkinsProjectConfig.getXmlConfig());
+
+      jenkinsService.buildJob(jobName);
+
+    } catch (Exception e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
     }
+
   }
 
   /**
@@ -743,7 +764,8 @@ public class AssignmentService {
     List<String> assignmentNames = dbManager.getAllAssignmentNames();
 
     for (String assignmentName : assignmentNames) {
-      createAssignmentSettings(username, assignmentName);
+//      createAssignmentSettings(username, assignmentName);
+      createAssignmentSettingsV2(username, assignmentName);
     }
 
   }
