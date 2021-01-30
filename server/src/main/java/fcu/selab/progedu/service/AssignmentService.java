@@ -875,6 +875,7 @@ public class AssignmentService {
       @FormDataParam("fileRadio") String fileType, 
       @FormDataParam("order") String assignmentCompileOrdersAndScore,
       @FormDataParam("assignmentName") String assignmentName) {
+    Response response = null;
     //-----order: Compile Failure:10, Coding Style Failure:80, Unit Test Failure:10
     List<String> ordersList = new ArrayList<>();
     String[] tokens = assignmentCompileOrdersAndScore.split(", ");
@@ -911,11 +912,14 @@ public class AssignmentService {
             assignmentSettingDir + assignmentName + "/pom.xml")));
         zipHandler.zipTestFolder(assignmentSettingDir + assignmentName);
       }
+      response = Response.ok().build();
     } catch (Exception e) {
-      e.printStackTrace();
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+      response = Response.serverError().entity(e.getMessage()).build();
     }
 
-    return Response.ok().build();
+    return response;
   }
 
   /**
