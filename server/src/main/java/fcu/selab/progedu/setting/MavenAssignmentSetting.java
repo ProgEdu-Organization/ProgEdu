@@ -174,8 +174,7 @@ public class MavenAssignmentSetting implements AssignmentSettings {
     model.setReporting(reporting);
     try {
       final MavenXpp3Writer writer = new MavenXpp3Writer();
-      writer.write(new FileWriter(targetPomSavePath
-              + "pom.xml"), model);
+      writer.write(new FileWriter(targetPomSavePath), model);
     } catch (IOException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());

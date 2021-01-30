@@ -894,7 +894,7 @@ public class AssignmentService {
         zipHandler.unzipFile(mavenResourcesZipPath,
             assignmentSettingDir + assignmentName);
         mas.createAssignmentSetting(ordersList, assignmentName,
-            mavenPomXmlSettingDir + assignmentName + "_");
+            mavenPomXmlPath);
 
         File inputFile = new File(mavenPomXmlPath);
         DocumentBuilderFactory docFactory =
