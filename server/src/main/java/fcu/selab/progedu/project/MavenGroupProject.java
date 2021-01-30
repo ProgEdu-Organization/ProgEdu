@@ -40,7 +40,8 @@ public class MavenGroupProject extends GroupProjectType {
 //      DOMSource source = new DOMSource(doc);
 //      StreamResult result = new StreamResult(new File(jenkinsJobConfigPath));
 //      transformer.transform(source, result);
-//    } catch (LoadConfigFailureException | ParserConfigurationException | SAXException | IOException
+//    } catch (LoadConfigFailureException | ParserConfigurationException |
+//    SAXException | IOException
 //        | TransformerException e) {
 //      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
 //      LOGGER.error(e.getMessage());
