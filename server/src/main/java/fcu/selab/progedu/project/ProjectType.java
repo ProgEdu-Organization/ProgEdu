@@ -8,11 +8,8 @@ import fcu.selab.progedu.status.StatusFactorySelector;
 public abstract class ProjectType {
 
   public Status getStatus(String statusType) {
-    return getStatusFactory().getStatus(statusType);
-  }
-
-  public StatusFactory getStatusFactory() {
-    return StatusFactorySelector.getStatusFactory(getProjectType());
+    StatusFactory statusFactory = StatusFactorySelector.getStatusFactory(getProjectType());
+    return statusFactory.getStatus(statusType);
   }
 
   public abstract ProjectTypeEnum getProjectType();
