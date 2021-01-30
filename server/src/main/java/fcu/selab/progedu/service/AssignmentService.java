@@ -26,6 +26,13 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import fcu.selab.progedu.data.AssignmentUser;
 import fcu.selab.progedu.data.PairMatching;
@@ -67,13 +74,11 @@ import fcu.selab.progedu.db.CommitStatusDbManager;
 import fcu.selab.progedu.db.ScreenshotRecordDbManager;
 import fcu.selab.progedu.db.UserDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
-import fcu.selab.progedu.project.ProjectTypeFactory;
 import fcu.selab.progedu.project.ProjectTypeEnum;
 import fcu.selab.progedu.utils.ExceptionUtil;
 import fcu.selab.progedu.utils.Linux;
 import fcu.selab.progedu.utils.ZipHandler;
 import fcu.selab.progedu.setting.MavenAssignmentSetting;
-import fcu.selab.progedu.setting.AssignmentSettings;
 
 @Path("assignment/")
 public class AssignmentService {
@@ -881,12 +886,30 @@ public class AssignmentService {
       if (fileType.equals("maven")) {
         String mavenResourcesZipPath =
             "/usr/local/tomcat/webapps/ROOT/resources/MvnQuickStart.zip";
+        String mavenPomXmlPath =
+            mavenPomXmlSettingDir + assignmentName + "_pom.xml";
         MavenAssignmentSetting mas = new MavenAssignmentSetting(assignmentName);
         ZipHandler zipHandler = new ZipHandler();
         zipHandler.unzipFile(mavenResourcesZipPath,
             assignmentSettingDir + assignmentName);
         mas.createAssignmentSetting(ordersList, assignmentName,
             mavenPomXmlSettingDir + assignmentName + "_");
+
+        File inputFile = new File(mavenPomXmlPath);
+        DocumentBuilderFactory docFactory =
+            DocumentBuilderFactory.newInstance();
+        DocumentBuilder docBuilder =
+            docFactory.newDocumentBuilder();
+        org.w3c.dom.Document doc;
+        doc = docBuilder.parse(inputFile);
+        doc.getDocumentElement().normalize();
+        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        Transformer transformer = transformerFactory.newTransformer();
+        transformer.setOutputProperty(OutputKeys.INDENT,"yes");
+        transformer.transform(new DOMSource(doc),
+            new StreamResult(new File(
+            assignmentSettingDir + assignmentName +"/pom.xml")));
+        zipHandler.zipTestFolder(assignmentSettingDir + assignmentName);
       }
     } catch (Exception e) {
       e.printStackTrace();
