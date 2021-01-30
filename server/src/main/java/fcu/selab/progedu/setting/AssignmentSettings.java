@@ -5,5 +5,6 @@ import org.apache.maven.model.Model;
 
 public interface AssignmentSettings {
 
-  public void createAssignmentSetting(List<String> order, String name, String targetPomSavePath);
+  public void createAssignmentSetting(
+      List<String> order, String name, String targetPomSavePath);
 }
