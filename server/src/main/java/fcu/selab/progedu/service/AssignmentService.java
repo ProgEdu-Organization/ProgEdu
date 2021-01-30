@@ -889,6 +889,7 @@ public class AssignmentService {
             "/usr/local/tomcat/webapps/ROOT/resources/MvnQuickStart.zip";
         String mavenPomXmlPath =
             mavenPomXmlSettingDir + assignmentName + "_pom.xml";
+        System.out.println(mavenPomXmlPath);
         MavenAssignmentSetting mas = new MavenAssignmentSetting(assignmentName);
         ZipHandler zipHandler = new ZipHandler();
         zipHandler.unzipFile(mavenResourcesZipPath,
