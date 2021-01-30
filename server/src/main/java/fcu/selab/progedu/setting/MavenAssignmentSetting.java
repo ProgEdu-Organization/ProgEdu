@@ -25,44 +25,30 @@ import fcu.selab.progedu.utils.ExceptionUtil;
 public class MavenAssignmentSetting implements AssignmentSettings {
 
   private static final Logger LOGGER = LoggerFactory
-      .getLogger(MavenAssignmentSetting.class);
-  private SettingZipHandler settingZipHandler;
+          .getLogger(MavenAssignmentSetting.class);
   private String assignmentName;
   private Model model;
 
   /**
    * init MavenAssignmentSetting
+   *
    * @param assignmentName Assignment Name
    */
   public MavenAssignmentSetting(String assignmentName) {
     this.assignmentName = assignmentName;
-    settingZipHandler = new SettingZipHandler();
-  }
-
-  /**
-   * unzip assignment to temp
-   */
-  public void unZipAssignmentToTmp() {
-    settingZipHandler.unZipAssignmentToTmp("maven", this.assignmentName);
-  }
-
-  /**
-   * pack up assignment
-   */
-  public void packUpAssignment() {
-    settingZipHandler.packUpAssignment(this.assignmentName);
   }
 
   /**
    * Create pom.xml
+   *
    * @param order List Order
-   * @param name AssignmentName
+   * @param name  AssignmentName
    */
   @Override
-  public void createAssignmentSetting(List<String> order,String name) {
+  public void createAssignmentSetting(List<String> order, String name, String targetPomSavePath) {
     final List<PluginExecution> checkStyleExecutions = new ArrayList<>();
     Model model = new Model();
-      
+
     model.setModelVersion("4.0.0");
     model.setGroupId("myApp");
     model.setArtifactId(name);
@@ -70,14 +56,14 @@ public class MavenAssignmentSetting implements AssignmentSettings {
     model.setVersion("1.0-SNAPSHOT");
     model.setName(name);
     model.setUrl("http://maven.apache.org");
-      
+
     Dependency dependency = new Dependency();
     dependency.setGroupId("junit");
     dependency.setArtifactId("junit");
     dependency.setVersion("4.12");
     dependency.setScope("test");
     model.addDependency(dependency);
-      
+
     Build build = new Build();
     build.setFinalName("ProgEdu");
     //-------------compiler settings
@@ -96,7 +82,7 @@ public class MavenAssignmentSetting implements AssignmentSettings {
     Xpp3Dom compilerConfigTarget = new Xpp3Dom("target");
     compilerConfigTarget.setValue("1.8");
     configCompiler.addChild(compilerConfigTarget);
-      
+
     pluginCompiler.setConfiguration(configCompiler);
     build.addPlugin(pluginCompiler);
     //---------------------unit test settings
@@ -111,7 +97,7 @@ public class MavenAssignmentSetting implements AssignmentSettings {
     Xpp3Dom testConfigUseSystemClassLoader = new Xpp3Dom("useSystemClassLoader");
     testConfigUseSystemClassLoader.setValue("false");
     configTest.addChild(testConfigUseSystemClassLoader);
-      
+
     if (order.contains("Unit Test Failure") == false) {
       Xpp3Dom testConfigSkip = new Xpp3Dom("skipTests");
       testConfigSkip.setValue("true");
@@ -134,7 +120,7 @@ public class MavenAssignmentSetting implements AssignmentSettings {
         checkStyleExecution.setId("compile");
         checkStyleExecution.setPhase("compile");
       }
-      
+
       Xpp3Dom configCheckStyle = (Xpp3Dom) pluginCheckStyle.getConfiguration();
       if (configCheckStyle == null) {
         configCheckStyle = new Xpp3Dom("configuration");
@@ -157,7 +143,7 @@ public class MavenAssignmentSetting implements AssignmentSettings {
       checkStyleExecution.setConfiguration(configCheckStyle);
       List<String> checkStyleExecutionGoals = new ArrayList<>();
       String checkStyleExecutionGoal = new String("check");
-      
+
       checkStyleExecutionGoals.add(checkStyleExecutionGoal);
       checkStyleExecution.setGoals(checkStyleExecutionGoals);
       checkStyleExecutions.add(checkStyleExecution);
@@ -166,10 +152,10 @@ public class MavenAssignmentSetting implements AssignmentSettings {
     }
     //-----------------update all build
     model.setBuild(build);
-      
+
     //---------------------reporting settings
     final Reporting reporting = new Reporting();
-    final List<ReportPlugin> reportingPlugins  = new ArrayList<>();;
+    final List<ReportPlugin> reportingPlugins = new ArrayList<>();
     ReportPlugin reportingPlugin = new ReportPlugin();
     reportingPlugin.setGroupId(" org.apache.maven.plugins ");
     reportingPlugin.setArtifactId("maven-checkstyle-plugin");
@@ -183,20 +169,13 @@ public class MavenAssignmentSetting implements AssignmentSettings {
     reportSets.add(reportSet);
     reportingPlugin.setReportSets(reportSets);
     reportingPlugins.add(reportingPlugin);
-      
+
     reporting.setPlugins(reportingPlugins);
     model.setReporting(reporting);
-    this.model = model;
-  }
-
-  /**
-   * write assignment setting file
-   */
-  public void writeAssignmentSettingFile() {
     try {
       final MavenXpp3Writer writer = new MavenXpp3Writer();
-      writer.write(new FileWriter(settingZipHandler.getAssignmentPath(this.assignmentName)
-          + "/pom.xml"), model);
+      writer.write(new FileWriter(targetPomSavePath
+              + "pom.xml"), model);
     } catch (IOException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());

@@ -110,7 +110,8 @@ public class AssignmentService {
   private final String tempDir = System.getProperty("java.io.tmpdir");
   private final String uploadDir = tempDir + "/uploads/";
   private final String testDir = tempDir + "/tests/";
-  private final String assignmentDir = tempDir + "/assignmentSetting/";
+  private final String assignmentSettingDir = tempDir + "/assignmentSetting/";
+  private final String mavenPomXmlSettingDir = tempDir + "/mavenPomXmlSetting/";
   private final String projectDir = System.getProperty("catalina.base");
   private final String imageTempName = "/temp_images/";
   private final String imageTempDir = projectDir + imageTempName;
@@ -876,19 +877,22 @@ public class AssignmentService {
       ordersList.add(token);
     }
     //---------make pom.xml
-    if (fileType.equals("maven")) {
-      MavenAssignmentSetting mas = new MavenAssignmentSetting(assignmentName);
-      modifyAssignmentFile(mas, ordersList, assignmentName);
+    try {
+      if (fileType.equals("maven")) {
+        String mavenResourcesZipPath =
+            "/usr/local/tomcat/webapps/ROOT/resources/MvnQuickStart.zip";
+        MavenAssignmentSetting mas = new MavenAssignmentSetting(assignmentName);
+        ZipHandler zipHandler = new ZipHandler();
+        zipHandler.unzipFile(mavenResourcesZipPath,
+            assignmentSettingDir + assignmentName);
+        mas.createAssignmentSetting(ordersList, assignmentName,
+            mavenPomXmlSettingDir + assignmentName + "_");
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
     }
-    return Response.ok().build();
-  }
 
-  private void modifyAssignmentFile(AssignmentSettings as,
-                                     List<String> ordersList, String assignmentName) {
-    as.unZipAssignmentToTmp();
-    as.createAssignmentSetting(ordersList, assignmentName);
-    as.writeAssignmentSettingFile();
-    as.packUpAssignment();
+    return Response.ok().build();
   }
 
   /**
@@ -901,7 +905,8 @@ public class AssignmentService {
   @GET
   @Path("getAssignmentFile")
   public Response getAssignmentFile(@QueryParam("fileName") String fileName) {
-    String filePath = assignmentDir + fileName + ".zip";
+    String filePath = assignmentSettingDir + fileName + ".zip";
+
     
     File file = new File(filePath);
 
