@@ -312,14 +312,6 @@ public class CommitRecordService {
     return Response.ok().entity(ob.toString()).build();
   }
 
-  private ProjectType getAssignmentType(String assignmentName) { // Todo 需整理
-    AssignmentDbManager adb = AssignmentDbManager.getInstance();
-    AssignmentTypeDbManager atdb = AssignmentTypeDbManager.getInstance();
-    int typeId = adb.getAssignmentTypeId(assignmentName);
-    ProjectTypeEnum type = atdb.getTypeNameById(typeId);
-    return ProjectTypeFactory.getProjectType(type.getTypeName());
-  }
-
   private ProjectTypeEnum getProjectTypeEnum(String assignmentName) {
     AssignmentDbManager adb = AssignmentDbManager.getInstance();
     AssignmentTypeDbManager atdb = AssignmentTypeDbManager.getInstance();
