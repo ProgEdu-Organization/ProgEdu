@@ -18,7 +18,10 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import fcu.selab.progedu.db.service.ProjectDbService;
 import fcu.selab.progedu.project.ProjectType;
+import fcu.selab.progedu.status.Status;
+import fcu.selab.progedu.status.StatusAnalysisFactory;
 import fcu.selab.progedu.utils.ExceptionUtil;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -51,6 +54,7 @@ public class CommitRecordService {
   private JenkinsService js = JenkinsService.getInstance();
   private GitlabService gs = GitlabService.getInstance();
   private static final Logger LOGGER = LoggerFactory.getLogger(CommitRecordService.class);
+  private ProjectDbService projectDbService = ProjectDbService.getInstance();
 
   /**
    * get all commit result.
@@ -273,14 +277,19 @@ public class CommitRecordService {
   public Response getFeedback(@QueryParam("username") String username,
       @QueryParam("assignmentName") String assignmentName, @QueryParam("number") int number) {
     JenkinsService js = JenkinsService.getInstance();
-    ProjectType assignmentType = getAssignmentType(assignmentName);
     String jobName = username + "_" + assignmentName;
     String console = js.getConsole(jobName, number);
     int auId = getAuid(username, assignmentName);
     String statusType = getStatusTypeName(auId, number);
-    String message = assignmentType.getStatus(statusType).extractFailureMsg(console);
-    ArrayList feedBacks = assignmentType.getStatus(statusType).formatExamineMsg(message);
-    String feedBackMessage = assignmentType.getStatus(statusType).tojsonArray(feedBacks);
+
+    ProjectTypeEnum projectTypeEnum = projectDbService.getProjectType(assignmentName);
+    StatusAnalysisFactory statusAnalysisFactory = new StatusAnalysisFactory();
+    Status statusAnalysis = statusAnalysisFactory.getStatusAnalysis(projectTypeEnum, statusType);
+
+
+    String message = statusAnalysis.extractFailureMsg(console);
+    ArrayList feedBacks = statusAnalysis.formatExamineMsg(message);
+    String feedBackMessage = statusAnalysis.tojsonArray(feedBacks);
 
     return Response.ok().entity(feedBackMessage).build();
   }
@@ -308,6 +317,7 @@ public class CommitRecordService {
     AssignmentTypeDbManager atdb = AssignmentTypeDbManager.getInstance();
     int typeId = adb.getAssignmentTypeId(assignmentName);
     ProjectTypeEnum type = atdb.getTypeNameById(typeId);
+    // Todo 以上用這行可取代 ProjectTypeEnum type = gpdb.getProjectType(projectName);
     return ProjectTypeFactory.getProjectType(type.getTypeName());
   }
 
