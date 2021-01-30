@@ -908,7 +908,7 @@ public class AssignmentService {
         transformer.setOutputProperty(OutputKeys.INDENT,"yes");
         transformer.transform(new DOMSource(doc),
             new StreamResult(new File(
-            assignmentSettingDir + assignmentName +"/pom.xml")));
+            assignmentSettingDir + assignmentName + "/pom.xml")));
         zipHandler.zipTestFolder(assignmentSettingDir + assignmentName);
       }
     } catch (Exception e) {
