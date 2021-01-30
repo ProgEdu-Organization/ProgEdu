@@ -18,10 +18,4 @@ public class JavacAssignmentTest {
 //        javacAssignment.searchJavaFile(target.toString()); // just show the command txt
     }
 
-    @Test
-    public void getJenkinsJobConfigPath() {
-        JavacAssignment javacAssignment = new JavacAssignment();
-        String jenkinsJobConfigPath = javacAssignment.getJenkinsJobConfigPath();
-        System.out.println(jenkinsJobConfigPath);
-    }
 }

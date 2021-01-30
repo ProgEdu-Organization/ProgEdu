@@ -122,29 +122,23 @@ public class TomcatService {
   /**
    * (to do)
    *
-   * @param file       (to do)
-   * @param fileDetail (to do)
-   * @param project    (to do)
    * @return target (to do)
    */
-  public String storeFileToServer(InputStream file, FormDataContentDisposition fileDetail,
-                                  ProjectType project) {
-    String fileName;
-    if (!hasTemplate(fileDetail)) {
-      fileName = project.getSampleTemplate();
-      String filePath = this.getClass().getResource("/sample/" + fileName).getFile();
-      File sample = new File(filePath);
-      try {
-        file = new FileInputStream(sample);
-      } catch (FileNotFoundException e) {
-        LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
-        LOGGER.error(e.getMessage());
-      }
-    } else {
-      fileName = fileDetail.getFileName();
-    }
-    return storeFileToUploadsFolder(file, fileName);
+  public String storeWebFileToServer() {
 
+    String fileName = "WebQuickStart.zip";
+    String filePath = this.getClass().getResource("/sample/" + fileName).getFile();
+    File sample = new File(filePath);
+    InputStream file;
+    try {
+      file = new FileInputStream(sample);
+      return storeFileToUploadsFolder(file, fileName);
+    } catch (FileNotFoundException e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    }
+
+    return "";
   }
 
   /**
