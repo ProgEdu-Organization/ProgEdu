@@ -282,7 +282,7 @@ public class CommitRecordService {
     int auId = getAuid(username, assignmentName);
     String statusType = getStatusTypeName(auId, number);
 
-    ProjectTypeEnum projectTypeEnum = projectDbService.getProjectType(assignmentName);
+    ProjectTypeEnum projectTypeEnum = getProjectTypeEnum(assignmentName);
     StatusAnalysisFactory statusAnalysisFactory = new StatusAnalysisFactory();
     Status statusAnalysis = statusAnalysisFactory.getStatusAnalysis(projectTypeEnum, statusType);
 
@@ -312,13 +312,19 @@ public class CommitRecordService {
     return Response.ok().entity(ob.toString()).build();
   }
 
-  private ProjectType getAssignmentType(String assignmentName) {
+  private ProjectType getAssignmentType(String assignmentName) { // Todo 需整理
     AssignmentDbManager adb = AssignmentDbManager.getInstance();
     AssignmentTypeDbManager atdb = AssignmentTypeDbManager.getInstance();
     int typeId = adb.getAssignmentTypeId(assignmentName);
     ProjectTypeEnum type = atdb.getTypeNameById(typeId);
-    // Todo 以上用這行可取代 ProjectTypeEnum type = gpdb.getProjectType(projectName);
     return ProjectTypeFactory.getProjectType(type.getTypeName());
+  }
+
+  private ProjectTypeEnum getProjectTypeEnum(String assignmentName) {
+    AssignmentDbManager adb = AssignmentDbManager.getInstance();
+    AssignmentTypeDbManager atdb = AssignmentTypeDbManager.getInstance();
+    int typeId = adb.getAssignmentTypeId(assignmentName);
+    return atdb.getTypeNameById(typeId);
   }
 
   private int getAuid(String username, String assignmentName) {
