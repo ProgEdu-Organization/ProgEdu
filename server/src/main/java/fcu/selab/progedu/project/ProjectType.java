@@ -17,8 +17,6 @@ public abstract class ProjectType {
 
   public abstract ProjectTypeEnum getProjectType();
 
-  public abstract String getSampleTemplate();
-
   public abstract StatusEnum checkStatusType(int num, String username, String assignmentName);
 
 }

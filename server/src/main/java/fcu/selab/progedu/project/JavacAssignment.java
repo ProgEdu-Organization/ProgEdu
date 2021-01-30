@@ -29,11 +29,6 @@ public class JavacAssignment extends ProjectType {
   }
 
   @Override
-  public String getSampleTemplate() {
-    return "JavacQuickStart.zip";
-  }
-
-  @Override
   public StatusEnum checkStatusType(int num, String username, String assignmentName) {
     StatusEnum status;
     StatusService statusService = StatusService.getInstance();

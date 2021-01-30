@@ -11,11 +11,6 @@ public class MavenGroupProject extends GroupProjectType {
     return ProjectTypeEnum.MAVEN;
   }
 
-  @Override
-  public String getSampleTemplate() {
-    return "MavenQuickStart.zip";
-  }
-
   // Todo 這因為還未遷移, 所以先不刪,
 //  public void createJenkinsJobConfig(String username, String projectName) {
 //    try {

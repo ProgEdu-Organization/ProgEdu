@@ -16,11 +16,6 @@ public class MavenAssignment extends ProjectType {
   }
 
   @Override
-  public String getSampleTemplate() {
-    return "MavenQuickStart.zip";
-  }
-
-  @Override
   public StatusEnum checkStatusType(int num, String username, String assignmentName) {
     StatusEnum status;
     StatusService statusService = StatusService.getInstance();

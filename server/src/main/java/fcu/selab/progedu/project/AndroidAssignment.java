@@ -16,11 +16,6 @@ public class AndroidAssignment extends ProjectType {
   }
 
   @Override
-  public String getSampleTemplate() {
-    return "AndroidQuickStart.zip";
-  }
-
-  @Override
   public StatusEnum checkStatusType(int num, String username, String assignmentName) {
     StatusEnum status = null;
     StatusService statusService = StatusService.getInstance();

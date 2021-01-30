@@ -11,9 +11,4 @@ public class WebGroupProject extends GroupProjectType {
     return ProjectTypeEnum.WEB;
   }
 
-  @Override
-  public String getSampleTemplate() {
-    return "WebQuickStart.zip";
-  }
-
 }
