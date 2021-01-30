@@ -150,6 +150,28 @@ public class TomcatService {
   /**
    * (to do)
    *
+   * @return target (to do)
+   */
+  public String storeWebFileToServer() {
+
+    String fileName = "WebQuickStart.zip";
+    String filePath = this.getClass().getResource("/sample/" + fileName).getFile();
+    File sample = new File(filePath);
+    InputStream file;
+    try {
+      file = new FileInputStream(sample);
+      return storeFileToUploadsFolder(file, fileName);
+    } catch (FileNotFoundException e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    }
+
+    return "";
+  }
+
+  /**
+   * (to do)
+   *
    * @param fileDetail (to do)
    * @return hasTemplate (to do)
    */

@@ -99,7 +99,7 @@ public class GroupProjectService {
     tomcatService.createReadmeFile(readMe, cloneDirectoryPath);
 
     // 4 create template
-    String filePath = tomcatService.storeFileToServer(null, null, groupProject);
+    String filePath = tomcatService.storeWebFileToServer();
     zipHandler.unzipFile(filePath, cloneDirectoryPath);
 
     // 5. Add .gitkeep if folder is empty.
