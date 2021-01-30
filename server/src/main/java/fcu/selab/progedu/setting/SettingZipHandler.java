@@ -7,6 +7,7 @@ import fcu.selab.progedu.exception.LoadConfigFailureException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+// Todo 不需要這類別, 現在所有需要處理壓縮檔這件事, 直接透過 .utils.ZipHandler 就可以了
 public class SettingZipHandler {
   
   private ZipHandler zipHandler;
