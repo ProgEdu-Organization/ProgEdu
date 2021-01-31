@@ -884,7 +884,7 @@ public class AssignmentService {
     try {
       if (fileType.equals("maven")) {
         String mavenResourcesZipPath =
-            "/usr/local/tomcat/webapps/ROOT/resources/MvnQuickStart.zip";
+            this.getClass().getResource("/resources/MvnQuickStart.zip").getPath();
         MavenAssignmentSetting mas = new MavenAssignmentSetting();
         ZipHandler zipHandler = new ZipHandler();
         zipHandler.unzipFile(mavenResourcesZipPath,
