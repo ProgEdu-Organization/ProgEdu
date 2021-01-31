@@ -1,6 +1,6 @@
 package fcu.selab.progedu.status;
 
-import fcu.selab.progedu.project.ProjectTypeEnum;
+import fcu.selab.progedu.data.ProjectTypeEnum;
 
 public class StatusAnalysisFactory {
 
@@ -22,7 +22,7 @@ public class StatusAnalysisFactory {
    * @param statusType  StatusEnum string
    * @return Status
    */
-  public Status getStatusAnalysis(ProjectTypeEnum projectTypeEnum, String statusType) {
+  public static Status getStatusAnalysis(ProjectTypeEnum projectTypeEnum, String statusType) {
 
     switch (projectTypeEnum) {
       case JAVAC:

@@ -2,8 +2,6 @@ package fcu.selab.progedu.data;
 
 import java.util.Date;
 
-import fcu.selab.progedu.project.ProjectTypeEnum;
-
 public class Assignment {
 
   private int id = 0;

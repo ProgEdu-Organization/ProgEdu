@@ -1,7 +1,7 @@
 package fcu.selab.progedu.jenkinsconfig;
 
 
-import fcu.selab.progedu.project.ProjectTypeEnum;
+import fcu.selab.progedu.data.ProjectTypeEnum;
 
 public class JenkinsProjectConfigFactory {
 

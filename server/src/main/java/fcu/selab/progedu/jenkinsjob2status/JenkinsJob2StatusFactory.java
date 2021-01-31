@@ -1,6 +1,6 @@
 package fcu.selab.progedu.jenkinsjob2status;
 
-import fcu.selab.progedu.project.ProjectTypeEnum;
+import fcu.selab.progedu.data.ProjectTypeEnum;
 
 public class JenkinsJob2StatusFactory {
 

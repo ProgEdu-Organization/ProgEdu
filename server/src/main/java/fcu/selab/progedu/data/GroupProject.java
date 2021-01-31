@@ -2,8 +2,6 @@ package fcu.selab.progedu.data;
 
 import java.util.Date;
 
-import fcu.selab.progedu.project.ProjectTypeEnum;
-
 public class GroupProject {
   private int id = 0;
 

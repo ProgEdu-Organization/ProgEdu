@@ -1,6 +1,5 @@
-package fcu.selab.progedu.project;
+package fcu.selab.progedu.data;
 
-// Todo 之後這個應該移到 data package中
 public enum ProjectTypeEnum {
   JAVAC("javac"),
   MAVEN("maven"),
