@@ -3,6 +3,8 @@ package fcu.selab.progedu.service;
 import java.io.File;
 import java.io.IOException;
 
+import fcu.selab.progedu.jenkinsconfig.JenkinsProjectConfig;
+import fcu.selab.progedu.jenkinsconfig.WebGroupConfig;
 import org.gitlab.api.models.GitlabProject;
 import org.gitlab.api.models.GitlabUser;
 import org.slf4j.Logger;
@@ -63,14 +65,21 @@ public class GroupProjectService {
       LOGGER.error(e.getMessage());
     }
   }
+  
 
   /**
-   * 
+   *
    * @param groupName   group name
    * @param projectName project name
    * @param projectType projectType
    */
-  public void createGroupProject(String groupName, String projectName, String projectType) {
+  public void createGroupProjectV2(String groupName, String projectName, String projectType) {
+
+    if (!projectType.equals("web")) {
+      LOGGER.error("The createGroupProjectV2 not support" + projectType);
+      return;
+    }
+
     String readMe = "Initialization";
 //    final GitlabService gitlabService = GitlabService.getInstance();
     final GroupProjectType groupProject = GroupProjectFactory.getGroupProjectType(projectType);
@@ -90,7 +99,7 @@ public class GroupProjectService {
     tomcatService.createReadmeFile(readMe, cloneDirectoryPath);
 
     // 4 create template
-    String filePath = tomcatService.storeFileToServer(null, null, groupProject);
+    String filePath = tomcatService.storeWebFileToServer();
     zipHandler.unzipFile(filePath, cloneDirectoryPath);
 
     // 5. Add .gitkeep if folder is empty.
@@ -113,8 +122,29 @@ public class GroupProjectService {
       LOGGER.error(e.getMessage());
     }
 
-    // 10. Create each Jenkins Jobs
-    groupProject.createJenkinsJob(groupName, projectName);
+    // 10. Create Jenkins Job
+    try {
+      GitlabConfig gitlabConfig = GitlabConfig.getInstance();
+
+      CourseConfig courseConfig = CourseConfig.getInstance();
+      String progEduApiUrl = courseConfig.getTomcatServerIp() + courseConfig.getBaseuri()
+              + "/webapi/groups";
+      String updateDbUrl = progEduApiUrl + "/commits/update";
+      String projectUrl = gitlabConfig.getGitlabHostUrl() + "/" + groupName + "/" + projectName
+              + ".git";
+
+      JenkinsProjectConfig jenkinsProjectConfig = new WebGroupConfig(projectUrl, updateDbUrl,
+                                                                     groupName, projectName);
+
+      JenkinsService jenkinsService = JenkinsService.getInstance();
+      String jobName = groupName + "_" +  projectName;
+      jenkinsService.createJobV2(jobName, jenkinsProjectConfig.getXmlConfig());
+      jenkinsService.buildJob(jobName);
+    } catch (Exception e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    }
+
   }
 
   /**

@@ -19,6 +19,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import fcu.selab.progedu.db.UserDbManager;
+import fcu.selab.progedu.status.Status;
+import fcu.selab.progedu.status.StatusAnalysisFactory;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -276,9 +278,14 @@ public class GroupCommitRecordService {
     int pgid = pgdb.getId(groupName, projectName);
 
     StatusEnum statusType = gpdb.getCommitRecordStatus(pgid, number);
-    String message = projectType.getStatus(statusType.getType()).extractFailureMsg(console);
-    ArrayList feedBacks = projectType.getStatus(statusType.getType()).formatExamineMsg(message);
-    String feedBackMessage = projectType.getStatus(statusType.getType()).tojsonArray(feedBacks);
+
+    StatusAnalysisFactory statusAnalysisFactory = new StatusAnalysisFactory();
+    Status statusAnalysis = statusAnalysisFactory.getStatusAnalysis(projectTypeEnum,
+                                                                    statusType.getType());
+
+    String message = statusAnalysis.extractFailureMsg(console);
+    ArrayList feedBacks = statusAnalysis.formatExamineMsg(message);
+    String feedBackMessage = statusAnalysis.tojsonArray(feedBacks);
 
     return Response.ok().entity(feedBackMessage).build();
   }

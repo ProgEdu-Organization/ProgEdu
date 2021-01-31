@@ -13,7 +13,7 @@ public class GroupProjectFactory {
       case JAVAC: {
         return null;
       }
-      case MAVEN: {
+      case MAVEN: { // Todo 目前失效
         return new MavenGroupProject();
       }
       case WEB: {

@@ -25,7 +25,7 @@ export class AssignmentManagementService {
   ALL_ASSIGNMENT_API = environment.SERVER_URL + '/webapi/assignment/getAllAssignments';
   DELETE_ASSIGNMENT_API = environment.SERVER_URL + '/webapi/assignment/delete';
   EDIT_ASSIGNMENT_API = environment.SERVER_URL + '/webapi/assignment/edit';
-  ASSIGNMENT_ORDER = environment.SERVER_URL + '/webapi/assignment/getAssignmentOrder'
+  ASSIGNMENT_ORDER = environment.SERVER_URL + '/webapi/assignment/getAssignmentOrder';
   constructor(private http: HttpClient) { }
   getAllAssignments(): Observable<any> {
     return this.http.get<any>(this.ALL_ASSIGNMENT_API);

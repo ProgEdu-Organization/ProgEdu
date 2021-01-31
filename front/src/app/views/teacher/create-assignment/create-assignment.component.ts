@@ -37,7 +37,7 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
   type: string = 'Waiting';
   finalIndex: number;
   orderString: string;
-  isShow: boolean = true;
+  showAssessment: boolean = true;
 
   reviewMetricsNums = [0, 1, 2];
   assessments: Assessment[][] = [[], [], []];
@@ -144,7 +144,12 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
     );
     this.assignment.get(type).valueChanges.subscribe(
       () => {
-        this.reset();
+        //this.reset();
+        if (this.assignment.get(type).value == 'javac') {
+          this.setShowAssessment(false);
+        } else {
+          this.setShowAssessment(true);
+        }
       }
     );
 
@@ -174,25 +179,8 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
     );
   }
 
-  isShowOrder(isShow: boolean) {
-    this.isShow = isShow;
-  }
-
-  isEnabledConfirm() {
-    if(!(this.assignment.get('name').valid && this.assignment.get('type').valid)) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  checkIsFill() {
-    let sum = 0;
-    for(let i=0; i<this.statusScore.size; i++) {
-      sum += Number(this.statusScore[i]);
-    }
-    if(sum>100) return false;
-    else return true;
+  setShowAssessment(showAssessment: boolean) {
+    this.showAssessment = showAssessment;
   }
 
   getScoreOptions(status:string) {
@@ -200,25 +188,27 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
     let sum = 0;
     let options : string[] = [];
     sum += Number(this.statusScore.get("Compile Failure"));
-    if(this.order.length !== 0){
-      for(let i=0; i<this.order.length; i++){
-        if(this.statusScore.get(this.order[i]) !== undefined)
+    if (this.order.length !== 0) {
+      for (let i = 0; i < this.order.length; i++) {
+        if (this.statusScore.get(this.order[i]) !== undefined) {
           sum += Number(this.statusScore.get(this.order[i]));
+        }
       }
     }
-    if(this.statusScore.get(status) !== undefined)
+    if (this.statusScore.get(status) !== undefined) {
       sum -= Number(this.statusScore.get(status));
+    }
     max = max - sum;
-    for(let i=0; i <= 100; i++) {
-      if(i <= max)
+    for (let i = 0; i <= 100; i++) {
+      if (i <= max) {
         options.push(String(i));
+      }
     }
     return options;
   }
 
   selectChangeHandler(status:string, $event) {
     this.statusScore.set(status, $event.target.value);
-    console.log(this.statusScore);
   }
 
   selectedAssignmentGradingMethod(method: string) {
@@ -265,8 +255,9 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
   }
 
   selectedAssignmentType(type: string) {
-    if (type !== undefined) {
+    if (assignmentTypeEnum[type] !== undefined && assignmentTypeEnum[type] !== this.assignment.get('type').value) {
       this.assignment.get('type').setValue(assignmentTypeEnum[type]);
+      this.reset();
     }
   }
 
@@ -312,13 +303,13 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
     if (this.assignment.get('type').value == 'maven') {
       this.orderString = "Compile Failure:" + this.statusScore.get("Compile Failure");
     }
-    for(let i = 0; i < this.order.length; i++) {
-      if(this.statusScore.get(this.order[i]) == undefined)
+    for (let i = 0; i < this.order.length; i++) {
+      if (this.statusScore.get(this.order[i]) == undefined) {
         this.orderString = this.orderString + ', ' + this.order[i] + ':0';
-      else
+      } else {
         this.orderString = this.orderString + ', ' + this.order[i] + ':' + this.statusScore.get(this.order[i]);
+      }
     }
-    console.log(this.orderString);
     this.assignment.get('assOrder').setValue(this.orderString);
     if (this.assignment.dirty && this.assignment.valid) {
       this.progressModal.show();

@@ -20,10 +20,6 @@ public class Assignment {
 
   private ProjectTypeEnum type;
 
-  private String gitLabUrl = "";
-
-  private String jenkinsUrl = "";
-
   private boolean display = true;
 
   public int getId() {
@@ -72,22 +68,6 @@ public class Assignment {
 
   public ProjectTypeEnum setType(ProjectTypeEnum type) {
     return this.type = type;
-  }
-
-  public String getGitLabUrl() {
-    return gitLabUrl;
-  }
-
-  public void setGitLabUrl(String gitLabUrl) {
-    this.gitLabUrl = gitLabUrl;
-  }
-
-  public String getJenkinsUrl() {
-    return jenkinsUrl;
-  }
-
-  public void setJenkinsUrl(String jenkinsUrl) {
-    this.jenkinsUrl = jenkinsUrl;
   }
 
   public Date getReleaseTime() {

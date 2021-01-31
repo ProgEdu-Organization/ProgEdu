@@ -1,7 +1,6 @@
 package fcu.selab.progedu.service;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -26,6 +25,13 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import fcu.selab.progedu.data.AssignmentUser;
 import fcu.selab.progedu.data.PairMatching;
@@ -35,7 +41,8 @@ import fcu.selab.progedu.db.ReviewRecordDbManager;
 import fcu.selab.progedu.db.ReviewSettingDbManager;
 import fcu.selab.progedu.db.ReviewSettingMetricsDbManager;
 import fcu.selab.progedu.db.ReviewStatusDbManager;
-import fcu.selab.progedu.project.ProjectType;
+import fcu.selab.progedu.jenkinsconfig.JenkinsProjectConfig;
+import fcu.selab.progedu.jenkinsconfig.JenkinsProjectConfigFactory;
 import org.json.JSONArray;
 import org.jsoup.nodes.Document;
 import org.gitlab.api.models.GitlabProject;
@@ -65,13 +72,11 @@ import fcu.selab.progedu.db.CommitStatusDbManager;
 import fcu.selab.progedu.db.ScreenshotRecordDbManager;
 import fcu.selab.progedu.db.UserDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
-import fcu.selab.progedu.project.ProjectTypeFactory;
 import fcu.selab.progedu.project.ProjectTypeEnum;
 import fcu.selab.progedu.utils.ExceptionUtil;
 import fcu.selab.progedu.utils.Linux;
 import fcu.selab.progedu.utils.ZipHandler;
 import fcu.selab.progedu.setting.MavenAssignmentSetting;
-import fcu.selab.progedu.setting.AssignmentSettings;
 
 @Path("assignment/")
 public class AssignmentService {
@@ -108,7 +113,8 @@ public class AssignmentService {
   private final String tempDir = System.getProperty("java.io.tmpdir");
   private final String uploadDir = tempDir + "/uploads/";
   private final String testDir = tempDir + "/tests/";
-  private final String assignmentDir = tempDir + "/assignmentSetting/";
+  private final String assignmentSettingDir = tempDir + "/assignmentSetting/";
+  private final String mavenPomXmlSettingDir = tempDir + "/mavenPomXmlSetting/";
   private final String projectDir = System.getProperty("catalina.base");
   private final String imageTempName = "/temp_images/";
   private final String imageTempDir = projectDir + imageTempName;
@@ -202,7 +208,8 @@ public class AssignmentService {
 
     List<User> users = userService.getStudents();
     for (User user : users) {
-      createAssignmentSettings(user.getUsername(), assignmentName);
+//      createAssignmentSettings(user.getUsername(), assignmentName);
+      createAssignmentSettingsV2(user.getUsername(), assignmentName);
     }
 
     // 10. remove project file in linux
@@ -211,13 +218,13 @@ public class AssignmentService {
   }
 
   /**
-   * @param assignmentName assignment name
-   * @param releaseTime    release time
-   * @param readMe         read me
-   * @param assignmentType assignment type
-   * @param file           file
-   * @param fileDetail     file detail
-   * @param order          assignment order
+   * @param assignmentName                     assignment name
+   * @param releaseTime                        release time
+   * @param readMe                             read me
+   * @param assignmentType                     assignment type
+   * @param file                               file
+   * @param fileDetail                         file detail
+   * @param assignmentCompileOrdersAndScore    assignment compile order & score
    * @return abc
    * @throws Exception abc
    */
@@ -231,14 +238,14 @@ public class AssignmentService {
       @FormDataParam("readMe") String readMe, @FormDataParam("fileRadio") String assignmentType,
       @FormDataParam("file") InputStream file,
       @FormDataParam("file") FormDataContentDisposition fileDetail,
-      @FormDataParam("order") String order) {
+      @FormDataParam("order") String assignmentCompileOrdersAndScore) {
     
     Response response = null;
     
     try {
       createAssignment(assignmentName, releaseTime, deadline, readMe,
           assignmentType, file, fileDetail);
-      addOrder(order, assignmentName);
+      addOrder(assignmentCompileOrdersAndScore, assignmentName);
 
       response = Response.ok().build();
     } catch (Exception e) {
@@ -478,14 +485,14 @@ public class AssignmentService {
   /**
    * Add the assignment's assessment order to database
    *
-   * @param order          Order
-   * @param assignmentName Assignment name
+   * @param assignmentCompileOrdersAndScore     Assignment order and score
+   * @param assignmentName                      Assignment name
    */
-  private void addOrder(String order, String assignmentName) {
+  private void addOrder(String assignmentCompileOrdersAndScore, String assignmentName) {
     List<String> ordersList = new ArrayList<>();
     List<String> scoresList = new ArrayList<>();
 
-    String[] ordersAndScores = order.split(", ");
+    String[] ordersAndScores = assignmentCompileOrdersAndScore.split(", ");
     for (String orderAndScore : ordersAndScores) {
       String[] token = orderAndScore.split(":");
 
@@ -583,20 +590,23 @@ public class AssignmentService {
       @FormDataParam("releaseTime") Date releaseTime, @FormDataParam("deadline") Date deadline,
       @FormDataParam("readMe") String readMe, @FormDataParam("file") InputStream file,
       @FormDataParam("file") FormDataContentDisposition fileDetail,
-      @FormDataParam("order") String order) {
+      @FormDataParam("order") String assignmentCompileOrdersAndScore) {
     int aid = dbManager.getAssignmentIdByName(assignmentName);
     dbManager.editAssignment(deadline, releaseTime, readMe, aid);
-    List<Integer> aaIds = aaDbManager.getAssignmentAssessmentIdByaId(aid);
-
-    List<Integer> scoresList = new ArrayList<>();
-
-    String[] ordersAndScores = order.split(", ");
-    for (String orderAndScore : ordersAndScores) {
-      String[] token = orderAndScore.split(":");
-      scoresList.add(Integer.valueOf(token[1]));
-    }
-    for (int i = 0; i < scoresList.size(); i++) {
-      aaDbManager.updateScore(aid, aaDbManager.getAssessmentOrder(aaIds.get(i)), scoresList.get(i));
+    if (!assignmentCompileOrdersAndScore.isEmpty()) {
+      List<Integer> aaIds = aaDbManager.getAssignmentAssessmentIdByaId(aid);
+      List<Integer> scoresList = new ArrayList<>();
+      //order: Compile Failure:10, Coding Style Failure:80, Unit Test Failure:10
+      String[] ordersAndScores = assignmentCompileOrdersAndScore.split(", ");
+      for (String orderAndScore : ordersAndScores) {
+        String[] token = orderAndScore.split(":");
+        scoresList.add(Integer.valueOf(token[1]));
+      }
+      for (int i = 0; i < scoresList.size(); i++) {
+        aaDbManager.updateScore(aid,
+            aaDbManager.getAssessmentOrder(aaIds.get(i)),
+            scoresList.get(i));
+      }
     }
     return Response.ok().build();
   }
@@ -710,25 +720,43 @@ public class AssignmentService {
     rsDbManager.deleteReviewSettingByAId(aid);
   }
 
-  private void createAssignmentSettings(String username, String assignmentName) {
+  private void createAssignmentSettingsV2(String username, String assignmentName) {
     ProjectTypeEnum assignmentTypeEnum = dbManager.getAssignmentType(assignmentName);
-    ProjectType project = ProjectTypeFactory
-        .getProjectType(assignmentTypeEnum.getTypeName());
-    //Todo 以上 assignmentTypeEnum 要拿掉, 因為之後沒有 assignment
 
     addAuid(username, assignmentName);
     //Todo 以上 addAuid 要改, 因為之後沒有 assignment
 
-    try {
-      GitlabProject gitlabProject = gitlabService.createPrivateProject(username,
-              assignmentName, "root"); // Todo assignment 要改
+    GitlabProject gitlabProject = gitlabService.createPrivateProject(username,
+            assignmentName, "root"); // Todo assignment 要改
 
+    try {
       gitlabService.setGitlabWebhook(gitlabProject);
-      project.createJenkinsJob(username, assignmentName); // Todo assignment 要改
-    } catch (IOException | LoadConfigFailureException e) {
+
+      GitlabConfig gitlabConfig = GitlabConfig.getInstance();
+      String projectUrl = gitlabConfig.getGitlabHostUrl() + "/" + username + "/" + assignmentName
+              + ".git";
+
+      CourseConfig courseConfig = CourseConfig.getInstance();
+      String progEduApiUrl = courseConfig.getTomcatServerIp() + courseConfig.getBaseuri()
+              + "/webapi";
+      String updateDbUrl = progEduApiUrl + "/commits/update";
+
+      JenkinsProjectConfig jenkinsProjectConfig = JenkinsProjectConfigFactory
+              .getJenkinsProjectConfig(assignmentTypeEnum.getTypeName(), projectUrl, updateDbUrl,
+                      username, assignmentName);
+
+      JenkinsService jenkinsService = JenkinsService.getInstance();
+      String jobName = username + "_" + assignmentName;
+
+      jenkinsService.createJobV2(jobName, jenkinsProjectConfig.getXmlConfig());
+
+      jenkinsService.buildJob(jobName);
+
+    } catch (Exception e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
     }
+
   }
 
   /**
@@ -740,7 +768,8 @@ public class AssignmentService {
     List<String> assignmentNames = dbManager.getAllAssignmentNames();
 
     for (String assignmentName : assignmentNames) {
-      createAssignmentSettings(username, assignmentName);
+//      createAssignmentSettings(username, assignmentName);
+      createAssignmentSettingsV2(username, assignmentName);
     }
 
   }
@@ -834,7 +863,7 @@ public class AssignmentService {
    * change assignment compile order
    *
    * @param fileType fileType
-   * @param orders orders
+   * @param assignmentCompileOrdersAndScore assignmentCompileOrdersAndScore
    * @param assignmentName assignmentName
    */
   @POST
@@ -842,27 +871,52 @@ public class AssignmentService {
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   public Response modifyAssignmentOrderFile(
       @FormDataParam("fileRadio") String fileType, 
-      @FormDataParam("order") String orders,
+      @FormDataParam("order") String assignmentCompileOrdersAndScore,
       @FormDataParam("assignmentName") String assignmentName) {
-    //---------cut order
+    Response response = null;
+    //-----order: Compile Failure:10, Coding Style Failure:80, Unit Test Failure:10
     List<String> ordersList = new ArrayList<>();
-    String[] tokens = orders.split(", ");
+    String[] tokens = assignmentCompileOrdersAndScore.split(", ");
     for (String token:tokens) {
       ordersList.add(token);
     }
-    //------------------------make pom.xml
-    if (fileType.equals("maven")) {
-      MavenAssignmentSetting mas = new MavenAssignmentSetting(assignmentName);
-      modifyAssignmentFile(mas, ordersList, assignmentName);
-    }
-    return Response.ok().build();
-  }
+    //---------make pom.xml
+    try {
+      if (fileType.equals("maven")) {
+        String mavenResourcesZipPath =
+            "/usr/local/tomcat/webapps/ROOT/resources/MvnQuickStart.zip";
+        String mavenPomXmlPath =
+            mavenPomXmlSettingDir + assignmentName + "_pom.xml";
+        MavenAssignmentSetting mas = new MavenAssignmentSetting();
+        ZipHandler zipHandler = new ZipHandler();
+        zipHandler.unzipFile(mavenResourcesZipPath,
+            assignmentSettingDir + assignmentName);
+        mas.createAssignmentSetting(ordersList, assignmentName,
+            mavenPomXmlPath);
 
-  private void modifyAssignmentFile(AssignmentSettings as,
-                                     List<String> ordersList, String assignmentName) {
-    as.unZipAssignmentToTmp();
-    as.writeAssignmentSettingFile(as.createAssignmentSetting(ordersList, assignmentName));
-    as.packUpAssignment();
+        File inputFile = new File(mavenPomXmlPath);
+        DocumentBuilderFactory docFactory =
+            DocumentBuilderFactory.newInstance();
+        DocumentBuilder docBuilder =
+            docFactory.newDocumentBuilder();
+        org.w3c.dom.Document doc;
+        doc = docBuilder.parse(inputFile);
+        doc.getDocumentElement().normalize();
+        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        Transformer transformer = transformerFactory.newTransformer();
+        transformer.setOutputProperty(OutputKeys.INDENT,"yes");
+        transformer.transform(new DOMSource(doc),
+            new StreamResult(new File(
+            assignmentSettingDir + assignmentName + "/pom.xml")));
+        zipHandler.zipTestFolder(assignmentSettingDir + assignmentName);
+      }
+      response = Response.ok().build();
+    } catch (Exception e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+      response = Response.serverError().entity(e.getMessage()).build();
+    }
+    return response;
   }
 
   /**
@@ -875,7 +929,8 @@ public class AssignmentService {
   @GET
   @Path("getAssignmentFile")
   public Response getAssignmentFile(@QueryParam("fileName") String fileName) {
-    String filePath = assignmentDir + fileName + ".zip";
+    String filePath = assignmentSettingDir + fileName + ".zip";
+
     
     File file = new File(filePath);
 
