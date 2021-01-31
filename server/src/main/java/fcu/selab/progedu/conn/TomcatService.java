@@ -151,44 +151,6 @@ public class TomcatService {
     return file.delete();
   }
 
-  /**
-   * Remove a directory
-   *
-   * @param directory (to do)
-   */
-  public boolean deleteDirectory(File directory) {
-    if (directory.isDirectory() && directory.exists()) {
-      String[] fileList = directory.list();
-
-      for (String s : fileList) {
-        String subFileStr = directory.getPath() + File.separator + s;
-        File subFile = new File(subFileStr);
-        if (subFile.isFile()) {
-          subFile.delete();
-        }
-        if (subFile.isDirectory()) {
-          deleteDirectory(subFile);
-        }
-      }
-
-      directory.delete();
-    } else {
-      return false;
-    }
-    return true;
-  }
-
-  /**
-   * Remove file in this directory but not itself.
-   * like rm -rf test_directory/*
-   *
-   * @param directory (to do)
-   */
-  public boolean deleteFileInDirectory(File directory) {
-    boolean isDeleteDirSuccess = deleteDirectory(directory);
-    boolean isCreateNewDirectorySuccess = createNewDirectory(directory);
-    return (isDeleteDirSuccess && isCreateNewDirectorySuccess);
-  }
 
   /**
    * create a new empty file

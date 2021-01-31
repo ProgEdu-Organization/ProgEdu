@@ -89,8 +89,8 @@ public class GroupProjectService {
     // 6. git push
     gitlabService.pushProject(cloneDirectoryPath);
 
-    // 7. remove project file in linux
-    tomcatService.deleteDirectory(new File(uploadDir));
+    // 7. remove project directory
+    JavaIoUtile.deleteDirectory(new File(uploadDir));
 
     // 8. import project infomation to database
     addProject(groupName, projectName, readMe, projectTypeEnum);

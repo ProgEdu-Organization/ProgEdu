@@ -174,7 +174,7 @@ public class AssignmentService {
     }
 
     // Delete all images of temp_images folder, but not temp_images folder
-    tomcatService.deleteFileInDirectory(new File(imageTempDir));
+    JavaIoUtile.deleteFileInDirectory(new File(imageTempDir));
 
     // 7. If README is not null
     // First, we need to modify images path
@@ -202,7 +202,7 @@ public class AssignmentService {
     }
 
     // 10. remove project file in linux
-    tomcatService.deleteDirectory(new File(uploadDir));
+    JavaIoUtile.deleteDirectory(new File(uploadDir));
     return Response.ok().build();
   }
 

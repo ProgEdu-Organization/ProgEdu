@@ -1,5 +1,6 @@
 package fcu.selab.progedu.conn;
 
+import fcu.selab.progedu.utils.JavaIoUtile;
 import org.junit.Test;
 
 import java.io.File;
@@ -21,7 +22,7 @@ public class TomcatServiceTest {
         tomcatService.createNewFile(Paths.get(willDeleteDir.getPath(), "file_1").toFile());
         System.out.println("The new directory is at " + target.toString() + " and it will be deleted.");
 
-        assertTrue(tomcatService.deleteDirectory(willDeleteDir));
+        assertTrue(JavaIoUtile.deleteDirectory(willDeleteDir));
     }
 
     @Test
@@ -37,7 +38,7 @@ public class TomcatServiceTest {
         tomcatService.createNewFile(Paths.get(willDeleteDir.getPath(), "file_1").toFile());
         System.out.println("The new directory is at " + target.toString() + " and which file in it will be deleted.");
 
-        assertTrue(tomcatService.deleteFileInDirectory(willDeleteDir));
+        assertTrue(JavaIoUtile.deleteFileInDirectory(willDeleteDir));
 
     }
 

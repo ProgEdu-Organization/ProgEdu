@@ -1,5 +1,6 @@
 package fcu.selab.progedu.conn;
 
+import fcu.selab.progedu.utils.JavaIoUtile;
 import org.gitlab.api.models.GitlabProject;
 import org.junit.Test;
 
@@ -32,8 +33,7 @@ public class GitlabServiceTest {
         assertNotEquals(targetPath, "");
 
         if (targetPath != "") {
-            TomcatService tomcatService = TomcatService.getInstance();
-            assertTrue( tomcatService.deleteDirectory(Paths.get(targetPath).toFile()) );
+            assertTrue( JavaIoUtile.deleteDirectory(Paths.get(targetPath).toFile()) );
         } else {
             fail();
         }
@@ -56,8 +56,7 @@ public class GitlabServiceTest {
         // after test delete this project
         assertTrue( gitlabService.deleteRootProject(projectName) );
 
-        TomcatService tomcatService = TomcatService.getInstance();
-        assertTrue( tomcatService.deleteDirectory(Paths.get(targetParentPathString).toFile()) );
+        assertTrue( JavaIoUtile.deleteDirectory(Paths.get(targetParentPathString).toFile()) );
 
     }
 }
