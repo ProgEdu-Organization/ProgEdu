@@ -153,7 +153,7 @@ public class AssignmentService {
       @FormDataParam("file") InputStream file,
       @FormDataParam("file") FormDataContentDisposition fileDetail) {
 
-    final ProjectTypeEnum projectTypeEnum = ProjectTypeEnum.getProjectTypeEnum(assignmentType);
+
     // 1. Create root project and get project id and url
     createRootProject(assignmentName);
 
@@ -211,6 +211,7 @@ public class AssignmentService {
     gitlabService.pushProject(cloneDirectoryPath);
 
     // 9. import project information to database
+    ProjectTypeEnum projectTypeEnum = ProjectTypeEnum.getProjectTypeEnum(assignmentType);
     addProject(assignmentName, releaseTime, deadline, readMe, projectTypeEnum);
 
 
@@ -724,7 +725,6 @@ public class AssignmentService {
   }
 
   private void createAssignmentSettingsV2(String username, String assignmentName) {
-    ProjectTypeEnum assignmentTypeEnum = dbManager.getAssignmentType(assignmentName);
 
     addAuid(username, assignmentName);
     //Todo 以上 addAuid 要改, 因為之後沒有 assignment
@@ -744,6 +744,7 @@ public class AssignmentService {
               + "/webapi";
       String updateDbUrl = progEduApiUrl + "/commits/update";
 
+      ProjectTypeEnum assignmentTypeEnum = dbManager.getAssignmentType(assignmentName);
       JenkinsProjectConfig jenkinsProjectConfig = JenkinsProjectConfigFactory
               .getJenkinsProjectConfig(assignmentTypeEnum.getTypeName(), projectUrl, updateDbUrl,
                       username, assignmentName);
