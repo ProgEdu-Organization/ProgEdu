@@ -223,7 +223,7 @@ public class GroupCommitRecordService {
   @Produces(MediaType.APPLICATION_JSON)
   public Response updateCommitRecord(
       @FormParam("user") String groupName, @FormParam("proName") String projectName) {
-    ProjectTypeEnum type = gpdb.getProjectType(projectName);
+    ProjectTypeEnum projectTypeEnum = gpdb.getProjectType(projectName);
     int pgid = pgdb.getId(groupName, projectName);
     CommitRecord cr = gpdb.getCommitResult(pgid);
     int commitNumber = 1;
@@ -239,7 +239,7 @@ public class GroupCommitRecordService {
       LOGGER.error(e.getMessage());
     }
 
-    JenkinsJobStatus jobStatus = JenkinsJob2StatusFactory.createJenkinsJobStatus(type);
+    JenkinsJobStatus jobStatus = JenkinsJob2StatusFactory.createJenkinsJobStatus(projectTypeEnum);
     String jobName = groupName + "_" + projectName;
     StatusEnum statusEnum = jobStatus.getStatus(jobName, commitNumber);
 
