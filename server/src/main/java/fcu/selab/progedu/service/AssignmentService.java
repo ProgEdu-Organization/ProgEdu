@@ -885,16 +885,15 @@ public class AssignmentService {
       if (fileType.equals("maven")) {
         String mavenResourcesZipPath =
             "/usr/local/tomcat/webapps/ROOT/resources/MvnQuickStart.zip";
-        String mavenPomXmlPath =
-            mavenPomXmlSettingDir + assignmentName + "_pom.xml";
         MavenAssignmentSetting mas = new MavenAssignmentSetting();
         ZipHandler zipHandler = new ZipHandler();
         zipHandler.unzipFile(mavenResourcesZipPath,
             assignmentSettingDir + assignmentName);
         mas.createAssignmentSetting(ordersList, assignmentName,
-            mavenPomXmlPath);
+            mavenPomXmlSettingDir);
 
-        File inputFile = new File(mavenPomXmlPath);
+        File inputFile = new File(mavenPomXmlSettingDir
+            + assignmentName + "_pom.xml");
         DocumentBuilderFactory docFactory =
             DocumentBuilderFactory.newInstance();
         DocumentBuilder docBuilder =
