@@ -168,6 +168,8 @@ public class AssignmentService {
 
     // 6. Copy all description image to temp/images
     System.out.println("Copy all description image to temp/images");
+    System.out.println("System.getProperty('catalina.base') is ");
+    System.out.println(System.getProperty("catalina.base"));
 
     ArrayList<String> paths = findAllDescriptionImagePaths(readMe);
     for (String path : paths) {
