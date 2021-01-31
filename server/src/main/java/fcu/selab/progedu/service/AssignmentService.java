@@ -1,10 +1,7 @@
 package fcu.selab.progedu.service;
 
 import java.io.File;
-import java.io.OutputStream;
 import java.io.InputStream;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -112,7 +109,6 @@ public class AssignmentService {
   private final String testDir = tempDir + "/tests/";
   private final String assignmentSettingDir = tempDir + "/assignmentSetting/";
   private final String mavenPomXmlSettingDir = tempDir + "/mavenPomXmlSetting/";
-  private final String assignmentDir = tempDir + "/assignmentSetting/";
 
   // System.getProperty("catalina.base") is /usr/local/tomcat, in tomcat container
   private final String projectDir = System.getProperty("catalina.base");
@@ -899,17 +895,12 @@ public class AssignmentService {
         mas.createAssignmentSetting(ordersList, assignmentName,
             mavenPomXmlSettingDir);
 
-        InputStream inputStream = new FileInputStream(mavenPomXmlSettingDir
+        File mavenPomXmlSettingFile = new File(mavenPomXmlSettingDir
             + assignmentName + "_pom.xml");
-        OutputStream outputStream = new FileOutputStream(assignmentSettingDir
+        File assignmentSettingFile = new File(assignmentSettingDir
             + assignmentName + "/pom.xml");
-        byte[] buf = new byte[1024];
-        int bytesRead;
-        while ((bytesRead = inputStream.read(buf)) > 0) {
-          outputStream.write(buf, 0, bytesRead);
-        }
-        inputStream.close();
-        outputStream.close();
+        
+        JavaIoUtile.copyDirectoryCompatibilityMode(mavenPomXmlSettingFile, assignmentSettingFile);
 
         zipHandler.zipTestFolder(assignmentSettingDir + assignmentName);
       }
