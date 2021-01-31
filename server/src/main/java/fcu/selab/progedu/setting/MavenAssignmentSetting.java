@@ -12,6 +12,7 @@ import org.apache.maven.model.ReportPlugin;
 import org.apache.maven.model.ReportSet;
 import org.apache.maven.model.Reporting;
 
+import java.io.File;
 import java.util.List;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -35,6 +36,12 @@ public class MavenAssignmentSetting implements AssignmentSettings {
    */
   @Override
   public void createAssignmentSetting(List<String> order, String name, String targetPomSavePath) {
+    String mavenPomXmlPath =
+        System.getProperty("java.io.tmpdir") + "/mavenPomXmlSetting/";
+    File mavenPomXmlSetting = new File(mavenPomXmlPath);
+    if (!mavenPomXmlSetting.exists()) {
+      mavenPomXmlSetting.mkdir();
+    }
     final List<PluginExecution> checkStyleExecutions = new ArrayList<>();
     Model model = new Model();
 
