@@ -36,6 +36,7 @@ import fcu.selab.progedu.db.ReviewSettingMetricsDbManager;
 import fcu.selab.progedu.db.ReviewStatusDbManager;
 import fcu.selab.progedu.jenkinsconfig.JenkinsProjectConfig;
 import fcu.selab.progedu.jenkinsconfig.JenkinsProjectConfigFactory;
+import fcu.selab.progedu.utils.JavaIoUtile;
 import org.json.JSONArray;
 import org.jsoup.nodes.Document;
 import org.gitlab.api.models.GitlabProject;
@@ -163,7 +164,7 @@ public class AssignmentService {
     zipHandler.unzipFile(filePath, cloneDirectoryPath);
 
     // 5. Add .gitkeep if folder is empty.
-    tomcatService.findEmptyFolder(cloneDirectoryPath);
+    JavaIoUtile.addFile2EmptyFolder(cloneDirectoryPath, ".gitkeep");
 
     // 6. Copy all description image to temp/images
     ArrayList<String> paths = findAllDescriptionImagePaths(readMe);

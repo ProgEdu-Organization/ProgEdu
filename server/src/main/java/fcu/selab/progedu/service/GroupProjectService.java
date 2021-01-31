@@ -5,6 +5,7 @@ import java.io.IOException;
 
 import fcu.selab.progedu.jenkinsconfig.JenkinsProjectConfig;
 import fcu.selab.progedu.jenkinsconfig.WebGroupConfig;
+import fcu.selab.progedu.utils.JavaIoUtile;
 import org.gitlab.api.models.GitlabProject;
 import org.gitlab.api.models.GitlabUser;
 import org.slf4j.Logger;
@@ -98,7 +99,7 @@ public class GroupProjectService {
     zipHandler.unzipFile(filePath, cloneDirectoryPath);
 
     // 5. Add .gitkeep if folder is empty.
-    tomcatService.findEmptyFolder(cloneDirectoryPath);
+    JavaIoUtile.addFile2EmptyFolder(cloneDirectoryPath, ".gitkeep");
     // 6. git push
     gitlabService.pushProject(cloneDirectoryPath);
 

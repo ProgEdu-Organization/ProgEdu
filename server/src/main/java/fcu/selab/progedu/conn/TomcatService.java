@@ -143,41 +143,6 @@ public class TomcatService {
 
 
   /**
-   * (to do)
-   *
-   * @param path (to do)
-   */
-  public void findEmptyFolder(String path) {
-    File dir = new File(path);
-    File[] files = dir.listFiles();
-
-    if (dir.exists() && dir.isDirectory()) {
-      if (files.length == 0) {
-        addGitkeep(path);
-      } else {
-        for (int i = 0; i < files.length; i++) {
-          findEmptyFolder(files[i].getPath());
-        }
-      }
-    }
-  }
-
-  private void addGitkeep(String path) {
-    File gitkeep = new File(path + "/.gitkeep");
-    if (!gitkeep.exists()) {
-      try {
-        if (!gitkeep.createNewFile()) {
-          LOGGER.debug("gitkeep had existed in path : " + path);
-          LOGGER.error("gitkeep had existed in path : " + path);
-        }
-      } catch (IOException e) {
-        LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
-        LOGGER.error(e.getMessage());
-      }
-    }
-  }
-
-  /**
    * delete a file.
    *
    * @param file (to do)
