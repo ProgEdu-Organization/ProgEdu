@@ -4,9 +4,14 @@ import fcu.selab.progedu.project.ProjectTypeEnum;
 
 public class JenkinsJob2StatusFactory {
 
+  /**
+   * createJenkinsJobStatus
+   *
+   * @param projectTypeEnum projectTypeEnum
+   */
   public static JenkinsJobStatus createJenkinsJobStatus(ProjectTypeEnum projectTypeEnum) {
 
-    switch(projectTypeEnum) {
+    switch (projectTypeEnum) {
       case JAVAC:
         return new JavaJenkinsJobStatus();
       case MAVEN:
