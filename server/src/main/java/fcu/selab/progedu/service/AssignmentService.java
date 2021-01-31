@@ -201,7 +201,6 @@ public class AssignmentService {
 
     List<User> users = userService.getStudents();
     for (User user : users) {
-//      createAssignmentSettings(user.getUsername(), assignmentName);
       createAssignmentSettingsV2(user.getUsername(), assignmentName);
     }
 
@@ -761,7 +760,6 @@ public class AssignmentService {
     List<String> assignmentNames = dbManager.getAllAssignmentNames();
 
     for (String assignmentName : assignmentNames) {
-//      createAssignmentSettings(username, assignmentName);
       createAssignmentSettingsV2(username, assignmentName);
     }
 
