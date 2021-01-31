@@ -1,7 +1,6 @@
 package fcu.selab.progedu.service;
 
-import java.io.File;
-import java.io.InputStream;
+import java.io.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -892,21 +891,18 @@ public class AssignmentService {
         mas.createAssignmentSetting(ordersList, assignmentName,
             mavenPomXmlSettingDir);
 
-        File inputFile = new File(mavenPomXmlSettingDir
+        InputStream inputStream = new FileInputStream(mavenPomXmlSettingDir
             + assignmentName + "_pom.xml");
-        DocumentBuilderFactory docFactory =
-            DocumentBuilderFactory.newInstance();
-        DocumentBuilder docBuilder =
-            docFactory.newDocumentBuilder();
-        org.w3c.dom.Document doc;
-        doc = docBuilder.parse(inputFile);
-        doc.getDocumentElement().normalize();
-        TransformerFactory transformerFactory = TransformerFactory.newInstance();
-        Transformer transformer = transformerFactory.newTransformer();
-        transformer.setOutputProperty(OutputKeys.INDENT,"yes");
-        transformer.transform(new DOMSource(doc),
-            new StreamResult(new File(
-            assignmentSettingDir + assignmentName + "/pom.xml")));
+        OutputStream outputStream = new FileOutputStream(assignmentSettingDir
+            + "/" +assignmentName + "pom.xml");
+        byte[] buf = new byte[1024];
+        int bytesRead;
+        while ((bytesRead = inputStream.read(buf)) > 0) {
+          outputStream.write(buf, 0, bytesRead);
+        }
+        inputStream.close();
+        outputStream.close();
+        
         zipHandler.zipTestFolder(assignmentSettingDir + assignmentName);
       }
       response = Response.ok().build();
