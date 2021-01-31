@@ -167,10 +167,26 @@ public class AssignmentService {
     JavaIoUtile.addFile2EmptyFolder(new File(cloneDirectoryPath), ".gitkeep");
 
     // 6. Copy all description image to temp/images
+    System.out.println("Copy all description image to temp/images");
+
     ArrayList<String> paths = findAllDescriptionImagePaths(readMe);
     for (String path : paths) {
       String targetPath = path.replace("temp_images", "images");
-      tomcatService.copyFileToTarget(projectDir + path, projectDir + targetPath);
+
+      File originalFile = new File(projectDir + path);
+      File targetFile = new File(projectDir + targetPath);
+      try {
+        System.out.println("start copy :" + originalFile.getPath());
+        System.out.println("to :" + targetFile.getPath());
+
+        JavaIoUtile.copyDirectoryCompatibilityMode(originalFile, targetFile);
+      } catch (Exception e) {
+        LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+        LOGGER.error(e.getMessage());
+      }
+
+//      tomcatService.copyFileToTarget(projectDir + path, projectDir + targetPath);
+
     }
 
     // Delete all images of temp_images folder, but not temp_images folder

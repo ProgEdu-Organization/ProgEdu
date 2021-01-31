@@ -31,7 +31,7 @@ public class JavaIoUtileTest {
   }
 
   @Test
-  public void copyFile() {
+  public void copyDirectoryCompatibilityMode() {
     JavaIoUtile.createDirectoryIfNotExists(rootFile);
     File targetFile= new File(tempDir, "unit-test-JavaIoUtileTest-copy");
     try {
@@ -40,6 +40,7 @@ public class JavaIoUtileTest {
     } catch (Exception e) {
       e.printStackTrace();
     }
+    System.out.println(System.getProperty("catalina.base"));
 
   }
 }

@@ -3,7 +3,13 @@ package fcu.selab.progedu.utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+
 
 public class JavaIoUtile {
 
@@ -95,7 +101,13 @@ public class JavaIoUtile {
     return (isDeleteDirSuccess && isCreateNewDirectorySuccess);
   }
 
-  public static void copyDirectoryCompatibilityMode(File source, File destination) throws IOException {
+  /**
+   * (todo)
+   * @param source (to do)
+   * @param destination (to do)
+   */
+  public static void copyDirectoryCompatibilityMode(File source, File destination)
+          throws IOException {
     if (source.isDirectory()) {
       copyDirectory(source, destination);
     } else {
@@ -103,12 +115,14 @@ public class JavaIoUtile {
     }
   }
 
-  private static void copyDirectory(File sourceDirectory, File destinationDirectory) throws IOException {
+  private static void copyDirectory(File sourceDirectory, File destinationDirectory)
+          throws IOException {
     if (!destinationDirectory.exists()) {
       destinationDirectory.mkdir();
     }
-    for (String f : sourceDirectory.list()) {
-      copyDirectoryCompatibilityMode(new File(sourceDirectory, f), new File(destinationDirectory, f));
+    for (String filePath : sourceDirectory.list()) {
+      copyDirectoryCompatibilityMode(new File(sourceDirectory, filePath),
+              new File(destinationDirectory, filePath));
     }
   }
 
