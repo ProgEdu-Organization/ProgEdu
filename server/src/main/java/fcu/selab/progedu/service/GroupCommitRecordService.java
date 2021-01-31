@@ -35,8 +35,6 @@ import fcu.selab.progedu.data.GroupProject;
 import fcu.selab.progedu.db.service.GroupDbService;
 import fcu.selab.progedu.db.service.ProjectDbService;
 import fcu.selab.progedu.db.service.ProjectGroupDbService;
-import fcu.selab.progedu.project.GroupProjectFactory;
-import fcu.selab.progedu.project.GroupProjectType;
 import fcu.selab.progedu.project.ProjectTypeEnum;
 import fcu.selab.progedu.status.StatusEnum;
 import fcu.selab.progedu.utils.ExceptionUtil;
@@ -240,8 +238,6 @@ public class GroupCommitRecordService {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
     }
-//    GroupProjectType projectType = GroupProjectFactory.getGroupProjectType(type.getTypeName());
-//    StatusEnum statusEnum = projectType.checkStatusType(commitNumber, groupName, projectName);
 
     JenkinsJobStatus jobStatus = JenkinsJob2StatusFactory.createJenkinsJobStatus(type);
     String jobName = groupName + "_" + projectName;
@@ -276,8 +272,7 @@ public class GroupCommitRecordService {
       @PathParam("num") int number) {
     JenkinsService js = JenkinsService.getInstance();
     ProjectTypeEnum projectTypeEnum = gpdb.getProjectType(projectName);
-    GroupProjectType projectType =
-        GroupProjectFactory.getGroupProjectType(projectTypeEnum.getTypeName());
+
     String jobName = js.getJobName(groupName, projectName);
     String console = js.getConsole(jobName, number);
     int pgid = pgdb.getId(groupName, projectName);

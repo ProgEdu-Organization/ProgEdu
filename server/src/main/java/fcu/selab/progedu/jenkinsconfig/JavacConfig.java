@@ -46,7 +46,7 @@ public class JavacConfig extends JenkinsProjectConfig {
 
       // Todo 這目前無效, 已經沒有 test資料夾了
 //    String assignmentPath = System.getProperty("java.io.tmpdir") + "/tests/" + projectName;
-//    String command = getCommandFromFile(assignmentPath);
+//    String command = getCommandFromFile(assignmentPath); // Todo 需參考 JavacAssignment.bak
     } catch (Exception e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());

@@ -21,7 +21,6 @@ import javax.ws.rs.core.Response;
 import fcu.selab.progedu.db.service.ProjectDbService;
 import fcu.selab.progedu.jenkinsjob2status.JenkinsJob2StatusFactory;
 import fcu.selab.progedu.jenkinsjob2status.JenkinsJobStatus;
-import fcu.selab.progedu.project.ProjectType;
 import fcu.selab.progedu.status.Status;
 import fcu.selab.progedu.status.StatusAnalysisFactory;
 import fcu.selab.progedu.utils.ExceptionUtil;
@@ -41,7 +40,6 @@ import fcu.selab.progedu.db.AssignmentUserDbManager;
 import fcu.selab.progedu.db.CommitRecordDbManager;
 import fcu.selab.progedu.db.CommitStatusDbManager;
 import fcu.selab.progedu.db.UserDbManager;
-import fcu.selab.progedu.project.ProjectTypeFactory;
 import fcu.selab.progedu.project.ProjectTypeEnum;
 import fcu.selab.progedu.status.StatusEnum;
 
@@ -230,8 +228,6 @@ public class CommitRecordService {
     // Todo 所有 assignment 相關的都要改掉 現在沒有 assignment
 
     JSONObject ob = new JSONObject();
-//    ProjectType projectType = ProjectTypeFactory.getProjectType(
-//        atDb.getTypeNameById(assignmentDb.getAssignmentTypeId(assignmentName)).getTypeName());
 
     int auId = auDb.getAuid(assignmentDb.getAssignmentIdByName(assignmentName),
         userDb.getUserIdByUsername(username));
@@ -240,7 +236,6 @@ public class CommitRecordService {
     DateFormat time = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss");
     date = time.parse(time.format(Calendar.getInstance().getTime()));
 
-//    StatusEnum statusEnum = projectType.checkStatusType(commitNumber, username, assignmentName);
 
     int assignmentId = assignmentDb.getAssignmentTypeId(assignmentName);
     ProjectTypeEnum projectTypeEnum = atDb.getTypeNameById(assignmentId);

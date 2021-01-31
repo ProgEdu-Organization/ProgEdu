@@ -20,33 +20,12 @@ import fcu.selab.progedu.service.StatusService;
 import fcu.selab.progedu.status.StatusEnum;
 import fcu.selab.progedu.utils.ExceptionUtil;
 
-public class JavacAssignment extends ProjectType {
+
+
+public class JavacAssignment {
   private static final Logger LOGGER = LoggerFactory.getLogger(JavacAssignment.class);
 
-  @Override
-  public ProjectTypeEnum getProjectType() {
-    return ProjectTypeEnum.JAVAC;
-  }
 
-  @Override
-  public StatusEnum checkStatusType(int num, String username, String assignmentName) {
-    StatusEnum status;
-    StatusService statusService = StatusService.getInstance();
-    if (statusService.isInitialization(num)) {
-      status = StatusEnum.INITIALIZATION;
-    } else {
-      JenkinsService jenkinsService = JenkinsService.getInstance();
-      String jobName = username + "_" + assignmentName;
-      String console = jenkinsService.getConsole(jobName, num);
-
-      if (statusService.isBuildSuccess(console)) {
-        status = StatusEnum.BUILD_SUCCESS;
-      } else {
-        status = StatusEnum.COMPILE_FAILURE;
-      }
-    }
-    return status;
-  }
 
   /**
    * Create a file with compile command in test directory
@@ -118,9 +97,9 @@ public class JavacAssignment extends ProjectType {
     for (String absolutePath : fileList) {
       String subPath = absolutePath
           .substring(absolutePath.indexOf(assignmentName) + assignmentName.length() + 1);
-      
+
       // For windows to linux, todo [change to use Path()]
-      subPath = subPath.replace("\\", "/"); 
+      subPath = subPath.replace("\\", "/");
 
       command += "javac " + subPath + "\n";
     }
