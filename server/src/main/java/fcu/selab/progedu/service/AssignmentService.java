@@ -1,6 +1,10 @@
 package fcu.selab.progedu.service;
 
-import java.io.*;
+import java.io.File;
+import java.io.OutputStream;
+import java.io.InputStream;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -24,13 +28,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 
 import fcu.selab.progedu.data.AssignmentUser;
 import fcu.selab.progedu.data.PairMatching;
@@ -894,7 +891,7 @@ public class AssignmentService {
         InputStream inputStream = new FileInputStream(mavenPomXmlSettingDir
             + assignmentName + "_pom.xml");
         OutputStream outputStream = new FileOutputStream(assignmentSettingDir
-            + "/" +assignmentName + "pom.xml");
+            + assignmentName + "/pom.xml");
         byte[] buf = new byte[1024];
         int bytesRead;
         while ((bytesRead = inputStream.read(buf)) > 0) {
@@ -902,7 +899,7 @@ public class AssignmentService {
         }
         inputStream.close();
         outputStream.close();
-        
+
         zipHandler.zipTestFolder(assignmentSettingDir + assignmentName);
       }
       response = Response.ok().build();
