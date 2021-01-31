@@ -35,7 +35,7 @@ import fcu.selab.progedu.data.GroupProject;
 import fcu.selab.progedu.db.service.GroupDbService;
 import fcu.selab.progedu.db.service.ProjectDbService;
 import fcu.selab.progedu.db.service.ProjectGroupDbService;
-import fcu.selab.progedu.project.ProjectTypeEnum;
+import fcu.selab.progedu.data.ProjectTypeEnum;
 import fcu.selab.progedu.status.StatusEnum;
 import fcu.selab.progedu.utils.ExceptionUtil;
 

@@ -40,7 +40,7 @@ import fcu.selab.progedu.db.AssignmentUserDbManager;
 import fcu.selab.progedu.db.CommitRecordDbManager;
 import fcu.selab.progedu.db.CommitStatusDbManager;
 import fcu.selab.progedu.db.UserDbManager;
-import fcu.selab.progedu.project.ProjectTypeEnum;
+import fcu.selab.progedu.data.ProjectTypeEnum;
 import fcu.selab.progedu.status.StatusEnum;
 
 @Path("commits/")

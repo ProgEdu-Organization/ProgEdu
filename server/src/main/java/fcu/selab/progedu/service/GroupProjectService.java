@@ -19,7 +19,7 @@ import fcu.selab.progedu.conn.TomcatService;
 import fcu.selab.progedu.data.GroupProject;
 import fcu.selab.progedu.db.service.ProjectDbService;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
-import fcu.selab.progedu.project.ProjectTypeEnum;
+import fcu.selab.progedu.data.ProjectTypeEnum;
 import fcu.selab.progedu.utils.ZipHandler;
 import fcu.selab.progedu.utils.ExceptionUtil;
 

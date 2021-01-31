@@ -1,6 +1,6 @@
 package fcu.selab.progedu.status;
 
-import fcu.selab.progedu.project.ProjectTypeEnum;
+import fcu.selab.progedu.data.ProjectTypeEnum;
 
 public class StatusAnalysisFactory {
 

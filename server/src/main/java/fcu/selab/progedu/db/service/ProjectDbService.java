@@ -12,7 +12,7 @@ import fcu.selab.progedu.db.GroupDbManager;
 import fcu.selab.progedu.db.ProjectCommitRecordDbManager;
 import fcu.selab.progedu.db.ProjectDbManager;
 import fcu.selab.progedu.db.ProjectGroupDbManager;
-import fcu.selab.progedu.project.ProjectTypeEnum;
+import fcu.selab.progedu.data.ProjectTypeEnum;
 import fcu.selab.progedu.status.StatusEnum;
 
 public class ProjectDbService {
