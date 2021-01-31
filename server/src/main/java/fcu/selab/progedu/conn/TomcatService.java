@@ -83,6 +83,7 @@ public class TomcatService {
   }
 
   /**
+   * Todo 直接呼叫 Linux 指令不好
    * @param originalFilePath originalFilePath
    * @param target           targetPath
    */
@@ -140,19 +141,6 @@ public class TomcatService {
     return "";
   }
 
-  /**
-   * (to do)
-   *
-   * @param fileDetail (to do)
-   * @return hasTemplate (to do)
-   */
-  public boolean hasTemplate(FormDataContentDisposition fileDetail) {
-    boolean hasTemplate = false;
-    if (fileDetail != null && StringUtils.isNotEmpty(fileDetail.getFileName())) {
-      hasTemplate = true;
-    }
-    return hasTemplate;
-  }
 
   /**
    * (to do)
@@ -187,17 +175,6 @@ public class TomcatService {
         LOGGER.error(e.getMessage());
       }
     }
-  }
-
-  /**
-   * (to do)
-   * It will be deprecated.
-   * @param path (to do)
-   */
-  public void removeFile(String path) {
-    Linux linux = new Linux();
-    String removeFileCommand = "rm -rf " + path;
-    linux.execLinuxCommand(removeFileCommand);
   }
 
   /**

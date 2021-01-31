@@ -40,7 +40,6 @@ public class GroupProjectService {
 //  private GroupProjectDbManager dbManager = GroupProjectDbManager.getInstance();
   private final String tempDir = System.getProperty("java.io.tmpdir");
   private final String uploadDir = tempDir + "/uploads/";
-  private final String testDir = tempDir + "/tests/";
   private static final Logger LOGGER = LoggerFactory.getLogger(GroupProjectService.class);
 
   boolean isSave = true;

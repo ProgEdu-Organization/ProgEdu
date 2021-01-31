@@ -106,15 +106,11 @@ public class AssignmentService {
   private ReviewStatusDbManager reviewStatusDbManager = ReviewStatusDbManager.getInstance();
   private final String tempDir = System.getProperty("java.io.tmpdir");
   private final String uploadDir = tempDir + "/uploads/";
-  private final String testDir = tempDir + "/tests/";
   private final String assignmentDir = tempDir + "/assignmentSetting/";
   private final String projectDir = System.getProperty("catalina.base");
   private final String imageTempName = "/temp_images/";
   private final String imageTempDir = projectDir + imageTempName;
   private static final Logger LOGGER = LoggerFactory.getLogger(AssignmentService.class);
-
-  boolean isSave = true;
-
 
 
   /**
@@ -533,10 +529,6 @@ public class AssignmentService {
 
     try {
       Linux linuxApi = new Linux();
-      
-      // delete tomcat test file
-      String removeZipTestFileCommand = testDir + name + ".zip";
-      tomcatService.removeFile(removeZipTestFileCommand);
 
       // if this assignment was assigned as pair review, delete review db
       if (rsDbManager.checkAssignmentByAid(name)) {
