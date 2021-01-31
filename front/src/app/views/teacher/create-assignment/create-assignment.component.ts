@@ -144,7 +144,7 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
     );
     this.assignment.get(type).valueChanges.subscribe(
       () => {
-        this.reset();
+        //this.reset();
         if (this.assignment.get(type).value == 'javac') {
           this.setShowAssessment(false);
         } else {
@@ -255,8 +255,9 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
   }
 
   selectedAssignmentType(type: string) {
-    if (type !== undefined) {
+    if (assignmentTypeEnum[type] !== undefined && assignmentTypeEnum[type] !== this.assignment.get('type').value) {
       this.assignment.get('type').setValue(assignmentTypeEnum[type]);
+      this.reset();
     }
   }
 
