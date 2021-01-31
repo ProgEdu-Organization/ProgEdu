@@ -108,7 +108,10 @@ public class AssignmentService {
   private final String tempDir = System.getProperty("java.io.tmpdir");
   private final String uploadDir = tempDir + "/uploads/";
   private final String assignmentDir = tempDir + "/assignmentSetting/";
+
+  // System.getProperty("catalina.base") is /usr/local/tomcat, in tomcat container
   private final String projectDir = System.getProperty("catalina.base");
+
   private final String imageTempName = "/temp_images/";
   private final String imageTempDir = projectDir + imageTempName;
   private static final Logger LOGGER = LoggerFactory.getLogger(AssignmentService.class);
@@ -167,9 +170,9 @@ public class AssignmentService {
     JavaIoUtile.addFile2EmptyFolder(new File(cloneDirectoryPath), ".gitkeep");
 
     // 6. Copy all description image to temp/images
-    System.out.println("Copy all description image to temp/images");
-    System.out.println("System.getProperty('catalina.base') is ");
-    System.out.println(System.getProperty("catalina.base"));
+    LOGGER.debug("Copy all description image to temp/images");
+    LOGGER.debug("System.getProperty('catalina.base') is ");
+    LOGGER.debug(System.getProperty("catalina.base"));
 
     ArrayList<String> paths = findAllDescriptionImagePaths(readMe);
     for (String path : paths) {
@@ -177,18 +180,15 @@ public class AssignmentService {
 
       File originalFile = new File(projectDir + path);
       File targetFile = new File(projectDir + targetPath);
-      try {
-        System.out.println("start copy :" + originalFile.getPath());
-        System.out.println("to :" + targetFile.getPath());
+      LOGGER.debug("start copy :" + originalFile.getPath());
+      LOGGER.debug("to :" + targetFile.getPath());
 
+      try {
         JavaIoUtile.copyDirectoryCompatibilityMode(originalFile, targetFile);
       } catch (Exception e) {
         LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
         LOGGER.error(e.getMessage());
       }
-
-//      tomcatService.copyFileToTarget(projectDir + path, projectDir + targetPath);
-
     }
 
     // Delete all images of temp_images folder, but not temp_images folder
@@ -200,7 +200,10 @@ public class AssignmentService {
       readMe = readMe.replaceAll(imageTempName, courseConfig.getTomcatServerIp() + "/images/");
       if (!readMe.equals("<br>") || !"".equals(readMe) || !readMe.isEmpty()) {
         // Add readme to folder
-        tomcatService.createReadmeFile(readMe, cloneDirectoryPath);
+
+        JavaIoUtile.createUtf8FileFromString(readMe, new File(cloneDirectoryPath, "README.md"));
+//        tomcatService.createReadmeFile(readMe, cloneDirectoryPath);
+
       }
     } catch (LoadConfigFailureException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));

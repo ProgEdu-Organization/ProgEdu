@@ -78,7 +78,8 @@ public class GroupProjectService {
     // 2. Clone the project to C:\\Users\\users\\AppData\\Temp\\uploads
     String cloneDirectoryPath = gitlabService.cloneProject(groupName, projectName);
     // 3. if README is not null
-    tomcatService.createReadmeFile(readMe, cloneDirectoryPath);
+//    tomcatService.createReadmeFile(readMe, cloneDirectoryPath);
+    JavaIoUtile.createUtf8FileFromString(readMe, new File(cloneDirectoryPath, "README.md"));
 
     // 4 create template
     String filePath = tomcatService.storeWebFileToServer();

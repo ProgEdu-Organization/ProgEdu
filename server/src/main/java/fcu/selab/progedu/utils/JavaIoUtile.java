@@ -3,12 +3,7 @@ package fcu.selab.progedu.utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
+import java.io.*;
 
 
 public class JavaIoUtile {
@@ -100,6 +95,24 @@ public class JavaIoUtile {
     boolean isCreateNewDirectorySuccess = directory.mkdir();
     return (isDeleteDirSuccess && isCreateNewDirectorySuccess);
   }
+
+  /**
+   * (to do)
+   *
+   * @param content (to do)
+   * @param targetFile   (to do)
+   */
+  public static void createUtf8FileFromString(String content, File targetFile) {
+    try (Writer writer = new BufferedWriter(
+            new OutputStreamWriter(new FileOutputStream(targetFile), "utf-8"));) {
+      writer.write(content);
+    } catch (IOException e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+      // report
+    }
+  }
+
 
   /**
    * (todo)

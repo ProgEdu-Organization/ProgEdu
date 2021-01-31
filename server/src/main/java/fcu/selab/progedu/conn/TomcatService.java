@@ -18,7 +18,6 @@ import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fcu.selab.progedu.utils.Linux;
 import fcu.selab.progedu.utils.ExceptionUtil;
 
 public class TomcatService {
@@ -81,17 +80,6 @@ public class TomcatService {
   }
 
   /**
-   * Todo 直接呼叫 Linux 指令不好
-   * @param originalFilePath originalFilePath
-   * @param target           targetPath
-   */
-  public void copyFileToTarget(String originalFilePath, String target) {
-    Linux linux = new Linux();
-    String removeFileCommand = "cp " + originalFilePath + " " + target;
-    linux.execLinuxCommand(removeFileCommand);
-  }
-
-  /**
    * Utility method to save InputStream data to target location/file
    *
    * @param input  - InputStream to be saved
@@ -122,33 +110,6 @@ public class TomcatService {
     }
 
     return "";
-  }
-
-  /**
-   * create a new empty file
-   *
-   * @param file (to do)
-   */
-  public boolean createNewFile(File file) {
-    try {
-      if (file.createNewFile()) {
-        return true;
-      }
-    } catch (IOException e) {
-      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
-      LOGGER.error(e.getMessage());
-    }
-
-    return false;
-  }
-
-  /**
-   * create a new directory
-   *
-   * @param directory (to do)
-   */
-  public boolean createNewDirectory(File directory) {
-    return directory.mkdir();
   }
 
   /**

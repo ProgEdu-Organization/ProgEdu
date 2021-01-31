@@ -40,7 +40,17 @@ public class JavaIoUtileTest {
     } catch (Exception e) {
       e.printStackTrace();
     }
-    System.out.println(System.getProperty("catalina.base"));
+  }
 
+  @Test
+  public void createUtf8FileFromString() {
+
+    File targetFile= new File(tempDir, "unit-test-JavaIoUtileTest-createUtf8FileFromString.md");
+    try {
+      JavaIoUtile.createUtf8FileFromString("franky-test", targetFile);
+      System.out.println("check new file at:" + targetFile.getPath());
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 }
