@@ -279,8 +279,7 @@ public class GroupCommitRecordService {
 
     StatusEnum statusType = gpdb.getCommitRecordStatus(pgid, number);
 
-    StatusAnalysisFactory statusAnalysisFactory = new StatusAnalysisFactory();
-    Status statusAnalysis = statusAnalysisFactory.getStatusAnalysis(projectTypeEnum,
+    Status statusAnalysis = StatusAnalysisFactory.getStatusAnalysis(projectTypeEnum,
                                                                     statusType.getType());
 
     String message = statusAnalysis.extractFailureMsg(console);

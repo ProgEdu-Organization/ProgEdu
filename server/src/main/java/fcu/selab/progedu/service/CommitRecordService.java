@@ -289,8 +289,7 @@ public class CommitRecordService {
     String statusType = getStatusTypeName(auId, number);
 
     ProjectTypeEnum projectTypeEnum = getProjectTypeEnum(assignmentName);
-    StatusAnalysisFactory statusAnalysisFactory = new StatusAnalysisFactory();
-    Status statusAnalysis = statusAnalysisFactory.getStatusAnalysis(projectTypeEnum, statusType);
+    Status statusAnalysis = StatusAnalysisFactory.getStatusAnalysis(projectTypeEnum, statusType);
 
 
     String message = statusAnalysis.extractFailureMsg(console);

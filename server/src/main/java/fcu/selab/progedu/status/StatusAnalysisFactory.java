@@ -22,7 +22,7 @@ public class StatusAnalysisFactory {
    * @param statusType  StatusEnum string
    * @return Status
    */
-  public Status getStatusAnalysis(ProjectTypeEnum projectTypeEnum, String statusType) {
+  public static Status getStatusAnalysis(ProjectTypeEnum projectTypeEnum, String statusType) {
 
     switch (projectTypeEnum) {
       case JAVAC:
