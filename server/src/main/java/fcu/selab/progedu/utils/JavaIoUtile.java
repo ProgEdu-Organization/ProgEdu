@@ -48,6 +48,17 @@ public class JavaIoUtile {
   }
 
   /**
+   * Creates a directory if it not already exists
+   *
+   * @param directory - directory
+   */
+  private static void createDirectoryIfNotExists(File directory) {
+    if (!directory.exists()) {
+      directory.mkdir();
+    }
+  }
+
+  /**
    * Remove a directory
    *
    * @param directory (to do)

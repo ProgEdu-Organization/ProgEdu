@@ -15,8 +15,6 @@ import java.util.Date;
 import java.util.TimeZone;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -93,21 +91,6 @@ public class TomcatService {
     linux.execLinuxCommand(removeFileCommand);
   }
 
-
-  /**
-   * Creates a folder to desired location if it not already exists
-   *
-   * @param dirName - full path to the folder
-   * @throws SecurityException - in case you don't have permission to create the
-   *                           folder
-   */
-  private void createFolderIfNotExists(String dirName) {
-    File theDir = new File(dirName);
-    if (!theDir.exists()) {
-      theDir.mkdir();
-    }
-  }
-
   /**
    * Utility method to save InputStream data to target location/file
    *
@@ -140,17 +123,6 @@ public class TomcatService {
 
     return "";
   }
-
-
-  /**
-   * delete a file.
-   *
-   * @param file (to do)
-   */
-  public boolean deleteFile(File file) {
-    return file.delete();
-  }
-
 
   /**
    * create a new empty file
