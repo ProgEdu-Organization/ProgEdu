@@ -27,23 +27,12 @@ import fcu.selab.progedu.utils.ExceptionUtil;
 public class GroupProjectService {
   private static GroupProjectService instance = new GroupProjectService();
   private GitlabService gitlabService = GitlabService.getInstance();
-  private GitlabUser root = gitlabService.getRoot();
   private ZipHandler zipHandler;
-  private JenkinsService jenkins = JenkinsService.getInstance();
   private TomcatService tomcatService = TomcatService.getInstance();
-  private GitlabConfig gitlabData = GitlabConfig.getInstance();
-  private JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
-  private CourseConfig courseConfig = CourseConfig.getInstance();
-  private UserService userService = UserService.getInstance();
-  private String mailUsername;
-  private String mailPassword;
-  private String gitlabRootUsername;
-//  private GroupProjectDbManager dbManager = GroupProjectDbManager.getInstance();
   private final String tempDir = System.getProperty("java.io.tmpdir");
   private final String uploadDir = tempDir + "/uploads/";
   private static final Logger LOGGER = LoggerFactory.getLogger(GroupProjectService.class);
 
-  boolean isSave = true;
 
   public static GroupProjectService getInstance() {
     return instance;
@@ -55,9 +44,6 @@ public class GroupProjectService {
   public GroupProjectService() {
     try {
       zipHandler = new ZipHandler();
-      mailUsername = jenkinsData.getMailUser();
-      mailPassword = jenkinsData.getMailPassword();
-      gitlabRootUsername = gitlabData.getGitlabRootUsername();
     } catch (LoadConfigFailureException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
