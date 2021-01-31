@@ -36,9 +36,7 @@ public class MavenAssignmentSetting implements AssignmentSettings {
    */
   @Override
   public void createAssignmentSetting(List<String> order, String name, String targetPomSavePath) {
-    String mavenPomXmlPath =
-        System.getProperty("java.io.tmpdir") + "/mavenPomXmlSetting/";
-    File mavenPomXmlSetting = new File(mavenPomXmlPath);
+    File mavenPomXmlSetting = new File(targetPomSavePath);
     if (!mavenPomXmlSetting.exists()) {
       mavenPomXmlSetting.mkdir();
     }
