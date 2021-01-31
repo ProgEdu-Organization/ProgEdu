@@ -19,6 +19,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import fcu.selab.progedu.db.UserDbManager;
+import fcu.selab.progedu.jenkinsjob2status.JenkinsJob2StatusFactory;
+import fcu.selab.progedu.jenkinsjob2status.JenkinsJobStatus;
 import fcu.selab.progedu.status.Status;
 import fcu.selab.progedu.status.StatusAnalysisFactory;
 import org.json.JSONArray;
@@ -238,10 +240,13 @@ public class GroupCommitRecordService {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
     }
-    GroupProjectType projectType = GroupProjectFactory.getGroupProjectType(type.getTypeName());
-    StatusEnum statusEnum = projectType.checkStatusType(commitNumber, groupName, projectName);
+//    GroupProjectType projectType = GroupProjectFactory.getGroupProjectType(type.getTypeName());
+//    StatusEnum statusEnum = projectType.checkStatusType(commitNumber, groupName, projectName);
 
-    String jobName = js.getJobName(groupName, projectName);
+    JenkinsJobStatus jobStatus = JenkinsJob2StatusFactory.createJenkinsJobStatus(type);
+    String jobName = groupName + "_" + projectName;
+    StatusEnum statusEnum = jobStatus.getStatus(jobName, commitNumber);
+
     String committer = js.getCommitter(jobName, commitNumber);
     gpdb.insertProjectCommitRecord(pgid, commitNumber, statusEnum, date, committer);
     JSONObject ob = new JSONObject();
