@@ -85,7 +85,7 @@ public class GroupProjectService {
     zipHandler.unzipFile(filePath, cloneDirectoryPath);
 
     // 5. Add .gitkeep if folder is empty.
-    JavaIoUtile.addFile2EmptyFolder(cloneDirectoryPath, ".gitkeep");
+    JavaIoUtile.addFile2EmptyFolder(new File(cloneDirectoryPath), ".gitkeep");
     // 6. git push
     gitlabService.pushProject(cloneDirectoryPath);
 

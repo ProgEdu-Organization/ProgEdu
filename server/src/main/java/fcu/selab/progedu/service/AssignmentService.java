@@ -164,7 +164,7 @@ public class AssignmentService {
     zipHandler.unzipFile(filePath, cloneDirectoryPath);
 
     // 5. Add .gitkeep if folder is empty.
-    JavaIoUtile.addFile2EmptyFolder(cloneDirectoryPath, ".gitkeep");
+    JavaIoUtile.addFile2EmptyFolder(new File(cloneDirectoryPath), ".gitkeep");
 
     // 6. Copy all description image to temp/images
     ArrayList<String> paths = findAllDescriptionImagePaths(readMe);

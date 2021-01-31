@@ -15,17 +15,17 @@ public class JavaIoUtile {
   /**
    * addFile2EmptyFolder
    *
-   * @param path (to do)
+   * @param rootFile (to do)
    * @param newFileName (to do)
    */
-  public static void addFile2EmptyFolder(String path, String newFileName) {
-    File dir = new File(path);
+  public static void addFile2EmptyFolder(File rootFile, String newFileName) {
+    File dir = rootFile;
     File[] files = dir.listFiles();
 
     if (dir.exists() && dir.isDirectory()) {
 
       if (files.length == 0) {
-        File newFile = new File(path + "/" + newFileName);
+        File newFile = new File(rootFile.getPath() + "/" + newFileName);
 
         if (!newFile.exists()) {
           try {
@@ -39,13 +39,54 @@ public class JavaIoUtile {
       } else {
 
         for (int i = 0; i < files.length; i++) {
-          addFile2EmptyFolder(files[i].getPath(), newFileName);
+          addFile2EmptyFolder(files[i], newFileName);
         }
 
       }
 
     }
   }
+
+  /**
+   * Remove a directory
+   *
+   * @param directory (to do)
+   */
+  public static boolean deleteDirectory(File directory) {
+    if (directory.isDirectory() && directory.exists()) {
+      String[] fileList = directory.list();
+
+      for (String s : fileList) {
+        String subFileStr = directory.getPath() + File.separator + s;
+        File subFile = new File(subFileStr);
+        if (subFile.isFile()) {
+          subFile.delete();
+        }
+        if (subFile.isDirectory()) {
+          deleteDirectory(subFile);
+        }
+      }
+
+      directory.delete();
+    } else {
+      return false;
+    }
+    return true;
+  }
+
+  /**
+   * Remove file in this directory but not itself.
+   * like rm -rf test_directory/*
+   *
+   * @param directory (to do)
+   */
+  public static boolean deleteFileInDirectory(File directory) {
+    boolean isDeleteDirSuccess = deleteDirectory(directory);
+    boolean isCreateNewDirectorySuccess = directory.mkdir();
+    return (isDeleteDirSuccess && isCreateNewDirectorySuccess);
+  }
+
+
 
 
 
