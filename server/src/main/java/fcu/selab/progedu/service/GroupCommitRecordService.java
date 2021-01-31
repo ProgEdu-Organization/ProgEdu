@@ -35,7 +35,7 @@ import fcu.selab.progedu.data.GroupProject;
 import fcu.selab.progedu.db.service.GroupDbService;
 import fcu.selab.progedu.db.service.ProjectDbService;
 import fcu.selab.progedu.db.service.ProjectGroupDbService;
-import fcu.selab.progedu.project.ProjectTypeEnum;
+import fcu.selab.progedu.data.ProjectTypeEnum;
 import fcu.selab.progedu.status.StatusEnum;
 import fcu.selab.progedu.utils.ExceptionUtil;
 
@@ -279,8 +279,7 @@ public class GroupCommitRecordService {
 
     StatusEnum statusType = gpdb.getCommitRecordStatus(pgid, number);
 
-    StatusAnalysisFactory statusAnalysisFactory = new StatusAnalysisFactory();
-    Status statusAnalysis = statusAnalysisFactory.getStatusAnalysis(projectTypeEnum,
+    Status statusAnalysis = StatusAnalysisFactory.getStatusAnalysis(projectTypeEnum,
                                                                     statusType.getType());
 
     String message = statusAnalysis.extractFailureMsg(console);

@@ -5,6 +5,7 @@ import java.io.IOException;
 
 import fcu.selab.progedu.jenkinsconfig.JenkinsProjectConfig;
 import fcu.selab.progedu.jenkinsconfig.WebGroupConfig;
+import fcu.selab.progedu.utils.JavaIoUtile;
 import org.gitlab.api.models.GitlabProject;
 import org.gitlab.api.models.GitlabUser;
 import org.slf4j.Logger;
@@ -19,31 +20,19 @@ import fcu.selab.progedu.conn.TomcatService;
 import fcu.selab.progedu.data.GroupProject;
 import fcu.selab.progedu.db.service.ProjectDbService;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
-import fcu.selab.progedu.project.ProjectTypeEnum;
+import fcu.selab.progedu.data.ProjectTypeEnum;
 import fcu.selab.progedu.utils.ZipHandler;
 import fcu.selab.progedu.utils.ExceptionUtil;
 
 public class GroupProjectService {
   private static GroupProjectService instance = new GroupProjectService();
   private GitlabService gitlabService = GitlabService.getInstance();
-  private GitlabUser root = gitlabService.getRoot();
   private ZipHandler zipHandler;
-  private JenkinsService jenkins = JenkinsService.getInstance();
   private TomcatService tomcatService = TomcatService.getInstance();
-  private GitlabConfig gitlabData = GitlabConfig.getInstance();
-  private JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
-  private CourseConfig courseConfig = CourseConfig.getInstance();
-  private UserService userService = UserService.getInstance();
-  private String mailUsername;
-  private String mailPassword;
-  private String gitlabRootUsername;
-//  private GroupProjectDbManager dbManager = GroupProjectDbManager.getInstance();
   private final String tempDir = System.getProperty("java.io.tmpdir");
   private final String uploadDir = tempDir + "/uploads/";
-  private final String testDir = tempDir + "/tests/";
   private static final Logger LOGGER = LoggerFactory.getLogger(GroupProjectService.class);
 
-  boolean isSave = true;
 
   public static GroupProjectService getInstance() {
     return instance;
@@ -55,9 +44,6 @@ public class GroupProjectService {
   public GroupProjectService() {
     try {
       zipHandler = new ZipHandler();
-      mailUsername = jenkinsData.getMailUser();
-      mailPassword = jenkinsData.getMailPassword();
-      gitlabRootUsername = gitlabData.getGitlabRootUsername();
     } catch (LoadConfigFailureException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
@@ -92,19 +78,19 @@ public class GroupProjectService {
     // 2. Clone the project to C:\\Users\\users\\AppData\\Temp\\uploads
     String cloneDirectoryPath = gitlabService.cloneProject(groupName, projectName);
     // 3. if README is not null
-    tomcatService.createReadmeFile(readMe, cloneDirectoryPath);
+    JavaIoUtile.createUtf8FileFromString(readMe, new File(cloneDirectoryPath, "README.md"));
 
     // 4 create template
     String filePath = tomcatService.storeWebFileToServer();
     zipHandler.unzipFile(filePath, cloneDirectoryPath);
 
     // 5. Add .gitkeep if folder is empty.
-    tomcatService.findEmptyFolder(cloneDirectoryPath);
+    JavaIoUtile.addFile2EmptyFolder(new File(cloneDirectoryPath), ".gitkeep");
     // 6. git push
     gitlabService.pushProject(cloneDirectoryPath);
 
-    // 7. remove project file in linux
-    tomcatService.deleteDirectory(new File(uploadDir));
+    // 7. remove project directory
+    JavaIoUtile.deleteDirectory(new File(uploadDir));
 
     // 8. import project infomation to database
     addProject(groupName, projectName, readMe, projectTypeEnum);

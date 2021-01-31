@@ -40,7 +40,7 @@ import fcu.selab.progedu.db.AssignmentUserDbManager;
 import fcu.selab.progedu.db.CommitRecordDbManager;
 import fcu.selab.progedu.db.CommitStatusDbManager;
 import fcu.selab.progedu.db.UserDbManager;
-import fcu.selab.progedu.project.ProjectTypeEnum;
+import fcu.selab.progedu.data.ProjectTypeEnum;
 import fcu.selab.progedu.status.StatusEnum;
 
 @Path("commits/")
@@ -289,8 +289,7 @@ public class CommitRecordService {
     String statusType = getStatusTypeName(auId, number);
 
     ProjectTypeEnum projectTypeEnum = getProjectTypeEnum(assignmentName);
-    StatusAnalysisFactory statusAnalysisFactory = new StatusAnalysisFactory();
-    Status statusAnalysis = statusAnalysisFactory.getStatusAnalysis(projectTypeEnum, statusType);
+    Status statusAnalysis = StatusAnalysisFactory.getStatusAnalysis(projectTypeEnum, statusType);
 
 
     String message = statusAnalysis.extractFailureMsg(console);
