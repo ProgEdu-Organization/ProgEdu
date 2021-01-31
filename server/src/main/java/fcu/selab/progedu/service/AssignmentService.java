@@ -200,10 +200,7 @@ public class AssignmentService {
       readMe = readMe.replaceAll(imageTempName, courseConfig.getTomcatServerIp() + "/images/");
       if (!readMe.equals("<br>") || !"".equals(readMe) || !readMe.isEmpty()) {
         // Add readme to folder
-
         JavaIoUtile.createUtf8FileFromString(readMe, new File(cloneDirectoryPath, "README.md"));
-//        tomcatService.createReadmeFile(readMe, cloneDirectoryPath);
-
       }
     } catch (LoadConfigFailureException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));

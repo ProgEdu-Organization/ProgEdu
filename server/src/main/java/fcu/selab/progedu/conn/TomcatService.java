@@ -113,23 +113,6 @@ public class TomcatService {
   }
 
   /**
-   * (to do)
-   *
-   * @param readMe (to do)
-   * @param path   (to do)
-   */
-  public void createReadmeFile(String readMe, String path) {
-    try (Writer writer = new BufferedWriter(
-        new OutputStreamWriter(new FileOutputStream(path + "/README.md"), "utf-8"));) {
-      writer.write(readMe);
-    } catch (IOException e) {
-      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
-      LOGGER.error(e.getMessage());
-      // report
-    }
-  }
-
-  /**
    * get server current time
    *
    * @return current time
