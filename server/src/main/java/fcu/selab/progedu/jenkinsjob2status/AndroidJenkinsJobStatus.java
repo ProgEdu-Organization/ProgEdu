@@ -1,30 +1,21 @@
-package fcu.selab.progedu.project;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+package fcu.selab.progedu.jenkinsjob2status;
 
 import fcu.selab.progedu.conn.JenkinsService;
 import fcu.selab.progedu.service.StatusService;
 import fcu.selab.progedu.status.StatusEnum;
 
-public class AndroidAssignment extends ProjectType {
-  private static final Logger LOGGER = LoggerFactory.getLogger(WebAssignment.class);
+public class AndroidJenkinsJobStatus extends JenkinsJobStatus {
+
 
   @Override
-  public ProjectTypeEnum getProjectType() {
-    return ProjectTypeEnum.ANDROID;
-  }
-
-  @Override
-  public StatusEnum checkStatusType(int num, String username, String assignmentName) {
-    StatusEnum status = null;
+  public StatusEnum getStatus(String jenkinsJobName, int buildCount) {
+    StatusEnum status;
     StatusService statusService = StatusService.getInstance();
-    if (statusService.isInitialization(num)) {
+    if (statusService.isInitialization(buildCount)) {
       status = StatusEnum.INITIALIZATION;
     } else {
       JenkinsService jenkinsService = JenkinsService.getInstance();
-      String jobName = username + "_" + assignmentName;
-      String console = jenkinsService.getConsole(jobName, num);
+      String console = jenkinsService.getConsole(jenkinsJobName, buildCount);
 
       if (statusService.isAndroidCompileFailure(console)) {
         status = StatusEnum.COMPILE_FAILURE;
@@ -42,4 +33,5 @@ public class AndroidAssignment extends ProjectType {
     }
     return status;
   }
+
 }

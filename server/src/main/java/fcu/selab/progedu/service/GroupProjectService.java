@@ -19,8 +19,6 @@ import fcu.selab.progedu.conn.TomcatService;
 import fcu.selab.progedu.data.GroupProject;
 import fcu.selab.progedu.db.service.ProjectDbService;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
-import fcu.selab.progedu.project.GroupProjectFactory;
-import fcu.selab.progedu.project.GroupProjectType;
 import fcu.selab.progedu.project.ProjectTypeEnum;
 import fcu.selab.progedu.utils.ZipHandler;
 import fcu.selab.progedu.utils.ExceptionUtil;
@@ -81,8 +79,6 @@ public class GroupProjectService {
     }
 
     String readMe = "Initialization";
-//    final GitlabService gitlabService = GitlabService.getInstance();
-    final GroupProjectType groupProject = GroupProjectFactory.getGroupProjectType(projectType);
     final ProjectTypeEnum projectTypeEnum = ProjectTypeEnum.getProjectTypeEnum(projectType);
     // 1. Create root project and get project id and url
     int projectId = 0;

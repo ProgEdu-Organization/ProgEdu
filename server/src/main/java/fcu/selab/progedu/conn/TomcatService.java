@@ -20,7 +20,6 @@ import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fcu.selab.progedu.project.ProjectType;
 import fcu.selab.progedu.utils.Linux;
 import fcu.selab.progedu.utils.ExceptionUtil;
 
