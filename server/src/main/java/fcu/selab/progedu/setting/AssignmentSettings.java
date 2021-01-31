@@ -1,7 +1,6 @@
 package fcu.selab.progedu.setting;
 
 import java.util.List;
-import org.apache.maven.model.Model;
 
 public interface AssignmentSettings {
 

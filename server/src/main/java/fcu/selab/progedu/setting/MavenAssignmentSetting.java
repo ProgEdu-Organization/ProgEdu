@@ -26,17 +26,6 @@ public class MavenAssignmentSetting implements AssignmentSettings {
 
   private static final Logger LOGGER = LoggerFactory
           .getLogger(MavenAssignmentSetting.class);
-  private String assignmentName;
-  private Model model;
-
-  /**
-   * init MavenAssignmentSetting
-   *
-   * @param assignmentName Assignment Name
-   */
-  public MavenAssignmentSetting(String assignmentName) {
-    this.assignmentName = assignmentName;
-  }
 
   /**
    * Create pom.xml

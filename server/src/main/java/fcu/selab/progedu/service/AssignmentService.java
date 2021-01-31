@@ -1,7 +1,6 @@
 package fcu.selab.progedu.service;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -44,7 +43,6 @@ import fcu.selab.progedu.db.ReviewSettingMetricsDbManager;
 import fcu.selab.progedu.db.ReviewStatusDbManager;
 import fcu.selab.progedu.jenkinsconfig.JenkinsProjectConfig;
 import fcu.selab.progedu.jenkinsconfig.JenkinsProjectConfigFactory;
-import fcu.selab.progedu.project.ProjectType;
 import org.json.JSONArray;
 import org.jsoup.nodes.Document;
 import org.gitlab.api.models.GitlabProject;
@@ -889,7 +887,7 @@ public class AssignmentService {
             "/usr/local/tomcat/webapps/ROOT/resources/MvnQuickStart.zip";
         String mavenPomXmlPath =
             mavenPomXmlSettingDir + assignmentName + "_pom.xml";
-        MavenAssignmentSetting mas = new MavenAssignmentSetting(assignmentName);
+        MavenAssignmentSetting mas = new MavenAssignmentSetting();
         ZipHandler zipHandler = new ZipHandler();
         zipHandler.unzipFile(mavenResourcesZipPath,
             assignmentSettingDir + assignmentName);
@@ -918,7 +916,6 @@ public class AssignmentService {
       LOGGER.error(e.getMessage());
       response = Response.serverError().entity(e.getMessage()).build();
     }
-
     return response;
   }
 
