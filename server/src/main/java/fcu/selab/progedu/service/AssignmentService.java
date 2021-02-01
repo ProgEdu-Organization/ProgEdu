@@ -155,9 +155,9 @@ public class AssignmentService {
 
 
     // 1. Create root project and get project id and url
-    createRootProject(assignmentName);
+    gitlabService.createRootProject(assignmentName);
 
-    // 2. Clone the project to C:\\Users\\users\\AppData\\Temp\\uploads
+    // 2. Clone the project
     final String cloneDirectoryPath = gitlabService.cloneProject(gitlabRootUsername,
         assignmentName);
 //    // 3. Store Zip File to uploads folder if file is not empty
@@ -220,7 +220,7 @@ public class AssignmentService {
       createAssignmentSettingsV2(user.getUsername(), assignmentName);
     }
 
-    // 10. remove project file in linux
+    // 10. remove project file
     JavaIoUtile.deleteDirectory(new File(uploadDir));
     return Response.ok().build();
   }
@@ -391,10 +391,6 @@ public class AssignmentService {
       response = Response.serverError().entity(e.getMessage()).build();
     }
     return response;
-  }
-
-  private void createRootProject(String name) {
-    gitlabService.createRootProject(name);
   }
 
   public List<String> getAllAssignmentNames() {
