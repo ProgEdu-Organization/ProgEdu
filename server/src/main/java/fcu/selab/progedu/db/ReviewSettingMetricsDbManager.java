@@ -16,7 +16,7 @@ public class ReviewSettingMetricsDbManager {
     return dbManager;
   }
 
-  private IDatabase database = new MySqlDatabase();
+  private IDatabase database = MySqlDatabase.getInstance();
 
   /**
    * Insert review setting metrics into db

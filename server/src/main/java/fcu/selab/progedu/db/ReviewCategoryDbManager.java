@@ -18,7 +18,7 @@ public class ReviewCategoryDbManager {
     return dbManager;
   }
 
-  private IDatabase database = new MySqlDatabase();
+  private IDatabase database = MySqlDatabase.getInstance();
 
   /**
    * insert new review category into db

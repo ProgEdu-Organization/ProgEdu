@@ -20,7 +20,7 @@ public class ReviewSettingDbManager {
     return dbManager;
   }
 
-  private IDatabase database = new MySqlDatabase();
+  private IDatabase database = MySqlDatabase.getInstance();
 
   /**
    * Insert assignment review setting into db
