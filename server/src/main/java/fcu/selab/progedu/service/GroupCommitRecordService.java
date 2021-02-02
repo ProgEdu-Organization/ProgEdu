@@ -19,6 +19,10 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import fcu.selab.progedu.db.UserDbManager;
+import fcu.selab.progedu.jenkinsjob2status.JenkinsJob2StatusFactory;
+import fcu.selab.progedu.jenkinsjob2status.JenkinsJobStatus;
+import fcu.selab.progedu.status.Status;
+import fcu.selab.progedu.status.StatusAnalysisFactory;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -31,9 +35,7 @@ import fcu.selab.progedu.data.GroupProject;
 import fcu.selab.progedu.db.service.GroupDbService;
 import fcu.selab.progedu.db.service.ProjectDbService;
 import fcu.selab.progedu.db.service.ProjectGroupDbService;
-import fcu.selab.progedu.project.GroupProjectFactory;
-import fcu.selab.progedu.project.GroupProjectType;
-import fcu.selab.progedu.project.ProjectTypeEnum;
+import fcu.selab.progedu.data.ProjectTypeEnum;
 import fcu.selab.progedu.status.StatusEnum;
 import fcu.selab.progedu.utils.ExceptionUtil;
 
@@ -221,7 +223,7 @@ public class GroupCommitRecordService {
   @Produces(MediaType.APPLICATION_JSON)
   public Response updateCommitRecord(
       @FormParam("user") String groupName, @FormParam("proName") String projectName) {
-    ProjectTypeEnum type = gpdb.getProjectType(projectName);
+    ProjectTypeEnum projectTypeEnum = gpdb.getProjectType(projectName);
     int pgid = pgdb.getId(groupName, projectName);
     CommitRecord cr = gpdb.getCommitResult(pgid);
     int commitNumber = 1;
@@ -236,10 +238,11 @@ public class GroupCommitRecordService {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
     }
-    GroupProjectType projectType = GroupProjectFactory.getGroupProjectType(type.getTypeName());
-    StatusEnum statusEnum = projectType.checkStatusType(commitNumber, groupName, projectName);
 
-    String jobName = js.getJobName(groupName, projectName);
+    JenkinsJobStatus jobStatus = JenkinsJob2StatusFactory.createJenkinsJobStatus(projectTypeEnum);
+    String jobName = groupName + "_" + projectName;
+    StatusEnum statusEnum = jobStatus.getStatus(jobName, commitNumber);
+
     String committer = js.getCommitter(jobName, commitNumber);
     gpdb.insertProjectCommitRecord(pgid, commitNumber, statusEnum, date, committer);
     JSONObject ob = new JSONObject();
@@ -269,16 +272,19 @@ public class GroupCommitRecordService {
       @PathParam("num") int number) {
     JenkinsService js = JenkinsService.getInstance();
     ProjectTypeEnum projectTypeEnum = gpdb.getProjectType(projectName);
-    GroupProjectType projectType =
-        GroupProjectFactory.getGroupProjectType(projectTypeEnum.getTypeName());
+
     String jobName = js.getJobName(groupName, projectName);
     String console = js.getConsole(jobName, number);
     int pgid = pgdb.getId(groupName, projectName);
 
     StatusEnum statusType = gpdb.getCommitRecordStatus(pgid, number);
-    String message = projectType.getStatus(statusType.getType()).extractFailureMsg(console);
-    ArrayList feedBacks = projectType.getStatus(statusType.getType()).formatExamineMsg(message);
-    String feedBackMessage = projectType.getStatus(statusType.getType()).tojsonArray(feedBacks);
+
+    Status statusAnalysis = StatusAnalysisFactory.getStatusAnalysis(projectTypeEnum,
+                                                                    statusType.getType());
+
+    String message = statusAnalysis.extractFailureMsg(console);
+    ArrayList feedBacks = statusAnalysis.formatExamineMsg(message);
+    String feedBackMessage = statusAnalysis.tojsonArray(feedBacks);
 
     return Response.ok().entity(feedBackMessage).build();
   }

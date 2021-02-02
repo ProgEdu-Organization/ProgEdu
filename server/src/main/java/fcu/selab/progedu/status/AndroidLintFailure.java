@@ -1,8 +1,6 @@
 package fcu.selab.progedu.status;
 
-import fcu.selab.progedu.conn.JenkinsService;
 import fcu.selab.progedu.data.FeedBack;
-import fcu.selab.progedu.service.CommitRecordService;
 
 import java.util.ArrayList;
 

@@ -1,7 +1,6 @@
 package fcu.selab.progedu.service;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -35,7 +34,9 @@ import fcu.selab.progedu.db.ReviewRecordDbManager;
 import fcu.selab.progedu.db.ReviewSettingDbManager;
 import fcu.selab.progedu.db.ReviewSettingMetricsDbManager;
 import fcu.selab.progedu.db.ReviewStatusDbManager;
-import fcu.selab.progedu.project.ProjectType;
+import fcu.selab.progedu.jenkinsconfig.JenkinsProjectConfig;
+import fcu.selab.progedu.jenkinsconfig.JenkinsProjectConfigFactory;
+import fcu.selab.progedu.utils.JavaIoUtile;
 import org.json.JSONArray;
 import org.jsoup.nodes.Document;
 import org.gitlab.api.models.GitlabProject;
@@ -65,8 +66,7 @@ import fcu.selab.progedu.db.CommitStatusDbManager;
 import fcu.selab.progedu.db.ScreenshotRecordDbManager;
 import fcu.selab.progedu.db.UserDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
-import fcu.selab.progedu.project.ProjectTypeFactory;
-import fcu.selab.progedu.project.ProjectTypeEnum;
+import fcu.selab.progedu.data.ProjectTypeEnum;
 import fcu.selab.progedu.utils.ExceptionUtil;
 import fcu.selab.progedu.utils.Linux;
 import fcu.selab.progedu.utils.ZipHandler;
@@ -107,15 +107,14 @@ public class AssignmentService {
   private ReviewStatusDbManager reviewStatusDbManager = ReviewStatusDbManager.getInstance();
   private final String tempDir = System.getProperty("java.io.tmpdir");
   private final String uploadDir = tempDir + "/uploads/";
-  private final String testDir = tempDir + "/tests/";
   private final String assignmentDir = tempDir + "/assignmentSetting/";
+
+  // System.getProperty("catalina.base") is /usr/local/tomcat, in tomcat container
   private final String projectDir = System.getProperty("catalina.base");
+
   private final String imageTempName = "/temp_images/";
   private final String imageTempDir = projectDir + imageTempName;
   private static final Logger LOGGER = LoggerFactory.getLogger(AssignmentService.class);
-
-  boolean isSave = true;
-
 
 
   /**
@@ -168,17 +167,32 @@ public class AssignmentService {
     zipHandler.unzipFile(filePath, cloneDirectoryPath);
 
     // 5. Add .gitkeep if folder is empty.
-    tomcatService.findEmptyFolder(cloneDirectoryPath);
+    JavaIoUtile.addFile2EmptyFolder(new File(cloneDirectoryPath), ".gitkeep");
 
     // 6. Copy all description image to temp/images
+    LOGGER.debug("Copy all description image to temp/images");
+    LOGGER.debug("System.getProperty('catalina.base') is ");
+    LOGGER.debug(System.getProperty("catalina.base"));
+
     ArrayList<String> paths = findAllDescriptionImagePaths(readMe);
     for (String path : paths) {
       String targetPath = path.replace("temp_images", "images");
-      tomcatService.copyFileToTarget(projectDir + path, projectDir + targetPath);
+
+      File originalFile = new File(projectDir + path);
+      File targetFile = new File(projectDir + targetPath);
+      LOGGER.debug("start copy :" + originalFile.getPath());
+      LOGGER.debug("to :" + targetFile.getPath());
+
+      try {
+        JavaIoUtile.copyDirectoryCompatibilityMode(originalFile, targetFile);
+      } catch (Exception e) {
+        LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+        LOGGER.error(e.getMessage());
+      }
     }
 
     // Delete all images of temp_images folder, but not temp_images folder
-    tomcatService.deleteFileInDirectory(new File(imageTempDir));
+    JavaIoUtile.deleteFileInDirectory(new File(imageTempDir));
 
     // 7. If README is not null
     // First, we need to modify images path
@@ -186,7 +200,7 @@ public class AssignmentService {
       readMe = readMe.replaceAll(imageTempName, courseConfig.getTomcatServerIp() + "/images/");
       if (!readMe.equals("<br>") || !"".equals(readMe) || !readMe.isEmpty()) {
         // Add readme to folder
-        tomcatService.createReadmeFile(readMe, cloneDirectoryPath);
+        JavaIoUtile.createUtf8FileFromString(readMe, new File(cloneDirectoryPath, "README.md"));
       }
     } catch (LoadConfigFailureException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
@@ -202,11 +216,11 @@ public class AssignmentService {
 
     List<User> users = userService.getStudents();
     for (User user : users) {
-      createAssignmentSettings(user.getUsername(), assignmentName);
+      createAssignmentSettingsV2(user.getUsername(), assignmentName);
     }
 
     // 10. remove project file in linux
-    tomcatService.deleteDirectory(new File(uploadDir));
+    JavaIoUtile.deleteDirectory(new File(uploadDir));
     return Response.ok().build();
   }
 
@@ -534,10 +548,6 @@ public class AssignmentService {
 
     try {
       Linux linuxApi = new Linux();
-      
-      // delete tomcat test file
-      String removeZipTestFileCommand = testDir + name + ".zip";
-      tomcatService.removeFile(removeZipTestFileCommand);
 
       // if this assignment was assigned as pair review, delete review db
       if (rsDbManager.checkAssignmentByAid(name)) {
@@ -713,25 +723,43 @@ public class AssignmentService {
     rsDbManager.deleteReviewSettingByAId(aid);
   }
 
-  private void createAssignmentSettings(String username, String assignmentName) {
+  private void createAssignmentSettingsV2(String username, String assignmentName) {
     ProjectTypeEnum assignmentTypeEnum = dbManager.getAssignmentType(assignmentName);
-    ProjectType project = ProjectTypeFactory
-        .getProjectType(assignmentTypeEnum.getTypeName());
-    //Todo 以上 assignmentTypeEnum 要拿掉, 因為之後沒有 assignment
 
     addAuid(username, assignmentName);
     //Todo 以上 addAuid 要改, 因為之後沒有 assignment
 
-    try {
-      GitlabProject gitlabProject = gitlabService.createPrivateProject(username,
-              assignmentName, "root"); // Todo assignment 要改
+    GitlabProject gitlabProject = gitlabService.createPrivateProject(username,
+            assignmentName, "root"); // Todo assignment 要改
 
+    try {
       gitlabService.setGitlabWebhook(gitlabProject);
-      project.createJenkinsJob(username, assignmentName); // Todo assignment 要改
-    } catch (IOException | LoadConfigFailureException e) {
+
+      GitlabConfig gitlabConfig = GitlabConfig.getInstance();
+      String projectUrl = gitlabConfig.getGitlabHostUrl() + "/" + username + "/" + assignmentName
+              + ".git";
+
+      CourseConfig courseConfig = CourseConfig.getInstance();
+      String progEduApiUrl = courseConfig.getTomcatServerIp() + courseConfig.getBaseuri()
+              + "/webapi";
+      String updateDbUrl = progEduApiUrl + "/commits/update";
+
+      JenkinsProjectConfig jenkinsProjectConfig = JenkinsProjectConfigFactory
+              .getJenkinsProjectConfig(assignmentTypeEnum.getTypeName(), projectUrl, updateDbUrl,
+                      username, assignmentName);
+
+      JenkinsService jenkinsService = JenkinsService.getInstance();
+      String jobName = username + "_" + assignmentName;
+
+      jenkinsService.createJobV2(jobName, jenkinsProjectConfig.getXmlConfig());
+
+      jenkinsService.buildJob(jobName);
+
+    } catch (Exception e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
     }
+
   }
 
   /**
@@ -743,7 +771,7 @@ public class AssignmentService {
     List<String> assignmentNames = dbManager.getAllAssignmentNames();
 
     for (String assignmentName : assignmentNames) {
-      createAssignmentSettings(username, assignmentName);
+      createAssignmentSettingsV2(username, assignmentName);
     }
 
   }

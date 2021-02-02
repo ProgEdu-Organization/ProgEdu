@@ -1,14 +1,10 @@
 package fcu.selab.progedu.status;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import fcu.selab.progedu.data.FeedBack;
 
 import fcu.selab.progedu.utils.ExceptionUtil;
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

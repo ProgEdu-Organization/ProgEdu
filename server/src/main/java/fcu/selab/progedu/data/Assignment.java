@@ -2,8 +2,6 @@ package fcu.selab.progedu.data;
 
 import java.util.Date;
 
-import fcu.selab.progedu.project.ProjectTypeEnum;
-
 public class Assignment {
 
   private int id = 0;
@@ -19,10 +17,6 @@ public class Assignment {
   private String description = "";
 
   private ProjectTypeEnum type;
-
-  private String gitLabUrl = "";
-
-  private String jenkinsUrl = "";
 
   private boolean display = true;
 
@@ -72,22 +66,6 @@ public class Assignment {
 
   public ProjectTypeEnum setType(ProjectTypeEnum type) {
     return this.type = type;
-  }
-
-  public String getGitLabUrl() {
-    return gitLabUrl;
-  }
-
-  public void setGitLabUrl(String gitLabUrl) {
-    this.gitLabUrl = gitLabUrl;
-  }
-
-  public String getJenkinsUrl() {
-    return jenkinsUrl;
-  }
-
-  public void setJenkinsUrl(String jenkinsUrl) {
-    this.jenkinsUrl = jenkinsUrl;
   }
 
   public Date getReleaseTime() {
