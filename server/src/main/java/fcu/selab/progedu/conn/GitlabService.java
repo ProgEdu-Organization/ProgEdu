@@ -724,22 +724,19 @@ public class GitlabService {
    * @throws IOException                (to do)
    * @throws LoadConfigFailureException (to do)
    */
-  public void setGitlabWebhook(GitlabProject project)
-      throws IOException, LoadConfigFailureException {
-    String[] namespace = project.getPathWithNamespace().split("/");
-    String username = namespace[0];
-    String projectName = namespace[1];
+  public void setGitlabWebhook(GitlabProject project, String jobName)
+          throws IOException, LoadConfigFailureException {
 
     JenkinsConfig jenkinsConfig = JenkinsConfig.getInstance();
+    String jenkinsJobUrl = jenkinsConfig.getJenkinsHostUrl() + "/project/" + jobName;
+
     // for example,
-    // http://localhost:80/api/v4/projects/3149/hooks?url=http://localhost:8888/project/webhook
+    // http://localhost:80/api/v4/projects/3149/hooks?url=http://localhost:8888/project/{jobName}
     String gitlabWebhookApi = hostUrl + API_NAMESPACE + "/projects/" + project.getId() + "/hooks";
-//    project.getPath()
-    String jenkinsJobUrl = jenkinsConfig.getJenkinsHostUrl() + "/project/" + username + "_"
-        + projectName; // Todo 壞味道, 這設定隱含了Jenkins一定要用 username_projectName 才能運作
+
     HttpPost post = new HttpPost(gitlabWebhookApi);
     post.addHeader("PRIVATE-TOKEN", apiToken);
-    // Request parameters
+
     List<NameValuePair> params = new ArrayList<>();
     params.add(new BasicNameValuePair("url", jenkinsJobUrl));
     post.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
