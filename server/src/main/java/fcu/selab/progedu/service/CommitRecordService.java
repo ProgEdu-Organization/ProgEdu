@@ -18,7 +18,11 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import fcu.selab.progedu.project.ProjectType;
+import fcu.selab.progedu.db.service.ProjectDbService;
+import fcu.selab.progedu.jenkinsjob2status.JenkinsJob2StatusFactory;
+import fcu.selab.progedu.jenkinsjob2status.JenkinsJobStatus;
+import fcu.selab.progedu.status.Status;
+import fcu.selab.progedu.status.StatusAnalysisFactory;
 import fcu.selab.progedu.utils.ExceptionUtil;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -36,8 +40,7 @@ import fcu.selab.progedu.db.AssignmentUserDbManager;
 import fcu.selab.progedu.db.CommitRecordDbManager;
 import fcu.selab.progedu.db.CommitStatusDbManager;
 import fcu.selab.progedu.db.UserDbManager;
-import fcu.selab.progedu.project.ProjectTypeFactory;
-import fcu.selab.progedu.project.ProjectTypeEnum;
+import fcu.selab.progedu.data.ProjectTypeEnum;
 import fcu.selab.progedu.status.StatusEnum;
 
 @Path("commits/")
@@ -51,6 +54,7 @@ public class CommitRecordService {
   private JenkinsService js = JenkinsService.getInstance();
   private GitlabService gs = GitlabService.getInstance();
   private static final Logger LOGGER = LoggerFactory.getLogger(CommitRecordService.class);
+  private ProjectDbService projectDbService = ProjectDbService.getInstance();
 
   /**
    * get all commit result.
@@ -224,8 +228,6 @@ public class CommitRecordService {
     // Todo 所有 assignment 相關的都要改掉 現在沒有 assignment
 
     JSONObject ob = new JSONObject();
-    ProjectType projectType = ProjectTypeFactory.getProjectType(
-        atDb.getTypeNameById(assignmentDb.getAssignmentTypeId(assignmentName)).getTypeName());
 
     int auId = auDb.getAuid(assignmentDb.getAssignmentIdByName(assignmentName),
         userDb.getUserIdByUsername(username));
@@ -234,7 +236,15 @@ public class CommitRecordService {
     DateFormat time = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss");
     date = time.parse(time.format(Calendar.getInstance().getTime()));
 
-    StatusEnum statusEnum = projectType.checkStatusType(commitNumber, username, assignmentName);
+
+    int assignmentId = assignmentDb.getAssignmentTypeId(assignmentName);
+    ProjectTypeEnum projectTypeEnum = atDb.getTypeNameById(assignmentId);
+    JenkinsJobStatus jobStatus = JenkinsJob2StatusFactory.createJenkinsJobStatus(projectTypeEnum);
+
+    String jobName = username + "_" + assignmentName;
+    StatusEnum statusEnum = jobStatus.getStatus(jobName, commitNumber);
+
+
     db.insertCommitRecord(auId, commitNumber, statusEnum, date);
 
     ob.put("auId", auId);
@@ -273,14 +283,18 @@ public class CommitRecordService {
   public Response getFeedback(@QueryParam("username") String username,
       @QueryParam("assignmentName") String assignmentName, @QueryParam("number") int number) {
     JenkinsService js = JenkinsService.getInstance();
-    ProjectType assignmentType = getAssignmentType(assignmentName);
     String jobName = username + "_" + assignmentName;
     String console = js.getConsole(jobName, number);
     int auId = getAuid(username, assignmentName);
     String statusType = getStatusTypeName(auId, number);
-    String message = assignmentType.getStatus(statusType).extractFailureMsg(console);
-    ArrayList feedBacks = assignmentType.getStatus(statusType).formatExamineMsg(message);
-    String feedBackMessage = assignmentType.getStatus(statusType).tojsonArray(feedBacks);
+
+    ProjectTypeEnum projectTypeEnum = getProjectTypeEnum(assignmentName);
+    Status statusAnalysis = StatusAnalysisFactory.getStatusAnalysis(projectTypeEnum, statusType);
+
+
+    String message = statusAnalysis.extractFailureMsg(console);
+    ArrayList feedBacks = statusAnalysis.formatExamineMsg(message);
+    String feedBackMessage = statusAnalysis.tojsonArray(feedBacks);
 
     return Response.ok().entity(feedBackMessage).build();
   }
@@ -303,12 +317,11 @@ public class CommitRecordService {
     return Response.ok().entity(ob.toString()).build();
   }
 
-  private ProjectType getAssignmentType(String assignmentName) {
+  private ProjectTypeEnum getProjectTypeEnum(String assignmentName) {
     AssignmentDbManager adb = AssignmentDbManager.getInstance();
     AssignmentTypeDbManager atdb = AssignmentTypeDbManager.getInstance();
     int typeId = adb.getAssignmentTypeId(assignmentName);
-    ProjectTypeEnum type = atdb.getTypeNameById(typeId);
-    return ProjectTypeFactory.getProjectType(type.getTypeName());
+    return atdb.getTypeNameById(typeId);
   }
 
   private int getAuid(String username, String assignmentName) {

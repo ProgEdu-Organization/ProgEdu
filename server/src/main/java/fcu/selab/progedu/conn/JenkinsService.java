@@ -156,6 +156,36 @@ public class JenkinsService {
     }
   }
 
+
+  /**
+   * (to do)
+   *
+   * @param jobName    (to do)
+   * @param xmlString (to do)
+   */
+  public void createJobV2(String jobName, String xmlString) {
+
+    try {
+      String crumb = getCrumb();
+      String url = jenkinsRootUrl + "/createItem?name=" + jobName;
+      HttpPost post = new HttpPost(url);
+
+      post.addHeader(contentType, "application/xml");
+      post.addHeader(jenkinsCrumb, crumb);
+
+      StringEntity se = new StringEntity(xmlString, ContentType.create("text/xml", Consts.UTF_8));
+      se.setChunked(true);
+      post.setEntity(se);
+
+      HttpClient client = new DefaultHttpClient();
+      client.execute(post);
+
+    } catch (IOException e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    }
+  }
+
   /**
    * (to do)
    * 

@@ -1,4 +1,4 @@
-package fcu.selab.progedu.project;
+package fcu.selab.progedu.data;
 
 public enum ProjectTypeEnum {
   JAVAC("javac"),
