@@ -36,6 +36,7 @@ import fcu.selab.progedu.db.ReviewSettingMetricsDbManager;
 import fcu.selab.progedu.db.ReviewStatusDbManager;
 import fcu.selab.progedu.jenkinsconfig.JenkinsProjectConfig;
 import fcu.selab.progedu.jenkinsconfig.JenkinsProjectConfigFactory;
+import fcu.selab.progedu.setting.WebAssignmentSetting;
 import fcu.selab.progedu.utils.JavaIoUtile;
 import org.json.JSONArray;
 import org.jsoup.nodes.Document;
@@ -109,6 +110,7 @@ public class AssignmentService {
   private final String testDir = tempDir + "/tests/";
   private final String assignmentSettingDir = tempDir + "/assignmentSetting/";
   private final String mavenPomXmlSettingDir = tempDir + "/mavenPomXmlSetting/";
+  private final String webConfigXmlSettingDir = tempDir + "/webConfigXmlSetting/";
 
   // System.getProperty("catalina.base") is /usr/local/tomcat, in tomcat container
   private final String projectDir = System.getProperty("catalina.base");
@@ -907,9 +909,28 @@ public class AssignmentService {
             + assignmentName + "_pom.xml");
         File assignmentSettingFile = new File(assignmentSettingDir
             + assignmentName + "/pom.xml");
-        
         JavaIoUtile.copyDirectoryCompatibilityMode(mavenPomXmlSettingFile, assignmentSettingFile);
 
+        zipHandler.zipTestFolder(assignmentSettingDir + assignmentName);
+      } else if (fileType.equals("web")) {
+        String configWebXmlPath =
+            this.getClass().getResource("/jenkins/config_web.xml").getPath();
+
+        WebAssignmentSetting was = new WebAssignmentSetting();
+        was.createAssignmentSetting(ordersList, assignmentName,
+            webConfigXmlSettingDir);
+
+        File webConfigXmlSettingFile = new File(webConfigXmlSettingDir
+            + assignmentName + "_config_web.xml");
+        File assignmentSettingFile = new File(configWebXmlPath);
+        JavaIoUtile.copyDirectoryCompatibilityMode(
+            webConfigXmlSettingFile, assignmentSettingFile);
+
+        String webResourcesZipPath =
+            this.getClass().getResource("/sample/WebQuickStart.zip").getPath();
+        ZipHandler zipHandler = new ZipHandler();
+        zipHandler.unzipFile(webResourcesZipPath,
+            assignmentSettingDir + assignmentName);
         zipHandler.zipTestFolder(assignmentSettingDir + assignmentName);
       }
       response = Response.ok().build();
@@ -933,7 +954,6 @@ public class AssignmentService {
   public Response getAssignmentFile(@QueryParam("fileName") String fileName) {
     String filePath = assignmentSettingDir + fileName + ".zip";
 
-    
     File file = new File(filePath);
 
     ResponseBuilder response = Response.ok((Object) file);

@@ -23,31 +23,18 @@ public class WebAssignmentSetting implements AssignmentSettings {
 
   private static final Logger LOGGER = LoggerFactory
       .getLogger(WebAssignmentSetting.class);
-  private SettingZipHandler settingZipHandler;
   private String configWebXmlPath =
-      "/usr/local/tomcat/webapps/ROOT/WEB-INF/classes/jenkins/config_web.xml";
+      this.getClass().getResource("/jenkins/config_web.xml").getPath();
   private Document doc;
-  private String assignmentName;
-
-  public WebAssignmentSetting(String assignmentName) {
-    this.assignmentName = assignmentName;
-    settingZipHandler = new SettingZipHandler();
-  }
 
   @Override
-  public void unZipAssignmentToTmp() {
-    settingZipHandler.unZipAssignmentToTmp("web", this.assignmentName);
-  }
-
-  @Override
-  public void packUpAssignment() {
-    settingZipHandler.packUpAssignment(this.assignmentName);
-
-  }
-
-  @Override
-  public void createAssignmentSetting(List<String> order, String name) {
+  public void createAssignmentSetting(List<String> order, String name, String targetPath) {
     List <String> commands = getCommand(order);
+
+    File webConfigSettingPath = new File(targetPath);
+    if (!webConfigSettingPath.exists()) {
+      webConfigSettingPath.mkdir();
+    }
 
     try {
       File inputFile = new File(configWebXmlPath);
@@ -97,22 +84,15 @@ public class WebAssignmentSetting implements AssignmentSettings {
         BuildStepWithTimeout.appendChild(Operation);
 
         builders.item(builders.getLength()-1).appendChild(BuildStepWithTimeout);
+
+        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        Transformer transformer = transformerFactory.newTransformer();
+        transformer.setOutputProperty(OutputKeys.INDENT,"yes");
+        transformer.transform(new DOMSource(doc),
+            new StreamResult(new File(targetPath
+            + name + "_config_web.xml")));
       }
     } catch (Exception e) {
-      LOGGER.error(e.getMessage());
-    }
-  }
-
-  @Override
-  public void writeAssignmentSettingFile() {
-    try {
-      TransformerFactory transformerFactory = TransformerFactory.newInstance();
-      Transformer transformer = transformerFactory.newTransformer();
-      transformer.setOutputProperty(OutputKeys.INDENT,"yes");
-      transformer.transform(new DOMSource(doc),
-              new StreamResult(new File(configWebXmlPath)));
-    } catch (Exception e) {
-      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
     }
   }
