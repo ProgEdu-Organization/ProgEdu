@@ -729,7 +729,9 @@ public class AssignmentService {
             assignmentName, "root"); // Todo assignment 要改
 
     try {
-      gitlabService.setGitlabWebhook(gitlabProject);
+      String jobName = username + "_" + assignmentName;
+
+      gitlabService.setGitlabWebhook(gitlabProject, jobName);
 
       GitlabConfig gitlabConfig = GitlabConfig.getInstance();
       String projectUrl = gitlabConfig.getGitlabHostUrl() + "/" + username + "/" + assignmentName
@@ -746,7 +748,7 @@ public class AssignmentService {
                       username, assignmentName);
 
       JenkinsService jenkinsService = JenkinsService.getInstance();
-      String jobName = username + "_" + assignmentName;
+
 
       jenkinsService.createJobV2(jobName, jenkinsProjectConfig.getXmlConfig());
 
