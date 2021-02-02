@@ -41,7 +41,7 @@ public class UserDbManager {
     return dbManager;
   }
 
-  private IDatabase database = new MySqlDatabase();
+  private IDatabase database = MySqlDatabase.getInstance();
   RoleDbManager rdb = RoleDbManager.getInstance();
   RoleUserDbManager rudb = RoleUserDbManager.getInstance();
 

@@ -15,7 +15,7 @@ public class ScoreModeDbManager {
     return dbManager;
   }
 
-  private IDatabase database = new MySqlDatabase();
+  private IDatabase database = MySqlDatabase.getInstance();
 
   /**
    * Get Score mode Id by score description
