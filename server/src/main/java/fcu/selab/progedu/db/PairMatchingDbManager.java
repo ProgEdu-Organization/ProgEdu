@@ -23,7 +23,7 @@ public class PairMatchingDbManager {
     return dbManager;
   }
 
-  private IDatabase database = new MySqlDatabase();
+  private IDatabase database = MySqlDatabase.getInstance();
 
   /**
    * Insert pair matching into db

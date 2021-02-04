@@ -13,7 +13,7 @@ import fcu.selab.progedu.utils.ExceptionUtil;
 
 public class ScreenshotRecordDbManager {
   private static ScreenshotRecordDbManager dbManager = new ScreenshotRecordDbManager();
-  private IDatabase database = new MySqlDatabase();
+  private IDatabase database = MySqlDatabase.getInstance();
   private static final Logger LOGGER = LoggerFactory.getLogger(ScreenshotRecordDbManager.class);
 
   public static ScreenshotRecordDbManager getInstance() {

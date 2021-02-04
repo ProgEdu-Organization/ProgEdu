@@ -154,11 +154,11 @@ public class AssignmentService {
       @FormDataParam("file") InputStream file,
       @FormDataParam("file") FormDataContentDisposition fileDetail) {
 
-    final ProjectTypeEnum projectTypeEnum = ProjectTypeEnum.getProjectTypeEnum(assignmentType);
-    // 1. Create root project and get project id and url
-    createRootProject(assignmentName);
 
-    // 2. Clone the project to C:\\Users\\users\\AppData\\Temp\\uploads
+    // 1. Create root project and get project id and url
+    gitlabService.createRootProject(assignmentName);
+
+    // 2. Clone the project
     final String cloneDirectoryPath = gitlabService.cloneProject(gitlabRootUsername,
         assignmentName);
 //    // 3. Store Zip File to uploads folder if file is not empty
@@ -212,6 +212,7 @@ public class AssignmentService {
     gitlabService.pushProject(cloneDirectoryPath);
 
     // 9. import project information to database
+    ProjectTypeEnum projectTypeEnum = ProjectTypeEnum.getProjectTypeEnum(assignmentType);
     addProject(assignmentName, releaseTime, deadline, readMe, projectTypeEnum);
 
 
@@ -220,7 +221,7 @@ public class AssignmentService {
       createAssignmentSettingsV2(user.getUsername(), assignmentName);
     }
 
-    // 10. remove project file in linux
+    // 10. remove project file
     JavaIoUtile.deleteDirectory(new File(uploadDir));
     return Response.ok().build();
   }
@@ -391,10 +392,6 @@ public class AssignmentService {
       response = Response.serverError().entity(e.getMessage()).build();
     }
     return response;
-  }
-
-  private void createRootProject(String name) {
-    gitlabService.createRootProject(name);
   }
 
   public List<String> getAllAssignmentNames() {
@@ -725,7 +722,6 @@ public class AssignmentService {
   }
 
   private void createAssignmentSettingsV2(String username, String assignmentName) {
-    ProjectTypeEnum assignmentTypeEnum = dbManager.getAssignmentType(assignmentName);
 
     addAuid(username, assignmentName);
     //Todo 以上 addAuid 要改, 因為之後沒有 assignment
@@ -734,7 +730,9 @@ public class AssignmentService {
             assignmentName, "root"); // Todo assignment 要改
 
     try {
-      gitlabService.setGitlabWebhook(gitlabProject);
+      String jobName = username + "_" + assignmentName;
+
+      gitlabService.setGitlabWebhook(gitlabProject, jobName);
 
       GitlabConfig gitlabConfig = GitlabConfig.getInstance();
       String projectUrl = gitlabConfig.getGitlabHostUrl() + "/" + username + "/" + assignmentName
@@ -745,12 +743,13 @@ public class AssignmentService {
               + "/webapi";
       String updateDbUrl = progEduApiUrl + "/commits/update";
 
+      ProjectTypeEnum assignmentTypeEnum = dbManager.getAssignmentType(assignmentName);
       JenkinsProjectConfig jenkinsProjectConfig = JenkinsProjectConfigFactory
               .getJenkinsProjectConfig(assignmentTypeEnum.getTypeName(), projectUrl, updateDbUrl,
                       username, assignmentName);
 
       JenkinsService jenkinsService = JenkinsService.getInstance();
-      String jobName = username + "_" + assignmentName;
+
 
       jenkinsService.createJobV2(jobName, jenkinsProjectConfig.getXmlConfig());
 

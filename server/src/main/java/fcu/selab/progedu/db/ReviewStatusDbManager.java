@@ -15,7 +15,7 @@ public class ReviewStatusDbManager {
     return dbManager;
   }
 
-  private IDatabase database = new MySqlDatabase();
+  private IDatabase database = MySqlDatabase.getInstance();
 
   /**
    * Get Id by status

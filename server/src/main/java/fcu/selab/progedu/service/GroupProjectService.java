@@ -95,17 +95,13 @@ public class GroupProjectService {
     // 8. import project infomation to database
     addProject(groupName, projectName, readMe, projectTypeEnum);
 
-    // 9. set Gitlab webhook
+    String jobName = groupName + "_" +  projectName;
     try {
+      // 9. set Gitlab webhook
       GitlabProject project = gitlabService.getProject(projectId);
-      gitlabService.setGitlabWebhook(project);
-    } catch (IOException | LoadConfigFailureException e) {
-      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
-      LOGGER.error(e.getMessage());
-    }
+      gitlabService.setGitlabWebhook(project, jobName);
 
-    // 10. Create Jenkins Job
-    try {
+      // 10. Create Jenkins Job
       GitlabConfig gitlabConfig = GitlabConfig.getInstance();
 
       CourseConfig courseConfig = CourseConfig.getInstance();
@@ -119,7 +115,7 @@ public class GroupProjectService {
                                                                      groupName, projectName);
 
       JenkinsService jenkinsService = JenkinsService.getInstance();
-      String jobName = groupName + "_" +  projectName;
+
       jenkinsService.createJobV2(jobName, jenkinsProjectConfig.getXmlConfig());
       jenkinsService.buildJob(jobName);
     } catch (Exception e) {

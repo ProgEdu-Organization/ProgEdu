@@ -15,7 +15,7 @@ import fcu.selab.progedu.utils.ExceptionUtil;
 public class ProjectScreenshotRecordDbManager {
   private static ProjectScreenshotRecordDbManager instance = new ProjectScreenshotRecordDbManager();
 
-  private IDatabase database = new MySqlDatabase();
+  private IDatabase database = MySqlDatabase.getInstance();
 
   private static final Logger LOGGER;
 

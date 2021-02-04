@@ -27,7 +27,7 @@ public class CommitRecordDbManager {
     return dbManager;
   }
 
-  private IDatabase database = new MySqlDatabase();
+  private IDatabase database = MySqlDatabase.getInstance();
 
   private static final Logger LOGGER = LoggerFactory.getLogger(CommitRecordDbManager.class);
 
