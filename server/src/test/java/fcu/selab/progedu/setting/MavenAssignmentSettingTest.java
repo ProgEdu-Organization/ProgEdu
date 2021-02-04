@@ -63,6 +63,5 @@ public class MavenAssignmentSettingTest extends TestCase {
     } catch (Exception e) {
       e.printStackTrace();
     }
-
   }
 }
