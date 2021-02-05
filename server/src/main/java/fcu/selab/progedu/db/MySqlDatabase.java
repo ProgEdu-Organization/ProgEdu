@@ -28,19 +28,11 @@ public class MySqlDatabase implements IDatabase {
   // https://bhaveshgadoya.wordpress.com/2015/07/08/bonecp-connection-pooling-some-useful-tips/
   private static BoneCP connectionPool = null;
 
-  private static int dbPoolPartitionCount = 2;
-
-  private static int dbPoolMaxConnectionsPerPartition = 5;
-
-  private static int dbPoolMinConnectionsPerPartition = 1;
-
-
-
   private MySqlDatabase() {
     try {
       Class.forName(DB_DRIVER); // load the DB driver
-      BoneCPConfig config = getConfig();
       if (connectionPool == null) {
+        BoneCPConfig config = getConfig();
         connectionPool = new BoneCP(config);
       }
 
@@ -94,9 +86,9 @@ public class MySqlDatabase implements IDatabase {
       config.setUsername(user);
       config.setPassword(password);
 
-      config.setPartitionCount(dbPoolPartitionCount);
-      config.setMinConnectionsPerPartition(dbPoolMinConnectionsPerPartition);
-      config.setMaxConnectionsPerPartition(dbPoolMaxConnectionsPerPartition);
+      config.setPartitionCount(3);
+      config.setMinConnectionsPerPartition(5);
+      config.setMaxConnectionsPerPartition(20);
 
     } catch (LoadConfigFailureException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));

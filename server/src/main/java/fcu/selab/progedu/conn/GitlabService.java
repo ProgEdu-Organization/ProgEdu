@@ -158,13 +158,12 @@ public class GitlabService {
    * @return gitlabProject
    */
   public GitlabProject getProject(String username, String proName) {
-    GitlabProject gitlabProject = new GitlabProject();
+    GitlabProject gitlabProject = null;
     try {
       gitlabProject = gitlab.getProject(username, proName);
     } catch (IOException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
-      return null;
     }
     return gitlabProject;
   }
@@ -187,6 +186,7 @@ public class GitlabService {
   }
 
   /**
+   * Todo 這預設限定了一個Group 只有一個 project
    * get project all commit information
    *
    * @param groupName groupName
