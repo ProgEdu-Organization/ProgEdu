@@ -29,7 +29,7 @@ public class WebAssignmentSetting implements AssignmentSettings {
 
   @Override
   public void createAssignmentSetting(List<String> order, String name, String targetPath) {
-    List <String> commands = getCommand(order);
+    List<String> commands = getCommand(order);
 
     File webConfigSettingPath = new File(targetPath);
     if (!webConfigSettingPath.exists()) {
@@ -49,41 +49,41 @@ public class WebAssignmentSetting implements AssignmentSettings {
       NodeList value = (NodeList) builders.item(0);
       Element value2 = (Element) builders.item(0);
 
-      int BuildStepWithTimeoutCount = value.getLength();
-      while (BuildStepWithTimeoutCount > 5 ) {
+      int buildStepWithTimeoutCount = value.getLength();
+      while (buildStepWithTimeoutCount > 5 ) {
         Node wannaDel = (Node) value2.getElementsByTagName
             ("hudson.plugins.build__timeout.BuildStepWithTimeout").item(1);
         value2.removeChild(wannaDel);
-        BuildStepWithTimeoutCount = BuildStepWithTimeoutCount-2;
+        buildStepWithTimeoutCount = buildStepWithTimeoutCount - 2;
       }
 
       for (String command: commands) {
-        Element TimeOut = doc.createElement("timeoutMinutes");
-        TimeOut.appendChild(doc.createTextNode("15"));
-        Element Strategy = doc.createElement("strategy");
-        Strategy.setAttribute("class",
+        Element timeOut = doc.createElement("timeoutMinutes");
+        timeOut.appendChild(doc.createTextNode("15"));
+        Element strategy = doc.createElement("strategy");
+        strategy.setAttribute("class",
             "hudson.plugins.build_timeout.impl.AbsoluteTimeOutStrategy");
-        Strategy.appendChild(TimeOut);
+        strategy.appendChild(timeOut);
 
-        Element NodeCommand = doc.createElement("command");
-        NodeCommand.appendChild(doc.createTextNode(command));
-        Element BuildStep = doc.createElement("buildStep");
-        BuildStep.setAttribute("class", "hudson.tasks.Shell");
-        BuildStep.appendChild(NodeCommand);
+        Element nodeCommand = doc.createElement("command");
+        nodeCommand.appendChild(doc.createTextNode(command));
+        Element buildStep = doc.createElement("buildStep");
+        buildStep.setAttribute("class", "hudson.tasks.Shell");
+        buildStep.appendChild(nodeCommand);
 
-        Element FailOperation = doc.createElement
+        Element failOperation = doc.createElement
             ("hudson.plugins.build__timeout.operations.FailOperation");
-        Element Operation = doc.createElement("operationList");
-        Operation.appendChild(FailOperation);
+        Element operation = doc.createElement("operationList");
+        operation.appendChild(failOperation);
 
-        Element BuildStepWithTimeout = doc.createElement
+        Element buildStepWithTimeout = doc.createElement
             ("hudson.plugins.build__timeout.BuildStepWithTimeout");
-        BuildStepWithTimeout.setAttribute("plugin", "build-timeout@1.19");
-        BuildStepWithTimeout.appendChild(Strategy);
-        BuildStepWithTimeout.appendChild(BuildStep);
-        BuildStepWithTimeout.appendChild(Operation);
+        buildStepWithTimeout.setAttribute("plugin", "build-timeout@1.19");
+        buildStepWithTimeout.appendChild(strategy);
+        buildStepWithTimeout.appendChild(buildStep);
+        buildStepWithTimeout.appendChild(operation);
 
-        builders.item(builders.getLength()-1).appendChild(BuildStepWithTimeout);
+        builders.item(builders.getLength() - 1).appendChild(buildStepWithTimeout);
 
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         Transformer transformer = transformerFactory.newTransformer();

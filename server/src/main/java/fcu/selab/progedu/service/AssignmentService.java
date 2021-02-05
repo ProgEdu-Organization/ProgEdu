@@ -509,14 +509,6 @@ public class AssignmentService {
         ordersList.add("utf");
       } else if (token[0].equals("Coding Style Failure")) {
         ordersList.add("csf");
-      } else if (token[0].equals("")) {
-
-      } else if (token[0].equals("")) {
-
-      } else if (token[0].equals("")) {
-
-      } else if (token[0].equals("")) {
-
       }
       scoresList.add(token[1]);
     }
