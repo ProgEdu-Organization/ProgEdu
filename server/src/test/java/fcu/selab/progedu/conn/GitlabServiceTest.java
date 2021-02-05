@@ -59,4 +59,10 @@ public class GitlabServiceTest {
         assertTrue( JavaIoUtile.deleteDirectory(Paths.get(targetParentPathString).toFile()) );
 
     }
+
+  @Test
+  public void getAllProjects() {
+
+      System.out.println(gitlabService.getAllProjects());
+  }
 }
