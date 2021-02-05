@@ -76,8 +76,8 @@ public class WebAssignmentSetting implements AssignmentSettings {
         Element operation = doc.createElement("operationList");
         operation.appendChild(failOperation);
 
-        Element buildStepWithTimeout = doc.createElement
-            ("hudson.plugins.build__timeout.BuildStepWithTimeout");
+        Element buildStepWithTimeout = doc.createElement(
+            "hudson.plugins.build__timeout.BuildStepWithTimeout");
         buildStepWithTimeout.setAttribute("plugin", "build-timeout@1.19");
         buildStepWithTimeout.appendChild(strategy);
         buildStepWithTimeout.appendChild(buildStep);
