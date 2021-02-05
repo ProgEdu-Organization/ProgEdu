@@ -51,8 +51,8 @@ public class WebAssignmentSetting implements AssignmentSettings {
 
       int buildStepWithTimeoutCount = value.getLength();
       while (buildStepWithTimeoutCount > 5 ) {
-        Node wannaDel = (Node) value2.getElementsByTagName
-            ("hudson.plugins.build__timeout.BuildStepWithTimeout").item(1);
+        Node wannaDel = (Node) value2.getElementsByTagName(
+            "hudson.plugins.build__timeout.BuildStepWithTimeout").item(1);
         value2.removeChild(wannaDel);
         buildStepWithTimeoutCount = buildStepWithTimeoutCount - 2;
       }
@@ -71,8 +71,8 @@ public class WebAssignmentSetting implements AssignmentSettings {
         buildStep.setAttribute("class", "hudson.tasks.Shell");
         buildStep.appendChild(nodeCommand);
 
-        Element failOperation = doc.createElement
-            ("hudson.plugins.build__timeout.operations.FailOperation");
+        Element failOperation = doc.createElement(
+            "hudson.plugins.build__timeout.operations.FailOperation");
         Element operation = doc.createElement("operationList");
         operation.appendChild(failOperation);
 
