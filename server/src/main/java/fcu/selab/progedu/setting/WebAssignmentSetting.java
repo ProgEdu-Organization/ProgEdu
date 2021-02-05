@@ -98,7 +98,7 @@ public class WebAssignmentSetting implements AssignmentSettings {
   }
 
   private List<String> getCommand(List<String> orders) {
-    List <String> commands = new ArrayList<String>();
+    List<String> commands = new ArrayList<String>();
     commands.add("npm i");
 
     for (String order : orders) {
@@ -106,9 +106,9 @@ public class WebAssignmentSetting implements AssignmentSettings {
         commands.add("npm run htmlhint");
       } else if (order.equals("CSS Failure")) {
         commands.add("npm run stylelint");
-      } else if(order.equals("JavaScript Failure")) {
+      } else if (order.equals("JavaScript Failure")) {
         commands.add("npm run eslint");
-      } else if(order.equals("Unit Test Failure")) {
+      } else if (order.equals("Unit Test Failure")) {
         commands.add("npm run test");
       }
     }
