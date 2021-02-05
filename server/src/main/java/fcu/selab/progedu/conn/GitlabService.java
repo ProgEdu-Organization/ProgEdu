@@ -42,7 +42,7 @@ import fcu.selab.progedu.utils.Linux;
 public class GitlabService {
   private static GitlabService instance = new GitlabService();
 
-  GitlabConfig gitData = GitlabConfig.getInstance();
+  GitlabConfig gitlabConfig = GitlabConfig.getInstance();
   GroupDbService gdb = GroupDbService.getInstance();
   private String hostUrl;
   private String rootUrl;
@@ -55,9 +55,9 @@ public class GitlabService {
 
   private GitlabService() {
     try {
-      hostUrl = gitData.getGitlabHostUrl();
-      rootUrl = gitData.getGitlabRootUrl();
-      apiToken = gitData.getGitlabApiToken();
+      hostUrl = gitlabConfig.getGitlabHostUrl();
+      rootUrl = gitlabConfig.getGitlabRootUrl();
+      apiToken = gitlabConfig.getGitlabApiToken();
     } catch (LoadConfigFailureException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
