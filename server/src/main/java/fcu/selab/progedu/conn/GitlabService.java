@@ -9,7 +9,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -18,7 +17,6 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.gitlab.api.AuthMethod;
@@ -30,8 +28,6 @@ import org.gitlab.api.models.GitlabGroup;
 import org.gitlab.api.models.GitlabGroupMember;
 import org.gitlab.api.models.GitlabProject;
 import org.gitlab.api.models.GitlabUser;
-import org.json.JSONObject;
-import org.json.JSONTokener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,7 +35,6 @@ import fcu.selab.progedu.config.GitlabConfig;
 import fcu.selab.progedu.config.JenkinsConfig;
 import fcu.selab.progedu.data.User;
 import fcu.selab.progedu.db.service.GroupDbService;
-import fcu.selab.progedu.db.service.UserDbService;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.utils.ExceptionUtil;
 import fcu.selab.progedu.utils.Linux;
@@ -48,7 +43,6 @@ public class GitlabService {
   private static GitlabService instance = new GitlabService();
 
   GitlabConfig gitData = GitlabConfig.getInstance();
-  UserDbService udb = UserDbService.getInstance();
   GroupDbService gdb = GroupDbService.getInstance();
   private String hostUrl;
   private String rootUrl;
