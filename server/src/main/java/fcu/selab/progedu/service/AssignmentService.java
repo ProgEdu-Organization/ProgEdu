@@ -511,9 +511,9 @@ public class AssignmentService {
         ordersList.add("csf");
       } else if (token[0].equals("HTML Failure")) {
         ordersList.add("whf");
-      } else if (token.equals("CSS Failure")) {
+      } else if (token[0].equals("CSS Failure")) {
         ordersList.add("wsf");
-      } else if (token.equals("Javascript Failure")) {
+      } else if (token[0].equals("Javascript Failure")) {
         ordersList.add("wef");
       }
       scoresList.add(token[1]);
