@@ -52,7 +52,7 @@ public class WebAssignmentSetting implements AssignmentSettings {
       int buildStepWithTimeoutCount = value.getLength();
       while (buildStepWithTimeoutCount > 5 ) {
         Node wannaDel = (Node) value2.getElementsByTagName(
-            "hudson.plugins.build__timeout.BuildStepWithTimeout").item(1);
+            "hudson.plugins.build__timeout.BuildStepWithTimeout").item(0);
         value2.removeChild(wannaDel);
         buildStepWithTimeoutCount = buildStepWithTimeoutCount - 2;
       }
