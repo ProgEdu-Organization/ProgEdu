@@ -55,7 +55,7 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
   webStatus = [
     "HTML Failure",
     "CSS Failure",
-    "Javascript Failure",
+    "JavaScript Failure",
     "Unit Test Failure"
   ];
 
