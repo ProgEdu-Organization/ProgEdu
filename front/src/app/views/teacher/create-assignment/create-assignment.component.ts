@@ -310,7 +310,7 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
   }
 
   public submit() {
-    let tempOrder: string[];
+    let tempOrder: string[] = [];
     let tempStatusScore: Map<string, string>;
     let orderString = "";
     if (this.assignment.get('type').value == 'maven') {
