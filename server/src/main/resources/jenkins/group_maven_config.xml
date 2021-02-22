@@ -60,7 +60,7 @@
         <timeoutMinutes>15</timeoutMinutes>
       </strategy>
       <buildStep class="hudson.tasks.Maven">
-        <targets>clean package</targets>
+        <targets>package</targets>
         <mavenName>Global</mavenName>
         <usePrivateRepository>false</usePrivateRepository>
         <settings class="jenkins.mvn.DefaultSettingsProvider"/>
