@@ -922,13 +922,6 @@ public class AssignmentService {
         File assignmentSettingFile = new File(configWebXmlPath);
         JavaIoUtile.copyDirectoryCompatibilityMode(
             webConfigXmlSettingFile, assignmentSettingFile);
-
-        String webResourcesZipPath =
-            this.getClass().getResource("/sample/WebQuickStart.zip").getPath();
-        ZipHandler zipHandler = new ZipHandler();
-        zipHandler.unzipFile(webResourcesZipPath,
-            assignmentSettingDir + assignmentName);
-        zipHandler.zipTestFolder(assignmentSettingDir + assignmentName);
       }
       response = Response.ok().build();
     } catch (Exception e) {
