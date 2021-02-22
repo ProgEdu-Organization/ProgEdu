@@ -16,11 +16,11 @@ public class MavenGroupConfig extends JenkinsProjectConfig {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(MavenGroupConfig.class);
 
-  URL baseUrl = this.getClass().getResource("/jenkins/group_web_config.xml");
+  URL baseUrl = this.getClass().getResource("/jenkins/group_maven_config.xml");
   Document xmlDocument;
 
   /**
-   * WebGroupConfig
+   * MavenGroupConfig
    * Todo 這類別目前無功能 且壞掉 待修
    * @param projectUrl   projectUrl
    * @param updateDbUrl  updateDbUrl
