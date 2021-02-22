@@ -392,19 +392,13 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
     if (this.assignment.get('name').invalid) {
       if (this.assignment.get('type').value == 'maven' || this.assignment.get('type').value == undefined) {
         window.open(environment.SERVER_URL + '/resources/MvnQuickStart.zip');
-      } else if (this.assignment.get('type').value == 'web') {
-        window.open(environment.SERVER_URL + '/resources/WebQuickStart.zip');
       }
     } else {
       this.createService.modifyOrder(this.assignment).subscribe(
         (response) => {
           console.log("Success");
-          if(this.assignment.get('type').value == 'web') {
-            window.open(environment.SERVER_URL + '/resources/WebQuickStart.zip');
-          } else {
             window.open(environment.SERVER_URL + 
               '/webapi/assignment/getAssignmentFile?fileName=' + this.assignment.value.name);
-          }
         },
         error => {
           this.errorResponse = error;
