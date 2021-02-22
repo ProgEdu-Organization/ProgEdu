@@ -63,7 +63,7 @@ public class GroupProjectService {
 
     if (!projectType.equals("web") || !projectType.equals("maven")) {
       LOGGER.error("The createGroupProjectV2 not support" + projectType);
-      return;
+      //return;
     }
 
     String readMe = "Initialization";
@@ -125,6 +125,10 @@ public class GroupProjectService {
               groupName, projectName);
           break;
         default:
+          System.out.println("projectType: ");
+          System.out.println(projectType);
+          LOGGER.error("projectType: ");
+          LOGGER.error(projectType);
           throw new IllegalStateException("Unexpected value: " + projectType);
       }
       
