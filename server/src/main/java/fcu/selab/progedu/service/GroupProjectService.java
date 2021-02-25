@@ -62,8 +62,9 @@ public class GroupProjectService {
   public void createGroupProjectV2(String groupName, String projectName, String projectType) {
 
     if (!projectType.equals("web") || !projectType.equals("maven")) {
+      LOGGER.info(projectType);
       LOGGER.error("The createGroupProjectV2 not support" + projectType);
-      //return;
+      return;
     }
 
     String readMe = "Initialization";
@@ -119,10 +120,12 @@ public class GroupProjectService {
         case "web":
           jenkinsProjectConfig = new WebGroupConfig(projectUrl, updateDbUrl,
               groupName, projectName);
+          LOGGER.info("[web-projectType]");
           break;
         case "maven":
           jenkinsProjectConfig = new MavenGroupConfig(projectUrl, updateDbUrl,
               groupName, projectName);
+          LOGGER.info("[maven-projectType]");
           break;
         default:
           System.out.println("projectType: ");
