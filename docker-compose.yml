@@ -83,7 +83,7 @@ services:
       DOCKER_HOST: tcp://docker:2376
       DOCKER_CERT_PATH: /certs/client
       DOCKER_TLS_VERIFY: 1
-      
+
     depends_on:
       - docker
     volumes:
@@ -101,6 +101,7 @@ services:
     volumes:
       - jenkins-docker-certs:/certs/client
       - jenkins_home:/var/jenkins_home
+      - jenkins_home-workspace:/var/jenkins_home/workspace
 
   selenium:
     image: selenium/standalone-chrome
