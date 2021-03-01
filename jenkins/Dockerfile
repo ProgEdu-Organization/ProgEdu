@@ -21,7 +21,7 @@ RUN cd screenshotjenkinsplugin && mvn package
 RUN cd UpdatePngToDBJenkinsPlugin && mvn package
 RUN cd AndroidScreenshotPlugin && mvn package
 
-FROM jenkins/jenkins:lts
+FROM jenkins/jenkins:2.263.4-lts-jdk11
 
 USER root
 
@@ -35,7 +35,7 @@ RUN add-apt-repository \
        "deb [arch=amd64] https://download.docker.com/linux/debian \
        $(lsb_release -cs) stable"
 RUN apt-get update && apt-get install -y docker-ce-cli
-USER jenkins
+
 RUN jenkins-plugin-cli --plugins blueocean:1.24.4
 
 COPY plugins.txt /usr/share/jenkins/ref/plugins.txt
