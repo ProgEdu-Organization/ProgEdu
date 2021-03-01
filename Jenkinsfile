@@ -2,6 +2,7 @@ pipeline {
     agent any
     
     environment {
+        NEXT_CLOUD_USERNAME = credentials('next-cloud-username')
         NEXT_CLOUD_PASSWORD = credentials('next-cloud-password')
     }
     
@@ -11,7 +12,7 @@ pipeline {
         stage('download .env file') {
             steps {
                 script {
-                    sh 'curl -u server:$NEXT_CLOUD_PASSWORD -f http://140.134.26.63:50603/remote.php/dav/files/server/ProgEdu-CI-CD/$BRANCH_NAME/.env -X GET -O'
+                    sh "curl -u $NEXT_CLOUD_USERNAME:$NEXT_CLOUD_PASSWORD --insecure -f $NEXT_CLOUD_HOST/ProgEdu-CI-CD/$BRANCH_NAME/.env -X GET -O"
                 }
             }
         }
