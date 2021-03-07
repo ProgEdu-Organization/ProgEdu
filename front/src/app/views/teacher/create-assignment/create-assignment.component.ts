@@ -316,7 +316,7 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
     if (this.assignment.get('type').value == 'maven') {
       tempOrder = this.javaOrder;
       tempStatusScore = this.javaStatusScore;
-      orderString = "Compile Failure:" + this.javaStatusScore.get("Compile Failure");
+      orderString = "Compile Failure:" + this.javaStatusScore.get("Compile Failure") + ", ";
     } else if (this.assignment.get('type').value == 'web') {
       tempOrder = this.webOrder;
       tempStatusScore = this.webStatusScore;
