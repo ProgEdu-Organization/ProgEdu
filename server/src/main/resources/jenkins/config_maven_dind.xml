@@ -24,7 +24,7 @@
           <triggerOnPipelineEvent>false</triggerOnPipelineEvent>
           <triggerOnAcceptedMergeRequest>false</triggerOnAcceptedMergeRequest>
           <triggerOnClosedMergeRequest>false</triggerOnClosedMergeRequest>
-          <triggerOnApprovedMergeRequest>true</triggerOnApprovedMergeRequest>
+          <triggerOnApprovedMergeRequest>false</triggerOnApprovedMergeRequest>
           <triggerOpenMergeRequestOnPush>never</triggerOpenMergeRequestOnPush>
           <triggerOnNoteRequest>true</triggerOnNoteRequest>
           <noteRegex>Jenkins please retry a build</noteRegex>
@@ -36,7 +36,6 @@
           <excludeBranchesSpec></excludeBranchesSpec>
           <sourceBranchRegex></sourceBranchRegex>
           <targetBranchRegex></targetBranchRegex>
-          <secretToken>{AQAAABAAAAAQ7BUfssK86EXMILyhCgvJrF9UBigRSLowClKI3TK4xSQ=}</secretToken>
           <pendingBuildName></pendingBuildName>
           <cancelPendingBuildsOnUpdate>false</cancelPendingBuildsOnUpdate>
         </com.dabsquared.gitlabjenkins.GitLabPushTrigger>
@@ -48,7 +47,7 @@
       <configVersion>2</configVersion>
       <userRemoteConfigs>
         <hudson.plugins.git.UserRemoteConfig>
-          <url>http://140.134.25.63:41001/sss1/hhh1.git</url>
+          <url>http://140.134.25.64:30001/sss1/hhh3.git</url>
           <credentialsId>gitlab_root</credentialsId>
         </hudson.plugins.git.UserRemoteConfig>
       </userRemoteConfigs>
