@@ -68,8 +68,7 @@ services:
     
 
   jenkins:
-    build:
-      context: ./jenkins
+    image: fcumselab/fcu-progedu-jenkins:test-dind
     deploy:
       resources:
         limits:
@@ -95,6 +94,7 @@ services:
   
   docker:
     image: docker:dind
+    restart: always
     privileged: true
     environment:
       DOCKER_TLS_CERTDIR: /certs
