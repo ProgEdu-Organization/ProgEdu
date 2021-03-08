@@ -64,7 +64,7 @@ public class MavenDindConfig extends JenkinsProjectConfig {
                                   String username, String projectName) {
     String pipeline = createPipelineString(projectUrl, updateDbUrl, username, projectName);
 
-    pipeline = pipeline.replaceAll("'", "&apos;");
+//    pipeline = pipeline.replaceAll("'", "&apos;");
     this.xmlDocument.getElementsByTagName("script").item(0).setTextContent(pipeline);
 
   }
