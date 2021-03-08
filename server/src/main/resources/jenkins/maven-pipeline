@@ -6,7 +6,7 @@ pipeline {
             steps {
                 git branch: 'master',
                 credentialsId: 'gitlab_root',
-                url: 'http://140.134.25.64:30001/sss1/hhh4.git'
+                url: '{GitLab-url}'
 
 
                 sh 'docker run -i --rm -v "$(pwd)":/usr/src/mymaven -v "$HOME/.m2":/root/.m2 -w /usr/src/mymaven maven:3.3-jdk-8 mvn clean package'
@@ -15,10 +15,10 @@ pipeline {
             post {
 
                 always {
-                    sh "curl --location --request POST 'http://140.134.25.64:30003/webapi/commits/update' \
+                    sh "curl --location --request POST '{ProgEdu-server-updateDbUrl}' \
                                      --header 'Content-Type: application/x-www-form-urlencoded' \
-                                     --data-urlencode 'user=sss1' \
-                                     --data-urlencode 'proName=hhh4'"
+                                     --data-urlencode 'user={ProgEdu-user-name}' \
+                                     --data-urlencode 'proName={ProgEdu-project-name}'"
                     cleanWs()
                 }
             }

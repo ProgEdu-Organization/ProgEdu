@@ -23,7 +23,8 @@ public class JenkinsProjectConfigFactory {
       case MAVEN:
 //        return new MavenConfig(projectUrl, updateDbUrl,
 //                username, assignmentName);
-        return new MavenDindConfig(projectUrl);
+        return new MavenDindConfig(projectUrl, updateDbUrl,
+                  username, assignmentName);
       case WEB:
         return new WebConfig(projectUrl, updateDbUrl,
                 username, assignmentName);
