@@ -29,7 +29,7 @@ pipeline {
 
         stage('build') {
             steps {
-                sh "docker-compose --compatibility -p $BRANCH_NAME-progedu up -d --build"
+                sh "docker-compose pull && docker-compose --compatibility -p $BRANCH_NAME-progedu up -d --build"
             }
         }
     }

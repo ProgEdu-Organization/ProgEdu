@@ -12,6 +12,7 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+// Todo 準備棄用 改成 MavenPipelineConfig
 public class MavenConfig extends JenkinsProjectConfig {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(MavenConfig.class);
