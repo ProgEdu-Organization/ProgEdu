@@ -1,0 +1,27 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Build') {
+            steps {
+                git branch: 'master',
+                credentialsId: 'gitlab_root',
+                url: 'http://140.134.25.64:30001/sss1/hhh4.git'
+
+
+                sh 'docker run -i --rm -v "$(pwd)":/usr/src/mymaven -v "$HOME/.m2":/root/.m2 -w /usr/src/mymaven maven:3.3-jdk-8 mvn clean package'
+            }
+
+            post {
+
+                always {
+                    sh "curl --location --request POST 'http://140.134.25.64:30003/webapi/commits/update' \
+                                     --header 'Content-Type: application/x-www-form-urlencoded' \
+                                     --data-urlencode 'user=sss1' \
+                                     --data-urlencode 'proName=hhh4'"
+                    cleanWs()
+                }
+            }
+        }
+    }
+}

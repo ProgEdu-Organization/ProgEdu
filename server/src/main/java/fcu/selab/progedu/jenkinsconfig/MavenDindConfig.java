@@ -1,6 +1,7 @@
 package fcu.selab.progedu.jenkinsconfig;
 
 import fcu.selab.progedu.utils.ExceptionUtil;
+import fcu.selab.progedu.utils.JavaIoUtile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -11,6 +12,7 @@ import java.io.File;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.regex.*;
 
 public class MavenDindConfig extends JenkinsProjectConfig {
 
@@ -56,16 +58,17 @@ public class MavenDindConfig extends JenkinsProjectConfig {
     this.xmlDocument.getElementsByTagName("url").item(0).setTextContent(projectUrl);
   }
 
-  private void setProgEduUpdateUrl(String updateDbUrl) {
-    this.xmlDocument.getElementsByTagName("progeduDbUrl").item(0).setTextContent(updateDbUrl);
-  }
+  public void readPipeline() {
+    try {
+      URL baseUrl = this.getClass().getResource("/jenkins/maven-pipeline");
+      Path basePath = Paths.get(baseUrl.toURI());
+      File baseFile = basePath.toFile();
+      System.out.println(JavaIoUtile.readFileToString(baseFile));
 
-  private void setProgEduUpdateUsername(String username) {
-    this.xmlDocument.getElementsByTagName("user").item(0).setTextContent(username);
-  }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
 
-  private void setProgEduUpdateProjectName(String projectName) {
-    this.xmlDocument.getElementsByTagName("proName").item(0).setTextContent(projectName);
   }
 
 }
