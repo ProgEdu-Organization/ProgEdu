@@ -165,7 +165,7 @@ public class JavaIoUtile {
     }
   }
 
-  public static String readFileToString(File file) throws Exception{
+  public static String readFileToString(File file) throws Exception {
     return FileUtils.readFileToString(file, "UTF-8");
   }
 

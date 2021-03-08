@@ -27,7 +27,8 @@ public class MavenDindConfig extends JenkinsProjectConfig {
    *
    * @param projectUrl   projectUrl
    */
-  public MavenDindConfig(String projectUrl, String updateDbUrl, String username, String projectName) {
+  public MavenDindConfig(String projectUrl, String updateDbUrl,
+                         String username, String projectName) {
 
     try {
       Path basePath = Paths.get(this.baseUrl.toURI());
@@ -69,7 +70,16 @@ public class MavenDindConfig extends JenkinsProjectConfig {
   }
 
   // Todo 命名要修
-  public String createPipelineString(String projectUrl, String updateDbUrl, String username, String projectName) {
+  /**
+   * createPipelineString
+   *
+   * @param projectUrl   projectUrl
+   * @param updateDbUrl   updateDbUrl
+   * @param username   username
+   * @param projectName   projectName
+   */
+  public String createPipelineString(String projectUrl, String updateDbUrl,
+                                     String username, String projectName) {
     String newPipeLine = "";
     try {
       URL baseUrl = this.getClass().getResource("/jenkins/maven-pipeline");
@@ -106,25 +116,5 @@ public class MavenDindConfig extends JenkinsProjectConfig {
   }
 
 
-
-  public void readPipeline() {
-    try {
-      URL baseUrl = this.getClass().getResource("/jenkins/maven-pipeline");
-      Path basePath = Paths.get(baseUrl.toURI());
-      File baseFile = basePath.toFile();
-
-
-      String pipeLine = JavaIoUtile.readFileToString(baseFile);
-
-      String pattern = "\\{GitLab-url\\}";
-      Pattern r1 = Pattern.compile(pattern);
-      Matcher m1 = r1.matcher(pipeLine);
-      String newPipeLine = m1.replaceFirst("franky-test");
-
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-
-  }
 
 }
