@@ -1,6 +1,7 @@
 package fcu.selab.progedu.jenkinsconfig;
 
 import fcu.selab.progedu.utils.ExceptionUtil;
+import fcu.selab.progedu.utils.JavaIoUtile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -11,6 +12,8 @@ import java.io.File;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 public class MavenDindConfig extends JenkinsProjectConfig {
 
@@ -24,7 +27,7 @@ public class MavenDindConfig extends JenkinsProjectConfig {
    *
    * @param projectUrl   projectUrl
    */
-  public MavenDindConfig(String projectUrl) {
+  public MavenDindConfig(String projectUrl, String updateDbUrl, String username, String projectName) {
 
     try {
       Path basePath = Paths.get(this.baseUrl.toURI());
@@ -35,7 +38,10 @@ public class MavenDindConfig extends JenkinsProjectConfig {
       DocumentBuilder builder = factory.newDocumentBuilder();
       this.xmlDocument = builder.parse(baseFile);
 
-      setGitLabProjectUrl(projectUrl);
+      setJenkinsPipeline(projectUrl, updateDbUrl, username, projectName);
+
+
+//      setGitLabProjectUrl(projectUrl);
 //      setProgEduUpdateUrl(updateDbUrl);
 //      setProgEduUpdateUsername(username);
 //      setProgEduUpdateProjectName(projectName);
@@ -52,20 +58,73 @@ public class MavenDindConfig extends JenkinsProjectConfig {
     return this.xmlDocument;
   }
 
-  private void setGitLabProjectUrl(String projectUrl) {
-    this.xmlDocument.getElementsByTagName("url").item(0).setTextContent(projectUrl);
+
+  private void setJenkinsPipeline(String projectUrl, String updateDbUrl,
+                                  String username, String projectName) {
+    String pipeline = createPipelineString(projectUrl, updateDbUrl, username, projectName);
+
+    pipeline = pipeline.replaceAll("'", "&apos;");
+    this.xmlDocument.getElementsByTagName("script").item(0).setTextContent(pipeline);
+
   }
 
-  private void setProgEduUpdateUrl(String updateDbUrl) {
-    this.xmlDocument.getElementsByTagName("progeduDbUrl").item(0).setTextContent(updateDbUrl);
+  // Todo 命名要修
+  public String createPipelineString(String projectUrl, String updateDbUrl, String username, String projectName) {
+    String newPipeLine = "";
+    try {
+      URL baseUrl = this.getClass().getResource("/jenkins/maven-pipeline");
+      Path basePath = Paths.get(baseUrl.toURI());
+      File baseFile = basePath.toFile();
+
+
+      String pipeLine = JavaIoUtile.readFileToString(baseFile);
+
+      Pattern r1 = Pattern.compile("\\{GitLab-url\\}");
+      Matcher m1 = r1.matcher(pipeLine);
+      newPipeLine = m1.replaceFirst(projectUrl);
+
+      Pattern r2 = Pattern.compile("\\{ProgEdu-server-updateDbUrl\\}");
+      Matcher m2 = r2.matcher(newPipeLine);
+      newPipeLine = m2.replaceFirst(updateDbUrl);
+
+      Pattern r3 = Pattern.compile("\\{ProgEdu-user-name\\}");
+      Matcher m3 = r3.matcher(newPipeLine);
+      newPipeLine = m3.replaceFirst(username);
+
+      Pattern r4 = Pattern.compile("\\{ProgEdu-project-name\\}");
+      Matcher m4 = r4.matcher(newPipeLine);
+      newPipeLine = m4.replaceFirst(projectName);
+
+//      System.out.println(newPipeLine);
+
+
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
+    return newPipeLine;
   }
 
-  private void setProgEduUpdateUsername(String username) {
-    this.xmlDocument.getElementsByTagName("user").item(0).setTextContent(username);
-  }
 
-  private void setProgEduUpdateProjectName(String projectName) {
-    this.xmlDocument.getElementsByTagName("proName").item(0).setTextContent(projectName);
+
+  public void readPipeline() {
+    try {
+      URL baseUrl = this.getClass().getResource("/jenkins/maven-pipeline");
+      Path basePath = Paths.get(baseUrl.toURI());
+      File baseFile = basePath.toFile();
+
+
+      String pipeLine = JavaIoUtile.readFileToString(baseFile);
+
+      String pattern = "\\{GitLab-url\\}";
+      Pattern r1 = Pattern.compile(pattern);
+      Matcher m1 = r1.matcher(pipeLine);
+      String newPipeLine = m1.replaceFirst("franky-test");
+
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
   }
 
 }

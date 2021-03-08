@@ -42,26 +42,35 @@
       </triggers>
     </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
   </properties>
-  <definition class="org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition" plugin="workflow-cps@2.90">
-    <scm class="hudson.plugins.git.GitSCM" plugin="git@4.6.0">
-      <configVersion>2</configVersion>
-      <userRemoteConfigs>
-        <hudson.plugins.git.UserRemoteConfig>
-          <url>http://140.134.25.64:30001/sss1/hhh3.git</url>
-          <credentialsId>gitlab_root</credentialsId>
-        </hudson.plugins.git.UserRemoteConfig>
-      </userRemoteConfigs>
-      <branches>
-        <hudson.plugins.git.BranchSpec>
-          <name>*/master</name>
-        </hudson.plugins.git.BranchSpec>
-      </branches>
-      <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
-      <submoduleCfg class="empty-list"/>
-      <extensions/>
-    </scm>
-    <scriptPath>Jenkinsfile</scriptPath>
-    <lightweight>true</lightweight>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.90">
+    <script>pipeline {
+    agent any
+
+    stages {
+        stage(&apos;Build&apos;) {
+            steps {
+                git branch: &apos;master&apos;,
+                credentialsId: &apos;gitlab_root&apos;,
+                url: &apos;http://140.134.25.64:30001/sss1/hhh4.git&apos;
+                
+     
+                sh &apos;docker run -i --rm -v &quot;$(pwd)&quot;:/usr/src/mymaven -v &quot;$HOME/.m2&quot;:/root/.m2 -w /usr/src/mymaven maven:3.3-jdk-8 mvn clean package&apos;
+            }
+
+            post {
+               
+                always {
+                    sh &quot;curl --location --request POST &apos;http://140.134.25.64:30003/webapi/commits/update&apos; \
+                                     --header &apos;Content-Type: application/x-www-form-urlencoded&apos; \
+                                     --data-urlencode &apos;user=sss1&apos; \
+                                     --data-urlencode &apos;proName=hhh4&apos;&quot;
+                    cleanWs()
+                }
+            }
+        }
+    }
+}</script>
+    <sandbox>true</sandbox>
   </definition>
   <triggers/>
   <disabled>false</disabled>
