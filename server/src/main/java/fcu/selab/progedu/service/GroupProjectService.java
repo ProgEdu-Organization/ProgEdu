@@ -83,7 +83,17 @@ public class GroupProjectService {
     JavaIoUtile.createUtf8FileFromString(readMe, new File(cloneDirectoryPath, "README.md"));
 
     // 4 create template
-    String filePath = tomcatService.storeWebFileToServer();
+    String filePath;
+    switch (projectType) {
+      case "web":
+        filePath = tomcatService.storeWebFileToServer();
+        break;
+      case "maven":
+        filePath = tomcatService.storeMvnFileToServer();
+        break;
+      default:
+        throw new IllegalStateException("Unexpected value: " + projectType);
+    }
     zipHandler.unzipFile(filePath, cloneDirectoryPath);
 
     // 5. Add .gitkeep if folder is empty.
@@ -125,10 +135,6 @@ public class GroupProjectService {
               groupName, projectName);
           break;
         default:
-          System.out.println("projectType: ");
-          System.out.println(projectType);
-          LOGGER.error("projectType: ");
-          LOGGER.error(projectType);
           throw new IllegalStateException("Unexpected value: " + projectType);
       }
       
