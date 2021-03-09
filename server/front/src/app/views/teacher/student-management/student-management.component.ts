@@ -17,6 +17,7 @@ export class StudentManagementComponent implements OnInit {
   public addOneStudentSuccessful: boolean = false;
   public addMultipleStudentErrorMsg = '';
   public addMultipleStudentSuccessful: boolean = false;
+  public progressbar : boolean = false;
   constructor(private studentService: StudentManagementService, private fb: FormBuilder) { }
 
   async ngOnInit() {
@@ -97,10 +98,13 @@ export class StudentManagementComponent implements OnInit {
     this.multipleStudentFile = e.target.files[0];
   }
   public addMultipleStudent() {
-
+    //changechangechange
+    this.progressbar = true;
     if (this.multipleStudentFile != null) {
       this.studentService.addMultipleStudent(this.multipleStudentFile).subscribe(
         (response) => {
+          //changechangechange
+          this.progressbar = false;
           this.getAllUser();
           this.addMultipleStudentSuccessful = true;
           this.addMultipleStudentErrorMsg = '';
