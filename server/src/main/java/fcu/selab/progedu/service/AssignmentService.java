@@ -513,7 +513,7 @@ public class AssignmentService {
         ordersList.add("whf");
       } else if (token[0].equals("CSS Failure")) {
         ordersList.add("wsf");
-      } else if (token[0].equals("Javascript Failure")) {
+      } else if (token[0].equals("JavaScript Failure")) {
         ordersList.add("wef");
       }
       scoresList.add(token[1]);
