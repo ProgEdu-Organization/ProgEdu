@@ -1,5 +1,6 @@
 package fcu.selab.progedu.utils;
 
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -162,6 +163,10 @@ public class JavaIoUtile {
         out.write(buf, 0, length);
       }
     }
+  }
+
+  public static String readFileToString(File file) throws Exception {
+    return FileUtils.readFileToString(file, "UTF-8");
   }
 
 }
