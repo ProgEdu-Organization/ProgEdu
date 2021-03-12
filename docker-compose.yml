@@ -94,8 +94,6 @@ services:
   
   docker:
     image: docker:dind
-    ports:
-      - "31111:31111"
     restart: always
     privileged: true
     environment:
