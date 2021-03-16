@@ -14,7 +14,7 @@ services:
       - mysql:/var/lib/mysql
 
   gitlab:
-    image: gitlab/gitlab-ce:12.5.6-ce.0
+    image: gitlab/gitlab-ce:13.9.3-ce.0
     deploy:
       resources:
         limits:
@@ -68,7 +68,7 @@ services:
     
 
   jenkins:
-    image: fcumselab/fcu-progedu-jenkins:test-dind
+    image: fcumselab/fcu-progedu-jenkins:release-1.1.0
     deploy:
       resources:
         limits:
