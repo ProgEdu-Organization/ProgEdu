@@ -23,9 +23,9 @@ public class JenkinsProjectConfigFactory {
       case MAVEN:
         return new MavenPipelineConfig(projectUrl, updateDbUrl,
                   username, assignmentName);
-      case WEB:
-        return new WebConfig(projectUrl, updateDbUrl,
-                username, assignmentName);
+//      case WEB:
+//        return new WebConfig(projectUrl, updateDbUrl,
+//                username, assignmentName);
       case ANDROID:
         return new AndroidConfig(projectUrl, updateDbUrl,
                 username, assignmentName);
