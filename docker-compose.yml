@@ -64,7 +64,7 @@ services:
     
 
   jenkins:
-    image: fcumselab/fcu-progedu-jenkins:release-1.1.0
+    image: fcumselab/fcu-progedu-jenkins:test-dind
     deploy:
       resources:
         limits:
