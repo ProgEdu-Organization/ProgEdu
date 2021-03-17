@@ -15,10 +15,6 @@ services:
 
   gitlab:
     image: gitlab/gitlab-ce:13.9.3-ce.0
-    deploy:
-      resources:
-        limits:
-          memory: 3072M
     ports:
       - "${GITLAB_HTTP_PORT}:80"
       - "${GITLAB_SSH_PORT}:22"
