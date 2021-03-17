@@ -47,5 +47,6 @@
     <sandbox>true</sandbox>
   </definition>
   <triggers/>
+  <quietPeriod>30</quietPeriod>
   <disabled>false</disabled>
 </flow-definition>

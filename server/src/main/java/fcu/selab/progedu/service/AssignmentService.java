@@ -36,6 +36,8 @@ import fcu.selab.progedu.db.ReviewSettingMetricsDbManager;
 import fcu.selab.progedu.db.ReviewStatusDbManager;
 import fcu.selab.progedu.jenkinsconfig.JenkinsProjectConfig;
 import fcu.selab.progedu.jenkinsconfig.JenkinsProjectConfigFactory;
+import fcu.selab.progedu.jenkinsconfig.MavenPipelineConfig;
+import fcu.selab.progedu.jenkinsconfig.WebPipelineConfig;
 import fcu.selab.progedu.utils.JavaIoUtile;
 import org.json.JSONArray;
 import org.jsoup.nodes.Document;
@@ -744,9 +746,16 @@ public class AssignmentService {
       String updateDbUrl = progEduApiUrl + "/commits/update";
 
       ProjectTypeEnum assignmentTypeEnum = dbManager.getAssignmentType(assignmentName);
-      JenkinsProjectConfig jenkinsProjectConfig = JenkinsProjectConfigFactory
-              .getJenkinsProjectConfig(assignmentTypeEnum.getTypeName(), projectUrl, updateDbUrl,
-                      username, assignmentName);
+
+      JenkinsProjectConfig jenkinsProjectConfig;
+      if ( assignmentTypeEnum.equals(ProjectTypeEnum.WEB) ) {
+        jenkinsProjectConfig = new WebPipelineConfig(projectUrl, updateDbUrl,
+                username, assignmentName, progEduApiUrl + "/commits/screenshot/updateURL");
+      } else {
+        jenkinsProjectConfig = JenkinsProjectConfigFactory
+                .getJenkinsProjectConfig(assignmentTypeEnum.getTypeName(), projectUrl, updateDbUrl,
+                        username, assignmentName);
+      }
 
       JenkinsService jenkinsService = JenkinsService.getInstance();
 

@@ -13,20 +13,20 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class MavenPipelineConfig extends JenkinsProjectConfig {
+public class WebPipelineConfig extends JenkinsProjectConfig {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(MavenPipelineConfig.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(WebPipelineConfig.class);
 
   URL baseUrl = this.getClass().getResource("/jenkins/pipelineConfig.xml");
   Document xmlDocument;
 
   /**
-   * MavenConfig
+   * WebPipelineConfig
    *
    * @param projectUrl   projectUrl
    */
-  public MavenPipelineConfig(String projectUrl, String updateDbUrl,
-                             String username, String projectName) {
+  public WebPipelineConfig(String projectUrl, String updateDbUrl,
+                             String username, String projectName, String updateScreenShotDb) {
 
     try {
       Path basePath = Paths.get(this.baseUrl.toURI());
@@ -37,7 +37,7 @@ public class MavenPipelineConfig extends JenkinsProjectConfig {
       DocumentBuilder builder = factory.newDocumentBuilder();
       this.xmlDocument = builder.parse(baseFile);
 
-      setJenkinsPipeline(projectUrl, updateDbUrl, username, projectName);
+      setJenkinsPipeline(projectUrl, updateDbUrl, username, projectName, updateScreenShotDb);
 
     } catch (Exception e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
@@ -46,6 +46,7 @@ public class MavenPipelineConfig extends JenkinsProjectConfig {
 
   }
 
+
   @Override
   public Document getXmlDocument() {
     return this.xmlDocument;
@@ -53,9 +54,11 @@ public class MavenPipelineConfig extends JenkinsProjectConfig {
 
 
   private void setJenkinsPipeline(String projectUrl, String updateDbUrl,
-                                  String username, String projectName) {
+                                  String username, String projectName, String updateScreenShotDb) {
 
-    String pipeline = createPipeline(projectUrl, updateDbUrl, username, projectName);
+    String pipeline = createPipeline(projectUrl, updateDbUrl, username,
+                                     projectName, updateScreenShotDb);
+
     this.xmlDocument.getElementsByTagName("script").item(0).setTextContent(pipeline);
   }
 
@@ -66,21 +69,25 @@ public class MavenPipelineConfig extends JenkinsProjectConfig {
    * @param updateDbUrl   updateDbUrl
    * @param username   username
    * @param projectName   projectName
+   * @param updateScreenShotDb   updateScreenShotDb
    */
   public String createPipeline(String projectUrl, String updateDbUrl,
-                               String username, String projectName) {
+                               String username, String projectName, String updateScreenShotDb) {
     String newPipeLine = "";
     try {
-      URL mavenPipelineUrl = this.getClass().getResource("/jenkins/maven-pipeline");
-      Path mavenPipelinePath = Paths.get(mavenPipelineUrl.toURI());
-      File mavenPipelineFile = mavenPipelinePath.toFile();
+      URL webPipelineUrl = this.getClass().getResource("/jenkins/web-pipeline");
+      Path webPipelinePath = Paths.get(webPipelineUrl.toURI());
+      File webPipelineFile = webPipelinePath.toFile();
 
 
-      String pipeLine = JavaIoUtile.readFileToString(mavenPipelineFile);
-      pipeLine = pipeLine.replaceFirst("\\{GitLab-url\\}", projectUrl);
-      pipeLine = pipeLine.replaceFirst("\\{ProgEdu-server-updateDbUrl\\}", updateDbUrl);
-      pipeLine = pipeLine.replaceFirst("\\{ProgEdu-user-name\\}", username);
-      pipeLine = pipeLine.replaceFirst("\\{ProgEdu-project-name\\}", projectName);
+      String pipeLine = JavaIoUtile.readFileToString(webPipelineFile);
+      pipeLine = pipeLine.replaceAll("\\{GitLab-url\\}", projectUrl);
+      pipeLine = pipeLine.replaceAll("\\{ProgEdu-server-updateDbUrl\\}", updateDbUrl);
+      pipeLine = pipeLine.replaceAll("\\{ProgEdu-user-name\\}", username);
+      pipeLine = pipeLine.replaceAll("\\{ProgEdu-project-name\\}", projectName);
+
+      pipeLine = pipeLine.replaceAll("\\{ProgEdu-server-screenshot-updateDbUrl\\}",
+              updateScreenShotDb);
 
       newPipeLine = pipeLine;
 
