@@ -17,7 +17,7 @@ public class MavenPipelineConfig extends JenkinsProjectConfig {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(MavenPipelineConfig.class);
 
-  URL baseUrl = this.getClass().getResource("/jenkins/maven-pipeline-config.xml");
+  URL baseUrl = this.getClass().getResource("/jenkins/pipelineConfig.xml");
   Document xmlDocument;
 
   /**

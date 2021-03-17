@@ -1,8 +1,7 @@
 package fcu.selab.progedu.conn;
 
-import fcu.selab.progedu.config.JenkinsConfig;
 import fcu.selab.progedu.jenkinsconfig.JenkinsProjectConfig;
-import fcu.selab.progedu.jenkinsconfig.MavenConfig;
+import fcu.selab.progedu.jenkinsconfig.MavenPipelineConfig;
 import org.junit.Test;
 
 public class JenkinsServiceTest {
@@ -26,7 +25,7 @@ public class JenkinsServiceTest {
 
     String testString ="franky-test";
     try {
-      JenkinsProjectConfig jenkinsConfig = new MavenConfig(testString, testString, testString, testString);
+      JenkinsProjectConfig jenkinsConfig = new MavenPipelineConfig(testString, testString, testString, testString);
       jenkinsService.createJobV2("franky-test", jenkinsConfig.getXmlConfig());
     } catch (Exception e) {
       e.printStackTrace();
