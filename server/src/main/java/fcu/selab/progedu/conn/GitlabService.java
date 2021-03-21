@@ -395,7 +395,7 @@ public class GitlabService {
       throws IOException {
     GitlabUser user = new GitlabUser();
     user = gitlab.createUser(email, password, username, name, "", "", "", "", 10, null, null, "",
-        false, true, null, false);
+        false, true, true, false);
 
     String privateToken = getToken(user.getId());
     user.setPrivateToken(privateToken);
