@@ -38,9 +38,9 @@ cd ProgEdu
 用瀏覽器依照 `.env`裡的 `GITLAB_HOST` 的網址進入GitLab，
 使用者名稱為root，密碼為 `GITLAB_ROOT_PASSWORD`對應的值
 ### 2. 複製GitLab Token 
-右上方頭像進入 > `Settings` ,在左邊導覽列找到 `Account Tokens`後， 
-可自行設定Name, 日期可以不用設定,
-接著全部權限打勾後, 按下`Create personal access token`, 將產生的 **GitLab Token** 
+右上方頭像進入 > `Preferences` ,在左邊導覽列找到 `Account Tokens`後， 
+可設定Name為main, Expires不用設定,
+接著全部權限打勾, 接著按下`Create personal access token`, 將產生的 **GitLab Token** (在網頁上半部 的 Your new personal access token 欄位)
 ![](readme-images/How-to-take-token-in-Gitlab.png)
 
 
