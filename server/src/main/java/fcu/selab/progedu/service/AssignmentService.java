@@ -36,6 +36,7 @@ import fcu.selab.progedu.db.ReviewSettingMetricsDbManager;
 import fcu.selab.progedu.db.ReviewStatusDbManager;
 import fcu.selab.progedu.jenkinsconfig.JenkinsProjectConfig;
 import fcu.selab.progedu.jenkinsconfig.JenkinsProjectConfigFactory;
+import fcu.selab.progedu.utils.CheckFileFormat;
 import fcu.selab.progedu.utils.JavaIoUtile;
 import org.json.JSONArray;
 import org.jsoup.nodes.Document;
@@ -166,6 +167,11 @@ public class AssignmentService {
 
     // 4. Unzip the uploaded file to cloneDirectoryPath
     zipHandler.unzipFile(filePath, cloneDirectoryPath);
+
+    // Check the uploaded file format
+    if (!cloneDirectoryPath.isEmpty()) {
+      CheckFileFormat.checkFile(cloneDirectoryPath,assignmentType);
+    }
 
     // 5. Add .gitkeep if folder is empty.
     JavaIoUtile.addFile2EmptyFolder(new File(cloneDirectoryPath), ".gitkeep");
