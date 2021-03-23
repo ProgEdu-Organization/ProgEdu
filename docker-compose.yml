@@ -14,11 +14,7 @@ services:
       - mysql:/var/lib/mysql
 
   gitlab:
-    image: gitlab/gitlab-ce:12.5.6-ce.0
-    deploy:
-      resources:
-        limits:
-          memory: 3072M
+    image: gitlab/gitlab-ce:13.9.3-ce.0
     ports:
       - "${GITLAB_HTTP_PORT}:80"
       - "${GITLAB_SSH_PORT}:22"
@@ -68,7 +64,7 @@ services:
     
 
   jenkins:
-    image: fcumselab/fcu-progedu-jenkins:release-1.0.0
+    image: fcumselab/fcu-progedu-jenkins:test-dind
     deploy:
       resources:
         limits:
@@ -79,10 +75,29 @@ services:
     privileged: true
     environment:
       WEB_SELENIUM_URL: ${WEB_SELENIUM_URL}
+      DOCKER_HOST: tcp://docker:2376
+      DOCKER_CERT_PATH: /certs/client
+      DOCKER_TLS_VERIFY: 1
+
+    depends_on:
+      - docker
     volumes:
       - jenkins_home:/var/jenkins_home
       - jenkins_home-workspace:/var/jenkins_home/workspace
+      - jenkins-docker-certs:/certs/client:ro
       # - /dev/kvm:/dev/kvm // for android, but now it not need
+    
+  
+  docker:
+    image: docker:dind
+    restart: always
+    privileged: true
+    environment:
+      DOCKER_TLS_CERTDIR: /certs
+    volumes:
+      - jenkins-docker-certs:/certs/client
+      - jenkins_home:/var/jenkins_home
+      - jenkins_home-workspace:/var/jenkins_home/workspace
 
   selenium:
     image: selenium/standalone-chrome
@@ -122,5 +137,7 @@ volumes:
   
   jenkins_home: {}
   jenkins_home-workspace: {}
+
+  jenkins-docker-certs: {}
   
   mongo: {}

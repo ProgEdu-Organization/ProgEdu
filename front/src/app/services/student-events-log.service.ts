@@ -18,14 +18,14 @@ export class StudentEventsService {
   }
 
   createReviewRecord(event: StudentEvent) {
-    const formData = new FormData();
-    if (this.username === '') {
-      this.username = new User(this.jwtService).getUsername();
-    }
-    formData.append('username', this.username);
-    formData.append('page', event.page);
-    formData.append('name', event.name);
-    formData.append('event', JSON.stringify(event.event));
-    return this.http.post<any>(this.ADD_STUDENT_LOGIN_EVENT_API, formData).subscribe();
+    // const formData = new FormData();
+    // if (this.username === '') {
+    //   this.username = new User(this.jwtService).getUsername();
+    // }
+    // formData.append('username', this.username);
+    // formData.append('page', event.page);
+    // formData.append('name', event.name);
+    // formData.append('event', JSON.stringify(event.event));
+    // return this.http.post<any>(this.ADD_STUDENT_LOGIN_EVENT_API, formData).subscribe();
   }
 }

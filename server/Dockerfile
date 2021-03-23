@@ -25,8 +25,7 @@ ENV WEB_API_BASEURI=$WEB_API_BASEURI
 RUN apt-get update \
     && apt-get -y install gettext-base \
     && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* \
-    && envsubst < front/src/environments/environment.docker.ts > front/src/environments/environment.prod.ts
+    && rm -rf /var/lib/apt/lists/*
 
 RUN mvn clean package -DskipTests
 
