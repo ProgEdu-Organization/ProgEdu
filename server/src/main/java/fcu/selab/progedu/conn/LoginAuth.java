@@ -56,6 +56,12 @@ public class LoginAuth extends HttpServlet {
    *      response)
    */
   protected void doPost(HttpServletRequest request, HttpServletResponse response) {
+
+
+    System.out.println("franky-test");
+    System.out.println("doPost()");
+    System.out.println(request.getPathInfo());
+
     final HttpSession session = request.getSession();
     String username = request.getParameter(USERNAME);
     String password = request.getParameter(USER_TOKEN);
@@ -96,9 +102,12 @@ public class LoginAuth extends HttpServlet {
     }
   }
 
+  // Todo 命名不好, 還有不要用回傳空字串 來判斷有沒有效
   private String checkPermission(String username, String password)
       throws LoadConfigFailureException {
     String role = "";
+
+    //Todo 這耦合了GitLab, 用此依據判斷是不是teacher不好
     if (username.equals(gitlabConfig.getGitlabRootUsername())
         && password.equals(gitlabConfig.getGitlabRootPassword())) {
       role = "teacher";

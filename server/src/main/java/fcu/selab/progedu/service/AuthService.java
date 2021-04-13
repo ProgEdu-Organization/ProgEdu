@@ -1,11 +1,14 @@
 package fcu.selab.progedu.service;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
 
 import org.json.JSONObject;
 
@@ -26,7 +29,11 @@ public class AuthService {
   @POST
   @Path("login")
   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-  public Response checkAuth(@FormParam("token") String token) {
+  public Response checkAuth(@FormParam("token") String token,
+                            @Context SecurityContext securityContext) {
+    System.out.println("franky-test checkAuth");
+    System.out.println(securityContext.isSecure());
+
     JSONObject ob = new JSONObject();
     if (!token.equals("null") && jwt.validateToken(token)) {
       Claims body = jwt.decodeToken(token);

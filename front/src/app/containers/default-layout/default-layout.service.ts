@@ -17,7 +17,14 @@ export class DefaultLayoutService {
   constructor(private http: HttpClient) { }
 
   getNavData(): Observable<any> {
-    return this.http.get<any>(this.ALL_COMMIT_API);
+    // let token = "v eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwcm9nZWR1Iiwic3ViIjoidGVhY2hlciIsImF1ZCI6InJvb3QiLCJuYW1lIjoicm9vdCIsImV4cCI6MTYxODA3NzUzNSwianRpIjoiNGNiNWEyZWUtZjZjYi00NWYyLWIyNjMtOWRjN2IyM2IyNmVmIn0.gkcUQHYe6lIJHOmcyyoTh-ZBnJrqDycEWtKl2pD-0dg";
+    // let headers = new HttpHeaders().set('authorization', token); // create header object
+    // headers.append("Authorization", "v eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwcm9nZWR1Iiwic3ViIjoidGVhY2hlciIsImF1ZCI6InJvb3QiLCJuYW1lIjoicm9vdCIsImV4cCI6MTYxODA3Mjk4NSwianRpIjoiMDUzMmQ0YWEtYWE1MC00ZjExLWI3MmEtZDc1NDkwYTM1YWFiIn0.SC6VUudnPdkjGdZ8ZtcvjPoQ8cRsWLiLF2pZhMaKS54");
+  //   return this.http.get<any>(this.ALL_COMMIT_API, {
+  //     headers: headers
+  //  });
+
+   return this.http.get<any>(this.ALL_COMMIT_API);
   }
 
   modifySecret(modifySecretForm: FormGroup): Observable<any> {

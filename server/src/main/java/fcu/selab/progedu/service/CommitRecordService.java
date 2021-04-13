@@ -8,6 +8,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -15,8 +16,10 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
 
 import fcu.selab.progedu.db.service.ProjectDbService;
 import fcu.selab.progedu.jenkinsjob2status.JenkinsJob2StatusFactory;
@@ -64,7 +67,11 @@ public class CommitRecordService {
   @GET
   @Path("allUsers")
   @Produces(MediaType.APPLICATION_JSON)
-  public Response getAllUsersCommitRecord() {
+  public Response getAllUsersCommitRecord(@Context SecurityContext securityContext) {
+
+
+
+
     JSONArray array = new JSONArray();
     JSONObject result = new JSONObject();
     List<User> users = getStudents();
@@ -80,7 +87,17 @@ public class CommitRecordService {
     }
     result.put("allUsersCommitRecord", array);
 
-    return Response.ok().entity(result.toString()).build();
+    System.out.println("franky-test getAllUsersCommitRecord Good");
+
+//    if (!securityContext.isSecure()) {
+//      return Response.status(404).build();
+//    }
+//    if (!securityContext.isUserInRole("TEACHER")) {
+//      return Response.status(404).build();
+//    }
+
+    return Response.ok()
+            .entity(result.toString()).build();
   }
 
   /**
