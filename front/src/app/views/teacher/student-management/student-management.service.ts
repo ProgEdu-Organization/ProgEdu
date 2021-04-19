@@ -3,6 +3,8 @@ import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { FormGroup } from '@angular/forms';
 import { environment } from '../../../../environments/environment';
+import {AddJwtTokenHttpClient} from '../../../services/add-jwt-token.service';
+
 
 const addOneStudentOptions = ({
   headers: new HttpHeaders({
@@ -31,10 +33,10 @@ export class StudentManagementService {
   ADD_ONE_USER_API = environment.SERVER_URL + '/webapi/user/new';
   ADD_MULTIPLE_USER_API = environment.SERVER_URL + '/webapi/user/upload';
   DISPLAY_API = environment.SERVER_URL + '/webapi/user/display';
-  constructor(private http: HttpClient) { }
+  constructor(private addJwtTokenHttpClient: AddJwtTokenHttpClient) { }
 
   getAllUserData(): Observable<any> {
-    return this.http.get<any>(this.GET_USERS_API);
+    return this.addJwtTokenHttpClient.get(this.GET_USERS_API);
 
   }
   addOneStudent(student: FormGroup): Observable<any> {
@@ -46,20 +48,20 @@ export class StudentManagementService {
       .append('role', student.value.role)
       .append('isDisplayed', student.value.isDisplayed);
 
-    return this.http.post<any>(this.ADD_ONE_USER_API, params, addOneStudentOptions);
+    return this.addJwtTokenHttpClient.post(this.ADD_ONE_USER_API, params, addOneStudentOptions);
   }
 
   addMultipleStudent(file: File) {
     const frmData = new FormData();
     frmData.append('file', file);
-    return this.http.post<any>(this.ADD_MULTIPLE_USER_API, frmData, addMultipleStudentOptions);
+    return this.addJwtTokenHttpClient.post(this.ADD_MULTIPLE_USER_API, frmData, addMultipleStudentOptions);
   }
 
   updateDisplay(username: string) {
     const params = new HttpParams()
       .append('username', username);
 
-    return this.http.post<any>(this.DISPLAY_API, params, updateDisplayOptions);
+    return this.addJwtTokenHttpClient.post(this.DISPLAY_API, params, updateDisplayOptions);
   }
 
 }

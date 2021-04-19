@@ -4,6 +4,7 @@ import { JwtService } from './jwt.service';
 import { environment } from '../../environments/environment';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import {AddJwtTokenHttpClient} from './add-jwt-token.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,10 @@ export class LoginAuthService {
 
   LOGIN_URL: string = environment.SERVER_URL + '/LoginAuth';
   AUTH_URL: string = environment.SERVER_URL + '/webapi/auth/login';
-  constructor(private http: HttpClient, private jwtService: JwtService) { }
+
+  constructor(private http: HttpClient, private jwtService: JwtService, 
+              private addJwtTokenHttpClient: AddJwtTokenHttpClient) { }
+
   // 是否登录
   public Login(username, password): Observable<any> {
     let params = new HttpParams();
@@ -30,33 +34,23 @@ export class LoginAuthService {
 
   public isLoginByTeacher(): Observable<any> {
 
-    const token = this.jwtService.getToken();
-    const params = new HttpParams().set('token', token);
-
     const options = ({
       headers: new HttpHeaders({
         'Content-Type': 'application/x-www-form-urlencoded',
-      }),
-      params: params
+      })
     });
 
-
-    return this.http.post(this.AUTH_URL, null, options);
+    return this.addJwtTokenHttpClient.post(this.AUTH_URL, null, options);
   }
 
   public isLoginByStudent(): Observable<any> {
-
-    const token = this.jwtService.getToken();
-    const params = new HttpParams().set('token', token);
-
     const options = ({
       headers: new HttpHeaders({
         'Content-Type': 'application/x-www-form-urlencoded',
-      }),
-      params: params
+      })
     });
 
-    return this.http.post(this.AUTH_URL, null,  options);
+    return this.addJwtTokenHttpClient.post(this.AUTH_URL, null, options);
   }
 
   public logout() {

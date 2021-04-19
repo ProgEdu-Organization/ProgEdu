@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
+import {AddJwtTokenHttpClient} from '../../../services/add-jwt-token.service';
+
 
 const editGroupOptions = ({
   headers: new HttpHeaders(
@@ -13,11 +15,11 @@ const editGroupOptions = ({
 })
 export class EditGroupManagementService {
   GET_USERS_API = environment.SERVER_URL + '/webapi/user/getUsers';
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private addJwtTokenHttpClient: AddJwtTokenHttpClient) { }
 
   getGroup(groupName: string): Observable<any> {
     const GET_GROUP_API = environment.SERVER_URL + `/webapi/groups/${groupName}`;
-    return this.http.get<any>(GET_GROUP_API);
+    return this.addJwtTokenHttpClient.get(GET_GROUP_API);
   }
 
   editGroupLeader(groupName: string, leader: string) {
@@ -31,7 +33,7 @@ export class EditGroupManagementService {
   }
 
   getAllUser() {
-    return this.http.get<any>(this.GET_USERS_API);
+    return this.addJwtTokenHttpClient.get(this.GET_USERS_API);
   }
 
   addGroupMemeber(groupName: string, username: string) {
@@ -39,6 +41,6 @@ export class EditGroupManagementService {
     const params = new HttpParams()
       .append('members', username);
 
-    return this.http.post(ADD_MEMBER_API, params);
+    return this.addJwtTokenHttpClient.post(ADD_MEMBER_API, params);
   }
 }

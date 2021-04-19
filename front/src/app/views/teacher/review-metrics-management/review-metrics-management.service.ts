@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { param } from 'jquery';
+import {AddJwtTokenHttpClient} from '../../../services/add-jwt-token.service';
 
 
 @Injectable({
@@ -20,21 +21,21 @@ export class ReviewMetricsManagementService {
   EDIT_METRICS_API = environment.SERVER_URL + '/webapi/categoryMetrics/metrics/edit?';
   DELETE_METRICS_API = environment.SERVER_URL + '/webapi/categoryMetrics/metrics/delete?';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private addJwtTokenHttpClient: AddJwtTokenHttpClient) { }
 
   getAllCategory(): Observable<any> {
-    return this.http.get(this.GET_ALL_CATEGORY_API);
+    return this.addJwtTokenHttpClient.get(this.GET_ALL_CATEGORY_API);
   }
   getMetrics(category: Category): Observable<any> {
     const params = new HttpParams()
     .set('category', category.id.toString());
-    return this.http.get(this.GET_METRICS_API + params.toString() );
+    return this.addJwtTokenHttpClient.get(this.GET_METRICS_API + params.toString() );
   }
   createCategory(category: Category): Observable<any> {
     const params = new HttpParams()
     .set('name', category.name)
     .set('metrics', category.metrics);
-    return this.http.post(this.CREATE_CATEGORY_API + params.toString(), null );
+    return this.addJwtTokenHttpClient.post(this.CREATE_CATEGORY_API + params.toString(), null );
   }
   editCategory(category: Category): Observable<any> {
     const params = new HttpParams()
@@ -54,7 +55,7 @@ export class ReviewMetricsManagementService {
     .set('description', assessment.description)
     .set('link', assessment.link)
     .set('metrics', assessment.metrics);
-    return this.http.post(this.CREATE_METRICS_API + params.toString(), null);
+    return this.addJwtTokenHttpClient.post(this.CREATE_METRICS_API + params.toString(), null);
   }
   editMetrics(assessment: Assessment): Observable<any> {
     const params = new HttpParams()
