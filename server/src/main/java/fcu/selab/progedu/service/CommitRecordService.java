@@ -1,5 +1,6 @@
 package fcu.selab.progedu.service;
 
+import java.lang.annotation.ElementType;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -27,6 +28,7 @@ import fcu.selab.progedu.jenkinsjob2status.JenkinsJobStatus;
 import fcu.selab.progedu.status.Status;
 import fcu.selab.progedu.status.StatusAnalysisFactory;
 import fcu.selab.progedu.utils.ExceptionUtil;
+import jdk.jfr.ContentType;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -66,11 +68,9 @@ public class CommitRecordService {
    */
   @GET
   @Path("allUsers")
+  @RolesAllowed("TEACHER")
   @Produces(MediaType.APPLICATION_JSON)
   public Response getAllUsersCommitRecord(@Context SecurityContext securityContext) {
-
-
-
 
     JSONArray array = new JSONArray();
     JSONObject result = new JSONObject();
@@ -89,9 +89,9 @@ public class CommitRecordService {
 
     System.out.println("franky-test getAllUsersCommitRecord Good");
 
-//    if (!securityContext.isSecure()) {
-//      return Response.status(404).build();
-//    }
+    if (!securityContext.isSecure()) {
+      return Response.status(404).build();
+    }
 //    if (!securityContext.isUserInRole("TEACHER")) {
 //      return Response.status(404).build();
 //    }

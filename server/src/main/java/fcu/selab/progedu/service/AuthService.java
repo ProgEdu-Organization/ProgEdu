@@ -29,10 +29,7 @@ public class AuthService {
   @POST
   @Path("login")
   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-  public Response checkAuth(@FormParam("token") String token,
-                            @Context SecurityContext securityContext) {
-    System.out.println("franky-test checkAuth");
-    System.out.println(securityContext.isSecure());
+  public Response checkAuth(@FormParam("token") String token) {
 
     JSONObject ob = new JSONObject();
     if (!token.equals("null") && jwt.validateToken(token)) {

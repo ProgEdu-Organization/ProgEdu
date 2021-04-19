@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.ext.Provider;
@@ -30,16 +31,10 @@ public class JwtFilter implements ContainerRequestFilter {
     System.out.println("franky-test filter");
     System.out.println(containerRequestContext.getHeaders());
 
+    MultivaluedMap<String, String> queryParameters = containerRequestContext
+            .getUriInfo().getQueryParameters();
 
-    String credential = containerRequestContext.getHeaderString("Authorization");
-    String jwtToken = null;
-    if ( credential != null ) {
-      jwtToken = credential.split(" ")[1];
-
-      System.out.println("franky-test");
-      System.out.println(jwtToken);
-    }
-
+    String jwtToken = queryParameters.getFirst("token");
 
     if (jwtToken != null && jwt.validateToken(jwtToken)) {
       Claims body = jwt.decodeToken(jwtToken);
@@ -66,8 +61,12 @@ public class JwtFilter implements ContainerRequestFilter {
       containerRequestContext.setSecurityContext(authorizer);
 
     } else {
-      Authorizer authorizer = new Authorizer(null, null,false);
-      containerRequestContext.setSecurityContext(authorizer);
+      containerRequestContext.abortWith(Response.status(Response.Status.FORBIDDEN)
+              .entity("Cannot access")
+              .build());
+
+//      Authorizer authorizer = new Authorizer(null, null,false);
+//      containerRequestContext.setSecurityContext(authorizer);
     }
 
   }

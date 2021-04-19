@@ -57,12 +57,6 @@ public class LoginAuth extends HttpServlet {
    */
   protected void doPost(HttpServletRequest request, HttpServletResponse response) {
 
-
-    System.out.println("franky-test");
-    System.out.println("doPost()");
-    System.out.println(request.getPathInfo());
-
-    final HttpSession session = request.getSession();
     String username = request.getParameter(USERNAME);
     String password = request.getParameter(USER_TOKEN);
     String token;
