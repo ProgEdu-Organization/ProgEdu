@@ -24,12 +24,12 @@ export class EditGroupManagementService {
 
   editGroupLeader(groupName: string, leader: string) {
     const EDIT_LEADER_API = environment.SERVER_URL + `/webapi/groups/${groupName}/members/${leader[0]}`;
-    return this.http.put(EDIT_LEADER_API, editGroupOptions);
+    return this.addJwtTokenHttpClient.put(EDIT_LEADER_API, editGroupOptions);
   }
 
   deleteGroupMember(groupName: string, member: string) {
     const EDIT_LEADER_API = environment.SERVER_URL + `/webapi/groups/${groupName}/members/${member[0]}`;
-    return this.http.delete(EDIT_LEADER_API);
+    return this.addJwtTokenHttpClient.delete(EDIT_LEADER_API);
   }
 
   getAllUser() {

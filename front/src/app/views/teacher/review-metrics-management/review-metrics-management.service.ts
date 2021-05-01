@@ -41,12 +41,12 @@ export class ReviewMetricsManagementService {
     const params = new HttpParams()
     .set('id', category.id.toString())
     .set('metrics', category.metrics);
-    return this.http.put(this.EDIT_CATEGORY_API + params.toString(), null);
+    return this.addJwtTokenHttpClient.put(this.EDIT_CATEGORY_API + params.toString(), null);
   }
   deleteCategory(category: Category): Observable<any> {
     const params = new HttpParams()
     .set('id', category.id.toString());
-    return this.http.delete(this.DELETE_CATEGORY_API + params.toString());
+    return this.addJwtTokenHttpClient.delete(this.DELETE_CATEGORY_API + params.toString());
   }
   createMetrics(category: Category, assessment: Assessment): Observable<any> {
     const params = new HttpParams()
@@ -63,12 +63,12 @@ export class ReviewMetricsManagementService {
     .set('mode', assessment.mode.toString())
     .set('description', assessment.description)
     .set('link', assessment.link);
-    return this.http.put(this.EDIT_METRICS_API + params.toString(), null);
+    return this.addJwtTokenHttpClient.put(this.EDIT_METRICS_API + params.toString(), null);
   }
   deleteMetrics(assessment: Assessment): Observable<any> {
     const params = new HttpParams()
     .set('id', assessment.id.toString());
-    return this.http.delete(this.DELETE_METRICS_API + params.toString());
+    return this.addJwtTokenHttpClient.delete(this.DELETE_METRICS_API + params.toString());
   }
 
 

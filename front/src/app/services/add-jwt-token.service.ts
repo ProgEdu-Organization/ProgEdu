@@ -23,13 +23,8 @@ export class AddJwtTokenHttpClient {
         return this.http.get<any>(url, options);
 
     } else {
-
         options.params = options.params.append('token', jwtService.getToken());
-
-        console.log("franky-test  options.params");
-        console.log(options.params);
         return this.http.get<any>(url, options);
-
     }
     
   };
@@ -51,6 +46,46 @@ export class AddJwtTokenHttpClient {
         options.params = options.params.append('token', jwtService.getToken());
         return this.http.post<any>(url, body, options);
     }
+  }
+
+  put(url, body, options?) {
+
+    const jwtService = new JwtService();
+
+    if(options == undefined) {
+
+        const params = new HttpParams().set('token', jwtService.getToken());
+        return this.http.put<any>(url, body, {params});
+
+    } else if( options.params == undefined) {
+        options.params = new HttpParams().set('token', jwtService.getToken());
+        return this.http.put<any>(url, body, options);
+
+    } else {
+        options.params = options.params.append('token', jwtService.getToken());
+        return this.http.put<any>(url, body, options);
+    }
+  }
+
+  delete(url, options?) {
+
+    const jwtService = new JwtService();
+
+    if(options == undefined) {
+
+        const params = new HttpParams().set('token', jwtService.getToken());
+        return this.http.delete<any>(url, {params});
+
+    } else if( options.params == undefined) {
+
+        options.params = new HttpParams().set('token', jwtService.getToken());
+        return this.http.delete<any>(url, options);
+
+    } else {
+        options.params = options.params.append('token', jwtService.getToken());
+        return this.http.delete<any>(url, options);
+    }
+
   }
 
 }

@@ -28,7 +28,6 @@ import fcu.selab.progedu.jenkinsjob2status.JenkinsJobStatus;
 import fcu.selab.progedu.status.Status;
 import fcu.selab.progedu.status.StatusAnalysisFactory;
 import fcu.selab.progedu.utils.ExceptionUtil;
-import jdk.jfr.ContentType;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;

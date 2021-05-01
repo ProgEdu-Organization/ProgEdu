@@ -43,6 +43,6 @@ export class GroupManagementService {
 
   deleteGroup(groupName: string): Observable<any> {
     const DELETE_GROUP_API = environment.SERVER_URL + `/webapi/groups/${groupName}`;
-    return this.http.delete<any>(DELETE_GROUP_API);
+    return this.addJwtTokenHttpClient.delete(DELETE_GROUP_API);
   }
 }
