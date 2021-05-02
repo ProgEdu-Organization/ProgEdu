@@ -50,7 +50,7 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>UpdateCommit</servlet-name>
-		<url-pattern>/*</url-pattern>
+		<url-pattern>/update/*</url-pattern>
 	</servlet-mapping>
 
 	<filter>
