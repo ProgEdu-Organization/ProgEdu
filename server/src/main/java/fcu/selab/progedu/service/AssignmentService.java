@@ -743,7 +743,7 @@ public class AssignmentService {
       CourseConfig courseConfig = CourseConfig.getInstance();
       String progEduApiUrl = courseConfig.getTomcatServerIp() + courseConfig.getBaseuri()
               + "/webapi";
-      String updateDbUrl = progEduApiUrl + "/commits/update";
+      String updateDbUrl = courseConfig.getTomcatServerIp() + "/update/commits";
 
       ProjectTypeEnum assignmentTypeEnum = dbManager.getAssignmentType(assignmentName);
 
