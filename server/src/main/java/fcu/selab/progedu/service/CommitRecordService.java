@@ -229,49 +229,6 @@ public class CommitRecordService {
   }
 
   /**
-   * update user assignment commit record to DB.
-   * 
-   * @param username       username
-   * @param assignmentName assignment name
-   * @throws ParseException (to do)
-   */
-  @POST
-  @Path("update")
-  @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-  @Produces(MediaType.APPLICATION_JSON)
-  public Response updateCommitResult(@FormParam("user") String username,
-      @FormParam("proName") String assignmentName) throws ParseException {
-    // Todo 所有 assignment 相關的都要改掉 現在沒有 assignment
-
-    JSONObject ob = new JSONObject();
-
-    int auId = auDb.getAuid(assignmentDb.getAssignmentIdByName(assignmentName),
-        userDb.getUserIdByUsername(username));
-    int commitNumber = db.getCommitCount(auId) + 1;
-    Date date = new Date();
-    DateFormat time = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss");
-    date = time.parse(time.format(Calendar.getInstance().getTime()));
-
-
-    int assignmentId = assignmentDb.getAssignmentTypeId(assignmentName);
-    ProjectTypeEnum projectTypeEnum = atDb.getTypeNameById(assignmentId);
-    JenkinsJobStatus jobStatus = JenkinsJob2StatusFactory.createJenkinsJobStatus(projectTypeEnum);
-
-    String jobName = username + "_" + assignmentName;
-    StatusEnum statusEnum = jobStatus.getStatus(jobName, commitNumber);
-
-
-    db.insertCommitRecord(auId, commitNumber, statusEnum, date);
-
-    ob.put("auId", auId);
-    ob.put("commitNumber", commitNumber);
-    ob.put("time", time);
-    ob.put("status", statusEnum.getType());
-
-    return Response.ok().entity(ob.toString()).build();
-  }
-
-  /**
    * (to do)
    * 
    * @param assignmentName (to do)
