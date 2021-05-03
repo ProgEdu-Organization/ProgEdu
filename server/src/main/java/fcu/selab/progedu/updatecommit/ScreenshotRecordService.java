@@ -1,4 +1,4 @@
-package fcu.selab.progedu.service;
+package fcu.selab.progedu.updatecommit;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -46,7 +46,7 @@ public class ScreenshotRecordService {
 
   /**
    * update stu project commit record.
-   * 
+   *
    * @param assignmentName assignment name
    * @param urls           screenshot png file name
    * @throws SQLException SQLException
@@ -56,17 +56,17 @@ public class ScreenshotRecordService {
   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
   @Produces(MediaType.APPLICATION_JSON)
   public Response updateScreenshotPng(@FormParam("username") String username,
-      @FormParam("assignmentName") String assignmentName, @FormParam("url") List<String> urls) {
+                                      @FormParam("assignmentName") String assignmentName, @FormParam("url") List<String> urls) {
     JSONObject ob = new JSONObject();
     int auid = auDb.getAuid(assignmentDb.getAssignmentIdByName(assignmentName),
-        userDb.getUserIdByUsername(username));
+            userDb.getUserIdByUsername(username));
     int lastCommitNum = commitRecordDb.getCommitCount(auid);
     int crId = commitRecordDb.getCommitRecordId(auid, lastCommitNum);
 
     try {
       for (String url : urls) {
         String screenShotUrl = "/job/" + username + "_" + assignmentName + "/" + lastCommitNum
-            + "/artifact/target/screenshot/" + url + ".png";
+                + "/artifact/target/screenshot/" + url + ".png";
         db.addScreenshotRecord(crId, screenShotUrl);
       }
       ob.put("username", username);
@@ -93,7 +93,7 @@ public class ScreenshotRecordService {
   @Path("getScreenshotURL")
   @Produces(MediaType.APPLICATION_JSON)
   public Response updateScreenshotPng(@QueryParam("username") String username,
-      @QueryParam("assignmentName") String assignmentName, @QueryParam("commitNumber") int number) {
+                                      @QueryParam("assignmentName") String assignmentName, @QueryParam("commitNumber") int number) {
     JSONObject ob = new JSONObject();
     int auid = auDb.getAuid(assignmentDb.getAssignmentIdByName(assignmentName),
             userDb.getUserIdByUsername(username));

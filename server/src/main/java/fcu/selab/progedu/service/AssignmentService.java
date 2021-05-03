@@ -750,7 +750,8 @@ public class AssignmentService {
       JenkinsProjectConfig jenkinsProjectConfig;
       if ( assignmentTypeEnum.equals(ProjectTypeEnum.WEB) ) {
         jenkinsProjectConfig = new WebPipelineConfig(projectUrl, updateDbUrl,
-                username, assignmentName, progEduApiUrl + "/commits/screenshot/updateURL");
+                username, assignmentName,
+                courseConfig.getTomcatServerIp() + "/publicApi/commits/screenshot/updateURL");
       } else {
         jenkinsProjectConfig = JenkinsProjectConfigFactory
                 .getJenkinsProjectConfig(assignmentTypeEnum.getTypeName(), projectUrl, updateDbUrl,
