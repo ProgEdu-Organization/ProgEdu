@@ -17,10 +17,6 @@ pipeline {
 
                 docker run -i --rm -v "$(pwd)":/usr/src/mynode -w /usr/src/mynode -e WEB_PORT=$web_container_port -e WEB_SELENIUM_URL=$WEB_SELENIUM_URL node:12.16.1 npm i
                 docker run -i --rm -v "$(pwd)":/usr/src/mynode -w /usr/src/mynode -e WEB_PORT=$web_container_port -e WEB_SELENIUM_URL=$WEB_SELENIUM_URL node:12.16.1 npm run progedu-ci
-                docker run -i --rm -v "$(pwd)":/usr/src/mynode -w /usr/src/mynode -e WEB_PORT=$web_container_port -e WEB_SELENIUM_URL=$WEB_SELENIUM_URL node:12.16.1 node screenShotAllHtml.js
-                
-                docker rm -f $web_container_id
-                
                 '''
             }
         }
@@ -33,7 +29,6 @@ pipeline {
                 sh '''
 
                 docker run -i --rm -v "$(pwd)":/usr/src/mynode -w /usr/src/mynode -e WEB_PORT=$web_container_port -e WEB_SELENIUM_URL=$WEB_SELENIUM_URL node:12.16.1 node screenShotAllHtml.js
-                docker rm -f $web_container_id
                 '''
             }
         }
