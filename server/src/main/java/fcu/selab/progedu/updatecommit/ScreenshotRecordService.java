@@ -56,7 +56,8 @@ public class ScreenshotRecordService {
   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
   @Produces(MediaType.APPLICATION_JSON)
   public Response updateScreenshotPng(@FormParam("username") String username,
-                                      @FormParam("assignmentName") String assignmentName, @FormParam("url") List<String> urls) {
+                                      @FormParam("assignmentName") String assignmentName,
+                                      @FormParam("url") List<String> urls) {
     JSONObject ob = new JSONObject();
     int auid = auDb.getAuid(assignmentDb.getAssignmentIdByName(assignmentName),
             userDb.getUserIdByUsername(username));
@@ -93,7 +94,8 @@ public class ScreenshotRecordService {
   @Path("getScreenshotURL")
   @Produces(MediaType.APPLICATION_JSON)
   public Response updateScreenshotPng(@QueryParam("username") String username,
-                                      @QueryParam("assignmentName") String assignmentName, @QueryParam("commitNumber") int number) {
+                                      @QueryParam("assignmentName") String assignmentName,
+                                      @QueryParam("commitNumber") int number) {
     JSONObject ob = new JSONObject();
     int auid = auDb.getAuid(assignmentDb.getAssignmentIdByName(assignmentName),
             userDb.getUserIdByUsername(username));
