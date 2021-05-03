@@ -18,6 +18,11 @@ pipeline {
                 docker run -i --rm -v "$(pwd)":/usr/src/mynode -w /usr/src/mynode -e WEB_PORT=$web_container_port -e WEB_SELENIUM_URL=$WEB_SELENIUM_URL node:12.16.1 npm i
                 docker run -i --rm -v "$(pwd)":/usr/src/mynode -w /usr/src/mynode -e WEB_PORT=$web_container_port -e WEB_SELENIUM_URL=$WEB_SELENIUM_URL node:12.16.1 npm run progedu-ci
                 '''
+            }
+        }
+
+        stage('screenshot') {
+            steps {
 
                 sh '''
                 web_container_id=$(docker run -d -P web-assigment)
@@ -29,7 +34,6 @@ pipeline {
                 web_container_id=$(docker run -d -P web-assigment)
                 docker rm -f $web_container_id
                 '''
-
             }
         }
     }
