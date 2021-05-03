@@ -13,7 +13,7 @@ export class ReviewAssignmentChooseService {
   ASSIGNMENT_API = environment.SERVER_URL + '/webapi/assignment/getAssignment';
   GITLAB_URL_API = environment.SERVER_URL + '/webapi/commits/gitLab';
   FEEDBACK_API = environment.SERVER_URL + '/webapi/commits/feedback';
-  SCREENSHOT_API = environment.SERVER_URL + '/webapi/commits/screenshot/getScreenshotURL';
+  SCREENSHOT_API = environment.SERVER_URL + '/publicApi/commits/screenshot/getScreenshotURL';
   REVIEW_FEEDBACK_API = environment.SERVER_URL + '/webapi/peerReview/record/detail';
   constructor(private addJwtTokenHttpClient: AddJwtTokenHttpClient) { }
 

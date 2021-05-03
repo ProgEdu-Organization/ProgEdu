@@ -9,7 +9,7 @@ import {AddJwtTokenHttpClient} from '../../../services/add-jwt-token.service';
 })
 export class ProjectChoosedService {
   GITLAB_URL_API = environment.SERVER_URL + '/webapi/commits/gitLab';
-  SCREENSHOT_API = environment.SERVER_URL + '/webapi/groups/commits/screenshot/getScreenshotURL';
+  SCREENSHOT_API = environment.SERVER_URL + '/publicApi/groups/commits/screenshot/getScreenshotURL';
 
   constructor(private addJwtTokenHttpClient: AddJwtTokenHttpClient) { }
 
