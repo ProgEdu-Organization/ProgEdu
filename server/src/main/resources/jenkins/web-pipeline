@@ -23,27 +23,50 @@ pipeline {
                 
                 '''
             }
+        }
 
-            post {
-                always {
 
-                    archiveArtifacts artifacts: 'target/screenshot/*.png'
 
-                    sh "curl --location --request POST '{ProgEdu-server-updateDbUrl}' \
-                                     --header 'Content-Type: application/x-www-form-urlencoded' \
-                                     --data-urlencode 'user={ProgEdu-user-name}' \
-                                     --data-urlencode 'proName={ProgEdu-project-name}'"
 
-                    // {server_host}/webapi/commits/screenshot/updateURL
-                    sh "curl --location --request POST '{ProgEdu-server-screenshot-updateDbUrl}' \
-                            --header 'Content-Type: application/x-www-form-urlencoded' \
-                            --data-urlencode 'username={ProgEdu-user-name}' \
-                            --data-urlencode 'assignmentName={ProgEdu-project-name}' \
-                            --data-urlencode 'url=index.html'"
+        stage('screenShot') {
+            steps {
+                sh '''
 
-                    cleanWs()
-                }
+                docker run -i --rm -v "$(pwd)":/usr/src/mynode -w /usr/src/mynode -e WEB_PORT=$web_container_port -e WEB_SELENIUM_URL=$WEB_SELENIUM_URL node:12.16.1 node screenShotAllHtml.js
+                docker rm -f $web_container_id
+                '''
             }
         }
+
+        stage('rm') {
+            steps {
+                sh '''
+                docker rm -f $web_container_id
+                '''
+            }
+        }
+
+
     }
+
+    post {
+        always {
+
+            archiveArtifacts artifacts: 'target/screenshot/*.png'
+
+            sh "curl --location --request POST '{ProgEdu-server-updateDbUrl}' \
+                             --header 'Content-Type: application/x-www-form-urlencoded' \
+                             --data-urlencode 'user={ProgEdu-user-name}' \
+                             --data-urlencode 'proName={ProgEdu-project-name}'"
+
+            sh "curl --location --request POST '{ProgEdu-server-screenshot-updateDbUrl}' \
+                    --header 'Content-Type: application/x-www-form-urlencoded' \
+                    --data-urlencode 'username={ProgEdu-user-name}' \
+                    --data-urlencode 'assignmentName={ProgEdu-project-name}' \
+                    --data-urlencode 'url=index.html'"
+
+            cleanWs()
+        }
+    }
+
 }
