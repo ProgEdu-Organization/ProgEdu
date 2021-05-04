@@ -43,7 +43,7 @@ public class JwtConfig {
     
     String jws = Jwts.builder().setIssuer("progedu").setSubject(userRole).setAudience(userName)
             .claim("name", name)
-        .setExpiration(new Date((new Date()).getTime() +  3 * 60 * 60 * 1000))
+        .setExpiration(new Date((new Date()).getTime() +  24 * 60 * 60 * 1000))
         .setId(UUID.randomUUID().toString()).signWith(key).compact(); // just an example id
     return jws;
   }

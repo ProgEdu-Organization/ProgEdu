@@ -1,4 +1,4 @@
-package fcu.selab.progedu.service;
+package fcu.selab.progedu.updatecommit;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -54,9 +54,9 @@ public class GroupScreenshotRecordService {
   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
   @Produces(MediaType.APPLICATION_JSON)
   public Response updateScreenshotPng(
-      @FormParam("username") String groupName,
-      @FormParam("assignmentName") String projectName,
-      @FormParam("url") List<String> urls) {
+          @FormParam("username") String groupName,
+          @FormParam("assignmentName") String projectName,
+          @FormParam("url") List<String> urls) {
     JSONObject ob = new JSONObject();
     int pgid = pgdb.getId(groupName, projectName);
     CommitRecord commitResult = pdb.getCommitResult(pgid);
@@ -65,15 +65,15 @@ public class GroupScreenshotRecordService {
     try {
       for (String url : urls) {
         String screenShotUrl =
-            "/job/"
-                + groupName
-                + "_"
-                + projectName
-                + "/"
-                + lastCommitNum
-                + "/artifact/target/screenshot/"
-                + url
-                + ".png";
+                "/job/"
+                        + groupName
+                        + "_"
+                        + projectName
+                        + "/"
+                        + lastCommitNum
+                        + "/artifact/target/screenshot/"
+                        + url
+                        + ".png";
         db.addProjectScreenshotRecord(pcrid, screenShotUrl);
       }
       ob.put("groupName", groupName);
@@ -100,9 +100,9 @@ public class GroupScreenshotRecordService {
   @Path("getScreenshotURL")
   @Produces(MediaType.APPLICATION_JSON)
   public Response getScreenshotPng(
-      @QueryParam("groupName") String groupName,
-      @QueryParam("projectName") String projectName,
-      @QueryParam("commitNumber") int number) {
+          @QueryParam("groupName") String groupName,
+          @QueryParam("projectName") String projectName,
+          @QueryParam("commitNumber") int number) {
     JSONObject ob = new JSONObject();
     int pgid = pgdb.getId(groupName, projectName);
     int pcrid = pdb.getCommitRecordId(pgid, number);
@@ -120,3 +120,4 @@ public class GroupScreenshotRecordService {
     return Response.serverError().status(Status.INTERNAL_SERVER_ERROR).build();
   }
 }
+

@@ -397,8 +397,7 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
       this.createService.modifyOrder(this.assignment).subscribe(
         (response) => {
           console.log("Success");
-            window.open(environment.SERVER_URL + 
-              '/webapi/assignment/getAssignmentFile?fileName=' + this.assignment.value.name);
+          window.open(this.createService.getAssignmentFile(this.assignment.value.name));
         },
         error => {
           this.errorResponse = error;

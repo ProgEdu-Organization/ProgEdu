@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
-
+import { JwtService } from '../../../services/jwt.service';
+import {AddJwtTokenHttpClient} from '../../../services/add-jwt-token.service';
 @Injectable({
   providedIn: 'root'
 })
@@ -11,14 +12,14 @@ import { environment } from '../../../../environments/environment';
 export class DashboardService {
   ALL_COMMIT_API = environment.SERVER_URL + '/webapi/commits/allUsers';
   ALL_ASSIGNMENT_API = environment.SERVER_URL + '/webapi/assignment/getAllAssignments';
-  constructor(private http: HttpClient) { }
+  constructor(private addJwtTokenHttpClient: AddJwtTokenHttpClient) { }
 
   getAllStudentCommitRecord(): Observable<any> {
-    return this.http.get<any>(this.ALL_COMMIT_API);
+    return this.addJwtTokenHttpClient.get(this.ALL_COMMIT_API);
   }
 
   getAllAssignments(): Observable<any> {
-    return this.http.get<any>(this.ALL_ASSIGNMENT_API);
+    return this.addJwtTokenHttpClient.get(this.ALL_ASSIGNMENT_API);
   }
 
 }

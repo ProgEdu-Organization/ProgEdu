@@ -25,8 +25,12 @@ export class DashboardComponent implements OnInit {
   }
 
   async getAllStudent() {
+    console.log("franky-test   getAllStudent()");
     // clear student array
     this.dashboardService.getAllStudentCommitRecord().subscribe(response => {
+
+      
+
       this.allStudentCommitRecord = response.allUsersCommitRecord;
       if (this.allStudentCommitRecord[0] === undefined) {
         this.assignmentTable.length = 0;

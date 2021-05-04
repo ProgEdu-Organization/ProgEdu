@@ -8,7 +8,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { StudentEventsService } from '../../../services/student-events-log.service';
 import { ModalDirective } from 'ngx-bootstrap/modal';
-
+import { JwtService } from '../../../services/jwt.service';
 
 @Component({
   selector: 'app-review-status-assignment-choose',
@@ -265,9 +265,13 @@ export class ReviewStatusAssignmentChooseComponent implements OnInit {
       event: { assignment_name: this.assignmentName, reviewed_name: this.allReviewDetail[this.reviewOne].name }
     };
     this.emitStudentEvent(review_form_event);
+
+    const jwtService = new JwtService();
+
     // open source code link
-    window.open(environment.SERVER_URL + '/webapi/peerReview/sourceCode?username='
-      + this.allReviewDetail[this.reviewOne].name + '&assignmentName=' + this.assignmentName, '_blank');
+    window.open(environment.SERVER_URL + '/downloadApi/peerReview/sourceCode?username='
+      + this.allReviewDetail[this.reviewOne].name + '&assignmentName=' + this.assignmentName
+      , '_blank');
   }
   setReviewOne(index: number) {
     this.reviewOne = index;
