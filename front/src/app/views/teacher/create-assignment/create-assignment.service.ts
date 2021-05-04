@@ -4,6 +4,10 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { FormGroup } from '@angular/forms';
 import { environment } from '../../../../environments/environment';
+import {AddJwtTokenHttpClient} from '../../../services/add-jwt-token.service';
+import { JwtService } from '../../../services/jwt.service';
+
+
 
 const createAssigmentOptions = ({
   headers: new HttpHeaders(
@@ -20,7 +24,7 @@ export class CreateAssignmentService {
   GET_ALL_CATEGORY_API = environment.SERVER_URL + '/webapi/categoryMetrics/category';
   GET_METRICS_API = environment.SERVER_URL + '/webapi/categoryMetrics/metrics';
   CREATE_REVIEW_ASSIGNMENT_API = environment.SERVER_URL + '/webapi/assignment/peerReview/create';
-  constructor(private http: HttpClient) { }
+  constructor(private addJwtTokenHttpClient: AddJwtTokenHttpClient) { }
 
   createAssignment(assignment: FormGroup): Observable<any> {
 
@@ -33,7 +37,7 @@ export class CreateAssignmentService {
     formData.append('fileRadio', assignment.value.type);
     formData.append('file', assignment.value.file);
 
-    return this.http.post(this.CREATE_ASSIGNMENT_API, formData, createAssigmentOptions);
+    return this.addJwtTokenHttpClient.post(this.CREATE_ASSIGNMENT_API, formData, createAssigmentOptions);
   }
 
   createAssignmentWithOrder(assignment: FormGroup): Observable<any> {
@@ -48,7 +52,7 @@ export class CreateAssignmentService {
     formData.append('file', assignment.value.file);
     formData.append('order',assignment.value.assOrder);
 
-    return this.http.post(this.CREATE_ASSIGNMENT_WITH_ORDER_API, formData, createAssigmentOptions);
+    return this.addJwtTokenHttpClient.post(this.CREATE_ASSIGNMENT_WITH_ORDER_API, formData, createAssigmentOptions);
   }
 
   modifyOrder(assignment: FormGroup): Observable<any> {
@@ -59,16 +63,16 @@ export class CreateAssignmentService {
     formData.append('fileRadio', assignment.value.type);
     formData.append('order',assignment.value.assOrder);
     
-    return this.http.post(this.MODIFY_ORDER_API, formData, createAssigmentOptions);
+    return this.addJwtTokenHttpClient.post(this.MODIFY_ORDER_API, formData, createAssigmentOptions);
   }
 
   getAllCategory(): Observable<any> {
-    return this.http.get(this.GET_ALL_CATEGORY_API);
+    return this.addJwtTokenHttpClient.get(this.GET_ALL_CATEGORY_API);
   }
   getMetrics(category: Category): Observable<any> {
     const params = new HttpParams().
     set('category', category.id.toString());
-    return this.http.get(this.GET_METRICS_API , { params });
+    return this.addJwtTokenHttpClient.get(this.GET_METRICS_API , { params });
   }
 
   createPeerReviewAssignment(assigememt: FormGroup, metrics: number[]): Observable<any> {
@@ -85,6 +89,14 @@ export class CreateAssignmentService {
     formData.append('reviewEndTime', new Date(assigememt.value.reviewDeadline).toUTCString());
     formData.append('metrics', metrics.toString());
 
-    return this.http.post( this.CREATE_REVIEW_ASSIGNMENT_API, formData, createAssigmentOptions);
+    return this.addJwtTokenHttpClient.post( this.CREATE_REVIEW_ASSIGNMENT_API, formData, createAssigmentOptions);
+  }
+
+  getAssignmentFile(assigememtName: string): string {
+    const jwtService = new JwtService();
+
+    return environment.SERVER_URL + '/webapi/assignment/getAssignmentFile?fileName=' + assigememtName 
+        + "&token=" + jwtService.getToken();
+     
   }
 }

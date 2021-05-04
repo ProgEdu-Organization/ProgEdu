@@ -505,32 +505,6 @@ public class PeerReviewService {
   }
 
   /**
-   *
-   */
-  @GET
-  @Path("sourceCode")
-  @Produces(MediaType.APPLICATION_OCTET_STREAM)
-  public Response getSourceCode(@QueryParam("username") String username,
-                                @QueryParam("assignmentName") String assignmentName) {
-    Response response = null;
-
-    try {
-      GitlabProject gitlabProject = gitlabService.getProject(username, assignmentName);
-      GitlabAPI gitlabApi = gitlabService.getGitlab();
-      byte[] buffer = gitlabApi.getFileArchive(gitlabProject);
-
-      response = Response.ok().entity(buffer).type("application/tar.gz")
-          .header("Content-Disposition", "inline; filename=\"hw.tar.gz\"").build();
-    } catch (Exception e) {
-      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
-      LOGGER.error(e.getMessage());
-      response = Response.serverError().entity(e.getMessage()).build();
-    }
-
-    return response;
-  }
-
-  /**
    * insert review record by specific user, reviewed and assignment name
    *
    * @param username       user name

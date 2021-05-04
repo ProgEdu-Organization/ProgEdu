@@ -743,14 +743,15 @@ public class AssignmentService {
       CourseConfig courseConfig = CourseConfig.getInstance();
       String progEduApiUrl = courseConfig.getTomcatServerIp() + courseConfig.getBaseuri()
               + "/webapi";
-      String updateDbUrl = progEduApiUrl + "/commits/update";
+      String updateDbUrl = courseConfig.getTomcatServerIp() + "/publicApi/update/commits";
 
       ProjectTypeEnum assignmentTypeEnum = dbManager.getAssignmentType(assignmentName);
 
       JenkinsProjectConfig jenkinsProjectConfig;
       if ( assignmentTypeEnum.equals(ProjectTypeEnum.WEB) ) {
         jenkinsProjectConfig = new WebPipelineConfig(projectUrl, updateDbUrl,
-                username, assignmentName, progEduApiUrl + "/commits/screenshot/updateURL");
+                username, assignmentName,
+                courseConfig.getTomcatServerIp() + "/publicApi/commits/screenshot/updateURL");
       } else {
         jenkinsProjectConfig = JenkinsProjectConfigFactory
                 .getJenkinsProjectConfig(assignmentTypeEnum.getTypeName(), projectUrl, updateDbUrl,

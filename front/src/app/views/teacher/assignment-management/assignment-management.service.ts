@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { FormGroup } from '@angular/forms';
-
+import {AddJwtTokenHttpClient} from '../../../services/add-jwt-token.service';
 
 const deleteAssignmentOptions = ({
   headers: new HttpHeaders({
@@ -26,9 +26,9 @@ export class AssignmentManagementService {
   DELETE_ASSIGNMENT_API = environment.SERVER_URL + '/webapi/assignment/delete';
   EDIT_ASSIGNMENT_API = environment.SERVER_URL + '/webapi/assignment/edit';
   ASSIGNMENT_ORDER = environment.SERVER_URL + '/webapi/assignment/getAssignmentOrder';
-  constructor(private http: HttpClient) { }
+  constructor(private addJwtTokenHttpClient: AddJwtTokenHttpClient) { }
   getAllAssignments(): Observable<any> {
-    return this.http.get<any>(this.ALL_ASSIGNMENT_API);
+    return this.addJwtTokenHttpClient.get(this.ALL_ASSIGNMENT_API);
   }
 
   editAssignment(assignment: FormGroup): Observable<any> {
@@ -40,19 +40,19 @@ export class AssignmentManagementService {
     form.append('file', assignment.get('file').value);
     form.append('order', assignment.get('order').value);
 
-    return this.http.post<any>(this.EDIT_ASSIGNMENT_API, form, editAssignmentOptions);
+    return this.addJwtTokenHttpClient.post(this.EDIT_ASSIGNMENT_API, form, editAssignmentOptions);
   }
 
   deleteAssignment(assignmentName: string): Observable<any> {
     const form = new FormData();
     form.append('assignmentName', assignmentName);
-    return this.http.post<any>(this.DELETE_ASSIGNMENT_API, form, deleteAssignmentOptions);
+    return this.addJwtTokenHttpClient.post(this.DELETE_ASSIGNMENT_API, form, deleteAssignmentOptions);
   }
 
   getAssignmentOrder(assignmentName: string): Observable<any> {
     const params = new HttpParams()
       .set('fileName',assignmentName);
-    return this.http.get<any>(this.ASSIGNMENT_ORDER, { params });
+    return this.addJwtTokenHttpClient.get(this.ASSIGNMENT_ORDER, { params });
   }
 
 }

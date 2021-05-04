@@ -37,6 +37,38 @@
 		<url-pattern>/LoginAuth</url-pattern>
 	</servlet-mapping>
 
+	<servlet>
+		<description>UpdateCommit</description>
+		<display-name>UpdateCommit</display-name>
+		<servlet-name>UpdateCommit</servlet-name>
+		<servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
+		<init-param>
+			<param-name>jersey.config.server.provider.packages</param-name>
+			<param-value>fcu.selab.progedu.updatecommit</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>UpdateCommit</servlet-name>
+		<url-pattern>/publicApi/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<description>DownloadPeerViewerSrc</description>
+		<display-name>DownloadPeerViewerSrc</display-name>
+		<servlet-name>DownloadPeerViewerSrc</servlet-name>
+		<servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
+		<init-param>
+			<param-name>jersey.config.server.provider.packages</param-name>
+			<param-value>fcu.selab.progedu.peerreview</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>DownloadPeerViewerSrc</servlet-name>
+		<url-pattern>/downloadApi/*</url-pattern>
+	</servlet-mapping>
+
 	<filter>
 		<filter-name>CORS</filter-name>
 		<filter-class>com.thetransactioncompany.cors.CORSFilter</filter-class>
