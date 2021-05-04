@@ -269,9 +269,8 @@ export class ReviewStatusAssignmentChooseComponent implements OnInit {
     const jwtService = new JwtService();
 
     // open source code link
-    window.open(environment.SERVER_URL + '/webapi/peerReview/sourceCode?username='
+    window.open(environment.SERVER_URL + '/downloadApi/peerReview/sourceCode?username='
       + this.allReviewDetail[this.reviewOne].name + '&assignmentName=' + this.assignmentName
-      + '&token=' + jwtService.getToken()
       , '_blank');
   }
   setReviewOne(index: number) {
