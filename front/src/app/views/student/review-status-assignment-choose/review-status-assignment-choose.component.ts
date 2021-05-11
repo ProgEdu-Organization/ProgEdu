@@ -9,6 +9,8 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { StudentEventsService } from '../../../services/student-events-log.service';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { JwtService } from '../../../services/jwt.service';
+import { HttpClient } from '@angular/common/http';
+import { AddJwtTokenHttpClient } from '../../../services/add-jwt-token.service';
 
 @Component({
   selector: 'app-review-status-assignment-choose',
@@ -40,7 +42,7 @@ export class ReviewStatusAssignmentChooseComponent implements OnInit {
   errorTitle: string;
 
   constructor(private route: ActivatedRoute, private reviewStatusAssignmentChooseService: ReviewStatusAssignmentChooseService,
-    private router?: Router, private studentEventsService?: StudentEventsService, private renderer?: Renderer2) {
+    private addJwtTokenHttpClient: AddJwtTokenHttpClient, private router?: Router, private studentEventsService?: StudentEventsService, private renderer?: Renderer2) {
   }
 
   emitStudentEvent(event: StudentEvent) {
@@ -266,12 +268,12 @@ export class ReviewStatusAssignmentChooseComponent implements OnInit {
     };
     this.emitStudentEvent(review_form_event);
 
-    const jwtService = new JwtService();
+    let downloadApi = this.addJwtTokenHttpClient.get(environment.SERVER_URL + '/webapi/peerReview/sourceCode?username='
+    + this.allReviewDetail[this.reviewOne].name + '&assignmentName=' + this.assignmentName);
 
-    // open source code link
-    window.open(environment.SERVER_URL + '/downloadApi/peerReview/sourceCode?username='
-      + this.allReviewDetail[this.reviewOne].name + '&assignmentName=' + this.assignmentName
-      , '_blank');
+    downloadApi.subscribe(function (res){
+      window.open(res.url, '_blank');
+    });
   }
   setReviewOne(index: number) {
     this.reviewOne = index;

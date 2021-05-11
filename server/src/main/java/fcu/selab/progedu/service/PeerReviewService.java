@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.TimeZone;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipEntry;
+
+import fcu.selab.progedu.config.GitlabConfig;
 import fcu.selab.progedu.conn.GitlabService;
 import fcu.selab.progedu.data.Assignment;
 import fcu.selab.progedu.data.PairMatching;
@@ -501,6 +503,38 @@ public class PeerReviewService {
     } catch (Exception e) {
       response = Response.serverError().build();
     }
+    return response;
+  }
+
+  /**
+   *
+   */
+  @GET
+  @Path("sourceCode")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response getSourceCode(@QueryParam("username") String username,
+                                @QueryParam("assignmentName") String assignmentName) {
+    Response response = null;
+
+    try {
+      GitlabService gitlabService = GitlabService.getInstance();
+      GitlabProject gitlabProject = gitlabService.getProject(username, assignmentName);
+      GitlabConfig gitlabConfig = GitlabConfig.getInstance();
+
+      int projectId = gitlabProject.getId();
+      String test = gitlabConfig.getGitlabHostUrl() + "/api/v4/projects/" + projectId
+              + "/repository/archive?PRIVATE-TOKEN=" + gitlabConfig.getGitlabApiToken();
+
+      JSONObject result = new JSONObject();
+      result.put("url", test);
+
+      response = Response.ok().entity(result.toString()).build();
+    } catch (Exception e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+      response = Response.serverError().entity(e.getMessage()).build();
+    }
+
     return response;
   }
 

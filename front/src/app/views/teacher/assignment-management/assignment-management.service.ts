@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { FormGroup } from '@angular/forms';
-import {AddJwtTokenHttpClient} from '../../../services/add-jwt-token.service';
+import { AddJwtTokenHttpClient } from '../../../services/add-jwt-token.service';
 
 const deleteAssignmentOptions = ({
   headers: new HttpHeaders({

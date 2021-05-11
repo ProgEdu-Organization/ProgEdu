@@ -1,5 +1,4 @@
 export const environment = {
   production: false,
-  SERVER_URL: 'http://localhost:8080'
-  // SERVER_URL: 'http://140.134.25.64:55003'
+  SERVER_URL: 'put back-end url here'
 };
