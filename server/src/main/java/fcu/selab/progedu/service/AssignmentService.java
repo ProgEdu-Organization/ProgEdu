@@ -755,11 +755,26 @@ public class AssignmentService {
 
       ProjectTypeEnum assignmentTypeEnum = dbManager.getAssignmentType(assignmentName);
 
+      //
+      List<String> ordersList = new ArrayList<>();
+      String[] ordersAndScores = aaDbManager.getAssignmentOrderAndScore(
+          dbManager.getAssignmentIdByName(assignmentName)).split(", ");
+      for (String orderAndScore : ordersAndScores) {
+        String[] token = orderAndScore.split(":");
+        ordersList.add(token[0]);
+      }
+      String orderString = "";
+      for (String str: ordersList) {
+        orderString += str;
+      }
+      //
+
       JenkinsProjectConfig jenkinsProjectConfig;
       if ( assignmentTypeEnum.equals(ProjectTypeEnum.WEB) ) {
         jenkinsProjectConfig = new WebPipelineConfig(projectUrl, updateDbUrl,
                 username, assignmentName,
-                courseConfig.getTomcatServerIp() + "/publicApi/commits/screenshot/updateURL");
+                courseConfig.getTomcatServerIp() + "/publicApi/commits/screenshot/updateURL",
+            orderString);
       } else {
         jenkinsProjectConfig = JenkinsProjectConfigFactory
                 .getJenkinsProjectConfig(assignmentTypeEnum.getTypeName(), projectUrl, updateDbUrl,
