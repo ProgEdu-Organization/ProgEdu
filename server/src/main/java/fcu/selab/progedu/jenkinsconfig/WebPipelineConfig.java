@@ -148,8 +148,8 @@ public class WebPipelineConfig extends JenkinsProjectConfig {
                                         String projectName, String updateScreenShotDb,
                                         String order) {
     String newPipeLine = "";
-    String dockerCommand = "docker run -i --rm -v \"$(pwd)\":/usr/src/mynode -w /usr/src/mynode -e " +
-        "WEB_PORT=$web_container_port -e WEB_SELENIUM_URL=$WEB_SELENIUM_URL node:12.16.1 ";
+    String dockerCommand = "docker run -i --rm -v \"$(pwd)\":/usr/src/mynode -w /usr/src/mynode -e "
+        + "WEB_PORT=$web_container_port -e WEB_SELENIUM_URL=$WEB_SELENIUM_URL node:12.16.1 ";
     String[] ordersList = {"None", "None", "None", "None"};
     for (int i = 0; i < order.split(", ").length; i++) {
       ordersList[i] = order.split(", ")[i];
