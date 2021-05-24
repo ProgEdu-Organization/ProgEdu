@@ -15,4 +15,5 @@ Checkstyle > Build > Deploy
 
 
 ## 文件
-[安裝與部屬流程說明](./Deployment_zh-tw.md)
+* [安裝與部屬流程文件說明](./Deployment_zh-tw.md)
+* [影片教學](https://www.youtube.com/playlist?list=PLHqEll3JTJlmUXDKsQTNLf89-eu0GkeDH)
