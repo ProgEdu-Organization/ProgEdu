@@ -38,6 +38,18 @@
 	</servlet-mapping>
 
 	<servlet>
+		<description>DevTest</description>
+		<display-name>DevTest</display-name>
+		<servlet-name>DevTest</servlet-name>
+		<servlet-class>fcu.selab.progedu.devtest.DevTest</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>DevTest</servlet-name>
+		<url-pattern>/DevTest</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
 		<description>UpdateCommit</description>
 		<display-name>UpdateCommit</display-name>
 		<servlet-name>UpdateCommit</servlet-name>
