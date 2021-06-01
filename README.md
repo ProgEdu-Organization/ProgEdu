@@ -1,19 +1,28 @@
 ![](/readme-images/logo.png)
+## 什麼是ProgEdu?
 
-整合GitLab 與 Jenkins的服務, 用於學生繳交程式作業後, 將程式碼透過CI/CD的流程,
- 
-Checkstyle > Build > Deploy
+ProgEdu 是一套能自動檢查, 編譯, 單元測試, 上傳到系統中的專案,
+舉例來說, 當一份Maven專案上傳到該系統, 則ProgEdu就會自動觸發 `Checkstyle`, `Unit Test`, 最終顯示檢查結果, 是否有符合程式碼排版規定, 或是否有通過單元測試。
 
-達到提升學生們的程式碼品質, 也讓老師方便批改,
- 
-系統中還包含統計學生繳交作業情況, 與偵測程式碼錯誤部分。
+## 支持的專案類型
+* Maven  (Java作業)
+* Nodejs (Web作業)
 
-------
+## 何時使用ProgEdu
+可以用在教學上, 方便老師查看作業的繳交進度。
+目前已經實施的場合為 大學生的Java物件導向課程,
+由老師出一份Maven作業, 而當學生做完作業上傳後,
+老師可以從 Dashboard 上看見所有的繳交與完成度情況,
+如下:
+![](./readme-main-page-img/PrgoEdu_Dashboard.png)
 
-## 架構
-![](./readme-main-page-img/Architecture_V1.png)
+## 相關影片介紹系統
+* [老師 建立作業流程](https://www.youtube.com/watch?v=n4uM1-VIYpE&list=PLHqEll3JTJlmUXDKsQTNLf89-eu0GkeDH&index=8)
 
+* [學生 上傳作業流程](https://www.youtube.com/watch?v=daDpdnW07_0&list=PLHqEll3JTJlmUXDKsQTNLf89-eu0GkeDH&index=4)
 
-## 文件
+* [更多影片教學](https://www.youtube.com/playlist?list=PLHqEll3JTJlmUXDKsQTNLf89-eu0GkeDH)
+
+## 如何建置系統
 * [安裝與部屬流程文件說明](./Deployment_zh-tw.md)
-* [影片教學](https://www.youtube.com/playlist?list=PLHqEll3JTJlmUXDKsQTNLf89-eu0GkeDH)
+
