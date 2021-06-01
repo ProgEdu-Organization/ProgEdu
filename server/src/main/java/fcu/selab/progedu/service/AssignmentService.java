@@ -256,9 +256,9 @@ public class AssignmentService {
     Response response = null;
     
     try {
+      addOrder(assignmentCompileOrdersAndScore, assignmentName);
       createAssignment(assignmentName, releaseTime, deadline, readMe,
           assignmentType, file, fileDetail);
-      addOrder(assignmentCompileOrdersAndScore, assignmentName);
 
       response = Response.ok().build();
     } catch (Exception e) {
