@@ -12,7 +12,7 @@ ProgEdu 是一套能自動檢查, 編譯, 單元測試, 上傳到系統中的專
 可以用在教學上, 方便老師查看作業的繳交進度。
 目前已經實施的場合為 大學生的Java物件導向課程,
 由老師出一份Maven作業, 而當學生做完作業上傳後,
-老師可以從 Dashboard 上看見所有的繳交與完成度情況,
+老師可以從 Dashboard 上看見所有的作業完成度,
 如下:
 ![](./readme-main-page-img/PrgoEdu_Dashboard.PNG)
 
