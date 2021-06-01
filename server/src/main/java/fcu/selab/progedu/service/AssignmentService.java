@@ -764,8 +764,13 @@ public class AssignmentService {
         ordersList.add(token[0]);
       }
       String orderString = "";
-      for (String str: ordersList) {
-        orderString += str;
+      if (ordersList.isEmpty() != true) {
+        for (int i = 0; i < ordersList.size(); i++) {
+          orderString += ordersList.get(i);
+          if (i < ordersList.size() - 1) {
+            orderString += ", ";
+          }
+        }
       }
       //
 

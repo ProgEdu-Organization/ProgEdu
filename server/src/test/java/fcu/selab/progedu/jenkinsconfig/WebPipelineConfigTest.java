@@ -10,7 +10,7 @@ public class WebPipelineConfigTest {
   public void createPipeline() {
     WebPipelineConfig webPipelineConfig = new WebPipelineConfig("franky", "franky"
             , "franky", "franky", "franky",
-        "HTML Failure, Unit Test Failure, JavaScript Failure, CSS Failure");
+        "WEB_HTMLHINT_FAILURE, UNIT_TEST_FAILURE, WEB_ESLINT_FAILURE, WEB_STYLELINT_FAILURE");
     System.out.println(webPipelineConfig.getXmlConfig());
   }
 }

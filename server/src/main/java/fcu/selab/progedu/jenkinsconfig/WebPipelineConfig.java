@@ -176,14 +176,14 @@ public class WebPipelineConfig extends JenkinsProjectConfig {
       pipeLine = pipeLine.replace(dockerCommand + "npm run eslint", ordersList[3]);
 
       for (String temp: ordersList) {
-        if (temp.equals("Unit Test Failure")) {
-          pipeLine = pipeLine.replace("Unit Test Failure", dockerCommand + "npm run test");
-        } else if (temp.equals("HTML Failure")) {
-          pipeLine = pipeLine.replace("HTML Failure", dockerCommand + "npm run htmlhint");
-        } else if (temp.equals("CSS Failure")) {
-          pipeLine = pipeLine.replace("CSS Failure", dockerCommand + "npm run stylelint");
-        } else if (temp.equals("JavaScript Failure")) {
-          pipeLine = pipeLine.replace("JavaScript Failure", dockerCommand + "npm run eslint");
+        if (temp.equals("UNIT_TEST_FAILURE")) {
+          pipeLine = pipeLine.replace("UNIT_TEST_FAILURE", dockerCommand + "npm run test");
+        } else if (temp.equals("WEB_HTMLHINT_FAILURE")) {
+          pipeLine = pipeLine.replace("WEB_HTMLHINT_FAILURE", dockerCommand + "npm run htmlhint");
+        } else if (temp.equals("WEB_STYLELINT_FAILURE")) {
+          pipeLine = pipeLine.replace("WEB_STYLELINT_FAILURE", dockerCommand + "npm run stylelint");
+        } else if (temp.equals("WEB_ESLINT_FAILURE")) {
+          pipeLine = pipeLine.replace("WEB_ESLINT_FAILURE", dockerCommand + "npm run eslint");
         } else {
           pipeLine = pipeLine.replace("None", "");
         }
