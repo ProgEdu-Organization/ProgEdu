@@ -753,8 +753,6 @@ public class AssignmentService {
               + "/webapi";
       String updateDbUrl = courseConfig.getTomcatServerIp() + "/publicApi/update/commits";
 
-      ProjectTypeEnum assignmentTypeEnum = dbManager.getAssignmentType(assignmentName);
-
       //
       List<String> ordersList = new ArrayList<>();
       String[] ordersAndScores = aaDbManager.getAssignmentOrderAndScore(
@@ -777,7 +775,7 @@ public class AssignmentService {
         }
       }
       //
-
+      ProjectTypeEnum assignmentTypeEnum = dbManager.getAssignmentType(assignmentName);
       JenkinsProjectConfig jenkinsProjectConfig;
       if ( assignmentTypeEnum.equals(ProjectTypeEnum.WEB) ) {
         jenkinsProjectConfig = new WebPipelineConfig(projectUrl, updateDbUrl,
