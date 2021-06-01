@@ -12,6 +12,7 @@ import java.io.File;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 
 public class WebPipelineConfig extends JenkinsProjectConfig {
 
@@ -151,8 +152,9 @@ public class WebPipelineConfig extends JenkinsProjectConfig {
     String dockerCommand = "docker run -i --rm -v \"$(pwd)\":/usr/src/mynode -w /usr/src/mynode -e "
         + "WEB_PORT=$web_container_port -e WEB_SELENIUM_URL=$WEB_SELENIUM_URL node:12.16.1 ";
     String[] ordersList = {"None", "None", "None", "None"};
-    for (int i = 0; i < order.split(", ").length; i++) {
-      ordersList[i] = order.split(", ")[i];
+    String[] orderTokens = order.split(", ");
+    for (int i = 0; i < orderTokens.length; i++) {
+      ordersList[i] = orderTokens[i];
     }
     try {
       URL webPipelineUrl = this.getClass().getResource("/jenkins/web-pipeline");
