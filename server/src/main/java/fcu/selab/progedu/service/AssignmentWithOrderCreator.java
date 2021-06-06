@@ -85,7 +85,6 @@ public class AssignmentWithOrderCreator {
    * @param assignmentType assignment type
    * @param file           file
    * @param fileDetail     file detail
-   * @return abc
    * @throws Exception abc
    */
   public void createAssignment(String assignmentName, Date releaseTime,
