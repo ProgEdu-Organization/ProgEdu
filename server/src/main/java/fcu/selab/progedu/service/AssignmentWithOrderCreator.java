@@ -214,6 +214,8 @@ public class AssignmentWithOrderCreator {
                 .getJenkinsProjectConfig(assignmentTypeEnum.getTypeName(), projectUrl, updateDbUrl,
                 username, assignmentName);
       }
+      ordersList = new ArrayList<>();
+
       JenkinsService jenkinsService = JenkinsService.getInstance();
       jenkinsService.createJobV2(jobName, jenkinsProjectConfig.getXmlConfig());
       jenkinsService.buildJob(jobName);
