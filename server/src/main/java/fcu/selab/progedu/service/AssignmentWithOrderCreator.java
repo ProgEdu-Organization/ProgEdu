@@ -59,7 +59,7 @@ public class AssignmentWithOrderCreator {
   private final String imageTempName = "/temp_images/";
   private final String imageTempDir = projectDir + imageTempName;
 
-  private List<String> instructionList = new ArrayList<>();
+  private List<String> ordersList = new ArrayList<>();
 
   /**
    * Init assignment with order creator
@@ -90,7 +90,7 @@ public class AssignmentWithOrderCreator {
   public void createAssignment(String assignmentName, Date releaseTime,
       Date deadline, String readMe,
       String assignmentType, InputStream file,
-      FormDataContentDisposition fileDetail) {
+      FormDataContentDisposition fileDetail, String assignmentOrdersAndScores) {
 
     // 1. Create root project and get project id and url
     gitlabService.createRootProject(assignmentName);
@@ -155,14 +155,16 @@ public class AssignmentWithOrderCreator {
 
     List<User> users = userService.getStudents();
     for (User user : users) {
-      createAssignmentSettingsV2(user.getUsername(), assignmentName);
+      createAssignmentSettingsV2(user.getUsername(), assignmentName,
+          assignmentOrdersAndScores);
     }
 
       // 10. remove project file
     JavaIoUtile.deleteDirectory(new File(uploadDir));
   }
 
-  private void createAssignmentSettingsV2(String username, String assignmentName) {
+  private void createAssignmentSettingsV2(String username, String assignmentName,
+     String assignmentOrdersAndScores) {
 
     addAuid(username, assignmentName);
     //Todo 以上 addAuid 要改, 因為之後沒有 assignment
@@ -185,24 +187,18 @@ public class AssignmentWithOrderCreator {
       String updateDbUrl = courseConfig.getTomcatServerIp() + "/publicApi/update/commits";
 
       //
-      List<String> ordersList = new ArrayList<>();
-      String[] ordersAndScores = aaDbManager.getAssignmentOrderAndScore(
-          adbManager.getAssignmentIdByName(assignmentName)).split(", ");
-      while (ordersList.size() == 0) {
-        ordersAndScores = aaDbManager.getAssignmentOrderAndScore(
-            adbManager.getAssignmentIdByName(assignmentName)).split(", ");
-      }
+      String[] ordersAndScoresTokens = assignmentOrdersAndScores.split(", ");
+      
       for (String orderAndScore : ordersAndScores) {
-        String[] token = orderAndScore.split(":");
-        ordersList.add(token[0]);
-      }
-      String orderString = "";
-      if (ordersList.isEmpty() != true) {
-        for (int i = 0; i < ordersList.size(); i++) {
-          orderString += ordersList.get(i);
-          if (i < ordersList.size() - 1) {
-            orderString += ", ";
-          }
+        String order = orderAndScore.split(":")[0]; 
+        if (order.equals("Unit Test Failure")) {
+          appendOrder("UNIT_TEST_FAILURE");
+        } else if (order.equals("HTML Failure")) {
+          appendOrder("WEB_HTMLHINT_FAILURE");
+        } else if (order.equals("CSS Failure")) {
+          appendOrder("WEB_STYLELINT_FAILURE");
+        } else if (order.equals("JavaScript Failure")) {
+          appendOrder("WEB_ESLINT_FAILURE");
         }
       }
       //
@@ -212,7 +208,7 @@ public class AssignmentWithOrderCreator {
         jenkinsProjectConfig = new WebPipelineConfig(projectUrl, updateDbUrl,
                 username, assignmentName,
                 courseConfig.getTomcatServerIp() + "/publicApi/commits/screenshot/updateURL",
-                orderString);
+                String.join(", ", ordersList));
       } else {
         jenkinsProjectConfig = JenkinsProjectConfigFactory
                 .getJenkinsProjectConfig(assignmentTypeEnum.getTypeName(), projectUrl, updateDbUrl,
@@ -277,7 +273,7 @@ public class AssignmentWithOrderCreator {
     return paths;
   }
 
-  private void appendOrder(String instruction) {
-    instructionList.add(instruction);
+  private void appendOrder(String order) {
+    ordersList.add(order);
   }
 }

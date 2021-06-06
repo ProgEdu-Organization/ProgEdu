@@ -74,6 +74,7 @@ import fcu.selab.progedu.utils.ExceptionUtil;
 import fcu.selab.progedu.utils.Linux;
 import fcu.selab.progedu.utils.ZipHandler;
 import fcu.selab.progedu.setting.MavenAssignmentSetting;
+import fcu.selab.progedu.db.service.AssignmentWithOrderCreator;
 
 @Path("assignment/")
 public class AssignmentService {
@@ -256,9 +257,10 @@ public class AssignmentService {
     Response response = null;
     
     try {
-      addOrder(assignmentCompileOrdersAndScore, assignmentName);
-      createAssignment(assignmentName, releaseTime, deadline, readMe,
-          assignmentType, file, fileDetail);
+      AssignmentWithOrderCreator awoc = new AssignmentWithOrderCreator();
+      awoc.createAssignment(assignmentName, releaseTime, deadline, readMe,
+          assignmentType, file, fileDetail, assignmentCompileOrdersAndScore);
+      addOrder(assignmentCompileOrdersAndScore, assignmentName);    
 
       response = Response.ok().build();
     } catch (Exception e) {
