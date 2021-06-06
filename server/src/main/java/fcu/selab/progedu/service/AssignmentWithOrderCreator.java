@@ -189,7 +189,7 @@ public class AssignmentWithOrderCreator {
       //
       String[] ordersAndScoresTokens = assignmentOrdersAndScores.split(", ");
       
-      for (String orderAndScore : ordersAndScores) {
+      for (String orderAndScore : ordersAndScoresTokens) {
         String order = orderAndScore.split(":")[0]; 
         if (order.equals("Unit Test Failure")) {
           appendOrder("UNIT_TEST_FAILURE");
