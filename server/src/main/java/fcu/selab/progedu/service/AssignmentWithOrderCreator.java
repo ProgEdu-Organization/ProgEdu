@@ -129,7 +129,7 @@ public class AssignmentWithOrderCreator {
         JavaIoUtile.copyDirectoryCompatibilityMode(originalFile, targetFile);
       } catch (Exception e) {
         LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
-      LOGGER.error(e.getMessage());
+        LOGGER.error(e.getMessage());
       }
     }
 
@@ -194,12 +194,12 @@ public class AssignmentWithOrderCreator {
       String[] ordersAndScores = aaDbManager.getAssignmentOrderAndScore(
           adbManager.getAssignmentIdByName(assignmentName)).split(", ");
       while (ordersList.size() == 0) {
-          ordersAndScores = aaDbManager.getAssignmentOrderAndScore(
-              adbManager.getAssignmentIdByName(assignmentName)).split(", ");
+        ordersAndScores = aaDbManager.getAssignmentOrderAndScore(
+            adbManager.getAssignmentIdByName(assignmentName)).split(", ");
       }
       for (String orderAndScore : ordersAndScores) {
-          String[] token = orderAndScore.split(":");
-          ordersList.add(token[0]);
+        String[] token = orderAndScore.split(":");
+        ordersList.add(token[0]);
       }
       String orderString = "";
       if (ordersList.isEmpty() != true) {
@@ -214,13 +214,13 @@ public class AssignmentWithOrderCreator {
       ProjectTypeEnum assignmentTypeEnum = adbManager.getAssignmentType(assignmentName);
       JenkinsProjectConfig jenkinsProjectConfig;
       if ( assignmentTypeEnum.equals(ProjectTypeEnum.WEB) ) {
-          jenkinsProjectConfig = new WebPipelineConfig(projectUrl, updateDbUrl,
-              username, assignmentName,
-                  courseConfig.getTomcatServerIp() + "/publicApi/commits/screenshot/updateURL",
-                      orderString);
+        jenkinsProjectConfig = new WebPipelineConfig(projectUrl, updateDbUrl,
+                username, assignmentName,
+                courseConfig.getTomcatServerIp() + "/publicApi/commits/screenshot/updateURL",
+                orderString);
       } else {
         jenkinsProjectConfig = JenkinsProjectConfigFactory
-            .getJenkinsProjectConfig(assignmentTypeEnum.getTypeName(), projectUrl, updateDbUrl,
+                .getJenkinsProjectConfig(assignmentTypeEnum.getTypeName(), projectUrl, updateDbUrl,
                 username, assignmentName);
       }
       JenkinsService jenkinsService = JenkinsService.getInstance();
