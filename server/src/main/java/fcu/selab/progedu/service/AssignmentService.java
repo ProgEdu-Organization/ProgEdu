@@ -74,7 +74,7 @@ import fcu.selab.progedu.utils.ExceptionUtil;
 import fcu.selab.progedu.utils.Linux;
 import fcu.selab.progedu.utils.ZipHandler;
 import fcu.selab.progedu.setting.MavenAssignmentSetting;
-import fcu.selab.progedu.db.service.AssignmentWithOrderCreator;
+import fcu.selab.progedu.service.AssignmentWithOrderCreator;
 
 @Path("assignment/")
 public class AssignmentService {
