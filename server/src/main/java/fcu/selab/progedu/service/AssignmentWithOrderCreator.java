@@ -88,13 +88,10 @@ public class AssignmentWithOrderCreator {
    * @return abc
    * @throws Exception abc
    */
-  public Response createAssignment(
-      @FormDataParam("assignmentName") String assignmentName,
-      @FormDataParam("releaseTime") Date releaseTime, @FormDataParam("deadline") Date deadline,
-      @FormDataParam("readMe") String readMe, @FormDataParam("fileRadio") String assignmentType,
-      @FormDataParam("file") InputStream file,
-      @FormDataParam("file") FormDataContentDisposition fileDetail) {
-
+  public void createAssignment(String assignmentName, Date releaseTime,
+      Date deadline, String readMe,
+      String assignmentType, InputStream file,
+      FormDataContentDisposition fileDetail) {
 
     // 1. Create root project and get project id and url
     gitlabService.createRootProject(assignmentName);
@@ -164,7 +161,6 @@ public class AssignmentWithOrderCreator {
 
       // 10. remove project file
     JavaIoUtile.deleteDirectory(new File(uploadDir));
-    return Response.ok().build();
   }
 
   private void createAssignmentSettingsV2(String username, String assignmentName) {
@@ -282,7 +278,7 @@ public class AssignmentWithOrderCreator {
     return paths;
   }
 
-  public void appendOrder(String instruction) {
+  private void appendOrder(String instruction) {
     instructionList.add(instruction);
   }
 }
