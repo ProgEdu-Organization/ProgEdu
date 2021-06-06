@@ -61,16 +61,33 @@ public class AssignmentWithOrderCreator {
 
   private List<String> instructionList = new ArrayList<>();
 
+  /**
+   * Init assignment with order creator
+   *
+   * 
+   */
   public AssignmentWithOrderCreator() {
-      try {
-          zipHandler = new ZipHandler();
-          gitlabRootUsername = gitlabData.getGitlabRootUsername();
-      } catch (LoadConfigFailureException e) {
-          LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
-          LOGGER.error(e.getMessage());
-      }
+    try {
+      zipHandler = new ZipHandler();
+      gitlabRootUsername = gitlabData.getGitlabRootUsername();
+    } catch (LoadConfigFailureException e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    }
   }
 
+  /**
+   * Create assignment
+   * 
+   * @param assignmentName assignment name
+   * @param releaseTime    release time
+   * @param readMe         read me
+   * @param assignmentType assignment type
+   * @param file           file
+   * @param fileDetail     file detail
+   * @return abc
+   * @throws Exception abc
+   */
   public Response createAssignment(
       @FormDataParam("assignmentName") String assignmentName,
       @FormDataParam("releaseTime") Date releaseTime, @FormDataParam("deadline") Date deadline,
@@ -132,10 +149,10 @@ public class AssignmentWithOrderCreator {
       LOGGER.error(e.getMessage());
     }
 
-      // 8. git push
+    // 8. git push
     gitlabService.pushProject(cloneDirectoryPath);
 
-      // 9. import project information to database
+    // 9. import project information to database
     ProjectTypeEnum projectTypeEnum = ProjectTypeEnum.getProjectTypeEnum(assignmentType);
     addProject(assignmentName, releaseTime, deadline, readMe, projectTypeEnum);
 
