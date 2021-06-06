@@ -164,7 +164,7 @@ public class AssignmentWithOrderCreator {
   }
 
   private void createAssignmentSettingsV2(String username, String assignmentName,
-     String assignmentOrdersAndScores) {
+      String assignmentOrdersAndScores) {
 
     addAuid(username, assignmentName);
     //Todo 以上 addAuid 要改, 因為之後沒有 assignment
