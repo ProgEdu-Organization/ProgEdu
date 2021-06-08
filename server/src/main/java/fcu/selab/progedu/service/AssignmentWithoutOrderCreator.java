@@ -64,7 +64,7 @@ public class AssignmentWithoutOrderCreator {
    *
    * 
    */
-  public AssignmentWithOrderCreator() {
+  public AssignmentWithoutOrderCreator() {
     try {
       zipHandler = new ZipHandler();
       gitlabRootUsername = gitlabData.getGitlabRootUsername();
