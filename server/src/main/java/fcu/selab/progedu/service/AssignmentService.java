@@ -306,7 +306,7 @@ public class AssignmentService {
     try {
 
       // 1. create assignment
-      AssignmentWithoutOrderCreator awooc = new AssignmentWithOrderCreator();
+      AssignmentWithoutOrderCreator awooc = new AssignmentWithoutOrderCreator();
       awooc.createAssignment(assignmentName,
           releaseTime, deadline, readMe, assignmentType, file, fileDetail);
 
