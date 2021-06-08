@@ -152,19 +152,31 @@ public class AssignmentWithOrderCreator {
     ProjectTypeEnum projectTypeEnum = ProjectTypeEnum.getProjectTypeEnum(assignmentType);
     addProject(assignmentName, releaseTime, deadline, readMe, projectTypeEnum);
 
+    String[] ordersAndScoresTokens = assignmentOrdersAndScores.split(", ");
+      
+    for (String orderAndScore : ordersAndScoresTokens) {
+      String order = orderAndScore.split(":")[0]; 
+      if (order.equals("Unit Test Failure")) {
+        appendOrder("UNIT_TEST_FAILURE");
+      } else if (order.equals("HTML Failure")) {
+        appendOrder("WEB_HTMLHINT_FAILURE");
+      } else if (order.equals("CSS Failure")) {
+        appendOrder("WEB_STYLELINT_FAILURE");
+      } else if (order.equals("JavaScript Failure")) {
+        appendOrder("WEB_ESLINT_FAILURE");
+      }
+    }
 
     List<User> users = userService.getStudents();
     for (User user : users) {
-      createAssignmentSettingsV2(user.getUsername(), assignmentName,
-          assignmentOrdersAndScores);
+      createAssignmentSettingsV2(user.getUsername(), assignmentName);
     }
 
       // 10. remove project file
     JavaIoUtile.deleteDirectory(new File(uploadDir));
   }
 
-  private void createAssignmentSettingsV2(String username, String assignmentName,
-      String assignmentOrdersAndScores) {
+  private void createAssignmentSettingsV2(String username, String assignmentName) {
 
     addAuid(username, assignmentName);
     //Todo 以上 addAuid 要改, 因為之後沒有 assignment
@@ -185,22 +197,7 @@ public class AssignmentWithOrderCreator {
       String progEduApiUrl = courseConfig.getTomcatServerIp() + courseConfig.getBaseuri()
           + "/webapi";
       String updateDbUrl = courseConfig.getTomcatServerIp() + "/publicApi/update/commits";
-
-      //
-      String[] ordersAndScoresTokens = assignmentOrdersAndScores.split(", ");
       
-      for (String orderAndScore : ordersAndScoresTokens) {
-        String order = orderAndScore.split(":")[0]; 
-        if (order.equals("Unit Test Failure")) {
-          appendOrder("UNIT_TEST_FAILURE");
-        } else if (order.equals("HTML Failure")) {
-          appendOrder("WEB_HTMLHINT_FAILURE");
-        } else if (order.equals("CSS Failure")) {
-          appendOrder("WEB_STYLELINT_FAILURE");
-        } else if (order.equals("JavaScript Failure")) {
-          appendOrder("WEB_ESLINT_FAILURE");
-        }
-      }
       //
       ProjectTypeEnum assignmentTypeEnum = adbManager.getAssignmentType(assignmentName);
       JenkinsProjectConfig jenkinsProjectConfig;
@@ -214,7 +211,6 @@ public class AssignmentWithOrderCreator {
                 .getJenkinsProjectConfig(assignmentTypeEnum.getTypeName(), projectUrl, updateDbUrl,
                 username, assignmentName);
       }
-      ordersList = new ArrayList<>();
 
       JenkinsService jenkinsService = JenkinsService.getInstance();
       jenkinsService.createJobV2(jobName, jenkinsProjectConfig.getXmlConfig());
