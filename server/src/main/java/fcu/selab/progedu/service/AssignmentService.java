@@ -306,7 +306,8 @@ public class AssignmentService {
     try {
 
       // 1. create assignment
-      createAssignment(assignmentName,
+      AssignmentWithoutOrderCreator awooc = new AssignmentWithOrderCreator();
+      awooc.createAssignment(assignmentName,
           releaseTime, deadline, readMe, assignmentType, file, fileDetail);
 
       // 2. create peer review setting
