@@ -1,7 +1,7 @@
 package fcu.selab.progedu.jenkinsjob2status;
 
 import fcu.selab.progedu.conn.JenkinsService;
-import fcu.selab.progedu.service.StatusService;
+
 import fcu.selab.progedu.status.StatusEnum;
 
 public class WebJenkinsJobStatus extends JenkinsJobStatus {

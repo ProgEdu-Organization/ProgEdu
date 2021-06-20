@@ -1,0 +1,13 @@
+#The admin of DB
+DB_USER =
+#eg. admin
+
+DB_PASSWORD =
+
+DB_DATABASE =
+#eg. ProgEdu
+
+DB_HOST =
+#eg. 140.1.1.2:51345
+
+DB_CONNECTION_OPTION = ?relaxAutoCommit=true&useSSL=false&useUnicode=true&characterEncoding=utf-8

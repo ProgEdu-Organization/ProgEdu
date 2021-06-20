@@ -1,0 +1,15 @@
+# The curse name, it will show on the homepage of the website.
+COURSE_FULL_NAME = 
+#eg. 107-2
+
+# Abbreviation of the course name
+COURSE_NAME = 
+#eg. OOP
+
+# [Unnecessary] The domain of your school email
+COURSE_SCHOOL_EMAIL = 
+#eg. @fcu.edu.tw
+
+# Tomcat server's IP
+COURSE_TOMCAT_SERVER_IP = http://[TOMCAT_SERVER_IP]
+#eg. http://140.1.1.1:1111 , [WARN] if set to localhost, then Jenkins can't send trigger to tomcat.

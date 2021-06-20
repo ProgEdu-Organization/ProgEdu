@@ -1,0 +1,111 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<project>
+    <actions/>
+    <description></description>
+    <keepDependencies>false</keepDependencies>
+    <properties>
+        <com.dabsquared.gitlabjenkins.connection.GitLabConnectionProperty plugin="gitlab-plugin@1.5.12">
+            <gitLabConnection>gitlab</gitLabConnection>
+        </com.dabsquared.gitlabjenkins.connection.GitLabConnectionProperty>
+    </properties>
+    <scm class="hudson.plugins.git.GitSCM" plugin="git@3.10.0">
+        <configVersion>2</configVersion>
+        <userRemoteConfigs>
+            <hudson.plugins.git.UserRemoteConfig>
+                <url>http://140.134.26.71:20008/m1234567/web-hw999.git</url>
+                <credentialsId>gitlab_root</credentialsId>
+            </hudson.plugins.git.UserRemoteConfig>
+        </userRemoteConfigs>
+        <branches>
+            <hudson.plugins.git.BranchSpec>
+                <name>*/master</name>
+            </hudson.plugins.git.BranchSpec>
+        </branches>
+        <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+        <submoduleCfg class="list"/>
+        <extensions/>
+    </scm>
+    <canRoam>true</canRoam>
+    <disabled>false</disabled>
+    <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+    <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+    <triggers>
+        <com.dabsquared.gitlabjenkins.GitLabPushTrigger plugin="gitlab-plugin@1.5.12">
+            <spec></spec>
+            <triggerOnPush>true</triggerOnPush>
+            <triggerOnMergeRequest>true</triggerOnMergeRequest>
+            <triggerOnPipelineEvent>false</triggerOnPipelineEvent>
+            <triggerOnAcceptedMergeRequest>false</triggerOnAcceptedMergeRequest>
+            <triggerOnClosedMergeRequest>false</triggerOnClosedMergeRequest>
+            <triggerOnApprovedMergeRequest>false</triggerOnApprovedMergeRequest>
+            <triggerOpenMergeRequestOnPush>never</triggerOpenMergeRequestOnPush>
+            <triggerOnNoteRequest>true</triggerOnNoteRequest>
+            <noteRegex>Jenkins please retry a build</noteRegex>
+            <ciSkip>true</ciSkip>
+            <skipWorkInProgressMergeRequest>true</skipWorkInProgressMergeRequest>
+            <setBuildDescription>true</setBuildDescription>
+            <branchFilterType>All</branchFilterType>
+            <includeBranchesSpec></includeBranchesSpec>
+            <excludeBranchesSpec></excludeBranchesSpec>
+            <sourceBranchRegex></sourceBranchRegex>
+            <targetBranchRegex></targetBranchRegex>
+            <pendingBuildName></pendingBuildName>
+            <cancelPendingBuildsOnUpdate>false</cancelPendingBuildsOnUpdate>
+        </com.dabsquared.gitlabjenkins.GitLabPushTrigger>
+    </triggers>
+    <concurrentBuild>false</concurrentBuild>
+    <builders>
+        <io.jenkins.plugins.screenshot.ScreenShotBuilder plugin="sceenshot@1.0-SNAPSHOT">
+            <seleniumUrl>http://140.134.26.71:3444/wd/hub</seleniumUrl>
+        </io.jenkins.plugins.screenshot.ScreenShotBuilder>
+        <hudson.plugins.build__timeout.BuildStepWithTimeout plugin="build-timeout@1.19">
+            <strategy class="hudson.plugins.build_timeout.impl.AbsoluteTimeOutStrategy">
+                <timeoutMinutes>15</timeoutMinutes>
+            </strategy>
+            <buildStep class="hudson.tasks.Shell">
+                <command>npm install
+                    npm run htmlhint
+                    npm run stylelint
+                    npm run eslint
+                </command>
+            </buildStep>
+            <operationList>
+                <hudson.plugins.build__timeout.operations.FailOperation/>
+            </operationList>
+        </hudson.plugins.build__timeout.BuildStepWithTimeout>
+    </builders>
+    <publishers>
+        <hudson.tasks.ArtifactArchiver>
+            <artifacts>target/screenshot/*.png</artifacts>
+            <allowEmptyArchive>true</allowEmptyArchive>
+            <onlyIfSuccessful>false</onlyIfSuccessful>
+            <fingerprint>false</fingerprint>
+            <defaultExcludes>true</defaultExcludes>
+            <caseSensitive>true</caseSensitive>
+        </hudson.tasks.ArtifactArchiver>
+        <org.jenkinsci.plugins.UpdatingDbPublisher plugin="jenkins-progedu@1.0-SNAPSHOT">
+            <progeduDbUrl>http://140.134.26.71:10008/ProgEdu/webapi/commits/update</progeduDbUrl>
+            <user>M1234567</user>
+            <proName>WEB-HW999</proName>
+        </org.jenkinsci.plugins.UpdatingDbPublisher>
+        <io.jenkins.plugins.progupdatetodb.UpdateToDbPublisher plugin="progeduDB@1.0-SNAPSHOT">
+            <progeduAPIUrl>http://140.134.26.66:38818/webapi</progeduAPIUrl>
+            <jenkinsUsername>test01</jenkinsUsername>
+            <jenkinsAssignmentName>web</jenkinsAssignmentName>
+        </io.jenkins.plugins.progupdatetodb.UpdateToDbPublisher>
+        <hudson.plugins.ws__cleanup.WsCleanup plugin="ws-cleanup@0.37">
+            <patterns class="empty-list"/>
+            <deleteDirs>false</deleteDirs>
+            <skipWhenFailed>false</skipWhenFailed>
+            <cleanWhenSuccess>true</cleanWhenSuccess>
+            <cleanWhenUnstable>true</cleanWhenUnstable>
+            <cleanWhenFailure>true</cleanWhenFailure>
+            <cleanWhenNotBuilt>true</cleanWhenNotBuilt>
+            <cleanWhenAborted>true</cleanWhenAborted>
+            <notFailBuild>false</notFailBuild>
+            <cleanupMatrixParent>false</cleanupMatrixParent>
+            <externalDelete></externalDelete>
+            <disableDeferredWipeout>false</disableDeferredWipeout>
+        </hudson.plugins.ws__cleanup.WsCleanup>
+    </publishers>
+</project>

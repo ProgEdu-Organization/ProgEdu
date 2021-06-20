@@ -1,0 +1,83 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <com.dabsquared.gitlabjenkins.connection.GitLabConnectionProperty plugin="gitlab-plugin@1.5.10">
+      <gitLabConnection>gitlab</gitLabConnection>
+    </com.dabsquared.gitlabjenkins.connection.GitLabConnectionProperty>
+  </properties>
+  <scm class="hudson.plugins.git.GitSCM" plugin="git@3.9.1">
+    <configVersion>2</configVersion>
+    <userRemoteConfigs>
+      <hudson.plugins.git.UserRemoteConfig>
+        <url>http://140.134.26.78:80/group_test/group_test.git</url>
+        <credentialsId>gitlab_root</credentialsId>
+      </hudson.plugins.git.UserRemoteConfig>
+    </userRemoteConfigs>
+    <branches>
+      <hudson.plugins.git.BranchSpec>
+        <name>*/master</name>
+      </hudson.plugins.git.BranchSpec>
+    </branches>
+    <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+    <submoduleCfg class="list"/>
+    <extensions/>
+  </scm>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers>
+    <com.dabsquared.gitlabjenkins.GitLabPushTrigger plugin="gitlab-plugin@1.5.10">
+      <spec></spec>
+      <triggerOnPush>true</triggerOnPush>
+      <triggerOnMergeRequest>true</triggerOnMergeRequest>
+      <triggerOnPipelineEvent>false</triggerOnPipelineEvent>
+      <triggerOnAcceptedMergeRequest>false</triggerOnAcceptedMergeRequest>
+      <triggerOnClosedMergeRequest>false</triggerOnClosedMergeRequest>
+      <triggerOnApprovedMergeRequest>true</triggerOnApprovedMergeRequest>
+      <triggerOpenMergeRequestOnPush>never</triggerOpenMergeRequestOnPush>
+      <triggerOnNoteRequest>true</triggerOnNoteRequest>
+      <noteRegex>Jenkins please retry a build</noteRegex>
+      <ciSkip>true</ciSkip>
+      <skipWorkInProgressMergeRequest>true</skipWorkInProgressMergeRequest>
+      <setBuildDescription>true</setBuildDescription>
+      <branchFilterType>All</branchFilterType>
+      <includeBranchesSpec></includeBranchesSpec>
+      <excludeBranchesSpec></excludeBranchesSpec>
+      <sourceBranchRegex></sourceBranchRegex>
+      <targetBranchRegex></targetBranchRegex>
+      <pendingBuildName></pendingBuildName>
+      <cancelPendingBuildsOnUpdate>false</cancelPendingBuildsOnUpdate>
+    </com.dabsquared.gitlabjenkins.GitLabPushTrigger>
+  </triggers>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.plugins.build__timeout.BuildStepWithTimeout plugin="build-timeout@1.19">
+      <strategy class="hudson.plugins.build_timeout.impl.AbsoluteTimeOutStrategy">
+        <timeoutMinutes>15</timeoutMinutes>
+      </strategy>
+      <buildStep class="hudson.tasks.Maven">
+        <targets>clean package</targets>
+        <mavenName>Global</mavenName>
+        <usePrivateRepository>false</usePrivateRepository>
+        <settings class="jenkins.mvn.DefaultSettingsProvider"/>
+        <globalSettings class="jenkins.mvn.DefaultGlobalSettingsProvider"/>
+        <injectBuildVariables>false</injectBuildVariables>
+      </buildStep>
+      <operationList>
+        <hudson.plugins.build__timeout.operations.FailOperation/>
+      </operationList>
+    </hudson.plugins.build__timeout.BuildStepWithTimeout>
+  </builders>
+  <publishers>
+    <org.jenkinsci.plugins.UpdatingDbPublisher plugin="jenkins-progedu@1.0-SNAPSHOT">
+      <progeduDbUrl>http://140.134.26.78:8818/ProgEdu/webapi/commits/update</progeduDbUrl>
+      <user>group_test</user>
+      <proName>group_test</proName>
+    </org.jenkinsci.plugins.UpdatingDbPublisher>
+  </publishers>
+  <buildWrappers/>
+</project>
