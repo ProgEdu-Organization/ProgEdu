@@ -10,23 +10,42 @@
 			"item": [
 				{
 					"name": "delete user",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let base_url = pm.environment.get(\"base_url\");\r",
+									"\r",
+									"pm.sendRequest( base_url + \"/LoginAuth?username=root&password=rootrootrootroot\", function (err, response) {\r",
+									"    console.log(\"pre-request script response.json()\");\r",
+									"    console.log(response.json());\r",
+									"    let jwt_token = response.json().token;\r",
+									"\r",
+									"    pm.environment.set(\"jwt_token\", jwt_token);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/webapi/user/unit-test-username?token=eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwcm9nZWR1Iiwic3ViIjoidGVhY2hlciIsImF1ZCI6InJvb3QiLCJuYW1lIjoicm9vdCIsImV4cCI6MTYxOTg5MTM3NCwianRpIjoiMTNhOGMyMjUtZDIxOS00MWVmLWExMDMtMjc3YWM0M2E3ZDZjIn0.QeOC3sUvP_fCf0N9_3JweMe2UDoTYYk-PZ0enY0Tdlw",
+							"raw": "{{base_url}}/webapi/user/postman-test?token={{jwt_token}}",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"webapi",
 								"user",
-								"unit-test-username"
+								"postman-test"
 							],
 							"query": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwcm9nZWR1Iiwic3ViIjoidGVhY2hlciIsImF1ZCI6InJvb3QiLCJuYW1lIjoicm9vdCIsImV4cCI6MTYxOTg5MTM3NCwianRpIjoiMTNhOGMyMjUtZDIxOS00MWVmLWExMDMtMjc3YWM0M2E3ZDZjIn0.QeOC3sUvP_fCf0N9_3JweMe2UDoTYYk-PZ0enY0Tdlw"
+									"value": "{{jwt_token}}"
 								}
 							]
 						}
@@ -138,6 +157,209 @@
 								"webapi",
 								"user",
 								"upload"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createAccount",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let base_url = pm.environment.get(\"base_url\");\r",
+									"\r",
+									"pm.sendRequest( base_url + \"/LoginAuth?username=root&password=rootrootrootroot\", function (err, response) {\r",
+									"    console.log(\"pre-request script response.json()\");\r",
+									"    console.log(response.json());\r",
+									"    let jwt_token = response.json().token;\r",
+									"\r",
+									"    pm.environment.set(\"jwt_token\", jwt_token);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded;application/json",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "postman-test",
+									"type": "text"
+								},
+								{
+									"key": "username",
+									"value": "postman-test",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "postman-test@postman-test",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "postman-test",
+									"type": "text"
+								},
+								{
+									"key": "role",
+									"value": "student",
+									"type": "text"
+								},
+								{
+									"key": "isDisplayed",
+									"value": "true",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/webapi/user/new?token={{jwt_token}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"webapi",
+								"user",
+								"new"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updatePassword",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let base_url = pm.environment.get(\"base_url\");\r",
+									"\r",
+									"pm.sendRequest( base_url + \"/LoginAuth?username=root&password=rootrootrootroot\", function (err, response) {\r",
+									"    console.log(\"pre-request script response.json()\");\r",
+									"    console.log(response.json());\r",
+									"    let jwt_token = response.json().token;\r",
+									"\r",
+									"    pm.environment.set(\"jwt_token\", jwt_token);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let base_url = pm.environment.get(\"base_url\");\r",
+									"\r",
+									"let jwt_token = pm.environment.get(\"jwt_token\");\r",
+									"\r",
+									"pm.sendRequest(  function (err, response) {\r",
+									"    console.log(\"pre-request script response.json()\");\r",
+									"    console.log(response.json());\r",
+									"    let jwt_token = response.json().token;\r",
+									"});\r",
+									"\r",
+									"const demoRequest = {\r",
+									"  url: '' + base_url + \"/webapi/user/updatePassword?token=\" + jwt_token,\r",
+									"  method: 'POST',\r",
+									"    header: {\r",
+									"        'Content-Type': 'multipart/form-data',\r",
+									"          },\r",
+									"      body: {\r",
+									"          mode: 'formdata',\r",
+									"          formdata: [\r",
+									"            {key: \"username\", value: \"postman-test\"},\r",
+									"            {key: \"currentPassword\", value: \"postman-change\"},\r",
+									"            {key: \"newPassword\", value: \"postman-test\"}\r",
+									"        ]\r",
+									"      }\r",
+									"};\r",
+									"\r",
+									"pm.sendRequest(demoRequest, function (err, res) {\r",
+									"    const jsonResponse = response.json();\r",
+									"    console.log(jsonResponse.code);\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded;application/json",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "username",
+									"value": "postman-test",
+									"type": "text"
+								},
+								{
+									"key": "currentPassword",
+									"value": "postman-test",
+									"type": "text"
+								},
+								{
+									"key": "newPassword",
+									"value": "postman-change",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/webapi/user/updatePassword?token={{jwt_token}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"webapi",
+								"user",
+								"updatePassword"
 							],
 							"query": [
 								{
