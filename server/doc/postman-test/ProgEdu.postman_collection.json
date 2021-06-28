@@ -9,112 +9,6 @@
 			"name": "User",
 			"item": [
 				{
-					"name": "delete user",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									"let base_url = pm.environment.get(\"base_url\");\r",
-									"\r",
-									"pm.sendRequest( base_url + \"/LoginAuth?username=root&password=rootrootrootroot\", function (err, response) {\r",
-									"    console.log(\"pre-request script response.json()\");\r",
-									"    console.log(response.json());\r",
-									"    let jwt_token = response.json().token;\r",
-									"\r",
-									"    pm.environment.set(\"jwt_token\", jwt_token);\r",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/webapi/user/postman-test?token={{jwt_token}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"webapi",
-								"user",
-								"postman-test"
-							],
-							"query": [
-								{
-									"key": "token",
-									"value": "{{jwt_token}}"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "getUsers(old)",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									"let base_url = pm.environment.get(\"base_url\");\r",
-									"\r",
-									"pm.sendRequest( base_url + \"/LoginAuth?username=root&password=rootrootrootroot\", function (err, response) {\r",
-									"    console.log(\"pre-request script response.json()\");\r",
-									"    console.log(response.json());\r",
-									"    let jwt_token = response.json().token;\r",
-									"\r",
-									"    pm.environment.set(\"jwt_token\", jwt_token);\r",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/webapi/user/getUsers?token={{jwt_token}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"webapi",
-								"user",
-								"getUsers"
-							],
-							"query": [
-								{
-									"key": "token",
-									"value": "{{jwt_token}}"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "getUsers",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/user/getUsers",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"user",
-								"getUsers"
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "createAccounts",
 					"event": [
 						{
@@ -281,36 +175,13 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"let base_url = pm.environment.get(\"base_url\");\r",
 									"\r",
-									"let jwt_token = pm.environment.get(\"jwt_token\");\r",
-									"\r",
-									"pm.sendRequest(  function (err, response) {\r",
-									"    console.log(\"pre-request script response.json()\");\r",
-									"    console.log(response.json());\r",
-									"    let jwt_token = response.json().token;\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
 									"});\r",
 									"\r",
-									"const demoRequest = {\r",
-									"  url: '' + base_url + \"/webapi/user/updatePassword?token=\" + jwt_token,\r",
-									"  method: 'POST',\r",
-									"    header: {\r",
-									"        'Content-Type': 'multipart/form-data',\r",
-									"          },\r",
-									"      body: {\r",
-									"          mode: 'formdata',\r",
-									"          formdata: [\r",
-									"            {key: \"username\", value: \"postman-test\"},\r",
-									"            {key: \"currentPassword\", value: \"postman-change\"},\r",
-									"            {key: \"newPassword\", value: \"postman-test\"}\r",
-									"        ]\r",
-									"      }\r",
-									"};\r",
 									"\r",
-									"pm.sendRequest(demoRequest, function (err, res) {\r",
-									"    const jsonResponse = response.json();\r",
-									"    console.log(jsonResponse.code);\r",
-									"});\r",
+									"\r",
 									"\r",
 									""
 								],
@@ -360,6 +231,229 @@
 								"webapi",
 								"user",
 								"updatePassword"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getUsers(old)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let base_url = pm.environment.get(\"base_url\");\r",
+									"\r",
+									"pm.sendRequest( base_url + \"/LoginAuth?username=root&password=rootrootrootroot\", function (err, response) {\r",
+									"    console.log(\"pre-request script response.json()\");\r",
+									"    console.log(response.json());\r",
+									"    let jwt_token = response.json().token;\r",
+									"\r",
+									"    pm.environment.set(\"jwt_token\", jwt_token);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/webapi/user/getUsers?token={{jwt_token}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"webapi",
+								"user",
+								"getUsers"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getUsers",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/user/getUsers",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"getUsers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateStatus",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let base_url = pm.environment.get(\"base_url\");\r",
+									"\r",
+									"pm.sendRequest( base_url + \"/LoginAuth?username=root&password=rootrootrootroot\", function (err, response) {\r",
+									"    console.log(\"pre-request script response.json()\");\r",
+									"    console.log(response.json());\r",
+									"    let jwt_token = response.json().token;\r",
+									"\r",
+									"    pm.environment.set(\"jwt_token\", jwt_token);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "username",
+									"value": "postman-test",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/webapi/user/display?token={{jwt_token}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"webapi",
+								"user",
+								"display"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getGroup",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let base_url = pm.environment.get(\"base_url\");\r",
+									"\r",
+									"pm.sendRequest( base_url + \"/LoginAuth?username=root&password=rootrootrootroot\", function (err, response) {\r",
+									"    console.log(\"pre-request script response.json()\");\r",
+									"    console.log(response.json());\r",
+									"    let jwt_token = response.json().token;\r",
+									"\r",
+									"    pm.environment.set(\"jwt_token\", jwt_token);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "username",
+									"value": "postman-test",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/webapi/user/postman-test/groups?token={{jwt_token}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"webapi",
+								"user",
+								"postman-test",
+								"groups"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}"
+								},
+								{
+									"key": "username",
+									"value": "postman-test",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete user",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let base_url = pm.environment.get(\"base_url\");\r",
+									"\r",
+									"pm.sendRequest( base_url + \"/LoginAuth?username=root&password=rootrootrootroot\", function (err, response) {\r",
+									"    console.log(\"pre-request script response.json()\");\r",
+									"    console.log(response.json());\r",
+									"    let jwt_token = response.json().token;\r",
+									"\r",
+									"    pm.environment.set(\"jwt_token\", jwt_token);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/webapi/user/postman-test?token={{jwt_token}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"webapi",
+								"user",
+								"postman-test"
 							],
 							"query": [
 								{
@@ -498,6 +592,25 @@
 				},
 				{
 					"name": "getAssignmentOrder",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let base_url = pm.environment.get(\"base_url\");\r",
+									"\r",
+									"pm.sendRequest( base_url + \"/LoginAuth?username=root&password=rootrootrootroot\", function (err, response) {\r",
+									"    console.log(\"pre-request script response.json()\");\r",
+									"    console.log(response.json());\r",
+									"    let jwt_token = response.json().token;\r",
+									"\r",
+									"    pm.environment.set(\"jwt_token\", jwt_token);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -711,6 +824,25 @@
 				},
 				{
 					"name": "partCommitRecords",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let base_url = pm.environment.get(\"base_url\");\r",
+									"\r",
+									"pm.sendRequest( base_url + \"/LoginAuth?username=root&password=rootrootrootroot\", function (err, response) {\r",
+									"    console.log(\"pre-request script response.json()\");\r",
+									"    console.log(response.json());\r",
+									"    let jwt_token = response.json().token;\r",
+									"\r",
+									"    pm.environment.set(\"jwt_token\", jwt_token);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -749,6 +881,25 @@
 				},
 				{
 					"name": "gitLab",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let base_url = pm.environment.get(\"base_url\");\r",
+									"\r",
+									"pm.sendRequest( base_url + \"/LoginAuth?username=root&password=rootrootrootroot\", function (err, response) {\r",
+									"    console.log(\"pre-request script response.json()\");\r",
+									"    console.log(response.json());\r",
+									"    let jwt_token = response.json().token;\r",
+									"\r",
+									"    pm.environment.set(\"jwt_token\", jwt_token);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -783,6 +934,25 @@
 				},
 				{
 					"name": "getAssignmentFeedback",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let base_url = pm.environment.get(\"base_url\");\r",
+									"\r",
+									"pm.sendRequest( base_url + \"/LoginAuth?username=root&password=rootrootrootroot\", function (err, response) {\r",
+									"    console.log(\"pre-request script response.json()\");\r",
+									"    console.log(response.json());\r",
+									"    let jwt_token = response.json().token;\r",
+									"\r",
+									"    pm.environment.set(\"jwt_token\", jwt_token);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -820,37 +990,26 @@
 					"response": []
 				},
 				{
-					"name": "getAssignmentDescription",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/webapi/assignment/getAssignment?assignmentName=rrr1&token={{jwt_token}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"webapi",
-								"assignment",
-								"getAssignment"
-							],
-							"query": [
-								{
-									"key": "assignmentName",
-									"value": "rrr1"
-								},
-								{
-									"key": "token",
-									"value": "{{jwt_token}}"
-								}
-							]
-						},
-						"description": "get assignemnt description"
-					},
-					"response": []
-				},
-				{
 					"name": "getAllStudentCommitRecord",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let base_url = pm.environment.get(\"base_url\");\r",
+									"\r",
+									"pm.sendRequest( base_url + \"/LoginAuth?username=root&password=rootrootrootroot\", function (err, response) {\r",
+									"    console.log(\"pre-request script response.json()\");\r",
+									"    console.log(response.json());\r",
+									"    let jwt_token = response.json().token;\r",
+									"\r",
+									"    pm.environment.set(\"jwt_token\", jwt_token);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -877,6 +1036,25 @@
 				},
 				{
 					"name": "[ Useless ] oneUser",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let base_url = pm.environment.get(\"base_url\");\r",
+									"\r",
+									"pm.sendRequest( base_url + \"/LoginAuth?username=root&password=rootrootrootroot\", function (err, response) {\r",
+									"    console.log(\"pre-request script response.json()\");\r",
+									"    console.log(response.json());\r",
+									"    let jwt_token = response.json().token;\r",
+									"\r",
+									"    pm.environment.set(\"jwt_token\", jwt_token);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -906,6 +1084,25 @@
 				},
 				{
 					"name": "autoAssessment",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let base_url = pm.environment.get(\"base_url\");\r",
+									"\r",
+									"pm.sendRequest( base_url + \"/LoginAuth?username=root&password=rootrootrootroot\", function (err, response) {\r",
+									"    console.log(\"pre-request script response.json()\");\r",
+									"    console.log(response.json());\r",
+									"    let jwt_token = response.json().token;\r",
+									"\r",
+									"    pm.environment.set(\"jwt_token\", jwt_token);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -931,6 +1128,904 @@
 							]
 						},
 						"description": "get autoAssessment"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "MyResource",
+			"item": [
+				{
+					"name": "MyResource",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let base_url = pm.environment.get(\"base_url\");\r",
+									"\r",
+									"pm.sendRequest( base_url + \"/LoginAuth?username=root&password=rootrootrootroot\", function (err, response) {\r",
+									"    console.log(\"pre-request script response.json()\");\r",
+									"    console.log(response.json());\r",
+									"    let jwt_token = response.json().token;\r",
+									"\r",
+									"    pm.environment.set(\"jwt_token\", jwt_token);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/webapi/myresource?token={{jwt_token}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"webapi",
+								"myresource"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ImageService",
+			"item": [
+				{
+					"name": "uploadImageToTemp-備註:ckCsrfToken 沒用到 且在windows系統下這API不好測試, 因為檔案會存到 /temp_images 資料夾下",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let base_url = pm.environment.get(\"base_url\");\r",
+									"\r",
+									"pm.sendRequest( base_url + \"/LoginAuth?username=root&password=rootrootrootroot\", function (err, response) {\r",
+									"    console.log(\"pre-request script response.json()\");\r",
+									"    console.log(response.json());\r",
+									"    let jwt_token = response.json().token;\r",
+									"\r",
+									"    pm.environment.set(\"jwt_token\", jwt_token);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "upload",
+									"type": "file",
+									"src": "/C:/Users/franky/Pictures/20200704002959.jpg"
+								},
+								{
+									"key": "ckCsrfToken",
+									"value": "",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/webapi/image?token={{jwt_token}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"webapi",
+								"image"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Assignment",
+			"item": [
+				{
+					"name": "getAssignmentOrder",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let base_url = pm.environment.get(\"base_url\");\r",
+									"\r",
+									"pm.sendRequest( base_url + \"/LoginAuth?username=root&password=rootrootrootroot\", function (err, response) {\r",
+									"    console.log(\"pre-request script response.json()\");\r",
+									"    console.log(response.json());\r",
+									"    let jwt_token = response.json().token;\r",
+									"\r",
+									"    pm.environment.set(\"jwt_token\", jwt_token);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{base_url}}/webapi/assignment/getAssignmentOrder?fileName=hhh5&token={{jwt_token}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"webapi",
+								"assignment",
+								"getAssignmentOrder"
+							],
+							"query": [
+								{
+									"key": "fileName",
+									"value": "hhh5"
+								},
+								{
+									"key": "token",
+									"value": "{{jwt_token}}"
+								}
+							]
+						},
+						"description": "get auto assessment assignment judge order"
+					},
+					"response": []
+				},
+				{
+					"name": "[ Useless ]getTestFile",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": ""
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "modifyAssignmentOrderFile",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let base_url = pm.environment.get(\"base_url\");\r",
+									"\r",
+									"pm.sendRequest( base_url + \"/LoginAuth?username=root&password=rootrootrootroot\", function (err, response) {\r",
+									"    console.log(\"pre-request script response.json()\");\r",
+									"    console.log(response.json());\r",
+									"    let jwt_token = response.json().token;\r",
+									"\r",
+									"    pm.environment.set(\"jwt_token\", jwt_token);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "assignmentName",
+									"value": "testMvn001",
+									"type": "text"
+								},
+								{
+									"key": "order",
+									"value": "Compile Failure, Coding Style Failure, Unit Test Failure",
+									"type": "text"
+								},
+								{
+									"key": "fileRadio",
+									"value": "maven",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/webapi/assignment/order?token={{jwt_token}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"webapi",
+								"assignment",
+								"order"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}"
+								}
+							]
+						},
+						"description": "modify assignment order file"
+					},
+					"response": []
+				},
+				{
+					"name": "editAssignment",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let base_url = pm.environment.get(\"base_url\");\r",
+									"\r",
+									"pm.sendRequest( base_url + \"/LoginAuth?username=root&password=rootrootrootroot\", function (err, response) {\r",
+									"    console.log(\"pre-request script response.json()\");\r",
+									"    console.log(response.json());\r",
+									"    let jwt_token = response.json().token;\r",
+									"\r",
+									"    pm.environment.set(\"jwt_token\", jwt_token);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/Users/owner/Downloads/testMvnAPI.zip"
+								},
+								{
+									"key": "assignmentName",
+									"value": "testMvnAPI",
+									"type": "text"
+								},
+								{
+									"key": "releaseTime",
+									"value": "Mon, 28 Jun 2021 11:10:00 GMT",
+									"type": "text"
+								},
+								{
+									"key": "deadline",
+									"value": "Mon, 28 Jun 2021 11:10:00 GMT",
+									"type": "text"
+								},
+								{
+									"key": "readMe",
+									"value": "<p>testMvnAPI</p>",
+									"type": "text"
+								},
+								{
+									"key": "order",
+									"value": "Compile Failure:24, Coding Style Failure:16, Unit Test Failure:60",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/webapi/assignment/edit?token={{jwt_token}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"webapi",
+								"assignment",
+								"edit"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}"
+								}
+							]
+						},
+						"description": "edit assignment settings"
+					},
+					"response": []
+				},
+				{
+					"name": "getAllAssignment",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let base_url = pm.environment.get(\"base_url\");\r",
+									"\r",
+									"pm.sendRequest( base_url + \"/LoginAuth?username=root&password=rootrootrootroot\", function (err, response) {\r",
+									"    console.log(\"pre-request script response.json()\");\r",
+									"    console.log(response.json());\r",
+									"    let jwt_token = response.json().token;\r",
+									"\r",
+									"    pm.environment.set(\"jwt_token\", jwt_token);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/webapi/assignment/getAllAssignments?token={{jwt_token}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"webapi",
+								"assignment",
+								"getAllAssignments"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}"
+								}
+							]
+						},
+						"description": "get all assignment"
+					},
+					"response": []
+				},
+				{
+					"name": "deleteAssignment",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let base_url = pm.environment.get(\"base_url\");\r",
+									"\r",
+									"pm.sendRequest( base_url + \"/LoginAuth?username=root&password=rootrootrootroot\", function (err, response) {\r",
+									"    console.log(\"pre-request script response.json()\");\r",
+									"    console.log(response.json());\r",
+									"    let jwt_token = response.json().token;\r",
+									"\r",
+									"    pm.environment.set(\"jwt_token\", jwt_token);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "assignmentName",
+									"value": "testMvnAPI",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/webapi/assignment/delete?token={{jwt_token}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"webapi",
+								"assignment",
+								"delete"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}"
+								}
+							]
+						},
+						"description": "delete assignment"
+					},
+					"response": []
+				},
+				{
+					"name": "createAssignment",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let base_url = pm.environment.get(\"base_url\");\r",
+									"\r",
+									"pm.sendRequest( base_url + \"/LoginAuth?username=root&password=rootrootrootroot\", function (err, response) {\r",
+									"    console.log(\"pre-request script response.json()\");\r",
+									"    console.log(response.json());\r",
+									"    let jwt_token = response.json().token;\r",
+									"\r",
+									"    pm.environment.set(\"jwt_token\", jwt_token);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "assignmentName",
+									"value": "testMvn001",
+									"type": "text"
+								},
+								{
+									"key": "releaseTime",
+									"value": "Mon, 28 Jun 2021 04:53:00 GMT",
+									"type": "text"
+								},
+								{
+									"key": "deadline",
+									"value": "Mon, 28 Jun 2021 04:53:00 GMT",
+									"type": "text"
+								},
+								{
+									"key": "readMe",
+									"value": "<p>testMvn005</p>",
+									"type": "text"
+								},
+								{
+									"key": "fileRadio",
+									"value": "maven",
+									"type": "text"
+								},
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/Users/owner/Downloads/testMvn005.zip"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/webapi/assignment/create?token={{jwt_token}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"webapi",
+								"assignment",
+								"create"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}"
+								}
+							]
+						},
+						"description": "create assinment"
+					},
+					"response": []
+				},
+				{
+					"name": "createAutoAssessmentAssignment",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let base_url = pm.environment.get(\"base_url\");\r",
+									"\r",
+									"pm.sendRequest( base_url + \"/LoginAuth?username=root&password=rootrootrootroot\", function (err, response) {\r",
+									"    console.log(\"pre-request script response.json()\");\r",
+									"    console.log(response.json());\r",
+									"    let jwt_token = response.json().token;\r",
+									"\r",
+									"    pm.environment.set(\"jwt_token\", jwt_token);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "assignmentName",
+									"value": "testMvn002",
+									"type": "text"
+								},
+								{
+									"key": "releaseTime",
+									"value": "Mon, 28 Jun 2021 04:53:00 GMT",
+									"type": "text"
+								},
+								{
+									"key": "deadline",
+									"value": "Mon, 28 Jun 2021 04:53:00 GMT",
+									"type": "text"
+								},
+								{
+									"key": "readMe",
+									"value": "<p>testMvn002</p>",
+									"type": "text"
+								},
+								{
+									"key": "fileRadio",
+									"value": "maven",
+									"type": "text"
+								},
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/Users/owner/Downloads/testMvn005.zip"
+								},
+								{
+									"key": "order",
+									"value": "Compile Failure:20, Coding Style Failure:20, Unit Test Failure:60",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/webapi/assignment/autoAssessment/create?token={{jwt_token}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"webapi",
+								"assignment",
+								"autoAssessment",
+								"create"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createPeerReviewAssignment",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let base_url = pm.environment.get(\"base_url\");\r",
+									"\r",
+									"pm.sendRequest( base_url + \"/LoginAuth?username=root&password=rootrootrootroot\", function (err, response) {\r",
+									"    console.log(\"pre-request script response.json()\");\r",
+									"    console.log(response.json());\r",
+									"    let jwt_token = response.json().token;\r",
+									"\r",
+									"    pm.environment.set(\"jwt_token\", jwt_token);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "assignmentName",
+									"value": "tsetPeer02",
+									"type": "text"
+								},
+								{
+									"key": "releaseTime",
+									"value": "Mon, 28 Jun 2021 05:08:00 GMT",
+									"type": "text"
+								},
+								{
+									"key": "deadline",
+									"value": "Mon, 28 Jun 2021 05:08:00 GMT",
+									"type": "text"
+								},
+								{
+									"key": "readMe",
+									"value": "<p>testPeer02</p>",
+									"type": "text"
+								},
+								{
+									"key": "fileRadio",
+									"value": "maven",
+									"type": "text"
+								},
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/Users/owner/Downloads/testPeer02.zip"
+								},
+								{
+									"key": "amount",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "reviewStartTime",
+									"value": "Mon, 28 Jun 2021 05:08:00 GMT",
+									"type": "text"
+								},
+								{
+									"key": "reviewEndTime",
+									"value": "Mon, 28 Jun 2021 05:08:00 GMT",
+									"type": "text"
+								},
+								{
+									"key": "metrics",
+									"value": "1,2,4",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/webapi/assignment/peerReview/create?token={{jwt_token}}&token={{jwt_token}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"webapi",
+								"assignment",
+								"peerReview",
+								"create"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}"
+								},
+								{
+									"key": "token",
+									"value": "{{jwt_token}}"
+								}
+							]
+						},
+						"description": "create peer review assignemnt"
+					},
+					"response": []
+				},
+				{
+					"name": "getAllPeerReviewAssignment",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let base_url = pm.environment.get(\"base_url\");\r",
+									"\r",
+									"pm.sendRequest( base_url + \"/LoginAuth?username=root&password=rootrootrootroot\", function (err, response) {\r",
+									"    console.log(\"pre-request script response.json()\");\r",
+									"    console.log(response.json());\r",
+									"    let jwt_token = response.json().token;\r",
+									"\r",
+									"    pm.environment.set(\"jwt_token\", jwt_token);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/webapi/assignment/peerReview/allAssignment?token={{jwt_token}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"webapi",
+								"assignment",
+								"peerReview",
+								"allAssignment"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAllAutoAssessmentAssignment",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let base_url = pm.environment.get(\"base_url\");\r",
+									"\r",
+									"pm.sendRequest( base_url + \"/LoginAuth?username=root&password=rootrootrootroot\", function (err, response) {\r",
+									"    console.log(\"pre-request script response.json()\");\r",
+									"    console.log(response.json());\r",
+									"    let jwt_token = response.json().token;\r",
+									"\r",
+									"    pm.environment.set(\"jwt_token\", jwt_token);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/webapi/assignment/autoAssessment/allAssignment?token={{jwt_token}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"webapi",
+								"assignment",
+								"autoAssessment",
+								"allAssignment"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}"
+								}
+							]
+						},
+						"description": "get all auto assessment assignment"
+					},
+					"response": []
+				},
+				{
+					"name": "getAssignmentDescription",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let base_url = pm.environment.get(\"base_url\");\r",
+									"\r",
+									"pm.sendRequest( base_url + \"/LoginAuth?username=root&password=rootrootrootroot\", function (err, response) {\r",
+									"    console.log(\"pre-request script response.json()\");\r",
+									"    console.log(response.json());\r",
+									"    let jwt_token = response.json().token;\r",
+									"\r",
+									"    pm.environment.set(\"jwt_token\", jwt_token);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/webapi/assignment/getAssignment?assignmentName=rrr1&token={{jwt_token}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"webapi",
+								"assignment",
+								"getAssignment"
+							],
+							"query": [
+								{
+									"key": "assignmentName",
+									"value": "rrr1"
+								},
+								{
+									"key": "token",
+									"value": "{{jwt_token}}"
+								}
+							]
+						},
+						"description": "get assignment description"
+					},
+					"response": []
+				},
+				{
+					"name": "getAssignmentFile",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let base_url = pm.environment.get(\"base_url\");\r",
+									"\r",
+									"pm.sendRequest( base_url + \"/LoginAuth?username=root&password=rootrootrootroot\", function (err, response) {\r",
+									"    console.log(\"pre-request script response.json()\");\r",
+									"    console.log(response.json());\r",
+									"    let jwt_token = response.json().token;\r",
+									"\r",
+									"    pm.environment.set(\"jwt_token\", jwt_token);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/webapi/assignment/getAssignmentFile?fileName=hhh5&token={{jwt_token}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"webapi",
+								"assignment",
+								"getAssignmentFile"
+							],
+							"query": [
+								{
+									"key": "fileName",
+									"value": "hhh5"
+								},
+								{
+									"key": "token",
+									"value": "{{jwt_token}}"
+								}
+							]
+						},
+						"description": "get assignment file"
 					},
 					"response": []
 				}
