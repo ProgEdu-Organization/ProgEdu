@@ -742,13 +742,21 @@
 					"response": []
 				},
 				{
-					"name": "[ Useless ]getAssignmentFile",
+					"name": "getAssignmentFile",
 					"event": [
 						{
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									""
+									"let base_url = pm.environment.get(\"base_url\");\r",
+									"\r",
+									"pm.sendRequest( base_url + \"/LoginAuth?username=root&password=rootrootrootroot\", function (err, response) {\r",
+									"    console.log(\"pre-request script response.json()\");\r",
+									"    console.log(response.json());\r",
+									"    let jwt_token = response.json().token;\r",
+									"\r",
+									"    pm.environment.set(\"jwt_token\", jwt_token);\r",
+									"});"
 								],
 								"type": "text/javascript"
 							}
@@ -758,7 +766,25 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": ""
+							"raw": "{{base_url}}/webapi/assignment/getAssignmentFile?fileName=hhh5&token={{jwt_token}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"webapi",
+								"assignment",
+								"getAssignmentFile"
+							],
+							"query": [
+								{
+									"key": "fileName",
+									"value": "hhh5"
+								},
+								{
+									"key": "token",
+									"value": "{{jwt_token}}"
+								}
+							]
 						},
 						"description": "get assignment file"
 					},
