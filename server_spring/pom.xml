@@ -187,9 +187,13 @@
 			<artifactId>jackson-mapper-asl</artifactId>
 			<version>1.9.13</version>
 		</dependency>
+        <dependency>
+            <groupId>net.minidev</groupId>
+            <artifactId>json-smart</artifactId>
+        </dependency>
 
 
-	</dependencies>
+    </dependencies>
 
 	<build>
 		<plugins>
