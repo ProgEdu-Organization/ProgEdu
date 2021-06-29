@@ -1,0 +1,876 @@
+{
+	"info": {
+		"_postman_id": "1d46b45e-b07e-48bb-a30d-9a43d7c551ce",
+		"name": "ProgEdu",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "delete user",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/webapi/user/unit-test-username?token=eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwcm9nZWR1Iiwic3ViIjoidGVhY2hlciIsImF1ZCI6InJvb3QiLCJuYW1lIjoicm9vdCIsImV4cCI6MTYxOTg5MTM3NCwianRpIjoiMTNhOGMyMjUtZDIxOS00MWVmLWExMDMtMjc3YWM0M2E3ZDZjIn0.QeOC3sUvP_fCf0N9_3JweMe2UDoTYYk-PZ0enY0Tdlw",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"webapi",
+								"user",
+								"unit-test-username"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwcm9nZWR1Iiwic3ViIjoidGVhY2hlciIsImF1ZCI6InJvb3QiLCJuYW1lIjoicm9vdCIsImV4cCI6MTYxOTg5MTM3NCwianRpIjoiMTNhOGMyMjUtZDIxOS00MWVmLWExMDMtMjc3YWM0M2E3ZDZjIn0.QeOC3sUvP_fCf0N9_3JweMe2UDoTYYk-PZ0enY0Tdlw"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getUsers(old)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let base_url = pm.environment.get(\"base_url\");\r",
+									"\r",
+									"pm.sendRequest( base_url + \"/LoginAuth?username=root&password=rootrootrootroot\", function (err, response) {\r",
+									"    console.log(\"pre-request script response.json()\");\r",
+									"    console.log(response.json());\r",
+									"    let jwt_token = response.json().token;\r",
+									"\r",
+									"    pm.environment.set(\"jwt_token\", jwt_token);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/webapi/user/getUsers?token={{jwt_token}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"webapi",
+								"user",
+								"getUsers"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getUsers",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/user/getUsers",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"getUsers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createAccounts",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let base_url = pm.environment.get(\"base_url\");\r",
+									"\r",
+									"pm.sendRequest( base_url + \"/LoginAuth?username=root&password=rootrootrootroot\", function (err, response) {\r",
+									"    console.log(\"pre-request script response.json()\");\r",
+									"    console.log(response.json());\r",
+									"    let jwt_token = response.json().token;\r",
+									"\r",
+									"    pm.environment.set(\"jwt_token\", jwt_token);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/D/245lab/ProgEdu/code/ProgEdu/server/doc/postman-test/StudentTemplateForTest.csv"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/webapi/user/upload?token={{jwt_token}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"webapi",
+								"user",
+								"upload"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "conn",
+			"item": [
+				{
+					"name": "LoginAuth",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/LoginAuth?username=root&password=rootrootrootroot",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"LoginAuth"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "root"
+								},
+								{
+									"key": "password",
+									"value": "rootrootrootroot"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "isLogin",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let base_url = pm.environment.get(\"base_url\");\r",
+									"\r",
+									"pm.sendRequest( base_url + \"/LoginAuth?username=root&password=rootrootrootroot\", function (err, response) {\r",
+									"    console.log(\"pre-request script response.json()\");\r",
+									"    console.log(response.json());\r",
+									"    let jwt_token = response.json().token;\r",
+									"\r",
+									"    pm.environment.set(\"jwt_token\", jwt_token);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/webapi/auth/login?token={{jwt_token}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"webapi",
+								"auth",
+								"login"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Assigment",
+			"item": [
+				{
+					"name": "getAllAssignments",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let base_url = pm.environment.get(\"base_url\");\r",
+									"\r",
+									"pm.sendRequest( base_url + \"/LoginAuth?username=root&password=rootrootrootroot\", function (err, response) {\r",
+									"    console.log(\"pre-request script response.json()\");\r",
+									"    console.log(response.json());\r",
+									"    let jwt_token = response.json().token;\r",
+									"\r",
+									"    pm.environment.set(\"jwt_token\", jwt_token);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/webapi/assignment/getAllAssignments?token={{jwt_token}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"webapi",
+								"assignment",
+								"getAllAssignments"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAssignmentOrder",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/webapi/assignment/getAssignmentOrder?fileName=rrr1&token={{jwt_token}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"webapi",
+								"assignment",
+								"getAssignmentOrder"
+							],
+							"query": [
+								{
+									"key": "fileName",
+									"value": "rrr1"
+								},
+								{
+									"key": "token",
+									"value": "{{jwt_token}}"
+								}
+							]
+						},
+						"description": "get auto assignment judge order"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "CommitRecord",
+			"item": [
+				{
+					"name": "[ No need JWT ] UpdateCommitResult",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "user",
+									"value": "D002",
+									"type": "text"
+								},
+								{
+									"key": "proName",
+									"value": "1234",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/webapi/commits/update",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"webapi",
+								"commits",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getScreenshotURL",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let base_url = pm.environment.get(\"base_url\");\r",
+									"\r",
+									"pm.sendRequest( base_url + \"/LoginAuth?username=root&password=rootrootrootroot\", function (err, response) {\r",
+									"    console.log(\"pre-request script response.json()\");\r",
+									"    console.log(response.json());\r",
+									"    let jwt_token = response.json().token;\r",
+									"\r",
+									"    pm.environment.set(\"jwt_token\", jwt_token);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/webapi/commits/screenshot/getScreenshotURL?username=sss1&assignmentName=hhh2&commitNumber=1&token={{jwt_token}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"webapi",
+								"commits",
+								"screenshot",
+								"getScreenshotURL"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "sss1"
+								},
+								{
+									"key": "assignmentName",
+									"value": "hhh2"
+								},
+								{
+									"key": "commitNumber",
+									"value": "1"
+								},
+								{
+									"key": "token",
+									"value": "{{jwt_token}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "partCommitRecords",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/webapi/commits/partCommitRecords?username=apiTest&assignmentName=rrr1&currentPage=1&token={{jwt_token}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"webapi",
+								"commits",
+								"partCommitRecords"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "apiTest"
+								},
+								{
+									"key": "assignmentName",
+									"value": "rrr1"
+								},
+								{
+									"key": "currentPage",
+									"value": "1"
+								},
+								{
+									"key": "token",
+									"value": "{{jwt_token}}"
+								}
+							]
+						},
+						"description": "get one student a part of commit record "
+					},
+					"response": []
+				},
+				{
+					"name": "gitLab",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/webapi/commits/gitLab?username=apiTest&assignmentName=rrr1&token={{jwt_token}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"webapi",
+								"commits",
+								"gitLab"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "apiTest"
+								},
+								{
+									"key": "assignmentName",
+									"value": "rrr1"
+								},
+								{
+									"key": "token",
+									"value": "{{jwt_token}}"
+								}
+							]
+						},
+						"description": "get git lab url"
+					},
+					"response": []
+				},
+				{
+					"name": "getAssignmentFeedback",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/webapi/commits/feedback?username=apiTest&assignmentName=rrr1&number=1&token={{jwt_token}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"webapi",
+								"commits",
+								"feedback"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "apiTest"
+								},
+								{
+									"key": "assignmentName",
+									"value": "rrr1"
+								},
+								{
+									"key": "number",
+									"value": "1"
+								},
+								{
+									"key": "token",
+									"value": "{{jwt_token}}"
+								}
+							]
+						},
+						"description": "get assignment feedback"
+					},
+					"response": []
+				},
+				{
+					"name": "getAssignmentDescription",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/webapi/assignment/getAssignment?assignmentName=rrr1&token={{jwt_token}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"webapi",
+								"assignment",
+								"getAssignment"
+							],
+							"query": [
+								{
+									"key": "assignmentName",
+									"value": "rrr1"
+								},
+								{
+									"key": "token",
+									"value": "{{jwt_token}}"
+								}
+							]
+						},
+						"description": "get assignemnt description"
+					},
+					"response": []
+				},
+				{
+					"name": "getAllStudentCommitRecord",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/webapi/commits/allUsers?token={{jwt_token}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"webapi",
+								"commits",
+								"allUsers"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}"
+								}
+							]
+						},
+						"description": "get all user last commit status"
+					},
+					"response": []
+				},
+				{
+					"name": "[ Useless ] oneUser",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/webapi/commits/oneUser?username=apiTest&token={{jwt_token}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"webapi",
+								"commits",
+								"oneUser"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "apiTest"
+								},
+								{
+									"key": "token",
+									"value": "{{jwt_token}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "autoAssessment",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/webapi/commits/autoAssessment?username=apiTest&token={{jwt_token}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"webapi",
+								"commits",
+								"autoAssessment"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "apiTest"
+								},
+								{
+									"key": "token",
+									"value": "{{jwt_token}}"
+								}
+							]
+						},
+						"description": "get autoAssessment"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "screenShot",
+			"item": [
+				{
+					"name": "updateURL",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "username",
+									"value": "sss1",
+									"type": "text"
+								},
+								{
+									"key": "assignmentName",
+									"value": "hhh9",
+									"type": "text"
+								},
+								{
+									"key": "url",
+									"value": "franky1",
+									"type": "text"
+								},
+								{
+									"key": "url",
+									"value": "franky2",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/webapi/commits/screenshot/updateURL",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"webapi",
+								"commits",
+								"screenshot",
+								"updateURL"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Service",
+			"item": [
+				{
+					"name": "Auth.login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "token",
+									"value": "sdfad",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/webapi/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"webapi",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Jenkins_Jobs without parameters",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "user",
+						"value": "admin:admin",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "http://admin:11b603a456a4f441b2f14dcef8ccd77513@140.134.26.63:55004/job/sss2_hhh5/build",
+					"protocol": "http",
+					"auth": {
+						"user": "admin",
+						"password": "11b603a456a4f441b2f14dcef8ccd77513"
+					},
+					"host": [
+						"140",
+						"134",
+						"26",
+						"63"
+					],
+					"port": "55004",
+					"path": [
+						"job",
+						"sss2_hhh5",
+						"build"
+					],
+					"query": [
+						{
+							"key": "",
+							"value": "",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Jenkins_2",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://admin:11b603a456a4f441b2f14dcef8ccd77513@140.134.26.63:55004/job/sss2_hhh5/build",
+					"protocol": "http",
+					"auth": {
+						"user": "admin",
+						"password": "11b603a456a4f441b2f14dcef8ccd77513"
+					},
+					"host": [
+						"140",
+						"134",
+						"26",
+						"63"
+					],
+					"port": "55004",
+					"path": [
+						"job",
+						"sss2_hhh5",
+						"build"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "new_update",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "user",
+							"value": "12",
+							"type": "text"
+						},
+						{
+							"key": "proName",
+							"value": "12",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url}}/update/commits",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"update",
+						"commits"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "downloadAPI",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/downloadApi/peerReview/sourceCode?username=sss2&assignmentName=rrr4",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"downloadApi",
+						"peerReview",
+						"sourceCode"
+					],
+					"query": [
+						{
+							"key": "username",
+							"value": "sss2"
+						},
+						{
+							"key": "assignmentName",
+							"value": "rrr4"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "127.0.0.1:8080"
+		}
+	]
+}
