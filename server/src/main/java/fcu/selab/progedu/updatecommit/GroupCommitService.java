@@ -28,7 +28,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-@Path("group/commits")
+@Path("groups/commits")
 public class GroupCommitService {
   private JenkinsService js = JenkinsService.getInstance();
   private UserDbManager dbManager = UserDbManager.getInstance();
