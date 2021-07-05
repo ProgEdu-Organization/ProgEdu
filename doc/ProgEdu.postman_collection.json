@@ -152,6 +152,88 @@
 					"response": []
 				},
 				{
+					"name": "createAccount(new)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let base_url = pm.environment.get(\"base_url\");\r",
+									"\r",
+									"pm.sendRequest( base_url + \"/LoginAuth?username=root&password=rootrootrootroot\", function (err, response) {\r",
+									"    console.log(\"pre-request script response.json()\");\r",
+									"    console.log(response.json());\r",
+									"    let jwt_token = response.json().token;\r",
+									"\r",
+									"    pm.environment.set(\"jwt_token\", jwt_token);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded;application/json",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "postman-test-4",
+									"type": "text"
+								},
+								{
+									"key": "username",
+									"value": "postman-test-4",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "postman-test-4@postman-test-4",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "postman-test-4",
+									"type": "text"
+								},
+								{
+									"key": "role",
+									"value": "student",
+									"type": "text"
+								},
+								{
+									"key": "isDisplayed",
+									"value": "true",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{spring_url}}/user/new",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"user",
+								"new"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "updatePassword",
 					"event": [
 						{
@@ -446,14 +528,14 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/webapi/user/sss1?token={{jwt_token}}",
+							"raw": "{{base_url}}/webapi/user/postman-test-4?token={{jwt_token}}",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"webapi",
 								"user",
-								"sss1"
+								"postman-test-4"
 							],
 							"query": [
 								{
