@@ -107,6 +107,35 @@ public class UserService {
     return errorMessage;
   }
 
+
+
+
+  @PostMapping("/updatePassword")
+  public ResponseEntity<Object> updatePassword(
+          @RequestParam("username") String username,
+          @RequestParam("currentPassword") String currentPassword,
+          @RequestParam("newPassword") String newPassword) {
+    boolean isSame = dbManager.checkPassword(username, currentPassword);
+    if (isSame) {
+      int gitLabId = dbManager.getGitLabIdByUsername(username);
+      gitlabService.updateUserPassword(gitLabId, newPassword);
+      dbManager.modifiedUserPassword(username, newPassword);
+      return new ResponseEntity<>(HttpStatus.OK);
+    } else {
+      return new ResponseEntity<>("The current password is wrong", HttpStatus.OK);
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+
   private String getErrorMessage(User user) {
     String errorMessage = "";
     if (isPasswordTooShort(user.getPassword())) {
