@@ -1036,10 +1036,10 @@
 			]
 		},
 		{
-			"name": "MyResource",
+			"name": "GroupCommitRecord",
 			"item": [
 				{
-					"name": "MyResource",
+					"name": "groupsCommit",
 					"event": [
 						{
 							"listen": "prerequest",
@@ -1063,13 +1063,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/webapi/myresource?token={{jwt_token}}",
+							"raw": "{{base_url}}/webapi/groups/commits?token={{jwt_token}}",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"webapi",
-								"myresource"
+								"groups",
+								"commits"
 							],
 							"query": [
 								{
@@ -1078,6 +1079,317 @@
 								}
 							]
 						}
+					},
+					"response": []
+				},
+				{
+					"name": "userGroupCommit",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let base_url = pm.environment.get(\"base_url\");\r",
+									"\r",
+									"pm.sendRequest( base_url + \"/LoginAuth?username=root&password=rootrootrootroot\", function (err, response) {\r",
+									"    console.log(\"pre-request script response.json()\");\r",
+									"    console.log(response.json());\r",
+									"    let jwt_token = response.json().token;\r",
+									"\r",
+									"    pm.environment.set(\"jwt_token\", jwt_token);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/webapi/groups/postman-test-1/commits?token={{jwt_token}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"webapi",
+								"groups",
+								"postman-test-1",
+								"commits"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAllCommitRecordOfOneStudent",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let base_url = pm.environment.get(\"base_url\");\r",
+									"\r",
+									"pm.sendRequest( base_url + \"/LoginAuth?username=root&password=rootrootrootroot\", function (err, response) {\r",
+									"    console.log(\"pre-request script response.json()\");\r",
+									"    console.log(response.json());\r",
+									"    let jwt_token = response.json().token;\r",
+									"\r",
+									"    pm.environment.set(\"jwt_token\", jwt_token);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/webapi/groups/postman-test-1/commits/result?token={{jwt_token}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"webapi",
+								"groups",
+								"postman-test-1",
+								"commits",
+								"result"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getGroupPartCommitRecord",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let base_url = pm.environment.get(\"base_url\");\r",
+									"\r",
+									"pm.sendRequest( base_url + \"/LoginAuth?username=root&password=rootrootrootroot\", function (err, response) {\r",
+									"    console.log(\"pre-request script response.json()\");\r",
+									"    console.log(response.json());\r",
+									"    let jwt_token = response.json().token;\r",
+									"\r",
+									"    pm.environment.set(\"jwt_token\", jwt_token);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/webapi/groups/testGP02/projects/testGP02/partCommits/1?token={{jwt_token}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"webapi",
+								"groups",
+								"testGP02",
+								"projects",
+								"testGP02",
+								"partCommits",
+								"1"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getGroupCommitRecord",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let base_url = pm.environment.get(\"base_url\");\r",
+									"\r",
+									"pm.sendRequest( base_url + \"/LoginAuth?username=root&password=rootrootrootroot\", function (err, response) {\r",
+									"    console.log(\"pre-request script response.json()\");\r",
+									"    console.log(response.json());\r",
+									"    let jwt_token = response.json().token;\r",
+									"\r",
+									"    pm.environment.set(\"jwt_token\", jwt_token);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/webapi/groups/testGP02/projects/testGP02/commits?token={{jwt_token}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"webapi",
+								"groups",
+								"testGP02",
+								"projects",
+								"testGP02",
+								"commits"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getGroupFeedback",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/webapi/groups/testGP02/projects/testGP02/feedback/1?token={{jwt_token}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"webapi",
+								"groups",
+								"testGP02",
+								"projects",
+								"testGP02",
+								"feedback",
+								"1"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[ change to public api ]updateGroupCommit",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": ""
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "GroupService",
+			"item": [
+				{
+					"name": "createGroup(List 有問題 不會加入成員)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let base_url = pm.environment.get(\"base_url\");\r",
+									"\r",
+									"pm.sendRequest( base_url + \"/LoginAuth?username=root&password=rootrootrootroot\", function (err, response) {\r",
+									"    console.log(\"pre-request script response.json()\");\r",
+									"    console.log(response.json());\r",
+									"    let jwt_token = response.json().token;\r",
+									"\r",
+									"    pm.environment.set(\"jwt_token\", jwt_token);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "g-test-6",
+									"type": "text"
+								},
+								{
+									"key": "leader",
+									"value": "postman-test-1",
+									"type": "text"
+								},
+								{
+									"key": "member",
+									"value": "postman-test-1, postman-test-2",
+									"type": "text"
+								},
+								{
+									"key": "member[]",
+									"value": "postman-test-2",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "projectType",
+									"value": "maven",
+									"type": "text"
+								},
+								{
+									"key": "projectName",
+									"value": "g-test-6",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/webapi/groups?token={{jwt_token}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"webapi",
+								"groups"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}"
+								}
+							]
+						},
+						"description": "create assinment"
 					},
 					"response": []
 				}
@@ -1934,91 +2246,6 @@
 			]
 		},
 		{
-			"name": "GroupService",
-			"item": [
-				{
-					"name": "createGroup(List 有問題 不會加入成員)",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									"let base_url = pm.environment.get(\"base_url\");\r",
-									"\r",
-									"pm.sendRequest( base_url + \"/LoginAuth?username=root&password=rootrootrootroot\", function (err, response) {\r",
-									"    console.log(\"pre-request script response.json()\");\r",
-									"    console.log(response.json());\r",
-									"    let jwt_token = response.json().token;\r",
-									"\r",
-									"    pm.environment.set(\"jwt_token\", jwt_token);\r",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "urlencoded",
-							"urlencoded": [
-								{
-									"key": "name",
-									"value": "g-test-6",
-									"type": "text"
-								},
-								{
-									"key": "leader",
-									"value": "postman-test-1",
-									"type": "text"
-								},
-								{
-									"key": "member",
-									"value": "postman-test-1, postman-test-2",
-									"type": "text"
-								},
-								{
-									"key": "member[]",
-									"value": "postman-test-2",
-									"type": "text",
-									"disabled": true
-								},
-								{
-									"key": "projectType",
-									"value": "maven",
-									"type": "text"
-								},
-								{
-									"key": "projectName",
-									"value": "g-test-6",
-									"type": "text"
-								}
-							]
-						},
-						"url": {
-							"raw": "{{base_url}}/webapi/groups?token={{jwt_token}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"webapi",
-								"groups"
-							],
-							"query": [
-								{
-									"key": "token",
-									"value": "{{jwt_token}}"
-								}
-							]
-						},
-						"description": "create assinment"
-					},
-					"response": []
-				}
-			]
-		},
-		{
 			"name": "ChartService",
 			"item": []
 		},
@@ -2090,6 +2317,54 @@
 								"job",
 								"sss2_hhh5",
 								"build"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "MyResource",
+			"item": [
+				{
+					"name": "MyResource",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let base_url = pm.environment.get(\"base_url\");\r",
+									"\r",
+									"pm.sendRequest( base_url + \"/LoginAuth?username=root&password=rootrootrootroot\", function (err, response) {\r",
+									"    console.log(\"pre-request script response.json()\");\r",
+									"    console.log(response.json());\r",
+									"    let jwt_token = response.json().token;\r",
+									"\r",
+									"    pm.environment.set(\"jwt_token\", jwt_token);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/webapi/myresource?token={{jwt_token}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"webapi",
+								"myresource"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}"
+								}
 							]
 						}
 					},
