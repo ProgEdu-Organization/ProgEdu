@@ -757,23 +757,25 @@ public class AssignmentService {
       String updateDbUrl = courseConfig.getTomcatServerIp() + "/publicApi/update/commits";
 
       //
-      List<String> ordersList = new ArrayList<>();
-      String[] ordersAndScores = aaDbManager.getAssignmentOrderAndScore(
-          dbManager.getAssignmentIdByName(assignmentName)).split(", ");
-      while (ordersList.size() == 0) {
-        ordersAndScores = aaDbManager.getAssignmentOrderAndScore(
-            dbManager.getAssignmentIdByName(assignmentName)).split(", ");
-      }
-      for (String orderAndScore : ordersAndScores) {
-        String[] token = orderAndScore.split(":");
-        ordersList.add(token[0]);
-      }
       String orderString = "";
-      if (ordersList.isEmpty() != true) {
-        for (int i = 0; i < ordersList.size(); i++) {
-          orderString += ordersList.get(i);
-          if (i < ordersList.size() - 1) {
-            orderString += ", ";
+      if (dbManager.getAssignmentType(assignmentName).equals(ProjectTypeEnum.ANDROID) != true) {
+        List<String> ordersList = new ArrayList<>();
+        String[] ordersAndScores = aaDbManager.getAssignmentOrderAndScore(
+            dbManager.getAssignmentIdByName(assignmentName)).split(", ");
+        while (ordersList.size() == 0) {
+          ordersAndScores = aaDbManager.getAssignmentOrderAndScore(
+              dbManager.getAssignmentIdByName(assignmentName)).split(", ");
+        }
+        for (String orderAndScore : ordersAndScores) {
+          String[] token = orderAndScore.split(":");
+          ordersList.add(token[0]);
+        }
+        if (ordersList.isEmpty() != true) {
+          for (int i = 0; i < ordersList.size(); i++) {
+            orderString += ordersList.get(i);
+            if (i < ordersList.size() - 1) {
+              orderString += ", ";
+            }
           }
         }
       }
