@@ -6,36 +6,33 @@ import fcu.selab.progedu.config.JenkinsConfig;
 import fcu.selab.progedu.conn.GitlabService;
 import fcu.selab.progedu.conn.JenkinsService;
 import fcu.selab.progedu.conn.TomcatService;
-import fcu.selab.progedu.data.Assignment;
-import fcu.selab.progedu.data.ProjectTypeEnum;
-import fcu.selab.progedu.data.User;
-import fcu.selab.progedu.db.AssignmentDbManager;
-import fcu.selab.progedu.db.AssignmentUserDbManager;
-import fcu.selab.progedu.db.UserDbManager;
+import fcu.selab.progedu.data.*;
+import fcu.selab.progedu.db.*;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.jenkinsconfig.JenkinsProjectConfig;
 import fcu.selab.progedu.jenkinsconfig.JenkinsProjectConfigFactory;
 import fcu.selab.progedu.jenkinsconfig.WebPipelineConfig;
 import fcu.selab.progedu.utils.JavaIoUtile;
 import fcu.selab.progedu.utils.ZipHandler;
+import net.minidev.json.JSONArray;
+import net.minidev.json.JSONObject;
 import org.gitlab.api.models.GitlabProject;
 import org.jsoup.Jsoup;
 import org.jsoup.select.Elements;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Document;
 import java.io.File;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.io.InputStream;
 import java.util.List;
+import java.util.TimeZone;
 
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.springframework.web.multipart.MultipartFile;
@@ -53,7 +50,10 @@ public class AssignmentService {
   private UserService userService = UserService.getInstance();
   private UserDbManager userDbManager = UserDbManager.getInstance();
   private AssignmentUserDbManager auDbManager = AssignmentUserDbManager.getInstance();
-
+  private ReviewSettingDbManager rsDbManager = ReviewSettingDbManager.getInstance();
+  private ReviewSettingMetricsDbManager rsmDbManager = ReviewSettingMetricsDbManager.getInstance();
+  private PairMatchingDbManager pmDbManager = PairMatchingDbManager.getInstance();
+  private ReviewStatusDbManager reviewStatusDbManager = ReviewStatusDbManager.getInstance();
 
 
   private final String tempDir = System.getProperty("java.io.tmpdir");
@@ -132,6 +132,137 @@ public class AssignmentService {
     return new ResponseEntity<Object>(HttpStatus.OK);
   }
 
+  @GetMapping("getAllAssignments")
+  public ResponseEntity<Object> getAllAssignments() {
+    List<Assignment> assignments = dbManager.getAllAssignment();
+    JSONObject ob = new JSONObject();
+    ob.put("allAssignments", assignments);
+    return new ResponseEntity<Object>(ob, HttpStatus.OK);
+  }
+
+  @PostMapping("peerReview/create")
+  public ResponseEntity<Object> createPeerReview(
+          @RequestParam("assignmentName") String assignmentName,
+          @RequestParam("releaseTime") Date releaseTime,
+          @RequestParam("deadline") Date deadline,
+          @RequestParam("readMe") String readMe,
+          @RequestParam("fileRadio") String assignmentType,
+          @RequestParam("file") MultipartFile file,
+          @RequestParam("amount") int amount,
+          @RequestParam("reviewStartTime") Date reviewStartTime,
+          @RequestParam("reviewEndTime") Date reviewEndTime,
+          @RequestParam("metrics") String metrics) {
+
+    try {
+
+      // 1. create assignment
+      createAssignment(assignmentName,
+              releaseTime, deadline, readMe, assignmentType, file);
+
+      // 2. create peer review setting
+      int assignmentId = dbManager.getAssignmentIdByName(assignmentName);
+      rsDbManager.insertReviewSetting(assignmentId, amount, reviewStartTime, reviewEndTime);
+
+      // 3. set review metrics for specific peer review
+      int reviewSettingId = rsDbManager.getReviewSettingIdByAid(assignmentId);
+      int[] array = arrayStringToIntArray(metrics);
+      for (int item: array) {
+        rsmDbManager.insertReviewSettingMetrics(reviewSettingId, item);
+      }
+
+      // 4. set random reviewer and review status for each assignment_user
+      randomPairMatching(amount, assignmentName);
+
+      return new ResponseEntity<Object>(HttpStatus.OK);
+    } catch (Exception e) {
+      return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+
+  @GetMapping("peerReview/allAssignment")
+  public ResponseEntity<Object> getAllReviewAssignment() {
+
+    try {
+      List<Assignment> assignmentList = dbManager.getAllReviewAssignment();
+      TimeZone.setDefault(TimeZone.getTimeZone("Asia/Taipei"));
+      Date current = new Date();
+      for (Assignment assignment : assignmentList) {
+        if (current.compareTo(assignment.getReleaseTime()) >= 0) {
+          updatePairMatchingStatusByAid(assignment.getId());
+        }
+      }
+      JSONObject result = new JSONObject();
+      List<JSONObject> array = new ArrayList<>();
+      for (Assignment assignment : assignmentList) {
+        JSONObject ob = new JSONObject();
+        ReviewSetting reviewSetting = rsDbManager.getReviewSetting(assignment.getId());
+        ob.put("id", assignment.getId());
+        ob.put("name", assignment.getName());
+        ob.put("createTime", assignment.getCreateTime());
+        ob.put("deadline", assignment.getDeadline());
+        ob.put("releaseTime", assignment.getReleaseTime());
+        ob.put("display", assignment.isDisplay());
+        ob.put("description", assignment.getDescription());
+        ob.put("reviewReleaseTime", reviewSetting.getReleaseTime());
+        ob.put("reviewDeadline", reviewSetting.getDeadline());
+        array.add(ob);
+      }
+      result.put("allReviewAssignments", array);
+
+      return new ResponseEntity<Object>(result, HttpStatus.OK);
+    } catch (Exception e) {
+      return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+
+  public void updatePairMatchingStatusByAid(int aid) throws SQLException {
+    List<AssignmentUser> assignmentUserList = auDbManager.getAssignmentUserListByAid(aid);
+
+    for (AssignmentUser assignmentUser : assignmentUserList) {
+
+      if (!pmDbManager.checkStatusUpdated(assignmentUser.getId())) {
+        List<PairMatching> pmList = pmDbManager.getPairMatchingByAuId(assignmentUser.getId());
+
+        for (PairMatching pairMatching: pmList) {
+
+          if (pairMatching.getReviewStatusEnum().equals(ReviewStatusEnum.INIT)) {
+            int status = reviewStatusDbManager
+                    .getReviewStatusIdByStatus(ReviewStatusEnum.UNCOMPLETED.getTypeName());
+            pmDbManager.updatePairMatchingById(status, pairMatching.getId());
+          }
+        }
+      }
+    }
+  }
+
+
+  @GetMapping("autoAssessment/allAssignment")
+  public ResponseEntity<Object> getAllAutoAssignment() {
+
+    try {
+      List<Assignment> assignmentList = dbManager.getAutoAssessment();
+      JSONObject ob = new JSONObject();
+      ob.put("allAutoAssessment", assignmentList);
+
+      return new ResponseEntity<Object>(ob, HttpStatus.OK);
+    } catch (Exception e) {
+      return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  @GetMapping("getAssignment")
+  public ResponseEntity<Object> getAssignment(@RequestParam ("assignmentName") String assignmentName) {
+    Assignment assignment = dbManager.getAssignmentByName(assignmentName);
+    JSONObject ob = new JSONObject();
+    ob.put("description", assignment.getDescription());
+    ob.put("deadline", assignment.getDeadline());
+    ob.put("type", assignment.getType());
+    return new ResponseEntity<Object>(ob, HttpStatus.OK);
+  }
+
+
   public ArrayList<String> findAllDescriptionImagePaths(String readme) {
     ArrayList<String> paths = new ArrayList<>();
     Document doc = Jsoup.parse(readme);
@@ -200,6 +331,55 @@ public class AssignmentService {
       e.printStackTrace();
     }
 
+  }
+
+  public int[] arrayStringToIntArray(String metrics) {
+    String[] items = metrics.split(",");
+    int[] array = new int[items.length];
+
+    for (int i = 0; i < items.length; i++) {
+      array[i] = Integer.parseInt(items[i].trim());
+    }
+
+    return array;
+  }
+
+  public void randomPairMatching(int amount, String assignmentName) throws SQLException {
+    int aid = dbManager.getAssignmentIdByName(assignmentName);
+    List<User> userList = userService.getStudents();
+    List<AssignmentUser> assignmentUserList = auDbManager.getAssignmentUserListByAid(aid);
+    int randomNumber;
+
+    while (true) {
+      randomNumber = (int) (Math.random() * userList.size());
+      if (assignmentUserList.get(randomNumber).getUid() != userList.get(0).getId()) {
+        break;
+      }
+    }
+
+    for (int count = 0; count < amount; count++) {
+      int userSize = userList.size();
+      List<PairMatching> insertPairMatchingList = new ArrayList<>();
+      for (int order = 0; order < userSize; order++) {
+        int totalCount = randomNumber + order + count;
+        int mod = totalCount % userSize;
+
+        if (assignmentUserList.get(mod).getUid() == userList.get(order).getId()) {
+          randomNumber++;
+          totalCount = randomNumber + order + count;
+          mod = totalCount % userSize;
+        }
+
+        PairMatching pairMatching = new PairMatching();
+        pairMatching.setAuId(assignmentUserList.get(mod).getId());
+        pairMatching.setReviewId(userList.get(order).getId());
+        pairMatching.setReviewStatusEnum(ReviewStatusEnum.INIT);
+
+        insertPairMatchingList.add(pairMatching);
+      }
+
+      pmDbManager.insertPairMatchingList(insertPairMatchingList);
+    }
   }
 
   public void addAuid(String username, String assignmentName) {

@@ -152,7 +152,7 @@
 					"response": []
 				},
 				{
-					"name": "createAccount(new)",
+					"name": "createAccount(new)(未完成 因依賴AssigmentService)",
 					"event": [
 						{
 							"listen": "prerequest",
@@ -577,6 +577,64 @@
 									"key": "token",
 									"value": "{{jwt_token}}"
 								},
+								{
+									"key": "username",
+									"value": "postman-test",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getGroup(new) 未完成 因依賴 group",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let base_url = pm.environment.get(\"base_url\");\r",
+									"\r",
+									"pm.sendRequest( base_url + \"/LoginAuth?username=root&password=rootrootrootroot\", function (err, response) {\r",
+									"    console.log(\"pre-request script response.json()\");\r",
+									"    console.log(response.json());\r",
+									"    let jwt_token = response.json().token;\r",
+									"\r",
+									"    pm.environment.set(\"jwt_token\", jwt_token);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "username",
+									"value": "postman-test",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{spring_url}}/user/postman-test/groups",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"user",
+								"postman-test",
+								"groups"
+							],
+							"query": [
 								{
 									"key": "username",
 									"value": "postman-test",
@@ -1628,7 +1686,7 @@
 			"name": "Assignment",
 			"item": [
 				{
-					"name": "getAssignmentOrder",
+					"name": "getAssignmentOrder(先不改)",
 					"event": [
 						{
 							"listen": "prerequest",
@@ -1706,7 +1764,7 @@
 					"response": []
 				},
 				{
-					"name": "modifyAssignmentOrderFile",
+					"name": "modifyAssignmentOrderFile(先不改)",
 					"event": [
 						{
 							"listen": "prerequest",
@@ -1771,7 +1829,7 @@
 					"response": []
 				},
 				{
-					"name": "editAssignment",
+					"name": "editAssignment(先不改)",
 					"event": [
 						{
 							"listen": "prerequest",
@@ -1896,7 +1954,37 @@
 					"response": []
 				},
 				{
-					"name": "deleteAssignment",
+					"name": "getAllAssignment(new)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{spring_url}}/assignment/getAllAssignments",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"assignment",
+								"getAllAssignments"
+							]
+						},
+						"description": "get all assignment"
+					},
+					"response": []
+				},
+				{
+					"name": "deleteAssignment(先不改)",
 					"event": [
 						{
 							"listen": "prerequest",
@@ -1951,7 +2039,7 @@
 					"response": []
 				},
 				{
-					"name": "createAssignment",
+					"name": "createAssignment(web版)",
 					"event": [
 						{
 							"listen": "prerequest",
@@ -1979,7 +2067,7 @@
 							"formdata": [
 								{
 									"key": "assignmentName",
-									"value": "testMvn001",
+									"value": "postman-test-web",
 									"type": "text"
 								},
 								{
@@ -1989,23 +2077,23 @@
 								},
 								{
 									"key": "deadline",
-									"value": "Mon, 28 Jun 2021 04:53:00 GMT",
+									"value": "Mon, 28 Jun 2022 04:53:00 GMT",
 									"type": "text"
 								},
 								{
 									"key": "readMe",
-									"value": "<p>testMvn005</p>",
+									"value": "<p>postman-test</p>",
 									"type": "text"
 								},
 								{
 									"key": "fileRadio",
-									"value": "maven",
+									"value": "web",
 									"type": "text"
 								},
 								{
 									"key": "file",
 									"type": "file",
-									"src": "/C:/Users/owner/Downloads/testMvn005.zip"
+									"src": "/C:/D/245lab/ProgEdu/code/ProgEdu/doc/WebAssessmentForTest.zip"
 								}
 							]
 						},
@@ -2031,7 +2119,80 @@
 					"response": []
 				},
 				{
-					"name": "createAutoAssessmentAssignment",
+					"name": "createAssignment(web版)(new)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let base_url = pm.environment.get(\"base_url\");\r",
+									"\r",
+									"pm.sendRequest( base_url + \"/LoginAuth?username=root&password=rootrootrootroot\", function (err, response) {\r",
+									"    console.log(\"pre-request script response.json()\");\r",
+									"    console.log(response.json());\r",
+									"    let jwt_token = response.json().token;\r",
+									"\r",
+									"    pm.environment.set(\"jwt_token\", jwt_token);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "assignmentName",
+									"value": "postman-new3-web",
+									"type": "text"
+								},
+								{
+									"key": "releaseTime",
+									"value": "Mon, 28 Jun 2021 04:53:00 GMT",
+									"type": "text"
+								},
+								{
+									"key": "deadline",
+									"value": "Mon, 28 Jun 2022 04:53:00 GMT",
+									"type": "text"
+								},
+								{
+									"key": "readMe",
+									"value": "<p>postman-new3</p>",
+									"type": "text"
+								},
+								{
+									"key": "fileRadio",
+									"value": "web",
+									"type": "text"
+								},
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/D/245lab/ProgEdu/code/ProgEdu/doc/WebAssessmentForTest.zip"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{spring_url}}/assignment/create",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"assignment",
+								"create"
+							]
+						},
+						"description": "create assinment"
+					},
+					"response": []
+				},
+				{
+					"name": "createAutoAssessmentAssignment(maven版)(先不改)",
 					"event": [
 						{
 							"listen": "prerequest",
@@ -2164,13 +2325,13 @@
 								},
 								{
 									"key": "fileRadio",
-									"value": "maven",
+									"value": "web",
 									"type": "text"
 								},
 								{
 									"key": "file",
 									"type": "file",
-									"src": "/C:/Users/owner/Downloads/testPeer02.zip"
+									"src": "/C:/D/245lab/ProgEdu/code/ProgEdu/doc/WebAssessmentForTest.zip"
 								},
 								{
 									"key": "amount",
@@ -2184,7 +2345,7 @@
 								},
 								{
 									"key": "reviewEndTime",
-									"value": "Mon, 28 Jun 2021 05:08:00 GMT",
+									"value": "Mon, 28 Jun 2022 05:08:00 GMT",
 									"type": "text"
 								},
 								{
@@ -2195,7 +2356,7 @@
 							]
 						},
 						"url": {
-							"raw": "{{base_url}}/webapi/assignment/peerReview/create?token={{jwt_token}}&token={{jwt_token}}",
+							"raw": "{{base_url}}/webapi/assignment/peerReview/create?token={{jwt_token}}",
 							"host": [
 								"{{base_url}}"
 							],
@@ -2209,11 +2370,93 @@
 								{
 									"key": "token",
 									"value": "{{jwt_token}}"
+								}
+							]
+						},
+						"description": "create peer review assignemnt"
+					},
+					"response": []
+				},
+				{
+					"name": "createPeerReviewAssignment(new)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "assignmentName",
+									"value": "tsetPeer03",
+									"type": "text"
 								},
 								{
-									"key": "token",
-									"value": "{{jwt_token}}"
+									"key": "releaseTime",
+									"value": "Mon, 28 Jun 2021 05:08:00 GMT",
+									"type": "text"
+								},
+								{
+									"key": "deadline",
+									"value": "Mon, 28 Jun 2021 05:08:00 GMT",
+									"type": "text"
+								},
+								{
+									"key": "readMe",
+									"value": "<p>tsetPeer03</p>",
+									"type": "text"
+								},
+								{
+									"key": "fileRadio",
+									"value": "web",
+									"type": "text"
+								},
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/D/245lab/ProgEdu/code/ProgEdu/doc/WebAssessmentForTest.zip"
+								},
+								{
+									"key": "amount",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "reviewStartTime",
+									"value": "Mon, 28 Jun 2021 05:08:00 GMT",
+									"type": "text"
+								},
+								{
+									"key": "reviewEndTime",
+									"value": "Mon, 28 Jun 2022 05:08:00 GMT",
+									"type": "text"
+								},
+								{
+									"key": "metrics",
+									"value": "1,2,4",
+									"type": "text"
 								}
+							]
+						},
+						"url": {
+							"raw": "{{spring_url}}/assignment/peerReview/create",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"assignment",
+								"peerReview",
+								"create"
 							]
 						},
 						"description": "create peer review assignemnt"
@@ -2266,6 +2509,36 @@
 					"response": []
 				},
 				{
+					"name": "getAllPeerReviewAssignment(new)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{spring_url}}/assignment/peerReview/allAssignment",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"assignment",
+								"peerReview",
+								"allAssignment"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "getAllAutoAssessmentAssignment",
 					"event": [
 						{
@@ -2312,6 +2585,37 @@
 					"response": []
 				},
 				{
+					"name": "getAllAutoAssessmentAssignment(new)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{spring_url}}/assignment/autoAssessment/allAssignment",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"assignment",
+								"autoAssessment",
+								"allAssignment"
+							]
+						},
+						"description": "get all auto assessment assignment"
+					},
+					"response": []
+				},
+				{
 					"name": "getAssignmentDescription",
 					"event": [
 						{
@@ -2336,7 +2640,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/webapi/assignment/getAssignment?assignmentName=rrr1&token={{jwt_token}}",
+							"raw": "{{base_url}}/webapi/assignment/getAssignment?assignmentName=postman-new3-web&token={{jwt_token}}",
 							"host": [
 								"{{base_url}}"
 							],
@@ -2348,7 +2652,7 @@
 							"query": [
 								{
 									"key": "assignmentName",
-									"value": "rrr1"
+									"value": "postman-new3-web"
 								},
 								{
 									"key": "token",
@@ -2361,7 +2665,43 @@
 					"response": []
 				},
 				{
-					"name": "getAssignmentFile",
+					"name": "getAssignmentDescription(new)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{spring_url}}/assignment/getAssignment?assignmentName=postman-new3-web",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"assignment",
+								"getAssignment"
+							],
+							"query": [
+								{
+									"key": "assignmentName",
+									"value": "postman-new3-web"
+								}
+							]
+						},
+						"description": "get assignment description"
+					},
+					"response": []
+				},
+				{
+					"name": "getAssignmentFile(有錯 這還拿不了檔案)",
 					"event": [
 						{
 							"listen": "prerequest",
