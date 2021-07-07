@@ -1,15 +1,17 @@
 package fcu.selab.progedu.service;
 
+import fcu.selab.progedu.conn.GitlabService;
 import fcu.selab.progedu.data.User;
+import fcu.selab.progedu.db.RoleUserDbManager;
 import fcu.selab.progedu.db.UserDbManager;
 import net.minidev.json.JSONObject;
+import org.gitlab.api.models.GitlabUser;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +19,16 @@ import java.util.List;
 @RequestMapping(value ="/user")
 public class UserService {
 
+  private static UserService instance = new UserService();
+  public static UserService getInstance() {
+    return instance;
+  }
+
   private UserDbManager dbManager = UserDbManager.getInstance();
+  private GitlabService gitlabService = GitlabService.getInstance();
+  private RoleUserDbManager rudb = RoleUserDbManager.getInstance();
+
+//  private AssignmentService as = AssignmentService.getInstance(); Todo
 
   @GetMapping("/getUsers")
   public ResponseEntity<Object> getUsers() {
@@ -57,6 +68,177 @@ public class UserService {
 
 
     return new ResponseEntity<Object>(rootUserEntity, headers, HttpStatus.OK);
+  }
+
+  @PostMapping("/new")
+  public ResponseEntity<Object> createAccount(
+          @RequestParam("name") String name,
+          @RequestParam("username") String username,
+          @RequestParam("email") String email,
+          @RequestParam("password") String password,
+          @RequestParam("role") String role,
+          @RequestParam("isDisplayed") boolean isDisplayed) {
+
+
+    List<RoleEnum> roleList = new ArrayList<>();
+
+    RoleEnum roleEnum = RoleEnum.getRoleEnum(role);
+    roleList.add(roleEnum);
+
+    User user = new User(username, name, email, password, roleList, isDisplayed);
+    String errorMessage = getErrorMessage(user);
+    if (errorMessage.isEmpty()) {
+      try {
+        register(user);
+        createPreviousAssginment(username, roleList);
+        return new ResponseEntity<>(HttpStatus.OK);
+      } catch (IOException e) {
+        return new ResponseEntity<>("Failed !", HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+    } else {
+      return new ResponseEntity<>(errorMessage, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  private String getErrorMessage(List<User> users, User user) {
+    String errorMessage = getErrorMessage(user);
+    if (errorMessage.isEmpty()) {
+      if (isDuplicateUsername(users, user.getUsername())) {
+        errorMessage = "username : " + user.getUsername() + " is duplicated in student list.";
+      } else if (isDuplicateEmail(users, user.getEmail())) {
+        errorMessage = "Email : " + user.getEmail() + " is duplicated in student list.";
+      }
+    }
+    return errorMessage;
+  }
+
+
+
+
+  @PostMapping("/updatePassword")
+  public ResponseEntity<Object> updatePassword(
+          @RequestParam("username") String username,
+          @RequestParam("currentPassword") String currentPassword,
+          @RequestParam("newPassword") String newPassword) {
+    boolean isSame = dbManager.checkPassword(username, currentPassword);
+    if (isSame) {
+      int gitLabId = dbManager.getGitLabIdByUsername(username);
+      gitlabService.updateUserPassword(gitLabId, newPassword);
+      dbManager.modifiedUserPassword(username, newPassword);
+      return new ResponseEntity<>(HttpStatus.OK);
+    } else {
+      return new ResponseEntity<>("The current password is wrong", HttpStatus.OK);
+    }
+  }
+
+  @GetMapping("/{username}/groups") // todo
+  public ResponseEntity<Object> getGroup(@PathVariable("username") String username) {
+
+//    GroupService gs = new GroupService();
+//    int uid = dbManager.getUserIdByUsername(username);
+//    List<String> groupNames = gdb.getGroupNames(uid);
+//    JSONArray array = new JSONArray();
+//    for (String groupName : groupNames) {
+//      String group = gs.getGroup(groupName).getEntity().toString();
+//      JSONObject ob = new JSONObject(group);
+//      array.put(ob);
+//    }
+
+//    return Response.ok().entity(array.toString()).build();
+    return new ResponseEntity<>("getGroup: " + username + " is not support", HttpStatus.OK);
+  }
+
+
+  private String getErrorMessage(User user) {
+    String errorMessage = "";
+    if (isPasswordTooShort(user.getPassword())) {
+      errorMessage = user.getName() + " : Password must be at least 8 characters.";
+    } else if (isDuplicateUsername(user.getUsername())) {
+      errorMessage = "username : " + user.getUsername() + " already exists.";
+    } else if (isDuplicateEmail(user.getEmail())) {
+      errorMessage = "Email : " + user.getEmail() + " already exists.";
+    } else if (user.getRole() == null) {
+      errorMessage = "Role is empty";
+    }
+    return errorMessage;
+  }
+
+  private boolean isDuplicateUsername(String username) {
+    boolean isDuplicateUsername = false;
+    if (dbManager.checkUsername(username)) {
+      isDuplicateUsername = true;
+    }
+    return isDuplicateUsername;
+  }
+
+  private boolean isDuplicateUsername(List<User> users, String username) {
+    boolean isDuplicateUsername = false;
+    for (User user : users) {
+      if (username.equals(user.getUsername())) {
+        isDuplicateUsername = true;
+        break;
+      }
+    }
+    return isDuplicateUsername;
+  }
+
+  private boolean isPasswordTooShort(String password) {
+    boolean isPasswordTooShort = false;
+    if (password.length() < 8) {
+      isPasswordTooShort = true;
+    }
+    return isPasswordTooShort;
+  }
+
+  private boolean isDuplicateEmail(String email) {
+    boolean isDuplicateEmail = false;
+    if (dbManager.checkEmail(email)) {
+      isDuplicateEmail = true;
+    }
+    return isDuplicateEmail;
+  }
+
+  private boolean isDuplicateEmail(List<User> users, String email) {
+    boolean isDuplicateEmail = false;
+    for (User user : users) {
+      if (email.equals(user.getEmail())) {
+        isDuplicateEmail = true;
+        break;
+      }
+    }
+    return isDuplicateEmail;
+  }
+
+  private void register(User user) throws IOException {
+    GitlabUser gitlabUser =
+            gitlabService.createUser(
+                    user.getEmail(), user.getPassword(), user.getUsername(), user.getName());
+    user.setGitLabToken(gitlabUser.getPrivateToken());
+    user.setGitLabId(gitlabUser.getId());
+
+    dbManager.addUser(user);
+    rudb.addRoleUser(user);
+  }
+
+  private void createPreviousAssginment(String username, List<RoleEnum> roles) {
+    for (RoleEnum role : roles) {
+      if (role == RoleEnum.STUDENT) {
+//        as.createPreviousAssignment(username); Todo
+        break;
+      }
+    }
+  }
+
+  public List<User> getStudents() {
+    List<User> studentUsers = new ArrayList<>();
+    List<User> users = dbManager.getAllUsers();
+
+    for (User user : users) {
+      if (user.getRole().contains(RoleEnum.STUDENT)) {
+        studentUsers.add(user);
+      }
+    }
+    return studentUsers;
   }
 
 }
