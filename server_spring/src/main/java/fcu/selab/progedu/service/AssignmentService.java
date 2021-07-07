@@ -193,10 +193,7 @@ public class AssignmentService {
 
       JenkinsService jenkinsService = JenkinsService.getInstance();
 
-      System.out.println("franky-test");
-      System.out.println(jenkinsProjectConfig.getXmlConfig());
       jenkinsService.createJobV2(jobName, jenkinsProjectConfig.getXmlConfig());
-
       jenkinsService.buildJob(jobName);
 
     } catch (Exception e) {

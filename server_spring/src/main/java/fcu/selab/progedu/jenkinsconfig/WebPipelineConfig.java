@@ -1,7 +1,6 @@
 package fcu.selab.progedu.jenkinsconfig;
 
 import fcu.selab.progedu.utils.ExceptionUtil;
-import fcu.selab.progedu.utils.JavaIoUtile;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,20 +8,14 @@ import org.w3c.dom.Document;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.File;
 import java.io.InputStream;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 public class WebPipelineConfig extends JenkinsProjectConfig {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(WebPipelineConfig.class);
 
-  URL baseUrl = this.getClass().getClassLoader().getResource("jenkins/pipelineConfig.xml");
-  InputStream  baseConfig = this.getClass().getClassLoader().getResourceAsStream("jenkins/pipelineConfig.xml");
-
+  InputStream  baseConfig = this.getClass().getResourceAsStream("/jenkins/pipelineConfig.xml");
 
   Document xmlDocument;
 
@@ -35,11 +28,6 @@ public class WebPipelineConfig extends JenkinsProjectConfig {
                              String username, String projectName, String updateScreenShotDb) {
 
     try {
-      System.out.println("franky-test");
-      System.out.println(this.baseUrl);
-
-      Path basePath = Paths.get(this.baseUrl.toURI());
-      File baseFile = basePath.toFile();
 
       DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 //    factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl",true); // Todo 我不知道這個要不要刪掉, 先註解起來保留
@@ -84,13 +72,7 @@ public class WebPipelineConfig extends JenkinsProjectConfig {
                                String username, String projectName, String updateScreenShotDb) {
     String newPipeLine = "";
     try {
-      InputStream webPipeline = this.getClass().getClassLoader().getResourceAsStream("jenkins/web-pipeline");
-
-//      Path webPipelinePath = Paths.get(webPipelineUrl.toURI());
-//      File webPipelineFile = webPipelinePath.toFile();
-
-
-//      String pipeLine = JavaIoUtile.readFileToString(webPipelineFile);
+      InputStream webPipeline = this.getClass().getResourceAsStream("/jenkins/web-pipeline");
 
       String pipeLine = IOUtils.toString(webPipeline, StandardCharsets.UTF_8);
 
