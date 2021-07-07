@@ -19,6 +19,11 @@ import java.util.List;
 @RequestMapping(value ="/user")
 public class UserService {
 
+  private static UserService instance = new UserService();
+  public static UserService getInstance() {
+    return instance;
+  }
+
   private UserDbManager dbManager = UserDbManager.getInstance();
   private GitlabService gitlabService = GitlabService.getInstance();
   private RoleUserDbManager rudb = RoleUserDbManager.getInstance();
@@ -126,14 +131,22 @@ public class UserService {
     }
   }
 
+  @GetMapping("/{username}/groups") // todo
+  public ResponseEntity<Object> getGroup(@PathVariable("username") String username) {
 
+//    GroupService gs = new GroupService();
+//    int uid = dbManager.getUserIdByUsername(username);
+//    List<String> groupNames = gdb.getGroupNames(uid);
+//    JSONArray array = new JSONArray();
+//    for (String groupName : groupNames) {
+//      String group = gs.getGroup(groupName).getEntity().toString();
+//      JSONObject ob = new JSONObject(group);
+//      array.put(ob);
+//    }
 
-
-
-
-
-
-
+//    return Response.ok().entity(array.toString()).build();
+    return new ResponseEntity<>("getGroup: " + username + " is not support", HttpStatus.OK);
+  }
 
 
   private String getErrorMessage(User user) {
@@ -214,6 +227,18 @@ public class UserService {
         break;
       }
     }
+  }
+
+  public List<User> getStudents() {
+    List<User> studentUsers = new ArrayList<>();
+    List<User> users = dbManager.getAllUsers();
+
+    for (User user : users) {
+      if (user.getRole().contains(RoleEnum.STUDENT)) {
+        studentUsers.add(user);
+      }
+    }
+    return studentUsers;
   }
 
 }
