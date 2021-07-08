@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "83c0574e-a1e9-4689-9af1-53aa202c096f",
+		"_postman_id": "d3589b7d-f28f-405f-af3f-f878cf7df68c",
 		"name": "ProgEdu",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -1055,6 +1055,34 @@
 							]
 						},
 						"description": "get git lab url"
+					},
+					"response": []
+				},
+				{
+					"name": "gitLab(new)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{spring_url}}/commits/gitLab?username=apiTest&assignmentName=hhh5",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"commits",
+								"gitLab"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "apiTest"
+								},
+								{
+									"key": "assignmentName",
+									"value": "hhh5"
+								}
+							]
+						}
 					},
 					"response": []
 				},
