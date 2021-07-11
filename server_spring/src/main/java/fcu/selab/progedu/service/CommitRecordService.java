@@ -61,8 +61,8 @@ public class CommitRecordService {
     int auId = assignmentUserDb.getAuid(aid, uid);
     List<CommitRecord> commitRecords = commitRecordDb.getPartCommitRecord(auId, currentPage);
     int totalCommit = commitRecordDb.getCommitCount(auId);
-    SimpleDateFormat dataFormat = new SimpleDateFormat(
-        "yyyy/MM/dd HH:mm:ss.SSS");
+    SimpleDateFormat dateFormat = new SimpleDateFormat(
+        "yyyy-MM-dd HH:mm:ss.S");
 
     for (CommitRecord commitRecord : commitRecords) {
       int number = commitRecord.getNumber();
