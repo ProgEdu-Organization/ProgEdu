@@ -2,6 +2,7 @@ package fcu.selab.progedu.service;
 
 import java.util.List;
 import java.util.Date;
+import java.text.SimpleDateFormat;
 
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
@@ -30,12 +31,6 @@ public class CommitRecordService {
   private UserDbManager userDb = UserDbManager.getInstance();
   private CommitRecordDbManager commitRecordDb = CommitRecordDbManager.getInstance();
 
-  /**
-   * get GitLab project url
-   * 
-   * @param username       username
-   * @param assignmentName assignmentName
-   */
   @GetMapping("/gitLab")
   public ResponseEntity<Object> getGitLabURL(
           @RequestParam("username") String username,
@@ -51,14 +46,6 @@ public class CommitRecordService {
     return new ResponseEntity<Object>(gitLabEntity, headers, HttpStatus.OK);
   }
 
-  /**
-   * get a part of student build detail info
-   * 
-   * @param username       student id
-   * @param assignmentName assignment name
-   * @param currentPage current page
-   * @return build detail
-   */
   @GetMapping("/partCommitRecords")
   public ResponseEntity<Object> getPartCommitRecord(
           @RequestParam("username") String username,
@@ -74,6 +61,8 @@ public class CommitRecordService {
     int auId = assignmentUserDb.getAuid(aid, uid);
     List<CommitRecord> commitRecords = commitRecordDb.getPartCommitRecord(auId, currentPage);
     int totalCommit = commitRecordDb.getCommitCount(auId);
+    SimpleDateFormat dataFormat = new SimpleDateFormat(
+        "yyyy/MM/dd HH:mm:ss.SSS");
 
     for (CommitRecord commitRecord : commitRecords) {
       int number = commitRecord.getNumber();
@@ -84,7 +73,7 @@ public class CommitRecordService {
       jsonObject.put("totalCommit", totalCommit);
       jsonObject.put("number", number);
       jsonObject.put("status", status.toUpperCase());
-      jsonObject.put("time", dateTime);
+      jsonObject.put("time", dateFormat.format(dateTime));
       jsonObject.put("message", message);
 
       jsonArray.add(jsonObject);
