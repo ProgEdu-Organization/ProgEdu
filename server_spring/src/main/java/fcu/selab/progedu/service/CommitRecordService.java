@@ -31,6 +31,12 @@ public class CommitRecordService {
   private UserDbManager userDb = UserDbManager.getInstance();
   private CommitRecordDbManager commitRecordDb = CommitRecordDbManager.getInstance();
 
+  /**
+   * get GitLab project url
+   * 
+   * @param username       username
+   * @param assignmentName assignmentName
+   */
   @GetMapping("/gitLab")
   public ResponseEntity<Object> getGitLabURL(
           @RequestParam("username") String username,
@@ -46,6 +52,14 @@ public class CommitRecordService {
     return new ResponseEntity<Object>(gitLabEntity, headers, HttpStatus.OK);
   }
 
+  /**
+   * get a part of student build detail info
+   * 
+   * @param username       student id
+   * @param assignmentName assignment name
+   * @param currentPage current page
+   * @return build detail
+   */
   @GetMapping("/partCommitRecords")
   public ResponseEntity<Object> getPartCommitRecord(
           @RequestParam("username") String username,
