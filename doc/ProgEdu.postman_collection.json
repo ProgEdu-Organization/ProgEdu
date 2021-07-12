@@ -1006,6 +1006,38 @@
 					"response": []
 				},
 				{
+					"name": "partCommitRecord(new)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{spring_url}}/commits/partCommitRecords?username=apiTest&assignmentName=rrr1&currentPage=1",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"commits",
+								"partCommitRecords"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "apiTest"
+								},
+								{
+									"key": "assignmentName",
+									"value": "rrr1"
+								},
+								{
+									"key": "currentPage",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "gitLab",
 					"event": [
 						{
