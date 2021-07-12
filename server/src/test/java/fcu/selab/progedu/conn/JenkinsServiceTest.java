@@ -11,13 +11,13 @@ public class JenkinsServiceTest {
     @Test
     public void getConsole() {
         String out = jenkinsService.getConsole("sss2_hhh11", 1);
-        System.out.printf(out);
+        System.out.print(out);
     }
 
     @Test
     public void getConsoleUrl() {
         String out = jenkinsService.getConsoleUrl("sss2_hhh11", 1);
-        System.out.printf(out);
+        System.out.print(out);
     }
 
   @Test
