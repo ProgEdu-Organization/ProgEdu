@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "d3589b7d-f28f-405f-af3f-f878cf7df68c",
+		"_postman_id": "250b7096-36d7-4f50-baa5-b50d2470c64b",
 		"name": "ProgEdu",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -1314,6 +1314,17 @@
 							]
 						},
 						"description": "get autoAssessment"
+					},
+					"response": []
+				},
+				{
+					"name": "autoAssessment(new)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": ""
+						}
 					},
 					"response": []
 				}
