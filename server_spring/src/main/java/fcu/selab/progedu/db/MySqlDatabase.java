@@ -74,14 +74,9 @@ public class MySqlDatabase implements IDatabase {
     BoneCPConfig config = new BoneCPConfig();
 
     try {
-//      String connection = MySqlDbConfig.getInstance().getDbConnectionString();
-//      String user = MySqlDbConfig.getInstance().getDbUser();
-//      String password = MySqlDbConfig.getInstance().getDbPassword();
-//
-//      "jdbc:mysql://" + getDbHost() + "/" + getDbSchema() + getDbConnectionOption();
-      String connection = "jdbc:mysql://140.134.25.64:55000/ProgEdu?relaxAutoCommit=true&useSSL=false&useUnicode=true&characterEncoding=utf-8";
-      String user = "root";
-      String password = "123456";
+     String connection = MySqlDbConfig.getInstance().getDbConnectionString();
+     String user = MySqlDbConfig.getInstance().getDbUser();
+     String password = MySqlDbConfig.getInstance().getDbPassword();
 
       config.setJdbcUrl(connection);
       config.setUsername(user);
