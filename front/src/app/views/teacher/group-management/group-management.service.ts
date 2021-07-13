@@ -3,7 +3,7 @@ import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import {AddJwtTokenHttpClient} from '../../../services/add-jwt-token.service';
-
+import { UserAPI } from '../../../api/UserAPI';
 
 const createProjectOptions = ({
   headers: new HttpHeaders(
@@ -14,7 +14,7 @@ const createProjectOptions = ({
 })
 
 export class GroupManagementService {
-  GET_USERS_API = environment.SERVER_URL + '/webapi/user/getUsers';
+  GET_USERS_API = UserAPI.getUsers;
   CREATE_PROJECT = environment.SERVER_URL + '/webapi/groups/create';
   GET_GROUP_MEMBER_API = environment.SERVER_URL + '/webapi/groups';
   constructor(private http: HttpClient, private addJwtTokenHttpClient: AddJwtTokenHttpClient) { }

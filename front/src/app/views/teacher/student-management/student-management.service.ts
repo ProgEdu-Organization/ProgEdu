@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { FormGroup } from '@angular/forms';
 import { environment } from '../../../../environments/environment';
 import {AddJwtTokenHttpClient} from '../../../services/add-jwt-token.service';
-
+import { UserAPI } from '../../../api/UserAPI';
 
 const addOneStudentOptions = ({
   headers: new HttpHeaders({
@@ -29,7 +29,7 @@ const updateDisplayOptions = ({
 
 
 export class StudentManagementService {
-  GET_USERS_API = environment.SERVER_URL + '/webapi/user/getUsers';
+  GET_USERS_API = UserAPI.getUsers;
   ADD_ONE_USER_API = environment.SERVER_URL + '/webapi/user/new';
   ADD_MULTIPLE_USER_API = environment.SERVER_URL + '/webapi/user/upload';
   DISPLAY_API = environment.SERVER_URL + '/webapi/user/display';

@@ -34,6 +34,7 @@ public class UserService {
   public ResponseEntity<Object> getUsers() {
     HttpHeaders headers = new HttpHeaders();
     headers.add("Content-Type", "application/json");
+    headers.add("Access-Control-Allow-Origin", "*");
 
     List<User> users = dbManager.getAllUsers();
     List<JSONObject> userListEntities = new ArrayList<>();
@@ -64,7 +65,7 @@ public class UserService {
     }
 
     JSONObject rootUserEntity = new JSONObject();
-    rootUserEntity.put("User", userListEntities);
+    rootUserEntity.put("Users", userListEntities);
 
 
     return new ResponseEntity<Object>(rootUserEntity, headers, HttpStatus.OK);
