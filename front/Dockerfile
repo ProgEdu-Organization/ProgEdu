@@ -8,6 +8,8 @@ RUN npm i
 COPY . .
 
 ARG BACK_END_URL
+ARG SPRING_BACK_END_URL
+
 RUN apt-get update \
     && apt-get -y install gettext-base \
     && apt-get clean \

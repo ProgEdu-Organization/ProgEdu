@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { FormGroup } from '@angular/forms';
 import { environment } from '../../../../environments/environment';
 import {AddJwtTokenHttpClient} from '../../../services/add-jwt-token.service';
+import { UserAPI } from '../../../api/UserAPI';
 
 const createProjectOptions = ({
   headers: new HttpHeaders(
@@ -14,7 +15,7 @@ const createProjectOptions = ({
 })
 
 export class CreateGroupService {
-  GET_USERS_API = environment.SERVER_URL + '/webapi/user/getUsers';
+  GET_USERS_API = UserAPI.getUsers;
   CREATE_PROJECT = environment.SERVER_URL + '/webapi/groups';
   GET_GROUP_MEMBER_API = environment.SERVER_URL + '/webapi/groups';
   constructor(private addJwtTokenHttpClient: AddJwtTokenHttpClient) { }
