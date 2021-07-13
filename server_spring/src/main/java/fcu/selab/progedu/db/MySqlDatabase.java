@@ -10,6 +10,8 @@ import java.sql.SQLException;
 import com.jolbox.bonecp.BoneCP;
 import com.jolbox.bonecp.BoneCPConfig;
 
+import fcu.selab.progedu.config.MySqlDbConfig;
+
 public class MySqlDatabase implements IDatabase {
 
   private static final String DB_DRIVER = "com.mysql.jdbc.Driver";
