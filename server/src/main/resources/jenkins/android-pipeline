@@ -1,8 +1,7 @@
 pipeline {
-    agent none
+    agent any
     stages {
         stage('pull environment') {
-            agent any
             steps {
                 sh 'docker pull yhwang8943/android-build:latest'
             }
