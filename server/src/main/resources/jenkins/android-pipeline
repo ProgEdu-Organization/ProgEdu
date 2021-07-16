@@ -1,16 +1,9 @@
 pipeline {
-    agent any
+    agent {
+        docker { image 'yhwang8943/android-build' }
+    }
     stages {
-        stage('pull environment') {
-            steps {
-                sh 'docker pull yhwang8943/android-build:latest'
-            }
-        }
         stage('get source') {
-            agent {
-                docker { image 'yhwang8943/android-build:latest' }
-
-            }
             steps {
                 git branch: 'master',
                 credentialsId: 'gitlab_root',
@@ -20,17 +13,11 @@ pipeline {
             }
         }
         stage('lint') {
-            agent {
-                docker { image 'yhwang8943/android-build:latest' }
-            }
             steps {
                 sh './gradlew lint'
             }
         }
         stage('checkstyle') {
-            agent {
-                docker { image 'yhwang8943/android-build:latest' }
-            }
             steps {
                 sh './gradlew checkstyle'
             }
