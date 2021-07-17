@@ -19,6 +19,7 @@ import net.minidev.json.JSONObject;
 import org.gitlab.api.models.GitlabProject;
 import org.jsoup.Jsoup;
 import org.jsoup.select.Elements;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -86,6 +87,10 @@ public class AssignmentService {
           @RequestParam("file") MultipartFile file) {
 
 
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("Access-Control-Allow-Origin", "*");
+
+
     // 1. Create root project and get project id and url
     gitlabService.createRootProject(assignmentName);
 
@@ -129,15 +134,19 @@ public class AssignmentService {
 
     // 10. remove project file
     JavaIoUtile.deleteDirectory(new File(uploadDir));
-    return new ResponseEntity<Object>(HttpStatus.OK);
+    return new ResponseEntity<Object>(headers, HttpStatus.OK);
   }
 
   @GetMapping("getAllAssignments")
   public ResponseEntity<Object> getAllAssignments() {
+
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("Access-Control-Allow-Origin", "*");
+
     List<Assignment> assignments = dbManager.getAllAssignment();
     JSONObject ob = new JSONObject();
     ob.put("allAssignments", assignments);
-    return new ResponseEntity<Object>(ob, HttpStatus.OK);
+    return new ResponseEntity<Object>(ob, headers, HttpStatus.OK);
   }
 
   @PostMapping("peerReview/create")

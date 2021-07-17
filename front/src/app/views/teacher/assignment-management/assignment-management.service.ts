@@ -5,6 +5,9 @@ import { environment } from '../../../../environments/environment';
 import { FormGroup } from '@angular/forms';
 import { AddJwtTokenHttpClient } from '../../../services/add-jwt-token.service';
 
+import { AssignmentAPI } from '../../../api/AssignmentAPI';
+
+
 const deleteAssignmentOptions = ({
   headers: new HttpHeaders({
   })
@@ -22,7 +25,7 @@ const editAssignmentOptions = ({
 })
 export class AssignmentManagementService {
 
-  ALL_ASSIGNMENT_API = environment.SERVER_URL + '/webapi/assignment/getAllAssignments';
+  ALL_ASSIGNMENT_API = AssignmentAPI.getAllAssignments;
   DELETE_ASSIGNMENT_API = environment.SERVER_URL + '/webapi/assignment/delete';
   EDIT_ASSIGNMENT_API = environment.SERVER_URL + '/webapi/assignment/edit';
   ASSIGNMENT_ORDER = environment.SERVER_URL + '/webapi/assignment/getAssignmentOrder';
