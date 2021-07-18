@@ -2,6 +2,7 @@ package fcu.selab.progedu.jenkinsconfig;
 
 import fcu.selab.progedu.utils.ExceptionUtil;
 import fcu.selab.progedu.utils.JavaIoUtile;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -9,7 +10,9 @@ import org.w3c.dom.Document;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
+import java.io.InputStream;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -17,7 +20,8 @@ public class MavenPipelineConfig extends JenkinsProjectConfig {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(MavenPipelineConfig.class);
 
-  URL baseUrl = this.getClass().getResource("/jenkins/pipelineConfig.xml");
+//  URL baseUrl = this.getClass().getResource("/jenkins/pipelineConfig.xml");
+  InputStream baseConfig = this.getClass().getResourceAsStream("/jenkins/pipelineConfig.xml");
   Document xmlDocument;
 
   /**
@@ -29,13 +33,13 @@ public class MavenPipelineConfig extends JenkinsProjectConfig {
                              String username, String projectName) {
 
     try {
-      Path basePath = Paths.get(this.baseUrl.toURI());
-      File baseFile = basePath.toFile();
+//      Path basePath = Paths.get(this.baseUrl.toURI());
+//      File baseFile = basePath.toFile();
 
       DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 //    factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl",true); // Todo 我不知道這個要不要刪掉, 先註解起來保留
       DocumentBuilder builder = factory.newDocumentBuilder();
-      this.xmlDocument = builder.parse(baseFile);
+      this.xmlDocument = builder.parse(baseConfig);
 
       setJenkinsPipeline(projectUrl, updateDbUrl, username, projectName);
 
@@ -71,12 +75,16 @@ public class MavenPipelineConfig extends JenkinsProjectConfig {
                                String username, String projectName) {
     String newPipeLine = "";
     try {
-      URL mavenPipelineUrl = this.getClass().getResource("/jenkins/maven-pipeline");
-      Path mavenPipelinePath = Paths.get(mavenPipelineUrl.toURI());
-      File mavenPipelineFile = mavenPipelinePath.toFile();
+      InputStream mavenPipeline = this.getClass().getResourceAsStream("/jenkins/maven-pipeline");
+
+//      URL mavenPipelineUrl = this.getClass().getResource("/jenkins/maven-pipeline");
+//      Path mavenPipelinePath = Paths.get(mavenPipelineUrl.toURI());
+//      File mavenPipelineFile = mavenPipelinePath.toFile();
+
+      String pipeLine = IOUtils.toString(mavenPipeline, StandardCharsets.UTF_8);
 
 
-      String pipeLine = JavaIoUtile.readFileToString(mavenPipelineFile);
+//      String pipeLine = JavaIoUtile.readFileToString(mavenPipelineFile);
       pipeLine = pipeLine.replaceFirst("\\{GitLab-url\\}", projectUrl);
       pipeLine = pipeLine.replaceFirst("\\{ProgEdu-server-updateDbUrl\\}", updateDbUrl);
       pipeLine = pipeLine.replaceFirst("\\{ProgEdu-user-name\\}", username);

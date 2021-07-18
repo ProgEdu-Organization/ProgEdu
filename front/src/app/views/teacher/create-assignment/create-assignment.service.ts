@@ -18,7 +18,7 @@ const createAssigmentOptions = ({
 })
 export class CreateAssignmentService {
   CREATE_ASSIGNMENT_API = AssignmentAPI.createAssignment;
-  CREATE_ASSIGNMENT_WITH_ORDER_API = environment.SERVER_URL + '/webapi/assignment/autoAssessment/create';
+  CREATE_ASSIGNMENT_WITH_ORDER_API = AssignmentAPI.createAutoAssessment;
   MODIFY_ORDER_API = environment.SERVER_URL + '/webapi/assignment/order';
   GET_ORDER_API = environment.SERVER_URL + '/webapi/assignment/getAssignmentFile';
   GET_ALL_CATEGORY_API = environment.SERVER_URL + '/webapi/categoryMetrics/category';

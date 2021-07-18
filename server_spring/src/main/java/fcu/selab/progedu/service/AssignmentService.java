@@ -55,7 +55,8 @@ public class AssignmentService {
   private ReviewSettingMetricsDbManager rsmDbManager = ReviewSettingMetricsDbManager.getInstance();
   private PairMatchingDbManager pmDbManager = PairMatchingDbManager.getInstance();
   private ReviewStatusDbManager reviewStatusDbManager = ReviewStatusDbManager.getInstance();
-
+  private AssignmentAssessmentDbManager aaDbManager = AssignmentAssessmentDbManager.getInstance();
+  private CommitStatusDbManager csDbManager = CommitStatusDbManager.getInstance();
 
   private final String tempDir = System.getProperty("java.io.tmpdir");
   private final String uploadDir = tempDir + "/uploads/";
@@ -78,6 +79,54 @@ public class AssignmentService {
     }
   }
 
+  @PostMapping("autoAssessment/create")
+  public ResponseEntity<Object> createAutoAssessment(
+          @RequestParam("assignmentName") String assignmentName,
+          @RequestParam("releaseTime") Date releaseTime, @RequestParam("deadline") Date deadline,
+          @RequestParam("readMe") String readMe, @RequestParam("fileRadio") String assignmentType,
+          @RequestParam("file") MultipartFile file,
+          @RequestParam("order") String assignmentCompileOrdersAndScore) {
+
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("Access-Control-Allow-Origin", "*");
+
+    try {
+      createAssignment(assignmentName, releaseTime, deadline, readMe,
+              assignmentType, file);
+      addOrder(assignmentCompileOrdersAndScore, assignmentName);
+
+      return new ResponseEntity<Object>(headers, HttpStatus.OK);
+    } catch (Exception e) {
+      e.printStackTrace();
+      return new ResponseEntity<Object>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  private void addOrder(String assignmentCompileOrdersAndScore, String assignmentName) {
+    List<String> ordersList = new ArrayList<>();
+    List<String> scoresList = new ArrayList<>();
+
+    String[] ordersAndScores = assignmentCompileOrdersAndScore.split(", ");
+    for (String orderAndScore : ordersAndScores) {
+      String[] token = orderAndScore.split(":");
+
+      if (token[0].equals("Compile Failure")) {
+        ordersList.add("cpf");
+      } else if (token[0].equals("Unit Test Failure")) {
+        ordersList.add("utf");
+      } else if (token[0].equals("Coding Style Failure")) {
+        ordersList.add("csf");
+      }
+      scoresList.add(token[1]);
+    }
+    //write assignment assessment in to data base
+    //addAssignmentAssessment( aid, int sid, int order, int score)
+    for (int i = 0; i < ordersAndScores.length; i++) {
+      aaDbManager.addAssignmentAssessment(dbManager.getAssignmentIdByName(assignmentName),
+              csDbManager.getStatusIdByName(ordersList.get(i)),
+              i + 1, Integer.valueOf(scoresList.get(i)));
+    }
+  }
 
   @PostMapping("/create")
   public ResponseEntity<Object> createAssignment( // 把readme 的圖片處理拿掉 因為太複雜了
