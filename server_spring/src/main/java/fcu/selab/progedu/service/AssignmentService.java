@@ -241,6 +241,9 @@ public class AssignmentService {
   @GetMapping("peerReview/allAssignment")
   public ResponseEntity<Object> getAllReviewAssignment() {
 
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("Access-Control-Allow-Origin", "*");
+
     try {
       List<Assignment> assignmentList = dbManager.getAllReviewAssignment();
       TimeZone.setDefault(TimeZone.getTimeZone("Asia/Taipei"));
@@ -268,9 +271,9 @@ public class AssignmentService {
       }
       result.put("allReviewAssignments", array);
 
-      return new ResponseEntity<Object>(result, HttpStatus.OK);
+      return new ResponseEntity<Object>(result, headers, HttpStatus.OK);
     } catch (Exception e) {
-      return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+      return new ResponseEntity<Object>(e.getMessage(), headers, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -299,14 +302,17 @@ public class AssignmentService {
   @GetMapping("autoAssessment/allAssignment")
   public ResponseEntity<Object> getAllAutoAssignment() {
 
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("Access-Control-Allow-Origin", "*");
+
     try {
       List<Assignment> assignmentList = dbManager.getAutoAssessment();
       JSONObject ob = new JSONObject();
       ob.put("allAutoAssessment", assignmentList);
 
-      return new ResponseEntity<Object>(ob, HttpStatus.OK);
+      return new ResponseEntity<Object>(ob, headers, HttpStatus.OK);
     } catch (Exception e) {
-      return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+      return new ResponseEntity<Object>(e.getMessage(), headers, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
