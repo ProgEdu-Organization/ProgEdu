@@ -6,6 +6,7 @@ let createAssignment: string = environment.NEW_SERVER_URL + '/assignment/create'
 //這是只適用Maven 有順序的創作業API
 let createAutoAssessment: string = environment.NEW_SERVER_URL + '/assignment/autoAssessment/create';
 
+let createPeerReviewAssignment: string = environment.NEW_SERVER_URL + '/assignment/peerReview/create';
 
 
 let getAllAssignments: string = environment.NEW_SERVER_URL + '/assignment/getAllAssignments';
@@ -17,9 +18,11 @@ let getAllAutoAssessment: string = environment.NEW_SERVER_URL + '/assignment/aut
 let getAllPeerReviewAssignment: string = environment.NEW_SERVER_URL + '/assignment/peerReview/allAssignment';
 
 
+
 export const AssignmentAPI = {
     createAssignment: createAssignment,
     createAutoAssessment: createAutoAssessment,
+    createPeerReviewAssignment: createPeerReviewAssignment,
 
     getAllAssignments: getAllAssignments,
     getAllAutoAssessment: getAllAutoAssessment,

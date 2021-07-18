@@ -211,6 +211,9 @@ public class AssignmentService {
           @RequestParam("reviewEndTime") Date reviewEndTime,
           @RequestParam("metrics") String metrics) {
 
+
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("Access-Control-Allow-Origin", "*");
     try {
 
       // 1. create assignment
@@ -231,9 +234,9 @@ public class AssignmentService {
       // 4. set random reviewer and review status for each assignment_user
       randomPairMatching(amount, assignmentName);
 
-      return new ResponseEntity<Object>(HttpStatus.OK);
+      return new ResponseEntity<Object>(headers, HttpStatus.OK);
     } catch (Exception e) {
-      return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+      return new ResponseEntity<Object>(e.getMessage(), headers, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 

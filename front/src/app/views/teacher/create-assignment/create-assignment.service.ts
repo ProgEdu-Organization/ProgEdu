@@ -23,7 +23,7 @@ export class CreateAssignmentService {
   GET_ORDER_API = environment.SERVER_URL + '/webapi/assignment/getAssignmentFile';
   GET_ALL_CATEGORY_API = environment.SERVER_URL + '/webapi/categoryMetrics/category';
   GET_METRICS_API = environment.SERVER_URL + '/webapi/categoryMetrics/metrics';
-  CREATE_REVIEW_ASSIGNMENT_API = environment.SERVER_URL + '/webapi/assignment/peerReview/create';
+  CREATE_REVIEW_ASSIGNMENT_API = AssignmentAPI.createPeerReviewAssignment;
   constructor(private addJwtTokenHttpClient: AddJwtTokenHttpClient) { }
 
   createAssignment(assignment: FormGroup): Observable<any> {
