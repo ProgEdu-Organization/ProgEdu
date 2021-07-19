@@ -8,7 +8,11 @@ import fcu.selab.progedu.db.GroupUserDbManager;
 import fcu.selab.progedu.db.service.GroupDbService;
 import fcu.selab.progedu.db.service.ProjectDbService;
 import fcu.selab.progedu.db.service.UserDbService;
+import net.minidev.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -38,7 +42,10 @@ public class GroupService {
    * @return response
    */
   @GetMapping("/{name}")
-  public Response getGroup(@RequestParam("name") String name) {
+  public ResponseEntity<Object> getGroup(@RequestParam("name") String name) {
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("Content-Type", "application/json");
+    JSONArray jsonArray = new JSONArray();
     Group group = gdb.getGroup(name);
 
     JSONObject ob = new JSONObject();
@@ -46,6 +53,7 @@ public class GroupService {
     ob.put("leader", group.getLeader());
     ob.put("members", group.getMembers());
     ob.put("project", group.getProjects());
-    return Response.ok().entity(ob.toString()).build();
+    jsonArray.add(ob);
+    return new ResponseEntity<Object>(jsonArray, headers, HttpStatus.OK);
   }
 }
