@@ -44,15 +44,13 @@ public class GroupService {
   public ResponseEntity<Object> getGroup(@PathVariable("name") String name) {
     HttpHeaders headers = new HttpHeaders();
     headers.add("Content-Type", "application/json");
-    JSONArray jsonArray = new JSONArray();
     Group group = gdb.getGroup(name);
 
-    JSONObject ob = new JSONObject();
-    ob.put("name", group.getGroupName());
-    ob.put("leader", group.getLeader());
-    ob.put("members", group.getMembers());
-    ob.put("project", group.getProjects());
-    jsonArray.add(ob);
-    return new ResponseEntity<Object>(jsonArray, headers, HttpStatus.OK);
+    JSONObject jsonObject = new JSONObject();
+    jsonObject.put("name", group.getGroupName());
+    jsonObject.put("leader", group.getLeader());
+    jsonObject.put("members", group.getMembers());
+    jsonObject.put("project", group.getProjects());
+    return new ResponseEntity<Object>(jsonObject, headers, HttpStatus.OK);
   }
 }
