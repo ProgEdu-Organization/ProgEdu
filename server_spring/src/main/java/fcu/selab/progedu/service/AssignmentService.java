@@ -37,6 +37,8 @@ import java.util.TimeZone;
 
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.springframework.web.multipart.MultipartFile;
+import fcu.selab.progedu.utils.Linux;
+
 
 @RestController
 @RequestMapping(value ="/assignment")
@@ -57,6 +59,10 @@ public class AssignmentService {
   private ReviewStatusDbManager reviewStatusDbManager = ReviewStatusDbManager.getInstance();
   private AssignmentAssessmentDbManager aaDbManager = AssignmentAssessmentDbManager.getInstance();
   private CommitStatusDbManager csDbManager = CommitStatusDbManager.getInstance();
+  private ReviewRecordDbManager rrDbManager = ReviewRecordDbManager.getInstance();
+
+  private CommitRecordDbManager crDbManager = CommitRecordDbManager.getInstance();
+  private ScreenshotRecordDbManager srDbManager = ScreenshotRecordDbManager.getInstance();
 
   private final String tempDir = System.getProperty("java.io.tmpdir");
   private final String uploadDir = tempDir + "/uploads/";
@@ -397,6 +403,40 @@ public class AssignmentService {
     return new ResponseEntity<Object>(headers, HttpStatus.OK);
   }
 
+  @PostMapping("delete")
+  public ResponseEntity<Object> deleteProject(@RequestParam("assignmentName") String name) {
+
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("Access-Control-Allow-Origin", "*");
+
+    JenkinsService jenkins = JenkinsService.getInstance();
+    try {
+
+      // if this assignment was assigned as pair review, delete review db
+      if (rsDbManager.checkAssignmentByAid(name)) {
+        deleteReviewDatabase(name);
+      }
+
+      // delete db
+      deleteAssignmentDatabase(name);
+
+      // delete gitlab
+      gitlabService.deleteProjects(name);
+
+      // delete Jenkins
+
+      List<User> users = userService.getStudents();
+
+      for (User user : users) {
+        String jobName = jenkins.getJobName(user.getUsername(), name);
+        jenkins.deleteJob(jobName);
+      }
+      return new ResponseEntity<Object>(headers, HttpStatus.OK);
+    } catch (Exception e) {
+      return new ResponseEntity<Object>(e.getMessage(), headers, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
   public void addProject(String name, Date releaseTime, Date deadline, String readMe,
                          ProjectTypeEnum projectType) {
     Assignment assignment = new Assignment();
@@ -511,6 +551,48 @@ public class AssignmentService {
     int uid = userDbManager.getUserIdByUsername(username);
 
     auDbManager.addAssignmentUser(aid, uid);
+  }
+
+  /**
+   *  delete assignment form pair review db
+   */
+  public void deleteReviewDatabase(String assignmentName) throws SQLException {
+    int aid = dbManager.getAssignmentIdByName(assignmentName);
+    int reviewSettingId = rsDbManager.getReviewSettingIdByAid(aid);
+    List<AssignmentUser> auList = auDbManager.getAssignmentUserListByAid(aid);
+
+    for (AssignmentUser au : auList) {
+      List<PairMatching> pmList = pmDbManager.getPairMatchingByAuId(au.getId());
+      for (PairMatching pm : pmList) {
+        rrDbManager.deleteReviewRecordByPmId(pm.getId());
+        pmDbManager.deletePairMatchingById(pm.getId());
+      }
+    }
+
+    rsmDbManager.deleteReviewSettingMetricsByAssignmentId(reviewSettingId);
+    rsDbManager.deleteReviewSettingByAId(aid);
+  }
+
+  public void deleteAssignmentDatabase(String name) {
+
+    int aid = dbManager.getAssignmentIdByName(name);
+    List<Integer> auidList = auDbManager.getAuids(aid);
+    List<Integer> aaidList = aaDbManager.getAssignmentAssessmentIdByaId(aid);
+
+    for (int aaid : aaidList) {  //Assignment_Assessment
+      aaDbManager.deleteAssignmentAssessment(aaid);
+    }
+
+    for (int auid : auidList) { // CommitRecord
+      List<Integer> cridList = crDbManager.getCommitRecordId(auid);
+      for (int crid : cridList) { // ScreenShot
+        srDbManager.deleteScreenshotByCrid(crid);
+      }
+      crDbManager.deleteRecord(auid);
+    }
+    auDbManager.deleteAssignmentUserByAid(aid);// Assignment_User
+    dbManager.deleteAssignment(name);// Assignment
+
   }
 
 
