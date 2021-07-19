@@ -13,9 +13,11 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.Date;
 import java.sql.SQLException;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
+import java.text.SimpleDateFormat;
 
 @RestController
 @RequestMapping(value ="/peerReview")
@@ -32,6 +34,8 @@ public class PeerReviewService {
 
 		HttpHeaders headers = new HttpHeaders();
     headers.add("Content-Type", "application/json");
+		SimpleDateFormat dateFormat = new SimpleDateFormat(
+        "yyyy-MM-dd HH:mm:ss.S");
 		
 		try {
 			List<Assignment> assignmentList = assignmentDbManager.getAllReviewAssignment();
@@ -43,10 +47,10 @@ public class PeerReviewService {
 				JSONObject jsonObject = new JSONObject();
 				jsonObject.put("assignmentName", assignment.getName());
         jsonObject.put("amount", reviewSetting.getAmount());
-        jsonObject.put("releaseTime", assignment.getReleaseTime());
-        jsonObject.put("deadline", assignment.getDeadline());
-        jsonObject.put("reviewReleaseTime", reviewSetting.getReleaseTime());
-        jsonObject.put("reviewDeadline", reviewSetting.getDeadline());
+        jsonObject.put("releaseTime", dateFormat.format(assignment.getReleaseTime()));
+        jsonObject.put("deadline", dateFormat.format(assignment.getDeadline()));
+        jsonObject.put("reviewReleaseTime", dateFormat.format(reviewSetting.getReleaseTime()));
+        jsonObject.put("reviewDeadline", dateFormat.format(reviewSetting.getDeadline()));
         jsonObject.put("count", getReviewCompletedCount(assignment.getId(), reviewId));
         jsonObject.put("status", reviewerStatus(assignment.getId(),
             reviewId, reviewSetting.getAmount()).getTypeName());
