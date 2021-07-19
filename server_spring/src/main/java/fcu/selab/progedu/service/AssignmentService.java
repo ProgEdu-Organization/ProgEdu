@@ -321,12 +321,34 @@ public class AssignmentService {
 
   @GetMapping("getAssignment")
   public ResponseEntity<Object> getAssignment(@RequestParam ("assignmentName") String assignmentName) {
+
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("Access-Control-Allow-Origin", "*");
+
     Assignment assignment = dbManager.getAssignmentByName(assignmentName);
     JSONObject ob = new JSONObject();
     ob.put("description", assignment.getDescription());
     ob.put("deadline", assignment.getDeadline());
     ob.put("type", assignment.getType());
-    return new ResponseEntity<Object>(ob, HttpStatus.OK);
+    return new ResponseEntity<Object>(ob, headers, HttpStatus.OK);
+  }
+
+
+  @GetMapping("getAssignmentOrder")
+  public ResponseEntity<Object> getAssignmentOrder(@RequestParam("fileName") String fileName) {
+
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("Access-Control-Allow-Origin", "*");
+
+    int aid = dbManager.getAssignmentIdByName(fileName);
+    String orders = aaDbManager.getAssignmentOrderAndScore(aid);
+    if (orders.isEmpty()) {
+      orders = "None";
+    }
+    JSONObject ob = new JSONObject();
+    ob.put("orders", orders);
+
+    return new ResponseEntity<Object>(ob, headers, HttpStatus.OK);
   }
 
 

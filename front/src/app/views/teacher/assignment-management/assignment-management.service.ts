@@ -28,7 +28,7 @@ export class AssignmentManagementService {
   ALL_ASSIGNMENT_API = AssignmentAPI.getAllAssignments;
   DELETE_ASSIGNMENT_API = environment.SERVER_URL + '/webapi/assignment/delete';
   EDIT_ASSIGNMENT_API = environment.SERVER_URL + '/webapi/assignment/edit';
-  ASSIGNMENT_ORDER = environment.SERVER_URL + '/webapi/assignment/getAssignmentOrder';
+  ASSIGNMENT_ORDER = AssignmentAPI.getAssignmentOrder;
   constructor(private addJwtTokenHttpClient: AddJwtTokenHttpClient) { }
   getAllAssignments(): Observable<any> {
     return this.addJwtTokenHttpClient.get(this.ALL_ASSIGNMENT_API);

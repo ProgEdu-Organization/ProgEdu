@@ -17,7 +17,9 @@ let getAllAutoAssessment: string = environment.NEW_SERVER_URL + '/assignment/aut
 //顯示peer review學生的作業
 let getAllPeerReviewAssignment: string = environment.NEW_SERVER_URL + '/assignment/peerReview/allAssignment';
 
+let getAssignmentDescription: string = environment.NEW_SERVER_URL + '/assignment/getAssignment';
 
+let getAssignmentOrder: string = environment.NEW_SERVER_URL + '/assignment/getAssignmentOrder';
 
 export const AssignmentAPI = {
     createAssignment: createAssignment,
@@ -26,5 +28,7 @@ export const AssignmentAPI = {
 
     getAllAssignments: getAllAssignments,
     getAllAutoAssessment: getAllAutoAssessment,
-    getAllPeerReviewAssignment: getAllPeerReviewAssignment
+    getAllPeerReviewAssignment: getAllPeerReviewAssignment,
+    getAssignmentDescription: getAssignmentDescription,
+    getAssignmentOrder: getAssignmentOrder
 }
