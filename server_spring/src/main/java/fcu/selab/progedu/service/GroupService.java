@@ -14,6 +14,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -42,7 +43,7 @@ public class GroupService {
    * @return response
    */
   @GetMapping("/{name}")
-  public ResponseEntity<Object> getGroup(@RequestParam("name") String name) {
+  public ResponseEntity<Object> getGroup(@PathVariable("name") String name) {
     HttpHeaders headers = new HttpHeaders();
     headers.add("Content-Type", "application/json");
     JSONArray jsonArray = new JSONArray();
