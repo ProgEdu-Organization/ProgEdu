@@ -1,7 +1,5 @@
 package fcu.selab.progedu.service;
 
-import javax.ws.rs.PathParam;
-import javax.ws.rs.core.Response;
 import fcu.selab.progedu.conn.GitlabService;
 import fcu.selab.progedu.data.Group;
 import fcu.selab.progedu.db.GroupUserDbManager;
@@ -9,7 +7,7 @@ import fcu.selab.progedu.db.service.GroupDbService;
 import fcu.selab.progedu.db.service.ProjectDbService;
 import fcu.selab.progedu.db.service.UserDbService;
 import net.minidev.json.JSONArray;
-import org.json.JSONObject;
+import net.minidev.json.JSONObject;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
