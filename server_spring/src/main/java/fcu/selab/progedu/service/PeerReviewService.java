@@ -6,12 +6,14 @@ import fcu.selab.progedu.data.Assignment;
 import fcu.selab.progedu.db.AssignmentDbManager;
 import fcu.selab.progedu.db.ReviewSettingDbManager;
 import fcu.selab.progedu.db.PairMatchingDbManager;
+import fcu.selab.progedu.db.UserDbManager;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.sql.SQLException;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 
@@ -22,6 +24,7 @@ public class PeerReviewService {
   private AssignmentDbManager assignmentDbManager = AssignmentDbManager.getInstance();
   private ReviewSettingDbManager reviewSettingDbManager = ReviewSettingDbManager.getInstance();
   private PairMatchingDbManager pairMatchingDbManager = PairMatchingDbManager.getInstance();
+  private UserDbManager userDbManager = UserDbManager.getInstance();
 
 	@GetMapping("/status/oneUser")
 	public ResponseEntity<Object> getReviewStatus(
