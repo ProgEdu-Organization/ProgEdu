@@ -3164,6 +3164,17 @@
 				},
 				{
 					"name": "getReviewStatus(new)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -3182,6 +3193,81 @@
 									"key": "username",
 									"value": "D1234567"
 								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAllReviewStatus",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let base_url = pm.environment.get(\"base_url\");",
+									"",
+									"pm.sendRequest( base_url + \"/LoginAuth?username=root&password=rootrootrootroot\", function (err, response) {",
+									"    console.log(\"pre-request script response.json()\");",
+									"    console.log(response.json());",
+									"    let jwt_token = response.json().token;",
+									"",
+									"    pm.environment.set(\"jwt_token\", jwt_token);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/webapi/peerReview/status/allUsers?token={{jwt_token}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"webapi",
+								"peerReview",
+								"status",
+								"allUsers"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAllReviewStatus(new)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{spring_url}}/peerReview/status/allUsers",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"peerReview",
+								"status",
+								"allUsers"
 							]
 						}
 					},
