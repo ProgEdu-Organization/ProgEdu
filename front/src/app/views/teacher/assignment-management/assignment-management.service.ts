@@ -26,10 +26,12 @@ const editAssignmentOptions = ({
 export class AssignmentManagementService {
 
   ALL_ASSIGNMENT_API = AssignmentAPI.getAllAssignments;
-  DELETE_ASSIGNMENT_API = environment.SERVER_URL + '/webapi/assignment/delete';
+  DELETE_ASSIGNMENT_API = AssignmentAPI.deleteAssignment;
   EDIT_ASSIGNMENT_API = AssignmentAPI.editAssignment;
   ASSIGNMENT_ORDER = AssignmentAPI.getAssignmentOrder;
+
   constructor(private addJwtTokenHttpClient: AddJwtTokenHttpClient) { }
+  
   getAllAssignments(): Observable<any> {
     return this.addJwtTokenHttpClient.get(this.ALL_ASSIGNMENT_API);
   }

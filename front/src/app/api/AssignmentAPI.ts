@@ -24,6 +24,7 @@ let getAssignmentOrder: string = environment.NEW_SERVER_URL + '/assignment/getAs
 
 let editAssignment: string = environment.NEW_SERVER_URL + '/assignment/edit';
 
+let deleteAssignment: string = environment.NEW_SERVER_URL + '/assignment/delete';
 
 export const AssignmentAPI = {
     createAssignment: createAssignment,
@@ -35,5 +36,7 @@ export const AssignmentAPI = {
     getAllPeerReviewAssignment: getAllPeerReviewAssignment,
     getAssignmentDescription: getAssignmentDescription,
     getAssignmentOrder: getAssignmentOrder,
-    editAssignment: editAssignment
+    
+    editAssignment: editAssignment,
+    deleteAssignment: deleteAssignment
 }
