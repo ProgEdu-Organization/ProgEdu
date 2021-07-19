@@ -362,6 +362,41 @@ public class AssignmentService {
     return paths;
   }
 
+  @PostMapping("edit")
+  public ResponseEntity<Object> editProject(
+          @RequestParam("assignmentName") String assignmentName,
+          @RequestParam("releaseTime") Date releaseTime, @RequestParam("deadline") Date deadline,
+          @RequestParam("readMe") String readMe,
+          @RequestParam("order") String assignmentCompileOrdersAndScore) {
+
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("Access-Control-Allow-Origin", "*");
+
+    int aid = dbManager.getAssignmentIdByName(assignmentName);
+    dbManager.editAssignment(deadline, releaseTime, readMe, aid);
+
+
+
+    if (!assignmentCompileOrdersAndScore.isEmpty()) {
+      List<Integer> aaIds = aaDbManager.getAssignmentAssessmentIdByaId(aid);
+      List<Integer> scoresList = new ArrayList<>();
+
+      //order: Compile Failure:10, Coding Style Failure:80, Unit Test Failure:10
+      String[] ordersAndScores = assignmentCompileOrdersAndScore.split(", ");
+      for (String orderAndScore : ordersAndScores) {
+        String[] token = orderAndScore.split(":");
+        scoresList.add(Integer.valueOf(token[1]));
+      }
+      for (int i = 0; i < scoresList.size(); i++) {
+        aaDbManager.updateScore(aid,
+                aaDbManager.getAssessmentOrder(aaIds.get(i)),
+                scoresList.get(i));
+      }
+    }
+
+    return new ResponseEntity<Object>(headers, HttpStatus.OK);
+  }
+
   public void addProject(String name, Date releaseTime, Date deadline, String readMe,
                          ProjectTypeEnum projectType) {
     Assignment assignment = new Assignment();

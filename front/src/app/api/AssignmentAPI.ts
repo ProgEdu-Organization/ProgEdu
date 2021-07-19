@@ -21,6 +21,10 @@ let getAssignmentDescription: string = environment.NEW_SERVER_URL + '/assignment
 
 let getAssignmentOrder: string = environment.NEW_SERVER_URL + '/assignment/getAssignmentOrder';
 
+
+let editAssignment: string = environment.NEW_SERVER_URL + '/assignment/edit';
+
+
 export const AssignmentAPI = {
     createAssignment: createAssignment,
     createAutoAssessment: createAutoAssessment,
@@ -30,5 +34,6 @@ export const AssignmentAPI = {
     getAllAutoAssessment: getAllAutoAssessment,
     getAllPeerReviewAssignment: getAllPeerReviewAssignment,
     getAssignmentDescription: getAssignmentDescription,
-    getAssignmentOrder: getAssignmentOrder
+    getAssignmentOrder: getAssignmentOrder,
+    editAssignment: editAssignment
 }
