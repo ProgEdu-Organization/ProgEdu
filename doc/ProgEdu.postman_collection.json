@@ -3186,6 +3186,28 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "getAllReviewStatus",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": ""
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAllReviewStatus(new)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": ""
+						}
+					},
+					"response": []
 				}
 			]
 		}
