@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "d3589b7d-f28f-405f-af3f-f878cf7df68c",
+		"_postman_id": "83c0574e-a1e9-4689-9af1-53aa202c096f",
 		"name": "ProgEdu",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -1006,38 +1006,6 @@
 					"response": []
 				},
 				{
-					"name": "partCommitRecord(new)",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{spring_url}}/commits/partCommitRecords?username=apiTest&assignmentName=rrr1&currentPage=1",
-							"host": [
-								"{{spring_url}}"
-							],
-							"path": [
-								"commits",
-								"partCommitRecords"
-							],
-							"query": [
-								{
-									"key": "username",
-									"value": "apiTest"
-								},
-								{
-									"key": "assignmentName",
-									"value": "rrr1"
-								},
-								{
-									"key": "currentPage",
-									"value": "1"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "gitLab",
 					"event": [
 						{
@@ -1087,34 +1055,6 @@
 							]
 						},
 						"description": "get git lab url"
-					},
-					"response": []
-				},
-				{
-					"name": "gitLab(new)",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{spring_url}}/commits/gitLab?username=apiTest&assignmentName=hhh5",
-							"host": [
-								"{{spring_url}}"
-							],
-							"path": [
-								"commits",
-								"gitLab"
-							],
-							"query": [
-								{
-									"key": "username",
-									"value": "apiTest"
-								},
-								{
-									"key": "assignmentName",
-									"value": "hhh5"
-								}
-							]
-						}
 					},
 					"response": []
 				},
@@ -1746,7 +1686,7 @@
 			"name": "Assignment",
 			"item": [
 				{
-					"name": "getAssignmentOrder(先不改)",
+					"name": "deleteAssignment(先不改)",
 					"event": [
 						{
 							"listen": "prerequest",
@@ -1766,60 +1706,37 @@
 							}
 						}
 					],
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
 					"request": {
-						"method": "GET",
+						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "formdata",
-							"formdata": []
+							"formdata": [
+								{
+									"key": "assignmentName",
+									"value": "testMvnAPI",
+									"type": "text"
+								}
+							]
 						},
 						"url": {
-							"raw": "{{base_url}}/webapi/assignment/getAssignmentOrder?fileName=hhh5&token={{jwt_token}}",
+							"raw": "{{base_url}}/webapi/assignment/delete?token={{jwt_token}}",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"webapi",
 								"assignment",
-								"getAssignmentOrder"
+								"delete"
 							],
 							"query": [
-								{
-									"key": "fileName",
-									"value": "hhh5"
-								},
 								{
 									"key": "token",
 									"value": "{{jwt_token}}"
 								}
 							]
 						},
-						"description": "get auto assessment assignment judge order"
-					},
-					"response": []
-				},
-				{
-					"name": "[ Useless ]getTestFile",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": ""
-						}
+						"description": "delete assignment"
 					},
 					"response": []
 				},
@@ -1969,6 +1886,154 @@
 					"response": []
 				},
 				{
+					"name": "getAssignmentFile(有錯 這還拿不了檔案)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let base_url = pm.environment.get(\"base_url\");\r",
+									"\r",
+									"pm.sendRequest( base_url + \"/LoginAuth?username=root&password=rootrootrootroot\", function (err, response) {\r",
+									"    console.log(\"pre-request script response.json()\");\r",
+									"    console.log(response.json());\r",
+									"    let jwt_token = response.json().token;\r",
+									"\r",
+									"    pm.environment.set(\"jwt_token\", jwt_token);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/webapi/assignment/getAssignmentFile?fileName=hhh5&token={{jwt_token}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"webapi",
+								"assignment",
+								"getAssignmentFile"
+							],
+							"query": [
+								{
+									"key": "fileName",
+									"value": "hhh5"
+								},
+								{
+									"key": "token",
+									"value": "{{jwt_token}}"
+								}
+							]
+						},
+						"description": "get assignment file"
+					},
+					"response": []
+				},
+				{
+					"name": "getAssignmentOrder",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let base_url = pm.environment.get(\"base_url\");\r",
+									"\r",
+									"pm.sendRequest( base_url + \"/LoginAuth?username=root&password=rootrootrootroot\", function (err, response) {\r",
+									"    console.log(\"pre-request script response.json()\");\r",
+									"    console.log(response.json());\r",
+									"    let jwt_token = response.json().token;\r",
+									"\r",
+									"    pm.environment.set(\"jwt_token\", jwt_token);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{base_url}}/webapi/assignment/getAssignmentOrder?fileName=m-718-4&token={{jwt_token}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"webapi",
+								"assignment",
+								"getAssignmentOrder"
+							],
+							"query": [
+								{
+									"key": "fileName",
+									"value": "m-718-4"
+								},
+								{
+									"key": "token",
+									"value": "{{jwt_token}}"
+								}
+							]
+						},
+						"description": "get auto assessment assignment judge order"
+					},
+					"response": []
+				},
+				{
+					"name": "getAssignmentOrder(new_已完成)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{spring_url}}/assignment/getAssignmentOrder?fileName=m-718-4",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"assignment",
+								"getAssignmentOrder"
+							],
+							"query": [
+								{
+									"key": "fileName",
+									"value": "m-718-4"
+								}
+							]
+						},
+						"description": "get auto assessment assignment judge order"
+					},
+					"response": []
+				},
+				{
 					"name": "getAllAssignment",
 					"event": [
 						{
@@ -2014,7 +2079,7 @@
 					"response": []
 				},
 				{
-					"name": "getAllAssignment(new)",
+					"name": "getAllAssignment(new_已完成)",
 					"event": [
 						{
 							"listen": "prerequest",
@@ -2040,61 +2105,6 @@
 							]
 						},
 						"description": "get all assignment"
-					},
-					"response": []
-				},
-				{
-					"name": "deleteAssignment(先不改)",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									"let base_url = pm.environment.get(\"base_url\");\r",
-									"\r",
-									"pm.sendRequest( base_url + \"/LoginAuth?username=root&password=rootrootrootroot\", function (err, response) {\r",
-									"    console.log(\"pre-request script response.json()\");\r",
-									"    console.log(response.json());\r",
-									"    let jwt_token = response.json().token;\r",
-									"\r",
-									"    pm.environment.set(\"jwt_token\", jwt_token);\r",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "assignmentName",
-									"value": "testMvnAPI",
-									"type": "text"
-								}
-							]
-						},
-						"url": {
-							"raw": "{{base_url}}/webapi/assignment/delete?token={{jwt_token}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"webapi",
-								"assignment",
-								"delete"
-							],
-							"query": [
-								{
-									"key": "token",
-									"value": "{{jwt_token}}"
-								}
-							]
-						},
-						"description": "delete assignment"
 					},
 					"response": []
 				},
@@ -2179,7 +2189,7 @@
 					"response": []
 				},
 				{
-					"name": "createAssignment(web版)(new)",
+					"name": "createAssignment(web版)(new_已完成)",
 					"event": [
 						{
 							"listen": "prerequest",
@@ -2252,7 +2262,7 @@
 					"response": []
 				},
 				{
-					"name": "createAutoAssessmentAssignment(maven版)(先不改)",
+					"name": "createAutoAssessment(maven版)",
 					"event": [
 						{
 							"listen": "prerequest",
@@ -2280,7 +2290,7 @@
 							"formdata": [
 								{
 									"key": "assignmentName",
-									"value": "testMvn002",
+									"value": "p-m-718",
 									"type": "text"
 								},
 								{
@@ -2306,7 +2316,7 @@
 								{
 									"key": "file",
 									"type": "file",
-									"src": "/C:/Users/owner/Downloads/testMvn005.zip"
+									"src": "/C:/D/245lab/ProgEdu/code/ProgEdu/doc/MvnQuickStart.zip"
 								},
 								{
 									"key": "order",
@@ -2331,6 +2341,76 @@
 									"key": "token",
 									"value": "{{jwt_token}}"
 								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createAutoAssessment(maven版)(new_已完成)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "assignmentName",
+									"value": "t-718",
+									"type": "text"
+								},
+								{
+									"key": "releaseTime",
+									"value": "Mon, 28 Jun 2021 04:53:00 GMT",
+									"type": "text"
+								},
+								{
+									"key": "deadline",
+									"value": "Mon, 28 Jun 2021 04:53:00 GMT",
+									"type": "text"
+								},
+								{
+									"key": "readMe",
+									"value": "<p>testMvn002</p>",
+									"type": "text"
+								},
+								{
+									"key": "fileRadio",
+									"value": "maven",
+									"type": "text"
+								},
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/D/245lab/ProgEdu/code/ProgEdu/doc/MvnQuickStart.zip"
+								},
+								{
+									"key": "order",
+									"value": "Compile Failure:20, Coding Style Failure:20, Unit Test Failure:60",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{spring_url}}/assignment/autoAssessment/create",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"assignment",
+								"autoAssessment",
+								"create"
 							]
 						}
 					},
@@ -2438,7 +2518,7 @@
 					"response": []
 				},
 				{
-					"name": "createPeerReviewAssignment(new)",
+					"name": "createPeerReviewAssignment(new_已完成)",
 					"event": [
 						{
 							"listen": "prerequest",
@@ -2569,7 +2649,7 @@
 					"response": []
 				},
 				{
-					"name": "getAllPeerReviewAssignment(new)",
+					"name": "getAllPeerReviewAssignment(new_已完成)",
 					"event": [
 						{
 							"listen": "prerequest",
@@ -2645,7 +2725,7 @@
 					"response": []
 				},
 				{
-					"name": "getAllAutoAssessmentAssignment(new)",
+					"name": "getAllAutoAssessmentAssignment(new_已完成)",
 					"event": [
 						{
 							"listen": "prerequest",
@@ -2700,7 +2780,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/webapi/assignment/getAssignment?assignmentName=postman-new3-web&token={{jwt_token}}",
+							"raw": "{{base_url}}/webapi/assignment/getAssignment?assignmentName=postman-test-web&token={{jwt_token}}",
 							"host": [
 								"{{base_url}}"
 							],
@@ -2712,7 +2792,7 @@
 							"query": [
 								{
 									"key": "assignmentName",
-									"value": "postman-new3-web"
+									"value": "postman-test-web"
 								},
 								{
 									"key": "token",
@@ -2725,7 +2805,7 @@
 					"response": []
 				},
 				{
-					"name": "getAssignmentDescription(new)",
+					"name": "getAssignmentDescription(new_已完成)",
 					"event": [
 						{
 							"listen": "prerequest",
@@ -2741,7 +2821,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{spring_url}}/assignment/getAssignment?assignmentName=postman-new3-web",
+							"raw": "{{spring_url}}/assignment/getAssignment?assignmentName=postman-test-web",
 							"host": [
 								"{{spring_url}}"
 							],
@@ -2752,7 +2832,7 @@
 							"query": [
 								{
 									"key": "assignmentName",
-									"value": "postman-new3-web"
+									"value": "postman-test-web"
 								}
 							]
 						},
@@ -2761,21 +2841,13 @@
 					"response": []
 				},
 				{
-					"name": "getAssignmentFile(有錯 這還拿不了檔案)",
+					"name": "[ Useless ]getTestFile",
 					"event": [
 						{
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"let base_url = pm.environment.get(\"base_url\");\r",
-									"\r",
-									"pm.sendRequest( base_url + \"/LoginAuth?username=root&password=rootrootrootroot\", function (err, response) {\r",
-									"    console.log(\"pre-request script response.json()\");\r",
-									"    console.log(response.json());\r",
-									"    let jwt_token = response.json().token;\r",
-									"\r",
-									"    pm.environment.set(\"jwt_token\", jwt_token);\r",
-									"});"
+									""
 								],
 								"type": "text/javascript"
 							}
@@ -2785,27 +2857,8 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/webapi/assignment/getAssignmentFile?fileName=hhh5&token={{jwt_token}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"webapi",
-								"assignment",
-								"getAssignmentFile"
-							],
-							"query": [
-								{
-									"key": "fileName",
-									"value": "hhh5"
-								},
-								{
-									"key": "token",
-									"value": "{{jwt_token}}"
-								}
-							]
-						},
-						"description": "get assignment file"
+							"raw": ""
+						}
 					},
 					"response": []
 				}
