@@ -1256,30 +1256,6 @@
 						"description": "get autoAssessment"
 					},
 					"response": []
-				},
-				{
-					"name": "autoAssessment(new)",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{spring_url}}/commits/autoAssessment?username=apiTest",
-							"host": [
-								"{{spring_url}}"
-							],
-							"path": [
-								"commits",
-								"autoAssessment"
-							],
-							"query": [
-								{
-									"key": "username",
-									"value": "apiTest"
-								}
-							]
-						}
-					},
-					"response": []
 				}
 			]
 		},
@@ -1640,87 +1616,6 @@
 						"description": "create assinment"
 					},
 					"response": []
-				},
-				{
-					"name": "getGroup",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									"let base_url = pm.environment.get(\"base_url\");",
-									"",
-									"pm.sendRequest( base_url + \"/LoginAuth?username=root&password=rootrootrootroot\", function (err, response) {",
-									"    console.log(\"pre-request script response.json()\");",
-									"    console.log(response.json());",
-									"    let jwt_token = response.json().token;",
-									"",
-									"    pm.environment.set(\"jwt_token\", jwt_token);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/webapi/groups/testGP02?token={{jwt_token}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"webapi",
-								"groups",
-								"testGP02"
-							],
-							"query": [
-								{
-									"key": "token",
-									"value": "{{jwt_token}}"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "getGroup(new)",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									"let base_url = pm.environment.get(\"base_url\");",
-									"",
-									"pm.sendRequest( base_url + \"/LoginAuth?username=root&password=rootrootrootroot\", function (err, response) {",
-									"    console.log(\"pre-request script response.json()\");",
-									"    console.log(response.json());",
-									"    let jwt_token = response.json().token;",
-									"",
-									"    pm.environment.set(\"jwt_token\", jwt_token);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{spring_url}}/groups/testGP02",
-							"host": [
-								"{{spring_url}}"
-							],
-							"path": [
-								"groups",
-								"testGP02"
-							]
-						}
-					},
-					"response": []
 				}
 			]
 		},
@@ -1791,7 +1686,7 @@
 			"name": "Assignment",
 			"item": [
 				{
-					"name": "deleteAssignment(先不改)",
+					"name": "getAssignmentFile(有錯 這還拿不了檔案)",
 					"event": [
 						{
 							"listen": "prerequest",
@@ -1812,41 +1707,35 @@
 						}
 					],
 					"request": {
-						"method": "POST",
+						"method": "GET",
 						"header": [],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "assignmentName",
-									"value": "testMvnAPI",
-									"type": "text"
-								}
-							]
-						},
 						"url": {
-							"raw": "{{base_url}}/webapi/assignment/delete?token={{jwt_token}}",
+							"raw": "{{base_url}}/webapi/assignment/getAssignmentFile?fileName=hhh5&token={{jwt_token}}",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"webapi",
 								"assignment",
-								"delete"
+								"getAssignmentFile"
 							],
 							"query": [
+								{
+									"key": "fileName",
+									"value": "hhh5"
+								},
 								{
 									"key": "token",
 									"value": "{{jwt_token}}"
 								}
 							]
 						},
-						"description": "delete assignment"
+						"description": "get assignment file"
 					},
 					"response": []
 				},
 				{
-					"name": "modifyAssignmentOrderFile(先不改)",
+					"name": "modifyAssignmentOrderFile(先不改_因為檔案問題)",
 					"event": [
 						{
 							"listen": "prerequest",
@@ -1911,7 +1800,102 @@
 					"response": []
 				},
 				{
-					"name": "editAssignment(先不改)",
+					"name": "deleteAssignment",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let base_url = pm.environment.get(\"base_url\");\r",
+									"\r",
+									"pm.sendRequest( base_url + \"/LoginAuth?username=root&password=rootrootrootroot\", function (err, response) {\r",
+									"    console.log(\"pre-request script response.json()\");\r",
+									"    console.log(response.json());\r",
+									"    let jwt_token = response.json().token;\r",
+									"\r",
+									"    pm.environment.set(\"jwt_token\", jwt_token);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "assignmentName",
+									"value": "testMvnAPI",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/webapi/assignment/delete?token={{jwt_token}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"webapi",
+								"assignment",
+								"delete"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}"
+								}
+							]
+						},
+						"description": "delete assignment"
+					},
+					"response": []
+				},
+				{
+					"name": "deleteAssignment(new_已完成)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "assignmentName",
+									"value": "p-718-9",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{spring_url}}/assignment/delete",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"assignment",
+								"delete"
+							]
+						},
+						"description": "delete assignment"
+					},
+					"response": []
+				},
+				{
+					"name": "editAssignment",
 					"event": [
 						{
 							"listen": "prerequest",
@@ -1940,11 +1924,12 @@
 								{
 									"key": "file",
 									"type": "file",
-									"src": "/C:/Users/owner/Downloads/testMvnAPI.zip"
+									"src": "/C:/Users/owner/Downloads/testMvnAPI.zip",
+									"disabled": true
 								},
 								{
 									"key": "assignmentName",
-									"value": "testMvnAPI",
+									"value": "m-718-4",
 									"type": "text"
 								},
 								{
@@ -1965,7 +1950,8 @@
 								{
 									"key": "order",
 									"value": "Compile Failure:24, Coding Style Failure:16, Unit Test Failure:60",
-									"type": "text"
+									"type": "text",
+									"disabled": true
 								}
 							]
 						},
@@ -1991,7 +1977,7 @@
 					"response": []
 				},
 				{
-					"name": "getAssignmentFile(有錯 這還拿不了檔案)",
+					"name": "editAssignment_有order版本(new_已完成)(如果不是Maven作業 order 的 value 要留空)",
 					"event": [
 						{
 							"listen": "prerequest",
@@ -2012,30 +1998,49 @@
 						}
 					],
 					"request": {
-						"method": "GET",
+						"method": "POST",
 						"header": [],
-						"url": {
-							"raw": "{{base_url}}/webapi/assignment/getAssignmentFile?fileName=hhh5&token={{jwt_token}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"webapi",
-								"assignment",
-								"getAssignmentFile"
-							],
-							"query": [
+						"body": {
+							"mode": "formdata",
+							"formdata": [
 								{
-									"key": "fileName",
-									"value": "hhh5"
+									"key": "assignmentName",
+									"value": "m-718-4",
+									"type": "text"
 								},
 								{
-									"key": "token",
-									"value": "{{jwt_token}}"
+									"key": "releaseTime",
+									"value": "Mon, 28 Jun 2021 11:10:00 GMT",
+									"type": "text"
+								},
+								{
+									"key": "deadline",
+									"value": "Mon, 28 Jun 2021 11:10:00 GMT",
+									"type": "text"
+								},
+								{
+									"key": "readMe",
+									"value": "<p>testMvnAPI2</p>",
+									"type": "text"
+								},
+								{
+									"key": "order",
+									"value": "Compile Failure:24, Coding Style Failure:16, Unit Test Failure:60",
+									"type": "text"
 								}
 							]
 						},
-						"description": "get assignment file"
+						"url": {
+							"raw": "{{spring_url}}/assignment/edit",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"assignment",
+								"edit"
+							]
+						},
+						"description": "edit assignment settings"
 					},
 					"response": []
 				},
@@ -3156,171 +3161,6 @@
 							"path": [
 								"update",
 								"commits"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "PeerReview",
-			"item": [
-				{
-					"name": "getReviewStatus",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									"let base_url = pm.environment.get(\"base_url\");",
-									"",
-									"pm.sendRequest( base_url + \"/LoginAuth?username=root&password=rootrootrootroot\", function (err, response) {",
-									"    console.log(\"pre-request script response.json()\");",
-									"    console.log(response.json());",
-									"    let jwt_token = response.json().token;",
-									"",
-									"    pm.environment.set(\"jwt_token\", jwt_token);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/webapi/peerReview/status/oneUser?username=D1234567&token={{jwt_token}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"webapi",
-								"peerReview",
-								"status",
-								"oneUser"
-							],
-							"query": [
-								{
-									"key": "username",
-									"value": "D1234567"
-								},
-								{
-									"key": "token",
-									"value": "{{jwt_token}}"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "getReviewStatus(new)",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{spring_url}}/peerReview/status/oneUser?username=D1234567",
-							"host": [
-								"{{spring_url}}"
-							],
-							"path": [
-								"peerReview",
-								"status",
-								"oneUser"
-							],
-							"query": [
-								{
-									"key": "username",
-									"value": "D1234567"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "getAllReviewStatus",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									"let base_url = pm.environment.get(\"base_url\");",
-									"",
-									"pm.sendRequest( base_url + \"/LoginAuth?username=root&password=rootrootrootroot\", function (err, response) {",
-									"    console.log(\"pre-request script response.json()\");",
-									"    console.log(response.json());",
-									"    let jwt_token = response.json().token;",
-									"",
-									"    pm.environment.set(\"jwt_token\", jwt_token);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/webapi/peerReview/status/allUsers?token={{jwt_token}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"webapi",
-								"peerReview",
-								"status",
-								"allUsers"
-							],
-							"query": [
-								{
-									"key": "token",
-									"value": "{{jwt_token}}"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "getAllReviewStatus(new)",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{spring_url}}/peerReview/status/allUsers",
-							"host": [
-								"{{spring_url}}"
-							],
-							"path": [
-								"peerReview",
-								"status",
-								"allUsers"
 							]
 						}
 					},
