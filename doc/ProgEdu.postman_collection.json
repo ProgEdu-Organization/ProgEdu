@@ -3169,15 +3169,7 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"let base_url = pm.environment.get(\"base_url\");",
-									"",
-									"pm.sendRequest( base_url + \"/LoginAuth?username=root&password=rootrootrootroot\", function (err, response) {",
-									"    console.log(\"pre-request script response.json()\");",
-									"    console.log(response.json());",
-									"    let jwt_token = response.json().token;",
-									"",
-									"    pm.environment.set(\"jwt_token\", jwt_token);",
-									"});"
+									""
 								],
 								"type": "text/javascript"
 							}
@@ -3258,15 +3250,7 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"let base_url = pm.environment.get(\"base_url\");",
-									"",
-									"pm.sendRequest( base_url + \"/LoginAuth?username=root&password=rootrootrootroot\", function (err, response) {",
-									"    console.log(\"pre-request script response.json()\");",
-									"    console.log(response.json());",
-									"    let jwt_token = response.json().token;",
-									"",
-									"    pm.environment.set(\"jwt_token\", jwt_token);",
-									"});"
+									""
 								],
 								"type": "text/javascript"
 							}
