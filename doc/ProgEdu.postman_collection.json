@@ -1700,6 +1700,87 @@
 						"description": "create assinment"
 					},
 					"response": []
+				},
+				{
+					"name": "getGroup",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let base_url = pm.environment.get(\"base_url\");",
+									"",
+									"pm.sendRequest( base_url + \"/LoginAuth?username=root&password=rootrootrootroot\", function (err, response) {",
+									"    console.log(\"pre-request script response.json()\");",
+									"    console.log(response.json());",
+									"    let jwt_token = response.json().token;",
+									"",
+									"    pm.environment.set(\"jwt_token\", jwt_token);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/webapi/groups/testGp02?token={{jwt_token}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"webapi",
+								"groups",
+								"testGp02"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getGroup(new)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let base_url = pm.environment.get(\"base_url\");",
+									"",
+									"pm.sendRequest( base_url + \"/LoginAuth?username=root&password=rootrootrootroot\", function (err, response) {",
+									"    console.log(\"pre-request script response.json()\");",
+									"    console.log(response.json());",
+									"    let jwt_token = response.json().token;",
+									"",
+									"    pm.environment.set(\"jwt_token\", jwt_token);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{spring_url}}/groups/testGp02",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"groups",
+								"testGp02"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -3022,6 +3103,85 @@
 							"path": [
 								"update",
 								"commits"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "PeerReview",
+			"item": [
+				{
+					"name": "getReviewStatus",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let base_url = pm.environment.get(\"base_url\");",
+									"",
+									"pm.sendRequest( base_url + \"/LoginAuth?username=root&password=rootrootrootroot\", function (err, response) {",
+									"    console.log(\"pre-request script response.json()\");",
+									"    console.log(response.json());",
+									"    let jwt_token = response.json().token;",
+									"",
+									"    pm.environment.set(\"jwt_token\", jwt_token);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/webapi/peerReview/status/oneUser?username=D1234567&token={{jwt_token}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"webapi",
+								"peerReview",
+								"status",
+								"oneUser"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "D1234567"
+								},
+								{
+									"key": "token",
+									"value": "{{jwt_token}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getReviewStatus(new)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{spring_url}}/peerReview/status/oneUser?username=D1234567",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"peerReview",
+								"status",
+								"oneUser"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "D1234567"
+								}
 							]
 						}
 					},
