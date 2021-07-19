@@ -1726,14 +1726,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/webapi/groups/testGP02?token={{jwt_token}}",
+							"raw": "{{base_url}}/webapi/groups/testGp02?token={{jwt_token}}",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"webapi",
 								"groups",
-								"testGP02"
+								"testGp02"
 							],
 							"query": [
 								{
@@ -1770,13 +1770,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{spring_url}}/groups/testGP02",
+							"raw": "{{spring_url}}/groups/testGp02",
 							"host": [
 								"{{spring_url}}"
 							],
 							"path": [
 								"groups",
-								"testGP02"
+								"testGp02"
 							]
 						}
 					},
