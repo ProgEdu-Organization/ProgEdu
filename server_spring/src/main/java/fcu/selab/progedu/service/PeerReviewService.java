@@ -38,7 +38,7 @@ public class PeerReviewService {
 			int reviewId = userDbManager.getUserIdByUsername(username);
 			JSONArray jsonArray = new JSONArray();
 
-			for(Assignment assignmnet : assignmentList) {
+			for(Assignment assignment : assignmentList) {
 				ReviewSetting reviewSetting = reviewSettingDbManager.getReviewSetting(assignment.getId());
 				JSONObject jsonObject = new JSONObject();
 				jsonObject.put("assignmentName", assignment.getName());
