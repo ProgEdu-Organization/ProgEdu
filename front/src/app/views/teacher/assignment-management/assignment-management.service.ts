@@ -5,6 +5,9 @@ import { environment } from '../../../../environments/environment';
 import { FormGroup } from '@angular/forms';
 import { AddJwtTokenHttpClient } from '../../../services/add-jwt-token.service';
 
+import { AssignmentAPI } from '../../../api/AssignmentAPI';
+
+
 const deleteAssignmentOptions = ({
   headers: new HttpHeaders({
   })
@@ -22,10 +25,10 @@ const editAssignmentOptions = ({
 })
 export class AssignmentManagementService {
 
-  ALL_ASSIGNMENT_API = environment.SERVER_URL + '/webapi/assignment/getAllAssignments';
+  ALL_ASSIGNMENT_API = AssignmentAPI.getAllAssignments;
   DELETE_ASSIGNMENT_API = environment.SERVER_URL + '/webapi/assignment/delete';
-  EDIT_ASSIGNMENT_API = environment.SERVER_URL + '/webapi/assignment/edit';
-  ASSIGNMENT_ORDER = environment.SERVER_URL + '/webapi/assignment/getAssignmentOrder';
+  EDIT_ASSIGNMENT_API = AssignmentAPI.editAssignment;
+  ASSIGNMENT_ORDER = AssignmentAPI.getAssignmentOrder;
   constructor(private addJwtTokenHttpClient: AddJwtTokenHttpClient) { }
   getAllAssignments(): Observable<any> {
     return this.addJwtTokenHttpClient.get(this.ALL_ASSIGNMENT_API);
@@ -37,7 +40,6 @@ export class AssignmentManagementService {
     form.append('releaseTime', new Date(assignment.get('releaseTime').value).toUTCString());
     form.append('deadline', new Date(assignment.get('deadline').value).toUTCString());
     form.append('readMe', assignment.get('description').value);
-    form.append('file', assignment.get('file').value);
     form.append('order', assignment.get('order').value);
 
     return this.addJwtTokenHttpClient.post(this.EDIT_ASSIGNMENT_API, form, editAssignmentOptions);

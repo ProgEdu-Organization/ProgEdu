@@ -28,6 +28,15 @@ RUN mvn clean package -DskipTests
 
 FROM openjdk:8-jdk-alpine
 
+RUN apk update && \
+    apk upgrade && \
+    apk add git && \
+    git config --global user.email "admin@example.com" && \
+    git config --global user.name "Administrator"
+
+
+
+
 COPY --from=builder /workdir/target/progedu-0.0.1-SNAPSHOT.jar app.jar
 
 ENV application-name=progedu_server 
