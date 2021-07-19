@@ -3,7 +3,7 @@ import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import {AddJwtTokenHttpClient} from '../../../services/add-jwt-token.service';
-
+import { UserAPI } from '../../../api/UserAPI';
 
 const editGroupOptions = ({
   headers: new HttpHeaders(
@@ -14,7 +14,7 @@ const editGroupOptions = ({
   providedIn: 'root'
 })
 export class EditGroupManagementService {
-  GET_USERS_API = environment.SERVER_URL + '/webapi/user/getUsers';
+  GET_USERS_API = UserAPI.getUsers;
   constructor(private http: HttpClient, private addJwtTokenHttpClient: AddJwtTokenHttpClient) { }
 
   getGroup(groupName: string): Observable<any> {
