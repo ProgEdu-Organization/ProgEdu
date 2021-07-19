@@ -1,11 +1,16 @@
 package fcu.selab.progedu.service;
 
+import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 
+import fcu.selab.progedu.data.Assignment;
+import fcu.selab.progedu.utils.ExceptionUtil;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +35,7 @@ public class CommitRecordService {
   private AssignmentDbManager assignmentDb = AssignmentDbManager.getInstance();
   private UserDbManager userDb = UserDbManager.getInstance();
   private CommitRecordDbManager commitRecordDb = CommitRecordDbManager.getInstance();
+  private static final Logger LOGGER = LoggerFactory.getLogger(CommitRecordService.class);
 
   /**
    * get GitLab project url
@@ -50,6 +56,49 @@ public class CommitRecordService {
     gitLabEntity.put("url", projectUrl);
 
     return new ResponseEntity<Object>(gitLabEntity, headers, HttpStatus.OK);
+  }
+
+  /**
+   * get all commit record from auto assessment of one student
+   *
+   * @param username       student id
+   * @return homework, commit status, commit number
+   */
+  @GetMapping("/autoAssessment")
+  public ResponseEntity<Object> getAutoAssessment(
+      @RequestParam("username") String username) {
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("Content-Type", "application/json");
+
+    JSONArray jsonArray = new JSONArray();
+    int userId = userDb.getUserIdByUsername(username);
+    SimpleDateFormat dateFormat = new SimpleDateFormat(
+        "yyyy-MM-dd HH:mm:ss.S");
+
+    try {
+      for (Assignment assignment: assignmentDb.getAutoAssessment()) {
+        int auId = assignmentUserDb.getAuid(assignment.getId(), userId);
+        JSONObject jsonObject = new JSONObject();
+        JSONObject lastCommitRecord = new JSONObject();
+        org.json.JSONObject lastCommitRecordJson = commitRecordDb.getLastCommitRecord(auId);
+
+        String commitReleaseTime = dateFormat.format(lastCommitRecordJson.get("commitTime"));
+        lastCommitRecord.put("commitNumber", lastCommitRecordJson.get("commitNumber"));
+        lastCommitRecord.put("commitTime", commitReleaseTime);
+        lastCommitRecord.put("status", lastCommitRecordJson.get("status"));
+
+        String assignmentReleaseTime = dateFormat.format(assignment.getReleaseTime());
+        jsonObject.put("assignmentName", assignment.getName());
+        jsonObject.put("releaseTime", assignmentReleaseTime);
+        jsonObject.put("commitRecord", lastCommitRecord);
+        jsonArray.add(jsonObject);
+      }
+    } catch (Exception e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    }
+
+    return new ResponseEntity<Object>(jsonArray, headers, HttpStatus.OK);
   }
 
   /**
