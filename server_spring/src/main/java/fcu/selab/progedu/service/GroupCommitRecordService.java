@@ -27,7 +27,7 @@ public class GroupCommitRecordService {
   private JenkinsService js = JenkinsService.getInstance();
   private UserDbManager dbManager = UserDbManager.getInstance();
   private GroupDbService gdb = GroupDbService.getInstance();
-  private ProjectDbService pdb = ProjectDbService.getInstance();
+  private ProjectDbService gpdb = ProjectDbService.getInstance();
   private ProjectGroupDbService pgdb = ProjectGroupDbService.getInstance();
   private static final Logger LOGGER = LoggerFactory.getLogger(GroupCommitRecordService.class);
 
@@ -48,13 +48,13 @@ public class GroupCommitRecordService {
     headers.add("Content-Type", "application/json");
 
     JenkinsService js = JenkinsService.getInstance();
-    ProjectTypeEnum projectTypeEnum = pdb.getProjectType(projectName);
+    ProjectTypeEnum projectTypeEnum = gpdb.getProjectType(projectName);
 
     String jobName = js.getJobName(groupName, projectName);
     String console = js.getConsole(jobName, number);
     int pgid = pgdb.getId(groupName, projectName);
 
-    StatusEnum statusType = pdb.getCommitRecordStatus(pgid, number);
+    StatusEnum statusType = gpdb.getCommitRecordStatus(pgid, number);
 
     Status statusAnalysis = StatusAnalysisFactory.getStatusAnalysis(projectTypeEnum,
         statusType.getType());
