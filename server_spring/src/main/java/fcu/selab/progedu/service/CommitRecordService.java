@@ -19,7 +19,6 @@ import fcu.selab.progedu.db.CommitRecordDbManager;
 import fcu.selab.progedu.db.AssignmentDbManager;
 import fcu.selab.progedu.db.UserDbManager;
 
-
 @RestController
 @RequestMapping(value = "/commits")
 public class CommitRecordService {
@@ -90,6 +89,46 @@ public class CommitRecordService {
       jsonObject.put("time", dateFormat.format(dateTime));
       jsonObject.put("message", message);
 
+      jsonArray.add(jsonObject);
+    }
+
+    return new ResponseEntity<Object>(jsonArray, headers, HttpStatus.OK);
+  }
+
+  /**
+   * get student build detail info
+   *
+   * @param username       student id
+   * @param assignmentName assignment name
+   * @return build detail
+   */
+  @GetMapping("/commitRecords")
+  public ResponseEntity<Object> getCommitRecord(
+          @RequestParam("username") String username,
+          @RequestParam("assignmentName") String assignmentName) {
+
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("Content-Type", "application/json");
+
+    JSONArray jsonArray = new JSONArray();
+    String jobName = username + "_" + assignmentName;
+    int aid = assignmentDb.getAssignmentIdByName(assignmentName);
+    int uid = userDb.getUserIdByUsername(username);
+    int auId = assignmentUserDb.getAuid(aid, uid);
+    List<CommitRecord> commitRecords = commitRecordDb.getCommitRecord(auId);
+    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+
+    for (CommitRecord commitRecord : commitRecords) {
+      int number = commitRecord.getNumber();
+      String message = jenkinsService.getCommitMessage(jobName, number);
+      Date dateTime = commitRecord.getTime();
+      String status = commitRecord.getStatus().getType();
+      JSONObject jsonObject = new JSONObject();
+
+      jsonObject.put("number", number);
+      jsonObject.put("status", status.toUpperCase());
+      jsonObject.put("time", dateFormat.format(dateTime));
+      jsonObject.put("message", message);
       jsonArray.add(jsonObject);
     }
 
