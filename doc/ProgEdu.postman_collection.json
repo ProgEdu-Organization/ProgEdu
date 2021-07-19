@@ -1323,7 +1323,20 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": ""
+							"raw": "{{spring_url}}/commits/autoAssessment?username=apiTest",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"commits",
+								"autoAssessment"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "apiTest"
+								}
+							]
 						}
 					},
 					"response": []
