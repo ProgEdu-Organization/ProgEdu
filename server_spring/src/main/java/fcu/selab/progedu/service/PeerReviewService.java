@@ -1,14 +1,9 @@
 package fcu.selab.progedu.service;
 
 import javax.ws.rs.core.Response;
-import fcu.selab.progedu.data.PairMatching;
-import fcu.selab.progedu.data.ReviewSetting;
-import fcu.selab.progedu.data.Assignment;
-import fcu.selab.progedu.data.User;
-import fcu.selab.progedu.db.AssignmentDbManager;
-import fcu.selab.progedu.db.ReviewSettingDbManager;
-import fcu.selab.progedu.db.PairMatchingDbManager;
-import fcu.selab.progedu.db.UserDbManager;
+
+import fcu.selab.progedu.data.*;
+import fcu.selab.progedu.db.*;
 
 import fcu.selab.progedu.utils.ExceptionUtil;
 import org.slf4j.Logger;
@@ -33,6 +28,12 @@ public class PeerReviewService {
   private ReviewSettingDbManager reviewSettingDbManager = ReviewSettingDbManager.getInstance();
   private PairMatchingDbManager pairMatchingDbManager = PairMatchingDbManager.getInstance();
   private UserDbManager userDbManager = UserDbManager.getInstance();
+
+  private ReviewMetricsDbManager reviewMetricsDbManager = ReviewMetricsDbManager.getInstance();
+  private ReviewSettingMetricsDbManager reviewSettingMetricsDbManager = ReviewSettingMetricsDbManager.getInstance();
+  private ScoreModeDbManager scoreModeDbManager = ScoreModeDbManager.getInstance();
+
+
   private static final Logger LOGGER = LoggerFactory.getLogger(PeerReviewService.class);
 
   /**
@@ -151,6 +152,36 @@ public class PeerReviewService {
 
     return resultStatus;
   }
+
+  @GetMapping("/metrics")
+  public ResponseEntity<Object> getReviewMetrics(
+          @RequestParam("assignmentName") String assignmentName
+  ) {
+    try {
+      JSONArray array = new JSONArray();
+      JSONObject result = new JSONObject();
+      int assignmentId = assignmentDbManager.getAssignmentIdByName(assignmentName);
+      int reviewSettingId = reviewSettingDbManager.getReviewSettingIdByAid(assignmentId);
+      List<Integer> metricsList = reviewSettingMetricsDbManager
+              .getReviewSettingMetricsByAssignmentId(reviewSettingId);
+      for (Integer integer : metricsList) {
+        JSONObject entity = new JSONObject();
+        ReviewMetrics reviewMetrics = reviewMetricsDbManager.getReviewMetrics(integer);
+        entity.put("id", integer);
+        entity.put("mode", scoreModeDbManager.getScoreModeDescById(reviewMetrics.getMode()));
+        entity.put("metrics", reviewMetrics.getMetrics());
+        entity.put("description", reviewMetrics.getDescription());
+        entity.put("link", reviewMetrics.getLink());
+        array.add(entity);
+      }
+      result.put("allMetrics", array);
+
+      return new ResponseEntity<>(result, HttpStatus.OK);
+    }catch (Exception e) {
+      return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
 
   /**
    * Get all user which role is student
