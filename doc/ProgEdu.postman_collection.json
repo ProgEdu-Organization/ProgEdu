@@ -1,7 +1,7 @@
 {
 	"info": {
-		"_postman_id": "20ea9aae-3add-48eb-b626-4860d54b75d7",
-		"name": "ProgEdu Copy",
+		"_postman_id": "83c0574e-a1e9-4689-9af1-53aa202c096f",
+		"name": "ProgEdu",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -1498,16 +1498,16 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/webapi/groups/testGp05/projects/testGp05/feedback/1?token={{jwt_token}}",
+							"raw": "{{base_url}}/webapi/groups/testGP02/projects/testGP02/feedback/1?token={{jwt_token}}",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"webapi",
 								"groups",
-								"testGp05",
+								"testGP02",
 								"projects",
-								"testGp05",
+								"testGP02",
 								"feedback",
 								"1"
 							],
@@ -1516,28 +1516,6 @@
 									"key": "token",
 									"value": "{{jwt_token}}"
 								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "getGroupFeedback(new)",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{spring_url}}/groups/testGp05/projects/testGp05/feedback/1",
-							"host": [
-								"{{spring_url}}"
-							],
-							"path": [
-								"groups",
-								"testGp05",
-								"projects",
-								"testGp05",
-								"feedback",
-								"1"
 							]
 						}
 					},
@@ -1636,49 +1614,6 @@
 							]
 						},
 						"description": "create assinment"
-					},
-					"response": []
-				},
-				{
-					"name": "getGroup",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/webapi/groups/testGP02?token={{jwt_token}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"webapi",
-								"groups",
-								"testGP02"
-							],
-							"query": [
-								{
-									"key": "token",
-									"value": "{{jwt_token}}"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "getGroup(new)",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{spring_url}}/groups/testGP02",
-							"host": [
-								"{{spring_url}}"
-							],
-							"path": [
-								"groups",
-								"testGP02"
-							]
-						}
 					},
 					"response": []
 				}
@@ -3119,6 +3054,125 @@
 			]
 		},
 		{
+			"name": "PeerReview",
+			"item": [
+				{
+					"name": "status/allUsers",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let base_url = pm.environment.get(\"base_url\");\r",
+									"\r",
+									"pm.sendRequest( base_url + \"/LoginAuth?username=root&password=rootrootrootroot\", function (err, response) {\r",
+									"    console.log(\"pre-request script response.json()\");\r",
+									"    console.log(response.json());\r",
+									"    let jwt_token = response.json().token;\r",
+									"\r",
+									"    pm.environment.set(\"jwt_token\", jwt_token);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/webapi/peerReview/status/allUsers?token={{jwt_token}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"webapi",
+								"peerReview",
+								"status",
+								"allUsers"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "status/allUsers(new_有錯誤)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let base_url = pm.environment.get(\"base_url\");\r",
+									"\r",
+									"pm.sendRequest( base_url + \"/LoginAuth?username=root&password=rootrootrootroot\", function (err, response) {\r",
+									"    console.log(\"pre-request script response.json()\");\r",
+									"    console.log(response.json());\r",
+									"    let jwt_token = response.json().token;\r",
+									"\r",
+									"    pm.environment.set(\"jwt_token\", jwt_token);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{spring_url}}/peerReview/status/allUsers",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"peerReview",
+								"status",
+								"allUsers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "metrics(new)",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "assignmentName",
+									"value": "peer-720-6",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{spring_url}}/peerReview/metrics",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"peerReview",
+								"metrics"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "MyResource",
 			"item": [
 				{
@@ -3226,118 +3280,6 @@
 							"path": [
 								"update",
 								"commits"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "PeerReview",
-			"item": [
-				{
-					"name": "getReviewStatus",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/webapi/peerReview/status/oneUser?username=D1234567&token={{jwt_token}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"webapi",
-								"peerReview",
-								"status",
-								"oneUser"
-							],
-							"query": [
-								{
-									"key": "username",
-									"value": "D1234567"
-								},
-								{
-									"key": "token",
-									"value": "{{jwt_token}}"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "getReviewStatus(new)",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{spring_url}}/peerReview/status/oneUser?username=D1234567",
-							"host": [
-								"{{spring_url}}"
-							],
-							"path": [
-								"peerReview",
-								"status",
-								"oneUser"
-							],
-							"query": [
-								{
-									"key": "username",
-									"value": "D1234567"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "getAllReviewStatus",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/webapi/peerReview/status/allUsers?token={{jwt_token}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"webapi",
-								"peerReview",
-								"status",
-								"allUsers"
-							],
-							"query": [
-								{
-									"key": "token",
-									"value": "{{jwt_token}}"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "getAllReviewStatus(new)",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/webapi/peerReview/status/allUsers?token={{jwt_token}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"webapi",
-								"peerReview",
-								"status",
-								"allUsers"
-							],
-							"query": [
-								{
-									"key": "token",
-									"value": "{{jwt_token}}"
-								}
 							]
 						}
 					},
