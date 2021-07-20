@@ -64,6 +64,7 @@ public class AssignmentService {
   private CommitRecordDbManager crDbManager = CommitRecordDbManager.getInstance();
   private ScreenshotRecordDbManager srDbManager = ScreenshotRecordDbManager.getInstance();
 
+
   private final String tempDir = System.getProperty("java.io.tmpdir");
   private final String uploadDir = tempDir + "/uploads/";
   private final String testDir = tempDir + "/tests/";
@@ -73,6 +74,11 @@ public class AssignmentService {
   private ZipHandler zipHandler;
   private String mailUsername;
   private String mailPassword;
+
+  private static AssignmentService instance = new AssignmentService();
+  public static AssignmentService getInstance() {
+    return instance;
+  }
 
   public AssignmentService() {
     try {
@@ -592,6 +598,15 @@ public class AssignmentService {
     }
     auDbManager.deleteAssignmentUserByAid(aid);// Assignment_User
     dbManager.deleteAssignment(name);// Assignment
+
+  }
+
+  public void createPreviousAssignment(String username) {
+    List<String> assignmentNames = dbManager.getAllAssignmentNames();
+
+    for (String assignmentName : assignmentNames) {
+      createAssignmentSettingsV2(username, assignmentName);
+    }
 
   }
 

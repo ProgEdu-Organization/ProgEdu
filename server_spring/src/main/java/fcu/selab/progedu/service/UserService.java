@@ -27,6 +27,7 @@ public class UserService {
   private UserDbManager dbManager = UserDbManager.getInstance();
   private GitlabService gitlabService = GitlabService.getInstance();
   private RoleUserDbManager rudb = RoleUserDbManager.getInstance();
+  private AssignmentService as = AssignmentService.getInstance();
 
 //  private AssignmentService as = AssignmentService.getInstance(); Todo
 
@@ -224,7 +225,7 @@ public class UserService {
   private void createPreviousAssginment(String username, List<RoleEnum> roles) {
     for (RoleEnum role : roles) {
       if (role == RoleEnum.STUDENT) {
-//        as.createPreviousAssignment(username); Todo
+        as.createPreviousAssignment(username); // Todo 這裡會去依賴作業的API, 要創一個獨立的class 去處理比較好
         break;
       }
     }

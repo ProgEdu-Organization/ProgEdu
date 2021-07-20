@@ -59,8 +59,13 @@ public class UserDbManager {
         + TOKEN + "," + EMAIL + "," + GIT_LAB_TOKEN + "," + DISPLAY + ")"
         + "VALUES(?, ?, ?, ?, ?, ?, ?)";
 
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
       preStmt.setInt(1, user.getGitLabId());
       preStmt.setString(2, user.getUsername());
       preStmt.setString(3, user.getName());
@@ -69,9 +74,13 @@ public class UserDbManager {
       preStmt.setString(6, user.getGitLabToken());
       preStmt.setBoolean(7, user.getDisplay());
       preStmt.executeUpdate();
+
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      try { preStmt.close(); } catch (Exception e) { LOGGER.error(e.getMessage()); }
+      try { conn.close(); } catch (Exception e) { LOGGER.error(e.getMessage()); }
     }
   }
 
@@ -114,8 +123,14 @@ public class UserDbManager {
     String token = "";
     String query = "SELECT password FROM User WHERE username = ?";
 
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(query)) {
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+
+    try {
+
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(query);
+
       preStmt.setString(1, username);
       try (ResultSet rs = preStmt.executeQuery()) {
         while (rs.next()) {
@@ -125,6 +140,9 @@ public class UserDbManager {
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      try { preStmt.close(); } catch (Exception e) { LOGGER.error(e.getMessage()); }
+      try { conn.close(); } catch (Exception e) { LOGGER.error(e.getMessage()); }
     }
     return token;
   }
@@ -138,8 +156,13 @@ public class UserDbManager {
   public void modifiedUserPassword(String username, String password) {
     String query = "UPDATE User SET password=? WHERE username = ?";
 
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(query)) {
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(query);
+
       String newPass = passwordMD5(password);
       preStmt.setString(1, newPass);
       preStmt.setString(2, username);
@@ -147,6 +170,9 @@ public class UserDbManager {
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      try { preStmt.close(); } catch (Exception e) { LOGGER.error(e.getMessage()); }
+      try { conn.close(); } catch (Exception e) { LOGGER.error(e.getMessage()); }
     }
   }
 
@@ -174,8 +200,15 @@ public class UserDbManager {
   public int getUserIdByUsername(String username) {
     String query = "SELECT id FROM User WHERE username = ?";
     int id = -1;
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(query)) {
+
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+
+    try {
+
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(query);
+
       preStmt.setString(1, username);
       try (ResultSet rs = preStmt.executeQuery();) {
         while (rs.next()) {
@@ -185,6 +218,9 @@ public class UserDbManager {
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      try { preStmt.close(); } catch (Exception e) { LOGGER.error(e.getMessage()); }
+      try { conn.close(); } catch (Exception e) { LOGGER.error(e.getMessage()); }
     }
     return id;
   }
@@ -198,8 +234,14 @@ public class UserDbManager {
     String query = "SELECT gitLabId FROM User WHERE username = ?";
     int id = -1;
 
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(query)) {
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+
+    try {
+
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(query);
+
       preStmt.setString(1, username);
       try (ResultSet rs = preStmt.executeQuery();) {
         while (rs.next()) {
@@ -209,6 +251,9 @@ public class UserDbManager {
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      try { preStmt.close(); } catch (Exception e) { LOGGER.error(e.getMessage()); }
+      try { conn.close(); } catch (Exception e) { LOGGER.error(e.getMessage()); }
     }
     return id;
   }
@@ -233,8 +278,15 @@ public class UserDbManager {
     User user = new User();
     String query = "SELECT * FROM User WHERE id = ?";
 
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(query)) {
+    Connection conn = null;
+    PreparedStatement preStmt =null;
+
+
+    try {
+
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(query);
+
       preStmt.setInt(1, id);
       try (ResultSet rs = preStmt.executeQuery()) {
         while (rs.next()) {
@@ -260,6 +312,9 @@ public class UserDbManager {
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      try { preStmt.close(); } catch (Exception e) { LOGGER.error(e.getMessage()); }
+      try { conn.close(); } catch (Exception e) { LOGGER.error(e.getMessage()); }
     }
     return user;
   }
@@ -273,8 +328,14 @@ public class UserDbManager {
     boolean isDisplay = false;
     String query = "SELECT display FROM User WHERE username = ?";
 
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(query)) {
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+
+    try {
+
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(query);
+
       preStmt.setString(1, username);
       try (ResultSet rs = preStmt.executeQuery()) {
         if (rs.next()) {
@@ -284,6 +345,9 @@ public class UserDbManager {
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      try { preStmt.close(); } catch (Exception e) { LOGGER.error(e.getMessage()); }
+      try { conn.close(); } catch (Exception e) { LOGGER.error(e.getMessage()); }
     }
     return isDisplay;
   }
@@ -297,14 +361,24 @@ public class UserDbManager {
   public void updateUserStatus(String username, boolean isDisplay) {
     String query = "UPDATE User SET display=? WHERE username = ?";
 
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(query)) {
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+
+
+    try {
+
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(query);
+
       preStmt.setBoolean(1, isDisplay);
       preStmt.setString(2, username);
       preStmt.executeUpdate();
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      try { preStmt.close(); } catch (Exception e) { LOGGER.error(e.getMessage()); }
+      try { conn.close(); } catch (Exception e) { LOGGER.error(e.getMessage()); }
     }
 
   }
@@ -318,36 +392,46 @@ public class UserDbManager {
     List<User> users = new ArrayList<>();
     String sql = "SELECT * FROM User";
 
-    try (Connection conn = database.getConnection(); Statement stmt = conn.createStatement()) {
-      try (ResultSet rs = stmt.executeQuery(sql)) {
-        while (rs.next()) {
-          int id = rs.getInt("id");
-          int gitLabId = rs.getInt(GIT_LAB_ID);
-          String username = rs.getString(USERNAME);
-          String name = rs.getString(NAME);
-          String password = rs.getString(TOKEN);
-          String email = rs.getString(EMAIL);
-          String gitLabToken = rs.getString(GIT_LAB_ID);
-          boolean display = rs.getBoolean(DISPLAY);
-          List<RoleEnum> roleList = rudb.getRoleList(id);
+    Connection conn = null;
+    Statement stmt = null;
+    ResultSet rs = null;
 
-          User user = new User();
-          user.setId(id);
-          user.setGitLabId(gitLabId);
-          user.setUsername(username);
-          user.setName(name);
-          user.setPassword(password);
-          user.setEmail(email);
-          user.setGitLabToken(gitLabToken);
-          user.setDisplay(display);
-          user.setRole(roleList);
-          users.add(user);
-        }
+    try{
+
+      conn = database.getConnection();
+      stmt = conn.createStatement();
+      rs = stmt.executeQuery(sql);
+
+      while (rs.next()) {
+        int id = rs.getInt("id");
+        int gitLabId = rs.getInt(GIT_LAB_ID);
+        String username = rs.getString(USERNAME);
+        String name = rs.getString(NAME);
+        String password = rs.getString(TOKEN);
+        String email = rs.getString(EMAIL);
+        String gitLabToken = rs.getString(GIT_LAB_ID);
+        boolean display = rs.getBoolean(DISPLAY);
+        List<RoleEnum> roleList = rudb.getRoleList(id);
+
+        User user = new User();
+        user.setId(id);
+        user.setGitLabId(gitLabId);
+        user.setUsername(username);
+        user.setName(name);
+        user.setPassword(password);
+        user.setEmail(email);
+        user.setGitLabToken(gitLabToken);
+        user.setDisplay(display);
+        user.setRole(roleList);
+        users.add(user);
       }
-
-    } catch (SQLException e) {
+    } catch (Exception e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      try { rs.close(); } catch (Exception e) { LOGGER.error(e.getMessage()); }
+      try { stmt.close(); } catch (Exception e) { LOGGER.error(e.getMessage()); }
+      try { conn.close(); } catch (Exception e) { LOGGER.error(e.getMessage()); }
     }
     return users;
   }
@@ -362,8 +446,14 @@ public class UserDbManager {
     boolean isExist = false;
     String query = "SELECT count(*) FROM User WHERE username = ?";
 
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(query)) {
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+
+    try {
+
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(query);
+
       preStmt.setString(1, username);
       try (ResultSet rs = preStmt.executeQuery()) {
         rs.next();
@@ -374,6 +464,9 @@ public class UserDbManager {
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      try { preStmt.close(); } catch (Exception e) { LOGGER.error(e.getMessage()); }
+      try { conn.close(); } catch (Exception e) { LOGGER.error(e.getMessage()); }
     }
     return isExist;
   }
@@ -388,8 +481,14 @@ public class UserDbManager {
     boolean isExist = false;
     String query = "SELECT count(*) FROM User WHERE email = ?";
 
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(query)) {
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+
+    try {
+
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(query);
+
       preStmt.setString(1, email);
       try (ResultSet rs = preStmt.executeQuery()) {
         rs.next();
@@ -400,6 +499,9 @@ public class UserDbManager {
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      try { preStmt.close(); } catch (Exception e) { LOGGER.error(e.getMessage()); }
+      try { conn.close(); } catch (Exception e) { LOGGER.error(e.getMessage()); }
     }
     return isExist;
   }
@@ -413,8 +515,15 @@ public class UserDbManager {
   public String getUsername(int id) {
     String name = "";
     String query = "SELECT username FROM User WHERE id = ?";
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(query)) {
+
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+
+    try {
+
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(query);
+
       preStmt.setInt(1, id);
       try (ResultSet rs = preStmt.executeQuery();) {
         while (rs.next()) {
@@ -424,6 +533,9 @@ public class UserDbManager {
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      try { preStmt.close(); } catch (Exception e) { LOGGER.error(e.getMessage()); }
+      try { conn.close(); } catch (Exception e) { LOGGER.error(e.getMessage()); }
     }
     return name;
   }
@@ -436,14 +548,22 @@ public class UserDbManager {
    */
   public void deleteUser(int id) {
     String query = "DELETE FROM ProgEdu.User WHERE id = ?";
-    try (Connection conn = database.getConnection();
-         PreparedStatement preStmt = conn.prepareStatement(query)) {
+
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(query);
 
       preStmt.setInt(1, id);
       preStmt.executeUpdate();
 
     } catch (SQLException e) {
       e.printStackTrace();
+    } finally {
+      try { preStmt.close(); } catch (Exception e) { LOGGER.error(e.getMessage()); }
+      try { conn.close(); } catch (Exception e) { LOGGER.error(e.getMessage()); }
     }
   }
 
