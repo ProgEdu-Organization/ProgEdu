@@ -1,0 +1,34 @@
+{
+	"info": {
+		"_postman_id": "d04452ad-537c-4fc5-aded-4732736c21a5",
+		"name": "PeerReview/status/oneUser(new)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "peer review one user status",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{spring_url}}/peerReview/status/oneUser?username=D1234567",
+					"host": [
+						"{{spring_url}}"
+					],
+					"path": [
+						"peerReview",
+						"status",
+						"oneUser"
+					],
+					"query": [
+						{
+							"key": "username",
+							"value": "D1234567"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
