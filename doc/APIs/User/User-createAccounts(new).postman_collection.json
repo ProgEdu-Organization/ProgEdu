@@ -1,7 +1,7 @@
 {
 	"info": {
-		"_postman_id": "b8b5b0b6-5901-4004-9e57-55150a34dd4d",
-		"name": "New Collection",
+		"_postman_id": "8a965f0f-c58c-4109-9c15-8517fa665311",
+		"name": "User/createAccounts(new)",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [

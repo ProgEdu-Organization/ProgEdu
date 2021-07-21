@@ -1,0 +1,53 @@
+{
+	"info": {
+		"_postman_id": "22eb4a58-11a1-40c7-ba2e-ce1cafce19b9",
+		"name": "Users/deleteUser(new)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "delete user(這因為peer review 有外建 會不能刪除) Copy",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let base_url = pm.environment.get(\"base_url\");\r",
+							"\r",
+							"pm.sendRequest( base_url + \"/LoginAuth?username=root&password=rootrootrootroot\", function (err, response) {\r",
+							"    console.log(\"pre-request script response.json()\");\r",
+							"    console.log(response.json());\r",
+							"    let jwt_token = response.json().token;\r",
+							"\r",
+							"    pm.environment.set(\"jwt_token\", jwt_token);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/webapi/user/postman-test-4?token={{jwt_token}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"webapi",
+						"user",
+						"postman-test-4"
+					],
+					"query": [
+						{
+							"key": "token",
+							"value": "{{jwt_token}}"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
