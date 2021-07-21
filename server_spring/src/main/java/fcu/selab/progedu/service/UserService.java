@@ -10,8 +10,11 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import com.csvreader.CsvReader;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -115,6 +118,59 @@ public class UserService {
       }
     }
     return errorMessage;
+  }
+
+
+  @PostMapping("/upload")
+  public ResponseEntity<Object> createAccounts(@RequestParam("file") MultipartFile uploadedInputStream) {
+
+
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("Access-Control-Allow-Origin", "*");
+
+    List<User> users = new ArrayList<>();
+    String errorMessage = "";
+    try {
+      CsvReader csvReader = new CsvReader(new InputStreamReader(uploadedInputStream.getInputStream(), "BIG5"));
+      csvReader.readHeaders();
+      while (csvReader.readRecord()) {
+        User newUser = new User();
+        String role = csvReader.get("Role");
+        RoleEnum roleEnum = RoleEnum.getRoleEnum(role);
+        List<RoleEnum> roleList = new ArrayList<>();
+        roleList.add(roleEnum);
+        String username = csvReader.get("Username");
+        String password = csvReader.get("Password");
+        String name = csvReader.get("Name");
+        String email = csvReader.get("Email");
+
+        newUser.setDisplay(true);
+        newUser.setUsername(username);
+        newUser.setPassword(password);
+        newUser.setName(name);
+        newUser.setEmail(email);
+        newUser.setRole(roleList);
+        errorMessage = getErrorMessage(users, newUser);
+        if (errorMessage.isEmpty()) {
+          users.add(newUser);
+        } else {
+          break;
+        }
+      }
+      csvReader.close();
+      System.out.println("errorMessage: " + errorMessage);
+      if (errorMessage == null || errorMessage.isEmpty()) {
+        for (User user : users) {
+          register(user);
+          createPreviousAssginment(user.getUsername(), user.getRole());
+        }
+        return new ResponseEntity<>(headers, HttpStatus.OK);
+      } else {
+        return new ResponseEntity<>(errorMessage, headers, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+    } catch (IOException e) {
+      return new ResponseEntity<>("failed !", headers, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
 
