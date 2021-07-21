@@ -610,6 +610,10 @@ public class AssignmentService {
 
   }
 
+  public List<String> getAllAssignmentNames() {
+    return dbManager.getAllAssignmentNames();
+  }
+
 
 
 }
