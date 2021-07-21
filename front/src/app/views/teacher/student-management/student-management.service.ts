@@ -30,7 +30,7 @@ const updateDisplayOptions = ({
 
 export class StudentManagementService {
   GET_USERS_API = UserAPI.getUsers;
-  ADD_ONE_USER_API = environment.SERVER_URL + '/webapi/user/new';
+  ADD_ONE_USER_API = UserAPI.addOneUser;
   ADD_MULTIPLE_USER_API = environment.SERVER_URL + '/webapi/user/upload';
   DISPLAY_API = environment.SERVER_URL + '/webapi/user/display';
   constructor(private addJwtTokenHttpClient: AddJwtTokenHttpClient) { }

@@ -82,6 +82,8 @@ public class UserService {
           @RequestParam("role") String role,
           @RequestParam("isDisplayed") boolean isDisplayed) {
 
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("Access-Control-Allow-Origin", "*");
 
     List<RoleEnum> roleList = new ArrayList<>();
 
@@ -94,12 +96,12 @@ public class UserService {
       try {
         register(user);
         createPreviousAssginment(username, roleList);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(headers, HttpStatus.OK);
       } catch (IOException e) {
-        return new ResponseEntity<>("Failed !", HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>("Failed !", headers, HttpStatus.INTERNAL_SERVER_ERROR);
       }
     } else {
-      return new ResponseEntity<>(errorMessage, HttpStatus.INTERNAL_SERVER_ERROR);
+      return new ResponseEntity<>(errorMessage, headers, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -123,14 +125,18 @@ public class UserService {
           @RequestParam("username") String username,
           @RequestParam("currentPassword") String currentPassword,
           @RequestParam("newPassword") String newPassword) {
+
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("Access-Control-Allow-Origin", "*");
+
     boolean isSame = dbManager.checkPassword(username, currentPassword);
     if (isSame) {
       int gitLabId = dbManager.getGitLabIdByUsername(username);
       gitlabService.updateUserPassword(gitLabId, newPassword);
       dbManager.modifiedUserPassword(username, newPassword);
-      return new ResponseEntity<>(HttpStatus.OK);
+      return new ResponseEntity<>(headers, HttpStatus.OK);
     } else {
-      return new ResponseEntity<>("The current password is wrong", HttpStatus.OK);
+      return new ResponseEntity<>("The current password is wrong", headers, HttpStatus.OK);
     }
   }
 
