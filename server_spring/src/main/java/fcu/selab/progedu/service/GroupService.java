@@ -58,12 +58,9 @@ public class GroupService {
       project.put("id", temp.getId());
       project.put("name", temp.getName());
 
-      String releaseTime;
-      try {
-        releaseTime = dateFormat.format(temp.getReleaseTime());
+      if (temp.getReleaseTime() != null) {
+        String releaseTime = dateFormat.format(temp.getReleaseTime());
         project.put("releaseTime", releaseTime);
-      } catch (Exception e) {
-        e.printStackTrace();
       }
       String createTime = dateFormat.format(temp.getCreateTime());
       String deadline = dateFormat.format(temp.getDeadline());
