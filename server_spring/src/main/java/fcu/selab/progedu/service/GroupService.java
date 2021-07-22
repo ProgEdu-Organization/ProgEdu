@@ -11,6 +11,7 @@ import fcu.selab.progedu.db.service.ProjectDbService;
 import fcu.selab.progedu.db.service.UserDbService;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
+import net.minidev.json.JSONValue;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -83,5 +84,21 @@ public class GroupService {
     jsonObject.put("members", group.getMembers());
     jsonObject.put("project", projectList);
     return new ResponseEntity<Object>(jsonObject, headers, HttpStatus.OK);
+  }
+
+  @GetMapping("")
+  public ResponseEntity<Object> getAllGroup() {
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("Content-Type", "application/json");
+
+    JSONArray jsonArray = new JSONArray();
+    List<Group> groups = gdb.getGroups();
+    for(Group group : groups) {
+      ResponseEntity<Object> responseEntity = getGroup(group.getGroupName());
+      JSONObject jsonObject = (JSONObject) JSONValue.parse(
+          responseEntity.getBody().toString().replaceAll("\"gitLabToken\":null,", ""));
+      jsonArray.add(jsonObject);
+    }
+    return new ResponseEntity<Object>(jsonArray, headers, HttpStatus.OK); 
   }
 }
