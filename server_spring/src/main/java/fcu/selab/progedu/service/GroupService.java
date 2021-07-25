@@ -83,6 +83,11 @@ public class GroupService {
     return new ResponseEntity<Object>(jsonObject, headers, HttpStatus.OK);
   }
 
+  /**
+   * get all commit result.
+   *
+   * @return hw, color, commit
+   */
   @GetMapping("")
   public ResponseEntity<Object> getAllGroup() {
     HttpHeaders headers = new HttpHeaders();
