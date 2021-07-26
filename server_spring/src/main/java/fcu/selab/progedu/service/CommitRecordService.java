@@ -1,6 +1,5 @@
 package fcu.selab.progedu.service;
 
-import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.Date;
 import java.text.SimpleDateFormat;
@@ -99,6 +98,40 @@ public class CommitRecordService {
     }
 
     return new ResponseEntity<Object>(jsonArray, headers, HttpStatus.OK);
+  }
+
+  /**
+   * get all commit record of one student.
+   *
+   * @return homework, commit status, commit number
+   */
+  @GetMapping("oneUser")
+  public ResponseEntity<Object> getOneUserCommitRecord(@RequestParam("username") String username) {
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("Content-Type", "application/json");
+
+    int userId = userDb.getUserIdByUsername(username);
+    JSONArray array = new JSONArray();
+
+    SimpleDateFormat dateFormat = new SimpleDateFormat(
+            "yyyy-MM-dd HH:mm:ss.S");
+
+    for (Assignment assignment : assignmentDb.getAllAssignment()) {
+      int auId = assignmentUserDb.getAuid(assignment.getId(), userId);
+      JSONObject jsonObject = new JSONObject();
+      jsonObject.put("assignmentName", assignment.getName());
+      jsonObject.put("releaseTime", assignment.getReleaseTime());
+
+      org.json.JSONObject lastCommitRecordJson = commitRecordDb.getLastCommitRecord(auId);
+      JSONObject lastCommitRecord = new JSONObject();
+      lastCommitRecord.put("commitNumber", lastCommitRecordJson.get("commitNumber"));
+      lastCommitRecord.put("commitTime", dateFormat.format(lastCommitRecordJson.get("commitTime")));
+      lastCommitRecord.put("status", lastCommitRecordJson.get("status"));
+
+      jsonObject.put("commitRecord",lastCommitRecord);
+      array.add(jsonObject);
+    }
+    return new ResponseEntity<Object>(array, headers, HttpStatus.OK);
   }
 
   /**
