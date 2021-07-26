@@ -139,7 +139,8 @@ public class AndroidPipelineConfig extends JenkinsProjectConfig {
     String[] ordersList = {"None", "None", "None"};
     String[] orderTokens = order.split(", ");
     for (int i = 0; i < orderTokens.length; i++) {
-      ordersList[i] = orderTokens[i];
+      String[] temp = orderTokens[i].split(":");
+      ordersList[i] = temp[0];
     }
     try {
       URL androidPipelineUrl = this.getClass().getResource("/jenkins/android-pipeline");
