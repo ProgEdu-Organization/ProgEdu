@@ -202,8 +202,8 @@ public class AndroidPipelineConfig extends JenkinsProjectConfig {
    * @param command one command
    */
   public String makeStageString(String name, String command) {
-    String result = "\n\t\tstage('" + name + "') {\n\t\t\tsteps {\n\t\t\t\tsh '"+ command + "'"
-          + "\n\t\t\t}\n\t\t}";
+    String result = "\n\t\tstage('" + name + "') {\n\t\t\tsteps {\n\t\t\t\tsh '" + command + "'"
+        + "\n\t\t\t}\n\t\t}";
     return result;
   }
 }
