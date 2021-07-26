@@ -88,7 +88,8 @@ public class AndroidPipelineConfig extends JenkinsProjectConfig {
   private void setJenkinsPipelineWithOrder(String projectUrl, String updateDbUrl,
                                            String username, String projectName, String order) {
 
-    String pipeline = createPipelineWithOrder(projectUrl, updateDbUrl, username, projectName, order);
+    String pipeline = createPipelineWithOrder(projectUrl, updateDbUrl, username, projectName,
+        order);
     this.xmlDocument.getElementsByTagName("script").item(0).setTextContent(pipeline);
   }
 
@@ -175,20 +176,32 @@ public class AndroidPipelineConfig extends JenkinsProjectConfig {
     return newPipeLine;
   }
 
-  public String makeStageString (String name, String[] commands) {
+  /**
+   * make stage string
+   *
+   * @param name stage name
+   * @param commands several commands
+   */
+  public String makeStageString(String name, String[] commands) {
     String start = "\n\t\tstage('" + name + "') {\n\t\t\tsteps {";
     String end = "\n\t\t\t}\n\t\t}";
     String result = start;
     for (String command: commands) {
       String commandString = "\n\t\t\t\tsh '{command}'";
       commandString = commandString.replace("{command}", command);
-      result += commandString;
+      result = result + commandString;
     }
     result += end;
     return result;
   }
 
-  public String makeStageString (String name, String command) {
+  /**
+   * make stage string
+   *
+   * @param name stage name
+   * @param command one command
+   */
+  public String makeStageString(String name, String command) {
     String result = "\n\t\tstage('" + name + "') {\n\t\t\tsteps {\n\t\t\t\tsh '"+ command + "'"
           + "\n\t\t\t}\n\t\t}";
     return result;
