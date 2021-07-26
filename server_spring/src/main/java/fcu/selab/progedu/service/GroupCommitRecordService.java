@@ -2,6 +2,8 @@ package fcu.selab.progedu.service;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Date;
 import fcu.selab.progedu.conn.JenkinsService;
 import fcu.selab.progedu.data.ProjectTypeEnum;
 import fcu.selab.progedu.db.UserDbManager;
@@ -11,6 +13,9 @@ import fcu.selab.progedu.db.service.ProjectGroupDbService;
 import fcu.selab.progedu.status.Status;
 import fcu.selab.progedu.status.StatusAnalysisFactory;
 import fcu.selab.progedu.status.StatusEnum;
+import fcu.selab.progedu.data.CommitRecord;
+import net.minidev.json.JSONObject;
+import net.minidev.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -74,6 +79,45 @@ public class GroupCommitRecordService {
   // userGroupCommit
   public void getCommitRecordByUsername() {
 
+  }
+
+/**
+ * get student build detail info.
+ * @param groupName group name
+ * @param projectName project name
+ * @param currentPage current page
+ * @return build detail
+ */
+  @GetMapping("/{name}/projects/{projectName}/partCommits/{currentPage}")
+  public ResponseEntity<Object> getPartCommitRecord(
+    @PathVariable("name") String groupName,
+    @PathVariable("projectName") String projectName,
+    @PathVariable("currentPage") int currentPage
+  ) {
+    JenkinsService js = JenkinsService.getInstance();
+    JSONArray array = new JSONArray();
+    int pgid = gpdb.getPgid(groupName, projectName);
+    List<CommitRecord> commitRecords = gpdb.getPartCommitRecords(pgid,currentPage);
+    String jobName = groupName + "_" + projectName;
+    int totalCommit = gpdb.getCommitCount(pgid);
+
+    for (CommitRecord commitRecord : commitRecords) {
+      int number = commitRecord.getNumber();
+      String message = js.getCommitMessage(jobName, number);
+      Date time = commitRecord.getTime();
+      String status = commitRecord.getStatus().getType();
+      String committer = commitRecord.getCommitter();
+      JSONObject ob = new JSONObject();
+
+      ob.put("totalCommit", totalCommit);
+      ob.put("number", number);
+      ob.put("status", status.toUpperCase());
+      ob.put("time", time);
+      ob.put("message", message);
+      ob.put("committer", committer);
+      array.add(ob);
+    }
+    return new ResponseEntity<Object>(array, HttpStatus.OK);
   }
 
 
