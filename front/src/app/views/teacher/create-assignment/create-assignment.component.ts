@@ -192,7 +192,7 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
     let tempOrder = order;
     let tempStatusScore = statusScore;
 
-    if (statusScore = this.javaStatusScore) {
+    if (statusScore == this.javaStatusScore || statusScore == this.appStatusScore) {
       sum += Number(statusScore.get('Compile Failure'));
     }
 
