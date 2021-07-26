@@ -46,6 +46,7 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
 
   javaStatusScore = new Map([["Compile Failure", "0"]]);
   webStatusScore = new Map();
+  appStatusScore = new Map([["Compile Failure", "0"]]);
 
   javaStatus = [
     "Unit Test Failure",
@@ -62,11 +63,12 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
   appStatus = [
     "Coding Style Failure",
     "Unit Test Failure",
-    "E2E Test Failure"
+    "UI Test Failure"
   ];
 
   javaOrder = [];
   webOrder = [];
+  appOrder = [];
 
   normalOptions: SortablejsOptions = {
     group: 'normal-group',
@@ -220,6 +222,9 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
     } else if (type == 'web') {
       this.webStatusScore.set(status, $event.target.value);
       console.log(this.webStatusScore);
+    } else if (type == 'android') {
+      this.appStatusScore.set(status, $event.target.value);
+      console.log(this.appStatusScore);
     }
   }
 
@@ -320,6 +325,10 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
     } else if (this.assignment.get('type').value == 'web') {
       tempOrder = this.webOrder;
       tempStatusScore = this.webStatusScore;
+    } else if (this.assignment.get('type').value == 'android') {
+      tempOrder = this.appOrder;
+      tempStatusScore = this.appStatusScore;
+      orderString = "Compile Failure:" + this.appStatusScore.get("Compile Failure") + ", ";
     }
     for (let i = 0; i < tempOrder.length; i++) {
       if (tempStatusScore.get(tempOrder[i]) == undefined) {
@@ -332,10 +341,12 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
       }
     }
     this.assignment.get('assOrder').setValue(orderString);
+
     if (this.assignment.dirty && this.assignment.valid) {
       this.progressModal.show();
       if (!this.peerReviewStatus.isOpen) {
-        if (this.assignment.get('type').value == 'maven' || this.assignment.get('type').value == 'web') {
+        if (this.assignment.get('type').value == 'maven' || this.assignment.get('type').value == 'web'
+            || this.assignment.get('type').value == 'android') {
           this.createService.createAssignmentWithOrder(this.assignment).subscribe(
             (response) => {
               this.router.navigate(['./dashboard/assignmentManagement']);
