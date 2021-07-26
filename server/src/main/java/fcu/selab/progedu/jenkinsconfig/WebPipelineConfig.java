@@ -154,7 +154,8 @@ public class WebPipelineConfig extends JenkinsProjectConfig {
     String[] ordersList = {"None", "None", "None", "None"};
     String[] orderTokens = order.split(", ");
     for (int i = 0; i < orderTokens.length; i++) {
-      ordersList[i] = orderTokens[i];
+      String[] temp = orderTokens[i].split(":");
+      ordersList[i] = temp[0];
     }
     try {
       URL webPipelineUrl = this.getClass().getResource("/jenkins/web-pipeline");
