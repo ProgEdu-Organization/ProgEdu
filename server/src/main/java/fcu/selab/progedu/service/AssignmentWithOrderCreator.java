@@ -14,6 +14,7 @@ import fcu.selab.progedu.db.AssignmentDbManager;
 import fcu.selab.progedu.db.AssignmentUserDbManager;
 import fcu.selab.progedu.db.UserDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
+import fcu.selab.progedu.jenkinsconfig.AndroidPipelineConfig;
 import fcu.selab.progedu.jenkinsconfig.JenkinsProjectConfig;
 import fcu.selab.progedu.jenkinsconfig.JenkinsProjectConfigFactory;
 import fcu.selab.progedu.jenkinsconfig.WebPipelineConfig;
@@ -152,31 +153,17 @@ public class AssignmentWithOrderCreator {
     ProjectTypeEnum projectTypeEnum = ProjectTypeEnum.getProjectTypeEnum(assignmentType);
     addProject(assignmentName, releaseTime, deadline, readMe, projectTypeEnum);
 
-    String[] ordersAndScoresTokens = assignmentOrdersAndScores.split(", ");
-      
-    for (String orderAndScore : ordersAndScoresTokens) {
-      String order = orderAndScore.split(":")[0]; 
-      if (order.equals("Unit Test Failure")) {
-        appendOrder("UNIT_TEST_FAILURE");
-      } else if (order.equals("HTML Failure")) {
-        appendOrder("WEB_HTMLHINT_FAILURE");
-      } else if (order.equals("CSS Failure")) {
-        appendOrder("WEB_STYLELINT_FAILURE");
-      } else if (order.equals("JavaScript Failure")) {
-        appendOrder("WEB_ESLINT_FAILURE");
-      }
-    }
-
     List<User> users = userService.getStudents();
     for (User user : users) {
-      createAssignmentSettingsV2(user.getUsername(), assignmentName);
+      createAssignmentSettingsV2(user.getUsername(), assignmentName, assignmentOrdersAndScores);
     }
 
       // 10. remove project file
     JavaIoUtile.deleteDirectory(new File(uploadDir));
   }
 
-  private void createAssignmentSettingsV2(String username, String assignmentName) {
+  private void createAssignmentSettingsV2(String username, String assignmentName,
+                                          String assignmentOrderAndScores) {
 
     addAuid(username, assignmentName);
     //Todo 以上 addAuid 要改, 因為之後沒有 assignment
@@ -205,7 +192,10 @@ public class AssignmentWithOrderCreator {
         jenkinsProjectConfig = new WebPipelineConfig(projectUrl, updateDbUrl,
                 username, assignmentName,
                 courseConfig.getTomcatServerIp() + "/publicApi/commits/screenshot/updateURL",
-                String.join(", ", ordersList));
+                assignmentOrderAndScores);
+      } else if ( assignmentTypeEnum.equals(ProjectTypeEnum.ANDROID) ) {
+        jenkinsProjectConfig = new AndroidPipelineConfig(projectUrl, updateDbUrl,
+            username, assignmentName, assignmentOrderAndScores);
       } else {
         jenkinsProjectConfig = JenkinsProjectConfigFactory
                 .getJenkinsProjectConfig(assignmentTypeEnum.getTypeName(), projectUrl, updateDbUrl,

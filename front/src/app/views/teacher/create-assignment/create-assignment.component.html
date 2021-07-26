@@ -173,7 +173,7 @@
                         </select>
                     </li>
                     <ul class="list-group sortable" [sortablejs]="javaOrder" [sortablejsOptions]="normalOptions">
-                      <li class="list-group-item" *ngFor="let item of javaOrder; let i = index;">{{ i+2 }}. {{ item }}
+                      <li class="list-group-item" *ngFor="let item of javaOrder; let i = index;">{{ i + 2 }}. {{ item }}
                         <select class="form-control" (change)="selectChangeHandler('maven', item, $event)">
                           <option *ngFor="let op of getScoreOptions(javaOrder, javaStatusScore, item)" value="{{ op }}">{{ op }}%</option>
                         </select>
@@ -212,6 +212,34 @@
             </tab>
             <!---- App ---->
             <tab heading="App" (click)="selectedAssignmentType('Android')">
+              <div class="form-group row">
+                <div class="col-md-3">Assignment Assessment</div>
+                <div class="col-md-3">Status :</div>
+                <div class="col-md-2">Order & Score :</div>       
+              </div>
+              <div class="form-group row">
+                <div class="col-md-3"></div>
+                <div class="col-md-3">
+                  <ul class="list-group sortable" [sortablejs]="appStatus" [sortablejsOptions]="normalOptions">
+                    <li class="list-group-item" *ngFor="let item of appStatus">{{ item }}</li>
+                  </ul>
+                </div>
+                <div class="col-md-2">
+                  <li class="list-group-item sortable" draggable="false" style="cursor: not-allowed; 
+                        background-color: white;">1.&nbsp;Compile Failure
+                        <select class="form-control" (change)="selectChangeHandler('android', 'Compile Failure', $event)">
+                          <option *ngFor="let op of getScoreOptions(appOrder, appStatusScore, 'Compile Failure')" value="{{ op }}">{{ op }}%</option>
+                        </select>
+                    </li>
+                  <ul class="list-group sortable" [sortablejs]="appOrder" [sortablejsOptions]="normalOptions">
+                    <li class="list-group-item" *ngFor="let item of appOrder; let i = index;">{{ i + 2 }}. {{ item }}
+                      <select class="form-control" (change)="selectChangeHandler('android', item, $event)">
+                        <option *ngFor="let op of getScoreOptions(appOrder, appStatusScore, item)" value="{{ op }}">{{ op }}%</option>
+                      </select>
+                    </li>
+                  </ul>
+                </div>
+              </div>
               <div class="form-group row">
                 <label class="col-md-3 col-form-label">Android File</label>
                 <div class="col-md-9">
