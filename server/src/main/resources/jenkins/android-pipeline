@@ -11,27 +11,7 @@ pipeline {
 
                 sh 'chmod +x gradlew'
             }
-        }
-        stage('compile') {
-            steps {
-                sh './gradlew compileDebugJavaWithJavac'
-            }
-        }
-        stage('lint') {
-            steps {
-                sh './gradlew lint'
-            }
-        }
-        stage('checkstyle') {
-            steps {
-                sh './gradlew checkstyle'
-            }
-        }
-        stage('compile') {
-            steps {
-                sh './gradlew compileDebugJavaWithJavac'
-            }
-        }
+        }{other stages}
     }
 
     post {

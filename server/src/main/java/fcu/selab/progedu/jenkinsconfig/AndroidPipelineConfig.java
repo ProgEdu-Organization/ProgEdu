@@ -46,6 +46,32 @@ public class AndroidPipelineConfig extends JenkinsProjectConfig {
 
   }
 
+  /**
+   * AndroidConfig
+   *
+   * @param projectUrl   projectUrl
+   */
+  public AndroidPipelineConfig(String projectUrl, String updateDbUrl,
+                               String username, String projectName, String order) {
+
+    try {
+      Path basePath = Paths.get(this.baseUrl.toURI());
+      File baseFile = basePath.toFile();
+
+      DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+//    factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl",true); // Todo 我不知道這個要不要刪掉, 先註解起來保留
+      DocumentBuilder builder = factory.newDocumentBuilder();
+      this.xmlDocument = builder.parse(baseFile);
+
+      setJenkinsPipelineWithOrder(projectUrl, updateDbUrl, username, projectName, order);
+
+    } catch (Exception e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    }
+
+  }
+
   @Override
   public Document getXmlDocument() {
     return this.xmlDocument;
@@ -56,6 +82,13 @@ public class AndroidPipelineConfig extends JenkinsProjectConfig {
                                   String username, String projectName) {
 
     String pipeline = createPipeline(projectUrl, updateDbUrl, username, projectName);
+    this.xmlDocument.getElementsByTagName("script").item(0).setTextContent(pipeline);
+  }
+
+  private void setJenkinsPipelineWithOrder(String projectUrl, String updateDbUrl,
+                                           String username, String projectName, String order) {
+
+    String pipeline = createPipelineWithOrder(projectUrl, updateDbUrl, username, projectName, order);
     this.xmlDocument.getElementsByTagName("script").item(0).setTextContent(pipeline);
   }
 
@@ -89,5 +122,75 @@ public class AndroidPipelineConfig extends JenkinsProjectConfig {
       LOGGER.error(e.getMessage());
     }
     return newPipeLine;
+  }
+
+  /**
+   * createPipeline
+   *
+   * @param projectUrl   projectUrl
+   * @param updateDbUrl   updateDbUrl
+   * @param username   username
+   * @param projectName   projectName
+   */
+  public String createPipelineWithOrder(String projectUrl, String updateDbUrl,
+                                        String username, String projectName, String order) {
+    String newPipeLine = "";
+    String[] ordersList = {"None", "None", "None"};
+    String[] orderTokens = order.split(", ");
+    for (int i = 0; i < orderTokens.length; i++) {
+      ordersList[i] = orderTokens[i];
+    }
+    try {
+      URL androidPipelineUrl = this.getClass().getResource("/jenkins/android-pipeline");
+      Path androidPipelinePath = Paths.get(androidPipelineUrl.toURI());
+      File androidPipelineFile = androidPipelinePath.toFile();
+
+
+      String pipeLine = JavaIoUtile.readFileToString(androidPipelineFile);
+      pipeLine = pipeLine.replaceFirst("\\{GitLab-url\\}", projectUrl);
+      pipeLine = pipeLine.replaceFirst("\\{ProgEdu-server-updateDbUrl\\}", updateDbUrl);
+      pipeLine = pipeLine.replaceFirst("\\{ProgEdu-user-name\\}", username);
+      pipeLine = pipeLine.replaceFirst("\\{ProgEdu-project-name\\}", projectName);
+
+      //
+      String insertStages = "";
+      for (String temp: ordersList) {
+        if (temp.equals("Compile Failure")) {
+          //insertStages += makeStageString("compile", "./gradlew compileDebugJavaWithJavac");
+          insertStages += makeStageString("lint", "./gradlew lint");
+        } else if (temp.equals("Unit Test Failure")) {
+          insertStages += makeStageString("unit test", "./gradlew testDebugUnitTest");
+        } else if (temp.equals("Coding Style Failure")) {
+          insertStages += makeStageString("checkstyle", "./gradlew checkstyle");
+        }
+      }
+      pipeLine = pipeLine.replaceFirst("\\{other stages\\}", insertStages);
+
+      newPipeLine = pipeLine;
+
+    } catch (Exception e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    }
+    return newPipeLine;
+  }
+
+  public String makeStageString (String name, String[] commands) {
+    String start = "\n\t\tstage('" + name + "') {\n\t\t\tsteps {";
+    String end = "\n\t\t\t}\n\t\t}";
+    String result = start;
+    for (String command: commands) {
+      String commandString = "\n\t\t\t\tsh '{command}'";
+      commandString = commandString.replace("{command}", command);
+      result += commandString;
+    }
+    result += end;
+    return result;
+  }
+
+  public String makeStageString (String name, String command) {
+    String result = "\n\t\tstage('" + name + "') {\n\t\t\tsteps {\n\t\t\t\tsh '"+ command + "'"
+          + "\n\t\t\t}\n\t\t}";
+    return result;
   }
 }
