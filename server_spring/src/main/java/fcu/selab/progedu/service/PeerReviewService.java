@@ -28,6 +28,8 @@ public class PeerReviewService {
   private ReviewSettingDbManager reviewSettingDbManager = ReviewSettingDbManager.getInstance();
   private PairMatchingDbManager pairMatchingDbManager = PairMatchingDbManager.getInstance();
   private UserDbManager userDbManager = UserDbManager.getInstance();
+  private AssignmentUserDbManager assignmentUserDbManager = AssignmentUserDbManager.getInstance();
+  private CommitRecordDbManager commitRecordDbManager = CommitRecordDbManager.getInstance();
 
   private ReviewMetricsDbManager reviewMetricsDbManager = ReviewMetricsDbManager.getInstance();
   private ReviewSettingMetricsDbManager reviewSettingMetricsDbManager = ReviewSettingMetricsDbManager.getInstance();
@@ -122,6 +124,67 @@ public class PeerReviewService {
 
     return count;
   }
+
+  public String reviewedRecordStatus(int auId, int commitRecordCount)
+          throws SQLException {
+    List<PairMatching> pairMatchingList = pairMatchingDbManager.getPairMatchingByAuId(auId);
+    String resultStatus = "INIT";
+
+    if (commitRecordCount == 1) {
+      return resultStatus;
+    }
+
+    for (PairMatching pairMatching : pairMatchingList) {
+      if (pairMatching.getReviewStatusEnum().equals(ReviewStatusEnum.UNCOMPLETED)) {
+        resultStatus = "DONE";
+        break;
+      } else if (pairMatching.getReviewStatusEnum().equals(ReviewStatusEnum.COMPLETED)) {
+        resultStatus = "REVIEWED";
+      }
+    }
+
+    return resultStatus;
+  }
+
+  /**
+   * get one user commit result which is assigned by peer review
+   *
+   * @param username user name
+   */
+  @GetMapping("record/oneUser")
+  public ResponseEntity<Object> getReviewedRecord(@RequestParam("username") String username) {
+
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("Content-Type", "application/json");
+    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+    try {
+      List<Assignment> assignmentList = assignmentDbManager.getAllReviewAssignment();
+      JSONArray array = new JSONArray();
+      for (Assignment assignment : assignmentList) {
+        int auId = assignmentUserDbManager.getAuid(assignment.getId(), userId);
+        ReviewSetting reviewSetting = reviewSettingDbManager.getReviewSetting(assignment.getId());
+        JSONObject ob = new JSONObject();
+        int commitRecordCount = commitRecordDbManager.getCommitCount(auId);
+        ob.put("assignmentName", assignment.getName());
+        ob.put("releaseTime", dateFormat.format(assignment.getReleaseTime()));
+        ob.put("deadline", dateFormat.format(assignment.getDeadline()));
+        ob.put("commitRecordCount", commitRecordCount);
+        ob.put("reviewReleaseTime", dateFormat.format(reviewSetting.getReleaseTime()));
+        ob.put("reviewDeadline", dateFormat.format(reviewSetting.getDeadline()));
+        ob.put("reviewStatus", reviewedRecordStatus(auId, commitRecordCount));
+        array.add(ob);
+      }
+      return new ResponseEntity<Object>(array, headers, HttpStatus.OK);
+    } catch (Exception e) {
+      return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+
+
+
+
+
 
 	/**
    * check reviewer status of his/her review job
