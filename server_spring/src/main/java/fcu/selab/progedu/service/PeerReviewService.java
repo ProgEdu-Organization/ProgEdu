@@ -12,10 +12,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Date;
 import java.sql.SQLException;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
+
 import java.text.SimpleDateFormat;
 
 @RestController
@@ -232,6 +232,64 @@ public class PeerReviewService {
     } catch (Exception e) {
       return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
+  }
+
+  /**
+   * get review details from specific reviewer, assignment name and page
+   *
+   * @param username       user name
+   * @param assignmentName assignment name
+   * @param userId         user id
+   * @param page           page
+   */
+  @GetMapping("status/detail/page")
+  public ResponseEntity<Object> getReviewedStatusDetailPagination(@RequestParam("username") String username,
+                                                    @RequestParam("assignmentName")
+                                                            String assignmentName,
+                                                    @RequestParam("userId") int userId,
+                                                    @RequestParam("page") int page) {
+
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("Content-Type", "application/json");
+    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+
+    ResponseEntity<Object> response = null;
+
+    try {
+      JSONObject result = new JSONObject();
+      JSONArray array = new JSONArray();
+      int reviewId = userDbManager.getUserIdByUsername(username);
+      int assignmentId = assignmentDbManager.getAssignmentIdByName(assignmentName);
+      int auId = assignmentUserDbManager.getAuid(assignmentId, userId);
+      PairMatching pairMatching = pairMatchingDbManager
+              .getPairMatchingByAuIdReviewId(auId, reviewId);
+      int order = reviewRecordDbManager.getLatestReviewOrder(pairMatching.getId());
+      List<ReviewRecord> reviewRecordList = reviewRecordDbManager
+              .getReviewRecordByPairMatchingId(pairMatching.getId(), order - page + 1);
+
+      result.put("id", userId);
+      result.put("name", userDbManager.getUsername(userId));
+      for (ReviewRecord reviewRecord : reviewRecordList) {
+        JSONObject ob = new JSONObject();
+        int metricsId = reviewSettingMetricsDbManager
+                .getReviewMetricsIdByRsmId(reviewRecord.getRsmId());
+        ob.put("score", reviewRecord.getScore());
+        ob.put("feedback", reviewRecord.getFeedback());
+        ob.put("time", dateFormat.format(reviewRecord.getTime()));
+        ob.put("metrics", reviewMetricsDbManager.getReviewMetricsById(metricsId));
+        int scoreModeId = reviewMetricsDbManager.getScoreModeIdById(metricsId);
+        ob.put("scoreMode", scoreModeDbManager.getScoreModeDescById(scoreModeId).getTypeName());
+        array.add(ob);
+      }
+      result.put("totalCount", order);
+      result.put("pagination", page);
+      result.put("Detail", array);
+
+      response = new ResponseEntity<Object>(result, headers, HttpStatus.OK);
+    } catch (Exception e) {
+      response = new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+    return response;
   }
 
   /**
