@@ -1,7 +1,5 @@
 package fcu.selab.progedu.service;
 
-import javax.ws.rs.core.Response;
-
 import fcu.selab.progedu.data.*;
 import fcu.selab.progedu.db.*;
 
@@ -236,10 +234,75 @@ public class PeerReviewService {
     }
   }
 
+  /**
+   * get user's hw detail which had been reviewed
+   *
+   * @param username       user name
+   * @param assignmentName assignment name
+   */
+  @GetMapping("record/detail")
+  public ResponseEntity<Object> getReviewedRecordDetail(@RequestParam("username") String username,
+                                                        @RequestParam("assignmentName") String assignmentName) {
 
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("Content-Type", "application/json");
 
+    ResponseEntity<Object> response = null;
+    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
 
+    try {
+      org.json.JSONObject result = new org.json.JSONObject();
+      org.json.JSONArray array = new org.json.JSONArray();
+      int userId = userDbManager.getUserIdByUsername(username);
+      int assignmentId = assignmentDbManager.getAssignmentIdByName(assignmentName);
+      ReviewSetting reviewSetting = reviewSettingDbManager.getReviewSetting(assignmentId);
+      int auId = assignmentUserDbManager.getAuid(assignmentId, userId);
+      List<PairMatching> pairMatchingList = pairMatchingDbManager.getPairMatchingByAuId(auId);
 
+      for (PairMatching pairMatching : pairMatchingList) {
+        org.json.JSONObject reviewer = new org.json.JSONObject();
+        org.json.JSONArray reviewDetailArray = new org.json.JSONArray();
+        int order = reviewRecordDbManager.getLatestReviewOrder(pairMatching.getId());
+        List<ReviewRecord> reviewRecordList =
+                reviewRecordDbManager.getReviewRecordByPairMatchingId(pairMatching.getId(), order);
+
+        reviewer.put("id", pairMatching.getReviewId());
+        reviewer.put("name", userDbManager.getUsername(pairMatching.getReviewId()));
+        if (reviewRecordList.isEmpty()) {
+          reviewer.put("status", false);
+        } else {
+          reviewer.put("status", true);
+          for (ReviewRecord reviewRecord : reviewRecordList) {
+            org.json.JSONObject ob = new org.json.JSONObject();
+            int metricsId = reviewSettingMetricsDbManager
+                    .getReviewMetricsIdByRsmId(reviewRecord.getRsmId());
+            ob.put("score", reviewRecord.getScore());
+            ob.put("feedback", reviewRecord.getFeedback());
+            ob.put("time", reviewRecord.getTime());
+            ob.put("metrics", reviewMetricsDbManager.getReviewMetricsById(metricsId));
+            int scoreModeId = reviewMetricsDbManager.getScoreModeIdById(metricsId);
+            ob.put("scoreMode", scoreModeDbManager.getScoreModeDescById(scoreModeId).getTypeName());
+            reviewDetailArray.put(ob);
+          }
+          reviewer.put("totalCount", order);
+          reviewer.put("Detail", reviewDetailArray);
+        }
+        reviewer.put("reviewReleaseTime", dateFormat.format(reviewSetting.getReleaseTime()));
+        reviewer.put("reviewDeadline", dateFormat.format(reviewSetting.getDeadline()));
+
+        array.put(reviewer);
+      }
+
+      result.put("allRecordDetail", array);
+
+      response = new ResponseEntity<Object>(result.toString(),headers,HttpStatus.OK);
+    } catch (Exception e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+      response = new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+    return response;
+  }
 	/**
    * check reviewer status of his/her review job
    *
