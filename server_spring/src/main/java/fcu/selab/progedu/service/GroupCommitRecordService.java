@@ -1,8 +1,13 @@
 package fcu.selab.progedu.service;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.List;
+
 import fcu.selab.progedu.conn.JenkinsService;
+import fcu.selab.progedu.data.CommitRecord;
+import fcu.selab.progedu.data.GroupProject;
 import fcu.selab.progedu.data.ProjectTypeEnum;
 import fcu.selab.progedu.db.UserDbManager;
 import fcu.selab.progedu.db.service.GroupDbService;
@@ -11,6 +16,8 @@ import fcu.selab.progedu.db.service.ProjectGroupDbService;
 import fcu.selab.progedu.status.Status;
 import fcu.selab.progedu.status.StatusAnalysisFactory;
 import fcu.selab.progedu.status.StatusEnum;
+import net.minidev.json.JSONArray;
+import net.minidev.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -73,6 +80,43 @@ public class GroupCommitRecordService {
 
   // userGroupCommit
   public void getCommitRecordByUsername() {
+
+  }
+
+  /**
+   * get all commit record of one student.
+   *
+   * @param groupName group name
+   * @return homework, commit status, commit number
+   */
+  @GetMapping("/{name}/commits/result")
+  public ResponseEntity<Object> getResult(@PathVariable("name") String groupName) {
+
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("Content-Type", "application/json");
+
+    JSONArray array = new JSONArray();
+    JSONObject ob = new JSONObject();
+
+    SimpleDateFormat dateFormat = new SimpleDateFormat(
+            "yyyy-MM-dd HH:mm:ss.S");
+
+    List<Integer> pgids = gpdb.getPgids(groupName);
+    for (int pgid : pgids) {
+      GroupProject project = gpdb.getProject(pgid);
+
+      ob.put("name", project.getName());
+      CommitRecord cr = gpdb.getCommitResult(pgid);
+
+      ob.put("releaseTime", dateFormat.format(project.getReleaseTime()));
+      if (cr != null) {
+        ob.put("number", cr.getNumber());
+        ob.put("status", cr.getStatus().getType());
+      }
+      array.add(ob);
+    }
+
+    return new ResponseEntity<Object>(array, headers, HttpStatus.OK);
 
   }
 
