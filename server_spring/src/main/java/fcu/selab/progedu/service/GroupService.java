@@ -15,8 +15,14 @@ import net.minidev.json.JSONValue;
 import org.gitlab.api.models.GitlabAccessLevel;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.gitlab.api.models.GitlabAccessLevel;
 
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -87,6 +93,27 @@ public class GroupService {
     jsonObject.put("project", projectList);
     return new ResponseEntity<Object>(jsonObject, headers, HttpStatus.OK);
   }
+
+  @PostMapping("/{name}/members")
+  public ResponseEntity<Object> addMembers(
+          @RequestParam("name") String name, @RequestParam("members") List<String> members) {
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("Content-Type", "application/json");
+    int groupGitLabId = gdb.getGitlabId(name);
+    for (String member : members) {
+      int gitlabId = udb.getGitLabId(member);
+      gitlabService.addMember(groupGitLabId, gitlabId, GitlabAccessLevel.Master);
+      gdb.addMember(member, name);
+    }
+    return new ResponseEntity<Object>(headers, HttpStatus.OK);
+  }
+
+
+
+
+
+
+
 
   /**
    * get all commit result.
