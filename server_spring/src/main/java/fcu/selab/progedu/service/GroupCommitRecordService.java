@@ -4,10 +4,11 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-
+import javax.ws.rs.core.Response;
 import fcu.selab.progedu.conn.JenkinsService;
 import fcu.selab.progedu.data.CommitRecord;
 import fcu.selab.progedu.data.GroupProject;
+import fcu.selab.progedu.data.Group;
 import fcu.selab.progedu.data.ProjectTypeEnum;
 import fcu.selab.progedu.db.UserDbManager;
 import fcu.selab.progedu.db.service.GroupDbService;
@@ -23,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,6 +39,28 @@ public class GroupCommitRecordService {
   private ProjectDbService gpdb = ProjectDbService.getInstance();
   private ProjectGroupDbService pgdb = ProjectGroupDbService.getInstance();
   private static final Logger LOGGER = LoggerFactory.getLogger(GroupCommitRecordService.class);
+
+  /**
+   * get all commit result.
+   *
+   * @return hw, color, commit
+   */
+  @GetMapping("/commits")
+  public ResponseEntity<Object> getAllGroupCommitRecord() {
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("Content-Type", "application/json");
+    JSONArray array = new JSONArray();
+    List<Group> groups = gdb.getGroups();
+    for (Group group : groups) {
+      ResponseEntity<Object> response = getResult(group.getGroupName());
+      JSONObject ob = new JSONObject();
+      ob.put("groupName", group.getGroupName());
+      ob.put("commitRecord", response.getBody());
+      array.add(ob);
+    }
+    return new ResponseEntity<Object>(array, headers, HttpStatus.OK);
+  }
+
 
   /**
    * update user assignment commit record to DB.
@@ -71,11 +95,6 @@ public class GroupCommitRecordService {
     String feedBackMessage = statusAnalysis.tojsonArray(feedBacks);
 
     return new ResponseEntity<Object>(feedBackMessage, headers, HttpStatus.OK);
-  }
-
-  // groupsCommit
-  public void getAllGroupCommitRecord() {
-
   }
 
   // userGroupCommit
