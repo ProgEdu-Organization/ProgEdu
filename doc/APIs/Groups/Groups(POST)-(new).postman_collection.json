@@ -1,0 +1,66 @@
+{
+	"info": {
+		"_postman_id": "028abde4-b8d6-42a6-aa8a-19fa7d894476",
+		"name": "Groups/(new)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "create new group",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "name",
+							"value": "testGp06",
+							"type": "text"
+						},
+						{
+							"key": "projectName",
+							"value": "testGp06",
+							"type": "text"
+						},
+						{
+							"key": "projectType",
+							"value": "web",
+							"type": "text"
+						},
+						{
+							"key": "leader",
+							"value": "D1234567",
+							"type": "text"
+						},
+						{
+							"key": "member",
+							"value": "D1234567",
+							"type": "text"
+						},
+						{
+							"key": "member",
+							"value": "apiTest",
+							"type": "text"
+						},
+						{
+							"key": "member",
+							"value": "postman-test",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{spring_url}}/groups",
+					"host": [
+						"{{spring_url}}"
+					],
+					"path": [
+						"groups"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
