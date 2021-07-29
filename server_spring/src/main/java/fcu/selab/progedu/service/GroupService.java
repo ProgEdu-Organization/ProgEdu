@@ -12,13 +12,12 @@ import fcu.selab.progedu.db.service.UserDbService;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
+import org.gitlab.api.models.GitlabAccessLevel;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.gitlab.api.models.GitlabGroup;
 
 @RestController
 @RequestMapping(value = "/groups")
@@ -36,6 +35,36 @@ public class GroupService {
   private UserDbService udb = UserDbService.getInstance();
   private GroupUserDbManager gudb = GroupUserDbManager.getInstance();
   private AssignmentService projectService = new AssignmentService();
+
+  /**
+   * create gitlab group
+   *
+   * @param name group name
+   * @param leader the username of team leader
+   * @param members the members of group
+   * @param projectType project type
+   * @param projectName project name
+   * @return response
+   */
+  @PostMapping("")
+  public ResponseEntity<Object> createGroup(
+          @RequestParam("name") String name,
+          @RequestParam("leader") String leader,
+          @RequestParam("member") List<String> members,
+          @RequestParam("projectType") String projectType,
+          @RequestParam("projectName") String projectName) {
+
+
+    GitlabGroup gitlabGroup = gitlabService.createGroup(name);
+    int groupGitLabId = gitlabGroup.getId();
+    members.remove(leader);
+    int leaderGitlabId = udb.getGitLabId(leader);
+    gitlabService.addMember(groupGitLabId, leaderGitlabId, GitlabAccessLevel.Owner);
+    gdb.addGroup(groupGitLabId, name, leader);
+    gdb.addMember(leader, name);
+
+    
+  }
 
   /**
    * get group info
@@ -83,6 +112,11 @@ public class GroupService {
     return new ResponseEntity<Object>(jsonObject, headers, HttpStatus.OK);
   }
 
+  /**
+   * get all commit result.
+   *
+   * @return hw, color, commit
+   */
   @GetMapping("")
   public ResponseEntity<Object> getAllGroup() {
     HttpHeaders headers = new HttpHeaders();
