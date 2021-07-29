@@ -13,23 +13,15 @@ import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 import org.gitlab.api.models.GitlabAccessLevel;
+import org.gitlab.api.models.GitlabGroup;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.gitlab.api.models.GitlabAccessLevel;
-
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 @RestController
 @RequestMapping(value = "/groups")
@@ -47,6 +39,43 @@ public class GroupService {
   private UserDbService udb = UserDbService.getInstance();
   private GroupUserDbManager gudb = GroupUserDbManager.getInstance();
   private AssignmentService projectService = new AssignmentService();
+
+  /**
+   * create gitlab group
+   *
+   * @param name group name
+   * @param leader the username of team leader
+   * @param members the members of group
+   * @param projectType project type
+   * @param projectName project name
+   * @return response
+   */
+  @PostMapping("")
+  public ResponseEntity<Object> createGroup(
+          @RequestParam("name") String name,
+          @RequestParam("leader") String leader,
+          @RequestParam("member") List<String> members,
+          @RequestParam("projectType") String projectType,
+          @RequestParam("projectName") String projectName) {
+
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("Access-Control-Allow-Origin", "*");
+
+    GitlabGroup gitlabGroup = gitlabService.createGroup(name);
+    int groupGitLabId = gitlabGroup.getId();
+    members.remove(leader);
+    int leaderGitlabId = udb.getGitLabId(leader);
+    gitlabService.addMember(groupGitLabId, leaderGitlabId, GitlabAccessLevel.Owner);
+    gdb.addGroup(groupGitLabId, name, leader);
+    gdb.addMember(leader, name);
+
+    addMembers(name, members);
+
+    GroupProjectService groupProjectService = new GroupProjectService();
+    groupProjectService.createGroupProjectV2(name, projectName, projectType);
+
+    return new ResponseEntity<Object>(headers, HttpStatus.OK);
+  }
 
   /**
    * get group info
@@ -107,13 +136,6 @@ public class GroupService {
     }
     return new ResponseEntity<Object>(headers, HttpStatus.OK);
   }
-
-
-
-
-
-
-
 
   /**
    * get all commit result.
