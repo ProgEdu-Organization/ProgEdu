@@ -133,10 +133,6 @@ public class GroupCommitRecordService {
     return new ResponseEntity<>(array, HttpStatus.OK);
   }
 
-  // groupsCommit
-  public void getAllGroupCommitRecord() {
-
-  }
 
   /**
    * get all commit record of one student.
