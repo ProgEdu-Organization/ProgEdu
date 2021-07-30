@@ -102,7 +102,7 @@ public class GroupCommitRecordService {
       ob.put("committer", committer);
       array.add(ob);
     }
-    return new ResponseEntity<>(array.toString(), HttpStatus.OK);
+    return new ResponseEntity<>(array, HttpStatus.OK);
   }
 
   // groupsCommit
