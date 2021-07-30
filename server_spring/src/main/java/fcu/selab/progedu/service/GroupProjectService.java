@@ -81,7 +81,6 @@ public class GroupProjectService {
 
     // 4 create template
     String filePath = tomcatService.storeWebFileToServer();
-    System.out.println(filePath);
     zipHandler.unzipFile(filePath, cloneDirectoryPath);
 
     // 5. Add .gitkeep if folder is empty.

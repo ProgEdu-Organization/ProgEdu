@@ -100,7 +100,6 @@ public class TomcatService {
     String fileName = "WebQuickStart.zip";
     //String filePath = this.getClass().getResource("/sample/" + fileName).getFile();
     String filePath = this.getClass().getClassLoader().getResource("/sample/" + fileName).getFile();
-    System.out.println(filePath);
     File sample = new File(filePath);
     InputStream file;
     try {
