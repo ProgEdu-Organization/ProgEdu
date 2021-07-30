@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Date;
 import javax.ws.rs.core.Response;
 import fcu.selab.progedu.conn.JenkinsService;
 import fcu.selab.progedu.data.CommitRecord;
@@ -17,8 +18,9 @@ import fcu.selab.progedu.db.service.ProjectGroupDbService;
 import fcu.selab.progedu.status.Status;
 import fcu.selab.progedu.status.StatusAnalysisFactory;
 import fcu.selab.progedu.status.StatusEnum;
-import net.minidev.json.JSONArray;
+import fcu.selab.progedu.data.CommitRecord;
 import net.minidev.json.JSONObject;
+import net.minidev.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -96,9 +98,43 @@ public class GroupCommitRecordService {
 
     return new ResponseEntity<Object>(feedBackMessage, headers, HttpStatus.OK);
   }
+  /**
+   * get student build detail info
+   *
+   * @param groupName student id
+   * @param projectName assignment name
+   * @return build detail
+   */
 
-  // userGroupCommit
-  public void getCommitRecordByUsername() {
+  @GetMapping("/{name}/projects/{projectName}/commits")
+  public ResponseEntity<Object> getCommitRecord(
+          @PathVariable("name") String groupName, @PathVariable("projectName") String projectName){
+    JenkinsService js = JenkinsService.getInstance();
+    List<JSONObject> array = new ArrayList<>();
+    int pgid = gpdb.getPgid(groupName, projectName);
+    List<CommitRecord> commitRecords = gpdb.getCommitRecords(pgid);
+    String jobName = groupName + "_" + projectName;
+    for (CommitRecord commitRecord : commitRecords) {
+      int number = commitRecord.getNumber();
+      String message = js.getCommitMessage(jobName, number);
+      Date time = commitRecord.getTime();
+      String status = commitRecord.getStatus().getType();
+      String committer = commitRecord.getCommitter();
+
+      JSONObject ob = new JSONObject();
+
+      ob.put("number", number);
+      ob.put("status", status.toUpperCase());
+      ob.put("time", time.toString());
+      ob.put("message", message);
+      ob.put("committer", committer);
+      array.add(ob);
+    }
+    return new ResponseEntity<>(array, HttpStatus.OK);
+  }
+
+  // groupsCommit
+  public void getAllGroupCommitRecord() {
 
   }
 
