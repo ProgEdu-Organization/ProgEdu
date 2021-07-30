@@ -171,5 +171,44 @@ public class GroupCommitRecordService {
 
   }
 
+/**
+ * get student build detail info.
+ * @param groupName group name
+ * @param projectName project name
+ * @param currentPage current page
+ * @return build detail
+ */
+  @GetMapping("/{name}/projects/{projectName}/partCommits/{currentPage}")
+  public ResponseEntity<Object> getPartCommitRecord(
+    @PathVariable("name") String groupName,
+    @PathVariable("projectName") String projectName,
+    @PathVariable("currentPage") int currentPage
+  ) {
+    JenkinsService js = JenkinsService.getInstance();
+    JSONArray array = new JSONArray();
+    int pgid = gpdb.getPgid(groupName, projectName);
+    List<CommitRecord> commitRecords = gpdb.getPartCommitRecords(pgid,currentPage);
+    String jobName = groupName + "_" + projectName;
+    int totalCommit = gpdb.getCommitCount(pgid);
+
+    for (CommitRecord commitRecord : commitRecords) {
+      int number = commitRecord.getNumber();
+      String message = js.getCommitMessage(jobName, number);
+      Date time = commitRecord.getTime();
+      String status = commitRecord.getStatus().getType();
+      String committer = commitRecord.getCommitter();
+      JSONObject ob = new JSONObject();
+
+      ob.put("totalCommit", totalCommit);
+      ob.put("number", number);
+      ob.put("status", status.toUpperCase());
+      ob.put("time", time);
+      ob.put("message", message);
+      ob.put("committer", committer);
+      array.add(ob);
+    }
+    return new ResponseEntity<Object>(array, HttpStatus.OK);
+  }
+
 
 }
