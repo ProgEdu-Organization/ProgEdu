@@ -98,13 +98,16 @@ public class TomcatService {
   public String storeWebFileToServer() {
 
     String fileName = "WebQuickStart.zip";
-    String filePath = this.getClass().getResource("/sample/" + fileName).getFile();
+    //String filePath = this.getClass().getResource("/sample/" + fileName).getFile();
+    String filePath = this.getClass().getClassLoader().getResource("/sample/" + fileName).getFile();
+    System.out.println(filePath);
     File sample = new File(filePath);
     InputStream file;
     try {
-      file = new FileInputStream(sample);
+      file = this.getClass().getResourceAsStream("/sample/" + fileName);
+      //file = new FileInputStream(sample);
       return storeFileToUploadsFolder(file, fileName);
-    } catch (FileNotFoundException e) {
+    } catch (Exception e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
     }
