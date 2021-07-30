@@ -12,9 +12,12 @@ import fcu.selab.progedu.db.service.UserDbService;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
+import org.gitlab.api.models.GitlabAccessLevel;
+import org.gitlab.api.models.GitlabGroup;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,6 +39,43 @@ public class GroupService {
   private UserDbService udb = UserDbService.getInstance();
   private GroupUserDbManager gudb = GroupUserDbManager.getInstance();
   private AssignmentService projectService = new AssignmentService();
+
+  /**
+   * create gitlab group
+   *
+   * @param name group name
+   * @param leader the username of team leader
+   * @param members the members of group
+   * @param projectType project type
+   * @param projectName project name
+   * @return response
+   */
+  @PostMapping("")
+  public ResponseEntity<Object> createGroup(
+          @RequestParam("name") String name,
+          @RequestParam("leader") String leader,
+          @RequestParam("member") List<String> members,
+          @RequestParam("projectType") String projectType,
+          @RequestParam("projectName") String projectName) {
+
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("Access-Control-Allow-Origin", "*");
+
+    GitlabGroup gitlabGroup = gitlabService.createGroup(name);
+    int groupGitLabId = gitlabGroup.getId();
+    members.remove(leader);
+    int leaderGitlabId = udb.getGitLabId(leader);
+    gitlabService.addMember(groupGitLabId, leaderGitlabId, GitlabAccessLevel.Owner);
+    gdb.addGroup(groupGitLabId, name, leader);
+    gdb.addMember(leader, name);
+
+    addMembers(name, members);
+
+    GroupProjectService groupProjectService = new GroupProjectService();
+    groupProjectService.createGroupProjectV2(name, projectName, projectType);
+
+    return new ResponseEntity<Object>(headers, HttpStatus.OK);
+  }
 
   /**
    * get group info
@@ -83,6 +123,20 @@ public class GroupService {
     return new ResponseEntity<Object>(jsonObject, headers, HttpStatus.OK);
   }
 
+  @PostMapping("/{name}/members")
+  public ResponseEntity<Object> addMembers(
+          @RequestParam("name") String name, @RequestParam("members") List<String> members) {
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("Content-Type", "application/json");
+    int groupGitLabId = gdb.getGitlabId(name);
+    for (String member : members) {
+      int gitlabId = udb.getGitLabId(member);
+      gitlabService.addMember(groupGitLabId, gitlabId, GitlabAccessLevel.Master);
+      gdb.addMember(member, name);
+    }
+    return new ResponseEntity<Object>(headers, HttpStatus.OK);
+  }
+
   /**
    * get all commit result.
    *
@@ -102,5 +156,37 @@ public class GroupService {
       jsonArray.add(jsonObject);
     }
     return new ResponseEntity<Object>(jsonArray, headers, HttpStatus.OK); 
+  }
+
+  /**
+   * update team leader
+   *
+   * @param name group name
+   * @param leader leader username
+   * @return response
+   */
+  @PutMapping("/{name}/members/{username}")
+  public ResponseEntity<Object> updateLeader(
+          @PathVariable("name") String name, @PathVariable("username") String leader) {
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("Content-Type", "application/json");
+
+    int groupGitLabId = gdb.getGitlabId(name);
+    // update newLeader's AccessLevel to owner
+    int leaderGitlabId = udb.getGitLabId(leader);
+    gitlabService.updateMemberAccessLevel(groupGitLabId, leaderGitlabId, GitlabAccessLevel.Owner);
+
+    String currentLeader = gdb.getLeader(name);
+    int currentLeaderGitlabId = udb.getGitLabId(currentLeader);
+    // update currentLeader's AccessLevel to master
+    gitlabService.updateMemberAccessLevel(
+            groupGitLabId, currentLeaderGitlabId, GitlabAccessLevel.Master);
+    // update db.group leader
+    gdb.updateLeader(name, leader);
+
+    JSONObject result = new JSONObject();
+    result.put("status","success");
+
+    return new ResponseEntity<Object>(result, headers, HttpStatus.OK);
   }
 }

@@ -1,6 +1,5 @@
 package fcu.selab.progedu.service;
 
-import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.Date;
 import java.text.SimpleDateFormat;
@@ -11,11 +10,12 @@ import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import fcu.selab.progedu.status.Status;
+import fcu.selab.progedu.status.StatusAnalysisFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import fcu.selab.progedu.data.CommitRecord;
 import fcu.selab.progedu.conn.GitlabService;
 import fcu.selab.progedu.conn.JenkinsService;
@@ -23,7 +23,10 @@ import fcu.selab.progedu.db.AssignmentUserDbManager;
 import fcu.selab.progedu.db.CommitRecordDbManager;
 import fcu.selab.progedu.db.AssignmentDbManager;
 import fcu.selab.progedu.db.UserDbManager;
-
+import fcu.selab.progedu.db.CommitStatusDbManager;
+import fcu.selab.progedu.db.AssignmentTypeDbManager;
+import fcu.selab.progedu.data.ProjectTypeEnum;
+import java.util.ArrayList;
 
 @RestController
 @RequestMapping(value = "/commits")
@@ -35,6 +38,9 @@ public class CommitRecordService {
   private AssignmentDbManager assignmentDb = AssignmentDbManager.getInstance();
   private UserDbManager userDb = UserDbManager.getInstance();
   private CommitRecordDbManager commitRecordDb = CommitRecordDbManager.getInstance();
+  private CommitStatusDbManager csDb = CommitStatusDbManager.getInstance();
+//  private CommitRecordDbManager db = CommitRecordDbManager.getInstance();
+//  private AssignmentUserDbManager auDb = AssignmentUserDbManager.getInstance();
   private static final Logger LOGGER = LoggerFactory.getLogger(CommitRecordService.class);
 
   /**
@@ -102,6 +108,40 @@ public class CommitRecordService {
   }
 
   /**
+   * get all commit record of one student.
+   *
+   * @return homework, commit status, commit number
+   */
+  @GetMapping("oneUser")
+  public ResponseEntity<Object> getOneUserCommitRecord(@RequestParam("username") String username) {
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("Content-Type", "application/json");
+
+    int userId = userDb.getUserIdByUsername(username);
+    JSONArray array = new JSONArray();
+
+    SimpleDateFormat dateFormat = new SimpleDateFormat(
+            "yyyy-MM-dd HH:mm:ss.S");
+
+    for (Assignment assignment : assignmentDb.getAllAssignment()) {
+      int auId = assignmentUserDb.getAuid(assignment.getId(), userId);
+      JSONObject jsonObject = new JSONObject();
+      jsonObject.put("assignmentName", assignment.getName());
+      jsonObject.put("releaseTime", assignment.getReleaseTime());
+
+      org.json.JSONObject lastCommitRecordJson = commitRecordDb.getLastCommitRecord(auId);
+      JSONObject lastCommitRecord = new JSONObject();
+      lastCommitRecord.put("commitNumber", lastCommitRecordJson.get("commitNumber"));
+      lastCommitRecord.put("commitTime", dateFormat.format(lastCommitRecordJson.get("commitTime")));
+      lastCommitRecord.put("status", lastCommitRecordJson.get("status"));
+
+      jsonObject.put("commitRecord",lastCommitRecord);
+      array.add(jsonObject);
+    }
+    return new ResponseEntity<Object>(array, headers, HttpStatus.OK);
+  }
+
+  /**
    * get a part of student build detail info
    * 
    * @param username       student id
@@ -143,6 +183,46 @@ public class CommitRecordService {
     }
 
     return new ResponseEntity<Object>(jsonArray, headers, HttpStatus.OK);
+  }
+
+  @GetMapping("/feedback")
+  public ResponseEntity<Object> getFeedback(@RequestParam("username") String username,
+                                            @RequestParam("assignmentName") String assignmentName, @RequestParam("number") int number) {
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("Content-Type", "application/json");
+    JenkinsService js = JenkinsService.getInstance();
+    String jobName = username + "_" + assignmentName;
+    String console = js.getConsole(jobName, number);
+    int auId = getAuid(username, assignmentName);
+    String statusType = getStatusTypeName(auId, number);
+
+    ProjectTypeEnum projectTypeEnum = getProjectTypeEnum(assignmentName);
+    Status statusAnalysis = StatusAnalysisFactory.getStatusAnalysis(projectTypeEnum, statusType);
+
+
+    String message = statusAnalysis.extractFailureMsg(console);
+    ArrayList feedBacks = statusAnalysis.formatExamineMsg(message);
+    String feedBackMessage = statusAnalysis.tojsonArray(feedBacks);
+
+    return new ResponseEntity<Object>(feedBackMessage, headers, HttpStatus.OK);
+  }
+
+
+  private int getAuid(String username, String assignmentName) {
+    return assignmentUserDb.getAuid(assignmentDb.getAssignmentIdByName(assignmentName),
+            userDb.getUserIdByUsername(username));
+  }
+
+  private String getStatusTypeName(int auId, int number) {
+    int statusId = commitRecordDb.getCommitRecordStatus(auId, number);
+    return csDb.getStatusNameById(statusId).getType();
+  }
+
+  private ProjectTypeEnum getProjectTypeEnum(String assignmentName) {
+    AssignmentDbManager adb = AssignmentDbManager.getInstance();
+    AssignmentTypeDbManager atdb = AssignmentTypeDbManager.getInstance();
+    int typeId = adb.getAssignmentTypeId(assignmentName);
+    return atdb.getTypeNameById(typeId);
   }
 
   public void getAutoAssessment() {
