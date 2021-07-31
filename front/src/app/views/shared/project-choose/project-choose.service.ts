@@ -4,11 +4,13 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import {AddJwtTokenHttpClient} from '../../../services/add-jwt-token.service';
 
+import { CommitRecordAPI } from '../../../api/CommitRecordAPI';
+
 @Injectable({
   providedIn: 'root'
 })
 export class ProjectChoosedService {
-  GITLAB_URL_API = environment.SERVER_URL + '/webapi/commits/gitLab';
+  GITLAB_URL_API = CommitRecordAPI.getGitLabURL;
   SCREENSHOT_API = environment.SERVER_URL + '/publicApi/groups/commits/screenshot/getScreenshotURL';
 
   constructor(private addJwtTokenHttpClient: AddJwtTokenHttpClient) { }

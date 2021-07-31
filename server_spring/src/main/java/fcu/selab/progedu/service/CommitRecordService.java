@@ -55,7 +55,9 @@ public class CommitRecordService {
           @RequestParam("assignmentName") String assignmentName) {
     HttpHeaders headers = new HttpHeaders();
     headers.add("Content-Type", "application/json");
-    
+    headers.add("Access-Control-Allow-Origin", "*");
+
+
     String projectUrl = gitlabService.getProjectUrl(username, assignmentName);
 
     JSONObject gitLabEntity = new JSONObject();
@@ -75,6 +77,7 @@ public class CommitRecordService {
       @RequestParam("username") String username) {
     HttpHeaders headers = new HttpHeaders();
     headers.add("Content-Type", "application/json");
+    headers.add("Access-Control-Allow-Origin", "*");
 
     JSONArray jsonArray = new JSONArray();
     int userId = userDb.getUserIdByUsername(username);
@@ -156,7 +159,8 @@ public class CommitRecordService {
           @RequestParam("currentPage") int currentPage) {
     HttpHeaders headers = new HttpHeaders();
     headers.add("Content-Type", "application/json");
-    
+    headers.add("Access-Control-Allow-Origin", "*");
+
     JSONArray jsonArray = new JSONArray();
     String jobName = username + "_" + assignmentName;
     int aid = assignmentDb.getAssignmentIdByName(assignmentName);
@@ -190,6 +194,8 @@ public class CommitRecordService {
                                             @RequestParam("assignmentName") String assignmentName, @RequestParam("number") int number) {
     HttpHeaders headers = new HttpHeaders();
     headers.add("Content-Type", "application/json");
+    headers.add("Access-Control-Allow-Origin", "*");
+
     JenkinsService js = JenkinsService.getInstance();
     String jobName = username + "_" + assignmentName;
     String console = js.getConsole(jobName, number);
@@ -223,15 +229,6 @@ public class CommitRecordService {
     AssignmentTypeDbManager atdb = AssignmentTypeDbManager.getInstance();
     int typeId = adb.getAssignmentTypeId(assignmentName);
     return atdb.getTypeNameById(typeId);
-  }
-
-  public void getAutoAssessment() {
-
-  }
-
-  // getAssignmentFeedback
-  public void getFeedback() {
-
   }
 
   // getAllStudentCommitRecord
