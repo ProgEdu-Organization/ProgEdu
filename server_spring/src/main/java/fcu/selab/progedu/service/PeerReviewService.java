@@ -11,12 +11,14 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.sql.SQLException;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 
 import java.text.SimpleDateFormat;
+import java.util.TimeZone;
 
 @RestController
 @RequestMapping(value ="/peerReview")
@@ -32,9 +34,88 @@ public class PeerReviewService {
   private ReviewMetricsDbManager reviewMetricsDbManager = ReviewMetricsDbManager.getInstance();
   private ReviewSettingMetricsDbManager reviewSettingMetricsDbManager = ReviewSettingMetricsDbManager.getInstance();
   private ScoreModeDbManager scoreModeDbManager = ScoreModeDbManager.getInstance();
+  private ReviewStatusDbManager reviewStatusDbManager = ReviewStatusDbManager.getInstance();
 
 
   private static final Logger LOGGER = LoggerFactory.getLogger(PeerReviewService.class);
+
+
+  /**
+   * insert review record by specific user, reviewed and assignment name
+   *
+   * @param username       user name
+   * @param reviewedName   reviewed name
+   * @param assignmentName assignment name
+   * @param reviewRecord   review record
+   */
+  @PostMapping("create")
+  public ResponseEntity<Object> createReviewRecord(
+      @RequestParam("username") String username,
+      @RequestParam("reviewedName") String reviewedName,
+      @RequestParam("assignmentName") String assignmentName,
+      @RequestParam("reviewRecord") String reviewRecord) {
+
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("Access-Control-Allow-Origin", "*");
+
+    try {
+      int userId = userDbManager.getUserIdByUsername(username);
+      int reviewedId = userDbManager.getUserIdByUsername(reviewedName);
+      int assignmentId = assignmentDbManager.getAssignmentIdByName(assignmentName);
+      ReviewSetting reviewSetting = reviewSettingDbManager.getReviewSetting(assignmentId);
+      TimeZone.setDefault(TimeZone.getTimeZone("Asia/Taipei"));
+      Date createDate = new Date();
+      int reviewSettingId = reviewSetting.getId();
+      int auId = assignmentUserDbManager.getAuid(assignmentId, reviewedId);
+      int pmId = pairMatchingDbManager.getPairMatchingIdByAuIdReviewId(auId, userId);
+      int reviewOrder = 1;
+
+      // 1. Check this review record is expired or not,
+      //    if it's expired, it won't create new review record
+      if (createDate.compareTo(reviewSetting.getDeadline()) >= 0) {
+        return new ResponseEntity<>("This review has been expired.", headers,
+            HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+
+      // 2. Check this review record has been release or not.
+      //    PS. this won't happened, unless the student used this api in correct way
+      if (createDate.compareTo(reviewSetting.getReleaseTime()) < 0) {
+        return new ResponseEntity<>("This review hasn't been released.", headers,
+            HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+
+      // 3. Upload the status of pair matching
+      int status = reviewStatusDbManager
+          .getReviewStatusIdByStatus(ReviewStatusEnum.COMPLETED.getTypeName());
+      pairMatchingDbManager.updatePairMatchingById(status, pmId);
+
+      // 4. Check which time have been reviewed, and upload the review order
+      if (!reviewRecordDbManager.isFirstTimeReviewRecord(pmId)) {
+        reviewOrder = reviewRecordDbManager.getLatestReviewOrder(pmId) + 1;
+      }
+
+      // 5. Insert new review record onto db
+      org.json.JSONObject jsonObject = new org.json.JSONObject(reviewRecord);
+      org.json.JSONArray jsonArray = jsonObject.getJSONArray("allReviewRecord");
+
+      for (int i = 0; i < jsonArray.length(); i++) {
+        org.json.JSONObject object = jsonArray.getJSONObject(i);
+        int id = object.getInt("id");
+        int score = object.getInt("score");
+        String feedback = object.getString("feedback");
+        int rsmId = reviewSettingMetricsDbManager
+            .getReviewSettingMetricsIdByRsIdRsmId(reviewSettingId, id);
+
+        reviewRecordDbManager
+            .insertReviewRecord(pmId, rsmId, score, createDate, feedback, reviewOrder);
+      }
+
+      return new ResponseEntity<>(headers, HttpStatus.OK);
+    } catch (Exception e) {
+      return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+  }
 
   /**
    * get one user's status of reviewing other's hw
@@ -361,6 +442,7 @@ public class PeerReviewService {
     }
     return response;
   }
+
 	/**
    * check reviewer status of his/her review job
    *
