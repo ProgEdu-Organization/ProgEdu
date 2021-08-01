@@ -7,7 +7,7 @@ public class AndroidPipelineConfigTest {
 
   AndroidPipelineConfig androidPipelineConfig1 = new AndroidPipelineConfig("franky", "franky"
       , "franky", "franky",
-      "Compile Failure, Unit Test Failure, Coding Style Failure, UI Test Failure");
+      "Compile Failure, Unit Test Failure, Coding Style Failure");
   AndroidPipelineConfig androidPipelineConfig2 = new AndroidPipelineConfig("franky", "franky"
       , "franky", "franky");
 

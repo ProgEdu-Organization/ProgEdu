@@ -13,6 +13,7 @@ import java.io.File;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 
 public class AndroidPipelineConfig extends JenkinsProjectConfig {
 
@@ -137,11 +138,11 @@ public class AndroidPipelineConfig extends JenkinsProjectConfig {
   public String createPipelineWithOrder(String projectUrl, String updateDbUrl,
                                         String username, String projectName, String order) {
     String newPipeLine = "";
-    String[] ordersList = {"None", "None", "None", "None"};
+    ArrayList<String> ordersList = new ArrayList<>();
     String[] orderTokens = order.split(", ");
     for (int i = 0; i < orderTokens.length; i++) {
       String[] temp = orderTokens[i].split(":");
-      ordersList[i] = temp[0];
+      ordersList.add(temp[0]);
     }
     try {
       URL androidPipelineUrl = this.getClass().getResource("/jenkins/android-pipeline");
