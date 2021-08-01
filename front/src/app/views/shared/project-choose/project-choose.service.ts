@@ -23,7 +23,7 @@ export class ProjectChoosedService {
   }
 
   getPartCommitResult(groupName: string, projectName: string, currentPage: string): Observable<any> {
-    const GROUP_PART_COMMITS_RESULT_API: string = environment.SERVER_URL + `/webapi/groups/${groupName}/projects/${projectName}/partCommits/${currentPage}`;
+    const GROUP_PART_COMMITS_RESULT_API: string = GroupCommitRecordAPI.getPartCommitRecord(groupName, projectName, currentPage);
     return this.addJwtTokenHttpClient.get(GROUP_PART_COMMITS_RESULT_API);
   }
 
