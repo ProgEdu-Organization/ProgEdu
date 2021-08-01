@@ -149,11 +149,12 @@ public class AssignmentAssessmentDbManager {
 
       preStmt.setInt(1, aid);
       
-        rs = preStmt.executeQuery();
-        while (rs.next()) {
-          int aaId = rs.getInt("id");
-          aaIds.add(aaId);
-        }
+      rs = preStmt.executeQuery();
+      while (rs.next()) {
+        int aaId = rs.getInt("id");
+        aaIds.add(aaId);
+      }
+
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());

@@ -36,14 +36,22 @@ public class ProjectGroupDbManager {
   public void addProjectGroup(int pid, int gid) {
     String sql = "INSERT INTO Project_Group(pId, gId)  VALUES(?, ?)";
 
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
+
       preStmt.setInt(1, pid);
       preStmt.setInt(2, gid);
       preStmt.executeUpdate();
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(preStmt, conn);
     }
   }
 
@@ -57,18 +65,27 @@ public class ProjectGroupDbManager {
   public int getId(int gid, int pid) {
     int pgid = 0;
     String sql = "SELECT id FROM Project_Group WHERE pId=? AND gId=?";
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
+
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
       preStmt.setInt(1, pid);
       preStmt.setInt(2, gid);
-      try (ResultSet rs = preStmt.executeQuery()) {
-        while (rs.next()) {
-          pgid = rs.getInt("id");
-        }
+      rs = preStmt.executeQuery();
+      while (rs.next()) {
+        pgid = rs.getInt("id");
       }
+
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(rs, preStmt, conn);
     }
     return pgid;
   }
@@ -82,19 +99,30 @@ public class ProjectGroupDbManager {
   public List<Integer> getPgids(int gid) {
     List<Integer> pgids = new ArrayList<>();
     String sql = "SELECT id FROM Project_Group WHERE gId=?";
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
+
+
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
       preStmt.setInt(1, gid);
-      try (ResultSet rs = preStmt.executeQuery()) {
-        while (rs.next()) {
-          int pgid = rs.getInt("id");
-          pgids.add(pgid);
-        }
+      rs = preStmt.executeQuery();
+      while (rs.next()) {
+        int pgid = rs.getInt("id");
+        pgids.add(pgid);
       }
+
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(rs, preStmt, conn);
     }
+
     return pgids;
   }
 
@@ -106,18 +134,29 @@ public class ProjectGroupDbManager {
   public List<Integer> getPids(int gid) {
     List<Integer> lsPids = new ArrayList<>();
     String sql = "SELECT pId FROM Project_Group WHERE gId = ?";
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
+
+    try {
+
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
       preStmt.setInt(1, gid);
-      try (ResultSet rs = preStmt.executeQuery()) {
-        while (rs.next()) {
-          int pid = rs.getInt("pId");
-          lsPids.add(pid);
-        }
+
+      rs = preStmt.executeQuery();
+      while (rs.next()) {
+        int pid = rs.getInt("pId");
+        lsPids.add(pid);
       }
+
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(rs, preStmt, conn);
     }
     return lsPids;
   }
@@ -130,18 +169,27 @@ public class ProjectGroupDbManager {
   public List<Integer> getGids(int pid) {
     List<Integer> lsGids = new ArrayList<>();
     String sql = "SELECT gId FROM Project_Group WHERE pId = ?";
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
+
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
       preStmt.setInt(1, pid);
-      try (ResultSet rs = preStmt.executeQuery()) {
-        while (rs.next()) {
-          int gid = rs.getInt("gId");
-          lsGids.add(gid);
-        }
+      rs = preStmt.executeQuery();
+      while (rs.next()) {
+        int gid = rs.getInt("gId");
+        lsGids.add(gid);
       }
+
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(rs, preStmt, conn);
     }
     return lsGids;
   }
@@ -155,17 +203,26 @@ public class ProjectGroupDbManager {
   public int getPid(int id) {
     int gid = 0;
     String sql = "SELECT pId FROM Project_Group WHERE id = ?";
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
+
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
       preStmt.setInt(1, id);
-      try (ResultSet rs = preStmt.executeQuery()) {
-        if (rs.next()) {
-          gid = rs.getInt("pId");
-        }
+      rs = preStmt.executeQuery();
+      if (rs.next()) {
+        gid = rs.getInt("pId");
       }
+
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(rs, preStmt, conn);
     }
     return gid;
   }
@@ -177,13 +234,21 @@ public class ProjectGroupDbManager {
    */
   public void remove(int gid) {
     String sql = "DELETE FROM Project_Group WHERE gId=?";
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
       preStmt.setInt(1, gid);
       preStmt.executeUpdate();
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(preStmt, conn);
     }
   }
 

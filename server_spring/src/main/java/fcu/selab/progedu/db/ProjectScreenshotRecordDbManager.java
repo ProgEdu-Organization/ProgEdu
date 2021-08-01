@@ -36,14 +36,21 @@ public class ProjectScreenshotRecordDbManager {
   public void addProjectScreenshotRecord(int pcrId, String url) {
     String sql = "INSERT INTO Project_Screenshot_Record(pcrid, pngUrl)  VALUES(?, ?)";
 
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
       preStmt.setInt(1, pcrId);
       preStmt.setString(2, url);
       preStmt.executeUpdate();
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(preStmt, conn);
     }
   }
 
@@ -54,13 +61,21 @@ public class ProjectScreenshotRecordDbManager {
    */
   public void deleteProjectScreenshot(int pcrid) {
     String sql = "DELETE FROM Project_Screenshot_Record WHERE pcrid = ?";
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
       preStmt.setInt(1, pcrid);
       preStmt.executeUpdate();
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(preStmt, conn);
     }
   }
 
@@ -72,19 +87,29 @@ public class ProjectScreenshotRecordDbManager {
   public List<String> getScreenshotUrl(int pcrid) {
     String sql = "SELECT pngUrl FROM Project_Screenshot_Record WHERE pcrid = ?";
 
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
+
+    try {
+
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
       preStmt.setInt(1, pcrid);
-      try (ResultSet rs = preStmt.executeQuery()) {
-        List<String> urls = new ArrayList<>();
-        while (rs.next()) {
-          urls.add(rs.getString("pngUrl"));
-        }
-        return urls;
+      rs = preStmt.executeQuery();
+
+      List<String> urls = new ArrayList<>();
+      while (rs.next()) {
+        urls.add(rs.getString("pngUrl"));
       }
+      return urls;
+
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(rs, preStmt, conn);
     }
     return null;
   }
