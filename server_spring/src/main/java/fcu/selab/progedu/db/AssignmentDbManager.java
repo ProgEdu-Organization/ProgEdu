@@ -50,8 +50,14 @@ public class AssignmentDbManager {
     Timestamp deadlineTime = new Timestamp(assignment.getDeadline().getTime());
     Timestamp releaseTime = new Timestamp(assignment.getReleaseTime().getTime());
 
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+
+    try {
+
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
       preStmt.setString(1, assignment.getName());
       preStmt.setTimestamp(2, createTime);
       preStmt.setTimestamp(3, deadlineTime);
@@ -63,6 +69,8 @@ public class AssignmentDbManager {
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(preStmt, conn);
     }
   }
 
@@ -76,8 +84,14 @@ public class AssignmentDbManager {
     Assignment assignment = new Assignment();
     String sql = "SELECT * FROM Assignment WHERE name = ?";
 
-    try (Connection conn = database.getConnection();
-        PreparedStatement stmt = conn.prepareStatement(sql)) {
+    Connection conn = null;
+    PreparedStatement stmt = null;
+
+
+    try {
+      conn = database.getConnection();
+      stmt = conn.prepareStatement(sql);
+
       stmt.setString(1, name);
       try (ResultSet rs = stmt.executeQuery();) {
         while (rs.next()) {
@@ -93,6 +107,8 @@ public class AssignmentDbManager {
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(stmt, conn);
     }
     return assignment;
   }
@@ -106,8 +122,15 @@ public class AssignmentDbManager {
   public String getAssignmentNameById(int aid) {
     String sql = "SELECT name FROM Assignment WHERE id = ?";
     String assignmentName = "";
-    try (Connection conn = database.getConnection();
-        PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+    Connection conn = null;
+    PreparedStatement stmt = null;
+
+    try {
+
+      conn = database.getConnection();
+      stmt = conn.prepareStatement(sql);
+
       stmt.setInt(1, aid);
       try (ResultSet rs = stmt.executeQuery();) {
         while (rs.next()) {
@@ -117,6 +140,8 @@ public class AssignmentDbManager {
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(stmt, conn);
     }
     return assignmentName;
   }
@@ -131,8 +156,16 @@ public class AssignmentDbManager {
     String query = "SELECT id FROM Assignment WHERE name = ?";
     int id = -1;
 
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(query)) {
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+
+
+    try {
+
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(query);
+
+
       preStmt.setString(1, assignmentName);
       try (ResultSet rs = preStmt.executeQuery();) {
         while (rs.next()) {
@@ -142,6 +175,8 @@ public class AssignmentDbManager {
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(preStmt, conn);
     }
     return id;
   }
@@ -166,8 +201,16 @@ public class AssignmentDbManager {
   public int getAssignmentTypeId(String name) {
     int typeId = 0;
     String sql = "SELECT type FROM Assignment WHERE name=?";
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+
+
+    try {
+
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
       preStmt.setString(1, name);
       try (ResultSet rs = preStmt.executeQuery()) {
         while (rs.next()) {
@@ -177,6 +220,8 @@ public class AssignmentDbManager {
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(preStmt, conn);
     }
     return typeId;
   }
@@ -190,8 +235,15 @@ public class AssignmentDbManager {
   public String getTestFileUrl(String assignmentName) {
     String sql = "SELECT zipUrl FROM Assignment WHERE name = ?";
     String zipUrl = "";
-    try (Connection conn = database.getConnection();
-        PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+    Connection conn = null;
+    PreparedStatement stmt = null;
+
+
+    try {
+      conn = database.getConnection();
+      stmt = conn.prepareStatement(sql);
+
       stmt.setString(1, assignmentName);
       try (ResultSet rs = stmt.executeQuery();) {
         while (rs.next()) {
@@ -201,6 +253,8 @@ public class AssignmentDbManager {
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(stmt, conn);
     }
     return zipUrl;
   }
@@ -214,9 +268,19 @@ public class AssignmentDbManager {
     List<Assignment> assignments = new ArrayList<>();
     String sql = "SELECT id, name, createTime, deadline, releaseTime, display, description "
             + "FROM Assignment;";
-    try (Connection conn = database.getConnection();
-        Statement stmt = conn.createStatement();
-        ResultSet rs = stmt.executeQuery(sql)) {
+
+
+    Connection conn = null;
+    Statement stmt = null;
+    ResultSet rs = null;
+
+
+
+    try {
+      conn = database.getConnection();
+      stmt = conn.createStatement();
+      rs = stmt.executeQuery(sql);
+
       while (rs.next()) {
         Assignment assignment = new Assignment();
         assignment.setId(rs.getInt("id"));
@@ -231,6 +295,8 @@ public class AssignmentDbManager {
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(rs, stmt, conn);
     }
     return assignments;
   }
@@ -239,16 +305,25 @@ public class AssignmentDbManager {
    * get all peer review assignment form assignment
    *
    */
-  public List<Assignment> getAllReviewAssignment() throws SQLException {
+  public List<Assignment> getAllReviewAssignment() throws SQLException { // Todo 應該不用丟出錯誤
     String query = "SELECT assign.id, assign.name, assign.createTime, assign.deadline, "
         + "assign.releaseTime, assign.display, assign.description "
         + "FROM Assignment AS assign, Review_Setting AS review "
         + "WHERE assign.id = review.aId ORDER BY assign.id";
     List<Assignment> assignmentList = new ArrayList<>();
 
-    try (Connection conn = database.getConnection();
-         Statement stmt = conn.createStatement();
-         ResultSet rs = stmt.executeQuery(query)) {
+
+    Connection conn = null;
+    Statement stmt = null;
+    ResultSet rs = null;
+
+
+    try {
+
+      conn = database.getConnection();
+      stmt = conn.createStatement();
+      rs = stmt.executeQuery(query);
+
       while (rs.next()) {
         Assignment assignment = new Assignment();
         assignment.setId(rs.getInt("id"));
@@ -260,6 +335,8 @@ public class AssignmentDbManager {
         assignment.setDescription(rs.getString("description"));
         assignmentList.add(assignment);
       }
+    } finally {
+      CloseDBUtil.closeAll(rs, stmt, conn);
     }
     return assignmentList;
   }
@@ -272,9 +349,16 @@ public class AssignmentDbManager {
         + "FROM Assignment WHERE id NOT IN (SELECT aId FROM Review_Setting);";
     List<Assignment> assignmentList = new ArrayList<>();
 
-    try (Connection conn = database.getConnection();
-         Statement stmt = conn.createStatement();
-         ResultSet rs = stmt.executeQuery(query)) {
+    Connection conn = null;
+    Statement stmt = null;
+    ResultSet rs = null;
+
+    try {
+
+      conn = database.getConnection();
+      stmt = conn.createStatement();
+      rs = stmt.executeQuery(query);
+
       while (rs.next()) {
         Assignment assignment = new Assignment();
         assignment.setId(rs.getInt("id"));
@@ -286,6 +370,8 @@ public class AssignmentDbManager {
         assignment.setDescription(rs.getString("description"));
         assignmentList.add(assignment);
       }
+    } finally {
+      CloseDBUtil.closeAll(rs, stmt, conn);
     }
     return assignmentList;
   }
@@ -300,9 +386,15 @@ public class AssignmentDbManager {
     List<String> lsNames = new ArrayList<>();
     String sql = "SELECT name FROM Assignment";
 
-    try (Connection conn = database.getConnection();
-        Statement stmt = conn.createStatement();
-        ResultSet rs = stmt.executeQuery(sql)) {
+    Connection conn = null;
+    Statement stmt = null;
+    ResultSet rs = null;
+
+    try {
+      conn = database.getConnection();
+      stmt = conn.createStatement();
+      rs = stmt.executeQuery(sql);
+
       while (rs.next()) {
         String name = rs.getString("name");
         lsNames.add(name);
@@ -310,6 +402,8 @@ public class AssignmentDbManager {
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(rs, stmt, conn);
     }
     return lsNames;
   }
@@ -321,13 +415,22 @@ public class AssignmentDbManager {
    */
   public void deleteAssignment(String name) {
     String sql = "DELETE FROM Assignment WHERE name = ?";
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+
+
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
       preStmt.setString(1, name);
       preStmt.executeUpdate();
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(preStmt, conn);
     }
   }
 
@@ -346,8 +449,15 @@ public class AssignmentDbManager {
     Timestamp releasetime = new Timestamp(releaseTime.getTime());
     String sql = "UPDATE Assignment SET deadline = ?, releaseTime = ?, description = ?,"
         + "zipChecksum = ? WHERE id = ?";
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+
+    try {
+
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
       preStmt.setTimestamp(1, deadlinetime);
       preStmt.setTimestamp(2, releasetime);
       preStmt.setString(3, readMe);
@@ -357,6 +467,8 @@ public class AssignmentDbManager {
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(preStmt, conn);
     }
   }
 
@@ -373,8 +485,15 @@ public class AssignmentDbManager {
     Timestamp releasetime = new Timestamp(releaseTime.getTime());
     String sql = "UPDATE Assignment SET deadline = ?, releaseTime = ?, "
         + "description = ? WHERE id = ?";
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+
+    try {
+
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
       preStmt.setTimestamp(1, deadlinetime);
       preStmt.setTimestamp(2, releasetime);
       preStmt.setString(3, readMe);
@@ -383,6 +502,8 @@ public class AssignmentDbManager {
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(preStmt, conn);
     }
   }
 
