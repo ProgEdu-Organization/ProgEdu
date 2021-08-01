@@ -203,7 +203,7 @@ public class AndroidPipelineConfig extends JenkinsProjectConfig {
       case "Coding Style Failure":
         String command1 = command.replaceFirst("\\{command\\}", "lint");
         String command2 = command.replaceFirst("\\{command\\}", "checkstyle");
-        command = command + command;
+        command = command1 + command2;
         result = dockerCommand.replaceFirst("\\{android_command\\}", command);
         break;
       case "UI Test Failure":
