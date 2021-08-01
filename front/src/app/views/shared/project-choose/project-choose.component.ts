@@ -36,7 +36,7 @@ export class ProjectChooseComponent implements OnInit {
     this.getProjectUrl(this.groupName, this.projectName);
   }
 
-  getCommitResult() {
+  getCommitResult() { // Todo 這方法好像根本沒用到
     this.projectService.getCommitResult(this.groupName, this.projectName).subscribe(
       (resopnse) => {
         this.commits = resopnse;

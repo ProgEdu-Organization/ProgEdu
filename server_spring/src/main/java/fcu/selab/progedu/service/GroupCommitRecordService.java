@@ -51,6 +51,7 @@ public class GroupCommitRecordService {
   public ResponseEntity<Object> getAllGroupCommitRecord() {
     HttpHeaders headers = new HttpHeaders();
     headers.add("Content-Type", "application/json");
+    headers.add("Access-Control-Allow-Origin", "*");
     JSONArray array = new JSONArray();
     List<Group> groups = gdb.getGroups();
     for (Group group : groups) {
@@ -107,8 +108,12 @@ public class GroupCommitRecordService {
    */
 
   @GetMapping("/{name}/projects/{projectName}/commits")
-  public ResponseEntity<Object> getCommitRecord(
+  public ResponseEntity<Object> getCommitRecord( // Todo 這API 好像沒用到
           @PathVariable("name") String groupName, @PathVariable("projectName") String projectName){
+
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("Access-Control-Allow-Origin", "*");
+
     JenkinsService js = JenkinsService.getInstance();
     List<JSONObject> array = new ArrayList<>();
     int pgid = gpdb.getPgid(groupName, projectName);
@@ -130,7 +135,7 @@ public class GroupCommitRecordService {
       ob.put("committer", committer);
       array.add(ob);
     }
-    return new ResponseEntity<>(array, HttpStatus.OK);
+    return new ResponseEntity<>(array, headers, HttpStatus.OK);
   }
 
 
