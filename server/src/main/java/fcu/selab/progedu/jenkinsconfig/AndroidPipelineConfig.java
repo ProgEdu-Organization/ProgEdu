@@ -137,7 +137,7 @@ public class AndroidPipelineConfig extends JenkinsProjectConfig {
   public String createPipelineWithOrder(String projectUrl, String updateDbUrl,
                                         String username, String projectName, String order) {
     String newPipeLine = "";
-    String[] ordersList = {"None", "None", "None"};
+    String[] ordersList = {"None", "None", "None", "None"};
     String[] orderTokens = order.split(", ");
     for (int i = 0; i < orderTokens.length; i++) {
       String[] temp = orderTokens[i].split(":");
