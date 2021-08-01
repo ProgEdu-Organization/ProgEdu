@@ -521,6 +521,8 @@ public class AssignmentService {
         ordersList.add("wsf");
       } else if (token[0].equals("JavaScript Failure")) {
         ordersList.add("wef");
+      } else if (token[0].equals("UI Test Failure")) {
+        ordersList.add("uitf");
       }
       scoresList.add(token[1]);
     }

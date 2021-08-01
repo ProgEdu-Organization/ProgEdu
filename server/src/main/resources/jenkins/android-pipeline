@@ -12,8 +12,6 @@ pipeline {
                 git branch: 'master',
                 credentialsId: 'gitlab_root',
                 url: '{GitLab-url}'
-
-                sh 'chmod +x gradlew'
             }
         }{other stages}
     }
