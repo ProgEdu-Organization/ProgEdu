@@ -16,6 +16,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import fcu.selab.progedu.data.User;
 import fcu.selab.progedu.data.CommitRecord;
 import fcu.selab.progedu.conn.GitlabService;
 import fcu.selab.progedu.conn.JenkinsService;
@@ -45,7 +46,7 @@ public class CommitRecordService {
 
   /**
    * get GitLab project url
-   * 
+   *
    * @param username       username
    * @param assignmentName assignmentName
    */
@@ -146,7 +147,7 @@ public class CommitRecordService {
 
   /**
    * get a part of student build detail info
-   * 
+   *
    * @param username       student id
    * @param assignmentName assignment name
    * @param currentPage current page
@@ -232,7 +233,41 @@ public class CommitRecordService {
   }
 
   // getAllStudentCommitRecord
-  public void getAllUsersCommitRecord() {
+  /**
+   * get all student commit record.
+   * @return commit record
+   */
+  @GetMapping("/allUsers")
+  public ResponseEntity<Object> getAllUsersCommitRecord() {
+
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("Content-Type", "application/json");
+
+    try{
+      JSONArray array = new JSONArray();
+      JSONObject result = new JSONObject();
+      List<User> users = userDb.getAllUsers();
+
+      for (User user : users) {
+        String username = user.getUsername();
+        ResponseEntity<Object> userCommitRecord = getOneUserCommitRecord(username);
+        JSONObject entity = new JSONObject();
+
+        entity.put("name", user.getName());
+        entity.put("username", user.getUsername());
+        entity.put("display", user.getDisplay());
+        entity.put("commitReocord", userCommitRecord.getBody());
+
+        array.add(entity);
+      }
+      result.put("allUsersCommitRecord", array);
+
+      return new ResponseEntity<Object>(result, HttpStatus.OK);
+    } catch (Exception e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+      return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 
   }
 
