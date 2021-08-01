@@ -2,13 +2,6 @@ package fcu.selab.progedu.service;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
-import fcu.selab.progedu.conn.GitlabService;
-import fcu.selab.progedu.data.Group;
-import fcu.selab.progedu.data.GroupProject;
-import fcu.selab.progedu.db.GroupUserDbManager;
-import fcu.selab.progedu.db.service.GroupDbService;
-import fcu.selab.progedu.db.service.ProjectDbService;
-import fcu.selab.progedu.db.service.UserDbService;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
@@ -22,6 +15,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import fcu.selab.progedu.conn.GitlabService;
+import fcu.selab.progedu.conn.JenkinsService;
+import fcu.selab.progedu.data.Group;
+import fcu.selab.progedu.data.GroupProject;
+import fcu.selab.progedu.db.GroupUserDbManager;
+import fcu.selab.progedu.db.service.GroupDbService;
+import fcu.selab.progedu.db.service.ProjectDbService;
+import fcu.selab.progedu.db.service.UserDbService;
+
 
 @RestController
 @RequestMapping(value = "/groups")
@@ -88,8 +91,7 @@ public class GroupService {
     HttpHeaders headers = new HttpHeaders();
     headers.add("Content-Type", "application/json");
     Group group = gdb.getGroup(name);
-    SimpleDateFormat dateFormat = new SimpleDateFormat(
-        "yyyy-MM-dd HH:mm:ss.S");
+    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
 
     JSONArray projectList = new JSONArray();
     List<GroupProject> groupProjects = group.getProjects();
@@ -123,6 +125,31 @@ public class GroupService {
     return new ResponseEntity<Object>(jsonObject, headers, HttpStatus.OK);
   }
 
+  /**
+   * remove group
+   *
+   * @param name group name
+   */
+  @DeleteMapping(path = "/{name}")
+  public ResponseEntity<Object> removeGroup(@PathVariable("name") String name) {
+    // remove gitlab
+    //    gitlabService.deleteProjects(name);
+    int gitlabId = gdb.getGitlabId(name);
+    gitlabService.removeGroup(gitlabId);
+
+    // remove Jenkins
+    JenkinsService js = JenkinsService.getInstance();
+
+    List<String> projectNames = pdb.getProjectNames(name);
+    for (String projectName : projectNames) {
+      String jobName = js.getJobName(name, projectName);
+      js.deleteJob(jobName);
+    }
+    // remove db
+    gdb.removeGroup(name);
+    return new ResponseEntity<>(HttpStatus.OK);
+  }
+
   @PostMapping("/{name}/members")
   public ResponseEntity<Object> addMembers(
           @RequestParam("name") String name, @RequestParam("members") List<String> members) {
@@ -152,10 +179,10 @@ public class GroupService {
     for(Group group : groups) {
       ResponseEntity<Object> responseEntity = getGroup(group.getGroupName());
       JSONObject jsonObject = (JSONObject) JSONValue.parse(
-          responseEntity.getBody().toString().replaceAll("\"gitLabToken\":null,", ""));
+              responseEntity.getBody().toString().replaceAll("\"gitLabToken\":null,", ""));
       jsonArray.add(jsonObject);
     }
-    return new ResponseEntity<Object>(jsonArray, headers, HttpStatus.OK); 
+    return new ResponseEntity<Object>(jsonArray, headers, HttpStatus.OK);
   }
 
   /**
