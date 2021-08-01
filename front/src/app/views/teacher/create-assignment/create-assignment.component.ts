@@ -36,7 +36,6 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
   dynamic: number = 60;
   type: string = 'Waiting';
   finalIndex: number;
-  orderString: string;
   showAssessment: boolean = true;
 
   reviewMetricsNums = [0, 1, 2];
@@ -45,7 +44,9 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
   onSelectedCategory: number[] = [0, 1, 2];
   onSelectedMetrics: number[] = [0, 0, 0];
 
-  statusScore = new Map([["Compile Failure", "0"]])
+  javaStatusScore = new Map([["Compile Failure", "0"]]);
+  webStatusScore = new Map();
+  appStatusScore = new Map([["Compile Failure", "0"]]);
 
   javaStatus = [
     "Unit Test Failure",
@@ -55,17 +56,19 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
   webStatus = [
     "HTML Failure",
     "CSS Failure",
-    "Javascript Failure",
+    "JavaScript Failure",
     "Unit Test Failure"
   ];
 
   appStatus = [
     "Coding Style Failure",
     "Unit Test Failure",
-    "E2E Test Failure"
+    "UI Test Failure"
   ];
 
-  order = [];
+  javaOrder = [];
+  webOrder = [];
+  appOrder = [];
 
   normalOptions: SortablejsOptions = {
     group: 'normal-group',
@@ -144,7 +147,6 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
     );
     this.assignment.get(type).valueChanges.subscribe(
       () => {
-        this.reset();
         if (this.assignment.get(type).value == 'javac') {
           this.setShowAssessment(false);
         } else {
@@ -183,20 +185,26 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
     this.showAssessment = showAssessment;
   }
 
-  getScoreOptions(status:string) {
+  getScoreOptions(order: string[], statusScore: Map<string, string>, status: string) {
     let max = 100;
     let sum = 0;
     let options : string[] = [];
-    sum += Number(this.statusScore.get("Compile Failure"));
-    if (this.order.length !== 0) {
-      for (let i = 0; i < this.order.length; i++) {
-        if (this.statusScore.get(this.order[i]) !== undefined) {
-          sum += Number(this.statusScore.get(this.order[i]));
+    let tempOrder = order;
+    let tempStatusScore = statusScore;
+
+    if (statusScore == this.javaStatusScore || statusScore == this.appStatusScore) {
+      sum += Number(statusScore.get('Compile Failure'));
+    }
+
+    if (tempOrder.length !== 0) {
+      for (let i = 0; i < tempOrder.length; i++) {
+        if (tempStatusScore.get(tempOrder[i]) !== undefined) {
+          sum += Number(tempStatusScore.get(tempOrder[i]));
         }
       }
     }
-    if (this.statusScore.get(status) !== undefined) {
-      sum -= Number(this.statusScore.get(status));
+    if (tempStatusScore.get(status) !== undefined) {
+      sum -= Number(tempStatusScore.get(status));
     }
     max = max - sum;
     for (let i = 0; i <= 100; i++) {
@@ -207,8 +215,17 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
     return options;
   }
 
-  selectChangeHandler(status:string, $event) {
-    this.statusScore.set(status, $event.target.value);
+  selectChangeHandler(type:string, status:string, $event) {
+    if (type == 'maven') {
+      this.javaStatusScore.set(status, $event.target.value);
+      console.log(this.javaStatusScore);
+    } else if (type == 'web') {
+      this.webStatusScore.set(status, $event.target.value);
+      console.log(this.webStatusScore);
+    } else if (type == 'android') {
+      this.appStatusScore.set(status, $event.target.value);
+      console.log(this.appStatusScore);
+    }
   }
 
   selectedAssignmentGradingMethod(method: string) {
@@ -298,22 +315,38 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
   }
 
   public submit() {
-    this.orderString = "";
+    let tempOrder: string[] = [];
+    let tempStatusScore: Map<string, string>;
+    let orderString = "";
     if (this.assignment.get('type').value == 'maven') {
-      this.orderString = "Compile Failure:" + this.statusScore.get("Compile Failure");
+      tempOrder = this.javaOrder;
+      tempStatusScore = this.javaStatusScore;
+      orderString = "Compile Failure:" + this.javaStatusScore.get("Compile Failure") + ", ";
+    } else if (this.assignment.get('type').value == 'web') {
+      tempOrder = this.webOrder;
+      tempStatusScore = this.webStatusScore;
+    } else if (this.assignment.get('type').value == 'android') {
+      tempOrder = this.appOrder;
+      tempStatusScore = this.appStatusScore;
+      orderString = "Compile Failure:" + this.appStatusScore.get("Compile Failure") + ", ";
     }
-    for (let i = 0; i < this.order.length; i++) {
-      if (this.statusScore.get(this.order[i]) == undefined) {
-        this.orderString = this.orderString + ', ' + this.order[i] + ':0';
+    for (let i = 0; i < tempOrder.length; i++) {
+      if (tempStatusScore.get(tempOrder[i]) == undefined) {
+        orderString = orderString + tempOrder[i] + ':0';
       } else {
-        this.orderString = this.orderString + ', ' + this.order[i] + ':' + this.statusScore.get(this.order[i]);
+        orderString = orderString + tempOrder[i] + ':' + tempStatusScore.get(tempOrder[i]);
+      }
+      if (i < tempOrder.length - 1) {
+        orderString = orderString + ', ';
       }
     }
-    this.assignment.get('assOrder').setValue(this.orderString);
+    this.assignment.get('assOrder').setValue(orderString);
+
     if (this.assignment.dirty && this.assignment.valid) {
       this.progressModal.show();
       if (!this.peerReviewStatus.isOpen) {
-        if (this.assignment.get('type').value == 'maven') {
+        if (this.assignment.get('type').value == 'maven' || this.assignment.get('type').value == 'web'
+            || this.assignment.get('type').value == 'android') {
           this.createService.createAssignmentWithOrder(this.assignment).subscribe(
             (response) => {
               this.router.navigate(['./dashboard/assignmentManagement']);
@@ -354,16 +387,23 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
     }
   }
 
-  public confirm() {
+  public confirm(order: string[]) {
+    let tempOrder = order;
+    let orderString: string = "";
     if (this.assignment.get('type').value == 'maven') {
-      this.orderString = 'Compile Failure';
+      orderString = 'Compile Failure' + ', ';
     }
-    for (let i = 0; i < this.order.length; i++) {
-      this.orderString = this.orderString + ', ' + this.order[i];
+    for (let i = 0; i < tempOrder.length; i++) {
+      orderString = orderString + tempOrder[i];
+      if (i < tempOrder.length - 1) {
+        orderString = orderString + ', '
+      }
     }
-    this.assignment.get('assOrder').setValue(this.orderString);
+    this.assignment.get('assOrder').setValue(orderString);
     if (this.assignment.get('name').invalid) {
-      window.open(environment.SERVER_URL + '/resources/MvnQuickStart.zip');
+      if (this.assignment.get('type').value == 'maven' || this.assignment.get('type').value == undefined) {
+        window.open(environment.SERVER_URL + '/resources/MvnQuickStart.zip');
+      }
     } else {
       this.createService.modifyOrder(this.assignment).subscribe(
         (response) => {
@@ -374,29 +414,8 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
           this.errorResponse = error;
           this.errorTitle = 'Send Order Error';
         });
-        this.orderString = '';
     }
   }
-
-  public reset() {
-    this.order = [];
-    this.javaStatus = [
-      "Unit Test Failure",
-      "Coding Style Failure"
-    ];
-    this.webStatus = [
-      "HTML Failure",
-      "CSS Failure",
-      "Javascript Failure",
-      "Unit Test Failure"
-    ];
-    this.appStatus = [
-      "Coding Style Failure",
-      "Unit Test Failure",
-      "E2E Test Failure"
-    ];
-  }
-
 
   ngOnDestroy() {
     this.javaTabStatus.isOpen = false;
