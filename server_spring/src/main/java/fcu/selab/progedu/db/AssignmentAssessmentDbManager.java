@@ -39,8 +39,14 @@ public class AssignmentAssessmentDbManager {
     String sql = "INSERT INTO ProgEdu.Assignment_Assessment"
         + " (`aid`, `status`, `order`, `score`)"
         + " VALUES(?, ?, ?, ?)";
-    try (Connection conn = this.database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
       preStmt.setInt(1, aid);
       preStmt.setInt(2, sid);
       preStmt.setInt(3, order);
@@ -49,6 +55,8 @@ public class AssignmentAssessmentDbManager {
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(preStmt, conn);
     }
   }
 
@@ -63,14 +71,22 @@ public class AssignmentAssessmentDbManager {
     String sql = "UPDATE ProgEdu.Assignment_Assessment"
         + " SET `score` = ? WHERE `id` = ?";
     int id = getAssignmentAssessmentId(aid, order);
-    try (Connection conn = this.database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
       preStmt.setInt(1, score);
       preStmt.setInt(2, id);
       preStmt.executeUpdate();
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(preStmt, conn);
     }
   }
 
@@ -85,8 +101,14 @@ public class AssignmentAssessmentDbManager {
     int id = -1;
     String sql = "SELECT `id` FROM ProgEdu.Assignment_Assessment"
         + " WHERE `aId` = ? AND `order` = ?";
-    try (Connection conn = this.database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
       preStmt.setInt(1, aid);
       preStmt.setInt(2, order);
       try (ResultSet rs = preStmt.executeQuery()) {
@@ -97,6 +119,8 @@ public class AssignmentAssessmentDbManager {
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(preStmt, conn);
     }
     return id;
   }
@@ -111,8 +135,14 @@ public class AssignmentAssessmentDbManager {
     List<Integer> aaIds = new ArrayList<>();
     String sql = "SELECT `id` FROM ProgEdu.Assignment_Assessment"
         + " WHERE `aId` = ?";
-    try (Connection conn = this.database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
       preStmt.setInt(1, aid);
       
       try (ResultSet rs = preStmt.executeQuery()) {
@@ -124,6 +154,8 @@ public class AssignmentAssessmentDbManager {
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(preStmt, conn);
     }
     return aaIds;
   }
@@ -136,13 +168,21 @@ public class AssignmentAssessmentDbManager {
   public void deleteAssignmentAssessment(int id) {
     String sql = "DELETE FROM ProgEdu.Assignment_Assessment WHERE `id` = ?";
 
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+
+    try {
+
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
       preStmt.setInt(1, id);
       preStmt.executeUpdate();
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(preStmt, conn);
     }
   }
 
@@ -157,8 +197,15 @@ public class AssignmentAssessmentDbManager {
     String sql = "SELECT `order` FROM ProgEdu.Assignment_Assessment" 
         + " WHERE `aId` = ? AND `status` = ?";
     int order = -1;
-    try (Connection conn = this.database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+
+
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
       preStmt.setInt(1, aid);
       preStmt.setInt(2, status);
       try (ResultSet rs = preStmt.executeQuery()) {
@@ -169,6 +216,8 @@ public class AssignmentAssessmentDbManager {
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(preStmt, conn);
     }
     return order;
   }
@@ -183,8 +232,16 @@ public class AssignmentAssessmentDbManager {
     String sql = "SELECT `order` FROM ProgEdu.Assignment_Assessment"
             + " WHERE `id` = ?";
     int order = -1;
-    try (Connection conn = this.database.getConnection();
-         PreparedStatement preStmt = conn.prepareStatement(sql)) {
+
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+
+
+    try {
+
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
       preStmt.setInt(1, aaid);
       try (ResultSet rs = preStmt.executeQuery()) {
         while (rs.next()) {
@@ -194,6 +251,8 @@ public class AssignmentAssessmentDbManager {
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(preStmt, conn);
     }
     return order;
   }
@@ -209,8 +268,15 @@ public class AssignmentAssessmentDbManager {
     String sql = "SELECT SUM(`score`) FROM ProgEdu.Assignment_Assessment"
         + " WHERE `aId` = ? AND `order` < ?";
     int score = 0;
-    try (Connection conn = this.database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+
+
+    try  {
+      conn = this.database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
       preStmt.setInt(1, aid);
       preStmt.setInt(2, order);
       try (ResultSet rs = preStmt.executeQuery()) {
@@ -221,6 +287,8 @@ public class AssignmentAssessmentDbManager {
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(preStmt, conn);
     }
     return score;
   }
@@ -235,8 +303,15 @@ public class AssignmentAssessmentDbManager {
     String sql = "SELECT `status`,`score` FROM ProgEdu.Assignment_Assessment"
         + " WHERE `aId` = ? ORDER BY `order`";
 
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+
+
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
       preStmt.setInt(1, aid);
       try (ResultSet rs = preStmt.executeQuery()) {
         while (rs.next()) {
@@ -253,6 +328,8 @@ public class AssignmentAssessmentDbManager {
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(preStmt, conn);
     }
     return orders;
   }

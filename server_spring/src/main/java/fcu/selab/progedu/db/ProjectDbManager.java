@@ -46,8 +46,13 @@ public class ProjectDbManager {
     Timestamp createtimes = new Timestamp(project.getCreateTime().getTime());
     Timestamp deadline = new Timestamp(project.getDeadline().getTime());
 
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
       preStmt.setString(1, project.getName());
       preStmt.setTimestamp(2, createtimes);
       preStmt.setTimestamp(3, deadline);
@@ -57,6 +62,8 @@ public class ProjectDbManager {
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(preStmt, conn);
     }
   }
 
@@ -99,13 +106,7 @@ public class ProjectDbManager {
       stmt = conn.prepareStatement(sql);
       stmt.setInt(1, id);
       rs = stmt.executeQuery();
-    } catch (SQLException e) {
-      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
-      LOGGER.error(e.getMessage());
-      return new GroupProject();
-    }
 
-    try {
       while (rs.next()) {
 
         String name = rs.getString("name");
@@ -125,12 +126,14 @@ public class ProjectDbManager {
         project.setType(typeEnum);
         project.setDeadline(deadline);
         project.setReleaseTime(releaseTime);
-
       }
+
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
-      return new GroupProject();
+      project = new GroupProject();
+    } finally {
+      CloseDBUtil.closeAll(rs, stmt, conn);
     }
     return project;
   }
@@ -144,8 +147,15 @@ public class ProjectDbManager {
   public String getProjectName(int pid) {
     String sql = "SELECT name FROM Project WHERE id = ?";
     String projectName = "";
-    try (Connection conn = database.getConnection();
-        PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+    Connection conn = null;
+    PreparedStatement stmt = null;
+
+    try {
+
+      conn = database.getConnection();
+      stmt = conn.prepareStatement(sql);
+
       stmt.setInt(1, pid);
       try (ResultSet rs = stmt.executeQuery();) {
         while (rs.next()) {
@@ -155,6 +165,8 @@ public class ProjectDbManager {
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(stmt, conn);
     }
     return projectName;
   }
@@ -169,8 +181,13 @@ public class ProjectDbManager {
     String query = "SELECT id FROM Project WHERE name = ?";
     int id = -1;
 
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(query)) {
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(query);
+
       preStmt.setString(1, projectName);
       try (ResultSet rs = preStmt.executeQuery();) {
         while (rs.next()) {
@@ -180,6 +197,8 @@ public class ProjectDbManager {
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(preStmt, conn);
     }
     return id;
   }
@@ -193,8 +212,15 @@ public class ProjectDbManager {
   public int getProjectType(String projectName) {
     int typeId = 0;
     String sql = "SELECT type FROM Project WHERE name=?";
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+
+
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
       preStmt.setString(1, projectName);
       try (ResultSet rs = preStmt.executeQuery()) {
         while (rs.next()) {
@@ -204,6 +230,8 @@ public class ProjectDbManager {
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(preStmt, conn);
     }
     return typeId;
   }
@@ -217,9 +245,16 @@ public class ProjectDbManager {
     List<String> lsNames = new ArrayList<>();
     String sql = "SELECT name FROM Project";
 
-    try (Connection conn = database.getConnection();
-        Statement stmt = conn.createStatement();
-        ResultSet rs = stmt.executeQuery(sql)) {
+    Connection conn = null;
+    Statement stmt = null;
+    ResultSet rs = null;
+
+    try {
+
+      conn = database.getConnection();
+      stmt = conn.createStatement();
+      rs = stmt.executeQuery(sql);
+
       while (rs.next()) {
         String name = rs.getString("name");
         lsNames.add(name);
@@ -227,6 +262,8 @@ public class ProjectDbManager {
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(rs, stmt, conn);
     }
     return lsNames;
   }
@@ -238,13 +275,21 @@ public class ProjectDbManager {
    */
   public void deleteProject(int id) {
     String sql = "DELETE FROM Project WHERE id=?";
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
       preStmt.setInt(1, id);
       preStmt.executeUpdate();
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(preStmt, conn);
     }
   }
 
