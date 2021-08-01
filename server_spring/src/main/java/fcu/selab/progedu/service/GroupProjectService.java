@@ -76,6 +76,7 @@ public class GroupProjectService {
 
     // 2. Clone the project to C:\\Users\\users\\AppData\\Temp\\uploads
     String cloneDirectoryPath = gitlabService.cloneProject(groupName, projectName);
+    System.out.println(cloneDirectoryPath);
     // 3. if README is not null
     JavaIoUtile.createUtf8FileFromString(readMe, new File(cloneDirectoryPath, "README.md"));
 
