@@ -64,9 +64,8 @@ public class GroupCommitRecordService {
     return new ResponseEntity<Object>(array, headers, HttpStatus.OK);
   }
 
-
   /**
-   * update user assignment commit record to DB.
+   * get student commit feedback detail
    *
    * @param groupName username
    * @param projectName assignment name
@@ -100,6 +99,7 @@ public class GroupCommitRecordService {
 
     return new ResponseEntity<Object>(feedBackMessage, headers, HttpStatus.OK);
   }
+
   /**
    * get student build detail info
    *
@@ -107,7 +107,6 @@ public class GroupCommitRecordService {
    * @param projectName assignment name
    * @return build detail
    */
-
   @GetMapping("/{name}/projects/{projectName}/commits")
   public ResponseEntity<Object> getCommitRecord( // Todo 這API 好像沒用到
           @PathVariable("name") String groupName, @PathVariable("projectName") String projectName){
@@ -138,7 +137,6 @@ public class GroupCommitRecordService {
     }
     return new ResponseEntity<>(array, headers, HttpStatus.OK);
   }
-
 
   /**
    * get all commit record of one student.
@@ -183,22 +181,63 @@ public class GroupCommitRecordService {
 
   }
 
-/**
- * get student build detail info.
- * @param groupName group name
- * @param projectName project name
- * @param currentPage current page
- * @return build detail
- */
+  /**
+   * update user assignment commit record to DB.
+   *
+   * @param groupName username
+   * @param projectName assignment name
+   * @throws ParseException
+   */
+  @PostMapping(path = "/commits/update")
+  public ResponseEntity<Object> updateCommitRecord(
+          @RequestParam("user") String groupName,
+          @RequestParam("proName") String projectName
+  ) {
+    ProjectTypeEnum projectTypeEnum = gpdb.getProjectType(projectName);
+    int pgid = pgdb.getId(groupName, projectName);
+    CommitRecord cr = gpdb.getCommitResult(pgid);
+    int commitNumber = 1;
+    if (cr != null) {
+      commitNumber = cr.getNumber() + 1;
+    }
+    Date date = new Date();
+    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+    try {
+      date = dateFormat.parse(dateFormat.format(Calendar.getInstance().getTime()));
+    } catch (ParseException e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    }
+
+    JenkinsJobStatus jobStatus = JenkinsJob2StatusFactory.createJenkinsJobStatus(projectTypeEnum);
+    String jobName = groupName + "_" + projectName;
+    StatusEnum statusEnum = jobStatus.getStatus(jobName, commitNumber);
+
+    String committer = js.getCommitter(jobName, commitNumber);
+    gpdb.insertProjectCommitRecord(pgid, commitNumber, statusEnum, date, committer);
+    JSONObject ob = new JSONObject();
+    ob.put("pgid", pgid);
+    ob.put("commitNumber", commitNumber);
+    ob.put("date", date);
+    ob.put("status", statusEnum.getType());
+    ob.put("committer", committer);
+
+    return new ResponseEntity<>(ob.toString(), HttpStatus.OK);
+  }
+
+  /**
+   * get student build detail info.
+   * @param groupName group name
+   * @param projectName project name
+   * @param currentPage current page
+   * @return build detail
+   */
   @GetMapping("/{name}/projects/{projectName}/partCommits/{currentPage}")
   public ResponseEntity<Object> getPartCommitRecord(
-    @PathVariable("name") String groupName,
-    @PathVariable("projectName") String projectName,
-    @PathVariable("currentPage") int currentPage
+          @PathVariable("name") String groupName,
+          @PathVariable("projectName") String projectName,
+          @PathVariable("currentPage") int currentPage
   ) {
-    HttpHeaders headers = new HttpHeaders();
-    headers.add("Access-Control-Allow-Origin", "*");
-
     JenkinsService js = JenkinsService.getInstance();
     JSONArray array = new JSONArray();
     int pgid = gpdb.getPgid(groupName, projectName);
@@ -222,8 +261,6 @@ public class GroupCommitRecordService {
       ob.put("committer", committer);
       array.add(ob);
     }
-    return new ResponseEntity<Object>(array, headers, HttpStatus.OK);
+    return new ResponseEntity<Object>(array, HttpStatus.OK);
   }
-
-
 }

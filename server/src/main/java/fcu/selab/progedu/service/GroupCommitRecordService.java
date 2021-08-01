@@ -215,7 +215,7 @@ public class GroupCommitRecordService {
    *
    * @param groupName username
    * @param projectName assignment name
-   * @throws ParseException (to do)
+   * @throws ParseException
    */
   @POST
   @Path("/commits/update")
@@ -248,7 +248,7 @@ public class GroupCommitRecordService {
     JSONObject ob = new JSONObject();
     ob.put("pgid", pgid);
     ob.put("commitNumber", commitNumber);
-    ob.put("time", time);
+    ob.put("date", date);
     ob.put("status", statusEnum.getType());
     ob.put("committer", committer);
 
