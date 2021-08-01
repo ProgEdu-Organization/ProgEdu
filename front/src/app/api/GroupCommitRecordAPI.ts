@@ -11,9 +11,15 @@ let getPartCommitRecord = function (groupName: string, projectName:string, curre
     return environment.NEW_SERVER_URL + `/groups/${groupName}/projects/${projectName}/partCommits/${currentPage}`;
 } 
 
+let getFeedback = function (groupName: string, projectName:string, commitNumber:string): string {
+    return environment.NEW_SERVER_URL + `/groups/${groupName}/projects/${projectName}/feedback/${commitNumber}`;
+} 
+
+
 
 export const GroupCommitRecordAPI = {
     getAllGroupCommitRecord: getAllGroupCommitRecord,
     getCommitRecord: getCommitRecord,
-    getPartCommitRecord: getPartCommitRecord
+    getPartCommitRecord: getPartCommitRecord,
+    getFeedback: getFeedback
 }

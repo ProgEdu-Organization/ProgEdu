@@ -80,6 +80,7 @@ public class GroupCommitRecordService {
       @PathVariable("num") int number) {
     HttpHeaders headers = new HttpHeaders();
     headers.add("Content-Type", "application/json");
+    headers.add("Access-Control-Allow-Origin", "*");
 
     JenkinsService js = JenkinsService.getInstance();
     ProjectTypeEnum projectTypeEnum = gpdb.getProjectType(projectName);

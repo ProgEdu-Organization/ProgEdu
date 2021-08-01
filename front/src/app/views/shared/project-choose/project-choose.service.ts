@@ -33,7 +33,7 @@ export class ProjectChoosedService {
   }
 
   getFeedback(groupName: string, projectName: string, commitNumber: string): Observable<any> {
-    const GROUP_FEEDBACK_API: string = environment.SERVER_URL + `/webapi/groups/${groupName}/projects/${projectName}/feedback/${commitNumber}`;
+    const GROUP_FEEDBACK_API: string = GroupCommitRecordAPI.getFeedback(groupName, projectName, commitNumber);
     return this.addJwtTokenHttpClient.get(GROUP_FEEDBACK_API);
   }
 
