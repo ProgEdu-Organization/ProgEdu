@@ -37,17 +37,27 @@ public class AssignmentTypeDbManager {
     String query = "SELECT id FROM Assignment_Type WHERE name = ?";
     int typeId = 0;
 
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(query)) {
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
+
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(query);
+
+
       preStmt.setString(1, typeName);
-      try (ResultSet rs = preStmt.executeQuery();) {
-        while (rs.next()) {
-          typeId = rs.getInt("id");
-        }
+
+      rs = preStmt.executeQuery();
+      while (rs.next()) {
+        typeId = rs.getInt("id");
       }
+
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(rs, preStmt, conn);
     }
     return typeId;
   }
@@ -62,17 +72,27 @@ public class AssignmentTypeDbManager {
     String query = "SELECT name FROM Assignment_Type WHERE id = ?";
     String typeName = null;
 
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(query)) {
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
+
+    try {
+
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(query);
+
       preStmt.setInt(1, typeId);
-      try (ResultSet rs = preStmt.executeQuery();) {
-        while (rs.next()) {
-          typeName = rs.getString("name");
-        }
+
+      rs = preStmt.executeQuery();
+      while (rs.next()) {
+        typeName = rs.getString("name");
       }
+
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(rs, preStmt, conn);
     }
     ProjectTypeEnum typeEnum = ProjectTypeEnum.getProjectTypeEnum(typeName);
     return typeEnum;

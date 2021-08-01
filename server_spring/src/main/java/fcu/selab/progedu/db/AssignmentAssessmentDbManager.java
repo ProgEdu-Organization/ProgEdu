@@ -104,6 +104,7 @@ public class AssignmentAssessmentDbManager {
 
     Connection conn = null;
     PreparedStatement preStmt = null;
+    ResultSet rs = null;
 
     try {
       conn = database.getConnection();
@@ -111,16 +112,18 @@ public class AssignmentAssessmentDbManager {
 
       preStmt.setInt(1, aid);
       preStmt.setInt(2, order);
-      try (ResultSet rs = preStmt.executeQuery()) {
-        while (rs.next()) {
-          id = rs.getInt("id");
-        }
+
+      rs = preStmt.executeQuery();
+
+      while (rs.next()) {
+        id = rs.getInt("id");
       }
+
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
     } finally {
-      CloseDBUtil.closeAll(preStmt, conn);
+      CloseDBUtil.closeAll(rs, preStmt, conn);
     }
     return id;
   }
@@ -138,6 +141,7 @@ public class AssignmentAssessmentDbManager {
 
     Connection conn = null;
     PreparedStatement preStmt = null;
+    ResultSet rs = null;
 
     try {
       conn = database.getConnection();
@@ -145,17 +149,16 @@ public class AssignmentAssessmentDbManager {
 
       preStmt.setInt(1, aid);
       
-      try (ResultSet rs = preStmt.executeQuery()) {
+        rs = preStmt.executeQuery();
         while (rs.next()) {
           int aaId = rs.getInt("id");
           aaIds.add(aaId);
         }
-      }
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
     } finally {
-      CloseDBUtil.closeAll(preStmt, conn);
+      CloseDBUtil.closeAll(rs, preStmt, conn);
     }
     return aaIds;
   }
@@ -200,7 +203,7 @@ public class AssignmentAssessmentDbManager {
 
     Connection conn = null;
     PreparedStatement preStmt = null;
-
+    ResultSet rs = null;
 
     try {
       conn = database.getConnection();
@@ -208,16 +211,17 @@ public class AssignmentAssessmentDbManager {
 
       preStmt.setInt(1, aid);
       preStmt.setInt(2, status);
-      try (ResultSet rs = preStmt.executeQuery()) {
-        while (rs.next()) {
-          order = rs.getInt("order");
-        }
+
+      rs = preStmt.executeQuery();
+      while (rs.next()) {
+        order = rs.getInt("order");
       }
+
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
     } finally {
-      CloseDBUtil.closeAll(preStmt, conn);
+      CloseDBUtil.closeAll(rs, preStmt, conn);
     }
     return order;
   }
@@ -235,7 +239,7 @@ public class AssignmentAssessmentDbManager {
 
     Connection conn = null;
     PreparedStatement preStmt = null;
-
+    ResultSet rs = null;
 
     try {
 
@@ -243,16 +247,17 @@ public class AssignmentAssessmentDbManager {
       preStmt = conn.prepareStatement(sql);
 
       preStmt.setInt(1, aaid);
-      try (ResultSet rs = preStmt.executeQuery()) {
-        while (rs.next()) {
-          order = rs.getInt("order");
-        }
+
+      rs = preStmt.executeQuery();
+      while (rs.next()) {
+        order = rs.getInt("order");
       }
+
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
     } finally {
-      CloseDBUtil.closeAll(preStmt, conn);
+      CloseDBUtil.closeAll(rs, preStmt, conn);
     }
     return order;
   }
@@ -271,6 +276,7 @@ public class AssignmentAssessmentDbManager {
 
     Connection conn = null;
     PreparedStatement preStmt = null;
+    ResultSet rs = null;
 
 
     try  {
@@ -279,16 +285,17 @@ public class AssignmentAssessmentDbManager {
 
       preStmt.setInt(1, aid);
       preStmt.setInt(2, order);
-      try (ResultSet rs = preStmt.executeQuery()) {
-        while (rs.next()) {
-          score = rs.getInt("SUM(`score`)");
-        }
+
+      rs = preStmt.executeQuery();
+      while (rs.next()) {
+        score = rs.getInt("SUM(`score`)");
       }
+
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
     } finally {
-      CloseDBUtil.closeAll(preStmt, conn);
+      CloseDBUtil.closeAll(rs, preStmt, conn);
     }
     return score;
   }
@@ -306,6 +313,7 @@ public class AssignmentAssessmentDbManager {
 
     Connection conn = null;
     PreparedStatement preStmt = null;
+    ResultSet rs = null;
 
 
     try {
@@ -313,23 +321,24 @@ public class AssignmentAssessmentDbManager {
       preStmt = conn.prepareStatement(sql);
 
       preStmt.setInt(1, aid);
-      try (ResultSet rs = preStmt.executeQuery()) {
-        while (rs.next()) {
-          if (!orders.isEmpty()) {
-            orders = orders + ", ";
-          }
-          int status = rs.getInt("status");
-          int score = rs.getInt("score"); 
-          StatusEnum statusEnum = csDb.getStatusNameById(status);
-          orders = orders + statusEnum.toString()
-            + ":" + score;
+
+      rs = preStmt.executeQuery();
+      while (rs.next()) {
+        if (!orders.isEmpty()) {
+          orders = orders + ", ";
         }
+        int status = rs.getInt("status");
+        int score = rs.getInt("score");
+        StatusEnum statusEnum = csDb.getStatusNameById(status);
+        orders = orders + statusEnum.toString()
+          + ":" + score;
       }
+
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
     } finally {
-      CloseDBUtil.closeAll(preStmt, conn);
+      CloseDBUtil.closeAll(rs, preStmt, conn);
     }
     return orders;
   }

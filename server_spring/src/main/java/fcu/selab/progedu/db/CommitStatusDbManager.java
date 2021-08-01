@@ -33,18 +33,28 @@ public class CommitStatusDbManager {
     String query = "SELECT id FROM Commit_Status WHERE status = ?";
     int statusId = 0;
 
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(query)) {
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
+
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(query);
+
       preStmt.setString(1, statusName);
-      try (ResultSet rs = preStmt.executeQuery();) {
-        while (rs.next()) {
-          statusId = rs.getInt("id");
-        }
+
+      rs = preStmt.executeQuery();
+      while (rs.next()) {
+        statusId = rs.getInt("id");
       }
+
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(rs, preStmt, conn);
     }
+
     return statusId;
   }
 
@@ -58,18 +68,27 @@ public class CommitStatusDbManager {
     String query = "SELECT status FROM Commit_Status WHERE id = ?";
     String statusName = null;
 
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(query)) {
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
+
+    try {
+
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(query);
+
       preStmt.setInt(1, statusId);
-      try (ResultSet rs = preStmt.executeQuery();) {
-        while (rs.next()) {
-          statusName = rs.getString("status");
-        }
+      rs = preStmt.executeQuery();
+      while (rs.next()) {
+        statusName = rs.getString("status");
       }
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(rs, preStmt, conn);
     }
+
     StatusEnum statusEnum = StatusEnum.getStatusEnum(statusName);
     return statusEnum;
   }

@@ -42,8 +42,14 @@ public class GroupDbManager {
   public void addGroup(int gitlabId, String groupName, int leaderId) {
     String sql = "INSERT INTO ProgEdu.Group(gitLabId, name, leader) " + "VALUES(?, ?, ?)";
 
-    try (Connection conn = database.getConnection();
-         PreparedStatement preStmt = conn.prepareStatement(sql)) {
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+
+    try {
+
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
       preStmt.setInt(1, gitlabId);
       preStmt.setString(2, groupName);
       preStmt.setInt(3, leaderId);
@@ -51,6 +57,8 @@ public class GroupDbManager {
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(preStmt, conn);
     }
   }
 
@@ -63,17 +71,27 @@ public class GroupDbManager {
     int id = -1;
     String statement = "SELECT id FROM ProgEdu.Group WHERE name = ?";
 
-    try (Connection conn = database.getConnection();
-         PreparedStatement preStmt = conn.prepareStatement(statement)) {
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
+
+    try {
+
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(statement);
+
       preStmt.setString(1, name);
-      try (ResultSet rs = preStmt.executeQuery()) {
-        if (rs.next()) {
-          id = rs.getInt("id");
-        }
+
+      rs = preStmt.executeQuery();
+      if (rs.next()) {
+        id = rs.getInt("id");
       }
+
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(rs, preStmt, conn);
     }
     return id;
   }
@@ -87,16 +105,25 @@ public class GroupDbManager {
     String groupName = "";
     String statement = "SELECT name FROM ProgEdu.Group WHERE id = ?";
 
-    try (Connection conn = database.getConnection();
-         PreparedStatement preStmt = conn.prepareStatement(statement)) {
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
+
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(statement);
+
       preStmt.setInt(1, id);
-      try (ResultSet rs = preStmt.executeQuery()) {
-        if (rs.next()) {
-          groupName = rs.getString("name");
-        }
+
+      rs = preStmt.executeQuery();
+      if (rs.next()) {
+        groupName = rs.getString("name");
       }
+
     } catch (SQLException e) {
       e.printStackTrace();
+    } finally {
+      CloseDBUtil.closeAll(rs, preStmt, conn);
     }
     return groupName;
   }
@@ -110,17 +137,26 @@ public class GroupDbManager {
     int id = -1;
     String statement = "SELECT gitLabId FROM ProgEdu.Group WHERE name = ?";
 
-    try (Connection conn = database.getConnection();
-         PreparedStatement preStmt = conn.prepareStatement(statement)) {
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
+
+    try {
+
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(statement);
+
       preStmt.setString(1, name);
-      try (ResultSet rs = preStmt.executeQuery()) {
-        if (rs.next()) {
-          id = rs.getInt("gitLabId");
-        }
+      rs = preStmt.executeQuery();
+      if (rs.next()) {
+        id = rs.getInt("gitLabId");
       }
+
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(rs, preStmt, conn);
     }
     return id;
   }
@@ -134,17 +170,26 @@ public class GroupDbManager {
     int id = -1;
     String statement = "SELECT leader FROM ProgEdu.Group WHERE name = ?";
 
-    try (Connection conn = database.getConnection();
-         PreparedStatement preStmt = conn.prepareStatement(statement)) {
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
+
+    try {
+
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(statement);
+
       preStmt.setString(1, name);
-      try (ResultSet rs = preStmt.executeQuery()) {
-        if (rs.next()) {
-          id = rs.getInt("leader");
-        }
+      rs = preStmt.executeQuery();
+      if (rs.next()) {
+        id = rs.getInt("leader");
       }
+
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(rs, preStmt, conn);
     }
     return id;
   }
@@ -157,14 +202,24 @@ public class GroupDbManager {
    */
   public void updateLeader(int id, int leader) {
     String sql = "UPDATE ProgEdu.Group SET leader = ? WHERE id = ?";
-    try (Connection conn = database.getConnection();
-         PreparedStatement preStmt = conn.prepareStatement(sql)) {
+
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+
+
+    try {
+
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
       preStmt.setInt(1, leader);
       preStmt.setInt(2, id);
       preStmt.executeUpdate();
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(preStmt, conn);
     }
   }
 
@@ -176,19 +231,31 @@ public class GroupDbManager {
   public List<Group> getGroups() {
     String statement = "SELECT name FROM ProgEdu.Group";
     List<Group> groups = new ArrayList<>();
-    try (Connection conn = database.getConnection();
-         PreparedStatement preStmt = conn.prepareStatement(statement)) {
-      try (ResultSet rs = preStmt.executeQuery()) {
-        while (rs.next()) {
-          String name = rs.getString("name");
-          Group group = getGroup(name);
-          groups.add(group);
-        }
+
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
+
+    try {
+
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(statement);
+
+      rs = preStmt.executeQuery();
+      while (rs.next()) {
+        String name = rs.getString("name");
+        Group group = getGroup(name);
+        groups.add(group);
       }
+
+
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(rs, preStmt, conn);
     }
+
     return groups;
   }
 
@@ -201,38 +268,50 @@ public class GroupDbManager {
   public Group getGroup(String name) {
     String statement = "SELECT * FROM ProgEdu.Group WHERE name=?";
     Group group = new Group();
-    try (Connection conn = database.getConnection();
-         PreparedStatement preStmt = conn.prepareStatement(statement)) {
+
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
+
+    try {
+
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(statement);
+
       preStmt.setString(1, name);
-      try (ResultSet rs = preStmt.executeQuery()) {
-        while (rs.next()) {
-          group.setGroupName(rs.getString("name"));
-          group.setId(rs.getInt("id"));
-          group.setGitlabId(rs.getInt("gitLabId"));
-          group.setLeader(Integer.parseInt(rs.getString("leader")));
-        }
 
-        // setMembers
-        List<User> members = new ArrayList<>();
-        List<Integer> userIds = GroupUserDbManager.getInstance().getUids(group.getId());
-        for (int userId : userIds) {
-          members.add(UserDbManager.getInstance().getUser(userId));
-        }
-        group.setMembers(members);
-
-        // setProjects
-        List<GroupProject> groupProjectList = new ArrayList<>();
-        List<Integer> projectIds = ProjectGroupDbManager.getInstance().getPids(group.getId());
-        for (int projectId : projectIds) {
-          groupProjectList.add(ProjectDbManager.getInstance().getGroupProjectById(projectId));
-        }
-        group.setProjects(groupProjectList);
-
+      rs = preStmt.executeQuery();
+      while (rs.next()) {
+        group.setGroupName(rs.getString("name"));
+        group.setId(rs.getInt("id"));
+        group.setGitlabId(rs.getInt("gitLabId"));
+        group.setLeader(Integer.parseInt(rs.getString("leader")));
       }
+
+      // setMembers
+      List<User> members = new ArrayList<>();
+      List<Integer> userIds = GroupUserDbManager.getInstance().getUids(group.getId());
+      for (int userId : userIds) {
+        members.add(UserDbManager.getInstance().getUser(userId));
+      }
+      group.setMembers(members);
+
+      // setProjects
+      List<GroupProject> groupProjectList = new ArrayList<>();
+      List<Integer> projectIds = ProjectGroupDbManager.getInstance().getPids(group.getId());
+      for (int projectId : projectIds) {
+        groupProjectList.add(ProjectDbManager.getInstance().getGroupProjectById(projectId));
+      }
+      group.setProjects(groupProjectList);
+
+
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(rs, preStmt, conn);
     }
+
     return group;
   }
 
@@ -253,13 +332,22 @@ public class GroupDbManager {
    */
   public void remove(int id) {
     String sql = "DELETE FROM ProgEdu.Group WHERE id=?";
-    try (Connection conn = database.getConnection();
-         PreparedStatement preStmt = conn.prepareStatement(sql)) {
+
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+
+    try {
+
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
       preStmt.setInt(1, id);
       preStmt.executeUpdate();
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(preStmt, conn);
     }
   }
 }
