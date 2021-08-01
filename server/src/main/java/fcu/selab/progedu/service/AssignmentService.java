@@ -34,6 +34,7 @@ import fcu.selab.progedu.db.ReviewRecordDbManager;
 import fcu.selab.progedu.db.ReviewSettingDbManager;
 import fcu.selab.progedu.db.ReviewSettingMetricsDbManager;
 import fcu.selab.progedu.db.ReviewStatusDbManager;
+import fcu.selab.progedu.jenkinsconfig.AndroidPipelineConfig;
 import fcu.selab.progedu.jenkinsconfig.JenkinsProjectConfig;
 import fcu.selab.progedu.jenkinsconfig.JenkinsProjectConfigFactory;
 import fcu.selab.progedu.jenkinsconfig.MavenPipelineConfig;
@@ -758,24 +759,22 @@ public class AssignmentService {
 
       //
       String orderString = "";
-      if (dbManager.getAssignmentType(assignmentName).equals(ProjectTypeEnum.ANDROID) != true) {
-        List<String> ordersList = new ArrayList<>();
-        String[] ordersAndScores = aaDbManager.getAssignmentOrderAndScore(
+      List<String> ordersList = new ArrayList<>();
+      String[] ordersAndScores = aaDbManager.getAssignmentOrderAndScore(
+          dbManager.getAssignmentIdByName(assignmentName)).split(", ");
+      while (ordersList.size() == 0) {
+        ordersAndScores = aaDbManager.getAssignmentOrderAndScore(
             dbManager.getAssignmentIdByName(assignmentName)).split(", ");
-        while (ordersList.size() == 0) {
-          ordersAndScores = aaDbManager.getAssignmentOrderAndScore(
-              dbManager.getAssignmentIdByName(assignmentName)).split(", ");
-        }
-        for (String orderAndScore : ordersAndScores) {
-          String[] token = orderAndScore.split(":");
-          ordersList.add(token[0]);
-        }
-        if (ordersList.isEmpty() != true) {
-          for (int i = 0; i < ordersList.size(); i++) {
-            orderString += ordersList.get(i);
-            if (i < ordersList.size() - 1) {
-              orderString += ", ";
-            }
+      }
+      for (String orderAndScore : ordersAndScores) {
+        String[] token = orderAndScore.split(":");
+        ordersList.add(token[0]);
+      }
+      if (ordersList.isEmpty() != true) {
+        for (int i = 0; i < ordersList.size(); i++) {
+          orderString += ordersList.get(i);
+          if (i < ordersList.size() - 1) {
+            orderString += ", ";
           }
         }
       }
@@ -787,6 +786,9 @@ public class AssignmentService {
                 username, assignmentName,
                 courseConfig.getTomcatServerIp() + "/publicApi/commits/screenshot/updateURL",
             orderString);
+      } else if ( assignmentTypeEnum.equals(ProjectTypeEnum.ANDROID) ) {
+        jenkinsProjectConfig = new AndroidPipelineConfig(projectUrl, updateDbUrl,
+            username, assignmentName, orderString);
       } else {
         jenkinsProjectConfig = JenkinsProjectConfigFactory
                 .getJenkinsProjectConfig(assignmentTypeEnum.getTypeName(), projectUrl, updateDbUrl,
