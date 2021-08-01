@@ -36,14 +36,22 @@ public class GroupUserDbManager {
   public void addGroupUser(int gid, int uid) {
     String sql = "INSERT INTO ProgEdu.Group_User(gId, uId) VALUES(?, ?)";
 
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+
+    try {
+
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
       preStmt.setInt(1, gid);
       preStmt.setInt(2, uid);
       preStmt.executeUpdate();
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(preStmt, conn);
     }
   }
 
@@ -57,18 +65,31 @@ public class GroupUserDbManager {
   public int getGuid(int gid, int uid) {
     int guid = 0;
     String sql = "SELECT id FROM Group_User WHERE gId=? AND uId=?";
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
+
+
+    try {
+
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
       preStmt.setInt(1, gid);
       preStmt.setInt(2, uid);
-      try (ResultSet rs = preStmt.executeQuery()) {
-        while (rs.next()) {
-          guid = rs.getInt("id");
-        }
+
+      rs = preStmt.executeQuery();
+      while (rs.next()) {
+        guid = rs.getInt("id");
       }
+
+
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(rs, preStmt, conn);
     }
     return guid;
   }
@@ -81,18 +102,32 @@ public class GroupUserDbManager {
   public List<Integer> getGIds(int uid) {
     List<Integer> lsGids = new ArrayList<>();
     String sql = "SELECT gId FROM Group_User WHERE uId = ?";
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+
+
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
+
+
+    try {
+
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
       preStmt.setInt(1, uid);
-      try (ResultSet rs = preStmt.executeQuery()) {
-        while (rs.next()) {
-          int gid = rs.getInt("gId");
-          lsGids.add(gid);
-        }
+
+
+      rs = preStmt.executeQuery();
+      while (rs.next()) {
+        int gid = rs.getInt("gId");
+        lsGids.add(gid);
       }
+
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(rs, preStmt, conn);
     }
     return lsGids;
   }
@@ -105,19 +140,32 @@ public class GroupUserDbManager {
   public List<Integer> getUids(int gid) {
     List<Integer> lsUids = new ArrayList<>();
     String sql = "SELECT uId FROM Group_User WHERE gId = ?";
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
+
+
+    try {
+
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
       preStmt.setInt(1, gid);
-      try (ResultSet rs = preStmt.executeQuery()) {
-        while (rs.next()) {
-          int uid = rs.getInt("uId");
-          lsUids.add(uid);
-        }
+
+      rs = preStmt.executeQuery();
+      while (rs.next()) {
+        int uid = rs.getInt("uId");
+        lsUids.add(uid);
       }
+
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(rs, preStmt, conn);
     }
+
     return lsUids;
   }
 
@@ -128,13 +176,22 @@ public class GroupUserDbManager {
    */
   public void remove(int gid) {
     String sql = "DELETE FROM Group_User WHERE gId=?";
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+
+    try {
+
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
       preStmt.setInt(1, gid);
       preStmt.executeUpdate();
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(preStmt, conn);
     }
   }
 
@@ -146,14 +203,25 @@ public class GroupUserDbManager {
    */
   public void remove(int gid, int uid) {
     String sql = "DELETE FROM Group_User WHERE gId=? AND uId=?";
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+
+
+
+    try {
+
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
       preStmt.setInt(1, gid);
       preStmt.setInt(2, uid);
       preStmt.executeUpdate();
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(preStmt, conn);
     }
   }
 
@@ -164,12 +232,21 @@ public class GroupUserDbManager {
    */
   public void removeByUserId(int userId) {
     String sql = "DELETE FROM Group_User WHERE uid=?";
-    try (Connection conn = database.getConnection();
-         PreparedStatement preStmt = conn.prepareStatement(sql)) {
+
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+
+    try {
+
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
       preStmt.setInt(1, userId);
       preStmt.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();
+    } finally {
+      CloseDBUtil.closeAll(preStmt, conn);
     }
   }
 }

@@ -45,8 +45,14 @@ public class ProjectCommitRecordDbManager {
             + "VALUES(?, ?, ?, ?, ?)";
     int statusId = csDb.getStatusIdByName(status.getType());
     Timestamp date = new Timestamp(time.getTime());
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
       preStmt.setInt(1, pgId);
       preStmt.setInt(2, commitNumber);
       preStmt.setInt(3, statusId);
@@ -56,6 +62,8 @@ public class ProjectCommitRecordDbManager {
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(preStmt, conn);
     }
   }
 
@@ -69,19 +77,28 @@ public class ProjectCommitRecordDbManager {
   public int getProjectCommitRecordId(int pgId, int commitNumber) {
     String query = "SELECT id FROM Project_Commit_Record where pgId = ? and commitNumber = ?";
     int id = 0;
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(query)) {
+
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
+
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(query);
+
       preStmt.setInt(1, pgId);
       preStmt.setInt(2, commitNumber);
 
-      try (ResultSet rs = preStmt.executeQuery(); ) {
+      rs = preStmt.executeQuery();
         if (rs.next()) {
           id = rs.getInt("id");
         }
-      }
+
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(rs, preStmt, conn);
     }
 
     return id;
@@ -97,19 +114,28 @@ public class ProjectCommitRecordDbManager {
     String query = "SELECT id FROM Project_Commit_Record where pgId = ?";
     List<Integer> ids = new ArrayList<>();
 
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(query)) {
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
+
+    try {
+
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(query);
+
       preStmt.setInt(1, pgId);
 
-      try (ResultSet rs = preStmt.executeQuery(); ) {
-        while (rs.next()) {
-          int id = rs.getInt("id");
-          ids.add(id);
-        }
+      rs = preStmt.executeQuery();
+      while (rs.next()) {
+        int id = rs.getInt("id");
+        ids.add(id);
       }
+
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(rs, preStmt, conn);
     }
 
     return ids;
@@ -126,19 +152,28 @@ public class ProjectCommitRecordDbManager {
     int status = 0;
     String query = "SELECT status FROM Project_Commit_Record where pgId = ? and commitNumber = ?";
 
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(query)) {
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
+
+    try {
+
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(query);
+
       preStmt.setInt(1, pgId);
       preStmt.setInt(2, commitNumber);
 
-      try (ResultSet rs = preStmt.executeQuery(); ) {
-        if (rs.next()) {
-          status = rs.getInt("status");
-        }
+      rs = preStmt.executeQuery();
+      if (rs.next()) {
+        status = rs.getInt("status");
       }
+
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(rs, preStmt, conn);
     }
 
     return status;
@@ -154,29 +189,41 @@ public class ProjectCommitRecordDbManager {
     String sql = "SELECT * FROM Project_Commit_Record WHERE pgId=?";
     List<CommitRecord> crs = new ArrayList<>();
 
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
-      preStmt.setInt(1, pgId);
-      try (ResultSet rs = preStmt.executeQuery()) {
-        while (rs.next()) {
-          int statusId = rs.getInt("status");
-          StatusEnum statusEnum = csDb.getStatusNameById(statusId);
-          int commitNumber = rs.getInt("commitNumber");
-          Date commitTime = rs.getTimestamp("time");
-          String committer = rs.getString("commitStudent");
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
 
-          CommitRecord cr = new CommitRecord();
-          cr.setCommitter(committer);
-          cr.setNumber(commitNumber);
-          cr.setStatus(statusEnum);
-          cr.setTime(commitTime);
-          crs.add(cr);
-        }
+    try {
+
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
+
+      preStmt.setInt(1, pgId);
+      rs = preStmt.executeQuery();
+      while (rs.next()) {
+        int statusId = rs.getInt("status");
+        StatusEnum statusEnum = csDb.getStatusNameById(statusId);
+        int commitNumber = rs.getInt("commitNumber");
+        Date commitTime = rs.getTimestamp("time");
+        String committer = rs.getString("commitStudent");
+
+        CommitRecord cr = new CommitRecord();
+        cr.setCommitter(committer);
+        cr.setNumber(commitNumber);
+        cr.setStatus(statusEnum);
+        cr.setTime(commitTime);
+        crs.add(cr);
       }
+
+
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(rs, preStmt, conn);
     }
+
     return crs;
   }
 
@@ -199,31 +246,41 @@ public class ProjectCommitRecordDbManager {
       endSearchNumber = 1;
     }
 
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
+
+    try {
+
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
       preStmt.setInt(1, pgId);
       preStmt.setInt(2, endSearchNumber);
       preStmt.setInt(3, startSearchNumber);
-      try (ResultSet rs = preStmt.executeQuery()) {
-        while (rs.next()) {
-          int statusId = rs.getInt("status");
-          StatusEnum statusEnum = csDb.getStatusNameById(statusId);
-          int commitNumber = rs.getInt("commitNumber");
-          Date commitTime = rs.getTimestamp("time");
-          String committer = rs.getString("commitStudent");
+      rs = preStmt.executeQuery();
+      while (rs.next()) {
+        int statusId = rs.getInt("status");
+        StatusEnum statusEnum = csDb.getStatusNameById(statusId);
+        int commitNumber = rs.getInt("commitNumber");
+        Date commitTime = rs.getTimestamp("time");
+        String committer = rs.getString("commitStudent");
 
-          CommitRecord cr = new CommitRecord();
-          cr.setCommitter(committer);
-          cr.setNumber(commitNumber);
-          cr.setStatus(statusEnum);
-          cr.setTime(commitTime);
-          crs.add(cr);
-        }
+        CommitRecord cr = new CommitRecord();
+        cr.setCommitter(committer);
+        cr.setNumber(commitNumber);
+        cr.setStatus(statusEnum);
+        cr.setTime(commitTime);
+        crs.add(cr);
       }
+
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(rs, preStmt, conn);
     }
+
     return crs;
   }
 
@@ -239,29 +296,39 @@ public class ProjectCommitRecordDbManager {
             + "(SELECT max(commitNumber) FROM Project_Commit_Record WHERE pgId = ?)) AND pgId = ?;";
     CommitRecord cr = null;
 
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
+
+    try {
+
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
       preStmt.setInt(1, pgId);
       preStmt.setInt(2, pgId);
-      try (ResultSet rs = preStmt.executeQuery()) {
-        if (rs.next()) {
-          cr = new CommitRecord();
-          int statusId = rs.getInt("status");
-          StatusEnum statusEnum = csDb.getStatusNameById(statusId);
-          int commitNumber = rs.getInt("commitNumber");
-          Date commitTime = rs.getTimestamp("time");
-          String committer = rs.getString("commitStudent");
-          int id = rs.getInt("id");
-          cr.setId(id);
-          cr.setStatus(statusEnum);
-          cr.setCommitter(committer);
-          cr.setNumber(commitNumber);
-          cr.setTime(commitTime);
-        }
+      rs = preStmt.executeQuery();
+
+      if (rs.next()) {
+        cr = new CommitRecord();
+        int statusId = rs.getInt("status");
+        StatusEnum statusEnum = csDb.getStatusNameById(statusId);
+        int commitNumber = rs.getInt("commitNumber");
+        Date commitTime = rs.getTimestamp("time");
+        String committer = rs.getString("commitStudent");
+        int id = rs.getInt("id");
+        cr.setId(id);
+        cr.setStatus(statusEnum);
+        cr.setCommitter(committer);
+        cr.setNumber(commitNumber);
+        cr.setTime(commitTime);
       }
+
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(rs, preStmt, conn);
     }
     return cr;
   }
@@ -276,17 +343,26 @@ public class ProjectCommitRecordDbManager {
     int commitNumber = 0;
     String sql =
         "SELECT max(commitNumber) AS commitNumber FROM Project_Commit_Record WHERE pgId = ?";
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
+
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
       preStmt.setInt(1, pgId);
-      try (ResultSet rs = preStmt.executeQuery()) {
-        if (rs.next()) {
-          commitNumber = rs.getInt("commitNumber");
-        }
+      rs = preStmt.executeQuery();
+      if (rs.next()) {
+        commitNumber = rs.getInt("commitNumber");
       }
+
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(rs, preStmt, conn);
     }
     return commitNumber;
   }
@@ -299,13 +375,21 @@ public class ProjectCommitRecordDbManager {
   public void deleteProjectRecord(int pgId) {
     String sql = "DELETE FROM Project_Commit_Record WHERE pgid=?";
 
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+
+
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
       preStmt.setInt(1, pgId);
       preStmt.executeUpdate();
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(preStmt, conn);
     }
   }
 
@@ -318,17 +402,27 @@ public class ProjectCommitRecordDbManager {
   public int getCommitStatusbyPgid(int pgid) {
     int status = 0;
     String sql = "SELECT status FROM Project_Commit_Record WHERE pgId=?";
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
+
+
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
       preStmt.setInt(1, pgid);
-      try (ResultSet rs = preStmt.executeQuery()) {
-        while (rs.next()) {
-          status = rs.getInt("status");
-        }
+
+      while (rs.next()) {
+        status = rs.getInt("status");
       }
+
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(rs, preStmt, conn);
     }
     return status;
   }
