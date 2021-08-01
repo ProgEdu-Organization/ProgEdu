@@ -204,6 +204,12 @@ public class PeerReviewService {
     return count;
   }
 
+  /**
+   * check which reviewed status of specific assignment_user
+   *
+   * @param auId              assignment_user id
+   * @param commitRecordCount commit record count
+   */
   public String reviewedRecordStatus(int auId, int commitRecordCount)
           throws SQLException {
     List<PairMatching> pairMatchingList = pairMatchingDbManager.getPairMatchingByAuId(auId);
@@ -260,6 +266,12 @@ public class PeerReviewService {
     }
   }
 
+  /**
+   * get review details from specific reviewer and assignment name
+   *
+   * @param username       user name
+   * @param assignmentName assignment name
+   */
   @GetMapping("status/detail")
   public ResponseEntity<Object> getReviewStatusDetail(@RequestParam("username") String username,
                                                       @RequestParam("assignmentName") String assignmentName) {
@@ -443,7 +455,61 @@ public class PeerReviewService {
     return response;
   }
 
-	/**
+  /**
+   * get user's hw detail which had been reviewed
+   *
+   * @param username       user name
+   * @param assignmentName assignment name
+   * @param reviewId       review id
+   * @param page           page
+   */
+  @GetMapping("record/detail/page")
+  public ResponseEntity<Object> getReviewedRecordDetailPagination(@RequestParam("username") String username,
+                                                                  @RequestParam("assignmentName") String assignmentName,
+                                                                  @RequestParam("reviewId") int reviewId,
+                                                                  @RequestParam("page") int page) {
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("Content-Type", "application/json");
+    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+
+    ResponseEntity<Object> response = null;
+
+    try {
+      JSONObject result = new JSONObject();
+      JSONArray array = new JSONArray();
+      int userId = userDbManager.getUserIdByUsername(username);
+      int assignmentId = assignmentDbManager.getAssignmentIdByName(assignmentName);
+      int auId = assignmentUserDbManager.getAuid(assignmentId, userId);
+      PairMatching pairMatching = pairMatchingDbManager.getPairMatchingByAuIdReviewId(auId, reviewId);
+      int order = reviewRecordDbManager.getLatestReviewOrder(pairMatching.getId());
+      List<ReviewRecord> reviewRecordList = reviewRecordDbManager
+              .getReviewRecordByPairMatchingId(pairMatching.getId(), order - page + 1);
+
+      result.put("id", pairMatching.getReviewId());
+      result.put("name", userDbManager.getUsername(pairMatching.getReviewId()));
+      for (ReviewRecord reviewRecord : reviewRecordList) {
+        JSONObject ob = new JSONObject();
+        int metricsId = reviewSettingMetricsDbManager
+                .getReviewMetricsIdByRsmId(reviewRecord.getRsmId());
+        ob.put("score", reviewRecord.getScore());
+        ob.put("feedback", reviewRecord.getFeedback());
+        ob.put("time", dateFormat.format(reviewRecord.getTime()));
+        ob.put("metrics", reviewMetricsDbManager.getReviewMetricsById(metricsId));
+        int scoreModeId = reviewMetricsDbManager.getScoreModeIdById(metricsId);
+        ob.put("scoreMode", scoreModeDbManager.getScoreModeDescById(scoreModeId).getTypeName());
+        array.add(ob);
+      }
+      result.put("totalCount", order);
+      result.put("pagination", page);
+      result.put("Detail", array);
+
+      return new ResponseEntity<Object>(result, headers, HttpStatus.OK);
+    } catch (Exception e) {
+      return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  /**
    * check reviewer status of his/her review job
    *
    * @param aid      assignment id
@@ -473,6 +539,11 @@ public class PeerReviewService {
     return resultStatus;
   }
 
+  /**
+   * get metrics by specific assignment
+   *
+   * @param assignmentName assignment name
+   */
   @GetMapping("/metrics")
   public ResponseEntity<Object> getReviewMetrics(
           @RequestParam("assignmentName") String assignmentName
