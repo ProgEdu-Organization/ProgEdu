@@ -159,7 +159,13 @@ public class GroupCommitRecordService {
       ob.put("name", project.getName());
       CommitRecord cr = gpdb.getCommitResult(pgid);
 
-      ob.put("releaseTime", dateFormat.format(project.getReleaseTime()));
+
+      Date releaseTimeDate = project.getReleaseTime();
+      if(releaseTimeDate != null) {
+        String releaseTime = dateFormat.format(releaseTimeDate);
+        ob.put("releaseTime", releaseTime);
+      }
+
       if (cr != null) {
         ob.put("number", cr.getNumber());
         ob.put("status", cr.getStatus().getType());

@@ -90,31 +90,47 @@ public class ProjectDbManager {
     GroupProject project = new GroupProject();
     String sql = "SELECT * FROM Project WHERE id = ?";
 
-    try (Connection conn = database.getConnection();
-        PreparedStatement stmt = conn.prepareStatement(sql)) {
-      stmt.setInt(1, id);
-      try (ResultSet rs = stmt.executeQuery();) {
-        while (rs.next()) {
-          String name = rs.getString("name");
-          Date createTime = rs.getTimestamp("createTime");
-          Date deadline = rs.getTimestamp("deadline");
-          Date releaseTime = rs.getTimestamp("releaseTime");
-          String description = rs.getString("description");
-          int typeId = rs.getInt("type");
-          ProjectTypeEnum typeEnum = atDb.getTypeNameById(typeId);
+    Connection conn = null;
+    PreparedStatement stmt = null;
+    ResultSet rs = null;
 
-          project.setId(id);
-          project.setName(name);
-          project.setCreateTime(createTime);
-          project.setDescription(description);
-          project.setType(typeEnum);
-          project.setDeadline(deadline);
-          project.setReleaseTime(releaseTime);
-        }
+    try {
+      conn = database.getConnection();
+      stmt = conn.prepareStatement(sql);
+      stmt.setInt(1, id);
+      rs = stmt.executeQuery();
+    } catch (SQLException e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+      return new GroupProject();
+    }
+
+    try {
+      while (rs.next()) {
+
+        String name = rs.getString("name");
+
+        Date createTime = rs.getTimestamp("createTime");
+        Date deadline = rs.getTimestamp("deadline");
+        Date releaseTime = rs.getTimestamp("releaseTime");
+
+        String description = rs.getString("description");
+        int typeId = rs.getInt("type");
+        ProjectTypeEnum typeEnum = atDb.getTypeNameById(typeId);
+
+        project.setId(id);
+        project.setName(name);
+        project.setCreateTime(createTime);
+        project.setDescription(description);
+        project.setType(typeEnum);
+        project.setDeadline(deadline);
+        project.setReleaseTime(releaseTime);
+
       }
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+      return new GroupProject();
     }
     return project;
   }
