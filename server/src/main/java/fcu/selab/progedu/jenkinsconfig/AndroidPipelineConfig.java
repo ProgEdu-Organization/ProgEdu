@@ -158,12 +158,13 @@ public class AndroidPipelineConfig extends JenkinsProjectConfig {
       String insertStages = "";
       for (String temp: ordersList) {
         if (temp.equals("Compile Failure")) {
-          //insertStages += makeStageString("compile", "./gradlew compileDebugJavaWithJavac");
-          insertStages += makeStageString("lint", "./gradlew lint");
+          insertStages += makeStageString("compile", getDockerCommand(temp));
         } else if (temp.equals("Unit Test Failure")) {
-          insertStages += makeStageString("unit test", "./gradlew testDebugUnitTest");
+          insertStages += makeStageString("unit test", getDockerCommand(temp));
         } else if (temp.equals("Coding Style Failure")) {
-          insertStages += makeStageString("checkstyle", "./gradlew checkstyle");
+          insertStages += makeStageString("checkstyle", getDockerCommand(temp));
+        } else if (temp.equals("UI Test Failure")) {
+          insertStages += makeStageString("UI test", getDockerCommand(temp));
         }
       }
       pipeLine = pipeLine.replaceFirst("\\{other stages\\}", insertStages);
@@ -175,6 +176,40 @@ public class AndroidPipelineConfig extends JenkinsProjectConfig {
       LOGGER.error(e.getMessage());
     }
     return newPipeLine;
+  }
+
+  /**
+   * make docker command string
+   *
+   * @param status     the status which will be inspected
+   */
+  public String getDockerCommand(String status) {
+    String dockerCommand = "docker run --privileged -i -v $PWD:/data -v gradle-cache:/cache \\\n" +
+        "yhwang8943/android-container:latest \\\n" +
+        "bash -c 'chmod +x /data/gradlew && . /start.sh {android_command}'";
+    String command = " && /data/gradlew {command} -p /data";
+    String result = "";
+    switch (status) {
+      case "Compile Failure":
+        command = command.replaceFirst("\\{command\\}", "compileDebugJavaWithJavac");
+        result = dockerCommand.replaceFirst("\\{android_command\\}", command);
+        break;
+      case "Unit Test Failure":
+        command = command.replaceFirst("\\{command\\}", "testDebugUnitTest");
+        result = dockerCommand.replaceFirst("\\{android_command\\}", command);
+        break;
+      case "Coding Style Failure":
+        String command1 = command.replaceFirst("\\{command\\}", "lint");
+        String command2 = command.replaceFirst("\\{command\\}", "checkstyle");
+        command = command + command;
+        result = dockerCommand.replaceFirst("\\{android_command\\}", command);
+        break;
+      case "UI Test Failure":
+        command = command.replaceFirst("\\{command\\}", "connectedDebugAndroidTest");
+        result = dockerCommand.replaceFirst("\\{android_command\\}", command);
+        break;
+    }
+    return result;
   }
 
   /**

@@ -6,7 +6,7 @@ public class AndroidPipelineConfigTest {
 
   AndroidPipelineConfig androidPipelineConfig1 = new AndroidPipelineConfig("franky", "franky"
       , "franky", "franky",
-      "Compile Failure, Unit Test Failure, Coding Style Failure");
+      "Compile Failure");
   AndroidPipelineConfig androidPipelineConfig2 = new AndroidPipelineConfig("franky", "franky"
       , "franky", "franky");
 
@@ -25,5 +25,11 @@ public class AndroidPipelineConfigTest {
     System.out.println(result1);
     System.out.println("=========================================================");
     System.out.println(result2);
+  }
+
+  @Test
+  public void createCommand() {
+    String result = androidPipelineConfig1.getDockerCommand("Unit Test Failure");
+    System.out.println(result);
   }
 }

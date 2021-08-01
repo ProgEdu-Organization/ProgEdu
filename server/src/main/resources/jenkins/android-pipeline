@@ -1,8 +1,12 @@
 pipeline {
-    agent {
-        docker { image 'yhwang8943/android-build' }
-    }
+    agent any
     stages {
+        stage('pull environment') {
+            steps {
+                sh 'docker login -u yhwang8943 -p b65b27fd-2ffb-403f-a978-00a18b68edb7'
+                sh 'docker pull yhwang8943/android-container:latest'
+            }
+        }
         stage('get source') {
             steps {
                 git branch: 'master',
