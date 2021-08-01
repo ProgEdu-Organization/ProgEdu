@@ -1,0 +1,26 @@
+{
+	"info": {
+		"_postman_id": "82faa249-c65e-4bda-823f-ed9160c431e3",
+		"name": "Groups/(new)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "get all groups commit result",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{spring_url}}/groups",
+					"host": [
+						"{{spring_url}}"
+					],
+					"path": [
+						"groups"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

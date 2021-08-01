@@ -86,12 +86,6 @@ export class AssignmentManagementComponent implements OnInit {
     );
   }
 
-  updateTestCase($event) {
-    if ($event.target.files) {
-      this.assignmentForm.get('file').setValue($event.target.files[0]);
-    }
-  }
-
   selectChangeHandler(status:string, $event) {
     this.statusScore.set(status, $event.target.value);
   }

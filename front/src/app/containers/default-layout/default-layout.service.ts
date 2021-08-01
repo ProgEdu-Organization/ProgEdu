@@ -4,6 +4,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { FormGroup } from '@angular/forms';
 import {AddJwtTokenHttpClient} from '../../services/add-jwt-token.service';
+import { UserAPI } from '../../api/UserAPI';
 
 const modifySecretOptions = ({
   headers: new HttpHeaders({
@@ -14,7 +15,7 @@ const modifySecretOptions = ({
 })
 export class DefaultLayoutService {
   ALL_COMMIT_API = environment.SERVER_URL + '/webapi/commits/allUsers';
-  MODIFY_API = environment.SERVER_URL + '/webapi/user/updatePassword';
+  MODIFY_API = UserAPI.updatePassword;
   constructor(private http: HttpClient, private addJwtTokenHttpClient: AddJwtTokenHttpClient) { }
 
   getNavData(): Observable<any> {

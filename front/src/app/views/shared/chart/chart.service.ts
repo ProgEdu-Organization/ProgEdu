@@ -4,11 +4,13 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import {AddJwtTokenHttpClient} from '../../../services/add-jwt-token.service';
 
+import { ChartAPI } from '../../../api/ChartAPI';
+
 @Injectable({
   providedIn: 'root'
 })
 export class ChartService {
-  ALL_COMMIT_RECORD = environment.SERVER_URL + '/webapi/chart/allCommitRecord';
+  ALL_COMMIT_RECORD = ChartAPI.getAllCommitRecord;
   constructor(private addJwtTokenHttpClient: AddJwtTokenHttpClient) { }
 
   getAllCommits(): Observable<any> {

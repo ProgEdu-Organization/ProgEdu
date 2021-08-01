@@ -6,7 +6,7 @@ import { FormGroup } from '@angular/forms';
 import { environment } from '../../../../environments/environment';
 import {AddJwtTokenHttpClient} from '../../../services/add-jwt-token.service';
 import { JwtService } from '../../../services/jwt.service';
-
+import { AssignmentAPI } from '../../../api/AssignmentAPI';
 
 
 const createAssigmentOptions = ({
@@ -17,13 +17,13 @@ const createAssigmentOptions = ({
   providedIn: 'root'
 })
 export class CreateAssignmentService {
-  CREATE_ASSIGNMENT_API = environment.SERVER_URL + '/webapi/assignment/create';
-  CREATE_ASSIGNMENT_WITH_ORDER_API = environment.SERVER_URL + '/webapi/assignment/autoAssessment/create';
+  CREATE_ASSIGNMENT_API = AssignmentAPI.createAssignment;
+  CREATE_ASSIGNMENT_WITH_ORDER_API = AssignmentAPI.createAutoAssessment;
   MODIFY_ORDER_API = environment.SERVER_URL + '/webapi/assignment/order';
   GET_ORDER_API = environment.SERVER_URL + '/webapi/assignment/getAssignmentFile';
   GET_ALL_CATEGORY_API = environment.SERVER_URL + '/webapi/categoryMetrics/category';
   GET_METRICS_API = environment.SERVER_URL + '/webapi/categoryMetrics/metrics';
-  CREATE_REVIEW_ASSIGNMENT_API = environment.SERVER_URL + '/webapi/assignment/peerReview/create';
+  CREATE_REVIEW_ASSIGNMENT_API = AssignmentAPI.createPeerReviewAssignment;
   constructor(private addJwtTokenHttpClient: AddJwtTokenHttpClient) { }
 
   createAssignment(assignment: FormGroup): Observable<any> {

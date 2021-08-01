@@ -1,0 +1,41 @@
+{
+	"info": {
+		"_postman_id": "7335dde1-2100-4229-8610-19bd22f2ad6b",
+		"name": "Commits/partCommitRecords(new)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "get part commit records",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{spring_url}}/commits/partCommitRecords?username=apiTest&assignmentName=rrr1&currentPage=1",
+					"host": [
+						"{{spring_url}}"
+					],
+					"path": [
+						"commits",
+						"partCommitRecords"
+					],
+					"query": [
+						{
+							"key": "username",
+							"value": "apiTest"
+						},
+						{
+							"key": "assignmentName",
+							"value": "rrr1"
+						},
+						{
+							"key": "currentPage",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

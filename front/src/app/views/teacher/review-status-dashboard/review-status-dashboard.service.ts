@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import {AddJwtTokenHttpClient} from '../../../services/add-jwt-token.service';
-
+import { AssignmentAPI } from '../../../api/AssignmentAPI';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +11,7 @@ import {AddJwtTokenHttpClient} from '../../../services/add-jwt-token.service';
 export class ReviewStatusDashboardService {
 
   ALL_COMMIT_API = environment.SERVER_URL + '/webapi/peerReview/status/allUsers';
-  ALL_ASSIGNMENT_API = environment.SERVER_URL + '/webapi/assignment/peerReview/allAssignment';
+  ALL_ASSIGNMENT_API = AssignmentAPI.getAllPeerReviewAssignment;
   constructor(private addJwtTokenHttpClient: AddJwtTokenHttpClient) { }
 
   getAllStudentCommitRecord(): Observable<any> {

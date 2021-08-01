@@ -7,6 +7,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --port 4200 --open",
+    "start_production": "ng serve --configuration production --port 4200 --open",
     "build": "ng build --prod --aot --buildOptimizer --commonChunk --vendorChunk --optimization --progress",
     "lint": "ng lint",
     "e2e": "ng e2e",

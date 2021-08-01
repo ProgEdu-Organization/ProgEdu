@@ -2,18 +2,19 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
-import {AddJwtTokenHttpClient} from '../../../services/add-jwt-token.service';
-
+import { AddJwtTokenHttpClient } from '../../../services/add-jwt-token.service';
+import { AssignmentAPI } from '../../../api/AssignmentAPI';
+import { CommitRecordAPI } from '../../../api/CommitRecordAPI';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AssignmentChoosedService {
   COMMIT_RECORD_DETAIL = environment.SERVER_URL + '/webapi/commits/commitRecords';
-  PART_COMMIT_RECORD_DETAIL = environment.SERVER_URL + '/webapi/commits/partCommitRecords';
-  ASSIGNMENT_API = environment.SERVER_URL + '/webapi/assignment/getAssignment';
-  GITLAB_URL_API = environment.SERVER_URL + '/webapi/commits/gitLab';
-  FEEDBACK_API = environment.SERVER_URL + '/webapi/commits/feedback';
+  PART_COMMIT_RECORD_DETAIL = CommitRecordAPI.getPartCommitRecord;
+  ASSIGNMENT_API = AssignmentAPI.getAssignmentDescription;
+  GITLAB_URL_API = CommitRecordAPI.getGitLabURL;
+  FEEDBACK_API = CommitRecordAPI.getFeedback;
   SCREENSHOT_API = environment.SERVER_URL + '/publicApi/commits/screenshot/getScreenshotURL';
   constructor(private addJwtTokenHttpClient: AddJwtTokenHttpClient) { }
 
