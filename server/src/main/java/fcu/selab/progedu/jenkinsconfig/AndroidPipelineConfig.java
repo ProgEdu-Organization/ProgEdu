@@ -185,9 +185,9 @@ public class AndroidPipelineConfig extends JenkinsProjectConfig {
    * @param status     the status which will be inspected
    */
   public String getDockerCommand(String status) {
-    String dockerCommand = "docker run --privileged -i -v \\$PWD:/data -v gradle-cache:/cache \\\n" +
-        "\t\t\t\tyhwang8943/android-container:latest \\\n" +
-        "\t\t\t\tbash -c 'chmod +x /data/gradlew; ./start.sh{android_command}'";
+    String dockerCommand = "docker run --privileged -i -v \\$PWD:/data -v gradle-cache:/cache \\\n"
+        + "\t\t\t\tyhwang8943/android-container:latest \\\n"
+        + "\t\t\t\tbash -c 'chmod +x /data/gradlew; ./start.sh{android_command}'";
     String command = "; /data/gradlew {command} -p /data";
     String result = "";
     switch (status) {
@@ -208,6 +208,8 @@ public class AndroidPipelineConfig extends JenkinsProjectConfig {
       case "UI Test Failure":
         command = command.replaceFirst("\\{command\\}", "connectedDebugAndroidTest");
         result = dockerCommand.replaceFirst("\\{android_command\\}", command);
+        break;
+      default:
         break;
     }
     return result;
