@@ -73,4 +73,16 @@ public class GroupProject {
     this.releaseTime = releaseTime;
   }
 
+  @Override
+  public String toString() {
+    return "GroupProject{" +
+            "id=" + id +
+            ", name='" + name + '\'' +
+            ", releaseTime=" + releaseTime +
+            ", createTime=" + createTime +
+            ", deadline=" + deadline +
+            ", description='" + description + '\'' +
+            ", type=" + type +
+            '}';
+  }
 }
