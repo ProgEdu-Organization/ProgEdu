@@ -1,5 +1,6 @@
 package fcu.selab.progedu.jenkinsconfig;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.junit.Test;
 
 public class AndroidPipelineConfigTest {
@@ -31,5 +32,11 @@ public class AndroidPipelineConfigTest {
   public void createCommand() {
     String result = androidPipelineConfig1.getDockerCommand("Unit Test Failure");
     System.out.println(result);
+  }
+
+  @Test
+  public void testEscape() {
+    String test = StringEscapeUtils.escapeJava("$");
+    System.out.println(test);
   }
 }

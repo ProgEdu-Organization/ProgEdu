@@ -2,6 +2,7 @@ package fcu.selab.progedu.jenkinsconfig;
 
 import fcu.selab.progedu.utils.ExceptionUtil;
 import fcu.selab.progedu.utils.JavaIoUtile;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -184,10 +185,10 @@ public class AndroidPipelineConfig extends JenkinsProjectConfig {
    * @param status     the status which will be inspected
    */
   public String getDockerCommand(String status) {
-    String dockerCommand = "docker run --privileged -i -v $PWD:/data -v gradle-cache:/cache \\\n" +
-        "yhwang8943/android-container:latest \\\n" +
-        "bash -c 'chmod +x /data/gradlew && . /start.sh {android_command}'";
-    String command = " && /data/gradlew {command} -p /data";
+    String dockerCommand = "docker run --privileged -i -v \\$PWD:/data -v gradle-cache:/cache \\\n" +
+        "\t\t\t\tyhwang8943/android-container:latest \\\n" +
+        "\t\t\t\tbash -c 'chmod +x /data/gradlew; . /start.sh {android_command}'";
+    String command = "; /data/gradlew {command} -p /data";
     String result = "";
     switch (status) {
       case "Compile Failure":
@@ -238,8 +239,8 @@ public class AndroidPipelineConfig extends JenkinsProjectConfig {
    * @param command one command
    */
   public String makeStageString(String name, String command) {
-    String result = "\n\t\tstage('" + name + "') {\n\t\t\tsteps {\n\t\t\t\tsh '" + command + "'"
-        + "\n\t\t\t}\n\t\t}";
+    String result = "\n\t\tstage('" + name + "') {\n\t\t\tsteps {\n\t\t\t\tsh '''\n\t\t\t\t"
+        + command + "\n\t\t\t\t'''" + "\n\t\t\t}\n\t\t}";
     return result;
   }
 }
