@@ -130,7 +130,7 @@ public class PeerReviewService {
     headers.add("Content-Type", "application/json");
 		SimpleDateFormat dateFormat = new SimpleDateFormat(
         "yyyy-MM-dd HH:mm:ss.S");
-		
+
 		try {
 			List<Assignment> assignmentList = assignmentDbManager.getAllReviewAssignment();
 			int reviewId = userDbManager.getUserIdByUsername(username);
@@ -148,7 +148,7 @@ public class PeerReviewService {
         jsonObject.put("count", getReviewCompletedCount(assignment.getId(), reviewId));
         jsonObject.put("status", reviewerStatus(assignment.getId(),
             reviewId, reviewSetting.getAmount()).getTypeName());
-				
+
 				jsonArray.add(jsonObject);
 			}
     	return new ResponseEntity<Object>(jsonArray, headers, HttpStatus.OK);
@@ -519,4 +519,38 @@ public class PeerReviewService {
     }
     return studentUsers;
   }
+
+  /**
+   * get all commit result which is assigned by peer review
+   */
+  @GetMapping("record/allUsers")
+  public ResponseEntity<Object> getAllReviewedRecord() {
+
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("Content-Type", "application/json");
+
+    try {
+      JSONArray array = new JSONArray();
+      JSONObject result = new JSONObject();
+      List<User> users = getStudents();
+      for (User user : users) {
+        String username = user.getUsername();
+        ResponseEntity<Object> userCommitRecord = getReviewedRecord(username);
+        JSONObject ob = new JSONObject();
+        ob.put("name", user.getName());
+        ob.put("username", user.getUsername());
+        ob.put("display", user.getDisplay());
+        ob.put("commitRecord", userCommitRecord.getBody());
+        array.add(ob);
+      }
+      result.put("allReviewedRecord", array);
+      return new ResponseEntity<Object>(result, headers,HttpStatus.OK);
+    } catch (Exception e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+      return new ResponseEntity<Object>(e, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+  }
+
 }
