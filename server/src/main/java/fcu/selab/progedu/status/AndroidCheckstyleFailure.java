@@ -9,8 +9,10 @@ public class AndroidCheckstyleFailure implements Status {
   @Override
   public String extractFailureMsg(String consoleText) {
     String feedback;
-    String feedbackStart = "Task :app:checkStyle";
+    String feedbackStart = "Task :app:checkStyle FAILED";
     String feedbackEnd = "FAILURE: Build failed with an exception.";
+    System.out.println(consoleText.indexOf(feedbackStart));
+    System.out.println(consoleText.indexOf(feedbackEnd));
     feedback = consoleText.substring(consoleText.indexOf(feedbackStart) + feedbackStart.length(),
         consoleText.indexOf(feedbackEnd));
     /**
