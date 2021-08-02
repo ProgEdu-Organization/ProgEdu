@@ -238,6 +238,9 @@ public class GroupCommitRecordService {
           @PathVariable("projectName") String projectName,
           @PathVariable("currentPage") int currentPage
   ) {
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("Access-Control-Allow-Origin", "*");
+
     JenkinsService js = JenkinsService.getInstance();
     JSONArray array = new JSONArray();
     int pgid = gpdb.getPgid(groupName, projectName);
@@ -261,6 +264,6 @@ public class GroupCommitRecordService {
       ob.put("committer", committer);
       array.add(ob);
     }
-    return new ResponseEntity<Object>(array, HttpStatus.OK);
+    return new ResponseEntity<Object>(array, headers, HttpStatus.OK);
   }
 }
