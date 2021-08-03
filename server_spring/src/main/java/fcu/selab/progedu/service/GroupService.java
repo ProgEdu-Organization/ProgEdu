@@ -12,6 +12,9 @@ import fcu.selab.progedu.db.service.UserDbService;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import fcu.selab.progedu.utils.ExceptionUtil;
 import org.gitlab.api.models.GitlabAccessLevel;
 import org.gitlab.api.models.GitlabGroup;
 import org.springframework.http.HttpHeaders;
@@ -39,6 +42,8 @@ public class GroupService {
   private UserDbService udb = UserDbService.getInstance();
   private GroupUserDbManager gudb = GroupUserDbManager.getInstance();
   private AssignmentService projectService = new AssignmentService();
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(GroupService.class);
 
   /**
    * create gitlab group
@@ -155,7 +160,7 @@ public class GroupService {
           responseEntity.getBody().toString().replaceAll("\"gitLabToken\":null,", ""));
       jsonArray.add(jsonObject);
     }
-    return new ResponseEntity<Object>(jsonArray, headers, HttpStatus.OK); 
+    return new ResponseEntity<Object>(jsonArray, headers, HttpStatus.OK);
   }
 
   /**
@@ -167,7 +172,7 @@ public class GroupService {
    */
   @PutMapping("/{name}/members/{username}")
   public ResponseEntity<Object> updateLeader(
-          @PathVariable("name") String name, @PathVariable("username") String leader) {
+      @PathVariable("name") String name, @PathVariable("username") String leader) {
     HttpHeaders headers = new HttpHeaders();
     headers.add("Content-Type", "application/json");
 
@@ -179,14 +184,40 @@ public class GroupService {
     String currentLeader = gdb.getLeader(name);
     int currentLeaderGitlabId = udb.getGitLabId(currentLeader);
     // update currentLeader's AccessLevel to master
-    gitlabService.updateMemberAccessLevel(
-            groupGitLabId, currentLeaderGitlabId, GitlabAccessLevel.Master);
+    gitlabService.updateMemberAccessLevel(groupGitLabId, currentLeaderGitlabId, GitlabAccessLevel.Master);
     // update db.group leader
     gdb.updateLeader(name, leader);
 
     JSONObject result = new JSONObject();
-    result.put("status","success");
+    result.put("status", "success");
 
     return new ResponseEntity<Object>(result, headers, HttpStatus.OK);
   }
+
+  /**
+   * remove members
+   *
+   * @param name group name
+   * @param member member
+   * @return response
+   */
+  @DeleteMapping("/{name}/members/{username}")
+  public ResponseEntity<Object> removeMember(
+      @PathVariable("name") String name,
+      @PathVariable("username") String member) {
+      try{
+        int groupGitLabId = gdb.getGitlabId(name);
+        int gitlabId = udb.getGitLabId(member);
+        gitlabService.removeGroupMember(groupGitLabId, gitlabId);
+        gdb.removeMember(name, member);
+
+        return new ResponseEntity<Object>(HttpStatus.OK);
+      } catch (Exception e) {
+        LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+        LOGGER.error(e.getMessage());
+        return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+
+  }
+
 }
