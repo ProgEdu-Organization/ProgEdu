@@ -92,6 +92,9 @@ public class GroupService {
   public ResponseEntity<Object> getGroup(@PathVariable("name") String name) {
     HttpHeaders headers = new HttpHeaders();
     headers.add("Content-Type", "application/json");
+    headers.add("Access-Control-Allow-Origin", "*");
+
+
     Group group = gdb.getGroup(name);
     SimpleDateFormat dateFormat = new SimpleDateFormat(
         "yyyy-MM-dd HH:mm:ss.S");
@@ -151,6 +154,7 @@ public class GroupService {
   public ResponseEntity<Object> getAllGroup() {
     HttpHeaders headers = new HttpHeaders();
     headers.add("Content-Type", "application/json");
+    headers.add("Access-Control-Allow-Origin", "*");
 
     JSONArray jsonArray = new JSONArray();
     List<Group> groups = gdb.getGroups();

@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import {AddJwtTokenHttpClient} from '../../../services/add-jwt-token.service';
 import { UserAPI } from '../../../api/UserAPI';
+import { GroupsAPI } from '../../../api/GroupsAPI';
 
 const createProjectOptions = ({
   headers: new HttpHeaders(
@@ -16,7 +17,7 @@ const createProjectOptions = ({
 export class GroupManagementService {
   GET_USERS_API = UserAPI.getUsers;
   CREATE_PROJECT = environment.SERVER_URL + '/webapi/groups/create';
-  GET_GROUP_MEMBER_API = environment.SERVER_URL + '/webapi/groups';
+  GET_GROUP_MEMBER_API = GroupsAPI.getAllGroup;
   constructor(private http: HttpClient, private addJwtTokenHttpClient: AddJwtTokenHttpClient) { }
 
   getAllUserData(): Observable<any> {
