@@ -71,6 +71,10 @@ public class GroupCommitRecordService {
    */
   @GetMapping("/{username}/commits")
   public ResponseEntity<Object> getCommitRecordByUsername(@PathVariable("username") String username) {
+
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("Access-Control-Allow-Origin", "*");
+
     GroupService gs = new GroupService();
     int uid = dbManager.getUserIdByUsername(username);
     List<String> groupNames = gdb.getGroupNames(uid);
@@ -82,7 +86,7 @@ public class GroupCommitRecordService {
       ob.put("commitRecord", response.getBody());
       array.add(ob);
     }
-    return new ResponseEntity<>(array, HttpStatus.OK);
+    return new ResponseEntity<>(array, headers, HttpStatus.OK);
   }
 
 

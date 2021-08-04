@@ -15,11 +15,15 @@ let getFeedback = function (groupName: string, projectName:string, commitNumber:
     return environment.NEW_SERVER_URL + `/groups/${groupName}/projects/${projectName}/feedback/${commitNumber}`;
 } 
 
+let getCommitRecordByUsername = function (username: string): string {
+    return environment.NEW_SERVER_URL + `/groups/${username}/commits`;
+} 
 
 
 export const GroupCommitRecordAPI = {
     getAllGroupCommitRecord: getAllGroupCommitRecord,
     getCommitRecord: getCommitRecord,
     getPartCommitRecord: getPartCommitRecord,
-    getFeedback: getFeedback
+    getFeedback: getFeedback,
+    getCommitRecordByUsername: getCommitRecordByUsername
 }

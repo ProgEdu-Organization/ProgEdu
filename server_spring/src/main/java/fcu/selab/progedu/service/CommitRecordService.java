@@ -111,18 +111,44 @@ public class CommitRecordService {
     return new ResponseEntity<Object>(jsonArray, headers, HttpStatus.OK);
   }
 
-  /**
-   * get all commit record of one student.
-   *
-   * @return homework, commit status, commit number
-   */
-  @GetMapping("oneUser")
-  public ResponseEntity<Object> getOneUserCommitRecord(@RequestParam("username") String username) {
-    HttpHeaders headers = new HttpHeaders();
-    headers.add("Content-Type", "application/json");
+//  /**
+//   * get all commit record of one student.
+//   *
+//   * @return homework, commit status, commit number
+//   */
+//  @GetMapping("oneUser")
+//  public ResponseEntity<Object> getOneUserCommitRecord(@RequestParam("username") String username) {
+//    HttpHeaders headers = new HttpHeaders();
+//    headers.add("Content-Type", "application/json");
+//
+//    int userId = userDb.getUserIdByUsername(username);
+//    JSONArray array = new JSONArray();
+//
+//    SimpleDateFormat dateFormat = new SimpleDateFormat(
+//            "yyyy-MM-dd HH:mm:ss.S");
+//
+//    for (Assignment assignment : assignmentDb.getAllAssignment()) {
+//      int auId = assignmentUserDb.getAuid(assignment.getId(), userId);
+//      JSONObject jsonObject = new JSONObject();
+//      jsonObject.put("assignmentName", assignment.getName());
+//      jsonObject.put("releaseTime", assignment.getReleaseTime());
+//
+//      org.json.JSONObject lastCommitRecordJson = commitRecordDb.getLastCommitRecord(auId);
+//      JSONObject lastCommitRecord = new JSONObject();
+//      lastCommitRecord.put("commitNumber", lastCommitRecordJson.get("commitNumber"));
+//      lastCommitRecord.put("commitTime", dateFormat.format(lastCommitRecordJson.get("commitTime")));
+//      lastCommitRecord.put("status", lastCommitRecordJson.get("status"));
+//
+//      jsonObject.put("commitRecord",lastCommitRecord);
+//      array.add(jsonObject);
+//    }
+//    return new ResponseEntity<Object>(array, headers, HttpStatus.OK);
+//  }
+
+  public List<JSONObject> getOneUserCommitRecord(String username) {
 
     int userId = userDb.getUserIdByUsername(username);
-    JSONArray array = new JSONArray();
+    List<JSONObject> array = new ArrayList<>();
 
     SimpleDateFormat dateFormat = new SimpleDateFormat(
             "yyyy-MM-dd HH:mm:ss.S");
@@ -135,15 +161,25 @@ public class CommitRecordService {
 
       org.json.JSONObject lastCommitRecordJson = commitRecordDb.getLastCommitRecord(auId);
       JSONObject lastCommitRecord = new JSONObject();
-      lastCommitRecord.put("commitNumber", lastCommitRecordJson.get("commitNumber"));
-      lastCommitRecord.put("commitTime", dateFormat.format(lastCommitRecordJson.get("commitTime")));
-      lastCommitRecord.put("status", lastCommitRecordJson.get("status"));
+
+      if(lastCommitRecordJson.has("commitNumber")) {
+        lastCommitRecord.put("commitNumber", lastCommitRecordJson.get("commitNumber"));
+      }
+
+      if(lastCommitRecordJson.has("commitTime")) {
+        lastCommitRecord.put("commitTime", dateFormat.format(lastCommitRecordJson.get("commitTime")));
+      }
+
+      if(lastCommitRecordJson.has("status")) {
+        lastCommitRecord.put("status", lastCommitRecordJson.get("status"));
+      }
 
       jsonObject.put("commitRecord",lastCommitRecord);
       array.add(jsonObject);
     }
-    return new ResponseEntity<Object>(array, headers, HttpStatus.OK);
+    return array;
   }
+
 
   /**
    * get a part of student build detail info
@@ -242,6 +278,7 @@ public class CommitRecordService {
 
     HttpHeaders headers = new HttpHeaders();
     headers.add("Content-Type", "application/json");
+    headers.add("Access-Control-Allow-Origin", "*");
 
     try{
       JSONArray array = new JSONArray();
@@ -250,23 +287,23 @@ public class CommitRecordService {
 
       for (User user : users) {
         String username = user.getUsername();
-        ResponseEntity<Object> userCommitRecord = getOneUserCommitRecord(username);
+        List<JSONObject> userCommitRecord = getOneUserCommitRecord(username);
         JSONObject entity = new JSONObject();
 
         entity.put("name", user.getName());
         entity.put("username", user.getUsername());
         entity.put("display", user.getDisplay());
-        entity.put("commitReocord", userCommitRecord.getBody());
+        entity.put("commitRecord", userCommitRecord);
 
         array.add(entity);
       }
       result.put("allUsersCommitRecord", array);
 
-      return new ResponseEntity<Object>(result, HttpStatus.OK);
+      return new ResponseEntity<Object>(result, headers, HttpStatus.OK);
     } catch (Exception e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
-      return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+      return new ResponseEntity<Object>(e.getMessage(), headers, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
   }

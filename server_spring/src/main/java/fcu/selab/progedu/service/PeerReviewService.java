@@ -128,6 +128,7 @@ public class PeerReviewService {
 
 		HttpHeaders headers = new HttpHeaders();
     headers.add("Content-Type", "application/json");
+    headers.add("Access-Control-Allow-Origin", "*");
 		SimpleDateFormat dateFormat = new SimpleDateFormat(
         "yyyy-MM-dd HH:mm:ss.S");
 
@@ -528,6 +529,7 @@ public class PeerReviewService {
 
     HttpHeaders headers = new HttpHeaders();
     headers.add("Content-Type", "application/json");
+    headers.add("Access-Control-Allow-Origin", "*");
 
     try {
       JSONArray array = new JSONArray();
@@ -548,7 +550,7 @@ public class PeerReviewService {
     } catch (Exception e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
-      return new ResponseEntity<Object>(e, HttpStatus.INTERNAL_SERVER_ERROR);
+      return new ResponseEntity<Object>(e, headers, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
   }
