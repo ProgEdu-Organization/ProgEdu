@@ -64,6 +64,27 @@ public class GroupCommitRecordService {
     return new ResponseEntity<Object>(array, headers, HttpStatus.OK);
   }
 
+  /**
+   * Display
+   *
+   * @param username username
+   */
+  @GetMapping("/{username}/commits")
+  public ResponseEntity<Object> getCommitRecordByUsername(@PathVariable("username") String username) {
+    GroupService gs = new GroupService();
+    int uid = dbManager.getUserIdByUsername(username);
+    List<String> groupNames = gdb.getGroupNames(uid);
+    List<JSONObject> array = new ArrayList<>();
+    for (String groupName : groupNames) {
+      ResponseEntity<Object> response = getResult(groupName);
+      JSONObject ob = new JSONObject();
+      ob.put("groupName", groupName);
+      ob.put("commitRecord", response.getBody());
+      array.add(ob);
+    }
+    return new ResponseEntity<>(array, HttpStatus.OK);
+  }
+
 
   /**
    * update user assignment commit record to DB.
