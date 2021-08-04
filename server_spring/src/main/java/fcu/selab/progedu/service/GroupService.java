@@ -133,9 +133,11 @@ public class GroupService {
 
   @PostMapping("/{name}/members")
   public ResponseEntity<Object> addMembers(
-          @RequestParam("name") String name, @RequestParam("members") List<String> members) {
+          @PathVariable("name") String name, @RequestParam("members") List<String> members) {
     HttpHeaders headers = new HttpHeaders();
     headers.add("Content-Type", "application/json");
+    headers.add("Access-Control-Allow-Origin", "*");
+
     int groupGitLabId = gdb.getGitlabId(name);
     for (String member : members) {
       int gitlabId = udb.getGitLabId(member);
@@ -174,11 +176,13 @@ public class GroupService {
    * @param leader leader username
    * @return response
    */
+  @CrossOrigin(origins = "*")
   @PutMapping("/{name}/members/{username}")
   public ResponseEntity<Object> updateLeader(
       @PathVariable("name") String name, @PathVariable("username") String leader) {
     HttpHeaders headers = new HttpHeaders();
     headers.add("Content-Type", "application/json");
+
 
     int groupGitLabId = gdb.getGitlabId(name);
     // update newLeader's AccessLevel to owner
@@ -205,11 +209,12 @@ public class GroupService {
    * @param member member
    * @return response
    */
+  @CrossOrigin(origins = "*")
   @DeleteMapping("/{name}/members/{username}")
   public ResponseEntity<Object> removeMember(
       @PathVariable("name") String name,
       @PathVariable("username") String member) {
-      try{
+    try{
         int groupGitLabId = gdb.getGitlabId(name);
         int gitlabId = udb.getGitLabId(member);
         gitlabService.removeGroupMember(groupGitLabId, gitlabId);

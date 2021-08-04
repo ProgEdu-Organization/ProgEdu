@@ -8,10 +8,25 @@ let getGroup = function (groupName: string): string {
 } 
 
 
+let updateLeader = function (groupName: string, leader: string): string {
+    return environment.NEW_SERVER_URL + `/groups/${groupName}/members/${leader[0]}`;
+} 
+
+let removeMember = function (groupName: string, member: string): string {
+    return environment.NEW_SERVER_URL + `/groups/${groupName}/members/${member[0]}`;
+} 
+
+let addMembers = function (groupName: string): string {
+    return environment.NEW_SERVER_URL + `/groups/${groupName}/members`;
+} 
+
 
 
 export const GroupsAPI = {
     getGroup: getGroup,
-    getAllGroup: getAllGroup
+    getAllGroup: getAllGroup,
+    updateLeader: updateLeader,
+    removeMember: removeMember,
+    addMembers: addMembers
 }
    
