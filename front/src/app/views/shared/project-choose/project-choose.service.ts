@@ -8,6 +8,8 @@ import { CommitRecordAPI } from '../../../api/CommitRecordAPI';
 
 import { GroupCommitRecordAPI } from '../../../api/GroupCommitRecordAPI';
 
+import { GroupsAPI } from '../../../api/GroupsAPI';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -28,7 +30,7 @@ export class ProjectChoosedService {
   }
 
   getGroup(groupName): Observable<any> {
-    const GROUP_MEMBER_API: string = environment.SERVER_URL + `/webapi/groups/${groupName}`;
+    const GROUP_MEMBER_API: string = GroupsAPI.getGroup(groupName);
     return this.addJwtTokenHttpClient.get(GROUP_MEMBER_API);
   }
 

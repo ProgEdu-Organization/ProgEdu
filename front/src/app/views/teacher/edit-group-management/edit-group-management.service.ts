@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import {AddJwtTokenHttpClient} from '../../../services/add-jwt-token.service';
 import { UserAPI } from '../../../api/UserAPI';
+import { GroupsAPI } from '../../../api/GroupsAPI';
 
 const editGroupOptions = ({
   headers: new HttpHeaders(
@@ -18,7 +19,7 @@ export class EditGroupManagementService {
   constructor(private http: HttpClient, private addJwtTokenHttpClient: AddJwtTokenHttpClient) { }
 
   getGroup(groupName: string): Observable<any> {
-    const GET_GROUP_API = environment.SERVER_URL + `/webapi/groups/${groupName}`;
+    const GET_GROUP_API = GroupsAPI.getGroup(groupName);;
     return this.addJwtTokenHttpClient.get(GET_GROUP_API);
   }
 
