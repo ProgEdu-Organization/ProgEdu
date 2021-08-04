@@ -10,10 +10,6 @@ public class Assignment {
 
   private Date createTime = null;
 
-  private Date deadline = null;
-
-  private Date releaseTime = null;
-
   private String description = "";
 
   private ProjectTypeEnum type;
@@ -44,14 +40,6 @@ public class Assignment {
     this.name = name;
   }
 
-  public Date getDeadline() {
-    return deadline;
-  }
-
-  public void setDeadline(Date deadline) {
-    this.deadline = deadline;
-  }
-
   public String getDescription() {
     return description;
   }
@@ -66,14 +54,6 @@ public class Assignment {
 
   public ProjectTypeEnum setType(ProjectTypeEnum type) {
     return this.type = type;
-  }
-
-  public Date getReleaseTime() {
-    return releaseTime;
-  }
-
-  public void setReleaseTime(Date releaseTime) {
-    this.releaseTime = releaseTime;
   }
 
   public boolean isDisplay() {
