@@ -3,14 +3,15 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import {AddJwtTokenHttpClient} from '../../../services/add-jwt-token.service';
+import { PeerReviewAPI } from '../../../api/PeerReviewAPI';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ReviewStatusAssignmentChooseService {
 
-  ALL_STATUS_DETAIL_API = environment.SERVER_URL + '/webapi/peerReview/status/detail';
-  REVIEW_METRICS_API = environment.SERVER_URL + '/webapi/peerReview/metrics';
+  ALL_STATUS_DETAIL_API = PeerReviewAPI.getReviewStatusDetail;
+  REVIEW_METRICS_API = PeerReviewAPI.getReviewMetrics;
   REVIEW_STATUS_DETAIL_PAGE_API = environment.SERVER_URL + '/webapi/peerReview/status/detail/page';
   CREATE_REVIEW_RECORD_API = environment.SERVER_URL + '/webapi/peerReview/create';
   constructor(private addJwtTokenHttpClient: AddJwtTokenHttpClient) { }
