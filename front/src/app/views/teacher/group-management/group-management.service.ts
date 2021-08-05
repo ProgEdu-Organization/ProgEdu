@@ -16,7 +16,7 @@ const createProjectOptions = ({
 
 export class GroupManagementService {
   GET_USERS_API = UserAPI.getUsers;
-  CREATE_PROJECT = environment.SERVER_URL + '/webapi/groups/create';
+  CREATE_PROJECT = environment.SERVER_URL + '/webapi/groups/create'; // Todo 這好像根本沒用到
   GET_GROUP_MEMBER_API = GroupsAPI.getAllGroup;
   constructor(private http: HttpClient, private addJwtTokenHttpClient: AddJwtTokenHttpClient) { }
 
