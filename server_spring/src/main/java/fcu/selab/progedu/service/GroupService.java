@@ -94,10 +94,15 @@ public class GroupService {
     headers.add("Content-Type", "application/json");
     headers.add("Access-Control-Allow-Origin", "*");
 
+    JSONObject jsonObject = getGroupInfo(name);
+    return new ResponseEntity<Object>(jsonObject, headers, HttpStatus.OK);
+  }
+
+  public JSONObject getGroupInfo(String name){
 
     Group group = gdb.getGroup(name);
     SimpleDateFormat dateFormat = new SimpleDateFormat(
-        "yyyy-MM-dd HH:mm:ss.S");
+            "yyyy-MM-dd HH:mm:ss.S");
 
     JSONArray projectList = new JSONArray();
     List<GroupProject> groupProjects = group.getProjects();
@@ -128,8 +133,13 @@ public class GroupService {
     jsonObject.put("leader", group.getLeader());
     jsonObject.put("members", group.getMembers());
     jsonObject.put("project", projectList);
-    return new ResponseEntity<Object>(jsonObject, headers, HttpStatus.OK);
+
+    return jsonObject;
   }
+
+
+
+
 
   @PostMapping("/{name}/members")
   public ResponseEntity<Object> addMembers(
