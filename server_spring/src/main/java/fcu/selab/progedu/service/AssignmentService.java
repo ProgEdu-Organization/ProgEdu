@@ -30,12 +30,11 @@ import org.springframework.web.bind.annotation.*;
 
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Document;
-import java.io.File;
-import java.io.FileInputStream;
+
+import java.io.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.io.InputStream;
 import java.util.List;
 import java.util.TimeZone;
 
@@ -672,7 +671,11 @@ public class AssignmentService {
                 .getResourceAsStream("/sample/MvnQuickStart.zip");
 
         File tempFile = File.createTempFile(String.valueOf(mavenResourcesZip.hashCode()), ".tmp");
-        tempFile.deleteOnExit();
+
+        System.out.println("franky-test mavenResourcesZip.hashCode()");
+        System.out.println(mavenResourcesZip.hashCode());
+
+        copyInputStreamToFile(mavenResourcesZip, tempFile);
 
         MavenAssignmentSetting mas = new MavenAssignmentSetting();
         ZipHandler zipHandler = new ZipHandler();
@@ -698,6 +701,21 @@ public class AssignmentService {
       System.out.println(e.getMessage());
       return new ResponseEntity<Object>(e.getMessage(), headers, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+  }
+
+  private static void copyInputStreamToFile(InputStream inputStream, File file)
+          throws IOException {
+
+    // append = false
+    try (FileOutputStream outputStream = new FileOutputStream(file, false)) {
+      int read;
+      final int DEFAULT_BUFFER_SIZE = 8192;
+      byte[] bytes = new byte[DEFAULT_BUFFER_SIZE];
+      while ((read = inputStream.read(bytes)) != -1) {
+        outputStream.write(bytes, 0, read);
+      }
+    }
+
   }
 
 
