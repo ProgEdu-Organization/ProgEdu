@@ -12,6 +12,7 @@ import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.jenkinsconfig.JenkinsProjectConfig;
 import fcu.selab.progedu.jenkinsconfig.JenkinsProjectConfigFactory;
 import fcu.selab.progedu.jenkinsconfig.WebPipelineConfig;
+import fcu.selab.progedu.setting.MavenAssignmentSetting;
 import fcu.selab.progedu.utils.JavaIoUtile;
 import fcu.selab.progedu.utils.ZipHandler;
 import net.minidev.json.JSONArray;
@@ -74,6 +75,7 @@ public class AssignmentService {
   private final String uploadDir = tempDir + "/uploads/";
   private final String testDir = tempDir + "/tests/";
   private final String assignmentSettingDir = tempDir + "/assignmentSetting/";
+  private final String mavenPomXmlSettingDir = tempDir + "/mavenPomXmlSetting/";
 
   private String gitlabRootUsername;
   private ZipHandler zipHandler;
@@ -639,6 +641,52 @@ public class AssignmentService {
     byte[] assignmentFile = IOUtils.toByteArray(targetStream);
     return new ResponseEntity<Object>(assignmentFile, headers, HttpStatus.OK);
 
+  }
+
+  @PostMapping("order")
+  public ResponseEntity<Object> modifyAssignmentOrderFile(
+          @RequestParam("fileRadio") String fileType,
+          @RequestParam("order") String assignmentCompileOrdersAndScore,
+          @RequestParam("assignmentName") String assignmentName) {
+
+    HttpHeaders headers = new HttpHeaders();
+
+    headers.add("Access-Control-Allow-Origin", "*");
+
+
+    //-----order: Compile Failure:10, Coding Style Failure:80, Unit Test Failure:10
+    List<String> ordersList = new ArrayList<>();
+    String[] tokens = assignmentCompileOrdersAndScore.split(", ");
+    for (String token:tokens) {
+      ordersList.add(token);
+    }
+    //---------make pom.xml
+    try {
+      if (fileType.equals("maven")) {
+        String mavenResourcesZipPath =
+                this.getClass().getResource("/sample/MvnQuickStart.zip").getPath();
+        MavenAssignmentSetting mas = new MavenAssignmentSetting();
+        ZipHandler zipHandler = new ZipHandler();
+        zipHandler.unzipFile(mavenResourcesZipPath,
+                assignmentSettingDir + assignmentName);
+        mas.createAssignmentSetting(ordersList, assignmentName,
+                mavenPomXmlSettingDir);
+
+        File mavenPomXmlSettingFile = new File(mavenPomXmlSettingDir
+                + assignmentName + "_pom.xml");
+        File assignmentSettingFile = new File(assignmentSettingDir
+                + assignmentName + "/pom.xml");
+
+        JavaIoUtile.copyDirectoryCompatibilityMode(mavenPomXmlSettingFile, assignmentSettingFile);
+
+        zipHandler.zipTestFolder(assignmentSettingDir + assignmentName);
+      }
+      return new ResponseEntity<Object>(headers, HttpStatus.OK);
+
+    } catch (Exception e) {
+      System.out.println(e.getMessage());
+      return new ResponseEntity<Object>(e.getMessage(), headers, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
 

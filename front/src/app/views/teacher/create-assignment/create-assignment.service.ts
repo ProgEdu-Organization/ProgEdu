@@ -7,6 +7,7 @@ import { environment } from '../../../../environments/environment';
 import {AddJwtTokenHttpClient} from '../../../services/add-jwt-token.service';
 import { JwtService } from '../../../services/jwt.service';
 import { AssignmentAPI } from '../../../api/AssignmentAPI';
+import { CategoryMetricsAPI } from '../../../api/CategoryMetricsAPI';
 
 
 const createAssigmentOptions = ({
@@ -19,9 +20,9 @@ const createAssigmentOptions = ({
 export class CreateAssignmentService {
   CREATE_ASSIGNMENT_API = AssignmentAPI.createAssignment;
   CREATE_ASSIGNMENT_WITH_ORDER_API = AssignmentAPI.createAutoAssessment;
-  MODIFY_ORDER_API = environment.SERVER_URL + '/webapi/assignment/order';
-  GET_ALL_CATEGORY_API = environment.SERVER_URL + '/webapi/categoryMetrics/category';
-  GET_METRICS_API = environment.SERVER_URL + '/webapi/categoryMetrics/metrics';
+  MODIFY_ORDER_API = AssignmentAPI.modifyAssignmentOrderFile;
+  GET_ALL_CATEGORY_API = CategoryMetricsAPI.getCategory;
+  GET_METRICS_API = CategoryMetricsAPI.getMetrics;
   CREATE_REVIEW_ASSIGNMENT_API = AssignmentAPI.createPeerReviewAssignment;
 
   GET_ASSIGNMENT_FILE_API = AssignmentAPI.getAssignmentFile;
