@@ -663,12 +663,23 @@ public class AssignmentService {
     //---------make pom.xml
     try {
       if (fileType.equals("maven")) {
-        String mavenResourcesZipPath =
-                this.getClass().getResource("/sample/MvnQuickStart.zip").getPath();
+
+//        String mavenResourcesZipPath =
+//                this.getClass().getResource("/sample/MvnQuickStart.zip").getPath();
+
+
+        InputStream mavenResourcesZip = this.getClass()
+                .getResourceAsStream("/sample/MvnQuickStart.zip");
+
+        File tempFile = File.createTempFile(String.valueOf(mavenResourcesZip.hashCode()), ".tmp");
+        tempFile.deleteOnExit();
+
         MavenAssignmentSetting mas = new MavenAssignmentSetting();
         ZipHandler zipHandler = new ZipHandler();
-        zipHandler.unzipFile(mavenResourcesZipPath,
+        zipHandler.unzipFile(tempFile,
                 assignmentSettingDir + assignmentName);
+
+
         mas.createAssignmentSetting(ordersList, assignmentName,
                 mavenPomXmlSettingDir);
 
