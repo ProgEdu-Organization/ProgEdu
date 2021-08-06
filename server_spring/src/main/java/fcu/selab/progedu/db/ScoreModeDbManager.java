@@ -26,15 +26,21 @@ public class ScoreModeDbManager {
   public int getScoreModeIdByDesc(String scoreDesc) throws SQLException {
     String query = "SELECT id FROM Score_Mode WHERE mode = ?";
     int scoreModeId = 0;
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
 
-    try (Connection conn = database.getConnection();
-         PreparedStatement preStmt = conn.prepareStatement(query)) {
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(query);
+
       preStmt.setString(1, scoreDesc);
-      try (ResultSet rs = preStmt.executeQuery();) {
-        while (rs.next()) {
-          scoreModeId = rs.getInt("id");
-        }
+      rs = preStmt.executeQuery();
+      while (rs.next()) {
+        scoreModeId = rs.getInt("id");
       }
+    } finally {
+      CloseDBUtil.closeAll(rs, preStmt, conn);
     }
     return scoreModeId;
   }
@@ -48,15 +54,21 @@ public class ScoreModeDbManager {
   public ScoreModeEnum getScoreModeDescById(int scoreModeId) throws SQLException {
     String query = "SELECT mode FROM Score_Mode WHERE id = ?";
     String scoreMode = null;
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
 
-    try (Connection conn = database.getConnection();
-         PreparedStatement preStmt = conn.prepareStatement(query)) {
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(query);
+
       preStmt.setInt(1, scoreModeId);
-      try (ResultSet rs = preStmt.executeQuery();) {
-        while (rs.next()) {
-          scoreMode = rs.getString("mode");
-        }
+      rs = preStmt.executeQuery();
+      while (rs.next()) {
+        scoreMode = rs.getString("mode");
       }
+    } finally {
+      CloseDBUtil.closeAll(rs, preStmt, conn);
     }
     ScoreModeEnum scoreModeEnum = ScoreModeEnum.getScoreModeEnum(scoreMode);
     return scoreModeEnum;
