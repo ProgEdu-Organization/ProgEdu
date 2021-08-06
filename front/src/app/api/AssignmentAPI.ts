@@ -26,6 +26,11 @@ let editAssignment: string = environment.NEW_SERVER_URL + '/assignment/edit';
 
 let deleteAssignment: string = environment.NEW_SERVER_URL + '/assignment/delete';
 
+let getAssignmentFile: string = environment.NEW_SERVER_URL + '/assignment/getAssignmentFile';
+
+
+
+
 export const AssignmentAPI = {
     createAssignment: createAssignment,
     createAutoAssessment: createAutoAssessment,
@@ -38,5 +43,7 @@ export const AssignmentAPI = {
     getAssignmentOrder: getAssignmentOrder,
     
     editAssignment: editAssignment,
-    deleteAssignment: deleteAssignment
+    deleteAssignment: deleteAssignment,
+
+    getAssignmentFile: getAssignmentFile
 }

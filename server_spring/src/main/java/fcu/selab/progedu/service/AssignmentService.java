@@ -16,11 +16,13 @@ import fcu.selab.progedu.utils.JavaIoUtile;
 import fcu.selab.progedu.utils.ZipHandler;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
+import org.apache.commons.io.IOUtils;
 import org.gitlab.api.models.GitlabProject;
 import org.jsoup.Jsoup;
 import org.jsoup.select.Elements;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,6 +30,7 @@ import org.springframework.web.bind.annotation.*;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Document;
 import java.io.File;
+import java.io.FileInputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -38,6 +41,8 @@ import java.util.TimeZone;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.springframework.web.multipart.MultipartFile;
 import fcu.selab.progedu.utils.Linux;
+
+import javax.ws.rs.QueryParam;
 
 
 @RestController
@@ -68,7 +73,7 @@ public class AssignmentService {
   private final String tempDir = System.getProperty("java.io.tmpdir");
   private final String uploadDir = tempDir + "/uploads/";
   private final String testDir = tempDir + "/tests/";
-
+  private final String assignmentSettingDir = tempDir + "/assignmentSetting/";
 
   private String gitlabRootUsername;
   private ZipHandler zipHandler;
@@ -612,6 +617,28 @@ public class AssignmentService {
 
   public List<String> getAllAssignmentNames() {
     return dbManager.getAllAssignmentNames();
+  }
+
+  @GetMapping(
+          value ="getAssignmentFile",
+          produces = MediaType.APPLICATION_OCTET_STREAM_VALUE
+  )
+  public ResponseEntity<Object>  getAssignmentFile(@QueryParam("fileName") String fileName) throws Exception{
+
+    HttpHeaders headers = new HttpHeaders();
+
+    headers.add("Access-Control-Allow-Origin", "*");
+    headers.add("Content-Disposition", "attachment;filename=" + fileName + ".zip");
+
+    String filePath = assignmentSettingDir + fileName + ".zip";
+
+
+    File file = new File(filePath);
+    InputStream targetStream = new FileInputStream(file);
+
+    byte[] assignmentFile = IOUtils.toByteArray(targetStream);
+    return new ResponseEntity<Object>(assignmentFile, headers, HttpStatus.OK);
+
   }
 
 

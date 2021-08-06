@@ -20,10 +20,15 @@ export class CreateAssignmentService {
   CREATE_ASSIGNMENT_API = AssignmentAPI.createAssignment;
   CREATE_ASSIGNMENT_WITH_ORDER_API = AssignmentAPI.createAutoAssessment;
   MODIFY_ORDER_API = environment.SERVER_URL + '/webapi/assignment/order';
-  GET_ORDER_API = environment.SERVER_URL + '/webapi/assignment/getAssignmentFile';
   GET_ALL_CATEGORY_API = environment.SERVER_URL + '/webapi/categoryMetrics/category';
   GET_METRICS_API = environment.SERVER_URL + '/webapi/categoryMetrics/metrics';
   CREATE_REVIEW_ASSIGNMENT_API = AssignmentAPI.createPeerReviewAssignment;
+
+  GET_ASSIGNMENT_FILE_API = AssignmentAPI.getAssignmentFile;
+
+
+
+
   constructor(private addJwtTokenHttpClient: AddJwtTokenHttpClient) { }
 
   createAssignment(assignment: FormGroup): Observable<any> {
@@ -94,9 +99,7 @@ export class CreateAssignmentService {
 
   getAssignmentFile(assigememtName: string): string {
     const jwtService = new JwtService();
-
-    return environment.SERVER_URL + '/webapi/assignment/getAssignmentFile?fileName=' + assigememtName 
+    return this.GET_ASSIGNMENT_FILE_API + '?fileName=' + assigememtName 
         + "&token=" + jwtService.getToken();
-     
   }
 }
