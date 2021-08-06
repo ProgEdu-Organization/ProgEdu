@@ -195,7 +195,7 @@ public class ReviewMetricsDbManager {
 
     try {
       conn = database.getConnection();
-      preStmt = conn.prepareStatement(query)
+      preStmt = conn.prepareStatement(query);
 
       preStmt.setInt(1, mode);
       preStmt.setString(2, description);
