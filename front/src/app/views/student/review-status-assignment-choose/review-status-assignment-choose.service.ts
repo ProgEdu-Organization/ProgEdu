@@ -13,7 +13,7 @@ export class ReviewStatusAssignmentChooseService {
   ALL_STATUS_DETAIL_API = PeerReviewAPI.getReviewStatusDetail;
   REVIEW_METRICS_API = PeerReviewAPI.getReviewMetrics;
   REVIEW_STATUS_DETAIL_PAGE_API = environment.SERVER_URL + '/webapi/peerReview/status/detail/page';
-  CREATE_REVIEW_RECORD_API = environment.SERVER_URL + '/webapi/peerReview/create';
+  CREATE_REVIEW_RECORD_API = PeerReviewAPI.createReviewRecord;
   constructor(private addJwtTokenHttpClient: AddJwtTokenHttpClient) { }
 
   getReviewDetail(username: string, assignmentName: string): Observable<any> {

@@ -9,6 +9,7 @@ let getAllReviewStatus: string = environment.NEW_SERVER_URL + '/peerReview/statu
 
 let getReviewStatusDetail: string = environment.NEW_SERVER_URL + '/peerReview/status/detail';
 
+let createReviewRecord: string = environment.NEW_SERVER_URL + '/peerReview/create';
 
 
 export const PeerReviewAPI = {
@@ -17,5 +18,6 @@ export const PeerReviewAPI = {
     getReviewMetrics: getReviewMetrics,
     getReviewedRecordDetail: getReviewedRecordDetail,
     getAllReviewStatus: getAllReviewStatus,
-    getReviewStatusDetail: getReviewStatusDetail
+    getReviewStatusDetail: getReviewStatusDetail,
+    createReviewRecord: createReviewRecord
 }

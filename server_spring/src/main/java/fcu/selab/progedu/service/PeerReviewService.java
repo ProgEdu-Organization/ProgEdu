@@ -113,7 +113,7 @@ public class PeerReviewService {
 
       return new ResponseEntity<>(headers, HttpStatus.OK);
     } catch (Exception e) {
-      return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+      return new ResponseEntity<Object>(e.getMessage(), headers, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
   }
