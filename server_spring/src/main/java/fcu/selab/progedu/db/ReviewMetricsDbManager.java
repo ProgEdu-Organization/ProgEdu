@@ -33,15 +33,20 @@ public class ReviewMetricsDbManager {
                                   String description, String link) throws SQLException {
     String query = "INSERT INTO Review_Metrics(category, mode, metrics, description, link) "
         + "VALUES(?,?,?,?,?);";
+    Connection conn = null;
+    PreparedStatement preStmt = null;
 
-    try (Connection conn = database.getConnection();
-         PreparedStatement preStmt = conn.prepareStatement(query)) {
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(query);
       preStmt.setInt(1, category);
       preStmt.setInt(2, mode);
       preStmt.setString(3, metrics);
       preStmt.setString(4, description);
       preStmt.setString(5, link);
       preStmt.executeUpdate();
+    } finally {
+      CloseDBUtil.closeAll(preStmt, conn);
     }
   }
 
@@ -55,26 +60,33 @@ public class ReviewMetricsDbManager {
     String query = "SELECT * FROM Review_Metrics WHERE category = ?";
     List<ReviewMetrics> reviewMetricsList = new ArrayList<>();
 
-    try (Connection conn = database.getConnection();
-         PreparedStatement preStmt = conn.prepareStatement(query)) {
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
+
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(query);
       preStmt.setInt(1, category);
-      try (ResultSet rs = preStmt.executeQuery()) {
-        while (rs.next()) {
-          int id = rs.getInt("id");
-          int mode = rs.getInt("mode");
-          String metrics = rs.getString("metrics");
-          String description = rs.getString("description");
-          String link = rs.getString("link");
-          ReviewMetrics reviewMetrics = new ReviewMetrics();
-          reviewMetrics.setId(id);
-          reviewMetrics.setCategory(category);
-          reviewMetrics.setMode(mode);
-          reviewMetrics.setMetrics(metrics);
-          reviewMetrics.setDescription(description);
-          reviewMetrics.setLink(link);
-          reviewMetricsList.add(reviewMetrics);
-        }
+      rs = preStmt.executeQuery();
+
+      while (rs.next()) {
+        int id = rs.getInt("id");
+        int mode = rs.getInt("mode");
+        String metrics = rs.getString("metrics");
+        String description = rs.getString("description");
+        String link = rs.getString("link");
+        ReviewMetrics reviewMetrics = new ReviewMetrics();
+        reviewMetrics.setId(id);
+        reviewMetrics.setCategory(category);
+        reviewMetrics.setMode(mode);
+        reviewMetrics.setMetrics(metrics);
+        reviewMetrics.setDescription(description);
+        reviewMetrics.setLink(link);
+        reviewMetricsList.add(reviewMetrics);
       }
+    } finally {
+      CloseDBUtil.closeAll(rs, preStmt, conn);
     }
     return reviewMetricsList;
   }
@@ -88,19 +100,26 @@ public class ReviewMetricsDbManager {
     String query = "SELECT * FROM Review_Metrics WHERE id = ?";
     ReviewMetrics reviewMetrics = new ReviewMetrics();
 
-    try (Connection conn = database.getConnection();
-         PreparedStatement preStmt = conn.prepareStatement(query)) {
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
+
+    try  {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(query);
       preStmt.setInt(1, id);
-      try (ResultSet rs = preStmt.executeQuery()) {
-        while (rs.next()) {
-          reviewMetrics.setId(id);
-          reviewMetrics.setCategory(rs.getInt("category"));
-          reviewMetrics.setMode(rs.getInt("mode"));
-          reviewMetrics.setMetrics(rs.getString("metrics"));
-          reviewMetrics.setDescription(rs.getString("description"));
-          reviewMetrics.setLink(rs.getString("link"));
-        }
+
+      rs = preStmt.executeQuery();
+      while (rs.next()) {
+        reviewMetrics.setId(id);
+        reviewMetrics.setCategory(rs.getInt("category"));
+        reviewMetrics.setMode(rs.getInt("mode"));
+        reviewMetrics.setMetrics(rs.getString("metrics"));
+        reviewMetrics.setDescription(rs.getString("description"));
+        reviewMetrics.setLink(rs.getString("link"));
       }
+    } finally {
+      CloseDBUtil.closeAll(rs, preStmt, conn);
     }
     return reviewMetrics;
   }
@@ -114,14 +133,21 @@ public class ReviewMetricsDbManager {
     String query = "SELECT metrics FROM Review_Metrics WHERE id = ?";
     String metrics = null;
 
-    try (Connection conn = database.getConnection();
-         PreparedStatement preStmt = conn.prepareStatement(query)) {
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
+
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(query);
       preStmt.setInt(1, id);
-      try (ResultSet rs = preStmt.executeQuery()) {
-        while (rs.next()) {
-          metrics = rs.getString("metrics");
-        }
+      rs = preStmt.executeQuery();
+
+      while (rs.next()) {
+        metrics = rs.getString("metrics");
       }
+    } finally {
+      CloseDBUtil.closeAll(rs, preStmt, conn);
     }
     return metrics;
   }
@@ -134,15 +160,21 @@ public class ReviewMetricsDbManager {
   public int getScoreModeIdById(int id) throws SQLException {
     String query = "SELECT mode FROM Review_Metrics WHERE id = ?";
     int mode = 0;
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
 
-    try (Connection conn = database.getConnection();
-         PreparedStatement preStmt = conn.prepareStatement(query)) {
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(query);
       preStmt.setInt(1, id);
-      try (ResultSet rs = preStmt.executeQuery()) {
-        while (rs.next()) {
-          mode = rs.getInt("mode");
-        }
+      rs = preStmt.executeQuery();
+
+      while (rs.next()) {
+        mode = rs.getInt("mode");
       }
+    } finally {
+      CloseDBUtil.closeAll(rs, preStmt, conn);
     }
     return mode;
   }
@@ -158,14 +190,20 @@ public class ReviewMetricsDbManager {
   public void editReviewMetricsById(int id, int mode, String description, String link)
       throws SQLException {
     String query = "UPDATE Review_Metrics SET mode = ?, description = ?, link = ? WHERE id = ?";
+    Connection conn = null;
+    PreparedStatement preStmt = null;
 
-    try (Connection conn = database.getConnection();
-         PreparedStatement preStmt = conn.prepareStatement(query)) {
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(query);
+
       preStmt.setInt(1, mode);
       preStmt.setString(2, description);
       preStmt.setString(3, link);
       preStmt.setInt(4, id);
       preStmt.executeUpdate();
+    } finally {
+      CloseDBUtil.closeAll(preStmt, conn);
     }
   }
 
@@ -176,11 +214,16 @@ public class ReviewMetricsDbManager {
    */
   public void deleteReviewMetrics(int id) throws SQLException {
     String query = "DELETE FROM Review_Metrics WHERE id = ?";
+    Connection conn = null;
+    PreparedStatement preStmt = null;
 
-    try (Connection conn = database.getConnection();
-         PreparedStatement preStmt = conn.prepareStatement(query)) {
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(query);
       preStmt.setInt(1, id);
       preStmt.executeUpdate();
+    } finally {
+      CloseDBUtil.closeAll(preStmt, conn);
     }
   }
 

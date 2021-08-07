@@ -32,18 +32,24 @@ public class RoleDbManager {
   public int getRoleIdByName(String roleName) {
     String query = "SELECT id FROM Role WHERE role = ?";
     int roleId = 0;
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
 
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(query)) {
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(query);
+
       preStmt.setString(1, roleName);
-      try (ResultSet rs = preStmt.executeQuery();) {
-        while (rs.next()) {
-          roleId = rs.getInt("id");
-        }
+      rs = preStmt.executeQuery();
+      while (rs.next()) {
+        roleId = rs.getInt("id");
       }
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(rs, preStmt, conn);
     }
     return roleId;
   }
@@ -57,18 +63,24 @@ public class RoleDbManager {
   public RoleEnum getRoleNameById(int roleId) {
     String query = "SELECT role FROM Role WHERE id = ?";
     String roleName = null;
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
 
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(query)) {
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(query);
+
       preStmt.setInt(1, roleId);
-      try (ResultSet rs = preStmt.executeQuery();) {
-        while (rs.next()) {
-          roleName = rs.getString("role");
-        }
+      rs = preStmt.executeQuery();
+      while (rs.next()) {
+        roleName = rs.getString("role");
       }
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(rs, preStmt, conn);
     }
     RoleEnum roleEnum = RoleEnum.getRoleEnum(roleName);
     return roleEnum;

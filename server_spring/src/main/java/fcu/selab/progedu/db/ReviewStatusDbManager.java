@@ -26,15 +26,21 @@ public class ReviewStatusDbManager {
   public int getReviewStatusIdByStatus(String status) throws SQLException {
     String query = "SELECT id FROM Review_Status WHERE status = ?";
     int id = 0;
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
 
-    try (Connection conn = database.getConnection();
-         PreparedStatement preStmt = conn.prepareStatement(query)) {
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(query);
       preStmt.setString(1, status);
-      try (ResultSet rs = preStmt.executeQuery();) {
-        while (rs.next()) {
-          id = rs.getInt("id");
-        }
+
+      rs = preStmt.executeQuery();
+      while (rs.next()) {
+        id = rs.getInt("id");
       }
+    } finally {
+      CloseDBUtil.closeAll(rs, preStmt, conn);
     }
     return id;
   }
@@ -48,15 +54,21 @@ public class ReviewStatusDbManager {
   public ReviewStatusEnum getReviewStatusById(int id) throws SQLException {
     String query = "SELECT status FROM Review_Status WHERE id = ?";
     String reviewStatus = null;
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
 
-    try (Connection conn = database.getConnection();
-         PreparedStatement preStmt = conn.prepareStatement(query)) {
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(query);
       preStmt.setInt(1, id);
-      try (ResultSet rs = preStmt.executeQuery();) {
-        while (rs.next()) {
-          reviewStatus = rs.getString("status");
-        }
+
+      rs = preStmt.executeQuery();
+      while (rs.next()) {
+        reviewStatus = rs.getString("status");
       }
+    } finally {
+      CloseDBUtil.closeAll(rs, preStmt, conn);
     }
     ReviewStatusEnum reviewStatusEnum = ReviewStatusEnum.getReviewStatusEnum(reviewStatus);
     return reviewStatusEnum;

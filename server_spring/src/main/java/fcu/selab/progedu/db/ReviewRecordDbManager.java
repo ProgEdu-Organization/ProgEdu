@@ -37,9 +37,13 @@ public class ReviewRecordDbManager {
     String query = "INSERT INTO Review_Record(pmId, rsmId, score, time, feedback, reviewOrder)"
         + " VALUES (?,?,?,?,?,?);";
     Timestamp timeTimestamp = new Timestamp(time.getTime());
+    Connection conn = null;
+    PreparedStatement preStmt = null;
 
-    try (Connection conn = database.getConnection();
-         PreparedStatement preStmt = conn.prepareStatement(query)) {
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(query);
+
       preStmt.setInt(1, pmId);
       preStmt.setInt(2, rsmId);
       preStmt.setInt(3, score);
@@ -47,6 +51,8 @@ public class ReviewRecordDbManager {
       preStmt.setString(5, feedback);
       preStmt.setInt(6, reviewOrder);
       preStmt.executeUpdate();
+    } finally {
+      CloseDBUtil.closeAll(preStmt, conn);
     }
   }
 
@@ -59,27 +65,33 @@ public class ReviewRecordDbManager {
   public ReviewRecord getReviewRecordById(int id) throws SQLException {
     String query = "SELECT * FROM Review_Record WHERE id = ?";
     ReviewRecord reviewRecord = new ReviewRecord();
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
 
-    try (Connection conn = database.getConnection();
-         PreparedStatement preStmt = conn.prepareStatement(query)) {
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(query);
       preStmt.setInt(1, id);
-      try (ResultSet rs = preStmt.executeQuery()) {
-        while (rs.next()) {
-          int pmId = rs.getInt("pmId");
-          int rsmId = rs.getInt("rsmId");
-          int score = rs.getInt("score");
-          Date time = rs.getTimestamp("time");
-          String feedback = rs.getString("feedback");
-          int reviewOrder = rs.getInt("reviewOrder");
-          reviewRecord.setId(id);
-          reviewRecord.setPmId(pmId);
-          reviewRecord.setRsmId(rsmId);
-          reviewRecord.setScore(score);
-          reviewRecord.setTime(time);
-          reviewRecord.setFeedback(feedback);
-          reviewRecord.setReviewOrder(reviewOrder);
-        }
+
+      rs = preStmt.executeQuery();
+      while (rs.next()) {
+        int pmId = rs.getInt("pmId");
+        int rsmId = rs.getInt("rsmId");
+        int score = rs.getInt("score");
+        Date time = rs.getTimestamp("time");
+        String feedback = rs.getString("feedback");
+        int reviewOrder = rs.getInt("reviewOrder");
+        reviewRecord.setId(id);
+        reviewRecord.setPmId(pmId);
+        reviewRecord.setRsmId(rsmId);
+        reviewRecord.setScore(score);
+        reviewRecord.setTime(time);
+        reviewRecord.setFeedback(feedback);
+        reviewRecord.setReviewOrder(reviewOrder);
       }
+    } finally {
+      CloseDBUtil.closeAll(rs, preStmt, conn);
     }
     return reviewRecord;
   }
@@ -95,30 +107,36 @@ public class ReviewRecordDbManager {
       throws SQLException {
     String query = "SELECT * FROM Review_Record WHERE pmId = ? AND reviewOrder = ?";
     List<ReviewRecord> reviewRecordList = new ArrayList<>();
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
 
-    try (Connection conn = database.getConnection();
-         PreparedStatement preStmt = conn.prepareStatement(query)) {
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(query);
+
       preStmt.setInt(1, pmId);
       preStmt.setInt(2, order);
-      try (ResultSet rs = preStmt.executeQuery()) {
-        while (rs.next()) {
-          int id = rs.getInt("id");
-          int rsmId = rs.getInt("rsmId");
-          int score = rs.getInt("score");
-          Date time = rs.getTimestamp("time");
-          String feedback = rs.getString("feedback");
-          int reviewOrder = rs.getInt("reviewOrder");
-          ReviewRecord reviewRecord = new ReviewRecord();
-          reviewRecord.setId(id);
-          reviewRecord.setPmId(pmId);
-          reviewRecord.setRsmId(rsmId);
-          reviewRecord.setScore(score);
-          reviewRecord.setTime(time);
-          reviewRecord.setFeedback(feedback);
-          reviewRecord.setReviewOrder(reviewOrder);
-          reviewRecordList.add(reviewRecord);
-        }
+      rs = preStmt.executeQuery();
+      while (rs.next()) {
+        int id = rs.getInt("id");
+        int rsmId = rs.getInt("rsmId");
+        int score = rs.getInt("score");
+        Date time = rs.getTimestamp("time");
+        String feedback = rs.getString("feedback");
+        int reviewOrder = rs.getInt("reviewOrder");
+        ReviewRecord reviewRecord = new ReviewRecord();
+        reviewRecord.setId(id);
+        reviewRecord.setPmId(pmId);
+        reviewRecord.setRsmId(rsmId);
+        reviewRecord.setScore(score);
+        reviewRecord.setTime(time);
+        reviewRecord.setFeedback(feedback);
+        reviewRecord.setReviewOrder(reviewOrder);
+        reviewRecordList.add(reviewRecord);
       }
+    } finally {
+      CloseDBUtil.closeAll(rs, preStmt, conn);
     }
     return reviewRecordList;
   }
@@ -133,18 +151,24 @@ public class ReviewRecordDbManager {
   public boolean isFirstTimeReviewRecord(int pmId) throws SQLException {
     String query = "SELECT COUNT(*) AS isFirstTime FROM Review_Record WHERE pmId = ?";
     boolean isFirstTime = false;
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
 
-    try (Connection conn = database.getConnection();
-         PreparedStatement preStmt = conn.prepareStatement(query)) {
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(query);
+
       preStmt.setInt(1, pmId);
-      try (ResultSet rs = preStmt.executeQuery()) {
-        while (rs.next()) {
-          int count = rs.getInt("isFirstTime");
-          if (count == 0) {
-            isFirstTime = true;
-          }
+      rs = preStmt.executeQuery();
+      while (rs.next()) {
+        int count = rs.getInt("isFirstTime");
+        if (count == 0) {
+          isFirstTime = true;
         }
       }
+    } finally {
+      CloseDBUtil.closeAll(rs, preStmt, conn);
     }
     return isFirstTime;
   }
@@ -159,15 +183,21 @@ public class ReviewRecordDbManager {
   public int getLatestReviewOrder(int pmId) throws SQLException {
     String query = "SELECT MAX(reviewOrder) AS latestCount FROM Review_Record WHERE pmId = ?";
     int latestCount = -1;
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
 
-    try (Connection conn = database.getConnection();
-         PreparedStatement preStmt = conn.prepareStatement(query)) {
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(query);
+
       preStmt.setInt(1, pmId);
-      try (ResultSet rs = preStmt.executeQuery()) {
-        while (rs.next()) {
-          latestCount = rs.getInt("latestCount");
-        }
+      rs = preStmt.executeQuery();
+      while (rs.next()) {
+        latestCount = rs.getInt("latestCount");
       }
+    } finally {
+      CloseDBUtil.closeAll(rs, preStmt, conn);
     }
     return latestCount;
   }
@@ -180,11 +210,17 @@ public class ReviewRecordDbManager {
    */
   public void deleteReviewRecordByPmId(int pmId) throws SQLException {
     String query = "DELETE FROM Review_Record WHERE pmId = ?";
+    Connection conn = null;
+    PreparedStatement preStmt = null;
 
-    try (Connection conn = database.getConnection();
-         PreparedStatement preStmt = conn.prepareStatement(query)) {
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(query);
+
       preStmt.setInt(1, pmId);
       preStmt.executeUpdate();
+    } finally {
+      CloseDBUtil.closeAll(preStmt, conn);
     }
   }
 

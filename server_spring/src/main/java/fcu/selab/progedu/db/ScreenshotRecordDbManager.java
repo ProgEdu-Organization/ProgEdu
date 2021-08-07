@@ -28,15 +28,21 @@ public class ScreenshotRecordDbManager {
    */
   public void addScreenshotRecord(int crId, String url) {
     String sql = "INSERT INTO Screenshot_Record(crId, pngUrl)  VALUES(?, ?)";
+    Connection conn = null;
+    PreparedStatement preStmt = null;
 
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
       preStmt.setInt(1, crId);
       preStmt.setString(2, url);
       preStmt.executeUpdate();
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(preStmt, conn);
     }
   }
 
@@ -47,22 +53,27 @@ public class ScreenshotRecordDbManager {
    */
   public ArrayList<String> getScreenshotUrl(int crId) {
     String sql = "SELECT * FROM Screenshot_Record WHERE crid = ?";
+    ArrayList urls = new ArrayList<String>();
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
 
-    try (Connection conn = database.getConnection();
-         PreparedStatement preStmt = conn.prepareStatement(sql)) {
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
       preStmt.setInt(1, crId);
-      try (ResultSet rs = preStmt.executeQuery()) {
-        ArrayList urls = new ArrayList<String>();
-        while (rs.next()) {
-          urls.add(rs.getString("pngUrl"));
-        }
-        return urls;
+      rs = preStmt.executeQuery();
+      while (rs.next()) {
+        urls.add(rs.getString("pngUrl"));
       }
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(rs, preStmt, conn);
     }
-    return null;
+    return urls;
   }
 
 
@@ -72,13 +83,20 @@ public class ScreenshotRecordDbManager {
    */
   public void deleteScreenshotByCrid(int crid) {
     String sql = "DELETE FROM Screenshot_Record WHERE crId = ?";
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
       preStmt.setInt(1, crid);
       preStmt.executeUpdate();
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(preStmt, conn);
     }
   }
 
