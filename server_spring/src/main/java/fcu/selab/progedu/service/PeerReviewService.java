@@ -1,25 +1,28 @@
 package fcu.selab.progedu.service;
 
-import fcu.selab.progedu.data.*;
-import fcu.selab.progedu.db.*;
-
-import fcu.selab.progedu.utils.ExceptionUtil;
+import javax.ws.rs.QueryParam;
+import java.text.SimpleDateFormat;
+import java.util.TimeZone;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.TimeZone;
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.sql.SQLException;
+import org.gitlab.api.models.GitlabProject;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
-
-import javax.ws.rs.QueryParam;
-import java.text.SimpleDateFormat;
-import java.util.TimeZone;
+import fcu.selab.progedu.data.*;
+import fcu.selab.progedu.db.*;
+import fcu.selab.progedu.utils.ExceptionUtil;
+import fcu.selab.progedu.config.GitlabConfig;
+import fcu.selab.progedu.conn.GitlabService;
 
 @RestController
 @RequestMapping(value ="/peerReview")
@@ -51,10 +54,10 @@ public class PeerReviewService {
    */
   @PostMapping("create")
   public ResponseEntity<Object> createReviewRecord(
-      @RequestParam("username") String username,
-      @RequestParam("reviewedName") String reviewedName,
-      @RequestParam("assignmentName") String assignmentName,
-      @RequestParam("reviewRecord") String reviewRecord) {
+          @RequestParam("username") String username,
+          @RequestParam("reviewedName") String reviewedName,
+          @RequestParam("assignmentName") String assignmentName,
+          @RequestParam("reviewRecord") String reviewRecord) {
 
     HttpHeaders headers = new HttpHeaders();
     headers.add("Access-Control-Allow-Origin", "*");
@@ -75,19 +78,19 @@ public class PeerReviewService {
       //    if it's expired, it won't create new review record
       if (createDate.compareTo(reviewSetting.getDeadline()) >= 0) {
         return new ResponseEntity<>("This review has been expired.", headers,
-            HttpStatus.INTERNAL_SERVER_ERROR);
+                HttpStatus.INTERNAL_SERVER_ERROR);
       }
 
       // 2. Check this review record has been release or not.
       //    PS. this won't happened, unless the student used this api in correct way
       if (createDate.compareTo(reviewSetting.getReleaseTime()) < 0) {
         return new ResponseEntity<>("This review hasn't been released.", headers,
-            HttpStatus.INTERNAL_SERVER_ERROR);
+                HttpStatus.INTERNAL_SERVER_ERROR);
       }
 
       // 3. Upload the status of pair matching
       int status = reviewStatusDbManager
-          .getReviewStatusIdByStatus(ReviewStatusEnum.COMPLETED.getTypeName());
+              .getReviewStatusIdByStatus(ReviewStatusEnum.COMPLETED.getTypeName());
       pairMatchingDbManager.updatePairMatchingById(status, pmId);
 
       // 4. Check which time have been reviewed, and upload the review order
@@ -105,10 +108,10 @@ public class PeerReviewService {
         int score = object.getInt("score");
         String feedback = object.getString("feedback");
         int rsmId = reviewSettingMetricsDbManager
-            .getReviewSettingMetricsIdByRsIdRsmId(reviewSettingId, id);
+                .getReviewSettingMetricsIdByRsIdRsmId(reviewSettingId, id);
 
         reviewRecordDbManager
-            .insertReviewRecord(pmId, rsmId, score, createDate, feedback, reviewOrder);
+                .insertReviewRecord(pmId, rsmId, score, createDate, feedback, reviewOrder);
       }
 
       return new ResponseEntity<>(headers, HttpStatus.OK);
@@ -123,11 +126,11 @@ public class PeerReviewService {
    *
    * @param username user name
    */
-	@GetMapping("/status/oneUser")
-	public ResponseEntity<Object> getReviewStatus(
-					@RequestParam("username") String username) {
+  @GetMapping("/status/oneUser")
+  public ResponseEntity<Object> getReviewStatus(
+          @RequestParam("username") String username) {
 
-		HttpHeaders headers = new HttpHeaders();
+    HttpHeaders headers = new HttpHeaders();
     headers.add("Content-Type", "application/json");
     headers.add("Access-Control-Allow-Origin", "*");
 		SimpleDateFormat dateFormat = new SimpleDateFormat(
@@ -193,9 +196,9 @@ public class PeerReviewService {
     }
   }
 
-	private int getReviewCompletedCount(int aid, int reviewId) throws SQLException {
+  private int getReviewCompletedCount(int aid, int reviewId) throws SQLException {
     List<PairMatching> pairMatchingList =
-        pairMatchingDbManager.getPairMatchingByAidAndReviewId(aid, reviewId);
+            pairMatchingDbManager.getPairMatchingByAidAndReviewId(aid, reviewId);
     int count = 0;
 
     for (PairMatching pairMatching : pairMatchingList) {
@@ -343,12 +346,10 @@ public class PeerReviewService {
    * @param page           page
    */
   @GetMapping("status/detail/page") // Todo 這目前還沒用到 先沒呼叫
-  public ResponseEntity<Object> getReviewedStatusDetailPagination(@QueryParam("username") String username,
-                                                    @QueryParam("assignmentName")
-                                                            String assignmentName,
-                                                    @QueryParam("userId") int userId,
-                                                    @QueryParam("page") int page) {
-
+  public ResponseEntity<Object> getReviewedStatusDetailPagination(@RequestParam("username") String username,
+                                                                  @RequestParam("assignmentName") String assignmentName,
+                                                                  @RequestParam("userId") int userId,
+                                                                  @RequestParam("page") int page) {
     HttpHeaders headers = new HttpHeaders();
     headers.add("Content-Type", "application/json");
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
@@ -525,7 +526,7 @@ public class PeerReviewService {
    */
   private ReviewStatusEnum reviewerStatus(int aid, int reviewId, int amount) throws SQLException {
     List<PairMatching> pairMatchingList =
-        pairMatchingDbManager.getPairMatchingByAidAndReviewId(aid, reviewId);
+            pairMatchingDbManager.getPairMatchingByAidAndReviewId(aid, reviewId);
     ReviewStatusEnum resultStatus = ReviewStatusEnum.INIT;
     int initCount = 0;
 
@@ -584,6 +585,40 @@ public class PeerReviewService {
     }
   }
 
+  /**
+   * return user's hw as a gzip file (.tar.gz)
+   *
+   * @param username       user name
+   * @param assignmentName assignment name
+   */
+  @GetMapping(path = "sourceCode")
+  public ResponseEntity<Object> getSourceCode(
+          @RequestParam("username") String username,
+          @RequestParam("assignmentName") String assignmentName
+  ) {
+    ResponseEntity<Object> response = null;
+
+    try {
+      GitlabService gitlabService = GitlabService.getInstance();
+      GitlabProject gitlabProject = gitlabService.getProject(username, assignmentName);
+      GitlabConfig gitlabConfig = GitlabConfig.getInstance();
+
+      int projectId = gitlabProject.getId();
+      String test = gitlabConfig.getGitlabHostUrl() + "/api/v4/projects/" + projectId
+              + "/repository/archive?PRIVATE-TOKEN=" + gitlabConfig.getGitlabApiToken();
+
+      JSONObject result = new JSONObject();
+      result.put("url", test);
+
+      response =  new ResponseEntity<>(result, HttpStatus.OK);
+    } catch (Exception e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+      response = new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    return response;
+  }
 
   /**
    * Get all user which role is student
