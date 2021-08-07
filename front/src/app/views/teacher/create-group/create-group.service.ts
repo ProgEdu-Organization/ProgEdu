@@ -17,7 +17,7 @@ const createProjectOptions = ({
 
 export class CreateGroupService {
   GET_USERS_API = UserAPI.getUsers;
-  CREATE_PROJECT = environment.SERVER_URL + '/webapi/groups';
+  CREATE_PROJECT = GroupsAPI.createGroup;
   GET_GROUP_MEMBER_API = GroupsAPI.getAllGroup;
   constructor(private addJwtTokenHttpClient: AddJwtTokenHttpClient) { }
 

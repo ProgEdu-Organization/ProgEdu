@@ -17,6 +17,7 @@ import java.sql.SQLException;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 
+import javax.ws.rs.QueryParam;
 import java.text.SimpleDateFormat;
 import java.util.TimeZone;
 
@@ -112,7 +113,7 @@ public class PeerReviewService {
 
       return new ResponseEntity<>(headers, HttpStatus.OK);
     } catch (Exception e) {
-      return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+      return new ResponseEntity<Object>(e.getMessage(), headers, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
   }
@@ -166,6 +167,7 @@ public class PeerReviewService {
 
     HttpHeaders headers = new HttpHeaders();
     headers.add("Content-Type", "application/json");
+    headers.add("Access-Control-Allow-Origin", "*");
 
     try {
       JSONArray array = new JSONArray();
@@ -232,10 +234,12 @@ public class PeerReviewService {
    * @param username user name
    */
   @GetMapping("record/oneUser")
-  public ResponseEntity<Object> getReviewedRecord(@RequestParam("username") String username) {
+  public ResponseEntity<Object> getReviewedRecord(@QueryParam("username") String username) {
 
     HttpHeaders headers = new HttpHeaders();
     headers.add("Content-Type", "application/json");
+    headers.add("Access-Control-Allow-Origin", "*");
+
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
     try {
       List<Assignment> assignmentList = assignmentDbManager.getAllReviewAssignment();
@@ -266,6 +270,8 @@ public class PeerReviewService {
                                                       @RequestParam("assignmentName") String assignmentName) {
     HttpHeaders headers = new HttpHeaders();
     headers.add("Content-Type", "application/json");
+    headers.add("Access-Control-Allow-Origin", "*");
+
     try {
       JSONObject result = new JSONObject();
       JSONArray array = new JSONArray();
@@ -310,7 +316,7 @@ public class PeerReviewService {
       }
 
       result.put("allStatusDetail", array);
-      return new ResponseEntity<Object>(array, headers, HttpStatus.OK);
+      return new ResponseEntity<Object>(result, headers, HttpStatus.OK);
     } catch (Exception e) {
       return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -324,12 +330,12 @@ public class PeerReviewService {
    * @param userId         user id
    * @param page           page
    */
-  @GetMapping("status/detail/page")
-  public ResponseEntity<Object> getReviewedStatusDetailPagination(@RequestParam("username") String username,
-                                                    @RequestParam("assignmentName")
+  @GetMapping("status/detail/page") // Todo 這目前還沒用到 先沒呼叫
+  public ResponseEntity<Object> getReviewedStatusDetailPagination(@QueryParam("username") String username,
+                                                    @QueryParam("assignmentName")
                                                             String assignmentName,
-                                                    @RequestParam("userId") int userId,
-                                                    @RequestParam("page") int page) {
+                                                    @QueryParam("userId") int userId,
+                                                    @QueryParam("page") int page) {
 
     HttpHeaders headers = new HttpHeaders();
     headers.add("Content-Type", "application/json");
@@ -381,11 +387,12 @@ public class PeerReviewService {
    * @param assignmentName assignment name
    */
   @GetMapping("record/detail")
-  public ResponseEntity<Object> getReviewedRecordDetail(@RequestParam("username") String username,
-                                                        @RequestParam("assignmentName") String assignmentName) {
+  public ResponseEntity<Object> getReviewedRecordDetail(@QueryParam("username") String username,
+                                                        @QueryParam("assignmentName") String assignmentName) {
 
     HttpHeaders headers = new HttpHeaders();
     headers.add("Content-Type", "application/json");
+    headers.add("Access-Control-Allow-Origin", "*");
 
     ResponseEntity<Object> response = null;
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
@@ -476,8 +483,11 @@ public class PeerReviewService {
 
   @GetMapping("/metrics")
   public ResponseEntity<Object> getReviewMetrics(
-          @RequestParam("assignmentName") String assignmentName
+          @QueryParam("assignmentName") String assignmentName
   ) {
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("Access-Control-Allow-Origin", "*");
+
     try {
       JSONArray array = new JSONArray();
       JSONObject result = new JSONObject();
@@ -497,9 +507,9 @@ public class PeerReviewService {
       }
       result.put("allMetrics", array);
 
-      return new ResponseEntity<>(result, HttpStatus.OK);
+      return new ResponseEntity<>(result, headers, HttpStatus.OK);
     }catch (Exception e) {
-      return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
+      return new ResponseEntity<>(e, headers, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 

@@ -20,13 +20,14 @@ let addMembers = function (groupName: string): string {
     return environment.NEW_SERVER_URL + `/groups/${groupName}/members`;
 } 
 
-
+let createGroup: string = environment.NEW_SERVER_URL + '/groups';
 
 export const GroupsAPI = {
     getGroup: getGroup,
     getAllGroup: getAllGroup,
     updateLeader: updateLeader,
     removeMember: removeMember,
-    addMembers: addMembers
+    addMembers: addMembers,
+    createGroup: createGroup
 }
    

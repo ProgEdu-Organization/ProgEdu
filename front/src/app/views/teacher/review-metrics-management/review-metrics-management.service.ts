@@ -6,20 +6,21 @@ import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { param } from 'jquery';
 import {AddJwtTokenHttpClient} from '../../../services/add-jwt-token.service';
 
+import { CategoryMetricsAPI } from '../../../api/CategoryMetricsAPI';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ReviewMetricsManagementService {
 
-  GET_ALL_CATEGORY_API = environment.SERVER_URL + '/webapi/categoryMetrics/category';
-  GET_METRICS_API = environment.SERVER_URL + '/webapi/categoryMetrics/metrics?';
-  CREATE_CATEGORY_API = environment.SERVER_URL + '/webapi/categoryMetrics/category/create?';
-  EDIT_CATEGORY_API = environment.SERVER_URL + '/webapi/categoryMetrics/category/edit?';
-  DELETE_CATEGORY_API = environment.SERVER_URL + '/webapi/categoryMetrics/category/delete?';
-  CREATE_METRICS_API = environment.SERVER_URL + '/webapi/categoryMetrics/metrics/create?';
-  EDIT_METRICS_API = environment.SERVER_URL + '/webapi/categoryMetrics/metrics/edit?';
-  DELETE_METRICS_API = environment.SERVER_URL + '/webapi/categoryMetrics/metrics/delete?';
+  GET_ALL_CATEGORY_API = CategoryMetricsAPI.getCategory;
+  GET_METRICS_API = CategoryMetricsAPI.getMetrics + "?";
+  CREATE_CATEGORY_API = CategoryMetricsAPI.createCategory + "?";
+  EDIT_CATEGORY_API = CategoryMetricsAPI.editCategory + "?";
+  DELETE_CATEGORY_API = CategoryMetricsAPI.deleteCategory + "?";
+  CREATE_METRICS_API = CategoryMetricsAPI.createMetrics + "?";
+  EDIT_METRICS_API = CategoryMetricsAPI.editMetrics + "?";
+  DELETE_METRICS_API = CategoryMetricsAPI.deleteMetrics + "?";
 
   constructor(private http: HttpClient, private addJwtTokenHttpClient: AddJwtTokenHttpClient) { }
 

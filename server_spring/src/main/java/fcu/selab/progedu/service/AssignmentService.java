@@ -12,32 +12,37 @@ import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.jenkinsconfig.JenkinsProjectConfig;
 import fcu.selab.progedu.jenkinsconfig.JenkinsProjectConfigFactory;
 import fcu.selab.progedu.jenkinsconfig.WebPipelineConfig;
+import fcu.selab.progedu.setting.MavenAssignmentSetting;
 import fcu.selab.progedu.utils.JavaIoUtile;
 import fcu.selab.progedu.utils.ZipHandler;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
+import org.apache.commons.io.IOUtils;
 import org.gitlab.api.models.GitlabProject;
 import org.jsoup.Jsoup;
 import org.jsoup.select.Elements;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Document;
-import java.io.File;
+
+import java.io.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.io.InputStream;
 import java.util.List;
 import java.util.TimeZone;
 
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.springframework.web.multipart.MultipartFile;
 import fcu.selab.progedu.utils.Linux;
+
+import javax.ws.rs.QueryParam;
 
 
 @RestController
@@ -68,7 +73,8 @@ public class AssignmentService {
   private final String tempDir = System.getProperty("java.io.tmpdir");
   private final String uploadDir = tempDir + "/uploads/";
   private final String testDir = tempDir + "/tests/";
-
+  private final String assignmentSettingDir = tempDir + "/assignmentSetting/";
+  private final String mavenPomXmlSettingDir = tempDir + "/mavenPomXmlSetting/";
 
   private String gitlabRootUsername;
   private ZipHandler zipHandler;
@@ -612,6 +618,104 @@ public class AssignmentService {
 
   public List<String> getAllAssignmentNames() {
     return dbManager.getAllAssignmentNames();
+  }
+
+  @GetMapping(
+          value ="getAssignmentFile",
+          produces = MediaType.APPLICATION_OCTET_STREAM_VALUE
+  )
+  public ResponseEntity<Object>  getAssignmentFile(@QueryParam("fileName") String fileName) throws Exception{
+
+    HttpHeaders headers = new HttpHeaders();
+
+    headers.add("Access-Control-Allow-Origin", "*");
+    headers.add("Content-Disposition", "attachment;filename=" + fileName + ".zip");
+
+    String filePath = assignmentSettingDir + fileName + ".zip";
+
+
+    File file = new File(filePath);
+    InputStream targetStream = new FileInputStream(file);
+
+    byte[] assignmentFile = IOUtils.toByteArray(targetStream);
+    return new ResponseEntity<Object>(assignmentFile, headers, HttpStatus.OK);
+
+  }
+
+  @PostMapping("order")
+  public ResponseEntity<Object> modifyAssignmentOrderFile(
+          @RequestParam("fileRadio") String fileType,
+          @RequestParam("order") String assignmentCompileOrdersAndScore,
+          @RequestParam("assignmentName") String assignmentName) {
+
+    HttpHeaders headers = new HttpHeaders();
+
+    headers.add("Access-Control-Allow-Origin", "*");
+
+
+    //-----order: Compile Failure:10, Coding Style Failure:80, Unit Test Failure:10
+    List<String> ordersList = new ArrayList<>();
+    String[] tokens = assignmentCompileOrdersAndScore.split(", ");
+    for (String token:tokens) {
+      ordersList.add(token);
+    }
+    //---------make pom.xml
+    try {
+      if (fileType.equals("maven")) {
+
+//        String mavenResourcesZipPath =
+//                this.getClass().getResource("/sample/MvnQuickStart.zip").getPath();
+
+
+        InputStream mavenResourcesZip = this.getClass()
+                .getResourceAsStream("/sample/MvnQuickStart.zip");
+
+        File tempFile = File.createTempFile(String.valueOf(mavenResourcesZip.hashCode()), ".tmp");
+
+        System.out.println("franky-test mavenResourcesZip.hashCode()");
+        System.out.println(mavenResourcesZip.hashCode());
+
+        copyInputStreamToFile(mavenResourcesZip, tempFile);
+
+        MavenAssignmentSetting mas = new MavenAssignmentSetting();
+        ZipHandler zipHandler = new ZipHandler();
+        zipHandler.unzipFile(tempFile,
+                assignmentSettingDir + assignmentName);
+
+
+        mas.createAssignmentSetting(ordersList, assignmentName,
+                mavenPomXmlSettingDir);
+
+        File mavenPomXmlSettingFile = new File(mavenPomXmlSettingDir
+                + assignmentName + "_pom.xml");
+        File assignmentSettingFile = new File(assignmentSettingDir
+                + assignmentName + "/pom.xml");
+
+        JavaIoUtile.copyDirectoryCompatibilityMode(mavenPomXmlSettingFile, assignmentSettingFile);
+
+        zipHandler.zipTestFolder(assignmentSettingDir + assignmentName);
+      }
+      return new ResponseEntity<Object>(headers, HttpStatus.OK);
+
+    } catch (Exception e) {
+      System.out.println(e.getMessage());
+      return new ResponseEntity<Object>(e.getMessage(), headers, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  private static void copyInputStreamToFile(InputStream inputStream, File file)
+          throws IOException {
+
+    // append = false
+    try (FileOutputStream outputStream = new FileOutputStream(file, false)) {
+      int read;
+      final int DEFAULT_BUFFER_SIZE = 8192;
+      byte[] bytes = new byte[DEFAULT_BUFFER_SIZE];
+      while ((read = inputStream.read(bytes)) != -1) {
+        outputStream.write(bytes, 0, read);
+      }
+    }
+
   }
 
 
