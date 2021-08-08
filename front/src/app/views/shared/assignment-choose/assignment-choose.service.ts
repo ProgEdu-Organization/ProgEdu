@@ -59,7 +59,7 @@ export class AssignmentChoosedService {
     const params = new HttpParams()
       .set('username', username)
       .set('assignmentName', assignmentName)
-      .set('commitNumber', commitNumber);
+      .set('commitNumber', commitNumber.toString());
     return this.addJwtTokenHttpClient.get(this.SCREENSHOT_API, { params });
   }
 
