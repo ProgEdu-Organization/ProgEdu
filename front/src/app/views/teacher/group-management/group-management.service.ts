@@ -24,6 +24,7 @@ export class GroupManagementService {
     return this.addJwtTokenHttpClient.get(this.GET_USERS_API);
   }
 
+  // Todo 以下根本沒用到
   createProject(name: string, projectName: string, projectType: string, leader: string, members: Array<string>): Observable<any> {
 
     let params = new HttpParams()
@@ -43,7 +44,7 @@ export class GroupManagementService {
   }
 
   deleteGroup(groupName: string): Observable<any> {
-    const DELETE_GROUP_API = environment.SERVER_URL + `/webapi/groups/${groupName}`;
+    const DELETE_GROUP_API = GroupsAPI.removeGroup(groupName);
     return this.addJwtTokenHttpClient.delete(DELETE_GROUP_API);
   }
 }

@@ -6,11 +6,14 @@ let getPartCommitRecord: string = environment.NEW_SERVER_URL + '/commits/partCom
 let getAutoAssessment: string = environment.NEW_SERVER_URL + '/commits/autoAssessment';
 let getAllUsersCommitRecord: string = environment.NEW_SERVER_URL + '/commits/allUsers';
 
+let getCommitRecord: string = environment.NEW_SERVER_URL + '/commits/commitRecords'; // Todo 這沒用到
+
 
 export const CommitRecordAPI = {
     getGitLabURL: getGitLabURL,
     getFeedback: getFeedback,
     getPartCommitRecord: getPartCommitRecord,
     getAutoAssessment: getAutoAssessment,
-    getAllUsersCommitRecord: getAllUsersCommitRecord
+    getAllUsersCommitRecord: getAllUsersCommitRecord,
+    getCommitRecord: getCommitRecord,
 }
