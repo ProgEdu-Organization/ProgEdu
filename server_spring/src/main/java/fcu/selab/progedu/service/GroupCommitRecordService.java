@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Date;
+import java.util.Calendar;
 import javax.ws.rs.core.Response;
 import fcu.selab.progedu.conn.JenkinsService;
 import fcu.selab.progedu.data.CommitRecord;
@@ -18,7 +19,9 @@ import fcu.selab.progedu.db.service.ProjectGroupDbService;
 import fcu.selab.progedu.status.Status;
 import fcu.selab.progedu.status.StatusAnalysisFactory;
 import fcu.selab.progedu.status.StatusEnum;
-import fcu.selab.progedu.data.CommitRecord;
+import fcu.selab.progedu.jenkinsjob2status.JenkinsJobStatus;
+import fcu.selab.progedu.jenkinsjob2status.JenkinsJob2StatusFactory;
+import fcu.selab.progedu.utils.ExceptionUtil;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONArray;
 import org.slf4j.Logger;
@@ -91,7 +94,7 @@ public class GroupCommitRecordService {
 
 
   /**
-   * update user assignment commit record to DB.
+   * get student commit feedback detail
    *
    * @param groupName username
    * @param projectName assignment name
@@ -125,6 +128,7 @@ public class GroupCommitRecordService {
 
     return new ResponseEntity<Object>(feedBackMessage, headers, HttpStatus.OK);
   }
+
   /**
    * get student build detail info
    *
@@ -132,7 +136,6 @@ public class GroupCommitRecordService {
    * @param projectName assignment name
    * @return build detail
    */
-
   @GetMapping("/{name}/projects/{projectName}/commits")
   public ResponseEntity<Object> getCommitRecord( // Todo 這API 好像沒用到
           @PathVariable("name") String groupName, @PathVariable("projectName") String projectName){
@@ -163,7 +166,6 @@ public class GroupCommitRecordService {
     }
     return new ResponseEntity<>(array, headers, HttpStatus.OK);
   }
-
 
   /**
    * get all commit record of one student.
@@ -208,18 +210,65 @@ public class GroupCommitRecordService {
 
   }
 
-/**
- * get student build detail info.
- * @param groupName group name
- * @param projectName project name
- * @param currentPage current page
- * @return build detail
- */
+  /**
+   * update user assignment commit record to DB.
+   *
+   * @param groupName username
+   * @param projectName assignment name
+   * @throws ParseException
+   */
+  @PostMapping(path = "/commits/update")
+  public ResponseEntity<Object> updateCommitRecord(
+          @RequestParam("user") String groupName,
+          @RequestParam("proName") String projectName) {
+
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("Access-Control-Allow-Origin", "*");
+    
+    ProjectTypeEnum projectTypeEnum = gpdb.getProjectType(projectName);
+    int pgid = pgdb.getId(groupName, projectName);
+    CommitRecord cr = gpdb.getCommitResult(pgid);
+    int commitNumber = 1;
+    if (cr != null) {
+      commitNumber = cr.getNumber() + 1;
+    }
+    Date date = new Date();
+    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+    try {
+      date = dateFormat.parse(dateFormat.format(Calendar.getInstance().getTime()));
+    } catch (ParseException e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    }
+
+    JenkinsJobStatus jobStatus = JenkinsJob2StatusFactory.createJenkinsJobStatus(projectTypeEnum);
+    String jobName = groupName + "_" + projectName;
+    StatusEnum statusEnum = jobStatus.getStatus(jobName, commitNumber);
+
+    String committer = js.getCommitter(jobName, commitNumber);
+    gpdb.insertProjectCommitRecord(pgid, commitNumber, statusEnum, date, committer);
+    JSONObject ob = new JSONObject();
+    ob.put("pgid", pgid);
+    ob.put("commitNumber", commitNumber);
+    ob.put("time", dateFormat.toString());
+    ob.put("status", statusEnum.getType());
+    ob.put("committer", committer);
+
+    return new ResponseEntity<Object>(ob, headers, HttpStatus.OK);
+  }
+
+  /**
+   * get student build detail info.
+   * @param groupName group name
+   * @param projectName project name
+   * @param currentPage current page
+   * @return build detail
+   */
   @GetMapping("/{name}/projects/{projectName}/partCommits/{currentPage}")
   public ResponseEntity<Object> getPartCommitRecord(
-    @PathVariable("name") String groupName,
-    @PathVariable("projectName") String projectName,
-    @PathVariable("currentPage") int currentPage
+          @PathVariable("name") String groupName,
+          @PathVariable("projectName") String projectName,
+          @PathVariable("currentPage") int currentPage
   ) {
     HttpHeaders headers = new HttpHeaders();
     headers.add("Access-Control-Allow-Origin", "*");
@@ -249,6 +298,4 @@ public class GroupCommitRecordService {
     }
     return new ResponseEntity<Object>(array, headers, HttpStatus.OK);
   }
-
-
 }
