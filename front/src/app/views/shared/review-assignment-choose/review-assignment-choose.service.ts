@@ -6,6 +6,7 @@ import {AddJwtTokenHttpClient} from '../../../services/add-jwt-token.service';
 import { AssignmentAPI } from '../../../api/AssignmentAPI';
 import { CommitRecordAPI } from '../../../api/CommitRecordAPI';
 import { PeerReviewAPI } from '../../../api/PeerReviewAPI';
+import { PublicAPI } from '../../../api/PublicAPI';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +17,7 @@ export class ReviewAssignmentChooseService {
   ASSIGNMENT_API = AssignmentAPI.getAssignmentDescription;
   GITLAB_URL_API = CommitRecordAPI.getGitLabURL;
   FEEDBACK_API = CommitRecordAPI.getFeedback;
-  SCREENSHOT_API = environment.SERVER_URL + '/publicApi/commits/screenshot/getScreenshotURL';
+  SCREENSHOT_API = PublicAPI.getScreenshotURL;
   REVIEW_FEEDBACK_API = PeerReviewAPI.getReviewedRecordDetail;
   constructor(private addJwtTokenHttpClient: AddJwtTokenHttpClient) { }
 

@@ -9,13 +9,14 @@ import { CommitRecordAPI } from '../../../api/CommitRecordAPI';
 import { GroupCommitRecordAPI } from '../../../api/GroupCommitRecordAPI';
 
 import { GroupsAPI } from '../../../api/GroupsAPI';
+import { PublicAPI } from '../../../api/PublicAPI';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProjectChoosedService {
   GITLAB_URL_API = CommitRecordAPI.getGitLabURL;
-  SCREENSHOT_API = environment.SERVER_URL + '/publicApi/groups/commits/screenshot/getScreenshotURL';
+  SCREENSHOT_API = PublicAPI.getScreenshotURLofGroup;
 
   constructor(private addJwtTokenHttpClient: AddJwtTokenHttpClient) { }
 

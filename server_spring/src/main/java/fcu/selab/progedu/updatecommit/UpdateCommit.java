@@ -60,7 +60,7 @@ public class UpdateCommit {
 
     ob.put("auId", auId);
     ob.put("commitNumber", commitNumber);
-    ob.put("time", time);
+//    ob.put("time", time); // Todo 這根本沒用到
     ob.put("status", statusEnum.getType());
     return new ResponseEntity<>(ob, headers, HttpStatus.OK);
   }
