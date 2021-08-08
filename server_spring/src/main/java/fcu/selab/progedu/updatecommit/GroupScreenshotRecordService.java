@@ -80,14 +80,13 @@ public class GroupScreenshotRecordService {
     }
   }
 
+  @CrossOrigin(origins = "*")
   @GetMapping("getScreenshotURL")
   public ResponseEntity<Object> getScreenshotPng(
           @QueryParam("groupName") String groupName,
           @QueryParam("projectName") String projectName,
           @QueryParam("commitNumber") int number) {
 
-    HttpHeaders headers = new HttpHeaders();
-    headers.add("Access-Control-Allow-Origin", "*");
 
 
     JSONObject ob = new JSONObject();
@@ -99,12 +98,12 @@ public class GroupScreenshotRecordService {
         urls.set(urls.indexOf(url), jenkinsData.getJenkinsHostUrl() + url);
       }
       ob.put("urls", urls);
-      return new ResponseEntity<>(ob, headers, HttpStatus.OK);
+      return new ResponseEntity<>(ob, HttpStatus.OK);
 
     } catch (Exception e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
-      return new ResponseEntity<>(e.getMessage(), headers, HttpStatus.INTERNAL_SERVER_ERROR);
+      return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 

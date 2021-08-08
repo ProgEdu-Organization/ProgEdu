@@ -7,8 +7,5 @@ let getScreenshotURLofGroup: string = environment.NEW_SERVER_URL + '/publicApi/g
 
 export const PublicAPI = {
     getScreenshotURL: getScreenshotURL,
-    getScreenshotURLofGroup: getScreenshotURLofGroup,
-    getScreenshotURL: getScreenshotURL,
-    getScreenshotURL: getScreenshotURL,
-    
+    getScreenshotURLofGroup: getScreenshotURLofGroup
 }
