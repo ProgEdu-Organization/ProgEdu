@@ -1,0 +1,58 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Build') {
+            steps {
+                git branch: 'master',
+                credentialsId: 'gitlab_root',
+                url: '{GitLab-url}'
+                
+                sh 'docker build -t web-assigment .'
+
+                sh '''
+
+                web_container_id=$(docker run -d -P web-assigment)
+                web_container_port=$(docker inspect --format='{{(index (index .NetworkSettings.Ports "80/tcp") 0).HostPort}}' $web_container_id)
+
+                docker run -i --rm -v "$(pwd)":/usr/src/mynode -w /usr/src/mynode -e WEB_PORT=$web_container_port -e WEB_SELENIUM_URL=$WEB_SELENIUM_URL node:12.16.1 npm i
+                docker run -i --rm -v "$(pwd)":/usr/src/mynode -w /usr/src/mynode -e WEB_PORT=$web_container_port -e WEB_SELENIUM_URL=$WEB_SELENIUM_URL node:12.16.1 npm run htmlhint
+                docker run -i --rm -v "$(pwd)":/usr/src/mynode -w /usr/src/mynode -e WEB_PORT=$web_container_port -e WEB_SELENIUM_URL=$WEB_SELENIUM_URL node:12.16.1 npm run stylelint
+                docker run -i --rm -v "$(pwd)":/usr/src/mynode -w /usr/src/mynode -e WEB_PORT=$web_container_port -e WEB_SELENIUM_URL=$WEB_SELENIUM_URL node:12.16.1 npm run eslint
+                '''
+            }
+        }
+    }
+
+    post {
+        always {
+
+            sh '''
+            web_container_id=$(docker run -d -P web-assigment)
+            web_container_port=$(docker inspect --format='{{(index (index .NetworkSettings.Ports "80/tcp") 0).HostPort}}' $web_container_id)
+            docker run -i --rm -v "$(pwd)":/usr/src/mynode -w /usr/src/mynode -e WEB_PORT=$web_container_port -e WEB_SELENIUM_URL=$WEB_SELENIUM_URL node:12.16.1 node screenShotAllHtml.js
+            '''
+
+            sh '''
+            web_container_id=$(docker run -d -P web-assigment)
+            docker rm -f $web_container_id
+            '''
+
+            archiveArtifacts artifacts: 'target/screenshot/*.png'
+
+            sh "curl --location --request POST '{ProgEdu-server-updateDbUrl}' \
+                             --header 'Content-Type: application/x-www-form-urlencoded' \
+                             --data-urlencode 'user={ProgEdu-user-name}' \
+                             --data-urlencode 'proName={ProgEdu-project-name}'"
+
+            sh "curl --location --request POST '{ProgEdu-server-screenshot-updateDbUrl}' \
+                    --header 'Content-Type: application/x-www-form-urlencoded' \
+                    --data-urlencode 'username={ProgEdu-user-name}' \
+                    --data-urlencode 'assignmentName={ProgEdu-project-name}' \
+                    --data-urlencode 'url=index.html'"
+
+            cleanWs()
+        }
+    }
+
+}

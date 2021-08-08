@@ -16,6 +16,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import fcu.selab.progedu.data.User;
 import fcu.selab.progedu.data.CommitRecord;
 import fcu.selab.progedu.conn.GitlabService;
 import fcu.selab.progedu.conn.JenkinsService;
@@ -45,7 +46,7 @@ public class CommitRecordService {
 
   /**
    * get GitLab project url
-   * 
+   *
    * @param username       username
    * @param assignmentName assignmentName
    */
@@ -110,18 +111,44 @@ public class CommitRecordService {
     return new ResponseEntity<Object>(jsonArray, headers, HttpStatus.OK);
   }
 
-  /**
-   * get all commit record of one student.
-   *
-   * @return homework, commit status, commit number
-   */
-  @GetMapping("oneUser")
-  public ResponseEntity<Object> getOneUserCommitRecord(@RequestParam("username") String username) {
-    HttpHeaders headers = new HttpHeaders();
-    headers.add("Content-Type", "application/json");
+//  /**
+//   * get all commit record of one student.
+//   *
+//   * @return homework, commit status, commit number
+//   */
+//  @GetMapping("oneUser")
+//  public ResponseEntity<Object> getOneUserCommitRecord(@RequestParam("username") String username) {
+//    HttpHeaders headers = new HttpHeaders();
+//    headers.add("Content-Type", "application/json");
+//
+//    int userId = userDb.getUserIdByUsername(username);
+//    JSONArray array = new JSONArray();
+//
+//    SimpleDateFormat dateFormat = new SimpleDateFormat(
+//            "yyyy-MM-dd HH:mm:ss.S");
+//
+//    for (Assignment assignment : assignmentDb.getAllAssignment()) {
+//      int auId = assignmentUserDb.getAuid(assignment.getId(), userId);
+//      JSONObject jsonObject = new JSONObject();
+//      jsonObject.put("assignmentName", assignment.getName());
+//      jsonObject.put("releaseTime", assignment.getReleaseTime());
+//
+//      org.json.JSONObject lastCommitRecordJson = commitRecordDb.getLastCommitRecord(auId);
+//      JSONObject lastCommitRecord = new JSONObject();
+//      lastCommitRecord.put("commitNumber", lastCommitRecordJson.get("commitNumber"));
+//      lastCommitRecord.put("commitTime", dateFormat.format(lastCommitRecordJson.get("commitTime")));
+//      lastCommitRecord.put("status", lastCommitRecordJson.get("status"));
+//
+//      jsonObject.put("commitRecord",lastCommitRecord);
+//      array.add(jsonObject);
+//    }
+//    return new ResponseEntity<Object>(array, headers, HttpStatus.OK);
+//  }
+
+  public List<JSONObject> getOneUserCommitRecord(String username) {
 
     int userId = userDb.getUserIdByUsername(username);
-    JSONArray array = new JSONArray();
+    List<JSONObject> array = new ArrayList<>();
 
     SimpleDateFormat dateFormat = new SimpleDateFormat(
             "yyyy-MM-dd HH:mm:ss.S");
@@ -134,19 +161,29 @@ public class CommitRecordService {
 
       org.json.JSONObject lastCommitRecordJson = commitRecordDb.getLastCommitRecord(auId);
       JSONObject lastCommitRecord = new JSONObject();
-      lastCommitRecord.put("commitNumber", lastCommitRecordJson.get("commitNumber"));
-      lastCommitRecord.put("commitTime", dateFormat.format(lastCommitRecordJson.get("commitTime")));
-      lastCommitRecord.put("status", lastCommitRecordJson.get("status"));
+
+      if(lastCommitRecordJson.has("commitNumber")) {
+        lastCommitRecord.put("commitNumber", lastCommitRecordJson.get("commitNumber"));
+      }
+
+      if(lastCommitRecordJson.has("commitTime")) {
+        lastCommitRecord.put("commitTime", dateFormat.format(lastCommitRecordJson.get("commitTime")));
+      }
+
+      if(lastCommitRecordJson.has("status")) {
+        lastCommitRecord.put("status", lastCommitRecordJson.get("status"));
+      }
 
       jsonObject.put("commitRecord",lastCommitRecord);
       array.add(jsonObject);
     }
-    return new ResponseEntity<Object>(array, headers, HttpStatus.OK);
+    return array;
   }
+
 
   /**
    * get a part of student build detail info
-   * 
+   *
    * @param username       student id
    * @param assignmentName assignment name
    * @param currentPage current page
@@ -189,6 +226,47 @@ public class CommitRecordService {
     return new ResponseEntity<Object>(jsonArray, headers, HttpStatus.OK);
   }
 
+  /**
+   * get student build detail info
+   *
+   * @param username       student id
+   * @param assignmentName assignment name
+   * @return build detail
+   */
+  @GetMapping("/commitRecords")
+  public ResponseEntity<Object> getCommitRecord(
+          @RequestParam("username") String username,
+          @RequestParam("assignmentName") String assignmentName) {
+
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("Content-Type", "application/json");
+    headers.add("Access-Control-Allow-Origin", "*");
+
+    JSONArray jsonArray = new JSONArray();
+    String jobName = username + "_" + assignmentName;
+    int aid = assignmentDb.getAssignmentIdByName(assignmentName);
+    int uid = userDb.getUserIdByUsername(username);
+    int auId = assignmentUserDb.getAuid(aid, uid);
+    List<CommitRecord> commitRecords = commitRecordDb.getCommitRecord(auId);
+    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+
+    for (CommitRecord commitRecord : commitRecords) {
+      int number = commitRecord.getNumber();
+      String message = jenkinsService.getCommitMessage(jobName, number);
+      Date dateTime = commitRecord.getTime();
+      String status = commitRecord.getStatus().getType();
+      JSONObject jsonObject = new JSONObject();
+
+      jsonObject.put("number", number);
+      jsonObject.put("status", status.toUpperCase());
+      jsonObject.put("time", dateFormat.format(dateTime));
+      jsonObject.put("message", message);
+      jsonArray.add(jsonObject);
+    }
+
+    return new ResponseEntity<Object>(jsonArray, headers, HttpStatus.OK);
+  }
+
   @GetMapping("/feedback")
   public ResponseEntity<Object> getFeedback(@RequestParam("username") String username,
                                             @RequestParam("assignmentName") String assignmentName, @RequestParam("number") int number) {
@@ -213,7 +291,6 @@ public class CommitRecordService {
     return new ResponseEntity<Object>(feedBackMessage, headers, HttpStatus.OK);
   }
 
-
   private int getAuid(String username, String assignmentName) {
     return assignmentUserDb.getAuid(assignmentDb.getAssignmentIdByName(assignmentName),
             userDb.getUserIdByUsername(username));
@@ -232,7 +309,42 @@ public class CommitRecordService {
   }
 
   // getAllStudentCommitRecord
-  public void getAllUsersCommitRecord() {
+  /**
+   * get all student commit record.
+   * @return commit record
+   */
+  @GetMapping("/allUsers")
+  public ResponseEntity<Object> getAllUsersCommitRecord() {
+
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("Content-Type", "application/json");
+    headers.add("Access-Control-Allow-Origin", "*");
+
+    try{
+      JSONArray array = new JSONArray();
+      JSONObject result = new JSONObject();
+      List<User> users = userDb.getAllUsers();
+
+      for (User user : users) {
+        String username = user.getUsername();
+        List<JSONObject> userCommitRecord = getOneUserCommitRecord(username);
+        JSONObject entity = new JSONObject();
+
+        entity.put("name", user.getName());
+        entity.put("username", user.getUsername());
+        entity.put("display", user.getDisplay());
+        entity.put("commitRecord", userCommitRecord);
+
+        array.add(entity);
+      }
+      result.put("allUsersCommitRecord", array);
+
+      return new ResponseEntity<Object>(result, headers, HttpStatus.OK);
+    } catch (Exception e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+      return new ResponseEntity<Object>(e.getMessage(), headers, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 
   }
 

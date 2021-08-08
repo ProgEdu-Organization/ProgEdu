@@ -4,13 +4,14 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import {AddJwtTokenHttpClient} from '../../../services/add-jwt-token.service';
 import { AssignmentAPI } from '../../../api/AssignmentAPI';
+import { PeerReviewAPI } from '../../../api/PeerReviewAPI';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ReviewDashboardService {
 
-  ALL_COMMIT_API = environment.SERVER_URL + '/webapi/peerReview/record/allUsers';
+  ALL_COMMIT_API = PeerReviewAPI.getAllReviewedRecord;
   ALL_ASSIGNMENT_API = AssignmentAPI.getAllPeerReviewAssignment;
   constructor(private addJwtTokenHttpClient: AddJwtTokenHttpClient) { }
 

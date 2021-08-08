@@ -2,16 +2,12 @@ package fcu.selab.progedu.service;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
-import fcu.selab.progedu.conn.GitlabService;
-import fcu.selab.progedu.data.Group;
-import fcu.selab.progedu.data.GroupProject;
-import fcu.selab.progedu.db.GroupUserDbManager;
-import fcu.selab.progedu.db.service.GroupDbService;
-import fcu.selab.progedu.db.service.ProjectDbService;
-import fcu.selab.progedu.db.service.UserDbService;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import fcu.selab.progedu.utils.ExceptionUtil;
 import org.gitlab.api.models.GitlabAccessLevel;
 import org.gitlab.api.models.GitlabGroup;
 import org.springframework.http.HttpHeaders;
@@ -22,6 +18,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import fcu.selab.progedu.conn.GitlabService;
+import fcu.selab.progedu.conn.JenkinsService;
+import fcu.selab.progedu.data.Group;
+import fcu.selab.progedu.data.GroupProject;
+import fcu.selab.progedu.db.GroupUserDbManager;
+import fcu.selab.progedu.db.service.GroupDbService;
+import fcu.selab.progedu.db.service.ProjectDbService;
+import fcu.selab.progedu.db.service.UserDbService;
+
 
 @RestController
 @RequestMapping(value = "/groups")
@@ -39,6 +45,8 @@ public class GroupService {
   private UserDbService udb = UserDbService.getInstance();
   private GroupUserDbManager gudb = GroupUserDbManager.getInstance();
   private AssignmentService projectService = new AssignmentService();
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(GroupService.class);
 
   /**
    * create gitlab group
@@ -87,9 +95,16 @@ public class GroupService {
   public ResponseEntity<Object> getGroup(@PathVariable("name") String name) {
     HttpHeaders headers = new HttpHeaders();
     headers.add("Content-Type", "application/json");
+    headers.add("Access-Control-Allow-Origin", "*");
+
+    JSONObject jsonObject = getGroupInfo(name);
+    return new ResponseEntity<Object>(jsonObject, headers, HttpStatus.OK);
+  }
+
+  public JSONObject getGroupInfo(String name){
+
     Group group = gdb.getGroup(name);
-    SimpleDateFormat dateFormat = new SimpleDateFormat(
-        "yyyy-MM-dd HH:mm:ss.S");
+    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
 
     JSONArray projectList = new JSONArray();
     List<GroupProject> groupProjects = group.getProjects();
@@ -120,14 +135,39 @@ public class GroupService {
     jsonObject.put("leader", group.getLeader());
     jsonObject.put("members", group.getMembers());
     jsonObject.put("project", projectList);
-    return new ResponseEntity<Object>(jsonObject, headers, HttpStatus.OK);
+
+    return jsonObject;
+  }
+
+  @CrossOrigin(origins = "*")
+  @DeleteMapping(path = "/{name}")
+  public ResponseEntity<Object> removeGroup(@PathVariable("name") String name) {
+
+
+    // remove gitlab
+    int gitlabId = gdb.getGitlabId(name);
+    gitlabService.removeGroup(gitlabId);
+
+    // remove Jenkins
+    JenkinsService js = JenkinsService.getInstance();
+    List<String> projectNames = pdb.getProjectNames(name);
+    for (String projectName : projectNames) {
+      String jobName = js.getJobName(name, projectName);
+      js.deleteJob(jobName);
+    }
+
+    // remove db
+    gdb.removeGroup(name);
+    return new ResponseEntity<>(HttpStatus.OK);
   }
 
   @PostMapping("/{name}/members")
   public ResponseEntity<Object> addMembers(
-          @RequestParam("name") String name, @RequestParam("members") List<String> members) {
+          @PathVariable("name") String name, @RequestParam("members") List<String> members) {
     HttpHeaders headers = new HttpHeaders();
     headers.add("Content-Type", "application/json");
+    headers.add("Access-Control-Allow-Origin", "*");
+
     int groupGitLabId = gdb.getGitlabId(name);
     for (String member : members) {
       int gitlabId = udb.getGitLabId(member);
@@ -146,16 +186,17 @@ public class GroupService {
   public ResponseEntity<Object> getAllGroup() {
     HttpHeaders headers = new HttpHeaders();
     headers.add("Content-Type", "application/json");
+    headers.add("Access-Control-Allow-Origin", "*");
 
     JSONArray jsonArray = new JSONArray();
     List<Group> groups = gdb.getGroups();
     for(Group group : groups) {
       ResponseEntity<Object> responseEntity = getGroup(group.getGroupName());
       JSONObject jsonObject = (JSONObject) JSONValue.parse(
-          responseEntity.getBody().toString().replaceAll("\"gitLabToken\":null,", ""));
+              responseEntity.getBody().toString().replaceAll("\"gitLabToken\":null,", ""));
       jsonArray.add(jsonObject);
     }
-    return new ResponseEntity<Object>(jsonArray, headers, HttpStatus.OK); 
+    return new ResponseEntity<Object>(jsonArray, headers, HttpStatus.OK);
   }
 
   /**
@@ -165,11 +206,13 @@ public class GroupService {
    * @param leader leader username
    * @return response
    */
+  @CrossOrigin(origins = "*")
   @PutMapping("/{name}/members/{username}")
   public ResponseEntity<Object> updateLeader(
-          @PathVariable("name") String name, @PathVariable("username") String leader) {
+      @PathVariable("name") String name, @PathVariable("username") String leader) {
     HttpHeaders headers = new HttpHeaders();
     headers.add("Content-Type", "application/json");
+
 
     int groupGitLabId = gdb.getGitlabId(name);
     // update newLeader's AccessLevel to owner
@@ -179,14 +222,41 @@ public class GroupService {
     String currentLeader = gdb.getLeader(name);
     int currentLeaderGitlabId = udb.getGitLabId(currentLeader);
     // update currentLeader's AccessLevel to master
-    gitlabService.updateMemberAccessLevel(
-            groupGitLabId, currentLeaderGitlabId, GitlabAccessLevel.Master);
+    gitlabService.updateMemberAccessLevel(groupGitLabId, currentLeaderGitlabId, GitlabAccessLevel.Master);
     // update db.group leader
     gdb.updateLeader(name, leader);
 
     JSONObject result = new JSONObject();
-    result.put("status","success");
+    result.put("status", "success");
 
     return new ResponseEntity<Object>(result, headers, HttpStatus.OK);
   }
+
+  /**
+   * remove members
+   *
+   * @param name group name
+   * @param member member
+   * @return response
+   */
+  @CrossOrigin(origins = "*")
+  @DeleteMapping("/{name}/members/{username}")
+  public ResponseEntity<Object> removeMember(
+      @PathVariable("name") String name,
+      @PathVariable("username") String member) {
+    try{
+        int groupGitLabId = gdb.getGitlabId(name);
+        int gitlabId = udb.getGitLabId(member);
+        gitlabService.removeGroupMember(groupGitLabId, gitlabId);
+        gdb.removeMember(name, member);
+
+        return new ResponseEntity<Object>(HttpStatus.OK);
+      } catch (Exception e) {
+        LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+        LOGGER.error(e.getMessage());
+        return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+
+  }
+
 }

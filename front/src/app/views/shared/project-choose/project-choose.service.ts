@@ -8,12 +8,15 @@ import { CommitRecordAPI } from '../../../api/CommitRecordAPI';
 
 import { GroupCommitRecordAPI } from '../../../api/GroupCommitRecordAPI';
 
+import { GroupsAPI } from '../../../api/GroupsAPI';
+import { PublicAPI } from '../../../api/PublicAPI';
+
 @Injectable({
   providedIn: 'root'
 })
 export class ProjectChoosedService {
   GITLAB_URL_API = CommitRecordAPI.getGitLabURL;
-  SCREENSHOT_API = environment.SERVER_URL + '/publicApi/groups/commits/screenshot/getScreenshotURL';
+  SCREENSHOT_API = PublicAPI.getScreenshotURLofGroup;
 
   constructor(private addJwtTokenHttpClient: AddJwtTokenHttpClient) { }
 
@@ -23,17 +26,17 @@ export class ProjectChoosedService {
   }
 
   getPartCommitResult(groupName: string, projectName: string, currentPage: string): Observable<any> {
-    const GROUP_PART_COMMITS_RESULT_API: string = environment.SERVER_URL + `/webapi/groups/${groupName}/projects/${projectName}/partCommits/${currentPage}`;
+    const GROUP_PART_COMMITS_RESULT_API: string = GroupCommitRecordAPI.getPartCommitRecord(groupName, projectName, currentPage);
     return this.addJwtTokenHttpClient.get(GROUP_PART_COMMITS_RESULT_API);
   }
 
   getGroup(groupName): Observable<any> {
-    const GROUP_MEMBER_API: string = environment.SERVER_URL + `/webapi/groups/${groupName}`;
+    const GROUP_MEMBER_API: string = GroupsAPI.getGroup(groupName);
     return this.addJwtTokenHttpClient.get(GROUP_MEMBER_API);
   }
 
   getFeedback(groupName: string, projectName: string, commitNumber: string): Observable<any> {
-    const GROUP_FEEDBACK_API: string = environment.SERVER_URL + `/webapi/groups/${groupName}/projects/${projectName}/feedback/${commitNumber}`;
+    const GROUP_FEEDBACK_API: string = GroupCommitRecordAPI.getFeedback(groupName, projectName, commitNumber);
     return this.addJwtTokenHttpClient.get(GROUP_FEEDBACK_API);
   }
 

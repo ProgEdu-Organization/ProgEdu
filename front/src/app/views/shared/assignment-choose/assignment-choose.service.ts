@@ -5,17 +5,18 @@ import { environment } from '../../../../environments/environment';
 import { AddJwtTokenHttpClient } from '../../../services/add-jwt-token.service';
 import { AssignmentAPI } from '../../../api/AssignmentAPI';
 import { CommitRecordAPI } from '../../../api/CommitRecordAPI';
+import { PublicAPI } from '../../../api/PublicAPI';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AssignmentChoosedService {
-  COMMIT_RECORD_DETAIL = environment.SERVER_URL + '/webapi/commits/commitRecords';
+  COMMIT_RECORD_DETAIL = CommitRecordAPI.getCommitRecord;
   PART_COMMIT_RECORD_DETAIL = CommitRecordAPI.getPartCommitRecord;
   ASSIGNMENT_API = AssignmentAPI.getAssignmentDescription;
   GITLAB_URL_API = CommitRecordAPI.getGitLabURL;
   FEEDBACK_API = CommitRecordAPI.getFeedback;
-  SCREENSHOT_API = environment.SERVER_URL + '/publicApi/commits/screenshot/getScreenshotURL';
+  SCREENSHOT_API = PublicAPI.getScreenshotURL;
   constructor(private addJwtTokenHttpClient: AddJwtTokenHttpClient) { }
 
   getCommitDetail(assignmentName: string, username: string): Observable<any> {

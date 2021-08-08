@@ -5,6 +5,7 @@ import java.io.IOException;
 
 import fcu.selab.progedu.jenkinsconfig.JenkinsProjectConfig;
 import fcu.selab.progedu.jenkinsconfig.WebGroupConfig;
+import fcu.selab.progedu.jenkinsconfig.WebGroupPipelineConfig;
 import fcu.selab.progedu.jenkinsconfig.WebPipelineConfig;
 import fcu.selab.progedu.utils.JavaIoUtile;
 import org.gitlab.api.models.GitlabProject;
@@ -113,7 +114,7 @@ public class GroupProjectService {
 
       //JenkinsProjectConfig jenkinsProjectConfig = new WebGroupConfig(projectUrl, updateDbUrl,
       //                                                               groupName, projectName);
-      JenkinsProjectConfig jenkinsProjectConfig = new WebPipelineConfig(projectUrl, updateDbUrl,
+      JenkinsProjectConfig jenkinsProjectConfig = new WebGroupPipelineConfig(projectUrl, updateDbUrl,
               groupName, projectName,
               courseConfig.getTomcatServerIp() + "/publicApi/commits/screenshot/updateURL");
 

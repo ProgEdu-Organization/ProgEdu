@@ -9,7 +9,7 @@ import {AddJwtTokenHttpClient} from '../../../services/add-jwt-token.service';
 })
 export class ReviewCommitRecordService {
 
-  REVIEW_DETAIL_PAGE_API = environment.SERVER_URL + '/webapi/peerReview/record/detail/page';
+  REVIEW_DETAIL_PAGE_API = environment.SERVER_URL + '/webapi/peerReview/record/detail/page'; // Todo 沒用到
 
   constructor(private addJwtTokenHttpClient: AddJwtTokenHttpClient) { }
 

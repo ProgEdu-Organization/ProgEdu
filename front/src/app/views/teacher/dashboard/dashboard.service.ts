@@ -6,7 +6,7 @@ import { JwtService } from '../../../services/jwt.service';
 import {AddJwtTokenHttpClient} from '../../../services/add-jwt-token.service';
 
 import { AssignmentAPI } from '../../../api/AssignmentAPI';
-
+import { CommitRecordAPI } from '../../../api/CommitRecordAPI';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +14,7 @@ import { AssignmentAPI } from '../../../api/AssignmentAPI';
 
 
 export class DashboardService {
-  ALL_COMMIT_API = environment.SERVER_URL + '/webapi/commits/allUsers';
+  ALL_COMMIT_API = CommitRecordAPI.getAllUsersCommitRecord;
   ALL_ASSIGNMENT_API = AssignmentAPI.getAllAssignments;
   constructor(private addJwtTokenHttpClient: AddJwtTokenHttpClient) { }
 

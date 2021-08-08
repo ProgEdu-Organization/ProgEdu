@@ -55,15 +55,21 @@ public class RoleUserDbManager {
    */
   public void addRoleUser(int rid, int uid) {
     String sql = "INSERT INTO Role_User(rId, uId)  VALUES(?, ?)";
+    Connection conn = null;
+    PreparedStatement preStmt = null;
 
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+    try  {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
       preStmt.setInt(1, rid);
       preStmt.setInt(2, uid);
       preStmt.executeUpdate();
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(preStmt, conn);
     }
   }
 
@@ -77,18 +83,26 @@ public class RoleUserDbManager {
     int topRid = 0;
     String sql = "SELECT rid from Role_User a where uId = ? "
         + "AND (a.rId =(SELECT min(rId) FROM Role_User WHERE uId = ?));";
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
+
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
       preStmt.setInt(1, uid);
       preStmt.setInt(2, uid);
-      try (ResultSet rs = preStmt.executeQuery()) {
-        while (rs.next()) {
-          topRid = rs.getInt("rid");
-        }
+      rs = preStmt.executeQuery();
+
+      while (rs.next()) {
+        topRid = rs.getInt("rid");
       }
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(rs, preStmt, conn);
     }
     return topRid;
   }
@@ -103,18 +117,25 @@ public class RoleUserDbManager {
   public int getRuid(int rid, int uid) {
     int ruid = 0;
     String sql = "SELECT id FROM Role_User WHERE rId=? AND uId=?";
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
+
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
       preStmt.setInt(1, rid);
       preStmt.setInt(2, uid);
-      try (ResultSet rs = preStmt.executeQuery()) {
-        while (rs.next()) {
-          ruid = rs.getInt("id");
-        }
+      rs = preStmt.executeQuery();
+      while (rs.next()) {
+        ruid = rs.getInt("id");
       }
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(rs, preStmt, conn);
     }
     return ruid;
   }
@@ -127,19 +148,26 @@ public class RoleUserDbManager {
   public List<RoleEnum> getRoleList(int uid) {
     List<RoleEnum> lsRole = new ArrayList<>();
     String sql = "SELECT rId FROM Role_User WHERE uId = ?";
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
+
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
       preStmt.setInt(1, uid);
-      try (ResultSet rs = preStmt.executeQuery()) {
-        while (rs.next()) {
-          int rid = rs.getInt("rId");
-          RoleEnum role = rdb.getRoleNameById(rid);
-          lsRole.add(role);
-        }
+      rs = preStmt.executeQuery();
+      while (rs.next()) {
+        int rid = rs.getInt("rId");
+        RoleEnum role = rdb.getRoleNameById(rid);
+        lsRole.add(role);
       }
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(rs, preStmt, conn);
     }
     return lsRole;
   }
@@ -152,18 +180,24 @@ public class RoleUserDbManager {
   public List<Integer> getUids(int rid) {
     List<Integer> lsUids = new ArrayList<>();
     String sql = "SELECT uId FROM Role_User WHERE rId = ?";
-    try (Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)) {
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
+
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
       preStmt.setInt(1, rid);
-      try (ResultSet rs = preStmt.executeQuery()) {
-        while (rs.next()) {
-          int uid = rs.getInt("uId");
-          lsUids.add(uid);
-        }
+      rs = preStmt.executeQuery();
+      while (rs.next()) {
+        int uid = rs.getInt("uId");
+        lsUids.add(uid);
       }
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(rs, preStmt, conn);
     }
     return lsUids;
   }
@@ -176,8 +210,12 @@ public class RoleUserDbManager {
    */
   public void deleteRoleUserByUserId(int userId) {
     String query = "DELETE FROM Role_User WHERE uid = ?";
-    try (Connection conn = database.getConnection();
-         PreparedStatement preStmt = conn.prepareStatement(query)) {
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(query);
 
       preStmt.setInt(1, userId);
       preStmt.executeUpdate();
@@ -185,6 +223,8 @@ public class RoleUserDbManager {
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(preStmt, conn);
     }
   }
 

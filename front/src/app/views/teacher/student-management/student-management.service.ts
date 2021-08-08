@@ -32,7 +32,7 @@ export class StudentManagementService {
   GET_USERS_API = UserAPI.getUsers;
   ADD_ONE_USER_API = UserAPI.addOneUser;
   ADD_MULTIPLE_USER_API = UserAPI.addUserByCsv;
-  DISPLAY_API = environment.SERVER_URL + '/webapi/user/display';
+  DISPLAY_API = environment.SERVER_URL + '/webapi/user/display';// todo 這沒用到
   constructor(private addJwtTokenHttpClient: AddJwtTokenHttpClient) { }
 
   getAllUserData(): Observable<any> {

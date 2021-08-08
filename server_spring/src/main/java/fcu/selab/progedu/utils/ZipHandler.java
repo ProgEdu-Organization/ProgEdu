@@ -167,6 +167,20 @@ public class ZipHandler {
     }
   }
 
+  public void unzipFile(File sourceFile, String targetDirectory) {
+    File testsDir = new File(targetDirectory);
+    if (!testsDir.exists()) {
+      testsDir.mkdir();
+    }
+    try {
+      ZipFile zipFileToTests = new ZipFile(sourceFile);
+      zipFileToTests.extractAll(targetDirectory);
+    } catch (ZipException e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    }
+  }
+
   /**
    * get checksum and the file url after zip
    *

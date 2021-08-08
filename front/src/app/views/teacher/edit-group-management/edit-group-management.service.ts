@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import {AddJwtTokenHttpClient} from '../../../services/add-jwt-token.service';
 import { UserAPI } from '../../../api/UserAPI';
+import { GroupsAPI } from '../../../api/GroupsAPI';
 
 const editGroupOptions = ({
   headers: new HttpHeaders(
@@ -18,17 +19,17 @@ export class EditGroupManagementService {
   constructor(private http: HttpClient, private addJwtTokenHttpClient: AddJwtTokenHttpClient) { }
 
   getGroup(groupName: string): Observable<any> {
-    const GET_GROUP_API = environment.SERVER_URL + `/webapi/groups/${groupName}`;
+    const GET_GROUP_API = GroupsAPI.getGroup(groupName);;
     return this.addJwtTokenHttpClient.get(GET_GROUP_API);
   }
 
   editGroupLeader(groupName: string, leader: string) {
-    const EDIT_LEADER_API = environment.SERVER_URL + `/webapi/groups/${groupName}/members/${leader[0]}`;
-    return this.addJwtTokenHttpClient.put(EDIT_LEADER_API, editGroupOptions);
+    const EDIT_LEADER_API = GroupsAPI.updateLeader(groupName, leader); // Todo 用陣列不好
+    return this.addJwtTokenHttpClient.put(EDIT_LEADER_API, "");
   }
 
   deleteGroupMember(groupName: string, member: string) {
-    const EDIT_LEADER_API = environment.SERVER_URL + `/webapi/groups/${groupName}/members/${member[0]}`;
+    const EDIT_LEADER_API = GroupsAPI.removeMember(groupName, member); // Todo 用陣列不好
     return this.addJwtTokenHttpClient.delete(EDIT_LEADER_API);
   }
 
@@ -37,7 +38,7 @@ export class EditGroupManagementService {
   }
 
   addGroupMemeber(groupName: string, username: string) {
-    const ADD_MEMBER_API = environment.SERVER_URL + `/webapi/groups/${groupName}/members`;
+    const ADD_MEMBER_API = GroupsAPI.addMembers(groupName);
     const params = new HttpParams()
       .append('members', username);
 

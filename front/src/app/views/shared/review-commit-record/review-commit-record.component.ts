@@ -63,7 +63,7 @@ export class ReviewCommitRecordComponent implements OnInit, OnChanges {
     this.changePagination(this.currentPagination);
   }
 
-  nextReviewPage(index: number) {
+  nextReviewPage(index: number) { // Todo 好像根本沒用到
     if (this.currentReviewPagination[index] >= this.maxReviewPagination[index]) {
       return;
     }
@@ -71,7 +71,7 @@ export class ReviewCommitRecordComponent implements OnInit, OnChanges {
     this.changeReviewPagination(this.currentReviewPagination[index], index);
   }
 
-  preReviewPage(index: number) {
+  preReviewPage(index: number) { // // Todo 好像根本沒用到
     if (this.currentReviewPagination[index] <= 1) {
       return;
     }
@@ -92,7 +92,7 @@ export class ReviewCommitRecordComponent implements OnInit, OnChanges {
     }
   }
 
-  changeReviewPagination(pageNumber: number, index: number) {
+  changeReviewPagination(pageNumber: number, index: number) { // Todo 好像根本沒用到
     if (pageNumber <= 0 || pageNumber > this.maxReviewPagination[index]) {
       return;
     }

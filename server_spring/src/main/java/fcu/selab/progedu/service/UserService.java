@@ -4,6 +4,7 @@ import fcu.selab.progedu.conn.GitlabService;
 import fcu.selab.progedu.data.User;
 import fcu.selab.progedu.db.RoleUserDbManager;
 import fcu.selab.progedu.db.UserDbManager;
+import fcu.selab.progedu.db.service.GroupDbService;
 import net.minidev.json.JSONObject;
 import org.gitlab.api.models.GitlabUser;
 import org.springframework.http.HttpHeaders;
@@ -31,7 +32,7 @@ public class UserService {
   private GitlabService gitlabService = GitlabService.getInstance();
   private RoleUserDbManager rudb = RoleUserDbManager.getInstance();
   private AssignmentService as = AssignmentService.getInstance();
-
+  private GroupDbService gdb = GroupDbService.getInstance();
 
 
 
@@ -196,21 +197,23 @@ public class UserService {
     }
   }
 
-  @GetMapping("/{username}/groups") // todo
+  @GetMapping("/{username}/groups")
   public ResponseEntity<Object> getGroup(@PathVariable("username") String username) {
 
-//    GroupService gs = new GroupService();
-//    int uid = dbManager.getUserIdByUsername(username);
-//    List<String> groupNames = gdb.getGroupNames(uid);
-//    JSONArray array = new JSONArray();
-//    for (String groupName : groupNames) {
-//      String group = gs.getGroup(groupName).getEntity().toString();
-//      JSONObject ob = new JSONObject(group);
-//      array.put(ob);
-//    }
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("Access-Control-Allow-Origin", "*");
 
-//    return Response.ok().entity(array.toString()).build();
-    return new ResponseEntity<>("getGroup: " + username + " is not support", HttpStatus.OK);
+    GroupService gs = new GroupService();
+    int uid = dbManager.getUserIdByUsername(username);
+
+    List<String> groupNames = gdb.getGroupNames(uid);
+    List<JSONObject> array = new ArrayList<>();
+    for (String groupName : groupNames) {
+      JSONObject ob = gs.getGroupInfo(groupName);
+      array.add(ob);
+    }
+
+    return new ResponseEntity<>(array, headers, HttpStatus.OK);
   }
 
 
