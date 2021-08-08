@@ -74,8 +74,6 @@ public class ScreenshotRecordService {
   public ResponseEntity<Object> updateScreenshotPng(@QueryParam("username") String username,
                                       @QueryParam("assignmentName") String assignmentName,
                                       @QueryParam("commitNumber") int number) {
-    HttpHeaders headers = new HttpHeaders();
-    headers.add("Access-Control-Allow-Origin", "*");
 
 
     JSONObject ob = new JSONObject();
@@ -88,12 +86,12 @@ public class ScreenshotRecordService {
         urls.set(urls.indexOf(url),jenkinsData.getJenkinsHostUrl() + url);
       }
       ob.put("urls", urls);
-      return new ResponseEntity<Object>(ob, headers, HttpStatus.OK);
+      return new ResponseEntity<Object>(ob, HttpStatus.OK);
 
     } catch (Exception e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
-      return new ResponseEntity<>(e.getMessage(), headers, HttpStatus.INTERNAL_SERVER_ERROR);
+      return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 
     }
   }
