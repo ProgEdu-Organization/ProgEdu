@@ -240,6 +240,7 @@ public class CommitRecordService {
 
     HttpHeaders headers = new HttpHeaders();
     headers.add("Content-Type", "application/json");
+    headers.add("Access-Control-Allow-Origin", "*");
 
     JSONArray jsonArray = new JSONArray();
     String jobName = username + "_" + assignmentName;

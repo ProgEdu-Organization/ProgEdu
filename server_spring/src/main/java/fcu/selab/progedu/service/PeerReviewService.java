@@ -472,7 +472,7 @@ public class PeerReviewService {
    * @param reviewId       review id
    * @param page           page
    */
-  @GetMapping("record/detail/page")
+  @GetMapping("record/detail/page") // Todo 前端沒用到 先不改
   public ResponseEntity<Object> getReviewedRecordDetailPagination(@RequestParam("username") String username,
                                                                   @RequestParam("assignmentName") String assignmentName,
                                                                   @RequestParam("reviewId") int reviewId,
@@ -594,9 +594,11 @@ public class PeerReviewService {
   @GetMapping(path = "sourceCode")
   public ResponseEntity<Object> getSourceCode(
           @RequestParam("username") String username,
-          @RequestParam("assignmentName") String assignmentName
-  ) {
-    ResponseEntity<Object> response = null;
+          @RequestParam("assignmentName") String assignmentName)
+  {
+
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("Access-Control-Allow-Origin", "*");
 
     try {
       GitlabService gitlabService = GitlabService.getInstance();
@@ -604,20 +606,19 @@ public class PeerReviewService {
       GitlabConfig gitlabConfig = GitlabConfig.getInstance();
 
       int projectId = gitlabProject.getId();
+      // Todo 以下有安全性問題 會公開gitlab 的 api
       String test = gitlabConfig.getGitlabHostUrl() + "/api/v4/projects/" + projectId
               + "/repository/archive?PRIVATE-TOKEN=" + gitlabConfig.getGitlabApiToken();
 
       JSONObject result = new JSONObject();
       result.put("url", test);
 
-      response =  new ResponseEntity<>(result, HttpStatus.OK);
+      return new ResponseEntity<>(result, headers, HttpStatus.OK);
     } catch (Exception e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
-      response = new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
+      return new ResponseEntity<>(e, headers, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-
-    return response;
   }
 
   /**

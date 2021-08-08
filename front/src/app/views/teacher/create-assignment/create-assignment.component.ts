@@ -76,7 +76,7 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
     placeholder: 'Write the assignment description in here!',
     ckfinder: {
       // Upload the images to the server using the CKFinder QuickUpload command.
-      uploadUrl: environment.SERVER_URL + `/webapi/image`
+      uploadUrl: environment.SERVER_URL + `/webapi/image` // Todo 這即將捨棄
     }
   };
 

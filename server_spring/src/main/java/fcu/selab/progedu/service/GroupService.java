@@ -139,15 +139,12 @@ public class GroupService {
     return jsonObject;
   }
 
-  /**
-   * remove group
-   *
-   * @param name group name
-   */
+  @CrossOrigin(origins = "*")
   @DeleteMapping(path = "/{name}")
   public ResponseEntity<Object> removeGroup(@PathVariable("name") String name) {
+
+
     // remove gitlab
-    //    gitlabService.deleteProjects(name);
     int gitlabId = gdb.getGitlabId(name);
     gitlabService.removeGroup(gitlabId);
 

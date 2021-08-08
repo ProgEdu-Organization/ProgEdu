@@ -12,7 +12,7 @@ export class ReviewStatusAssignmentChooseService {
 
   ALL_STATUS_DETAIL_API = PeerReviewAPI.getReviewStatusDetail;
   REVIEW_METRICS_API = PeerReviewAPI.getReviewMetrics;
-  REVIEW_STATUS_DETAIL_PAGE_API = environment.SERVER_URL + '/webapi/peerReview/status/detail/page';
+  REVIEW_STATUS_DETAIL_PAGE_API = environment.SERVER_URL + '/webapi/peerReview/status/detail/page'; //todo 沒用到
   CREATE_REVIEW_RECORD_API = PeerReviewAPI.createReviewRecord;
   constructor(private addJwtTokenHttpClient: AddJwtTokenHttpClient) { }
 

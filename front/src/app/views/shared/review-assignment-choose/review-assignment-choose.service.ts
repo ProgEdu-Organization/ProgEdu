@@ -12,7 +12,7 @@ import { PeerReviewAPI } from '../../../api/PeerReviewAPI';
 })
 export class ReviewAssignmentChooseService {
 
-  COMMIT_RECORD_DETAIL = environment.SERVER_URL + '/webapi/commits/commitRecords';
+  COMMIT_RECORD_DETAIL = CommitRecordAPI.getCommitRecord;
   ASSIGNMENT_API = AssignmentAPI.getAssignmentDescription;
   GITLAB_URL_API = CommitRecordAPI.getGitLabURL;
   FEEDBACK_API = CommitRecordAPI.getFeedback;
