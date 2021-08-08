@@ -73,13 +73,13 @@ public class ScreenshotRecordService {
   @GetMapping("getScreenshotURL")
   public ResponseEntity<Object> updateScreenshotPng(@QueryParam("username") String username,
                                       @QueryParam("assignmentName") String assignmentName,
-                                      @QueryParam("commitNumber") int number) {
+                                      @QueryParam("commitNumber") String number) {
 
 
     JSONObject ob = new JSONObject();
     int auid = auDb.getAuid(assignmentDb.getAssignmentIdByName(assignmentName),
             userDb.getUserIdByUsername(username));
-    int crId = commitRecordDb.getCommitRecordId(auid, number);
+    int crId = commitRecordDb.getCommitRecordId(auid, Integer.valueOf(number));
     try {
       ArrayList<String> urls = db.getScreenshotUrl(crId);
       for (String url: urls) {
