@@ -69,7 +69,7 @@ public class ScreenshotRecordService {
 
   }
 
-
+  @CrossOrigin(origins = "*")
   @GetMapping("getScreenshotURL")
   public ResponseEntity<Object> updateScreenshotPng(@QueryParam("username") String username,
                                       @QueryParam("assignmentName") String assignmentName,

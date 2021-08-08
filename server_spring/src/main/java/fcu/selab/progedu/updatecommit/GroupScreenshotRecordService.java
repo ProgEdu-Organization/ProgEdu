@@ -79,7 +79,8 @@ public class GroupScreenshotRecordService {
 
     }
   }
-
+  
+  @CrossOrigin(origins = "*")
   @GetMapping("getScreenshotURL")
   public ResponseEntity<Object> getScreenshotPng(
           @QueryParam("groupName") String groupName,
