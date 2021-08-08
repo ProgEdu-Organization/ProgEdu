@@ -89,12 +89,12 @@ public class CourseConfig {
    * @throws LoadConfigFailureException when property file is not found, the exception is thrown
    */
   public String getTomcatServerIp() throws LoadConfigFailureException {
-    String webExternalUrl = System.getenv("WEB_EXTERNAL_URL");
+    String webExternalUrl = System.getenv("SPRING_SERVER_EXTERNAL_URL");
     if (webExternalUrl != null && !webExternalUrl.equals("")) {
       return webExternalUrl;
     }
     if (props != null) {
-      return props.getProperty("COURSE_TOMCAT_SERVER_IP").trim();
+      return props.getProperty("COURSE_TOMCAT_SERVER_IP").trim();// Todo 這等等改
     }
     throw new LoadConfigFailureException(EXCEPTION + PROPERTY_FILE);
   }
