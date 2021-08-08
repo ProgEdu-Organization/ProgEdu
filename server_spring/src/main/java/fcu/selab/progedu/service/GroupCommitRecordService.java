@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Date;
+import java.util.Calendar;
 import javax.ws.rs.core.Response;
 import fcu.selab.progedu.conn.JenkinsService;
 import fcu.selab.progedu.data.CommitRecord;
@@ -18,7 +19,9 @@ import fcu.selab.progedu.db.service.ProjectGroupDbService;
 import fcu.selab.progedu.status.Status;
 import fcu.selab.progedu.status.StatusAnalysisFactory;
 import fcu.selab.progedu.status.StatusEnum;
-import fcu.selab.progedu.data.CommitRecord;
+import fcu.selab.progedu.jenkinsjob2status.JenkinsJobStatus;
+import fcu.selab.progedu.jenkinsjob2status.JenkinsJob2StatusFactory;
+import fcu.selab.progedu.utils.ExceptionUtil;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONArray;
 import org.slf4j.Logger;
@@ -191,8 +194,11 @@ public class GroupCommitRecordService {
   @PostMapping(path = "/commits/update")
   public ResponseEntity<Object> updateCommitRecord(
           @RequestParam("user") String groupName,
-          @RequestParam("proName") String projectName
-  ) {
+          @RequestParam("proName") String projectName) {
+
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("Access-Control-Allow-Origin", "*");
+
     ProjectTypeEnum projectTypeEnum = gpdb.getProjectType(projectName);
     int pgid = pgdb.getId(groupName, projectName);
     CommitRecord cr = gpdb.getCommitResult(pgid);
@@ -218,11 +224,11 @@ public class GroupCommitRecordService {
     JSONObject ob = new JSONObject();
     ob.put("pgid", pgid);
     ob.put("commitNumber", commitNumber);
-    ob.put("date", date);
+    ob.put("time", dateFormat.toString());
     ob.put("status", statusEnum.getType());
     ob.put("committer", committer);
 
-    return new ResponseEntity<>(ob.toString(), HttpStatus.OK);
+    return new ResponseEntity<Object>(ob, headers, HttpStatus.OK);
   }
 
   /**
