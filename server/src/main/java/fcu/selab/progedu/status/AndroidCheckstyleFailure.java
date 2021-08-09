@@ -12,7 +12,7 @@ public class AndroidCheckstyleFailure implements Status {
     String feedbackStart = "Task :app:checkStyle FAILED";
     String feedbackEnd = "FAILURE: Build failed with an exception.";
     feedback = consoleText.substring(consoleText.indexOf(feedbackStart) + feedbackStart.length(),
-        consoleText.indexOf(feedbackEnd));
+        consoleText.indexOf(feedbackEnd) + feedbackEnd.length());
     /**
      * Remove /var/jenkins_home/workspace/
      */
