@@ -14,7 +14,7 @@ public class AndroidCheckstyleFailure implements Status {
     System.out.println(consoleText.indexOf(feedbackStart));
     System.out.println(consoleText.indexOf(feedbackEnd));
     feedback = consoleText.substring(consoleText.indexOf(feedbackStart) + feedbackStart.length(),
-        consoleText.indexOf(feedbackEnd));
+        consoleText.indexOf(feedbackEnd) + feedbackEnd.length());
     /**
      * Remove /var/jenkins_home/workspace/
      */

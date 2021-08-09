@@ -1,7 +1,7 @@
 package fcu.selab.progedu.status;
 
 import fcu.selab.progedu.data.FeedBack;
-import fcu.selab.progedu.status.AndroidLintFailure;
+import fcu.selab.progedu.status.AndroidCheckstyleFailure;
 import fcu.selab.progedu.status.StatusEnum;
 import fcu.selab.progedu.utils.ExceptionUtil;
 
@@ -54,31 +54,8 @@ public class AndroidCheckstyleFailureTest {
     }
     consoleText = androidCheckstyleFailure.extractFailureMsg(consoleText);
     ArrayList arrayList = androidCheckstyleFailure.formatExamineMsg(consoleText);
-    ArrayList<FeedBack> testArray = new ArrayList<>();
-    /*testArray.add(new FeedBack(StatusEnum.ANDROID_LINT_FAILURE,
-        "/D0440792_Android-Lint/app/src/main/res/layout/activity_main.xml"
-            + "\n/D0440792_Android-Lint/app/src/main/res/layout/activity_main.xml",
-        "20\n10",
-        "Error: Duplicate id @+id/helloWorld, already defined earlier in this layout [DuplicateIds]",
-        "android:id=\"@+id/helloWorld\"",
-        "https://developer.android.com/studio/write/lint"));
-    testArray.add(new FeedBack(StatusEnum.ANDROID_LINT_FAILURE,
-        "/D0440792_Android-Lint/app/src/main/res/layout/activity_main.xml",
-        "13",
-        "Error: Hardcoded string \"hello\", should use @string resource [HardcodedText]",
-        "android:text=\"hello\"",
-        "https://developer.android.com/studio/write/lint"));
-    testArray.add(new FeedBack(StatusEnum.ANDROID_LINT_FAILURE,
-        "/D0440792_Android-Lint/app/src/main/res/layout/activity_main.xml",
-        "23",
-        "Error: Hardcoded string \"hello\", should use @string resource [HardcodedText]",
-        "android:text=\"hello\"",
-        "https://developer.android.com/studio/write/lint"));*/
     String toJson = androidCheckstyleFailure.tojsonArray(arrayList);
-    //String testJson = androidLintFailure.tojsonArray(testArray);
     System.out.println(toJson);
-    //System.out.println(testJson);
-    //Assert.assertEquals(toJson, testJson);
   }
 
 }
