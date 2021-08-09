@@ -18,7 +18,7 @@ public class AndroidCheckstyleFailure implements Status {
     /**
      * Remove /var/jenkins_home/workspace/
      */
-    return feedback.replaceAll("/var/jenkins_home/workspace", "").trim();
+    return feedback.replaceAll("/data", "").trim();
   }
 
   @Override
