@@ -9,8 +9,6 @@ public class AssignmentTime{
 
   private int aaId;
 
-  private int round;
-
   private Date releaseTime;
 
   private Date deadline;
@@ -35,16 +33,8 @@ public class AssignmentTime{
     return aaId;
   }
 
-  public void steAaId(int aaId) {
+  public void setAaId(int aaId) {
     this.aaId = aaId;
-  }
-
-  public int getRound() {
-    return round;
-  }
-
-  public void setRound(int round) {
-    this.round = round;
   }
 
   public Date getReleaseTime() {
