@@ -10,6 +10,8 @@ public class ReviewSetting {
 
   private int amount;
 
+  private int round;
+
   public int getId() {
     return id;
   }
@@ -34,4 +36,11 @@ public class ReviewSetting {
     this.amount = amount;
   }
 
+  public int getRound() {
+    return round;
+  }
+
+  public void setRound(int round) {
+    this.round = round;
+  }
 }

@@ -30,12 +30,9 @@ public class ReviewSettingDbManager {
    * @param releaseTime releaseTime
    * @param deadline    deadline
    */
-  public void insertReviewSetting(int aid, int amount, Date releaseTime,
-                                  Date deadline) throws SQLException {
-    String query = "INSERT INTO Review_Setting(aId, amount, releaseTime, deadline)"
-        + " VALUES(?,?,?,?)";
-    Timestamp releaseTimestamp = new Timestamp(releaseTime.getTime());
-    Timestamp deadlineTimestamp = new Timestamp(deadline.getTime());
+  public void insertReviewSetting(int aid, int amount, int round) throws SQLException {
+    String query = "INSERT INTO Review_Setting(aId, amount, round)"
+        + " VALUES(?,?,?)";
     Connection conn = null;
     PreparedStatement preStmt = null;
 
@@ -45,8 +42,7 @@ public class ReviewSettingDbManager {
 
       preStmt.setInt(1, aid);
       preStmt.setInt(2, amount);
-      preStmt.setTimestamp(3, releaseTimestamp);
-      preStmt.setTimestamp(4, deadlineTimestamp);
+      preStmt.setRef(3, round);
       preStmt.executeUpdate();
     } finally {
       CloseDBUtil.closeAll(preStmt, conn);
@@ -101,13 +97,11 @@ public class ReviewSettingDbManager {
         int id = rs.getInt("id");
         int aid = rs.getInt("aId");
         int amount = rs.getInt("amount");
-        Date releaseTime = rs.getTimestamp("releaseTime");
-        Date deadline = rs.getTimestamp("deadline");
+        int round = rs.getInt("round");
         reviewSetting.setId(id);
         reviewSetting.setaId(aid);
         reviewSetting.setAmount(amount);
-        reviewSetting.setReleaseTime(releaseTime);
-        reviewSetting.setDeadline(deadline);
+        reviewSetting.setRound(round);
       }
     } finally {
       CloseDBUtil.closeAll(rs, preStmt, conn);
@@ -137,13 +131,11 @@ public class ReviewSettingDbManager {
       while (rs.next()) {
         int id = rs.getInt("id");
         int amount = rs.getInt("amount");
-        Date releaseTime = rs.getTimestamp("releaseTime");
-        Date deadline = rs.getTimestamp("deadline");
+        int round = rs.getInt("round");
         reviewSetting.setId(id);
         reviewSetting.setaId(aid);
         reviewSetting.setAmount(amount);
-        reviewSetting.setReleaseTime(releaseTime);
-        reviewSetting.setDeadline(deadline);
+        reviewSetting.setRound(round);
       }
     } finally {
       CloseDBUtil.closeAll(rs, preStmt, conn);
