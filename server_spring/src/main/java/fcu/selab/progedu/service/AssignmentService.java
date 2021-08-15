@@ -118,7 +118,7 @@ public class AssignmentService {
       List<AssignmentTime> assignmentTimes = new ArrayList<>();
       assignmentTimes.add(assignmentTime);
 
-      createAssignment(assignmentName, releaseTime, deadline, readMe,
+      createAssignment(assignmentName, readMe,
               assignmentType, file, assignmentTimes);
       addOrder(assignmentCompileOrdersAndScore, assignmentName);
 
@@ -158,7 +158,6 @@ public class AssignmentService {
   @PostMapping("/create")
   public ResponseEntity<Object> createAssignment( // 把readme 的圖片處理拿掉 因為太複雜了
           @RequestParam("assignmentName") String assignmentName,
-          @RequestParam("releaseTime") Date releaseTime, @RequestParam("deadline") Date deadline,
           @RequestParam("readMe") String readMe, @RequestParam("fileRadio") String assignmentType,
           @RequestParam("file") MultipartFile file, @RequestParam List<AssignmentTime> assignmentTimes) {
 
@@ -353,9 +352,10 @@ public class AssignmentService {
     headers.add("Access-Control-Allow-Origin", "*");
 
     Assignment assignment = dbManager.getAssignmentByName(assignmentName);
+    AssignmentTime assignmentTime = atDbManager.getAssignmentTimeByName(assignmentName);
     JSONObject ob = new JSONObject();
     ob.put("description", assignment.getDescription());
-    ob.put("deadline", assignment.getDeadline());
+    ob.put("deadline", assignmentTime.getDeadline());
     ob.put("type", assignment.getType());
     return new ResponseEntity<Object>(ob, headers, HttpStatus.OK);
   }
