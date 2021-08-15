@@ -21,6 +21,7 @@ import java.util.Date;
 public class ChartService {
 
   private AssignmentDbManager assignmentDbManager = AssignmentDbManager.getInstance();
+  private AssignmentTimeDbManager assignmentTimeDbManager = AssignmentTimeDbManager.getInstance();
   private AssignmentService assignmentService = AssignmentService.getInstance();
   private AssignmentUserDbManager assignmentUserDbManager = AssignmentUserDbManager.getInstance();
   private CommitStatusDbManager commitStatusDbManager = CommitStatusDbManager.getInstance();
@@ -69,8 +70,8 @@ public class ChartService {
           }
         });
         commits.put("name", name);
-        commits.put("releaseTime", assignmentDbManager.getAssignmentByName(name).getReleaseTime());
-        commits.put("deadline", assignmentDbManager.getAssignmentByName(name).getDeadline());
+        commits.put("releaseTime", assignmentTimeDbManager.getAssignmentTimeByName(name).getReleaseTime());
+        commits.put("deadline", assignmentTimeDbManager.getAssignmentTimeByName(name).getDeadline());
         commits.put("commits", array);
       });
       assignments.add(commits);
