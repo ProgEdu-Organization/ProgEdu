@@ -200,7 +200,7 @@ public class AssignmentService {
 
     // 9. import project information to database
     ProjectTypeEnum projectTypeEnum = ProjectTypeEnum.getProjectTypeEnum(assignmentType);
-    addProject(assignmentName, releaseTime, deadline, readMe, projectTypeEnum);
+    addProject(assignmentName, readMe, projectTypeEnum, assignmentTimes);
 
 
     List<User> users = userService.getStudents();
