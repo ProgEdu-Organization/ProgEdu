@@ -6,13 +6,16 @@ import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http
 import { Observable } from 'rxjs';
 import {AddJwtTokenHttpClient} from './add-jwt-token.service';
 
+import { LoginAPI } from '../api/LoginApi';
+
+
 @Injectable({
   providedIn: 'root'
 })
 export class LoginAuthService {
 
-  LOGIN_URL: string = environment.SERVER_URL + '/LoginAuth';
-  AUTH_URL: string = environment.SERVER_URL + '/webapi/auth/login';
+  LOGIN_URL: string = LoginAPI.login;
+  AUTH_URL: string = LoginAPI.checkLogin;
 
   constructor(private http: HttpClient, private jwtService: JwtService, 
               private addJwtTokenHttpClient: AddJwtTokenHttpClient) { }

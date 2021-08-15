@@ -1,18 +1,11 @@
 package fcu.selab.progedu.conn;
 
-import java.io.IOException;
-import java.io.PrintWriter;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import net.minidev.json.JSONObject;
 
 import fcu.selab.progedu.config.GitlabConfig;
 import fcu.selab.progedu.config.JwtConfig;
@@ -22,11 +15,17 @@ import fcu.selab.progedu.db.UserDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.service.RoleEnum;
 import fcu.selab.progedu.utils.ExceptionUtil;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-/**
- * Servlet implementation class AfterEnter
- */
-public class LoginAuth extends HttpServlet {
+@RestController
+@RequestMapping(value ="/LoginAuth")
+public class LoginAuth {
   private static final long serialVersionUID = 1L;
   private static final String USERNAME = "username";
   private static final String USER_TOKEN = "password";
@@ -34,31 +33,14 @@ public class LoginAuth extends HttpServlet {
   JwtConfig jwt = JwtConfig.getInstance();
   private static final Logger LOGGER = LoggerFactory.getLogger(LoginAuth.class);
 
-  /**
-   * @throws LoadConfigFailureException .
-   * @see HttpServlet#HttpServlet()
-   */
-  public LoginAuth() throws LoadConfigFailureException {
-    super();
-  }
+  @PostMapping("")
+  public ResponseEntity<Object> doPost(@RequestParam("username") String username,
+                                          @RequestParam("password") String password) {
 
-  /**
-   * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-   *      response)
-   */
-  protected void doGet(HttpServletRequest request, HttpServletResponse response)
-      throws ServletException, IOException {
-    doPost(request, response);
-  }
+    HttpHeaders headers = new HttpHeaders();
 
-  /**
-   * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-   *      response)
-   */
-  protected void doPost(HttpServletRequest request, HttpServletResponse response) {
+    headers.add("Access-Control-Allow-Origin", "*");
 
-    String username = request.getParameter(USERNAME);
-    String password = request.getParameter(USER_TOKEN);
     String token;
     JSONObject ob = new JSONObject();
     try {
@@ -82,18 +64,8 @@ public class LoginAuth extends HttpServlet {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
     }
+    return new ResponseEntity<Object>(ob, headers, HttpStatus.OK);
 
-    response.setStatus(200);
-    
-    try {
-      PrintWriter pw = response.getWriter();
-      pw.print(ob);
-      pw.flush();
-      pw.close();
-    } catch (IOException e) {
-      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
-      LOGGER.error(e.getMessage());
-    }
   }
 
   // Todo 命名不好, 還有不要用回傳空字串 來判斷有沒有效
