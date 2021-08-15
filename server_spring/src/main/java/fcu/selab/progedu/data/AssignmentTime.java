@@ -1,5 +1,7 @@
 package fcu.selab.progedu.data;
 
+import fcu.selab.progedu.service.AssignmentActionEnum;
+
 import java.util.Date;
 
 public class AssignmentTime{
@@ -12,6 +14,8 @@ public class AssignmentTime{
   private Date releaseTime;
 
   private Date deadline;
+
+  private AssignmentActionEnum actionEnum;
 
   public int getId() {
     return id;
@@ -53,4 +57,11 @@ public class AssignmentTime{
     this.deadline = deadline;
   }
 
+  public AssignmentActionEnum getActionEnum() {
+    return actionEnum;
+  }
+
+  public void setActionEnum(AssignmentActionEnum actionEnum) {
+    this.actionEnum = actionEnum;
+  }
 }

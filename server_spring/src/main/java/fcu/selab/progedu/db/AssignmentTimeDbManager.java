@@ -45,13 +45,12 @@ public class AssignmentTimeDbManager {
    * @param assignmnetName assignment name
    * @param assignmentTime assugnment time
    */
-  public void addAssignmentTime(String assignmnetName, AssignmentTime assignmentTime,
-      AssignmentActionEnum aActionEnum) {
+  public void addAssignmentTime(String assignmnetName, AssignmentTime assignmentTime) {
     String sql = "INSERT INTO Assignment_Time(`aId`, `aaId`, `releaseTime`, `deadline` VALUES(?, ?, ?, ?)";
 
     Timestamp deadlineTime = new Timestamp(assignmentTime.getDeadline().getTime());
     Timestamp releaseTime = new Timestamp(assignmentTime.getReleaseTime().getTime());
-    int actionId = aaDb.getAssignmentActionIdByAction(aActionEnum.getActionName());
+    int actionId = aaDb.getAssignmentActionIdByAction(assignmentTime.getActionEnum().getActionName());
 
     Connection conn = null;
     PreparedStatement preStmt = null;
