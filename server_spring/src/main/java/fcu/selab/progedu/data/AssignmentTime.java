@@ -21,11 +21,11 @@ public class AssignmentTime{
     this.id = id;
   }
 
-  public int getAid() {
+  public int getAId() {
     return aId;
   }
 
-  public void setAid(int aId) {
+  public void setAId(int aId) {
     this.aId = aId;
   }
 

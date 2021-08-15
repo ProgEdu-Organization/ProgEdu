@@ -279,7 +279,7 @@ public class AssignmentDbManager {
         Assignment assignment = new Assignment();
         assignment.setId(rs.getInt("id"));
         assignment.setName(rs.getString("name"));
-        assignment.setReleaseTime(rs.getTimestamp("createTime"));
+        assignment.setCreateTime(rs.getTimestamp("createTime"));
         assignment.setDisplay(rs.getBoolean("display"));
         assignment.setDescription(rs.getString("description"));
         assignments.add(assignment);

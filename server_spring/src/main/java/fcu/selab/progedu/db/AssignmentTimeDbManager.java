@@ -22,10 +22,11 @@ import fcu.selab.progedu.utils.ExceptionUtil;
 
 public class AssignmentTimeDbManager {
 
+  AssignmentActionDbManager aaDb = AssignmentActionDbManager.getInstance();
+  AssignmentDbManager aDb = AssignmentDbManager.getInstance();
+
 
   private static AssignmentTimeDbManager dbManager = new AssignmentTimeDbManager();
-  private static AssignmentActionDbManager aaDb = AssignmentActionDbManager.getInstance();
-
 
   public static AssignmentTimeDbManager getInstance() {
     return dbManager;
@@ -33,10 +34,9 @@ public class AssignmentTimeDbManager {
 
   private IDatabase database = MySqlDatabase.getInstance();
 
-
   private static final Logger LOGGER = LoggerFactory.getLogger(AssignmentDbManager.class);
 
-  private AssignmentDbManager(){
+  private AssignmentTimeDbManager(){
 
   }
 
@@ -60,7 +60,7 @@ public class AssignmentTimeDbManager {
       conn = database.getConnection();
       preStmt = conn.prepareStatement(sql);
 
-      preStmt.setString(1, getAssignmentIdByName(assignmnetName)); //aId
+      preStmt.setInt(1, aDb.getAssignmentIdByName(assignmnetName)); //aId
       preStmt.setInt(2, actionId); //aaId
       preStmt.setTimestamp(3, releaseTime); //releaseTime
       preStmt.setTimestamp(4, deadlineTime); //deadlineTime
@@ -113,31 +113,34 @@ public class AssignmentTimeDbManager {
    * @param aId aid
    * @return assignment name
    */
-  public String getAssignmentTimeNameById(int aId) {
-    String sql = "";
-    String assignmentName = "";
+  public AssignmentTime getAssignmentTimeNameById(int aId) {
+    String sql = "SELECT * FROM Assignment_Time WHERE aId = ?";
+    AssignmentTime assignmentTime = new AssignmentTime();
 
     Connection conn = null;
-    stmt = conn.prepareStatement(sql);
+    PreparedStatement preStmt = null;
 
     try {
       conn = database.getConnection();
-      stmt = conn.prepareStatement(sql);
+      preStmt = conn.prepareStatement(sql);
 
-      stmt.setInt(1, aId);
+      preStmt.setInt(1, aId);
 
-      try (ResultSet rs = stmt.executeQuery();){
+      try (ResultSet rs = preStmt.executeQuery();){
         while (rs.next()) {
-          assignmentName = rs.getString("name");
+          assignmentTime.setAId(rs.getInt("aId"));
+          assignmentTime.setAaId(rs.getInt("aaId"));
+          assignmentTime.setReleaseTime(rs.getTimestamp("releaseTime"));
+          assignmentTime.setDeadline(rs.getTimestamp("deadline"));
         }
       }
     } catch (Exception e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
     } finally {
-      CloseDBUtil.closeAll(stmt, conn);
+      CloseDBUtil.closeAll(preStmt, conn);
     }
-    return assignmentName;
+    return assignmentTime;
   }
 
 }

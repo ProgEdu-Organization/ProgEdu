@@ -42,7 +42,7 @@ public class ReviewSettingDbManager {
 
       preStmt.setInt(1, aid);
       preStmt.setInt(2, amount);
-      preStmt.setRef(3, round);
+      preStmt.setInt(3, round);
       preStmt.executeUpdate();
     } finally {
       CloseDBUtil.closeAll(preStmt, conn);
