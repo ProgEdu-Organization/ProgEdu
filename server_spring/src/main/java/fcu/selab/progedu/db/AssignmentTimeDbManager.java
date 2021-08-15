@@ -27,7 +27,7 @@ public class AssignmentTimeDbManager {
   private static AssignmentActionDbManager aaDb = AssignmentActionDbManager.getInstance();
 
 
-  private static AssignmentTimeDbManager getInstance() {
+  public static AssignmentTimeDbManager getInstance() {
     return dbManager;
   }
 
