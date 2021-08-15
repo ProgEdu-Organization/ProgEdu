@@ -65,7 +65,7 @@ public class AssignmentService {
   private AssignmentAssessmentDbManager aaDbManager = AssignmentAssessmentDbManager.getInstance();
   private CommitStatusDbManager csDbManager = CommitStatusDbManager.getInstance();
   private ReviewRecordDbManager rrDbManager = ReviewRecordDbManager.getInstance();
-
+  private AssignmentTimeDbManager atDbManager = AssignmentTimeDbManager.getInstance();
   private CommitRecordDbManager crDbManager = CommitRecordDbManager.getInstance();
   private ScreenshotRecordDbManager srDbManager = ScreenshotRecordDbManager.getInstance();
 
@@ -109,8 +109,17 @@ public class AssignmentService {
     headers.add("Access-Control-Allow-Origin", "*");
 
     try {
+
+      AssignmentActionEnum actionEnum = AssignmentActionEnum.AUTO;
+      AssignmentTime assignmentTime = new AssignmentTime();
+      assignmentTime.setActionEnum(actionEnum);
+      assignmentTime.setReleaseTime(releaseTime);
+      assignmentTime.setDeadline(deadline);
+      List<AssignmentTime> assignmentTimes = new ArrayList<>();
+      assignmentTimes.add(assignmentTime);
+
       createAssignment(assignmentName, releaseTime, deadline, readMe,
-              assignmentType, file);
+              assignmentType, file, assignmentTimes);
       addOrder(assignmentCompileOrdersAndScore, assignmentName);
 
       return new ResponseEntity<Object>(headers, HttpStatus.OK);
@@ -151,7 +160,7 @@ public class AssignmentService {
           @RequestParam("assignmentName") String assignmentName,
           @RequestParam("releaseTime") Date releaseTime, @RequestParam("deadline") Date deadline,
           @RequestParam("readMe") String readMe, @RequestParam("fileRadio") String assignmentType,
-          @RequestParam("file") MultipartFile file) {
+          @RequestParam("file") MultipartFile file, @RequestParam List<AssignmentTime> assignmentTimes) {
 
 
     HttpHeaders headers = new HttpHeaders();
@@ -449,18 +458,20 @@ public class AssignmentService {
     }
   }
 
-  public void addProject(String name, Date releaseTime, Date deadline, String readMe,
-                         ProjectTypeEnum projectType) {
+  public void addProject(String name, String readMe,
+                         ProjectTypeEnum projectType, List<AssignmentTime> assignmentTimes) {
     Assignment assignment = new Assignment();
     Date date = tomcatService.getCurrentTime();
     assignment.setName(name);
     assignment.setCreateTime(date);
-    assignment.setReleaseTime(releaseTime);
-    assignment.setDeadline(deadline);
     assignment.setDescription(readMe);
     assignment.setType(projectType);
-
     dbManager.addAssignment(assignment);
+
+    for(AssignmentTime assignmentTime : assignmentTimes) {
+      atDbManager.addAssignmentTime(name, assignmentTime);
+    }
+
   }
 
   private void createAssignmentSettingsV2(String username, String assignmentName) {

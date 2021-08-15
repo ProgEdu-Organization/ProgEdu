@@ -1,7 +1,11 @@
 package fcu.selab.progedu.service;
 
 public enum AssignmentActionEnum {
-  DO("Do HW"), REVIEW("Review HW");
+  DO("Do HW"),
+  REVIEW("Review HW"),
+  FIX("Fix HW"),
+  APPROVE("Approve HW"),
+  AUTO("Auto Assessment");
 
   private String assignmentAction;
 
