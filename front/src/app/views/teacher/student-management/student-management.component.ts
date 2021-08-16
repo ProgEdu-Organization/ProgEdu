@@ -11,7 +11,7 @@ export class StudentManagementComponent implements OnInit {
   public users: Array<any> = new Array<any>();
   public oneStudentForm: FormGroup;
   public multipleStudentFile: File;
-  public SERVER_URL = environment.SERVER_URL;
+  public NEW_SERVER_URL = environment.NEW_SERVER_URL;
   public isCollapsed = true;
   public addOneStudentErrorMsg = '';
   public addOneStudentSuccessful: boolean = false;
