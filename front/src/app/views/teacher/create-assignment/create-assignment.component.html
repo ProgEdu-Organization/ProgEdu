@@ -9,40 +9,6 @@
     <form [formGroup]="assignment" (ngSubmit)="submit()">
       <div class="card-body">
         <div class="form-group row">
-          <label class="col-md-3 col-form-label" for="name">Name</label>
-          <div class="col-md-9">
-            <input type="text" class="form-control" id="name" formControlName='name'
-              placeholder="Enter Your Assignment Name">
-            <div *ngIf="!assignment.get('name').valid" class='invalid-feedback'><span>Your assignment must be less
-                than 10 and must be English</span></div>
-          </div>
-        </div>
-        <div class="form-group row">
-          <label class="col-md-3 col-form-label" for="releaseTime">ReleaseTime</label>
-          <div class="col-md-9">
-            <input class="form-control is-valid" id="releaseTime" type="datetime-local" name="releaseTime"
-              formControlName='releaseTime' placeholder="date">
-            <span *ngIf="!assignment.get('releaseTime').valid" class="invalid-feedback">Please enter a valid
-              date</span>
-          </div>
-        </div>
-        <div class="form-group row">
-          <label class="col-md-3 col-form-label" for="deadline">Deadline</label>
-          <div class="col-md-9">
-            <input class="form-control is-valid" id="deadline" type="datetime-local" name="deadline"
-              formControlName='deadline' placeholder="date">
-            <span *ngIf="!assignment.get('deadline').valid" class="invalid-feedback">Please enter a valid date</span>
-          </div>
-        </div>
-        <div class="form-group row">
-          <label class="col-md-3 col-form-label" for="description"> Assignment Description</label>
-          <div class="col-md-9">
-            <ckeditor [config]="editorConfig" name='description' id="description" formControlName='description'
-              [editor]="Editor">
-            </ckeditor>
-          </div>
-        </div>
-        <div class="form-group row">
           <label class="col-md-3 col-form-label" for="method">Assessment Method</label>
           <div class="col-md-9">
             <div class="form-check form-check-inline mr-1">
@@ -57,26 +23,104 @@
             </div>
           </div>
         </div>
-
-        <!-- Review Metrics -->
-        <div class="grading-method-group" *ngIf="peerReviewStatus.isOpen">
+        <div class="form-group row">
+          <label class="col-md-3 col-form-label" for="name">Name</label>
+          <div class="col-md-9">
+            <input type="text" class="form-control" id="name" formControlName='name'
+              placeholder="Enter Your Assignment Name">
+            <div *ngIf="!assignment.get('name').valid" class='invalid-feedback'><span>Your assignment must be less
+                than 10 and must be English</span></div>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-md-3 col-form-label" for="description"> Assignment Description</label>
+          <div class="col-md-9">
+            <ckeditor [config]="editorConfig" name='description' id="description" formControlName='description'
+              [editor]="Editor">
+            </ckeditor>
+          </div>
+        </div>
+        <div *ngIf="!peerReviewStatus.isOpen">
           <div class="form-group row">
-            <label class="col-md-3 col-form-label" for="reviewReleaseTime">Review Start Time</label>
+            <label class="col-md-3 col-form-label" for="releaseTime">ReleaseTime</label>
             <div class="col-md-9">
-              <input class="form-control is-valid" id="reviewReleaseTime" type="datetime-local" name="reviewReleaseTime"
-                formControlName='reviewReleaseTime' placeholder="date">
-              <span *ngIf="!assignment.get('reviewReleaseTime').valid" class="invalid-feedback">Please enter a valid
+              <input class="form-control is-valid" id="releaseTime" type="datetime-local" name="releaseTime"
+                formControlName='releaseTime' placeholder="date">
+              <span *ngIf="!assignment.get('releaseTime').valid" class="invalid-feedback">Please enter a valid
                 date</span>
             </div>
           </div>
           <div class="form-group row">
-            <label class="col-md-3 col-form-label" for="reviewDeadline">Review End Time</label>
+            <label class="col-md-3 col-form-label" for="deadline">Deadline</label>
             <div class="col-md-9">
-              <input class="form-control is-valid" id="reviewDeadline" type="datetime-local" name="reviewDeadline"
-                formControlName='reviewDeadline' placeholder="date">
-              <span *ngIf="!assignment.get('reviewDeadline').valid" class="invalid-feedback">Please enter a valid date</span>
+              <input class="form-control is-valid" id="deadline" type="datetime-local" name="deadline"
+                formControlName='deadline' placeholder="date">
+              <span *ngIf="!assignment.get('deadline').valid" class="invalid-feedback">Please enter a valid date</span>
             </div>
           </div>
+        </div>
+
+        <!-- Review Metrics -->
+        <div class="grading-method-group" *ngIf="peerReviewStatus.isOpen">
+          <div class="form-group row">
+            <label class="col-md-1 col-form-label">Time</label>
+            <label class="col-md-1 col-form-label"></label>
+            <label class="col-md-2 col-form-label">Round</label>
+            <label class="col-md-2 col-form-label">Action</label>
+            <label class="col-md-3 col-form-label" for="reviewReleaseTime">Start Time</label>
+            <label class="col-md-3 col-form-label" for="reviewDeadline">End Time</label>
+          </div>
+          <div formArrayName="reviewTime">
+            <div *ngFor="let round of roundTimeArray; let i = index">
+              <div [formGroupName]="i">
+                <div class="form-group row">
+                  <div class="col-md-1"></div>
+                  <div class="col-md-1" *ngIf="i == 0"></div>
+                  <div class="col-md-1 container" *ngIf="i !== 0">
+                    <button class="btn" (click)="removeRound(i)"><i class="fa fa-trash"></i>
+                    </button>
+                  </div>
+                  <div class="col-md-2">&ensp;{{ i + 1 }}</div>
+                  <div class="col-md-2" *ngIf="i == 0">Do Homework</div>
+                  <div class="col-md-2" *ngIf="i !== 0">Fix Issues</div>
+                  <div class="col-md-3">
+                    <input class="form-control is-valid" id="startTime" type="datetime-local" name="startTime"
+                    formControlName='startTime' placeholder="date">
+                    <span *ngIf="!assignment.get('releaseTime').valid" class="invalid-feedback">Please enter a valid date</span>
+                  </div>
+                  <div class="col-md-3">
+                    <input class="form-control is-valid" id="endTime" type="datetime-local" name="endTime"
+                    formControlName='endTime' placeholder="date">
+                  <span *ngIf="!assignment.get('deadline').valid" class="invalid-feedback">Please enter a valid date</span>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-md-2"></div>
+                  <div class="col-md-2"></div>
+                  <div class="col-md-2" *ngIf="i == 0">Review Homework</div>
+                  <div class="col-md-2" *ngIf="i !== 0">Approve Homework</div>
+                  <div class="col-md-3">
+                    <input class="form-control is-valid" id="reviewStartTime" type="datetime-local" name="reviewStartTime"
+                      formControlName='reviewStartTime' placeholder="date">
+                    <span *ngIf="!assignment.get('reviewReleaseTime').valid" class="invalid-feedback">Please enter a valid
+                      date</span>
+                  </div>
+                  <div class="col-md-3">
+                    <input class="form-control is-valid" id="reviewEndTime" type="datetime-local" name="reviewEndTime"
+                      formControlName='reviewEndTime' placeholder="date">
+                    <span *ngIf="!assignment.get('reviewDeadline').valid" class="invalid-feedback">Please enter a valid date</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group row" *ngIf="roundTimeArray.length < 4">
+            <div class="col-md-2"></div>
+            <div class="col-md-2">
+              <button class="btn btn-sm" (click)="addRoundNums()">+</button>
+            </div>
+          </div>
+
           <div class="form-group row">
             <label class="col-md-3 col-form-label" for="commitRecordCount">Number of Reviewers</label>
             <div class="col-md-9">
@@ -191,7 +235,7 @@
                     </button>
                     <ul *dropdownMenu class="dropdown-menu" role="menu">
                       <li role="menuitem">
-                        <a class="dropdown-item" href="{{SERVER_URL}}/resources/JavacQuickStart.zip"
+                        <a class="dropdown-item" href="{{NEW_SERVER_URL}}/assignment/getJavaAssignmentFile"
                           download>JavacQuickStart.zip</a>
                       </li>
                       <li role="menuitem">
@@ -220,7 +264,7 @@
                       <i class="icon-cloud-download"></i><span class="caret"> template</span>
                     </button>
                     <ul *dropdownMenu class="dropdown-menu" role="menu">
-                      <li role="menuitem"><a class="dropdown-item" href="{{SERVER_URL}}/resources/AndroidQuickStart.zip"
+                      <li role="menuitem"><a class="dropdown-item" href="{{NEW_SERVER_URL}}/assignment/getAndroidAssignmentFile"
                           download>AndroidQuickStart.zip</a>
                       </li>
                     </ul>
@@ -245,7 +289,7 @@
                       <i class="icon-cloud-download"></i><span class="caret"> template</span>
                     </button>
                     <ul *dropdownMenu class="dropdown-menu" role="menu">
-                      <li role="menuitem"><a class="dropdown-item" href="{{SERVER_URL}}/resources/WebQuickStart.zip"
+                      <li role="menuitem"><a class="dropdown-item" href="{{NEW_SERVER_URL}}/assignment/getWebAssignmentFile"
                           download>WebQuickStart.zip</a>
                       </li>
                     </ul>
