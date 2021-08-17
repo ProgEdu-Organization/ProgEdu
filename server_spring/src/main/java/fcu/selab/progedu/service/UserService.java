@@ -6,15 +6,18 @@ import fcu.selab.progedu.db.RoleUserDbManager;
 import fcu.selab.progedu.db.UserDbManager;
 import fcu.selab.progedu.db.service.GroupDbService;
 import net.minidev.json.JSONObject;
+import org.apache.commons.io.IOUtils;
 import org.gitlab.api.models.GitlabUser;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import com.csvreader.CsvReader;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -214,6 +217,25 @@ public class UserService {
     }
 
     return new ResponseEntity<>(array, headers, HttpStatus.OK);
+  }
+
+  @GetMapping(
+          value ="getUserCsvFile",
+          produces = MediaType.APPLICATION_OCTET_STREAM_VALUE
+  )
+  public ResponseEntity<Object>  getUserCsvFile() throws Exception{
+
+    HttpHeaders headers = new HttpHeaders();
+
+    headers.add("Access-Control-Allow-Origin", "*");
+    headers.add("Content-Disposition", "attachment;filename=" + "StudentTemplate.csv");
+
+    InputStream targetStream = this.getClass().getResourceAsStream("/sample/StudentTemplate.csv");
+
+
+    byte[] file = IOUtils.toByteArray(targetStream);
+    return new ResponseEntity<Object>(file, headers, HttpStatus.OK);
+
   }
 
 

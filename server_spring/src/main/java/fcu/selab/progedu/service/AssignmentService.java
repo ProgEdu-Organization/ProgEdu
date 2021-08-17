@@ -642,6 +642,88 @@ public class AssignmentService {
 
   }
 
+  @GetMapping(
+          value ="getMvnAssignmentFile",
+          produces = MediaType.APPLICATION_OCTET_STREAM_VALUE
+  )
+  public ResponseEntity<Object>  getMvnAssignmentFile() throws Exception{
+
+    HttpHeaders headers = new HttpHeaders();
+
+    headers.add("Access-Control-Allow-Origin", "*");
+    headers.add("Content-Disposition", "attachment;filename=" + "MvnQuickStart.zip");
+
+    InputStream targetStream = this.getClass().getResourceAsStream("/sample/MvnQuickStart.zip");
+
+
+
+    byte[] assignmentFile = IOUtils.toByteArray(targetStream);
+    return new ResponseEntity<Object>(assignmentFile, headers, HttpStatus.OK);
+
+  }
+
+  @GetMapping(
+          value ="getJavaAssignmentFile",
+          produces = MediaType.APPLICATION_OCTET_STREAM_VALUE
+  )
+  public ResponseEntity<Object>  getJavaAssignmentFile() throws Exception{
+
+    HttpHeaders headers = new HttpHeaders();
+
+    headers.add("Access-Control-Allow-Origin", "*");
+    headers.add("Content-Disposition", "attachment;filename=" + "JavacQuickStart.zip");
+
+    InputStream targetStream = this.getClass().getResourceAsStream("/sample/JavacQuickStart.zip");
+
+
+
+    byte[] assignmentFile = IOUtils.toByteArray(targetStream);
+    return new ResponseEntity<Object>(assignmentFile, headers, HttpStatus.OK);
+
+  }
+
+  @GetMapping(
+          value ="getAndroidAssignmentFile",
+          produces = MediaType.APPLICATION_OCTET_STREAM_VALUE
+  )
+  public ResponseEntity<Object>  getAndroidAssignmentFile() throws Exception{
+
+    HttpHeaders headers = new HttpHeaders();
+
+    headers.add("Access-Control-Allow-Origin", "*");
+    headers.add("Content-Disposition", "attachment;filename=" + "AndroidQuickStart.zip");
+
+    InputStream targetStream = this.getClass().getResourceAsStream("/sample/AndroidQuickStart.zip");
+
+
+    byte[] assignmentFile = IOUtils.toByteArray(targetStream);
+    return new ResponseEntity<Object>(assignmentFile, headers, HttpStatus.OK);
+
+  }
+
+
+  @GetMapping(
+          value ="getWebAssignmentFile",
+          produces = MediaType.APPLICATION_OCTET_STREAM_VALUE
+  )
+  public ResponseEntity<Object>  getWebAssignmentFile() throws Exception{
+
+    HttpHeaders headers = new HttpHeaders();
+
+    headers.add("Access-Control-Allow-Origin", "*");
+    headers.add("Content-Disposition", "attachment;filename=" + "WebQuickStart.zip");
+
+    InputStream targetStream = this.getClass().getResourceAsStream("/sample/WebQuickStart.zip");
+
+
+    byte[] assignmentFile = IOUtils.toByteArray(targetStream);
+    return new ResponseEntity<Object>(assignmentFile, headers, HttpStatus.OK);
+
+  }
+
+
+
+
   @PostMapping("order")
   public ResponseEntity<Object> modifyAssignmentOrderFile(
           @RequestParam("fileRadio") String fileType,
