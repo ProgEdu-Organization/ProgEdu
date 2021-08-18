@@ -84,12 +84,12 @@
                   <div class="col-md-2" *ngIf="i == 0">Do Homework</div>
                   <div class="col-md-2" *ngIf="i !== 0">Fix Issues</div>
                   <div class="col-md-3">
-                    <input class="form-control is-valid" id="startTime" type="datetime-local" name="startTime"
+                    <input class="form-control is-valid" id="{{i}}_startTime" type="datetime-local" name="startTime"
                     formControlName='startTime' placeholder="date">
                     <span *ngIf="!assignment.get('releaseTime').valid" class="invalid-feedback">Please enter a valid date</span>
                   </div>
                   <div class="col-md-3">
-                    <input class="form-control is-valid" id="endTime" type="datetime-local" name="endTime"
+                    <input class="form-control is-valid" id="{{i}}_endTime" type="datetime-local" name="endTime"
                     formControlName='endTime' placeholder="date">
                   <span *ngIf="!assignment.get('deadline').valid" class="invalid-feedback">Please enter a valid date</span>
                   </div>
@@ -100,13 +100,13 @@
                   <div class="col-md-2" *ngIf="i == 0">Review Homework</div>
                   <div class="col-md-2" *ngIf="i !== 0">Approve Homework</div>
                   <div class="col-md-3">
-                    <input class="form-control is-valid" id="reviewStartTime" type="datetime-local" name="reviewStartTime"
+                    <input class="form-control is-valid" id="{{i}}_reviewStartTime" type="datetime-local" name="reviewStartTime"
                       formControlName='reviewStartTime' placeholder="date">
                     <span *ngIf="!assignment.get('reviewReleaseTime').valid" class="invalid-feedback">Please enter a valid
                       date</span>
                   </div>
                   <div class="col-md-3">
-                    <input class="form-control is-valid" id="reviewEndTime" type="datetime-local" name="reviewEndTime"
+                    <input class="form-control is-valid" id="{{i}}_reviewEndTime" type="datetime-local" name="reviewEndTime"
                       formControlName='reviewEndTime' placeholder="date">
                     <span *ngIf="!assignment.get('reviewDeadline').valid" class="invalid-feedback">Please enter a valid date</span>
                   </div>
