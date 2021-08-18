@@ -219,8 +219,24 @@ public class AssignmentService {
     headers.add("Access-Control-Allow-Origin", "*");
 
     List<Assignment> assignments = dbManager.getAllAssignment();
+
     JSONObject ob = new JSONObject();
-    ob.put("allAssignments", assignments);
+    JSONArray jsonArray = new JSONArray();
+    for(Assignment assignment : assignments) {
+      int aId = assignment.getId();
+      AssignmentTime assignmentTime = atDbManager.getAssignmentTimeNameById(aId);
+      JSONObject jsonObject = new JSONObject();
+      jsonObject.put("id", aId);
+      jsonObject.put("name", assignment.getName());
+      jsonObject.put("createTime", assignment.getCreateTime());
+      jsonObject.put("deadline", assignmentTime.getDeadline());
+      jsonObject.put("releaseTime", assignmentTime.getReleaseTime());
+      jsonObject.put("description", assignment.getDescription());
+      jsonObject.put("type", assignment.getType());
+      jsonObject.put("display", assignment.isDisplay());
+      jsonArray.add(jsonObject);
+    }
+    ob.put("allAssignments", jsonArray);
     return new ResponseEntity<Object>(ob, headers, HttpStatus.OK);
   }
 
