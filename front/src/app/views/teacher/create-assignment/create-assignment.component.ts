@@ -91,8 +91,6 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
       name: [undefined, [Validators.required, Validators.pattern('^[a-zA-Z0-9-_]{3,10}')]],
       releaseTime: [new Date(now_time).toISOString().slice(0, 17) + '00', Validators.required],
       deadline: [new Date(now_time).toISOString().slice(0, 17) + '00', Validators.required],
-      reviewReleaseTime: [new Date(now_time).toISOString().slice(0, 17) + '00', Validators.required],
-      reviewDeadline: [new Date(now_time).toISOString().slice(0, 17) + '00', Validators.required],
       reviewTime: this.fb.array(this.reviewRoundTime.map(round => this.fb.group({
         startTime: [new Date(now_time).toISOString().slice(0, 17) + '00', Validators.required],
         endTime: [new Date(now_time).toISOString().slice(0, 17) + '00', Validators.required],
@@ -119,9 +117,11 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
   setCategory(selectedReviews: number, selectedCategory: number): void {
     this.onSelectedCategory[selectedReviews] = selectedCategory;
   }
+
   setMetrics(selectedReviews: number, selectedMetrics: number): void {
     this.onSelectedMetrics[selectedReviews] = selectedMetrics;
   }
+
   onChanges(): void {
     const name = 'name';
     const releaseTime = 'releaseTime';
@@ -222,8 +222,17 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
         const now_time = Date.now() - (new Date().getTimezoneOffset() * 60 * 1000);
         // ReSet Peer Review Form Control
         this.assignment.patchValue({ commitRecordCount: 0 });
-        this.assignment.patchValue({ reviewReleaseTime: new Date(now_time).toISOString().slice(0, 17) + '00' });
-        this.assignment.patchValue({ reviewDeadline: new Date(now_time).toISOString().slice(0, 17) + '00' });
+        while(this.roundTimeArray.length > 1) {
+          this.roundTimeArray.pop();
+        }
+        this.assignment.patchValue({
+          reviewTime:[{
+            startTime: new Date(now_time).toISOString().slice(0, 17) + '00',
+            endTime: new Date(now_time).toISOString().slice(0, 17) + '00',
+            reviewStartTime: new Date(now_time).toISOString().slice(0, 17) + '00',
+            reviewEndTime: new Date(now_time).toISOString().slice(0, 17) + '00',
+          }]
+        });
       } else {
         this.autoAssignmentStatus.isOpen = false;
         this.peerReviewStatus.isOpen = true;
@@ -300,19 +309,10 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
   assignmentTimeCheck() {
     const releaseTime = 'releaseTime';
     const deadline = 'deadline';
-    const reviewReleaseTime = 'reviewReleaseTime';
-    const reviewDeadline = 'reviewDeadline';
+
     // deadline should be after release time
     if (Date.parse(this.assignment.get(deadline).value) < Date.parse(this.assignment.get(releaseTime).value)) {
       this.showIsInvalidById(deadline);
-    }
-    // review start time should be after deadline
-    if (Date.parse(this.assignment.get(reviewReleaseTime).value) < Date.parse(this.assignment.get(deadline).value)) {
-      this.showIsInvalidById(reviewReleaseTime);
-    }
-    // review end time should be after review start time
-    if (Date.parse(this.assignment.get(reviewDeadline).value) < Date.parse(this.assignment.get(reviewReleaseTime).value)) {
-      this.showIsInvalidById(reviewDeadline);
     }
   }
 
