@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { environment } from '../../../../environments/environment';
 import { Router } from '@angular/router';
-import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormControl, FormGroup, FormArray, FormBuilder, Validators } from '@angular/forms';
 import { CreateAssignmentService } from './create-assignment.service';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { assignmentTypeEnum } from './assignmentTypeEnum';
@@ -10,6 +10,7 @@ import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { SortablejsOptions } from 'ngx-sortablejs';
 import { assignmentGradingEnum } from './assignmentGradingEnum.enum';
 import { Category, Assessment } from './../review-metrics-management/Category';
+import { stringify } from '@angular/compiler/src/util';
 
 @Component({
   selector: 'app-create-assignment',
@@ -40,6 +41,7 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
   showAssessment: boolean = true;
 
   reviewMetricsNums = [0, 1, 2];
+  reviewRoundTime = [{startTime: '', endTime:'', reviewStartTime:'', reviewEndTime:''}];
   assessments: Assessment[][] = [[], [], []];
   categories: Category[];
   onSelectedCategory: number[] = [0, 1, 2];
@@ -92,6 +94,12 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
       deadline: [new Date(now_time).toISOString().slice(0, 17) + '00', Validators.required],
       reviewReleaseTime: [new Date(now_time).toISOString().slice(0, 17) + '00', Validators.required],
       reviewDeadline: [new Date(now_time).toISOString().slice(0, 17) + '00', Validators.required],
+      reviewTime: this.fb.array(this.reviewRoundTime.map(round => this.fb.group({
+        startTime: [new Date(now_time).toISOString().slice(0, 17) + '00', Validators.required],
+        endTime: [new Date(now_time).toISOString().slice(0, 17) + '00', Validators.required],
+        reviewStartTime: [new Date(now_time).toISOString().slice(0, 17) + '00', Validators.required],
+        reviewEndTime: [new Date(now_time).toISOString().slice(0, 17) + '00', Validators.required]
+      }))),
       commitRecordCount: [0, [Validators.pattern('^[0-9]{1,3}'), Validators.required]],
       description: [undefined, Validators.required],
       type: [undefined, Validators.required],
@@ -168,7 +176,6 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
     this.assignment.get(reviewDeadline).valueChanges.subscribe(
       val => {
         val.length !== 0 ? this.showIsValidById(reviewDeadline) : this.showIsInvalidById(reviewDeadline);
-
         this.assignmentTimeCheck();
       }
     );
@@ -177,6 +184,41 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
         val.length !== 0 ? this.showIsValidById(commitRecordCount) : this.showIsInvalidById(commitRecordCount);
       }
     );
+    for(let i = 0; i < this.roundTimeArray.length; i++) {
+      let startTime_id = i.toString() + '_startTime';
+      let endTime_id = i.toString() + '_endTime';
+      let reviewStartTime_id = i.toString() + '_reviewStartTime';
+      let reviewEndTime_id = i.toString() + '_reviewEndTime';
+      this.roundTimeArray[i].get('startTime').valueChanges.subscribe(
+        val => {
+          val.length !== 0 ? this.showIsValidById(startTime_id) : this.showIsInvalidById(startTime_id);
+          this.reviewTimeCheck();
+        }
+      )
+      this.roundTimeArray[i].get('endTime').valueChanges.subscribe(
+        val => {
+          val.length !== 0 ? this.showIsValidById(endTime_id) : this.showIsInvalidById(endTime_id);
+          this.reviewTimeCheck();
+        }
+      )
+      this.roundTimeArray[i].get('reviewStartTime').valueChanges.subscribe(
+        val => {
+          val.length !== 0 ? this.showIsValidById(reviewStartTime_id) : this.showIsInvalidById(reviewStartTime_id);
+          this.reviewTimeCheck();
+        }
+      )
+      this.roundTimeArray[i].get('reviewEndTime').valueChanges.subscribe(
+        val => {
+          val.length !== 0 ? this.showIsValidById(reviewEndTime_id) : this.showIsInvalidById(reviewEndTime_id);
+          this.reviewTimeCheck();
+        }
+      )
+    }
+    console.log(this.assignment.get('reviewTime').value);
+  }
+
+  get roundTimeArray() {
+    return (<FormArray>this.assignment.get('reviewTime')).controls;
   }
 
   setShowAssessment(showAssessment: boolean) {
@@ -227,6 +269,24 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
         this.peerReviewStatus.isOpen = true;
       }
     }
+  }
+
+  addRoundNums() {
+    const now_time = Date.now() - (new Date().getTimezoneOffset() * 60 * 1000);
+    (<FormArray>this.assignment.get('reviewTime')).push(
+      this.fb.group({
+        startTime: new Date(now_time).toISOString().slice(0, 17) + '00', 
+        endTime: new Date(now_time).toISOString().slice(0, 17) + '00',
+        reviewStartTime: new Date(now_time).toISOString().slice(0, 17) + '00',
+        reviewEndTime: new Date(now_time).toISOString().slice(0, 17) + '00'
+      })
+    );
+    console.log(this.assignment.get('reviewTime').value);
+  }
+
+  removeRound(index: number) {
+    (<FormArray>this.assignment.get('reviewTime')).removeAt(index);
+    console.log(this.assignment.get('reviewTime').value);
   }
 
   addReviewMetrics() {
@@ -294,6 +354,23 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
     // review end time should be after review start time
     if (Date.parse(this.assignment.get(reviewDeadline).value) < Date.parse(this.assignment.get(reviewReleaseTime).value)) {
       this.showIsInvalidById(reviewDeadline);
+    }
+  }
+
+  reviewTimeCheck() {
+    for(let i = 0; i < this.roundTimeArray.length; i++) {
+      if (i != 0 && Date.parse(this.roundTimeArray[i].get('startTime').value) < Date.parse(this.roundTimeArray[i - 1].get('reviewEndTime').value)) {
+        this.showIsInvalidById(i.toString() + '_startTime');
+      }
+      if (Date.parse(this.roundTimeArray[i].get('endTime').value) < Date.parse(this.roundTimeArray[i].get('startTime').value)) {
+        this.showIsInvalidById(i.toString() + '_endTime');
+      }
+      if (Date.parse(this.roundTimeArray[i].get('reviewStartTime').value) < Date.parse(this.roundTimeArray[i].get('endTime').value)) {
+        this.showIsInvalidById(i.toString() + '_reviewStartTime');
+      }
+      if (Date.parse(this.roundTimeArray[i].get('reviewEndTime').value) < Date.parse(this.roundTimeArray[i].get('reviewStartTime').value)) {
+        this.showIsInvalidById(i.toString() + '_reviewEndTime');
+      }
     }
   }
 
