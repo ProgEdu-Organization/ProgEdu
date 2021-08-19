@@ -83,20 +83,26 @@ export class CreateAssignmentService {
 
   createPeerReviewAssignment(assignment: FormGroup, metrics: number[]): Observable<any> {
     const formData = new FormData();
-    
+    const reviewTime = new FormGroup({});
+    let round = 0;
+
     (<FormArray>assignment.get('reviewTime')).controls.forEach(element => {
       element.get('startTime').setValue(new Date(element.get('startTime').value).toUTCString());
       element.get('endTime').setValue(new Date(element.get('endTime').value).toUTCString());
       element.get('reviewStartTime').setValue(new Date(element.get('reviewStartTime').value).toUTCString());
       element.get('reviewEndTime').setValue(new Date(element.get('reviewEndTime').value).toUTCString());
+      reviewTime.addControl(round.toString(), element);
+      round++;
     })
+
+    console.log(reviewTime.value);
     
     formData.append('assignmentName', assignment.value.name);
     formData.append('readMe', assignment.value.description);
     formData.append('fileRadio', assignment.value.type);
     formData.append('file', assignment.value.file);
     formData.append('amount', assignment.value.commitRecordCount);
-    formData.append('reviewTime', JSON.stringify(assignment.value.reviewTime));
+    formData.append('reviewTime', JSON.stringify(reviewTime.value));
     formData.append('metrics', metrics.toString());
 
     return this.addJwtTokenHttpClient.post( this.CREATE_REVIEW_ASSIGNMENT_API, formData, createAssigmentOptions);
