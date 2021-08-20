@@ -416,9 +416,14 @@ public class AssignmentService {
     headers.add("Access-Control-Allow-Origin", "*");
 
     int aid = dbManager.getAssignmentIdByName(assignmentName);
-    dbManager.editAssignment(deadline, releaseTime, readMe, aid);
+    AssignmentTime assignmentTime = new AssignmentTime();
+    assignmentTime.setReleaseTime(releaseTime);
+    assignmentTime.setDeadline(deadline);
 
+    int atId = atDbManager.getAssignmentTimeByName(assignmentName).getId();
 
+    atDbManager.editAssignmentTime(assignmentTime, atId);
+    dbManager.editAssignment(readMe, aid);
 
     if (!assignmentCompileOrdersAndScore.isEmpty()) {
       List<Integer> aaIds = aaDbManager.getAssignmentAssessmentIdByaId(aid);
