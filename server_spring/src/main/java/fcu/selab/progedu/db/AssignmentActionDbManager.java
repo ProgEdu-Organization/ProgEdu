@@ -26,6 +26,8 @@ public class AssignmentActionDbManager {
       return dbManager;
   }
 
+  private static final Logger LOGGER = LoggerFactory.getLogger(AssignmentActionDbManager.class);
+
   private IDatabase database = MySqlDatabase.getInstance();
 
   /**
@@ -37,14 +39,25 @@ public class AssignmentActionDbManager {
   public AssignmentActionEnum getAssignmentActionById(int id) throws SQLException {
     String query = "SELECT action FROM Assignment_Aciton WHERE id = ?";
     String assignmentAction = null;
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
 
-    try (Connection conn = database.getConnection(); PreparedStatement preStmt = conn.prepareStatement(query)) {
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(query);
+
       preStmt.setInt(1, id);
-      try (ResultSet rs = preStmt.executeQuery();) {
-        while (rs.next()) {
-          assignmentAction = rs.getString("action");
-        }
+      rs = preStmt.executeQuery();
+
+      while (rs.next()) {
+        assignmentAction = rs.getString("action");
       }
+    } catch (SQLException e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(rs, preStmt, conn);
     }
     AssignmentActionEnum assignmentActionEnum = AssignmentActionEnum.getAssignmentActionEnum(assignmentAction);
     return assignmentActionEnum;
@@ -57,17 +70,28 @@ public class AssignmentActionDbManager {
    * @return
    * @throws SQLException
    */
-  public int getAssignmentActionIdByAction(String action) throws SQLException {
+  public int getAssignmentActionIdByAction(String action) {
     String query = "SELECT id FROM Assignment_Aciton WHERE action = ?";
     int id = 0;
 
-    try (Connection conn = database.getConnection(); PreparedStatement preStmt = conn.prepareStatement(query)) {
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
+
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(query);
       preStmt.setString(1, action);
-      try (ResultSet rs = preStmt.executeQuery();) {
-        while (rs.next()) {
-          id = rs.getInt("id");
-        }
+
+      rs = preStmt.executeQuery();
+      while (rs.next()) {
+        id = rs.getInt("id");
       }
+    } catch (SQLException e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(rs, preStmt, conn);
     }
     return id;
   }
