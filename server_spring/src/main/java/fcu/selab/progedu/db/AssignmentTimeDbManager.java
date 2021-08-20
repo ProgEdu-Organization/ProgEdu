@@ -142,4 +142,28 @@ public class AssignmentTimeDbManager {
     return assignmentTime;
   }
 
+  public void editAssignmentTime(AssignmentTime assignmentTime, int id) {
+    String sql = "UPDATE Assignment_Time SET `releaseTime` = ? , `deadline` = ? WHERE id = ?";
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+    Timestamp releaseTime = new Timestamp(assignmentTime.getReleaseTime().getTime());
+    Timestamp deadlineTime = new Timestamp(assignmentTime.getDeadline().getTime());
+
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
+      preStmt.setTimestamp(1, releaseTime);
+      preStmt.setTimestamp(2, deadlineTime);
+      preStmt.setInt(3, id);
+      preStmt.executeUpdate();
+
+    } catch (Exception e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(preStmt, conn);
+    }
+  }
+
 }
