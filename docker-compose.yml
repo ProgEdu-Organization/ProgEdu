@@ -32,25 +32,25 @@ services:
       - gitlab-logs:/var/log/gitlab
       - gitlab-data:/var/opt/gitlab
 
-  server:
-    image: fcumselab/progedu-tomcat:latest
-    build:
-      context: ./server
-      args:
-        - DEBUG=false
-    env_file:
-      - .env
-    ports:
-      - "${WEB_PORT}:8080"
-    restart: always
-    depends_on:
-      - db
-      - jenkins
-      - gitlab
-    volumes:
-      - server-temp:/usr/local/tomcat/temp
-      - server-logs:/usr/local/tomcat/logs
-      - server-images:/usr/local/tomcat/images
+  # server:
+  #   image: fcumselab/progedu-tomcat:latest
+  #   build:
+  #     context: ./server
+  #     args:
+  #       - DEBUG=false
+  #   env_file:
+  #     - .env
+  #   ports:
+  #     - "${WEB_PORT}:8080"
+  #   restart: always
+  #   depends_on:
+  #     - db
+  #     - jenkins
+  #     - gitlab
+  #   volumes:
+  #     - server-temp:/usr/local/tomcat/temp
+  #     - server-logs:/usr/local/tomcat/logs
+  #     - server-images:/usr/local/tomcat/images
 
   server_spring:
     build:
@@ -64,6 +64,10 @@ services:
       - db
       - jenkins
       - gitlab
+    volumes:
+      - server-temp:/usr/local/tomcat/temp
+      - server-logs:/usr/local/tomcat/logs
+      - server-images:/usr/local/tomcat/images
 
   
       

@@ -26,7 +26,8 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
   isDropup: boolean = true;
   autoClose: boolean = false;
   assignment: FormGroup;
-  SERVER_URL: string = environment.SERVER_URL;
+
+  NEW_SERVER_URL: string = environment.NEW_SERVER_URL;
 
   errorResponse: HttpErrorResponse;
   errorTitle: string;
