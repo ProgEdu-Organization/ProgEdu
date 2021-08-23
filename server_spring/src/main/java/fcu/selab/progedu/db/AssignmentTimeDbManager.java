@@ -42,10 +42,10 @@ public class AssignmentTimeDbManager {
 
   /**
    * Add assignment time to db
-   * @param assignmnetName assignment name
+   * @param assignmentName assignment name
    * @param assignmentTime assugnment time
    */
-  public void addAssignmentTime(String assignmnetName, AssignmentTime assignmentTime)  {
+  public void addAssignmentTime(String assignmentName, AssignmentTime assignmentTime)  {
     String sql = "INSERT INTO Assignment_Time(`aId`, `aaId`, `releaseTime`, `deadline` VALUES(?, ?, ?, ?)";
 
     Connection conn = null;
@@ -59,7 +59,7 @@ public class AssignmentTimeDbManager {
       conn = database.getConnection();
       preStmt = conn.prepareStatement(sql);
 
-      preStmt.setInt(1, aDb.getAssignmentIdByName(assignmnetName)); //aId
+      preStmt.setInt(1, aDb.getAssignmentIdByName(assignmentName)); //aId
       preStmt.setInt(2, actionId); //aaId
       preStmt.setTimestamp(3, releaseTime); //releaseTime
       preStmt.setTimestamp(4, deadlineTime); //deadlineTime
@@ -73,38 +73,37 @@ public class AssignmentTimeDbManager {
   }
 
   /**
-   * get assignemnt time by assignment name
+   * get assignment time by assignment name
    * @param name assignment name
    * @return assignment time
    */
-  public AssignmentTime getAssignmentTimeByName(String name) {
-    AssignmentTime assignmentTime = new AssignmentTime();
+  public List<AssignmentTime> getAssignmentTimeByName(String name) throws SQLException{
     String sql = "SELECT a_t.* FROM Assignment_Time a_t join Assignment a on a.id = a_t.aId where a.name = ?";
 
-    Connection conn = null;
-    PreparedStatement stmt = null;
+    List<AssignmentTime> assignmentTimeList = new ArrayList<>();
 
-    try {
-      conn = database.getConnection();
-      stmt = conn.prepareStatement(sql);
-
+    try (Connection conn = database.getConnection();
+        PreparedStatement stmt = conn.prepareStatement(sql);
+    ) {
       stmt.setString(1, name);
       try (ResultSet rs = stmt.executeQuery();) {
         while (rs.next()) {
+          AssignmentTime assignmentTime = new AssignmentTime();
           assignmentTime.setId(rs.getInt("id"));
           assignmentTime.setAId(rs.getInt("aId"));
           assignmentTime.setAaId(rs.getInt("aaId"));
           assignmentTime.setReleaseTime(rs.getTimestamp("releaseTime"));
           assignmentTime.setDeadline(rs.getTimestamp("deadline"));
+          assignmentTimeList.add(assignmentTime);
         }
+      } catch (SQLException e) {
+        LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+        LOGGER.error(e.getMessage());
+      } finally {
+        CloseDBUtil.closeAll(stmt, conn);
       }
-    } catch (SQLException e) {
-      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
-      LOGGER.error(e.getMessage());
-    } finally {
-      CloseDBUtil.closeAll(stmt, conn);
     }
-    return assignmentTime;
+    return assignmentTimeList;
   }
 
   /**
@@ -112,50 +111,54 @@ public class AssignmentTimeDbManager {
    * @param aId aid
    * @return assignment name
    */
-  public AssignmentTime getAssignmentTimeNameById(int aId) {
+  public List<AssignmentTime> getAssignmentTimeNameById(int aId) {
     String sql = "SELECT * FROM Assignment_Time WHERE aId = ?";
-    AssignmentTime assignmentTime = new AssignmentTime();
 
-    Connection conn = null;
-    PreparedStatement preStmt = null;
+    List<AssignmentTime> assignmentTimeList = new ArrayList<>();
 
-    try {
-      conn = database.getConnection();
-      preStmt = conn.prepareStatement(sql);
-
+    try(
+        Connection conn = database.getConnection();
+        PreparedStatement preStmt = conn.prepareStatement(sql)
+    ) {
       preStmt.setInt(1, aId);
-
       try (ResultSet rs = preStmt.executeQuery();) {
         while (rs.next()) {
+          AssignmentTime assignmentTime = new AssignmentTime();
           assignmentTime.setAId(rs.getInt("aId"));
           assignmentTime.setAaId(rs.getInt("aaId"));
           assignmentTime.setReleaseTime(rs.getTimestamp("releaseTime"));
           assignmentTime.setDeadline(rs.getTimestamp("deadline"));
+          assignmentTimeList.add(assignmentTime);
         }
+      } catch (Exception e) {
+        LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+        LOGGER.error(e.getMessage());
+      } finally {
+        CloseDBUtil.closeAll(preStmt, conn);
       }
-    } catch (Exception e) {
-      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
-      LOGGER.error(e.getMessage());
-    } finally {
-      CloseDBUtil.closeAll(preStmt, conn);
     }
-    return assignmentTime;
+    return assignmentTimeList;
   }
 
-  public void editAssignmentTime(AssignmentTime assignmentTime, int id) {
-    String sql = "UPDATE Assignment_Time SET `releaseTime` = ? , `deadline` = ? WHERE id = ?";
+  public void editAssignmentTime(AssignmentTime assignmentTime) {
+    String sql = "UPDATE Assignment_Time SET releaseTime = ? , deadline = ? WHERE aId ? AND aaId = ?";
+
     Connection conn = null;
     PreparedStatement preStmt = null;
     Timestamp releaseTime = new Timestamp(assignmentTime.getReleaseTime().getTime());
     Timestamp deadlineTime = new Timestamp(assignmentTime.getDeadline().getTime());
 
+    Timestamp releaseTimestamp = new Timestamp(assignmentTime.getReleaseTime().getTime());
+    Timestamp deadlineTimestamp = new Timestamp(assignmentTime.getDeadline().getTime());
+
     try {
       conn = database.getConnection();
       preStmt = conn.prepareStatement(sql);
 
-      preStmt.setTimestamp(1, releaseTime);
-      preStmt.setTimestamp(2, deadlineTime);
-      preStmt.setInt(3, id);
+      preStmt.setTimestamp(1, releaseTimestamp);
+      preStmt.setTimestamp(2, deadlineTimestamp);
+      preStmt.setInt(3, assignmentTime.getAId());
+      preStmt.setInt(4, assignmentTime.getAaId());
       preStmt.executeUpdate();
 
     } catch (Exception e) {
