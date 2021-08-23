@@ -33,9 +33,11 @@ import org.jsoup.nodes.Document;
 
 import java.io.*;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Arrays;
 import java.util.TimeZone;
 
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
@@ -243,28 +245,38 @@ public class AssignmentService {
   @PostMapping("peerReview/create")
   public ResponseEntity<Object> createPeerReview(
           @RequestParam("assignmentName") String assignmentName,
-          @RequestParam("releaseTime") Date releaseTime,
-          @RequestParam("deadline") Date deadline,
           @RequestParam("readMe") String readMe,
           @RequestParam("fileRadio") String assignmentType,
           @RequestParam("file") MultipartFile file,
           @RequestParam("amount") int amount,
           @RequestParam("reviewStartTime") Date reviewStartTime,
           @RequestParam("reviewEndTime") Date reviewEndTime,
-          @RequestParam("metrics") String metrics) {
+          @RequestParam("metrics") String metrics,
+          @RequestParam("time") String time, @RequestParam("round") int round){
 
 
     HttpHeaders headers = new HttpHeaders();
     headers.add("Access-Control-Allow-Origin", "*");
     try {
 
+      //TODO 補時間
+      //string轉list
+      List<String> list = new ArrayList<String>(Arrays.asList(time.split(",")));
+
+      for (String t: list){
+
+      }
+      // list拿round 存入list time
+      ArrayList<AssignmentTime> assignmentTimes = new ArrayList<AssignmentTime>();
+
+
       // 1. create assignment
       createAssignment(assignmentName,
-              releaseTime, deadline, readMe, assignmentType, file);
+              readMe, assignmentType, file, assignmentTimes);
 
       // 2. create peer review setting
       int assignmentId = dbManager.getAssignmentIdByName(assignmentName);
-      rsDbManager.insertReviewSetting(assignmentId, amount, reviewStartTime, reviewEndTime);
+      rsDbManager.insertReviewSetting(assignmentId, amount, round );
 
       // 3. set review metrics for specific peer review
       int reviewSettingId = rsDbManager.getReviewSettingIdByAid(assignmentId);
@@ -294,7 +306,10 @@ public class AssignmentService {
       TimeZone.setDefault(TimeZone.getTimeZone("Asia/Taipei"));
       Date current = new Date();
       for (Assignment assignment : assignmentList) {
-        if (current.compareTo(assignment.getReleaseTime()) >= 0) {
+        // if (current.compareTo(assignment.getReleaseTime()) >= 0) {
+        //   updatePairMatchingStatusByAid(assignment.getId());
+        // }
+        if (current.compareTo(atDbManager.getAssignmentTimeNameById(assignment.getId()).getReleaseTime()) >= 0) {
           updatePairMatchingStatusByAid(assignment.getId());
         }
       }
@@ -306,12 +321,16 @@ public class AssignmentService {
         ob.put("id", assignment.getId());
         ob.put("name", assignment.getName());
         ob.put("createTime", assignment.getCreateTime());
-        ob.put("deadline", assignment.getDeadline());
-        ob.put("releaseTime", assignment.getReleaseTime());
+        // ob.put("deadline", assignment.getDeadline());
+        // ob.put("releaseTime", assignment.getReleaseTime());
+        ob.put("releaseTime",atDbManager.getAssignmentTimeNameById(assignment.getId()).getReleaseTime());
+        ob.put("deadline", atDbManager.getAssignmentTimeNameById(assignment.getId()).getDeadline());
         ob.put("display", assignment.isDisplay());
         ob.put("description", assignment.getDescription());
-        ob.put("reviewReleaseTime", reviewSetting.getReleaseTime());
-        ob.put("reviewDeadline", reviewSetting.getDeadline());
+
+        //TODO 多次review
+        // ob.put("reviewReleaseTime", reviewSetting.getReleaseTime());
+        // ob.put("reviewDeadline", reviewSetting.getDeadline());
         array.add(ob);
       }
       result.put("allReviewAssignments", array);
@@ -410,7 +429,7 @@ public class AssignmentService {
           @RequestParam("assignmentName") String assignmentName,
           @RequestParam("releaseTime") Date releaseTime, @RequestParam("deadline") Date deadline,
           @RequestParam("readMe") String readMe,
-          @RequestParam("order") String assignmentCompileOrdersAndScore) {
+          @RequestParam("order") String assignmentCompileOrdersAndScore, @RequestParam("action") AssignmentActionEnum actionEnum) {
 
     HttpHeaders headers = new HttpHeaders();
     headers.add("Access-Control-Allow-Origin", "*");
