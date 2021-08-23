@@ -26,7 +26,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.JsonNode;
 
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Document;
@@ -260,13 +261,12 @@ public class AssignmentService {
     try {
 
       //TODO 補時間
-      //string轉list
-      List<String> list = new ArrayList<String>(Arrays.asList(time.split(",")));
 
-      for (String t: list){
+      // JSONObject jsonObject = (JSONObject) new JSONParser().parse(time);
+      // JSONObject jsonArray = jsonObject.getJSONObject("object");
+      ObjectMapper mapper = new ObjectMapper();
+      JsonNode actualObj = mapper.readTree(time);
 
-      }
-      // list拿round 存入list time
       ArrayList<AssignmentTime> assignmentTimes = new ArrayList<AssignmentTime>();
 
 
