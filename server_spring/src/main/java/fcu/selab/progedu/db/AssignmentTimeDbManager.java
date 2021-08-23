@@ -45,17 +45,17 @@ public class AssignmentTimeDbManager {
    * @param assignmnetName assignment name
    * @param assignmentTime assugnment time
    */
-  public void addAssignmentTime(String assignmnetName, AssignmentTime assignmentTime) {
+  public void addAssignmentTime(String assignmnetName, AssignmentTime assignmentTime)  {
     String sql = "INSERT INTO Assignment_Time(`aId`, `aaId`, `releaseTime`, `deadline` VALUES(?, ?, ?, ?)";
-
-    Timestamp deadlineTime = new Timestamp(assignmentTime.getDeadline().getTime());
-    Timestamp releaseTime = new Timestamp(assignmentTime.getReleaseTime().getTime());
-    int actionId = aaDb.getAssignmentActionIdByAction(assignmentTime.getActionEnum().getActionName());
 
     Connection conn = null;
     PreparedStatement preStmt = null;
 
     try {
+
+      Timestamp deadlineTime = new Timestamp(assignmentTime.getDeadline().getTime());
+      Timestamp releaseTime = new Timestamp(assignmentTime.getReleaseTime().getTime());
+      Integer actionId = aaDb.getAssignmentActionIdByAction(assignmentTime.getActionEnum().getActionName());
       conn = database.getConnection();
       preStmt = conn.prepareStatement(sql);
 
@@ -125,7 +125,7 @@ public class AssignmentTimeDbManager {
 
       preStmt.setInt(1, aId);
 
-      try (ResultSet rs = preStmt.executeQuery();){
+      try (ResultSet rs = preStmt.executeQuery();) {
         while (rs.next()) {
           assignmentTime.setAId(rs.getInt("aId"));
           assignmentTime.setAaId(rs.getInt("aaId"));
