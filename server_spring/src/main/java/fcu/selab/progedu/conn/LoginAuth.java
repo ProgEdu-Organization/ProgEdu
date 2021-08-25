@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value ="/LoginAuth")
+@RequestMapping(value ="/LoginAuth") // Todo 待刪除
 public class LoginAuth {
   private static final long serialVersionUID = 1L;
   private static final String USERNAME = "username";

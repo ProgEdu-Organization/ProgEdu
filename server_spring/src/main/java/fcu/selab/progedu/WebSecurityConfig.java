@@ -42,11 +42,4 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .csrf().disable();
   }
 
-//  @Bean
-//  CorsConfigurationSource corsConfigurationSource() {
-//    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-//    source.registerCorsConfiguration("/**", new CorsConfiguration().applyPermitDefaultValues());
-//    return source;
-//  }
-
 }
