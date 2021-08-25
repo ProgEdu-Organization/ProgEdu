@@ -33,12 +33,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     http.cors().configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues());
 
     http.authorizeRequests()
-            .antMatchers("/publicApi/**").permitAll()
-            .antMatchers("/assignment/getAssignmentFile").permitAll()
-            .antMatchers("/assignment/getMvnAssignmentFile").permitAll()
-            .antMatchers("/assignment/getJavaAssignmentFile").permitAll()
-            .antMatchers("/assignment/getAndroidAssignmentFile").permitAll()
-            .antMatchers("/assignment/getWebAssignmentFile").permitAll()
+            .antMatchers(HttpMethod.POST, "/publicApi/**").permitAll()
+            .antMatchers(HttpMethod.GET, "/assignment/getAssignmentFile").permitAll()
+            .antMatchers(HttpMethod.GET, "/assignment/getMvnAssignmentFile").permitAll()
+            .antMatchers(HttpMethod.GET, "/assignment/getJavaAssignmentFile").permitAll()
+            .antMatchers(HttpMethod.GET, "/assignment/getAndroidAssignmentFile").permitAll()
+            .antMatchers(HttpMethod.GET, "/assignment/getWebAssignmentFile").permitAll()
             .antMatchers(HttpMethod.POST, "/login").permitAll()
 
             .anyRequest().authenticated()
