@@ -4,7 +4,8 @@ import java.util.List;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 
-import fcu.selab.progedu.data.Assignment;
+import fcu.selab.progedu.data.*;
+import fcu.selab.progedu.db.*;
 import fcu.selab.progedu.utils.ExceptionUtil;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
@@ -16,17 +17,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import fcu.selab.progedu.data.User;
-import fcu.selab.progedu.data.CommitRecord;
 import fcu.selab.progedu.conn.GitlabService;
 import fcu.selab.progedu.conn.JenkinsService;
-import fcu.selab.progedu.db.AssignmentUserDbManager;
-import fcu.selab.progedu.db.CommitRecordDbManager;
-import fcu.selab.progedu.db.AssignmentDbManager;
-import fcu.selab.progedu.db.UserDbManager;
-import fcu.selab.progedu.db.CommitStatusDbManager;
-import fcu.selab.progedu.db.AssignmentTypeDbManager;
-import fcu.selab.progedu.data.ProjectTypeEnum;
+
 import java.util.ArrayList;
 
 @RestController
@@ -40,6 +33,7 @@ public class CommitRecordService {
   private UserDbManager userDb = UserDbManager.getInstance();
   private CommitRecordDbManager commitRecordDb = CommitRecordDbManager.getInstance();
   private CommitStatusDbManager csDb = CommitStatusDbManager.getInstance();
+  private AssignmentTimeDbManager atDbManager = AssignmentTimeDbManager.getInstance();
 //  private CommitRecordDbManager db = CommitRecordDbManager.getInstance();
 //  private AssignmentUserDbManager auDb = AssignmentUserDbManager.getInstance();
   private static final Logger LOGGER = LoggerFactory.getLogger(CommitRecordService.class);
@@ -91,13 +85,16 @@ public class CommitRecordService {
         JSONObject jsonObject = new JSONObject();
         JSONObject lastCommitRecord = new JSONObject();
         org.json.JSONObject lastCommitRecordJson = commitRecordDb.getLastCommitRecord(auId);
+        List<AssignmentTime> assignmentTimes = atDbManager.getAssignmentTimeByName(assignment.getName());
 
         String commitReleaseTime = dateFormat.format(lastCommitRecordJson.get("commitTime"));
         lastCommitRecord.put("commitNumber", lastCommitRecordJson.get("commitNumber"));
         lastCommitRecord.put("commitTime", commitReleaseTime);
         lastCommitRecord.put("status", lastCommitRecordJson.get("status"));
 
-        String assignmentReleaseTime = dateFormat.format(assignment.getReleaseTime());
+
+        String assignmentReleaseTime = dateFormat.format(assignmentTimes.get(0).getReleaseTime());
+
         jsonObject.put("assignmentName", assignment.getName());
         jsonObject.put("releaseTime", assignmentReleaseTime);
         jsonObject.put("commitRecord", lastCommitRecord);
@@ -155,9 +152,18 @@ public class CommitRecordService {
 
     for (Assignment assignment : assignmentDb.getAllAssignment()) {
       int auId = assignmentUserDb.getAuid(assignment.getId(), userId);
+      List<AssignmentTime> assignmentTimes = atDbManager.getAssignmentTimeByName(assignment.getName());
       JSONObject jsonObject = new JSONObject();
       jsonObject.put("assignmentName", assignment.getName());
-      jsonObject.put("releaseTime", assignment.getReleaseTime());
+      JSONArray jsonArray = new JSONArray();
+
+      for(AssignmentTime assignmentTime : assignmentTimes) {
+        JSONObject assignmentObject = new JSONObject();
+        assignmentObject.put("action", assignmentTime.getActionEnum());
+        assignmentObject.put("releaseTime", dateFormat.format(assignmentTime.getReleaseTime()));
+        jsonArray.add(assignmentObject);
+      }
+      jsonObject.put("assignmentTimes", jsonArray);
 
       org.json.JSONObject lastCommitRecordJson = commitRecordDb.getLastCommitRecord(auId);
       JSONObject lastCommitRecord = new JSONObject();

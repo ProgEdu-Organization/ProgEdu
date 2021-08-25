@@ -162,8 +162,8 @@ public class AssignmentService {
   public ResponseEntity<Object> createAssignment( // 把readme 的圖片處理拿掉 因為太複雜了
           @RequestParam("assignmentName") String assignmentName,
           @RequestParam("readMe") String readMe, @RequestParam("fileRadio") String assignmentType,
-          @RequestParam("file") MultipartFile file, @RequestParam List<AssignmentTime> assignmentTimes) {
-
+          @RequestParam("file") MultipartFile file,
+          @RequestParam("assignmentTimes") List<AssignmentTime> assignmentTimes) {
 
     HttpHeaders headers = new HttpHeaders();
     headers.add("Access-Control-Allow-Origin", "*");
@@ -453,7 +453,7 @@ public class AssignmentService {
     assignmentTime.setReleaseTime(releaseTime);
     assignmentTime.setDeadline(deadline);
 
-    int atId = atDbManager.getAssignmentTimeByName(assignmentName).getId();
+    List<AssignmentTime> assignmentTimes = atDbManager.getAssignmentTimeByName(assignmentName);
 
     atDbManager.editAssignmentTime(assignmentTime, atId);
     dbManager.editAssignment(readMe, aid);

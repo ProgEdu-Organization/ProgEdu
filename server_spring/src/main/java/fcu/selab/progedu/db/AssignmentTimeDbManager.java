@@ -77,31 +77,34 @@ public class AssignmentTimeDbManager {
    * @param name assignment name
    * @return assignment time
    */
-  public List<AssignmentTime> getAssignmentTimeByName(String name) throws SQLException{
+  public List<AssignmentTime> getAssignmentTimeByName(String name) {
     String sql = "SELECT a_t.* FROM Assignment_Time a_t join Assignment a on a.id = a_t.aId where a.name = ?";
 
     List<AssignmentTime> assignmentTimeList = new ArrayList<>();
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
 
-    try (Connection conn = database.getConnection();
-        PreparedStatement stmt = conn.prepareStatement(sql);
-    ) {
-      stmt.setString(1, name);
-      try (ResultSet rs = stmt.executeQuery();) {
-        while (rs.next()) {
-          AssignmentTime assignmentTime = new AssignmentTime();
-          assignmentTime.setId(rs.getInt("id"));
-          assignmentTime.setAId(rs.getInt("aId"));
-          assignmentTime.setAaId(rs.getInt("aaId"));
-          assignmentTime.setReleaseTime(rs.getTimestamp("releaseTime"));
-          assignmentTime.setDeadline(rs.getTimestamp("deadline"));
-          assignmentTimeList.add(assignmentTime);
-        }
-      } catch (SQLException e) {
-        LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
-        LOGGER.error(e.getMessage());
-      } finally {
-        CloseDBUtil.closeAll(stmt, conn);
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
+      preStmt.setString(1, name);
+      rs = preStmt.executeQuery();
+      while (rs.next()) {
+        AssignmentTime assignmentTime = new AssignmentTime();
+        assignmentTime.setId(rs.getInt("id"));
+        assignmentTime.setAId(rs.getInt("aId"));
+        assignmentTime.setAaId(rs.getInt("aaId"));
+        assignmentTime.setReleaseTime(rs.getTimestamp("releaseTime"));
+        assignmentTime.setDeadline(rs.getTimestamp("deadline"));
+        assignmentTimeList.add(assignmentTime);
       }
+    } catch (SQLException e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(rs, preStmt, conn);
     }
     return assignmentTimeList;
   }
@@ -115,27 +118,29 @@ public class AssignmentTimeDbManager {
     String sql = "SELECT * FROM Assignment_Time WHERE aId = ?";
 
     List<AssignmentTime> assignmentTimeList = new ArrayList<>();
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
 
-    try(
-        Connection conn = database.getConnection();
-        PreparedStatement preStmt = conn.prepareStatement(sql)
-    ) {
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
       preStmt.setInt(1, aId);
-      try (ResultSet rs = preStmt.executeQuery();) {
-        while (rs.next()) {
-          AssignmentTime assignmentTime = new AssignmentTime();
-          assignmentTime.setAId(rs.getInt("aId"));
-          assignmentTime.setAaId(rs.getInt("aaId"));
-          assignmentTime.setReleaseTime(rs.getTimestamp("releaseTime"));
-          assignmentTime.setDeadline(rs.getTimestamp("deadline"));
-          assignmentTimeList.add(assignmentTime);
-        }
-      } catch (Exception e) {
-        LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
-        LOGGER.error(e.getMessage());
-      } finally {
-        CloseDBUtil.closeAll(preStmt, conn);
+
+      rs = preStmt.executeQuery();
+      while (rs.next()) {
+        AssignmentTime assignmentTime = new AssignmentTime();
+        assignmentTime.setAId(rs.getInt("aId"));
+        assignmentTime.setAaId(rs.getInt("aaId"));
+        assignmentTime.setReleaseTime(rs.getTimestamp("releaseTime"));
+        assignmentTime.setDeadline(rs.getTimestamp("deadline"));
+        assignmentTimeList.add(assignmentTime);
       }
+    } catch (Exception e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(rs, preStmt, conn);
     }
     return assignmentTimeList;
   }
