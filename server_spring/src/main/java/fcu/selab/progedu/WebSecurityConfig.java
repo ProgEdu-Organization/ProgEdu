@@ -14,18 +14,21 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Bean
-  PasswordEncoder passwordEncoder() {
+  PasswordEncoder passwordEncoder() { // Todo 一定要這一個 bean , 我也不知道為什麼
     return NoOpPasswordEncoder.getInstance();
   }
 
   @Override
   protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-    auth.inMemoryAuthentication().withUser("franky")
-            .password("franky-password").roles("user")
-            .and()
-            .withUser("sang")
-            .password("456")
-            .roles("admin");
+//    auth.inMemoryAuthentication().withUser("franky")
+//            .password("franky-password").roles("user")
+//            .and()
+//            .withUser("sang")
+//            .password("456")
+//            .roles("admin");
+    auth.userDetailsService(new MyUserDetailsService());
+
+
   }
 
   @Override
