@@ -67,16 +67,21 @@ export class LoginComponent implements OnInit {
   async login() {
     this._loginAuthService.Login(this.getUsername(), this.getPassword()).subscribe(
       (response) => {
-        if (!response.isLogin) {
+
+
+        if(response == "fail!") {
           this.dangerModal.show();
         } else {
-          this.jwtService.setToken(response.token);
-          if (response.role === 'teacher') {
+          this.jwtService.setToken(response);
+
+          let jwtInfo = this.jwtService.getDecodedToken();
+
+          if (jwtInfo.authorities.includes("ROLE_TEACHER")) {
+            console.log("login");
+
             this.router.navigate(['dashboard']);
-          } else if (response.role === 'student') {
-            // login event emit
-            const event: StudentEvent = {name: 'progedu.login',
-              page: this.router.url, event: {} };
+          } else if (jwtInfo.authorities.includes("ROLE_STUDENT")) {
+            const event: StudentEvent = {name: 'progedu.login', page: this.router.url, event: {} };
             this.emitStudentEvent(event);
             this.router.navigate(['studashboard']);
           }

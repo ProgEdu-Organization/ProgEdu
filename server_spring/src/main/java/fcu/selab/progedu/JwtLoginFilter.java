@@ -2,6 +2,7 @@ package fcu.selab.progedu;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fcu.selab.progedu.config.JwtConfig;
+import fcu.selab.progedu.db.UserDbManager;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -34,6 +35,7 @@ public class JwtLoginFilter extends AbstractAuthenticationProcessingFilter {
 
     String username = req.getParameter("username");
     String password = req.getParameter("password");
+    password = UserDbManager.getInstance().passwordMD5(password);
 
     return getAuthenticationManager().authenticate(new UsernamePasswordAuthenticationToken(username, password));
   }

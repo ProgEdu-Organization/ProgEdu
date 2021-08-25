@@ -1,6 +1,6 @@
 import { environment } from '../../environments/environment';
 
-let login: string = environment.NEW_SERVER_URL + '/LoginAuth';
+let login: string = environment.NEW_SERVER_URL + '/login';
 let checkLogin: string = environment.NEW_SERVER_URL + '/auth/login';
 
 

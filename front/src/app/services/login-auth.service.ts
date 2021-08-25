@@ -35,15 +35,31 @@ export class LoginAuthService {
     return this.http.post<any>(this.LOGIN_URL, params, options);
   }
 
-  public isLoginByTeacher(): Observable<any> {
+  public isLoginByTeacher(): boolean {
 
-    const options = ({
-      headers: new HttpHeaders({
-        'Content-Type': 'application/x-www-form-urlencoded',
-      })
-    });
+    let jwtInfo = this.jwtService.getDecodedToken();
 
-    return this.addJwtTokenHttpClient.post(this.AUTH_URL, null, options);
+    console.log("jwtInfo");
+    console.log(jwtInfo);
+    if (jwtInfo.authorities.includes("ROLE_TEACHER")) {
+      return true;
+    } else {
+      return false;
+    }
+
+
+
+    // const options = ({
+    //   headers: new HttpHeaders({
+    //     'Content-Type': 'application/x-www-form-urlencoded',
+    //   })
+    // });
+
+
+
+
+
+    // return this.addJwtTokenHttpClient.post(this.AUTH_URL, null, options);
   }
 
   public isLoginByStudent(): Observable<any> {
