@@ -12,21 +12,25 @@ export class AddJwtTokenHttpClient {
   get(url, options?) {
     const jwtService = new JwtService();
 
+    const header = { Authorization: 'Bearer ' + jwtService.getToken() };
+
+
     if(options == undefined) {
 
-        const params = new HttpParams().set('token', jwtService.getToken());
-        return this.http.get<any>(url, {params});
+        // const params = new HttpParams().set('token', jwtService.getToken());
+        return this.http.get<any>(url, { headers: header });
 
     } else if( options.params == undefined) {
 
-        options.params = new HttpParams().set('token', jwtService.getToken());
+        // options.params = new HttpParams().set('token', jwtService.getToken());
+        options.headers = header;
         return this.http.get<any>(url, options);
 
     } else {
-        options.params = options.params.append('token', jwtService.getToken());
+        // options.params = options.params.append('token', jwtService.getToken());
+        options.headers = header;
         return this.http.get<any>(url, options);
     }
-    
   };
 
   post(url, body, options?) {

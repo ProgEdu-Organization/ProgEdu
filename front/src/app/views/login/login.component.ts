@@ -77,8 +77,6 @@ export class LoginComponent implements OnInit {
           let jwtInfo = this.jwtService.getDecodedToken();
 
           if (jwtInfo.authorities.includes("ROLE_TEACHER")) {
-            console.log("login");
-
             this.router.navigate(['dashboard']);
           } else if (jwtInfo.authorities.includes("ROLE_STUDENT")) {
             const event: StudentEvent = {name: 'progedu.login', page: this.router.url, event: {} };
@@ -96,9 +94,9 @@ export class LoginComponent implements OnInit {
     if (this.jwtService.getToken() != null) {
       const decodedToken = this.jwtService.getDecodedToken();
       if (!this.jwtService.isTokenExpired()) {
-        if (decodedToken.sub === 'teacher') {
+        if (decodedToken.authorities.includes("ROLE_TEACHER")) {
           this.router.navigate(['dashboard']);
-        } else {
+        } else if(decodedToken.authorities.includes("ROLE_STUDENT")) {
           this.router.navigate(['studashboard']);
         }
       } else {

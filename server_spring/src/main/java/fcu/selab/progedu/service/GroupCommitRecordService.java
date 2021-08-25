@@ -54,7 +54,7 @@ public class GroupCommitRecordService {
   public ResponseEntity<Object> getAllGroupCommitRecord() {
     HttpHeaders headers = new HttpHeaders();
     headers.add("Content-Type", "application/json");
-    headers.add("Access-Control-Allow-Origin", "*");
+    //
     JSONArray array = new JSONArray();
     List<Group> groups = gdb.getGroups();
     for (Group group : groups) {
@@ -76,7 +76,7 @@ public class GroupCommitRecordService {
   public ResponseEntity<Object> getCommitRecordByUsername(@PathVariable("username") String username) {
 
     HttpHeaders headers = new HttpHeaders();
-    headers.add("Access-Control-Allow-Origin", "*");
+    //
 
     GroupService gs = new GroupService();
     int uid = dbManager.getUserIdByUsername(username);
@@ -108,7 +108,7 @@ public class GroupCommitRecordService {
       @PathVariable("num") int number) {
     HttpHeaders headers = new HttpHeaders();
     headers.add("Content-Type", "application/json");
-    headers.add("Access-Control-Allow-Origin", "*");
+    //
 
     JenkinsService js = JenkinsService.getInstance();
     ProjectTypeEnum projectTypeEnum = gpdb.getProjectType(projectName);
@@ -141,7 +141,7 @@ public class GroupCommitRecordService {
           @PathVariable("name") String groupName, @PathVariable("projectName") String projectName){
 
     HttpHeaders headers = new HttpHeaders();
-    headers.add("Access-Control-Allow-Origin", "*");
+    //
 
     JenkinsService js = JenkinsService.getInstance();
     List<JSONObject> array = new ArrayList<>();
@@ -223,7 +223,7 @@ public class GroupCommitRecordService {
           @RequestParam("proName") String projectName) {
 
     HttpHeaders headers = new HttpHeaders();
-    headers.add("Access-Control-Allow-Origin", "*");
+    //
     
     ProjectTypeEnum projectTypeEnum = gpdb.getProjectType(projectName);
     int pgid = pgdb.getId(groupName, projectName);
@@ -271,7 +271,7 @@ public class GroupCommitRecordService {
           @PathVariable("currentPage") int currentPage
   ) {
     HttpHeaders headers = new HttpHeaders();
-    headers.add("Access-Control-Allow-Origin", "*");
+    //
 
     JenkinsService js = JenkinsService.getInstance();
     JSONArray array = new JSONArray();

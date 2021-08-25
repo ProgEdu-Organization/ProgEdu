@@ -39,7 +39,7 @@ public class LoginAuth {
 
     HttpHeaders headers = new HttpHeaders();
 
-    headers.add("Access-Control-Allow-Origin", "*");
+    //
 
     String token;
     JSONObject ob = new JSONObject();

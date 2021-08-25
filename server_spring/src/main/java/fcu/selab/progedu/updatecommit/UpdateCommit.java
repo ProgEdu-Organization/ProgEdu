@@ -29,7 +29,7 @@ public class UpdateCommit {
     // Todo 所有 assignment 相關的都要改掉 現在沒有 assignment
 
     HttpHeaders headers = new HttpHeaders();
-    headers.add("Access-Control-Allow-Origin", "*");
+    //
 
 
     JSONObject ob = new JSONObject();

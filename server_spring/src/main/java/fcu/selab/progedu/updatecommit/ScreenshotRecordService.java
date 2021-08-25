@@ -40,7 +40,7 @@ public class ScreenshotRecordService {
                                       @RequestParam("url") List<String> urls) {
     HttpHeaders headers = new HttpHeaders();
 
-    headers.add("Access-Control-Allow-Origin", "*");
+    //
 
     JSONObject ob = new JSONObject();
     int auid = auDb.getAuid(assignmentDb.getAssignmentIdByName(assignmentName),

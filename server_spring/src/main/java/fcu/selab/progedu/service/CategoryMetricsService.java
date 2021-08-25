@@ -29,7 +29,7 @@ public class CategoryMetricsService {
   public ResponseEntity<Object> getCategory() {
 
     HttpHeaders headers = new HttpHeaders();
-    headers.add("Access-Control-Allow-Origin", "*");
+    //
 
     try {
       List<JSONObject> array = new ArrayList<>();
@@ -61,7 +61,7 @@ public class CategoryMetricsService {
   public ResponseEntity<Object> getMetrics(@QueryParam("category") int category) {
 
     HttpHeaders headers = new HttpHeaders();
-    headers.add("Access-Control-Allow-Origin", "*");
+    //
 
     try {
       List<JSONObject> array = new ArrayList<>();
@@ -99,7 +99,7 @@ public class CategoryMetricsService {
   public ResponseEntity<Object> createCategory(@QueryParam("name") String name,
                                  @QueryParam("metrics") String metrics) {
     HttpHeaders headers = new HttpHeaders();
-    headers.add("Access-Control-Allow-Origin", "*");
+    //
 
     try {
       reviewCategoryDbManager.insertReviewCategory(name, metrics);
@@ -155,7 +155,7 @@ public class CategoryMetricsService {
                                 @QueryParam("link") String link) {
 
     HttpHeaders headers = new HttpHeaders();
-    headers.add("Access-Control-Allow-Origin", "*");
+    //
 
     try {
       reviewMetricsDbManager.insertReviewMetrics(category, mode, metrics, description, link);

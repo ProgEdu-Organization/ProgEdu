@@ -11,15 +11,24 @@ export class CanActiveStudentService implements CanActivate {
 
   canActivate(): Promise<boolean> | boolean {
     return new Promise((resolve, reject) => {
-      this.loginAuth.isLoginByStudent().subscribe((response) => {
-        if (response.isLogin && response.isStudent) {
-          resolve(true);
-        } else {
-          this.jwtService.removeToken();
-          this.router.navigate(['login']);
-          resolve(false);
-        }
-      });
+
+      if (this.loginAuth.isLoginByTeacher()) {
+        resolve(true);
+      } else {
+        this.jwtService.removeToken();
+        this.router.navigate(['login']);
+        resolve(false);
+      }
+
+      // this.loginAuth.isLoginByStudent().subscribe((response) => {
+      //   if (response.isLogin && response.isStudent) {
+      //     resolve(true);
+      //   } else {
+      //     this.jwtService.removeToken();
+      //     this.router.navigate(['login']);
+      //     resolve(false);
+      //   }
+      // });
     });
   }
 }

@@ -60,7 +60,7 @@ public class PeerReviewService {
           @RequestParam("reviewRecord") String reviewRecord) {
 
     HttpHeaders headers = new HttpHeaders();
-    headers.add("Access-Control-Allow-Origin", "*");
+    //
 
     try {
       int userId = userDbManager.getUserIdByUsername(username);
@@ -132,7 +132,7 @@ public class PeerReviewService {
 
     HttpHeaders headers = new HttpHeaders();
     headers.add("Content-Type", "application/json");
-    headers.add("Access-Control-Allow-Origin", "*");
+    //
 		SimpleDateFormat dateFormat = new SimpleDateFormat(
         "yyyy-MM-dd HH:mm:ss.S");
 
@@ -170,7 +170,7 @@ public class PeerReviewService {
 
     HttpHeaders headers = new HttpHeaders();
     headers.add("Content-Type", "application/json");
-    headers.add("Access-Control-Allow-Origin", "*");
+    //
 
     try {
       JSONArray array = new JSONArray();
@@ -247,7 +247,7 @@ public class PeerReviewService {
 
     HttpHeaders headers = new HttpHeaders();
     headers.add("Content-Type", "application/json");
-    headers.add("Access-Control-Allow-Origin", "*");
+    //
 
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
     try {
@@ -285,7 +285,7 @@ public class PeerReviewService {
                                                       @RequestParam("assignmentName") String assignmentName) {
     HttpHeaders headers = new HttpHeaders();
     headers.add("Content-Type", "application/json");
-    headers.add("Access-Control-Allow-Origin", "*");
+    //
 
     try {
       JSONObject result = new JSONObject();
@@ -405,7 +405,7 @@ public class PeerReviewService {
 
     HttpHeaders headers = new HttpHeaders();
     headers.add("Content-Type", "application/json");
-    headers.add("Access-Control-Allow-Origin", "*");
+    //
 
     ResponseEntity<Object> response = null;
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
@@ -558,7 +558,7 @@ public class PeerReviewService {
           @QueryParam("assignmentName") String assignmentName
   ) {
     HttpHeaders headers = new HttpHeaders();
-    headers.add("Access-Control-Allow-Origin", "*");
+    //
 
     try {
       JSONArray array = new JSONArray();
@@ -598,7 +598,7 @@ public class PeerReviewService {
   {
 
     HttpHeaders headers = new HttpHeaders();
-    headers.add("Access-Control-Allow-Origin", "*");
+    //
 
     try {
       GitlabService gitlabService = GitlabService.getInstance();
@@ -646,7 +646,7 @@ public class PeerReviewService {
 
     HttpHeaders headers = new HttpHeaders();
     headers.add("Content-Type", "application/json");
-    headers.add("Access-Control-Allow-Origin", "*");
+    //
 
     try {
       JSONArray array = new JSONArray();
