@@ -227,13 +227,20 @@ public class AssignmentService {
     JSONArray jsonArray = new JSONArray();
     for(Assignment assignment : assignments) {
       int aId = assignment.getId();
-      AssignmentTime assignmentTime = atDbManager.getAssignmentTimeNameById(aId);
+      List<AssignmentTime> assignmentTimes = atDbManager.getAssignmentTimeNameById(aId);
       JSONObject jsonObject = new JSONObject();
       jsonObject.put("id", aId);
       jsonObject.put("name", assignment.getName());
       jsonObject.put("createTime", assignment.getCreateTime());
-      jsonObject.put("deadline", assignmentTime.getDeadline());
-      jsonObject.put("releaseTime", assignmentTime.getReleaseTime());
+      JSONArray jsonArrayTime = new JSONArray();
+      for (AssignmentTime assignmentTime : assignmentTimes) {
+        JSONObject jsonObjectTime = new JSONObject();
+        jsonObjectTime.put("action", assignmentTime.getActionEnum().toString());
+        jsonObjectTime.put("deadline", assignmentTime.getDeadline());
+        jsonObjectTime.put("releaseTime", assignmentTime.getReleaseTime());
+        jsonArrayTime.add(jsonObjectTime);
+      }
+      jsonObject.put("assignmentTimes", jsonArrayTime);
       jsonObject.put("description", assignment.getDescription());
       jsonObject.put("type", assignment.getType());
       jsonObject.put("display", assignment.isDisplay());
@@ -387,10 +394,17 @@ public class AssignmentService {
     headers.add("Access-Control-Allow-Origin", "*");
 
     Assignment assignment = dbManager.getAssignmentByName(assignmentName);
-    AssignmentTime assignmentTime = atDbManager.getAssignmentTimeByName(assignmentName);
+    List <AssignmentTime> assignmentTimes = atDbManager.getAssignmentTimeByName(assignmentName);
     JSONObject ob = new JSONObject();
+    JSONArray jsonArray = new JSONArray();
     ob.put("description", assignment.getDescription());
-    ob.put("deadline", assignmentTime.getDeadline());
+    for(AssignmentTime assignmentTime : assignmentTimes) {
+      JSONObject jsonObject = new JSONObject();
+      jsonObject.put("action", assignmentTime.getActionEnum().toString());
+      jsonObject.put("deadline", assignmentTime.getDeadline());
+      jsonArray.add(jsonObject);
+    }
+    ob.put("assignmentTime", jsonArray);
     ob.put("type", assignment.getType());
     return new ResponseEntity<Object>(ob, headers, HttpStatus.OK);
   }

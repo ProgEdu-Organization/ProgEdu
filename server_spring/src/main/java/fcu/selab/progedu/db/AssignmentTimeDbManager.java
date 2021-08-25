@@ -145,8 +145,6 @@ public class AssignmentTimeDbManager {
 
     Connection conn = null;
     PreparedStatement preStmt = null;
-    Timestamp releaseTime = new Timestamp(assignmentTime.getReleaseTime().getTime());
-    Timestamp deadlineTime = new Timestamp(assignmentTime.getDeadline().getTime());
 
     Timestamp releaseTimestamp = new Timestamp(assignmentTime.getReleaseTime().getTime());
     Timestamp deadlineTimestamp = new Timestamp(assignmentTime.getDeadline().getTime());
