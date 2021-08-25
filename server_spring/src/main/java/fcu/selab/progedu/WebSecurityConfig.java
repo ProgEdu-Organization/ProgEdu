@@ -34,7 +34,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     http.authorizeRequests()
             .antMatchers("/publicApi/**").permitAll()
+            .antMatchers("/assignment/getAssignmentFile").permitAll()
+            .antMatchers("/assignment/getMvnAssignmentFile").permitAll()
+            .antMatchers("/assignment/getJavaAssignmentFile").permitAll()
+            .antMatchers("/assignment/getAndroidAssignmentFile").permitAll()
+            .antMatchers("/assignment/getWebAssignmentFile").permitAll()
             .antMatchers(HttpMethod.POST, "/login").permitAll()
+
             .anyRequest().authenticated()
             .and()
             .addFilterBefore(new JwtLoginFilter("/login",authenticationManager()), UsernamePasswordAuthenticationFilter.class)
