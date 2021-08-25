@@ -29,22 +29,27 @@ public class JwtLoginFilter extends AbstractAuthenticationProcessingFilter {
   @Override
   public Authentication attemptAuthentication(HttpServletRequest req, HttpServletResponse resp) throws AuthenticationException, IOException, ServletException {
 //    User user = new ObjectMapper().readValue(req.getInputStream(), User.class);
+
 //    User user = new User("franky", "franky-password", new ArrayList<>());
 
-    return getAuthenticationManager().authenticate(new UsernamePasswordAuthenticationToken("franky", "franky-password"));
+    String username = req.getParameter("username");
+    String password = req.getParameter("password");
+
+    return getAuthenticationManager().authenticate(new UsernamePasswordAuthenticationToken(username, password));
   }
   @Override
   protected void successfulAuthentication(HttpServletRequest req, HttpServletResponse resp, FilterChain chain, Authentication authResult) throws IOException, ServletException {
     Collection<? extends GrantedAuthority> authorities = authResult.getAuthorities();
     StringBuffer as = new StringBuffer();
     for (GrantedAuthority authority : authorities) {
+      System.out.println("franky-test authority.getAuthority(): " + authority.getAuthority());
       as.append(authority.getAuthority())
               .append(",");
     }
 
     JwtConfig jwtConfig = JwtConfig.getInstance();
 
-    String jwt = jwtConfig.generateToken("", authResult.getName(), authResult.getName());
+    String jwt = jwtConfig.generateTokenV2(as.toString(), authResult.getName());
 
     resp.setContentType("application/json;charset=utf-8");
     PrintWriter out = resp.getWriter();

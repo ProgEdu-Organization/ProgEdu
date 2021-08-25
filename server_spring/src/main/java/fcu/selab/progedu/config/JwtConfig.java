@@ -47,6 +47,15 @@ public class JwtConfig {
         .setId(UUID.randomUUID().toString()).signWith(key).compact(); // just an example id
     return jws;
   }
+
+  public String generateTokenV2(String authorities, String userName) {
+
+    String jws = Jwts.builder().setSubject(userName)
+            .claim("authorities", authorities)
+            .setExpiration(new Date((new Date()).getTime() +  24 * 60 * 60 * 1000))
+            .setId(UUID.randomUUID().toString()).signWith(key).compact(); // just an example id
+    return jws;
+  }
   
   /**
    * 

@@ -21,7 +21,6 @@ public class JwtFilter extends GenericFilterBean {
   public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
     HttpServletRequest req = (HttpServletRequest) servletRequest;
     String jwtToken = req.getHeader("authorization");
-    System.out.println(jwtToken);
 
     JwtConfig jwtConfig = JwtConfig.getInstance();
     Claims claims = jwtConfig.decodeToken(jwtToken.replace("Bearer",""));

@@ -17,21 +17,22 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
   PasswordEncoder passwordEncoder() {
     return NoOpPasswordEncoder.getInstance();
   }
+
   @Override
   protected void configure(AuthenticationManagerBuilder auth) throws Exception {
     auth.inMemoryAuthentication().withUser("franky")
-            .password("franky-password").roles("");
-//            .and()
-//            .withUser("sang")
-//            .password("456")
-//            .roles("user");
+            .password("franky-password").roles("user")
+            .and()
+            .withUser("sang")
+            .password("456")
+            .roles("admin");
   }
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
     http.authorizeRequests()
-            .antMatchers("/hello").hasRole("user")
-            .antMatchers("/admin").hasRole("admin")
+            .antMatchers("/assignment/getAllAssignments").hasRole("user")
+            .antMatchers("/user/getUsers").hasRole("admin")
             .antMatchers(HttpMethod.POST, "/login").permitAll()
             .anyRequest().authenticated()
             .and()
