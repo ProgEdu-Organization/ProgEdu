@@ -44,11 +44,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Override
   public void configure(WebSecurity web) throws Exception {
-    web.ignoring().antMatchers("/publicApi/**");
-    web.ignoring().antMatchers("/assignment/getAssignmentFile");
-    web.ignoring().antMatchers("/assignment/getMvnAssignmentFile");
-    web.ignoring().antMatchers("/assignment/getJavaAssignmentFile");
-    web.ignoring().antMatchers("/assignment/getAndroidAssignmentFile");
+    web.ignoring().antMatchers("/publicApi/**", "/assignment/getAssignmentFile",
+            "/assignment/getMvnAssignmentFile", "/assignment/getJavaAssignmentFile",
+            "/assignment/getAndroidAssignmentFile");
   }
 
 
