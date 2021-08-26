@@ -184,7 +184,6 @@ public class CategoryMetricsService {
     }
   }
 
-  @CrossOrigin(origins = "*")
   @DeleteMapping("metrics/delete")
   public ResponseEntity<Object> deleteMetrics(@QueryParam("id") int id) {
 
