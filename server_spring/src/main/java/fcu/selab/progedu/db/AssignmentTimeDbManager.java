@@ -6,9 +6,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -170,6 +172,44 @@ public class AssignmentTimeDbManager {
     } finally {
       CloseDBUtil.closeAll(preStmt, conn);
     }
+  }
+
+  public AssignmentTime getAssignmentTimeByCurrentTime(String name) {
+    String sql = "SELECT a_t.* FROM ProgEdu.Assignment_Time a_t join ProgEdu.Assignment a on a.id = a_t.aId WHERE " +
+            "a.name = ? AND ( ? between a_t.releaseTime and a_t.deadline)";
+
+    TimeZone.setDefault(TimeZone.getTimeZone("Asia/Taipei"));
+    Date currentDate = new Date();
+
+    Timestamp currentDateStamp = new Timestamp(currentDate.getTime());
+
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
+    AssignmentTime assignmentTime = new AssignmentTime();
+
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
+      preStmt.setString(1, name);
+      preStmt.setTimestamp(2, currentDateStamp);
+
+      rs = preStmt.executeQuery();
+      while (rs.next()) {
+        assignmentTime.setAId(rs.getInt("aId"));
+        assignmentTime.setAaId(rs.getInt("aaId"));
+        assignmentTime.setReleaseTime(rs.getTimestamp("releaseTime"));
+        assignmentTime.setDeadline(rs.getTimestamp("deadline"));
+      }
+
+    } catch (Exception e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(rs, preStmt, conn);
+    }
+    return assignmentTime;
   }
 
 }

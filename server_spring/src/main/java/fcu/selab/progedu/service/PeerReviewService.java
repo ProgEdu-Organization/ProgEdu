@@ -39,6 +39,7 @@ public class PeerReviewService {
   private ReviewSettingMetricsDbManager reviewSettingMetricsDbManager = ReviewSettingMetricsDbManager.getInstance();
   private ScoreModeDbManager scoreModeDbManager = ScoreModeDbManager.getInstance();
   private ReviewStatusDbManager reviewStatusDbManager = ReviewStatusDbManager.getInstance();
+  private AssignmentTimeDbManager assignmentTimeDbManager = AssignmentTimeDbManager.getInstance();
 
 
   private static final Logger LOGGER = LoggerFactory.getLogger(PeerReviewService.class);
@@ -133,34 +134,43 @@ public class PeerReviewService {
     HttpHeaders headers = new HttpHeaders();
     headers.add("Content-Type", "application/json");
     headers.add("Access-Control-Allow-Origin", "*");
-		SimpleDateFormat dateFormat = new SimpleDateFormat(
-        "yyyy-MM-dd HH:mm:ss.S");
+    SimpleDateFormat dateFormat = new SimpleDateFormat(
+    "yyyy-MM-dd HH:mm:ss.S");
 
-		try {
-			List<Assignment> assignmentList = assignmentDbManager.getAllReviewAssignment();
-			int reviewId = userDbManager.getUserIdByUsername(username);
-			JSONArray jsonArray = new JSONArray();
+    try {
+      List<Assignment> assignmentList = assignmentDbManager.getAllReviewAssignment();
+      int reviewId = userDbManager.getUserIdByUsername(username);
+      JSONArray jsonArray = new JSONArray();
 
-			for(Assignment assignment : assignmentList) {
-				ReviewSetting reviewSetting = reviewSettingDbManager.getReviewSetting(assignment.getId());
-				JSONObject jsonObject = new JSONObject();
-				jsonObject.put("assignmentName", assignment.getName());
-//        jsonObject.put("amount", reviewSetting.getAmount());
-//        jsonObject.put("releaseTime", dateFormat.format(assignment.getReleaseTime()));
-//        jsonObject.put("deadline", dateFormat.format(assignment.getDeadline()));
-//        jsonObject.put("reviewReleaseTime", dateFormat.format(reviewSetting.getReleaseTime()));
-//        jsonObject.put("reviewDeadline", dateFormat.format(reviewSetting.getDeadline()));
+      for(Assignment assignment : assignmentList) {
+        ReviewSetting reviewSetting = reviewSettingDbManager.getReviewSetting(assignment.getId());
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("assignmentName", assignment.getName());
+        jsonObject.put("amount", reviewSetting.getAmount());
+
+        List<AssignmentTime> assignmentTimes = assignmentTimeDbManager.getAssignmentTimeByName(assignment.getName());
+        JSONArray assignmentArray = new JSONArray();
+        for (AssignmentTime assignmentTime : assignmentTimes) {
+          JSONObject assignmentObject = new JSONObject();
+          assignmentObject.put("action", assignmentTime.getActionEnum().toString());
+          assignmentObject.put("releaseTime", dateFormat.format(assignmentTime.getReleaseTime()));
+          assignmentObject.put("deadline", dateFormat.format(assignmentTime.getDeadline()));
+          assignmentArray.add(assignmentObject);
+        }
+
+        jsonObject.put("assignmentTimes", assignmentArray);
+
+
         jsonObject.put("count", getReviewCompletedCount(assignment.getId(), reviewId));
         jsonObject.put("status", reviewerStatus(assignment.getId(),
             reviewId, reviewSetting.getAmount()).getTypeName());
-
-				jsonArray.add(jsonObject);
-			}
-    	return new ResponseEntity<Object>(jsonArray, headers, HttpStatus.OK);
-		} catch (Exception e) {
-			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
+              jsonArray.add(jsonObject);
+      }
+    return new ResponseEntity<Object>(jsonArray, headers, HttpStatus.OK);
+    } catch (Exception e) {
+        return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
 
   /**
    * get all user's status of reviewing other's hw
