@@ -1,0 +1,2441 @@
+{
+	"info": {
+		"_postman_id": "83c0574e-a1e9-4689-9af1-53aa202c096f",
+		"name": "ProgEdu",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "createAccounts(new_已完成)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/D/245lab/ProgEdu/code/ProgEdu/doc/StudentTemplateForTest.csv"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{spring_url}}/user/upload",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"user",
+								"upload"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createAccount(new_已完成)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let base_url = pm.environment.get(\"base_url\");\r",
+									"\r",
+									"pm.sendRequest( base_url + \"/LoginAuth?username=root&password=rootrootrootroot\", function (err, response) {\r",
+									"    console.log(\"pre-request script response.json()\");\r",
+									"    console.log(response.json());\r",
+									"    let jwt_token = response.json().token;\r",
+									"\r",
+									"    pm.environment.set(\"jwt_token\", jwt_token);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded;application/json",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "postman-test-7",
+									"type": "text"
+								},
+								{
+									"key": "username",
+									"value": "postman-test-7",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "postman-test-7@postman-test-7",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "postman-test-7",
+									"type": "text"
+								},
+								{
+									"key": "role",
+									"value": "student",
+									"type": "text"
+								},
+								{
+									"key": "isDisplayed",
+									"value": "true",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{spring_url}}/user/new",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"user",
+								"new"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updatePassword(new_已完成)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let base_url = pm.environment.get(\"base_url\");\r",
+									"\r",
+									"pm.sendRequest( base_url + \"/LoginAuth?username=root&password=rootrootrootroot\", function (err, response) {\r",
+									"    console.log(\"pre-request script response.json()\");\r",
+									"    console.log(response.json());\r",
+									"    let jwt_token = response.json().token;\r",
+									"\r",
+									"    pm.environment.set(\"jwt_token\", jwt_token);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded;application/json",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "username",
+									"value": "postman-test-1",
+									"type": "text"
+								},
+								{
+									"key": "currentPassword",
+									"value": "postman-test-1",
+									"type": "text"
+								},
+								{
+									"key": "newPassword",
+									"value": "postman-change",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{spring_url}}/user/updatePassword",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"user",
+								"updatePassword"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getUsers(new_已完成)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let base_url = pm.environment.get(\"spring_url\");\r",
+									"\r",
+									"pm.sendRequest( base_url + \"/login?username=root&password=rootrootrootroot\", function (err, response) {\r",
+									"    console.log(\"pre-request script response.json()\");\r",
+									"    console.log(response.json());\r",
+									"    let jwt_token = response.json();\r",
+									"\r",
+									"    pm.environment.set(\"jwt_token\", jwt_token);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{spring_url}}/user/getUsers",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"user",
+								"getUsers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getGroup(new)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let base_url = pm.environment.get(\"spring_url\");\r",
+									"\r",
+									"pm.sendRequest( base_url + \"/login?username=root&password=rootrootrootroot\", function (err, response) {\r",
+									"    console.log(\"pre-request script response.json()\");\r",
+									"    console.log(response.json());\r",
+									"    let jwt_token = response.json();\r",
+									"\r",
+									"    pm.environment.set(\"jwt_token\", jwt_token);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "username",
+									"value": "postman-test",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{spring_url}}/user/postman-test/groups",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"user",
+								"postman-test",
+								"groups"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "postman-test",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "CategoryMetrics",
+			"item": [
+				{
+					"name": "getCategory(new)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{spring_url}}/categoryMetrics/category",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"categoryMetrics",
+								"category"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getMetrics(new)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{spring_url}}/categoryMetrics/metrics?category=1",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"categoryMetrics",
+								"metrics"
+							],
+							"query": [
+								{
+									"key": "category",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createCategory(new)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{spring_url}}/categoryMetrics/category/create?name=test86&metrics=test86",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"categoryMetrics",
+								"category",
+								"create"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "test86"
+								},
+								{
+									"key": "metrics",
+									"value": "test86"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "editCategory(new)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let base_url = pm.environment.get(\"base_url\");\r",
+									"\r",
+									"pm.sendRequest( base_url + \"/LoginAuth?username=root&password=rootrootrootroot\", function (err, response) {\r",
+									"    console.log(\"pre-request script response.json()\");\r",
+									"    console.log(response.json());\r",
+									"    let jwt_token = response.json().token;\r",
+									"\r",
+									"    pm.environment.set(\"jwt_token\", jwt_token);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{spring_url}}/categoryMetrics/category/edit?id=7&metrics=test86-new",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"categoryMetrics",
+								"category",
+								"edit"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "7"
+								},
+								{
+									"key": "metrics",
+									"value": "test86-new"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteCategory",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let base_url = pm.environment.get(\"base_url\");\r",
+									"\r",
+									"pm.sendRequest( base_url + \"/LoginAuth?username=root&password=rootrootrootroot\", function (err, response) {\r",
+									"    console.log(\"pre-request script response.json()\");\r",
+									"    console.log(response.json());\r",
+									"    let jwt_token = response.json().token;\r",
+									"\r",
+									"    pm.environment.set(\"jwt_token\", jwt_token);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{spring_url}}/categoryMetrics/category/delete?id=8",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"categoryMetrics",
+								"category",
+								"delete"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "8"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "CommitRecord",
+			"item": [
+				{
+					"name": "[ No need JWT ] UpdateCommitResult",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "user",
+									"value": "D002",
+									"type": "text"
+								},
+								{
+									"key": "proName",
+									"value": "1234",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/webapi/commits/update",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"webapi",
+								"commits",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "partCommitRecords(new)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{spring_url}}/commits/partCommitRecords?username=apiTest&assignmentName=rrr1&currentPage=1",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"commits",
+								"partCommitRecords"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "apiTest"
+								},
+								{
+									"key": "assignmentName",
+									"value": "rrr1"
+								},
+								{
+									"key": "currentPage",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "gitLab(new)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{spring_url}}/commits/gitLab?username=apiTest&assignmentName=hhh5",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"commits",
+								"gitLab"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "apiTest"
+								},
+								{
+									"key": "assignmentName",
+									"value": "hhh5"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAssignmentFeedback(new)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let base_url = pm.environment.get(\"base_url\");\r",
+									"\r",
+									"pm.sendRequest( base_url + \"/LoginAuth?username=root&password=rootrootrootroot\", function (err, response) {\r",
+									"    console.log(\"pre-request script response.json()\");\r",
+									"    console.log(response.json());\r",
+									"    let jwt_token = response.json().token;\r",
+									"\r",
+									"    pm.environment.set(\"jwt_token\", jwt_token);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{spring_url}}/commits/feedback?username=apiTest&assignmentName=rrr1&number=1",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"commits",
+								"feedback"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "apiTest"
+								},
+								{
+									"key": "assignmentName",
+									"value": "rrr1"
+								},
+								{
+									"key": "number",
+									"value": "1"
+								}
+							]
+						},
+						"description": "get assignment feedback"
+					},
+					"response": []
+				},
+				{
+					"name": "getAllStudentCommitRecord(new)(有問題)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{spring_url}}/commits/allUsers",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"commits",
+								"allUsers"
+							]
+						},
+						"description": "get all user last commit status"
+					},
+					"response": []
+				},
+				{
+					"name": "autoAssessment(new)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let base_url = pm.environment.get(\"base_url\");\r",
+									"\r",
+									"pm.sendRequest( base_url + \"/LoginAuth?username=root&password=rootrootrootroot\", function (err, response) {\r",
+									"    console.log(\"pre-request script response.json()\");\r",
+									"    console.log(response.json());\r",
+									"    let jwt_token = response.json().token;\r",
+									"\r",
+									"    pm.environment.set(\"jwt_token\", jwt_token);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{spring_url}}/commits/autoAssessment?username=apiTest",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"commits",
+								"autoAssessment"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "apiTest"
+								}
+							]
+						},
+						"description": "get autoAssessment"
+					},
+					"response": []
+				},
+				{
+					"name": "getCommitRecord",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{spring_url}}/commits/commitRecords?username=apiTest&assignmentName=rrr1",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"commits",
+								"commitRecords"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "apiTest"
+								},
+								{
+									"key": "assignmentName",
+									"value": "rrr1"
+								}
+							]
+						},
+						"description": "get autoAssessment"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "GroupCommitRecord",
+			"item": [
+				{
+					"name": "groupsCommit(new)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{spring_url}}/groups/commits",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"groups",
+								"commits"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "userGroupCommit(new)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{spring_url}}/groups/postman-test-1/commits",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"groups",
+								"postman-test-1",
+								"commits"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAllCommitRecordOfOneStudent(new)(目前沒用到)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{spring_url}}/groups/testGp08/commits/result",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"groups",
+								"testGp08",
+								"commits",
+								"result"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getGroupPartCommitRecord(new)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{spring_url}}/groups/testGp07/projects/testGp07/partCommits/1",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"groups",
+								"testGp07",
+								"projects",
+								"testGp07",
+								"partCommits",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getGroupCommitRecord(new)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{spring_url}}/groups/testGp07/projects/testGp07/commits",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"groups",
+								"testGp07",
+								"projects",
+								"testGp07",
+								"commits"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getGroupFeedback(new)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{spring_url}}/groups/testGp07/projects/testGp07/feedback/1",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"groups",
+								"testGp07",
+								"projects",
+								"testGp07",
+								"feedback",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[ change to public api ]updateGroupCommit",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": ""
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get all groups commit result(new)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{spring_url}}/groups",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"groups"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "GroupService",
+			"item": [
+				{
+					"name": "createGroup(new)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "testGp85",
+									"type": "text"
+								},
+								{
+									"key": "projectName",
+									"value": "testGp85",
+									"type": "text"
+								},
+								{
+									"key": "projectType",
+									"value": "web",
+									"type": "text"
+								},
+								{
+									"key": "leader",
+									"value": "D1234567",
+									"type": "text"
+								},
+								{
+									"key": "member",
+									"value": "D1234567",
+									"type": "text"
+								},
+								{
+									"key": "member",
+									"value": "apiTest",
+									"type": "text"
+								},
+								{
+									"key": "member",
+									"value": "postman-test",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{spring_url}}/groups",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"groups"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get all groups commit result(new)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{spring_url}}/groups",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"groups"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get a group(new)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{spring_url}}/groups/testGp08",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"groups",
+								"testGp08"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateLeader(new)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{spring_url}}/groups/testGp03/members/postman-test-2",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"groups",
+								"testGp03",
+								"members",
+								"postman-test-2"
+							]
+						},
+						"description": "create assinment"
+					},
+					"response": []
+				},
+				{
+					"name": "addMembers(new)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "members",
+									"value": "postman-test-3",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{spring_url}}/groups/testGp03/members",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"groups",
+								"testGp03",
+								"members"
+							]
+						},
+						"description": "create assinment"
+					},
+					"response": []
+				},
+				{
+					"name": "removeMember(new)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{spring_url}}/groups/testGp03/members/D1234567?token=ddd",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"groups",
+								"testGp03",
+								"members",
+								"D1234567"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "ddd"
+								}
+							]
+						},
+						"description": "create assinment"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Assignment",
+			"item": [
+				{
+					"name": "getAssignmentFile(new)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/octet-stream",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{spring_url}}/assignment/getAssignmentFile?fileName=ggg86",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"assignment",
+								"getAssignmentFile"
+							],
+							"query": [
+								{
+									"key": "fileName",
+									"value": "ggg86"
+								}
+							]
+						},
+						"description": "get assignment file"
+					},
+					"response": []
+				},
+				{
+					"name": "getAssignmentFile(new) Copy",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/octet-stream",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{spring_url}}/assignment/getAssignmentFile?fileName=ggg86",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"assignment",
+								"getAssignmentFile"
+							],
+							"query": [
+								{
+									"key": "fileName",
+									"value": "ggg86"
+								}
+							]
+						},
+						"description": "get assignment file"
+					},
+					"response": []
+				},
+				{
+					"name": "deleteAssignment(new_已完成)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "assignmentName",
+									"value": "p-718-9",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{spring_url}}/assignment/delete",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"assignment",
+								"delete"
+							]
+						},
+						"description": "delete assignment"
+					},
+					"response": []
+				},
+				{
+					"name": "editAssignment_有order版本(new_已完成)(如果不是Maven作業 order 的 value 要留空)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let base_url = pm.environment.get(\"base_url\");\r",
+									"\r",
+									"pm.sendRequest( base_url + \"/LoginAuth?username=root&password=rootrootrootroot\", function (err, response) {\r",
+									"    console.log(\"pre-request script response.json()\");\r",
+									"    console.log(response.json());\r",
+									"    let jwt_token = response.json().token;\r",
+									"\r",
+									"    pm.environment.set(\"jwt_token\", jwt_token);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "assignmentName",
+									"value": "m-718-4",
+									"type": "text"
+								},
+								{
+									"key": "releaseTime",
+									"value": "Mon, 28 Jun 2021 11:10:00 GMT",
+									"type": "text"
+								},
+								{
+									"key": "deadline",
+									"value": "Mon, 28 Jun 2021 11:10:00 GMT",
+									"type": "text"
+								},
+								{
+									"key": "readMe",
+									"value": "<p>testMvnAPI2</p>",
+									"type": "text"
+								},
+								{
+									"key": "order",
+									"value": "Compile Failure:24, Coding Style Failure:16, Unit Test Failure:60",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{spring_url}}/assignment/edit",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"assignment",
+								"edit"
+							]
+						},
+						"description": "edit assignment settings"
+					},
+					"response": []
+				},
+				{
+					"name": "getAssignmentOrder(new_已完成)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{spring_url}}/assignment/getAssignmentOrder?fileName=m-718-4",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"assignment",
+								"getAssignmentOrder"
+							],
+							"query": [
+								{
+									"key": "fileName",
+									"value": "m-718-4"
+								}
+							]
+						},
+						"description": "get auto assessment assignment judge order"
+					},
+					"response": []
+				},
+				{
+					"name": "getAllAssignment(new_已完成)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{spring_url}}/assignment/getAllAssignments",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"assignment",
+								"getAllAssignments"
+							]
+						},
+						"description": "get all assignment"
+					},
+					"response": []
+				},
+				{
+					"name": "createAssignment(web版)(new_已完成)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let base_url = pm.environment.get(\"base_url\");\r",
+									"\r",
+									"pm.sendRequest( base_url + \"/LoginAuth?username=root&password=rootrootrootroot\", function (err, response) {\r",
+									"    console.log(\"pre-request script response.json()\");\r",
+									"    console.log(response.json());\r",
+									"    let jwt_token = response.json().token;\r",
+									"\r",
+									"    pm.environment.set(\"jwt_token\", jwt_token);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "assignmentName",
+									"value": "postman-new3-web",
+									"type": "text"
+								},
+								{
+									"key": "releaseTime",
+									"value": "Mon, 28 Jun 2021 04:53:00 GMT",
+									"type": "text"
+								},
+								{
+									"key": "deadline",
+									"value": "Mon, 28 Jun 2022 04:53:00 GMT",
+									"type": "text"
+								},
+								{
+									"key": "readMe",
+									"value": "<p>postman-new3</p>",
+									"type": "text"
+								},
+								{
+									"key": "fileRadio",
+									"value": "web",
+									"type": "text"
+								},
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/D/245lab/ProgEdu/code/ProgEdu/doc/WebAssessmentForTest.zip"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{spring_url}}/assignment/create",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"assignment",
+								"create"
+							]
+						},
+						"description": "create assinment"
+					},
+					"response": []
+				},
+				{
+					"name": "createAutoAssessment(maven版)(new_已完成)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "assignmentName",
+									"value": "t-718",
+									"type": "text"
+								},
+								{
+									"key": "releaseTime",
+									"value": "Mon, 28 Jun 2021 04:53:00 GMT",
+									"type": "text"
+								},
+								{
+									"key": "deadline",
+									"value": "Mon, 28 Jun 2021 04:53:00 GMT",
+									"type": "text"
+								},
+								{
+									"key": "readMe",
+									"value": "<p>testMvn002</p>",
+									"type": "text"
+								},
+								{
+									"key": "fileRadio",
+									"value": "maven",
+									"type": "text"
+								},
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/D/245lab/ProgEdu/code/ProgEdu/doc/MvnQuickStart.zip"
+								},
+								{
+									"key": "order",
+									"value": "Compile Failure:20, Coding Style Failure:20, Unit Test Failure:60",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{spring_url}}/assignment/autoAssessment/create",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"assignment",
+								"autoAssessment",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createPeerReviewAssignment(new_已完成)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "assignmentName",
+									"value": "tsetPeer03",
+									"type": "text"
+								},
+								{
+									"key": "releaseTime",
+									"value": "Mon, 28 Jun 2021 05:08:00 GMT",
+									"type": "text"
+								},
+								{
+									"key": "deadline",
+									"value": "Mon, 28 Jun 2021 05:08:00 GMT",
+									"type": "text"
+								},
+								{
+									"key": "readMe",
+									"value": "<p>tsetPeer03</p>",
+									"type": "text"
+								},
+								{
+									"key": "fileRadio",
+									"value": "web",
+									"type": "text"
+								},
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/D/245lab/ProgEdu/code/ProgEdu/doc/WebAssessmentForTest.zip"
+								},
+								{
+									"key": "amount",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "reviewStartTime",
+									"value": "Mon, 28 Jun 2021 05:08:00 GMT",
+									"type": "text"
+								},
+								{
+									"key": "reviewEndTime",
+									"value": "Mon, 28 Jun 2022 05:08:00 GMT",
+									"type": "text"
+								},
+								{
+									"key": "metrics",
+									"value": "1,2,4",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{spring_url}}/assignment/peerReview/create",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"assignment",
+								"peerReview",
+								"create"
+							]
+						},
+						"description": "create peer review assignemnt"
+					},
+					"response": []
+				},
+				{
+					"name": "getAllPeerReviewAssignment(new_已完成)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{spring_url}}/assignment/peerReview/allAssignment",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"assignment",
+								"peerReview",
+								"allAssignment"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAllAutoAssessmentAssignment(new_已完成)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{spring_url}}/assignment/autoAssessment/allAssignment",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"assignment",
+								"autoAssessment",
+								"allAssignment"
+							]
+						},
+						"description": "get all auto assessment assignment"
+					},
+					"response": []
+				},
+				{
+					"name": "getAssignmentDescription(new_已完成)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{spring_url}}/assignment/getAssignment?assignmentName=postman-test-web",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"assignment",
+								"getAssignment"
+							],
+							"query": [
+								{
+									"key": "assignmentName",
+									"value": "postman-test-web"
+								}
+							]
+						},
+						"description": "get assignment description"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ChartService",
+			"item": [
+				{
+					"name": "allCommitRecord(new_已完成)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{spring_url}}/chart/allCommitRecord",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"chart",
+								"allCommitRecord"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "PeerReview",
+			"item": [
+				{
+					"name": "status/allUsers(new)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let base_url = pm.environment.get(\"spring_url\");\r",
+									"\r",
+									"pm.sendRequest( base_url + \"/login?username=root&password=rootrootrootroot\", function (err, response) {\r",
+									"    console.log(\"pre-request script response.json()\");\r",
+									"    console.log(response.json());\r",
+									"    let jwt_token = response.json();\r",
+									"\r",
+									"    pm.environment.set(\"jwt_token\", jwt_token);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{spring_url}}/peerReview/status/allUsers",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"peerReview",
+								"status",
+								"allUsers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "metrics(new)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{spring_url}}/peerReview/metrics?assignmentName=peer-720-6",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"peerReview",
+								"metrics"
+							],
+							"query": [
+								{
+									"key": "assignmentName",
+									"value": "peer-720-6"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "peer review one user status(new)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{spring_url}}/peerReview/status/oneUser?username=D1234567",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"peerReview",
+								"status",
+								"oneUser"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "D1234567"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getReviewedRecord_oneUser(new)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{spring_url}}/peerReview/record/oneUser?username=D1234567",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"peerReview",
+								"record",
+								"oneUser"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "D1234567"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAllReviewedRecord(new)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{spring_url}}/peerReview/record/allUsers",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"peerReview",
+								"record",
+								"allUsers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getReviewedRecordDetail(new)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let base_url = pm.environment.get(\"base_url\");\r",
+									"\r",
+									"pm.sendRequest( base_url + \"/LoginAuth?username=root&password=rootrootrootroot\", function (err, response) {\r",
+									"    console.log(\"pre-request script response.json()\");\r",
+									"    console.log(response.json());\r",
+									"    let jwt_token = response.json().token;\r",
+									"\r",
+									"    pm.environment.set(\"jwt_token\", jwt_token);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{spring_url}}/peerReview/record/detail?username=D1234567&assignmentName=testPeer00",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"peerReview",
+								"record",
+								"detail"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "D1234567"
+								},
+								{
+									"key": "assignmentName",
+									"value": "testPeer00"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getReviewStatusDetail(new)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{spring_url}}/peerReview/status/detail?username=D1234567&assignmentName=testPeer00",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"peerReview",
+								"status",
+								"detail"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "D1234567"
+								},
+								{
+									"key": "assignmentName",
+									"value": "testPeer00"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createReviewRecord(舊的 不好測)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let base_url = pm.environment.get(\"base_url\");\r",
+									"\r",
+									"pm.sendRequest( base_url + \"/LoginAuth?username=root&password=rootrootrootroot\", function (err, response) {\r",
+									"    console.log(\"pre-request script response.json()\");\r",
+									"    console.log(response.json());\r",
+									"    let jwt_token = response.json().token;\r",
+									"\r",
+									"    pm.environment.set(\"jwt_token\", jwt_token);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "username",
+									"value": "D1234567",
+									"type": "text"
+								},
+								{
+									"key": "reviewedName",
+									"value": "postman-test-3",
+									"type": "text"
+								},
+								{
+									"key": "assignmentName",
+									"value": "peer-720-6",
+									"type": "text"
+								},
+								{
+									"key": "reviewRecord",
+									"value": "{\"allReviewRecord\": \"test-86\"}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/webapi/peerReview/create?token={{jwt_token}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"webapi",
+								"peerReview",
+								"create"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "sourceCode",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{spring_url}}/peerReview/sourceCode?username=D1234567&assignmentName=testPeer00",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"peerReview",
+								"sourceCode"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "D1234567"
+								},
+								{
+									"key": "assignmentName",
+									"value": "testPeer00"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "other",
+			"item": [
+				{
+					"name": "jenkinsAPI(這是jenkins本身提供的)",
+					"item": [
+						{
+							"name": "Jenkins_Jobs without parameters",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "user",
+										"value": "admin:admin",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"url": {
+									"raw": "http://admin:11b603a456a4f441b2f14dcef8ccd77513@140.134.26.63:55004/job/sss2_hhh5/build",
+									"protocol": "http",
+									"auth": {
+										"user": "admin",
+										"password": "11b603a456a4f441b2f14dcef8ccd77513"
+									},
+									"host": [
+										"140",
+										"134",
+										"26",
+										"63"
+									],
+									"port": "55004",
+									"path": [
+										"job",
+										"sss2_hhh5",
+										"build"
+									],
+									"query": [
+										{
+											"key": "",
+											"value": "",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Jenkins_2",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "http://admin:11b603a456a4f441b2f14dcef8ccd77513@140.134.26.63:55004/job/sss2_hhh5/build",
+									"protocol": "http",
+									"auth": {
+										"user": "admin",
+										"password": "11b603a456a4f441b2f14dcef8ccd77513"
+									},
+									"host": [
+										"140",
+										"134",
+										"26",
+										"63"
+									],
+									"port": "55004",
+									"path": [
+										"job",
+										"sss2_hhh5",
+										"build"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "downloadAPI",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/downloadApi/peerReview/sourceCode?username=sss2&assignmentName=rrr4",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"downloadApi",
+								"peerReview",
+								"sourceCode"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "sss2"
+								},
+								{
+									"key": "assignmentName",
+									"value": "rrr4"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update_commits",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "user",
+									"value": "12",
+									"type": "text"
+								},
+								{
+									"key": "proName",
+									"value": "12",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/update/commits",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"update",
+								"commits"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getScreenshotURL",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{spring_url}}/publicApi/commits/screenshot/getScreenshotURL?username=D0000000&assignmentName=test-88-2&commitNumber=1",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"publicApi",
+								"commits",
+								"screenshot",
+								"getScreenshotURL"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "D0000000"
+								},
+								{
+									"key": "assignmentName",
+									"value": "test-88-2"
+								},
+								{
+									"key": "commitNumber",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{spring_url}}/login?username=root&password=rootrootrootroot",
+					"host": [
+						"{{spring_url}}"
+					],
+					"path": [
+						"login"
+					],
+					"query": [
+						{
+							"key": "username",
+							"value": "root"
+						},
+						{
+							"key": "password",
+							"value": "rootrootrootroot"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "127.0.0.1:8080"
+		}
+	]
+}
