@@ -76,17 +76,17 @@ public class PeerReviewService {
 
       // 1. Check this review record is expired or not,
       //    if it's expired, it won't create new review record
-      if (createDate.compareTo(reviewSetting.getDeadline()) >= 0) {
-        return new ResponseEntity<>("This review has been expired.", headers,
-                HttpStatus.INTERNAL_SERVER_ERROR);
-      }
+//      if (createDate.compareTo(reviewSetting.getDeadline()) >= 0) {
+//        return new ResponseEntity<>("This review has been expired.", headers,
+//                HttpStatus.INTERNAL_SERVER_ERROR);
+//      }
 
       // 2. Check this review record has been release or not.
       //    PS. this won't happened, unless the student used this api in correct way
-      if (createDate.compareTo(reviewSetting.getReleaseTime()) < 0) {
-        return new ResponseEntity<>("This review hasn't been released.", headers,
-                HttpStatus.INTERNAL_SERVER_ERROR);
-      }
+//      if (createDate.compareTo(reviewSetting.getReleaseTime()) < 0) {
+//        return new ResponseEntity<>("This review hasn't been released.", headers,
+//                HttpStatus.INTERNAL_SERVER_ERROR);
+//      }
 
       // 3. Upload the status of pair matching
       int status = reviewStatusDbManager
@@ -145,11 +145,11 @@ public class PeerReviewService {
 				ReviewSetting reviewSetting = reviewSettingDbManager.getReviewSetting(assignment.getId());
 				JSONObject jsonObject = new JSONObject();
 				jsonObject.put("assignmentName", assignment.getName());
-        jsonObject.put("amount", reviewSetting.getAmount());
-        jsonObject.put("releaseTime", dateFormat.format(assignment.getReleaseTime()));
-        jsonObject.put("deadline", dateFormat.format(assignment.getDeadline()));
-        jsonObject.put("reviewReleaseTime", dateFormat.format(reviewSetting.getReleaseTime()));
-        jsonObject.put("reviewDeadline", dateFormat.format(reviewSetting.getDeadline()));
+//        jsonObject.put("amount", reviewSetting.getAmount());
+//        jsonObject.put("releaseTime", dateFormat.format(assignment.getReleaseTime()));
+//        jsonObject.put("deadline", dateFormat.format(assignment.getDeadline()));
+//        jsonObject.put("reviewReleaseTime", dateFormat.format(reviewSetting.getReleaseTime()));
+//        jsonObject.put("reviewDeadline", dateFormat.format(reviewSetting.getDeadline()));
         jsonObject.put("count", getReviewCompletedCount(assignment.getId(), reviewId));
         jsonObject.put("status", reviewerStatus(assignment.getId(),
             reviewId, reviewSetting.getAmount()).getTypeName());
@@ -260,11 +260,11 @@ public class PeerReviewService {
         JSONObject ob = new JSONObject();
         int commitRecordCount = commitRecordDbManager.getCommitCount(auId);
         ob.put("assignmentName", assignment.getName());
-        ob.put("releaseTime", dateFormat.format(assignment.getReleaseTime()));
-        ob.put("deadline", dateFormat.format(assignment.getDeadline()));
-        ob.put("commitRecordCount", commitRecordCount);
-        ob.put("reviewReleaseTime", dateFormat.format(reviewSetting.getReleaseTime()));
-        ob.put("reviewDeadline", dateFormat.format(reviewSetting.getDeadline()));
+//        ob.put("releaseTime", dateFormat.format(assignment.getReleaseTime()));
+//        ob.put("deadline", dateFormat.format(assignment.getDeadline()));
+//        ob.put("commitRecordCount", commitRecordCount);
+//        ob.put("reviewReleaseTime", dateFormat.format(reviewSetting.getReleaseTime()));
+//        ob.put("reviewDeadline", dateFormat.format(reviewSetting.getDeadline()));
         ob.put("reviewStatus", reviewedRecordStatus(auId, commitRecordCount));
         array.add(ob);
       }
@@ -325,7 +325,7 @@ public class PeerReviewService {
           reviewed.put("totalCount", order);
           reviewed.put("Detail", reviewDetailArray);
         }
-        reviewed.put("reviewDeadline", reviewSetting.getDeadline());
+//        reviewed.put("reviewDeadline", reviewSetting.getDeadline());
 
         array.add(reviewed);
       }
@@ -447,8 +447,8 @@ public class PeerReviewService {
           reviewer.put("totalCount", order);
           reviewer.put("Detail", reviewDetailArray);
         }
-        reviewer.put("reviewReleaseTime", dateFormat.format(reviewSetting.getReleaseTime()));
-        reviewer.put("reviewDeadline", dateFormat.format(reviewSetting.getDeadline()));
+//        reviewer.put("reviewReleaseTime", dateFormat.format(reviewSetting.getReleaseTime()));
+//        reviewer.put("reviewDeadline", dateFormat.format(reviewSetting.getDeadline()));
 
         array.put(reviewer);
       }

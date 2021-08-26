@@ -1,4 +1,6 @@
 package fcu.selab.progedu.service;
+
+import fcu.selab.progedu.data.AssignmentTime;
 import fcu.selab.progedu.data.CommitRecord;
 import fcu.selab.progedu.db.AssignmentDbManager;
 import fcu.selab.progedu.db.AssignmentTimeDbManager;
@@ -55,6 +57,7 @@ public class ChartService {
 
         auIds.forEach(auId -> {
           List<CommitRecord> commitRecords = commitRecordDbManager.getCommitRecord(auId);
+          List<AssignmentTime> timeList = assignmentTimeDbManager.getAssignmentTimeNameById(auId);
           for (CommitRecord commitRecord : commitRecords) {
             try {
               int number = commitRecord.getNumber();
@@ -71,8 +74,8 @@ public class ChartService {
           }
         });
         commits.put("name", name);
-        commits.put("releaseTime", assignmentTimeDbManager.getAssignmentTimeByName(name).getReleaseTime());
-        commits.put("deadline", assignmentTimeDbManager.getAssignmentTimeByName(name).getDeadline());
+        // commits.put("releaseTime", assignmentTimeDbManager.getAssignmentTimeByName(name).getReleaseTime());
+        // commits.put("deadline", assignmentTimeDbManager.getAssignmentTimeByName(name).getDeadline());
         commits.put("commits", array);
       });
       assignments.add(commits);

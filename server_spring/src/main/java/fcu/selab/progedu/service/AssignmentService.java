@@ -17,6 +17,7 @@ import fcu.selab.progedu.utils.JavaIoUtile;
 import fcu.selab.progedu.utils.ZipHandler;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
+import net.minidev.json.parser.JSONParser;
 import org.apache.commons.io.IOUtils;
 import org.gitlab.api.models.GitlabProject;
 import org.jsoup.Jsoup;
@@ -34,16 +35,12 @@ import org.jsoup.nodes.Document;
 
 import java.io.*;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Arrays;
 import java.util.TimeZone;
 
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.springframework.web.multipart.MultipartFile;
-import fcu.selab.progedu.utils.Linux;
 
 import javax.ws.rs.QueryParam;
 
@@ -257,8 +254,6 @@ public class AssignmentService {
           @RequestParam("fileRadio") String assignmentType,
           @RequestParam("file") MultipartFile file,
           @RequestParam("amount") int amount,
-          @RequestParam("reviewStartTime") Date reviewStartTime,
-          @RequestParam("reviewEndTime") Date reviewEndTime,
           @RequestParam("metrics") String metrics,
           @RequestParam("time") String time, @RequestParam("round") int round){
 
@@ -267,15 +262,17 @@ public class AssignmentService {
     headers.add("Access-Control-Allow-Origin", "*");
     try {
 
-      //TODO 補時間
-
-      // JSONObject jsonObject = (JSONObject) new JSONParser().parse(time);
-      // JSONObject jsonArray = jsonObject.getJSONObject("object");
-      ObjectMapper mapper = new ObjectMapper();
-      JsonNode actualObj = mapper.readTree(time);
-
       ArrayList<AssignmentTime> assignmentTimes = new ArrayList<AssignmentTime>();
 
+      //TODO 補時間
+       JSONObject jsonObject = (JSONObject) new JSONParser().parse(time);
+       for (int r = 0; r < round; r++){
+         Object ob = jsonObject.get(r);
+         assignmentTimes.add((AssignmentTime) ob);
+       }
+
+//      ObjectMapper mapper = new ObjectMapper();
+//      JsonNode actualObj = mapper.readTree(time);
 
       // 1. create assignment
       createAssignment(assignmentName,
@@ -316,9 +313,9 @@ public class AssignmentService {
         // if (current.compareTo(assignment.getReleaseTime()) >= 0) {
         //   updatePairMatchingStatusByAid(assignment.getId());
         // }
-        if (current.compareTo(atDbManager.getAssignmentTimeNameById(assignment.getId()).getReleaseTime()) >= 0) {
-          updatePairMatchingStatusByAid(assignment.getId());
-        }
+//        if (current.compareTo(atDbManager.getAssignmentTimeNameById(assignment.getId()).getReleaseTime()) >= 0) {
+//          updatePairMatchingStatusByAid(assignment.getId());
+//        }
       }
       JSONObject result = new JSONObject();
       List<JSONObject> array = new ArrayList<>();
@@ -330,8 +327,8 @@ public class AssignmentService {
         ob.put("createTime", assignment.getCreateTime());
         // ob.put("deadline", assignment.getDeadline());
         // ob.put("releaseTime", assignment.getReleaseTime());
-        ob.put("releaseTime",atDbManager.getAssignmentTimeNameById(assignment.getId()).getReleaseTime());
-        ob.put("deadline", atDbManager.getAssignmentTimeNameById(assignment.getId()).getDeadline());
+//        ob.put("releaseTime",atDbManager.getAssignmentTimeNameById(assignment.getId()).getReleaseTime());
+//        ob.put("deadline", atDbManager.getAssignmentTimeNameById(assignment.getId()).getDeadline());
         ob.put("display", assignment.isDisplay());
         ob.put("description", assignment.getDescription());
 
@@ -455,7 +452,7 @@ public class AssignmentService {
 
     List<AssignmentTime> assignmentTimes = atDbManager.getAssignmentTimeByName(assignmentName);
 
-    atDbManager.editAssignmentTime(assignmentTime, atId);
+//    atDbManager.editAssignmentTime(assignmentTime, atId);
     dbManager.editAssignment(readMe, aid);
 
     if (!assignmentCompileOrdersAndScore.isEmpty()) {
@@ -642,7 +639,7 @@ public class AssignmentService {
       List<PairMatching> pmList = pmDbManager.getPairMatchingByAuId(au.getId());
       for (PairMatching pm : pmList) {
         rrDbManager.deleteReviewRecordByPmId(pm.getId());
-        pmDbManager.deletePairMatchingById(pm.getId());
+        pmDbManager.deletePairMatchingById(pm.getId()); 
       }
     }
 
