@@ -639,7 +639,7 @@ public class AssignmentService {
       List<PairMatching> pmList = pmDbManager.getPairMatchingByAuId(au.getId());
       for (PairMatching pm : pmList) {
         rrDbManager.deleteReviewRecordByPmId(pm.getId());
-        pmDbManager.deletePairMatchingById(pm.getId()); 
+        pmDbManager.deletePairMatchingById(pm.getId());
       }
     }
 
