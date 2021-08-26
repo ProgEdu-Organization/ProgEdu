@@ -56,7 +56,7 @@ public class CommitRecordService {
           @RequestParam("assignmentName") String assignmentName) {
     HttpHeaders headers = new HttpHeaders();
     headers.add("Content-Type", "application/json");
-    headers.add("Access-Control-Allow-Origin", "*");
+    //
 
 
     String projectUrl = gitlabService.getProjectUrl(username, assignmentName);
@@ -78,7 +78,7 @@ public class CommitRecordService {
       @RequestParam("username") String username) {
     HttpHeaders headers = new HttpHeaders();
     headers.add("Content-Type", "application/json");
-    headers.add("Access-Control-Allow-Origin", "*");
+    //
 
     JSONArray jsonArray = new JSONArray();
     int userId = userDb.getUserIdByUsername(username);
@@ -196,7 +196,7 @@ public class CommitRecordService {
           @RequestParam("currentPage") int currentPage) {
     HttpHeaders headers = new HttpHeaders();
     headers.add("Content-Type", "application/json");
-    headers.add("Access-Control-Allow-Origin", "*");
+    //
 
     JSONArray jsonArray = new JSONArray();
     String jobName = username + "_" + assignmentName;
@@ -240,7 +240,7 @@ public class CommitRecordService {
 
     HttpHeaders headers = new HttpHeaders();
     headers.add("Content-Type", "application/json");
-    headers.add("Access-Control-Allow-Origin", "*");
+    //
 
     JSONArray jsonArray = new JSONArray();
     String jobName = username + "_" + assignmentName;
@@ -272,7 +272,7 @@ public class CommitRecordService {
                                             @RequestParam("assignmentName") String assignmentName, @RequestParam("number") int number) {
     HttpHeaders headers = new HttpHeaders();
     headers.add("Content-Type", "application/json");
-    headers.add("Access-Control-Allow-Origin", "*");
+    //
 
     JenkinsService js = JenkinsService.getInstance();
     String jobName = username + "_" + assignmentName;
@@ -318,8 +318,6 @@ public class CommitRecordService {
 
     HttpHeaders headers = new HttpHeaders();
     headers.add("Content-Type", "application/json");
-    headers.add("Access-Control-Allow-Origin", "*");
-
     try{
       JSONArray array = new JSONArray();
       JSONObject result = new JSONObject();

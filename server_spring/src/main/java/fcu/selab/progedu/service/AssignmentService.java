@@ -106,7 +106,7 @@ public class AssignmentService {
           @RequestParam("order") String assignmentCompileOrdersAndScore) {
 
     HttpHeaders headers = new HttpHeaders();
-    headers.add("Access-Control-Allow-Origin", "*");
+    //
 
     try {
       createAssignment(assignmentName, releaseTime, deadline, readMe,
@@ -155,7 +155,7 @@ public class AssignmentService {
 
 
     HttpHeaders headers = new HttpHeaders();
-    headers.add("Access-Control-Allow-Origin", "*");
+    //
 
 
     // 1. Create root project and get project id and url
@@ -207,13 +207,11 @@ public class AssignmentService {
   @GetMapping("getAllAssignments")
   public ResponseEntity<Object> getAllAssignments() {
 
-    HttpHeaders headers = new HttpHeaders();
-    headers.add("Access-Control-Allow-Origin", "*");
 
     List<Assignment> assignments = dbManager.getAllAssignment();
     JSONObject ob = new JSONObject();
     ob.put("allAssignments", assignments);
-    return new ResponseEntity<Object>(ob, headers, HttpStatus.OK);
+    return new ResponseEntity<Object>(ob, HttpStatus.OK);
   }
 
   @PostMapping("peerReview/create")
@@ -231,7 +229,7 @@ public class AssignmentService {
 
 
     HttpHeaders headers = new HttpHeaders();
-    headers.add("Access-Control-Allow-Origin", "*");
+    //
     try {
 
       // 1. create assignment
@@ -263,7 +261,7 @@ public class AssignmentService {
   public ResponseEntity<Object> getAllReviewAssignment() {
 
     HttpHeaders headers = new HttpHeaders();
-    headers.add("Access-Control-Allow-Origin", "*");
+    //
 
     try {
       List<Assignment> assignmentList = dbManager.getAllReviewAssignment();
@@ -324,7 +322,7 @@ public class AssignmentService {
   public ResponseEntity<Object> getAllAutoAssignment() {
 
     HttpHeaders headers = new HttpHeaders();
-    headers.add("Access-Control-Allow-Origin", "*");
+    //
 
     try {
       List<Assignment> assignmentList = dbManager.getAutoAssessment();
@@ -341,7 +339,7 @@ public class AssignmentService {
   public ResponseEntity<Object> getAssignment(@RequestParam ("assignmentName") String assignmentName) {
 
     HttpHeaders headers = new HttpHeaders();
-    headers.add("Access-Control-Allow-Origin", "*");
+    //
 
     Assignment assignment = dbManager.getAssignmentByName(assignmentName);
     JSONObject ob = new JSONObject();
@@ -356,7 +354,7 @@ public class AssignmentService {
   public ResponseEntity<Object> getAssignmentOrder(@RequestParam("fileName") String fileName) {
 
     HttpHeaders headers = new HttpHeaders();
-    headers.add("Access-Control-Allow-Origin", "*");
+    //
 
     int aid = dbManager.getAssignmentIdByName(fileName);
     String orders = aaDbManager.getAssignmentOrderAndScore(aid);
@@ -388,7 +386,7 @@ public class AssignmentService {
           @RequestParam("order") String assignmentCompileOrdersAndScore) {
 
     HttpHeaders headers = new HttpHeaders();
-    headers.add("Access-Control-Allow-Origin", "*");
+    //
 
     int aid = dbManager.getAssignmentIdByName(assignmentName);
     dbManager.editAssignment(deadline, releaseTime, readMe, aid);
@@ -419,7 +417,7 @@ public class AssignmentService {
   public ResponseEntity<Object> deleteProject(@RequestParam("assignmentName") String name) {
 
     HttpHeaders headers = new HttpHeaders();
-    headers.add("Access-Control-Allow-Origin", "*");
+    //
 
     JenkinsService jenkins = JenkinsService.getInstance();
     try {
@@ -628,7 +626,7 @@ public class AssignmentService {
 
     HttpHeaders headers = new HttpHeaders();
 
-    headers.add("Access-Control-Allow-Origin", "*");
+    //
     headers.add("Content-Disposition", "attachment;filename=" + fileName + ".zip");
 
     String filePath = assignmentSettingDir + fileName + ".zip";
@@ -650,7 +648,7 @@ public class AssignmentService {
 
     HttpHeaders headers = new HttpHeaders();
 
-    headers.add("Access-Control-Allow-Origin", "*");
+    //
     headers.add("Content-Disposition", "attachment;filename=" + "MvnQuickStart.zip");
 
     InputStream targetStream = this.getClass().getResourceAsStream("/sample/MvnQuickStart.zip");
@@ -670,7 +668,7 @@ public class AssignmentService {
 
     HttpHeaders headers = new HttpHeaders();
 
-    headers.add("Access-Control-Allow-Origin", "*");
+    //
     headers.add("Content-Disposition", "attachment;filename=" + "JavacQuickStart.zip");
 
     InputStream targetStream = this.getClass().getResourceAsStream("/sample/JavacQuickStart.zip");
@@ -690,7 +688,7 @@ public class AssignmentService {
 
     HttpHeaders headers = new HttpHeaders();
 
-    headers.add("Access-Control-Allow-Origin", "*");
+    //
     headers.add("Content-Disposition", "attachment;filename=" + "AndroidQuickStart.zip");
 
     InputStream targetStream = this.getClass().getResourceAsStream("/sample/AndroidQuickStart.zip");
@@ -710,7 +708,7 @@ public class AssignmentService {
 
     HttpHeaders headers = new HttpHeaders();
 
-    headers.add("Access-Control-Allow-Origin", "*");
+    //
     headers.add("Content-Disposition", "attachment;filename=" + "WebQuickStart.zip");
 
     InputStream targetStream = this.getClass().getResourceAsStream("/sample/WebQuickStart.zip");
@@ -732,7 +730,7 @@ public class AssignmentService {
 
     HttpHeaders headers = new HttpHeaders();
 
-    headers.add("Access-Control-Allow-Origin", "*");
+    //
 
 
     //-----order: Compile Failure:10, Coding Style Failure:80, Unit Test Failure:10

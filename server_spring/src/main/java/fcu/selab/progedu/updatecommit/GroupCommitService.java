@@ -39,7 +39,7 @@ public class GroupCommitService {
           @RequestParam("user") String groupName, @RequestParam("proName") String projectName) {
 
     HttpHeaders headers = new HttpHeaders();
-    headers.add("Access-Control-Allow-Origin", "*");
+    //
 
     ProjectTypeEnum projectTypeEnum = gpdb.getProjectType(projectName);
     int pgid = pgdb.getId(groupName, projectName);

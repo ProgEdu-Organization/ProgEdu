@@ -1,10 +1,7 @@
 import { environment } from '../../environments/environment';
 
-let login: string = environment.NEW_SERVER_URL + '/LoginAuth';
-let checkLogin: string = environment.NEW_SERVER_URL + '/auth/login';
-
+let login: string = environment.NEW_SERVER_URL + '/login';
 
 export const LoginAPI = {
-    login: login,
-    checkLogin: checkLogin
+    login: login
 }

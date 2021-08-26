@@ -25,7 +25,7 @@ public class AuthService {
 
     HttpHeaders headers = new HttpHeaders();
 
-    headers.add("Access-Control-Allow-Origin", "*");
+    //
 
     JSONObject ob = new JSONObject();
 

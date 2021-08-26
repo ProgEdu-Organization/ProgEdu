@@ -15,7 +15,7 @@ import { LoginAPI } from '../api/LoginApi';
 export class LoginAuthService {
 
   LOGIN_URL: string = LoginAPI.login;
-  AUTH_URL: string = LoginAPI.checkLogin;
+  // AUTH_URL: string = LoginAPI.checkLogin; // Todo 待刪
 
   constructor(private http: HttpClient, private jwtService: JwtService, 
               private addJwtTokenHttpClient: AddJwtTokenHttpClient) { }
@@ -35,25 +35,24 @@ export class LoginAuthService {
     return this.http.post<any>(this.LOGIN_URL, params, options);
   }
 
-  public isLoginByTeacher(): Observable<any> {
+  public isLoginByTeacher(): boolean {
 
-    const options = ({
-      headers: new HttpHeaders({
-        'Content-Type': 'application/x-www-form-urlencoded',
-      })
-    });
-
-    return this.addJwtTokenHttpClient.post(this.AUTH_URL, null, options);
+    let jwtInfo = this.jwtService.getDecodedToken();
+    if (jwtInfo.authorities.includes("ROLE_TEACHER")) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
-  public isLoginByStudent(): Observable<any> {
-    const options = ({
-      headers: new HttpHeaders({
-        'Content-Type': 'application/x-www-form-urlencoded',
-      })
-    });
+  public isLoginByStudent(): boolean {
 
-    return this.addJwtTokenHttpClient.post(this.AUTH_URL, null, options);
+    let jwtInfo = this.jwtService.getDecodedToken();
+    if (jwtInfo.authorities.includes("ROLE_STUDENT")) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   public logout() {

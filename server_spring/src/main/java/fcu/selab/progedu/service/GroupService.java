@@ -67,7 +67,7 @@ public class GroupService {
           @RequestParam("projectName") String projectName) {
 
     HttpHeaders headers = new HttpHeaders();
-    headers.add("Access-Control-Allow-Origin", "*");
+    //
 
     GitlabGroup gitlabGroup = gitlabService.createGroup(name);
     int groupGitLabId = gitlabGroup.getId();
@@ -95,7 +95,7 @@ public class GroupService {
   public ResponseEntity<Object> getGroup(@PathVariable("name") String name) {
     HttpHeaders headers = new HttpHeaders();
     headers.add("Content-Type", "application/json");
-    headers.add("Access-Control-Allow-Origin", "*");
+    //
 
     JSONObject jsonObject = getGroupInfo(name);
     return new ResponseEntity<Object>(jsonObject, headers, HttpStatus.OK);
@@ -166,7 +166,7 @@ public class GroupService {
           @PathVariable("name") String name, @RequestParam("members") List<String> members) {
     HttpHeaders headers = new HttpHeaders();
     headers.add("Content-Type", "application/json");
-    headers.add("Access-Control-Allow-Origin", "*");
+    //
 
     int groupGitLabId = gdb.getGitlabId(name);
     for (String member : members) {
@@ -186,7 +186,7 @@ public class GroupService {
   public ResponseEntity<Object> getAllGroup() {
     HttpHeaders headers = new HttpHeaders();
     headers.add("Content-Type", "application/json");
-    headers.add("Access-Control-Allow-Origin", "*");
+    //
 
     JSONArray jsonArray = new JSONArray();
     List<Group> groups = gdb.getGroups();
