@@ -1,5 +1,6 @@
 package fcu.selab.progedu;
 
+import fcu.selab.progedu.db.UserDbManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -46,7 +47,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
   public void configure(WebSecurity web) throws Exception {
     web.ignoring().antMatchers("/publicApi/**", "/assignment/getAssignmentFile",
             "/assignment/getMvnAssignmentFile", "/assignment/getJavaAssignmentFile",
-            "/assignment/getAndroidAssignmentFile", "/assignment/getWebAssignmentFile");
+            "/assignment/getAndroidAssignmentFile", "/assignment/getWebAssignmentFile",
+            "/swagger-ui.html", "/webjars/**", "/swagger-resources/**", "/v2/api-docs");
   }
 
 

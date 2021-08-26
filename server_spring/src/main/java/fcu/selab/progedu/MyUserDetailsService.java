@@ -15,6 +15,16 @@ public class MyUserDetailsService implements UserDetailsService {
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
+    // 以下可以用在單純要測試API時, 登入就用 test / password , 平常時註解起來就好
+//    if(username.equals("test")) {
+//      String testPassword = UserDbManager.getInstance().passwordMD5("password");
+//
+//      User testUser = new User(username, testPassword,
+//              AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_TEACHER"));
+//      return testUser;
+//    }
+
+
     try {
       if (username.equals(gitlabConfig.getGitlabRootUsername())) {
 
