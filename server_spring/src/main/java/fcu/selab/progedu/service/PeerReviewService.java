@@ -153,6 +153,7 @@ public class PeerReviewService {
         jsonObject.put("count", getReviewCompletedCount(assignment.getId(), reviewId));
         jsonObject.put("status", reviewerStatus(assignment.getId(),
             reviewId, reviewSetting.getAmount()).getTypeName());
+        jsonObject.put("round", reviewSetting.getRound());
 
 				jsonArray.add(jsonObject);
 			}

@@ -101,11 +101,13 @@ public class ReviewSettingDbManager {
         int id = rs.getInt("id");
         int aid = rs.getInt("aId");
         int amount = rs.getInt("amount");
+        int round = rs.getInt("round");
         Date releaseTime = rs.getTimestamp("releaseTime");
         Date deadline = rs.getTimestamp("deadline");
         reviewSetting.setId(id);
         reviewSetting.setaId(aid);
         reviewSetting.setAmount(amount);
+        reviewSetting.setRound(round);
         reviewSetting.setReleaseTime(releaseTime);
         reviewSetting.setDeadline(deadline);
       }
@@ -137,11 +139,13 @@ public class ReviewSettingDbManager {
       while (rs.next()) {
         int id = rs.getInt("id");
         int amount = rs.getInt("amount");
+        int round = rs.getInt("round");
         Date releaseTime = rs.getTimestamp("releaseTime");
         Date deadline = rs.getTimestamp("deadline");
         reviewSetting.setId(id);
         reviewSetting.setaId(aid);
         reviewSetting.setAmount(amount);
+        reviewSetting.setRound(round);
         reviewSetting.setReleaseTime(releaseTime);
         reviewSetting.setDeadline(deadline);
       }
