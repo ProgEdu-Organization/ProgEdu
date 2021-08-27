@@ -33,7 +33,7 @@ public class ChartService {
   @GetMapping("/allCommitRecord")
   public ResponseEntity<Object> getAllCommitRecords() {
     HttpHeaders headers = new HttpHeaders();
-    headers.add("Access-Control-Allow-Origin", "*");
+    //
 
     // Step1  find all assignment's name.
     List<String> assignmentNames =  assignmentService.getAllAssignmentNames();

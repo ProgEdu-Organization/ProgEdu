@@ -7,15 +7,16 @@ export class User {
   private name: string;
 
   constructor(private jwtService: JwtService) {
-    const decodedToken = jwtService.getDecodedToken();
-    if (decodedToken.sub === 'teacher') {
+    const jwtInfo = jwtService.getDecodedToken();
+
+    if (jwtInfo.authorities.includes("ROLE_TEACHER")) {
       this.isTeacher = true;
-    } else if (decodedToken.sub === 'student') {
+    } else if (jwtInfo.authorities.includes("ROLE_STUDENT")) {
       this.isStudent = true;
     }
 
-    this.username = decodedToken.aud;
-    this.name = decodedToken.name;
+    this.username = jwtInfo.sub; // Todo username 跟 name 一樣, 這之後要拿掉其中一個
+    this.name = jwtInfo.sub;
   }
 
   public getUsername(): string {

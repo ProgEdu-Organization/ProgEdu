@@ -43,7 +43,7 @@ public class UserService {
   public ResponseEntity<Object> getUsers() {
     HttpHeaders headers = new HttpHeaders();
     headers.add("Content-Type", "application/json");
-    headers.add("Access-Control-Allow-Origin", "*");
+    //
 
     List<User> users = dbManager.getAllUsers();
     List<JSONObject> userListEntities = new ArrayList<>();
@@ -90,7 +90,7 @@ public class UserService {
           @RequestParam("isDisplayed") boolean isDisplayed) {
 
     HttpHeaders headers = new HttpHeaders();
-    headers.add("Access-Control-Allow-Origin", "*");
+    //
 
     List<RoleEnum> roleList = new ArrayList<>();
 
@@ -130,7 +130,7 @@ public class UserService {
 
 
     HttpHeaders headers = new HttpHeaders();
-    headers.add("Access-Control-Allow-Origin", "*");
+    //
 
     List<User> users = new ArrayList<>();
     String errorMessage = "";
@@ -187,7 +187,7 @@ public class UserService {
           @RequestParam("newPassword") String newPassword) {
 
     HttpHeaders headers = new HttpHeaders();
-    headers.add("Access-Control-Allow-Origin", "*");
+    //
 
     boolean isSame = dbManager.checkPassword(username, currentPassword);
     if (isSame) {
@@ -204,7 +204,7 @@ public class UserService {
   public ResponseEntity<Object> getGroup(@PathVariable("username") String username) {
 
     HttpHeaders headers = new HttpHeaders();
-    headers.add("Access-Control-Allow-Origin", "*");
+    //
 
     GroupService gs = new GroupService();
     int uid = dbManager.getUserIdByUsername(username);
@@ -227,7 +227,7 @@ public class UserService {
 
     HttpHeaders headers = new HttpHeaders();
 
-    headers.add("Access-Control-Allow-Origin", "*");
+    //
     headers.add("Content-Disposition", "attachment;filename=" + "StudentTemplate.csv");
 
     InputStream targetStream = this.getClass().getResourceAsStream("/sample/StudentTemplate.csv");

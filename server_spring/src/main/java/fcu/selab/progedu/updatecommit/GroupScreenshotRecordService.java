@@ -43,7 +43,7 @@ public class GroupScreenshotRecordService {
           @RequestParam("url") List<String> urls) {
 
     HttpHeaders headers = new HttpHeaders();
-    headers.add("Access-Control-Allow-Origin", "*");
+    //
 
 
 
