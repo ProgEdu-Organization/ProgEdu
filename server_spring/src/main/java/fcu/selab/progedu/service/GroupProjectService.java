@@ -112,11 +112,10 @@ public class GroupProjectService {
       String projectUrl = gitlabConfig.getGitlabHostUrl() + "/" + groupName + "/" + projectName
               + ".git";
 
-      //JenkinsProjectConfig jenkinsProjectConfig = new WebGroupConfig(projectUrl, updateDbUrl,
-      //                                                               groupName, projectName);
+
       JenkinsProjectConfig jenkinsProjectConfig = new WebGroupPipelineConfig(projectUrl, updateDbUrl,
               groupName, projectName,
-              courseConfig.getTomcatServerIp() + "/publicApi/commits/screenshot/updateURL");
+              courseConfig.getTomcatServerIp() + "/publicApi/groups/commits/screenshot/updateURL");
 
       JenkinsService jenkinsService = JenkinsService.getInstance();
 
