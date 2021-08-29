@@ -7,6 +7,7 @@ import fcu.selab.progedu.db.AssignmentTimeDbManager;
 import fcu.selab.progedu.db.AssignmentUserDbManager;
 import fcu.selab.progedu.db.CommitRecordDbManager;
 import fcu.selab.progedu.db.CommitStatusDbManager;
+import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Date;
@@ -38,6 +41,8 @@ public class ChartService {
   public ResponseEntity<Object> getAllCommitRecords() {
     HttpHeaders headers = new HttpHeaders();
     headers.add("Access-Control-Allow-Origin", "*");
+
+    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
 
     // Step1  find all assignment's name.
     List<String> assignmentNames =  assignmentService.getAllAssignmentNames();
@@ -73,12 +78,18 @@ public class ChartService {
             }
           }
         });
-        commits.put("name", name);
+        List<AssignmentTime> assignmentTimes = assignmentTimeDbManager.getAssignmentTimeByName(name);
+        for (AssignmentTime assignmentTime : assignmentTimes){
+          commits.put("name", name);
+
+          commits.put("releaseTime", dateFormat.format(assignmentTime.getReleaseTime()));
+          commits.put("deadline",  dateFormat.format(assignmentTime.getDeadline()));
+          commits.put("commits", array);
+          assignments.add(commits);
+        }
         // commits.put("releaseTime", assignmentTimeDbManager.getAssignmentTimeByName(name).getReleaseTime());
         // commits.put("deadline", assignmentTimeDbManager.getAssignmentTimeByName(name).getDeadline());
-        commits.put("commits", array);
       });
-      assignments.add(commits);
     });
     ob.put("allCommitRecord", assignments);
 
