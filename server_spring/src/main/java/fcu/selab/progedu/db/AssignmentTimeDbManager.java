@@ -212,4 +212,70 @@ public class AssignmentTimeDbManager {
     return assignmentTime;
   }
 
+  public AssignmentTime getAssignmentTimeByTimeAndName(String name, Date time) {
+    String sql = "SELECT a_t.* FROM ProgEdu.Assignment_Time a_t join ProgEdu.Assignment a on a.id = a_t.aId WHERE " +
+            "a.name = ? AND ( ? between a_t.releaseTime and a_t.deadline)";
+
+    Timestamp dateStamp = new Timestamp(time.getTime());
+
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
+    AssignmentTime assignmentTime = new AssignmentTime();
+
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
+      preStmt.setString(1, name);
+      preStmt.setTimestamp(2, dateStamp);
+
+      rs = preStmt.executeQuery();
+      while (rs.next()) {
+        assignmentTime.setAId(rs.getInt("aId"));
+        assignmentTime.setAaId(rs.getInt("aaId"));
+        assignmentTime.setReleaseTime(rs.getTimestamp("releaseTime"));
+        assignmentTime.setDeadline(rs.getTimestamp("deadline"));
+      }
+
+    } catch (Exception e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(rs, preStmt, conn);
+    }
+    return assignmentTime;
+  }
+
+  public AssignmentTime getAssignmentTimeByaIdAndTime(int aId, Date time) {
+    String sql = "SELECT * FROM ProgEdu.Assignment_Time WHERE aId = ? AND ( ? between releaseTime and deadline)";
+
+    Timestamp dateStamp = new Timestamp(time.getTime());
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
+    AssignmentTime assignmentTime = new AssignmentTime();
+
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+      preStmt.setInt(1, aId);
+      preStmt.setTimestamp(2, dateStamp);
+
+      rs = preStmt.executeQuery();
+      while (rs.next()) {
+        assignmentTime.setAId(rs.getInt("aId"));
+        assignmentTime.setAaId(rs.getInt("aaId"));
+        assignmentTime.setReleaseTime(rs.getTimestamp("releaseTime"));
+        assignmentTime.setDeadline(rs.getTimestamp("deadline"));
+      }
+    } catch (Exception e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(rs, preStmt, conn);
+    }
+    return assignmentTime;
+  }
+
 }
