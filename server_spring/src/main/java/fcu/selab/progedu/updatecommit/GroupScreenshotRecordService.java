@@ -80,18 +80,17 @@ public class GroupScreenshotRecordService {
     }
   }
 
-  @CrossOrigin(origins = "*")
   @GetMapping("getScreenshotURL")
   public ResponseEntity<Object> getScreenshotPng(
           @QueryParam("groupName") String groupName,
           @QueryParam("projectName") String projectName,
-          @QueryParam("commitNumber") int number) {
+          @QueryParam("commitNumber") int commitNumber) {
 
 
 
     JSONObject ob = new JSONObject();
     int pgid = pgdb.getId(groupName, projectName);
-    int pcrid = pdb.getCommitRecordId(pgid, number);
+    int pcrid = pdb.getCommitRecordId(pgid, commitNumber);
     try {
       List<String> urls = db.getScreenshotUrl(pcrid);
       for (String url : urls) {
