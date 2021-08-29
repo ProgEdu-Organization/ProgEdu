@@ -45,7 +45,7 @@ public class AssignmentTimeDbManager {
   /**
    * Add assignment time to db
    * @param assignmentName assignment name
-   * @param assignmentTime assugnment time
+   * @param assignmentTime assignment time
    */
   public void addAssignmentTime(String assignmentName, AssignmentTime assignmentTime)  {
     String sql = "INSERT INTO Assignment_Time(`aId`, `aaId`, `releaseTime`, `deadline` VALUES(?, ?, ?, ?)";
@@ -210,6 +210,45 @@ public class AssignmentTimeDbManager {
       CloseDBUtil.closeAll(rs, preStmt, conn);
     }
     return assignmentTime;
+  }
+  public void deleteAssignmentTimeById(int id){
+    String sql = "DELETE FROM Assignment_Time WHERE aid = ?";
+
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
+      preStmt.setInt(1, id);
+      preStmt.executeUpdate();
+    } catch (SQLException e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(preStmt, conn);
+    }
+  }
+
+  public void deleteAssignmentTimeByName(String name){
+    String sql = "DELETE FROM Assignment_Time a_t JOIN Assignment a ON a.id = a_t.aId WHERE a.name = ?";
+
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
+      preStmt.setString(1, name);
+      preStmt.executeUpdate();
+    } catch (SQLException e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(preStmt, conn);
+    }
   }
 
   public AssignmentTime getAssignmentTimeByTimeAndName(String name, Date time) {
