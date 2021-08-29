@@ -34,7 +34,7 @@ public class ReviewRecordDbManager {
    */
   public void insertReviewRecord(int pmId, int rsmId, int score, Date time,
                                  String feedback, int reviewOrder) throws SQLException {
-    String query = "INSERT INTO Review_Record(pmId, rsmId, score, time, feedback, reviewOrder)"
+    String query = "INSERT INTO Review_Record(pmId, rsmId, score, time, feedback, round)"
         + " VALUES (?,?,?,?,?,?);";
     Timestamp timeTimestamp = new Timestamp(time.getTime());
     Connection conn = null;
@@ -81,14 +81,14 @@ public class ReviewRecordDbManager {
         int score = rs.getInt("score");
         Date time = rs.getTimestamp("time");
         String feedback = rs.getString("feedback");
-        int reviewOrder = rs.getInt("reviewOrder");
+        int round = rs.getInt("round");
         reviewRecord.setId(id);
         reviewRecord.setPmId(pmId);
         reviewRecord.setRsmId(rsmId);
         reviewRecord.setScore(score);
         reviewRecord.setTime(time);
         reviewRecord.setFeedback(feedback);
-        reviewRecord.setReviewOrder(reviewOrder);
+        reviewRecord.setRound(round);
       }
     } finally {
       CloseDBUtil.closeAll(rs, preStmt, conn);
@@ -124,7 +124,7 @@ public class ReviewRecordDbManager {
         int score = rs.getInt("score");
         Date time = rs.getTimestamp("time");
         String feedback = rs.getString("feedback");
-        int reviewOrder = rs.getInt("reviewOrder");
+        int round = rs.getInt("round");
         ReviewRecord reviewRecord = new ReviewRecord();
         reviewRecord.setId(id);
         reviewRecord.setPmId(pmId);
@@ -132,7 +132,7 @@ public class ReviewRecordDbManager {
         reviewRecord.setScore(score);
         reviewRecord.setTime(time);
         reviewRecord.setFeedback(feedback);
-        reviewRecord.setReviewOrder(reviewOrder);
+        reviewRecord.setRound(round);
         reviewRecordList.add(reviewRecord);
       }
     } finally {

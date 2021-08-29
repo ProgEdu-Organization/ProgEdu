@@ -16,7 +16,7 @@ public class ReviewRecord {
 
   private String feedback;
 
-  private int reviewOrder;
+  private int round;
 
   public int getId() {
     return id;
@@ -66,11 +66,11 @@ public class ReviewRecord {
     this.feedback = feedback;
   }
 
-  public int getReviewOrder() {
-    return reviewOrder;
+  public int getRound() {
+    return round;
   }
 
-  public void setReviewOrder(int reviewOrder) {
-    this.reviewOrder = reviewOrder;
+  public void setRound(int round) {
+    this.round = round;
   }
 }
