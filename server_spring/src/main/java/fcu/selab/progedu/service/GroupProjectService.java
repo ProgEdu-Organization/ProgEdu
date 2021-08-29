@@ -89,8 +89,7 @@ public class GroupProjectService {
     JavaIoUtile.addFile2EmptyFolder(new File(cloneDirectoryPath), ".gitkeep");
 
 
-    // 7. remove project directory
-    JavaIoUtile.deleteDirectory(new File(uploadDir));
+
 
     // 8. import project infomation to database
     addProject(groupName, projectName, readMe, projectTypeEnum);
@@ -125,9 +124,11 @@ public class GroupProjectService {
       LOGGER.error(e.getMessage());
     }
 
-    // 6. git push
+    // git push
     gitlabService.pushProject(cloneDirectoryPath);
-
+    
+    // remove project directory
+    JavaIoUtile.deleteDirectory(new File(uploadDir));
   }
 
   /**
