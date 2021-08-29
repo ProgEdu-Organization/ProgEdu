@@ -666,6 +666,7 @@ public class AssignmentService {
     }
     auDbManager.deleteAssignmentUserByAid(aid);// Assignment_User
     dbManager.deleteAssignment(name);// Assignment
+    atDbManager.deleteAssignmentTimeById(aid);
 
   }
 
