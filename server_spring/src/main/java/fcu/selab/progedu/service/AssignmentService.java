@@ -335,6 +335,8 @@ public class AssignmentService {
         //TODO 多次review
         // ob.put("reviewReleaseTime", reviewSetting.getReleaseTime());
         // ob.put("reviewDeadline", reviewSetting.getDeadline());
+        ob.put("round", reviewSetting.getRound());
+        ob.put("amount", reviewSetting.getAmount());
         array.add(ob);
       }
       result.put("allReviewAssignments", array);

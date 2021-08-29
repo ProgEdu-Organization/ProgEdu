@@ -1,24 +1,28 @@
 import { StudentEvent } from '../../../services/student-event';
-import { ReviewStatusStudashboardService } from './review-status-studashboard.service';
+import { ReviewRoundStudashboardService } from './review-round-studashboard.service';
 import { Component, OnInit } from '@angular/core';
 import { JwtService } from '../../../services/jwt.service';
 import { User } from '../../../models/user';
 import { TimeService } from '../../../services/time.service';
 import { Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { StudentEventsService } from '../../../services/student-events-log.service';
 
 @Component({
-  selector: 'app-review-status-studashboard',
-  templateUrl: './review-status-studashboard.component.html',
-  styleUrls: ['./review-status-studashboard.component.scss']
+  selector: 'app-review-round-studashboard',
+  templateUrl: './review-round-studashboard.component.html',
+  styleUrls: ['./review-round-studashboard.component.scss']
 })
-export class ReviewStatusStudashboardComponent implements OnInit {
+
+export class ReviewRoundStudashboardComponent implements OnInit {
 
   public assignmentTable: Array<any> = new Array<any>();
   public studentCommitRecord: JSON;
   public username: string;
-  constructor(private reviewStatusStudashboardService: ReviewStatusStudashboardService, private timeService: TimeService,
-    private jwtService?: JwtService, private router?: Router, private studentEventsService?: StudentEventsService) {
+  public assignmentName: string;
+  constructor(private reviewRoundStudashboardService: ReviewRoundStudashboardService, private route: ActivatedRoute, 
+    private timeService: TimeService,private jwtService?: JwtService, private router?: Router, 
+    private studentEventsService?: StudentEventsService) {
     this.emitStudentEvent();
   }
 
@@ -34,19 +38,20 @@ export class ReviewStatusStudashboardComponent implements OnInit {
 
   async ngOnInit() {
     this.username = new User(this.jwtService).getUsername();
+    this.assignmentName = this.route.snapshot.queryParamMap.get('assignmentName');
     await this.getAllAssignments();
     await this.getStudentCommitRecords();
   }
 
   async getAllAssignments() {
-    this.reviewStatusStudashboardService.getAllAssignments().subscribe(response => {
+    this.reviewRoundStudashboardService.getAllAssignments().subscribe(response => {
       this.assignmentTable = response.allReviewAssignments;
     });
   }
 
   async getStudentCommitRecords() {
     // clear student array
-    this.reviewStatusStudashboardService.getStudentCommitRecord(this.username).subscribe(response => {
+    this.reviewRoundStudashboardService.getStudentCommitRecord(this.username).subscribe(response => {
       this.studentCommitRecord = response;
     });
   }
