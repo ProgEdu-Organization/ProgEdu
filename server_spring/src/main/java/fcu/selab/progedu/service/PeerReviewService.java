@@ -102,7 +102,7 @@ public class PeerReviewService {
 
       // 4. Check which time have been reviewed, and upload the review order
       if (!reviewRecordDbManager.isFirstTimeReviewRecord(pmId)) {
-        reviewOrder = reviewRecordDbManager.getLatestReviewOrder(pmId) + 1;
+        reviewOrder = reviewRecordDbManager.getLatestRound(pmId) + 1;
       }
 
       // 5. Insert new review record onto db
@@ -318,7 +318,7 @@ public class PeerReviewService {
       for (PairMatching pairMatching : pairMatchingList) {
         JSONObject reviewed = new JSONObject();
         JSONArray reviewDetailArray = new JSONArray();
-        int order = reviewRecordDbManager.getLatestReviewOrder(pairMatching.getId());
+        int order = reviewRecordDbManager.getLatestRound(pairMatching.getId());
         List<ReviewRecord> reviewRecordList =
                 reviewRecordDbManager.getReviewRecordByPairMatchingId(pairMatching.getId(), order);
 
@@ -383,7 +383,7 @@ public class PeerReviewService {
       int auId = assignmentUserDbManager.getAuid(assignmentId, userId);
       PairMatching pairMatching = pairMatchingDbManager
               .getPairMatchingByAuIdReviewId(auId, reviewId);
-      int order = reviewRecordDbManager.getLatestReviewOrder(pairMatching.getId());
+      int order = reviewRecordDbManager.getLatestRound(pairMatching.getId());
       List<ReviewRecord> reviewRecordList = reviewRecordDbManager
               .getReviewRecordByPairMatchingId(pairMatching.getId(), order - page + 1);
 
@@ -441,7 +441,7 @@ public class PeerReviewService {
       for (PairMatching pairMatching : pairMatchingList) {
         org.json.JSONObject reviewer = new org.json.JSONObject();
         org.json.JSONArray reviewDetailArray = new org.json.JSONArray();
-        int order = reviewRecordDbManager.getLatestReviewOrder(pairMatching.getId());
+        int order = reviewRecordDbManager.getLatestRound(pairMatching.getId());
         List<ReviewRecord> reviewRecordList =
                 reviewRecordDbManager.getReviewRecordByPairMatchingId(pairMatching.getId(), order);
 
@@ -509,7 +509,7 @@ public class PeerReviewService {
       int assignmentId = assignmentDbManager.getAssignmentIdByName(assignmentName);
       int auId = assignmentUserDbManager.getAuid(assignmentId, userId);
       PairMatching pairMatching = pairMatchingDbManager.getPairMatchingByAuIdReviewId(auId, reviewId);
-      int order = reviewRecordDbManager.getLatestReviewOrder(pairMatching.getId());
+      int order = reviewRecordDbManager.getLatestRound(pairMatching.getId());
       List<ReviewRecord> reviewRecordList = reviewRecordDbManager
               .getReviewRecordByPairMatchingId(pairMatching.getId(), order - page + 1);
 

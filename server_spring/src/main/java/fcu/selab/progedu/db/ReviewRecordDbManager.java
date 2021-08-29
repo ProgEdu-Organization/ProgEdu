@@ -180,8 +180,8 @@ public class ReviewRecordDbManager {
    *
    * @return reviewOrder review order
    */
-  public int getLatestReviewOrder(int pmId) throws SQLException {
-    String query = "SELECT MAX(reviewOrder) AS latestCount FROM Review_Record WHERE pmId = ?";
+  public int getLatestRound(int pmId) throws SQLException {
+    String query = "SELECT MAX(round) AS latestCount FROM Review_Record WHERE pmId = ?";
     int latestCount = -1;
     Connection conn = null;
     PreparedStatement preStmt = null;
