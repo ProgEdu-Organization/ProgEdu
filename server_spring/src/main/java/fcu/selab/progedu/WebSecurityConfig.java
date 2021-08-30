@@ -38,6 +38,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     http.cors().configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues());
 
     http.cors().and().csrf().disable().authorizeRequests()
+            .antMatchers(HttpMethod.POST, "/user/new").hasRole("TEACHER")
+            .antMatchers(HttpMethod.POST, "/user/upload").hasRole("TEACHER")
+            .antMatchers(HttpMethod.POST, "/assigment/**").hasRole("TEACHER")
             .antMatchers(HttpMethod.POST, "/login").permitAll()
             .anyRequest().authenticated()
             .and()

@@ -126,7 +126,7 @@ public class GroupProjectService {
 
     // git push
     gitlabService.pushProject(cloneDirectoryPath);
-    
+
     // remove project directory
     JavaIoUtile.deleteDirectory(new File(uploadDir));
   }
