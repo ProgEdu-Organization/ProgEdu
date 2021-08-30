@@ -29,9 +29,6 @@ public class JwtLoginFilter extends AbstractAuthenticationProcessingFilter {
   }
   @Override
   public Authentication attemptAuthentication(HttpServletRequest req, HttpServletResponse resp) throws AuthenticationException, IOException, ServletException {
-//    User user = new ObjectMapper().readValue(req.getInputStream(), User.class);
-
-//    User user = new User("franky", "franky-password", new ArrayList<>());
 
     String username = req.getParameter("username");
     String password = req.getParameter("password");
@@ -44,9 +41,7 @@ public class JwtLoginFilter extends AbstractAuthenticationProcessingFilter {
     Collection<? extends GrantedAuthority> authorities = authResult.getAuthorities();
     StringBuffer as = new StringBuffer();
     for (GrantedAuthority authority : authorities) {
-      System.out.println("franky-test authority.getAuthority(): " + authority.getAuthority());
-      as.append(authority.getAuthority())
-              .append(",");
+      as.append(authority.getAuthority()).append(",");
     }
 
     JwtConfig jwtConfig = JwtConfig.getInstance();

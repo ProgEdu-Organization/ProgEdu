@@ -87,11 +87,9 @@ public class GroupProjectService {
 
     // 5. Add .gitkeep if folder is empty.
     JavaIoUtile.addFile2EmptyFolder(new File(cloneDirectoryPath), ".gitkeep");
-    // 6. git push
-    gitlabService.pushProject(cloneDirectoryPath);
 
-    // 7. remove project directory
-    JavaIoUtile.deleteDirectory(new File(uploadDir));
+
+
 
     // 8. import project infomation to database
     addProject(groupName, projectName, readMe, projectTypeEnum);
@@ -112,21 +110,25 @@ public class GroupProjectService {
       String projectUrl = gitlabConfig.getGitlabHostUrl() + "/" + groupName + "/" + projectName
               + ".git";
 
-      //JenkinsProjectConfig jenkinsProjectConfig = new WebGroupConfig(projectUrl, updateDbUrl,
-      //                                                               groupName, projectName);
+
       JenkinsProjectConfig jenkinsProjectConfig = new WebGroupPipelineConfig(projectUrl, updateDbUrl,
               groupName, projectName,
-              courseConfig.getTomcatServerIp() + "/publicApi/commits/screenshot/updateURL");
+              courseConfig.getTomcatServerIp() + "/publicApi/groups/commits/screenshot/updateURL");
 
       JenkinsService jenkinsService = JenkinsService.getInstance();
 
       jenkinsService.createJobV2(jobName, jenkinsProjectConfig.getXmlConfig());
-      jenkinsService.buildJob(jobName);
+//      jenkinsService.buildJob(jobName);
     } catch (Exception e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
     }
 
+    // git push
+    gitlabService.pushProject(cloneDirectoryPath);
+
+    // remove project directory
+    JavaIoUtile.deleteDirectory(new File(uploadDir));
   }
 
   /**
