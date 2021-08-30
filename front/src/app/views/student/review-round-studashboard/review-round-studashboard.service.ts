@@ -14,6 +14,7 @@ export class ReviewRoundStudashboardService {
 
   ALL_COMMIT_API = PeerReviewAPI.getReviewStatus;
   ALL_ASSIGNMENT_API = AssignmentAPI.getAllPeerReviewAssignment;
+  ALL_STATUS_DETAIL_API = PeerReviewAPI.getReviewStatusDetail;
   constructor(private addJwtTokenHttpClient: AddJwtTokenHttpClient) { }
 
   getStudentCommitRecord(username: string): Observable<any> {
@@ -24,5 +25,12 @@ export class ReviewRoundStudashboardService {
 
   getAllAssignments(): Observable<any> {
     return this.addJwtTokenHttpClient.get(this.ALL_ASSIGNMENT_API);
+  }
+
+  getReviewDetail(username: string, assignmentName: string): Observable<any> {
+    const params = new HttpParams()
+      .set('username', username)
+      .set('assignmentName', assignmentName);
+    return this.addJwtTokenHttpClient.get(this.ALL_STATUS_DETAIL_API, { params });
   }
 }

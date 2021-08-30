@@ -17,9 +17,11 @@ import { StudentEventsService } from '../../../services/student-events-log.servi
 export class ReviewRoundStudashboardComponent implements OnInit {
 
   public assignmentTable: Array<any> = new Array<any>();
+  public reviewDetail: Array<any> = new Array<any>();
   public studentCommitRecord: JSON;
   public username: string;
   public assignmentName: string;
+  public round = [1];
   constructor(private reviewRoundStudashboardService: ReviewRoundStudashboardService, private route: ActivatedRoute, 
     private timeService: TimeService,private jwtService?: JwtService, private router?: Router, 
     private studentEventsService?: StudentEventsService) {
@@ -41,6 +43,7 @@ export class ReviewRoundStudashboardComponent implements OnInit {
     this.assignmentName = this.route.snapshot.queryParamMap.get('assignmentName');
     await this.getAllAssignments();
     await this.getStudentCommitRecords();
+    await this.getReviewDetail();
   }
 
   async getAllAssignments() {
@@ -56,6 +59,12 @@ export class ReviewRoundStudashboardComponent implements OnInit {
     });
   }
 
+  async getReviewDetail() {
+    this.reviewRoundStudashboardService.getReviewDetail(this.username, this.assignmentName).subscribe(response => {
+      this.reviewDetail = response.allStatusDetail;
+    })
+  }
+
   isRelease(release: Date) {
     const now_time = new Date().getTime();
     const realease_time = new Date(release).getTime();
@@ -66,7 +75,7 @@ export class ReviewRoundStudashboardComponent implements OnInit {
   }
 
   isNA(commit: any) {
-    if (JSON.stringify(commit.commitRecord) !== '{}') {
+    if (JSON.stringify(commit) !== '{}') {
       return false;
     }
     return true;

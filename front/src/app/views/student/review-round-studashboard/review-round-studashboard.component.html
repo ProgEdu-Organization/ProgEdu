@@ -28,28 +28,37 @@
             <thead>
               <tr>
                 <th width="10%" class='text-left'>學生</th>
-                <ng-container *ngFor='let col of assignmentTable'>
-                  <th width="10%" *ngIf='isRelease(col.reviewReleaseTime)'>
-                    <div>{{col.name}}</div>
+                <ng-container *ngFor='let r of round; let i = index'>
+                  <th width="10%">
+                    <div>Round {{i + 1}}</div>
                   </th>
                 </ng-container>
                 <th class='text-left'></th>
               </tr>
             </thead>
             <tbody>
-              <tr *ngIf='studentCommitRecord'>
+              <tr *ngFor="let student of reviewDetail; let i = index">
                 <th class='text-left' width="10%">
-                  {{username}}
+                  Student {{ i + 1 }}
                 </th>
-                <ng-container *ngFor='let review of studentCommitRecord'>
+                <ng-container *ngFor='let round of round'>
+                  <th>
+                    <p id="{{student.name}}_{{round}}" class="circle initialization">
+                      <a *ngIf='!isNA(student)' id="{{student.name}}_{{round}}_{{student.status}}"
+                        href="#/studashboard/reviewStatusAssignmentChoose?username={{username}}&assignmentName={{assignmentName}}">0</a>
+                      <a *ngIf='isNA(review)'>N/A</a>
+                    </p>
+                  </th>
+                </ng-container>
+                <!--<ng-container *ngFor='let review of studentCommitRecord'>
                   <th *ngIf='isRelease(review.reviewReleaseTime)'>
-                    <p id="{{username}}_{{review.assignmentName}}" class="square {{review.status}}">
+                    <p id="{{username}}_{{review.assignmentName}}" class="circle {{review.status}}">
                       <a *ngIf='!isNA(review)' id="{{username}}_{{review.hw}}_{{review.count}}"
                         href="#/studashboard/reviewStatusAssignmentChoose?username={{username}}&assignmentName={{review.assignmentName}}">{{review.count}}/{{review.amount}}</a>
                       <a *ngIf='isNA(review)'>N/A</a>
                     </p>
                   </th>
-                </ng-container>
+                </ng-container>-->
                 <th class='text-left'></th>
               </tr>
             </tbody>

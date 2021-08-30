@@ -171,6 +171,7 @@ public class PeerReviewService {
         jsonObject.put("status", reviewerStatus(assignment.getId(),
             reviewId, reviewSetting.getAmount()).getTypeName());
         jsonObject.put("round", reviewSetting.getRound());
+
               jsonArray.add(jsonObject);
       }
     return new ResponseEntity<Object>(jsonArray, headers, HttpStatus.OK);
@@ -695,7 +696,7 @@ public class PeerReviewService {
   /**
    * get all review round
    */
-  @GetMapping("record/status/allUsers")
+  /*@GetMapping("record/status/allUsers")
   public ResponseEntity<Object> getAllReviewRound(
           @RequestParam("assignmentName") String assignmentName) {
 
@@ -728,7 +729,6 @@ public class PeerReviewService {
           }
           assignmentTimeObject.put("amount", reviewSetting.getAmount());
 
-
           reviewRoundArray.add(assignmentTimeObject);
         }
       }
@@ -736,6 +736,6 @@ public class PeerReviewService {
 
     }
 
-  }
+  }*/
 
 }
