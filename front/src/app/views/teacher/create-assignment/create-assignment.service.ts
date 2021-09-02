@@ -83,15 +83,24 @@ export class CreateAssignmentService {
 
   createPeerReviewAssignment(assignment: FormGroup, metrics: number[]): Observable<any> {
     const formData = new FormData();
-    const reviewTime = new FormGroup({});
+    const reviewTime = new FormArray([]);
     let round = 0;
 
     (<FormArray>assignment.get('reviewTime')).controls.forEach(element => {
+      let action = new FormGroup({});
+      let reviewAction = new FormGroup({});
+      let roundGroup = new FormGroup({});
       element.get('startTime').setValue(new Date(element.get('startTime').value).toUTCString());
       element.get('endTime').setValue(new Date(element.get('endTime').value).toUTCString());
+      action.addControl('startTime', element.get('startTime'));
+      action.addControl('endTime', element.get('endTime'));
+      round == 0? roundGroup.addControl('Do', action):roundGroup.addControl('Fix', action);
       element.get('reviewStartTime').setValue(new Date(element.get('reviewStartTime').value).toUTCString());
       element.get('reviewEndTime').setValue(new Date(element.get('reviewEndTime').value).toUTCString());
-      reviewTime.addControl(round.toString(), element);
+      reviewAction.addControl('startTime', element.get('reviewStartTime'));
+      reviewAction.addControl('endTime', element.get('reviewEndTime'));
+      round == 0? roundGroup.addControl('Review', reviewAction):roundGroup.addControl('Approve', reviewAction);
+      reviewTime.insert(round, roundGroup);
       round++;
     })
 
