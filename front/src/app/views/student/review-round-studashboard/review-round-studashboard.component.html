@@ -10,6 +10,9 @@
             <span class="ovol NB">
               Initial
             </span>
+            <span class="ovol POR">
+              Process of Review
+            </span>
             <span class="ovol CPF">
               Unfinished Review
             </span>
@@ -46,7 +49,7 @@
                     <p id="{{student.name}}_{{round}}" class="circle initialization">
                       <a *ngIf='!isNA(student)' id="{{student.name}}_{{round}}_{{student.status}}"
                         href="#/studashboard/reviewStatusAssignmentChoose?username={{username}}&assignmentName={{assignmentName}}">0</a>
-                      <a *ngIf='isNA(review)'>N/A</a>
+                      <a *ngIf='isNA(student)'>N/A</a>
                     </p>
                   </th>
                 </ng-container>
