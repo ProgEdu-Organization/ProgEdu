@@ -72,6 +72,7 @@ public class ReviewOrderDbManager {
 
     Connection conn = null;
     PreparedStatement preStmt = null;
+    ResultSet rs = null;
 
     ReviewOrder reviewOrder = new ReviewOrder();
 
@@ -80,20 +81,19 @@ public class ReviewOrderDbManager {
       preStmt = conn.prepareStatement(sql);
 
       preStmt.setInt(1, pmId);
-      try (ResultSet rs = preStmt.executeQuery();) {
-        while (rs.next()) {
-          int statusId = rs.getInt("status");
-          reviewOrder.setId(rs.getInt("id"));
-          reviewOrder.setPmId(pmId);
-          reviewOrder.setReviewStatusEnum(reviewStatusDbManager.getReviewStatusById(statusId));
-          reviewOrder.setReviewOrder(rs.getInt("reviewOrder"));
-        }
+      rs = preStmt.executeQuery();
+      while (rs.next()) {
+        int statusId = rs.getInt("status");
+        reviewOrder.setId(rs.getInt("id"));
+        reviewOrder.setPmId(pmId);
+        reviewOrder.setReviewStatusEnum(reviewStatusDbManager.getReviewStatusById(statusId));
+        reviewOrder.setReviewOrder(rs.getInt("reviewOrder"));
       }
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
     } finally {
-      CloseDBUtil.closeAll(preStmt, conn);
+      CloseDBUtil.closeAll(rs, preStmt, conn);
     }
     return reviewOrder;
   }
@@ -115,24 +115,23 @@ public class ReviewOrderDbManager {
 
     Connection conn = null;
     PreparedStatement preStmt = null;
+    ResultSet rs = null;
 
     try {
       conn = database.getConnection();
       preStmt = conn.prepareStatement(sql);
 
       preStmt.setInt(1, aId);
-      try (ResultSet rs = preStmt.executeQuery();) {
-        while (rs.next()) {
-          int reviewStatusId = rs.getInt("status");
-          reviewStatusEnum = reviewStatusDbManager.getReviewStatusById(reviewStatusId);
-
-        }
+      rs = preStmt.executeQuery();
+      while (rs.next()) {
+        int reviewStatusId = rs.getInt("status");
+        reviewStatusEnum = reviewStatusDbManager.getReviewStatusById(reviewStatusId);
       }
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
     } finally {
-      CloseDBUtil.closeAll(preStmt, conn);
+      CloseDBUtil.closeAll(rs, preStmt, conn);
     }
     return reviewStatusEnum;
   }
@@ -166,6 +165,11 @@ public class ReviewOrderDbManager {
     }
   }
 
+  /**
+   * delete review order by id.
+   *
+   * @param id review order id
+   */
   public void deleteReviewOrderById(int id) {
     String sql = "DELETE FROM Review_Order WHERE id = ?";
 
