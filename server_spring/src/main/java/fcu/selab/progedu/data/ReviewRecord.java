@@ -6,7 +6,7 @@ public class ReviewRecord {
 
   private int id;
 
-  private int pmId;
+  private int roId;
 
   private int rsmId;
 
@@ -26,12 +26,12 @@ public class ReviewRecord {
     this.id = id;
   }
 
-  public int getPmId() {
-    return pmId;
+  public int getRoId() {
+    return roId;
   }
 
-  public void setPmId(int pmId) {
-    this.pmId = pmId;
+  public void setRoId(int roId) {
+    this.roId = roId;
   }
 
   public int getRsmId() {

@@ -33,14 +33,6 @@ public class AssignmentTime{
     this.aId = aId;
   }
 
-  public int getAaId() {
-    return aaId;
-  }
-
-  public void setAaId(int aaId) {
-    this.aaId = aaId;
-  }
-
   public Date getReleaseTime() {
     return releaseTime;
   }

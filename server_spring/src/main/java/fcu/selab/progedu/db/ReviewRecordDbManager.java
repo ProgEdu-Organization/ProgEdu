@@ -25,16 +25,16 @@ public class ReviewRecordDbManager {
   /**
    * Insert review record into db
    *
-   * @param pmId        pair matching Id
+   * @param roId        pair matching Id
    * @param rsmId       review setting metrics Id
    * @param score       score
    * @param time        time
    * @param feedback    feedback
    * @param reviewOrder reviewOrder
    */
-  public void insertReviewRecord(int pmId, int rsmId, int score, Date time,
+  public void insertReviewRecord(int roId, int rsmId, int score, Date time,
                                  String feedback, int reviewOrder) throws SQLException {
-    String query = "INSERT INTO Review_Record(pmId, rsmId, score, time, feedback, round)"
+    String query = "INSERT INTO Review_Record(roId, rsmId, score, time, feedback, round)"
         + " VALUES (?,?,?,?,?,?);";
     Timestamp timeTimestamp = new Timestamp(time.getTime());
     Connection conn = null;
@@ -44,7 +44,7 @@ public class ReviewRecordDbManager {
       conn = database.getConnection();
       preStmt = conn.prepareStatement(query);
 
-      preStmt.setInt(1, pmId);
+      preStmt.setInt(1, roId);
       preStmt.setInt(2, rsmId);
       preStmt.setInt(3, score);
       preStmt.setTimestamp(4, timeTimestamp);
@@ -76,14 +76,14 @@ public class ReviewRecordDbManager {
 
       rs = preStmt.executeQuery();
       while (rs.next()) {
-        int pmId = rs.getInt("pmId");
+        int roId = rs.getInt("roId");
         int rsmId = rs.getInt("rsmId");
         int score = rs.getInt("score");
         Date time = rs.getTimestamp("time");
         String feedback = rs.getString("feedback");
         int round = rs.getInt("round");
         reviewRecord.setId(id);
-        reviewRecord.setPmId(pmId);
+        reviewRecord.setRoId(roId);
         reviewRecord.setRsmId(rsmId);
         reviewRecord.setScore(score);
         reviewRecord.setTime(time);
@@ -97,15 +97,15 @@ public class ReviewRecordDbManager {
   }
 
   /**
-   * Get review record by specific pair matching Id
+   * Get review record by specific review order Id
    *
-   * @param pmId pair matching Id
+   * @param roId review order Id
    * @param order review order
    * @return review record from specific owner, reviewer and assignment
    */
-  public List<ReviewRecord> getReviewRecordByPairMatchingId(int pmId, int order)
+  public List<ReviewRecord> getReviewRecordByReviewOrderId(int roId, int order)
       throws SQLException {
-    String query = "SELECT * FROM Review_Record WHERE pmId = ? AND reviewOrder = ?";
+    String query = "SELECT * FROM Review_Record WHERE roId = ? AND reviewOrder = ?";
     List<ReviewRecord> reviewRecordList = new ArrayList<>();
     Connection conn = null;
     PreparedStatement preStmt = null;
@@ -115,7 +115,7 @@ public class ReviewRecordDbManager {
       conn = database.getConnection();
       preStmt = conn.prepareStatement(query);
 
-      preStmt.setInt(1, pmId);
+      preStmt.setInt(1, roId);
       preStmt.setInt(2, order);
       rs = preStmt.executeQuery();
       while (rs.next()) {
@@ -127,7 +127,7 @@ public class ReviewRecordDbManager {
         int round = rs.getInt("round");
         ReviewRecord reviewRecord = new ReviewRecord();
         reviewRecord.setId(id);
-        reviewRecord.setPmId(pmId);
+        reviewRecord.setRoId(roId);
         reviewRecord.setRsmId(rsmId);
         reviewRecord.setScore(score);
         reviewRecord.setTime(time);
@@ -144,12 +144,12 @@ public class ReviewRecordDbManager {
   /**
    * Whether the reviewer reviewed specific pair matching in the first time or not
    *
-   * @param pmId pair matching id
+   * @param roId pair matching id
    *
    * @return isFirstTime  return boolean
    */
-  public boolean isFirstTimeReviewRecord(int pmId) throws SQLException {
-    String query = "SELECT COUNT(*) AS isFirstTime FROM Review_Record WHERE pmId = ?";
+  public boolean isFirstTimeReviewRecord(int roId) throws SQLException {
+    String query = "SELECT COUNT(*) AS isFirstTime FROM Review_Record WHERE roId = ?";
     boolean isFirstTime = false;
     Connection conn = null;
     PreparedStatement preStmt = null;
@@ -159,7 +159,7 @@ public class ReviewRecordDbManager {
       conn = database.getConnection();
       preStmt = conn.prepareStatement(query);
 
-      preStmt.setInt(1, pmId);
+      preStmt.setInt(1, roId);
       rs = preStmt.executeQuery();
       while (rs.next()) {
         int count = rs.getInt("isFirstTime");
@@ -176,12 +176,12 @@ public class ReviewRecordDbManager {
   /**
    * Get latest review order number for specific pair matching
    *
-   * @param pmId pair matching id
+   * @param roId pair matching id
    *
    * @return reviewOrder review order
    */
-  public int getLatestRound(int pmId) throws SQLException {
-    String query = "SELECT MAX(round) AS latestCount FROM Review_Record WHERE pmId = ?";
+  public int getLatestRound(int roId) throws SQLException {
+    String query = "SELECT MAX(round) AS latestCount FROM Review_Record WHERE roId = ?";
     int latestCount = -1;
     Connection conn = null;
     PreparedStatement preStmt = null;
@@ -191,7 +191,7 @@ public class ReviewRecordDbManager {
       conn = database.getConnection();
       preStmt = conn.prepareStatement(query);
 
-      preStmt.setInt(1, pmId);
+      preStmt.setInt(1, roId);
       rs = preStmt.executeQuery();
       while (rs.next()) {
         latestCount = rs.getInt("latestCount");
@@ -205,11 +205,11 @@ public class ReviewRecordDbManager {
   /**
    * delete review record by pair matching id
    *
-   * @param pmId pair matching id
+   * @param roId pair matching id
    * @throws SQLException SQLException
    */
-  public void deleteReviewRecordByPmId(int pmId) throws SQLException {
-    String query = "DELETE FROM Review_Record WHERE pmId = ?";
+  public void deleteReviewRecordByPmId(int roId) throws SQLException {
+    String query = "DELETE FROM Review_Record WHERE roId = ?";
     Connection conn = null;
     PreparedStatement preStmt = null;
 
@@ -217,7 +217,7 @@ public class ReviewRecordDbManager {
       conn = database.getConnection();
       preStmt = conn.prepareStatement(query);
 
-      preStmt.setInt(1, pmId);
+      preStmt.setInt(1, roId);
       preStmt.executeUpdate();
     } finally {
       CloseDBUtil.closeAll(preStmt, conn);

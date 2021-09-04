@@ -37,7 +37,7 @@ public class AssignmentActionDbManager {
    * @throws SQLException
    */
   public AssignmentActionEnum getAssignmentActionById(int id) throws SQLException {
-    String query = "SELECT action FROM Assignment_Aciton WHERE id = ?";
+    String query = "SELECT action FROM Assignment_Action WHERE id = ?";
     String assignmentAction = null;
     Connection conn = null;
     PreparedStatement preStmt = null;
@@ -71,7 +71,7 @@ public class AssignmentActionDbManager {
    * @throws SQLException
    */
   public int getAssignmentActionIdByAction(String action) {
-    String query = "SELECT id FROM Assignment_Aciton WHERE action = ?";
+    String query = "SELECT id FROM Assignment_Action WHERE action = ?";
     int id = 0;
 
     Connection conn = null;

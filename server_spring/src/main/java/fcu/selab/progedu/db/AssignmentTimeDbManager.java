@@ -48,7 +48,7 @@ public class AssignmentTimeDbManager {
    * @param assignmentTime assignment time
    */
   public void addAssignmentTime(String assignmentName, AssignmentTime assignmentTime)  {
-    String sql = "INSERT INTO Assignment_Time(`aId`, `aaId`, `releaseTime`, `deadline` VALUES(?, ?, ?, ?)";
+    String sql = "INSERT INTO Assignment_Time(`aId`, `aaId`, `releaseTime`, `deadline`) VALUES(?, ?, ?, ?)";
 
     Connection conn = null;
     PreparedStatement preStmt = null;
@@ -57,7 +57,7 @@ public class AssignmentTimeDbManager {
 
       Timestamp deadlineTime = new Timestamp(assignmentTime.getDeadline().getTime());
       Timestamp releaseTime = new Timestamp(assignmentTime.getReleaseTime().getTime());
-      Integer actionId = aaDb.getAssignmentActionIdByAction(assignmentTime.getActionEnum().getActionName());
+      Integer actionId = aaDb.getAssignmentActionIdByAction(assignmentTime.getActionEnum().toString());
       conn = database.getConnection();
       preStmt = conn.prepareStatement(sql);
 
@@ -97,7 +97,7 @@ public class AssignmentTimeDbManager {
         AssignmentTime assignmentTime = new AssignmentTime();
         assignmentTime.setId(rs.getInt("id"));
         assignmentTime.setAId(rs.getInt("aId"));
-        assignmentTime.setAaId(rs.getInt("aaId"));
+        assignmentTime.setActionEnum(aaDb.getAssignmentActionById(rs.getInt("aaId")));
         assignmentTime.setReleaseTime(rs.getTimestamp("releaseTime"));
         assignmentTime.setDeadline(rs.getTimestamp("deadline"));
         assignmentTimeList.add(assignmentTime);
@@ -133,7 +133,7 @@ public class AssignmentTimeDbManager {
       while (rs.next()) {
         AssignmentTime assignmentTime = new AssignmentTime();
         assignmentTime.setAId(rs.getInt("aId"));
-        assignmentTime.setAaId(rs.getInt("aaId"));
+        assignmentTime.setActionEnum(aaDb.getAssignmentActionById(rs.getInt("aaId")));
         assignmentTime.setReleaseTime(rs.getTimestamp("releaseTime"));
         assignmentTime.setDeadline(rs.getTimestamp("deadline"));
         assignmentTimeList.add(assignmentTime);
@@ -163,7 +163,7 @@ public class AssignmentTimeDbManager {
       preStmt.setTimestamp(1, releaseTimestamp);
       preStmt.setTimestamp(2, deadlineTimestamp);
       preStmt.setInt(3, assignmentTime.getAId());
-      preStmt.setInt(4, assignmentTime.getAaId());
+      preStmt.setInt(4, aaDb.getAssignmentActionIdByAction(assignmentTime.getActionEnum().toString()));
       preStmt.executeUpdate();
 
     } catch (Exception e) {
@@ -198,7 +198,7 @@ public class AssignmentTimeDbManager {
       rs = preStmt.executeQuery();
       while (rs.next()) {
         assignmentTime.setAId(rs.getInt("aId"));
-        assignmentTime.setAaId(rs.getInt("aaId"));
+        assignmentTime.setActionEnum(aaDb.getAssignmentActionById(rs.getInt("aaId")));
         assignmentTime.setReleaseTime(rs.getTimestamp("releaseTime"));
         assignmentTime.setDeadline(rs.getTimestamp("deadline"));
       }
@@ -272,7 +272,7 @@ public class AssignmentTimeDbManager {
       rs = preStmt.executeQuery();
       while (rs.next()) {
         assignmentTime.setAId(rs.getInt("aId"));
-        assignmentTime.setAaId(rs.getInt("aaId"));
+        assignmentTime.setActionEnum(aaDb.getAssignmentActionById(rs.getInt("aaId")));
         assignmentTime.setReleaseTime(rs.getTimestamp("releaseTime"));
         assignmentTime.setDeadline(rs.getTimestamp("deadline"));
       }
@@ -304,7 +304,7 @@ public class AssignmentTimeDbManager {
       rs = preStmt.executeQuery();
       while (rs.next()) {
         assignmentTime.setAId(rs.getInt("aId"));
-        assignmentTime.setAaId(rs.getInt("aaId"));
+        assignmentTime.setActionEnum(aaDb.getAssignmentActionById(rs.getInt("aaId")));
         assignmentTime.setReleaseTime(rs.getTimestamp("releaseTime"));
         assignmentTime.setDeadline(rs.getTimestamp("deadline"));
       }

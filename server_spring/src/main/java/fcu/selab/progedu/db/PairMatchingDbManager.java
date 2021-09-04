@@ -30,12 +30,10 @@ public class PairMatchingDbManager {
    *
    * @param auId     assignment Id
    * @param reviewId user Id
-   * @param status   status
    */
-  public void insertPairMatching(int auId, int reviewId, ReviewStatusEnum status)
+  public void insertPairMatching(int auId, int reviewId)
       throws SQLException {
-    String query = "INSERT INTO Pair_Matching(auId, reviewId, status) VALUES(?,?,?)";
-    int statusId = rsDb.getReviewStatusIdByStatus(status.getTypeName());
+    String query = "INSERT INTO Pair_Matching(auId, reviewId) VALUES(?,?)";
 
     Connection conn = null;
     PreparedStatement preStmt = null;
@@ -47,7 +45,6 @@ public class PairMatchingDbManager {
 
       preStmt.setInt(1, auId);
       preStmt.setInt(2, reviewId);
-      preStmt.setInt(3, statusId);
       preStmt.executeUpdate();
     } finally {
       CloseDBUtil.closeAll(preStmt, conn);
@@ -62,8 +59,7 @@ public class PairMatchingDbManager {
    */
   public void insertPairMatchingList(List<PairMatching> pairMatchingList) throws SQLException {
     for (PairMatching pairMatching: pairMatchingList) {
-      insertPairMatching(pairMatching.getAuId(), pairMatching.getReviewId(),
-          pairMatching.getReviewStatusEnum());
+      insertPairMatching(pairMatching.getAuId(), pairMatching.getReviewId());
     }
   }
 
@@ -89,13 +85,9 @@ public class PairMatchingDbManager {
       while (rs.next()) {
         int id = rs.getInt("id");
         int auId = rs.getInt("auId");
-        int reviewId = rs.getInt("reviewId");
-        ReviewStatusEnum status = rsDb.getReviewStatusById(rs.getInt("status"));
         PairMatching pairMatching = new PairMatching();
         pairMatching.setId(id);
         pairMatching.setAuId(auId);
-        pairMatching.setReviewId(reviewId);
-        pairMatching.setReviewStatusEnum(status);
         pairMatchingList.add(pairMatching);
       }
 
@@ -130,11 +122,9 @@ public class PairMatchingDbManager {
       while (rs.next()) {
         int auId = rs.getInt("auId");
         int reviewId = rs.getInt("reviewId");
-        ReviewStatusEnum status = rsDb.getReviewStatusById(rs.getInt("status"));
         pairMatching.setId(id);
         pairMatching.setAuId(auId);
         pairMatching.setReviewId(reviewId);
-        pairMatching.setReviewStatusEnum(status);
       }
 
     } finally {
@@ -168,11 +158,9 @@ public class PairMatchingDbManager {
       rs = preStmt.executeQuery();
       while (rs.next()) {
         int id = rs.getInt("id");
-        ReviewStatusEnum status = rsDb.getReviewStatusById(rs.getInt("status"));
         pairMatching.setId(id);
         pairMatching.setAuId(auId);
         pairMatching.setReviewId(reviewId);
-        pairMatching.setReviewStatusEnum(status);
       }
 
     } finally {
@@ -207,12 +195,10 @@ public class PairMatchingDbManager {
       while (rs.next()) {
         int id = rs.getInt("id");
         int reviewId = rs.getInt("reviewId");
-        ReviewStatusEnum status = rsDb.getReviewStatusById(rs.getInt("status"));
         PairMatching pairMatching = new PairMatching();
         pairMatching.setId(id);
         pairMatching.setAuId(auId);
         pairMatching.setReviewId(reviewId);
-        pairMatching.setReviewStatusEnum(status);
         pairMatchingList.add(pairMatching);
       }
 
@@ -262,9 +248,7 @@ public class PairMatchingDbManager {
    */
   public List<PairMatching> getPairMatchingByAidAndReviewId(int aid, int reviewId)
       throws SQLException {
-    String query = "SELECT pm.id, pm.auId, pm.reviewId, pm.status FROM "
-        + "Pair_Matching AS pm, Assignment_User AS au "
-        + "WHERE au.id = pm.auId AND au.aId = ? AND pm.reviewId = ?;";
+    String query = "SELECT pm.* FROM Pair_Matching AS pm, Assignment_User AS au WHERE au.id = pm.auId AND au.aId = ? AND pm.reviewId = ?;";
     List<PairMatching> pairMatchingList = new ArrayList<>();
 
     Connection conn = null;
@@ -283,12 +267,10 @@ public class PairMatchingDbManager {
       while (rs.next()) {
         int id = rs.getInt("id");
         int auId = rs.getInt("auId");
-        ReviewStatusEnum status = rsDb.getReviewStatusById(rs.getInt("status"));
         PairMatching pairMatching = new PairMatching();
         pairMatching.setId(id);
         pairMatching.setAuId(auId);
         pairMatching.setReviewId(reviewId);
-        pairMatching.setReviewStatusEnum(status);
         pairMatchingList.add(pairMatching);
       }
 
@@ -323,12 +305,10 @@ public class PairMatchingDbManager {
       while (rs.next()) {
         int id = rs.getInt("id");
         int auId = rs.getInt("auId");
-        ReviewStatusEnum status = rsDb.getReviewStatusById(rs.getInt("status"));
         PairMatching pairMatching = new PairMatching();
         pairMatching.setId(id);
         pairMatching.setAuId(auId);
         pairMatching.setReviewId(reviewId);
-        pairMatching.setReviewStatusEnum(status);
         pairMatchingList.add(pairMatching);
       }
     } finally {
@@ -377,33 +357,33 @@ public class PairMatchingDbManager {
    *
    * @param auId assignment user id
    */
-  public boolean checkStatusUpdated(int auId) throws SQLException {
-    String query = "SELECT COUNT(status) AS count FROM Pair_Matching WHERE auId = ? AND status = 1";
-    boolean haveUpdated = false;
-
-    Connection conn = null;
-    PreparedStatement preStmt = null;
-    ResultSet rs = null;
-
-    try {
-      conn = database.getConnection();
-      preStmt = conn.prepareStatement(query);
-
-      preStmt.setInt(1, auId);
-      rs = preStmt.executeQuery();
-      while (rs.next()) {
-        int count = rs.getInt("count");
-        if (count == 0) {
-          haveUpdated = true;
-        }
-      }
-
-    } finally {
-      CloseDBUtil.closeAll(rs, preStmt, conn);
-    }
-
-    return haveUpdated;
-  }
+//  public boolean checkStatusUpdated(int auId) throws SQLException {
+//    String query = "SELECT COUNT(status) AS count FROM Pair_Matching WHERE auId = ? AND status = 1";
+//    boolean haveUpdated = false;
+//
+//    Connection conn = null;
+//    PreparedStatement preStmt = null;
+//    ResultSet rs = null;
+//
+//    try {
+//      conn = database.getConnection();
+//      preStmt = conn.prepareStatement(query);
+//
+//      preStmt.setInt(1, auId);
+//      rs = preStmt.executeQuery();
+//      while (rs.next()) {
+//        int count = rs.getInt("count");
+//        if (count == 0) {
+//          haveUpdated = true;
+//        }
+//      }
+//
+//    } finally {
+//      CloseDBUtil.closeAll(rs, preStmt, conn);
+//    }
+//
+//    return haveUpdated;
+//  }
 
   /**
    * Upload status by id
@@ -411,24 +391,24 @@ public class PairMatchingDbManager {
    * @param status review status
    * @param id pair matching id
    */
-  public void updatePairMatchingById(int status, int id) throws SQLException {
-    String query = "UPDATE ProgEdu.Pair_Matching SET status = ? WHERE id = ?";
-
-    Connection conn = null;
-    PreparedStatement preStmt = null;
-
-    try {
-
-      conn = database.getConnection();
-      preStmt = conn.prepareStatement(query);
-
-      preStmt.setInt(1, status);
-      preStmt.setInt(2, id);
-      preStmt.executeUpdate();
-    } finally {
-      CloseDBUtil.closeAll(preStmt, conn);
-    }
-  }
+//  public void updatePairMatchingById(int status, int id) throws SQLException {
+//    String query = "UPDATE ProgEdu.Pair_Matching SET status = ? WHERE id = ?";
+//
+//    Connection conn = null;
+//    PreparedStatement preStmt = null;
+//
+//    try {
+//
+//      conn = database.getConnection();
+//      preStmt = conn.prepareStatement(query);
+//
+//      preStmt.setInt(1, status);
+//      preStmt.setInt(2, id);
+//      preStmt.executeUpdate();
+//    } finally {
+//      CloseDBUtil.closeAll(preStmt, conn);
+//    }
+//  }
 
   /**
    * Delete pair matching by id

@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.jolbox.bonecp.ConnectionTesterThread;
 import fcu.selab.progedu.data.AssignmentUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -253,6 +254,33 @@ public class AssignmentUserDbManager {
     } catch (SQLException e) {
       e.printStackTrace();
     }
+  }
+
+  public int getPmIdByAssignmentByAssignmentId(int assignmentId){
+    String sql = "SELECT a_u.id FROM Assignment a JOIN ProgEdu.Assignment_User a_u ON a.id = a_u.aId WHERE a.id = ?";
+
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+
+    int pmId = 0;
+
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+      preStmt.setInt(1, assignmentId);
+
+      try (ResultSet rs = preStmt.executeQuery();){
+        while(rs.next()){
+          pmId = rs.getInt("id");
+        }
+      }
+    } catch (Exception e){
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(preStmt, conn);
+    }
+    return pmId;
   }
 
 }
