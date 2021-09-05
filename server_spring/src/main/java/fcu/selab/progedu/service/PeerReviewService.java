@@ -178,9 +178,12 @@ public class PeerReviewService {
 
   /**
    * get all user's status of reviewing other's hw
+   *
+   * @param assignmentName assignment name
    */
   @GetMapping("/status/allUsers")
-  public ResponseEntity<Object> getAllReviewStatus() {
+  public ResponseEntity<Object> getAllReviewStatus(
+          @RequestParam("assignmentName") String assignmentName) {
 
     HttpHeaders headers = new HttpHeaders();
     headers.add("Content-Type", "application/json");
@@ -190,14 +193,27 @@ public class PeerReviewService {
       JSONArray array = new JSONArray();
       JSONObject result = new JSONObject();
       List<User> users = getStudents();
+      int aId = assignmentDbManager.getAssignmentIdByName(assignmentName);
+      int rounds = assignmentTimeDbManager.getAssignmentTotalRound(aId);
+      ReviewSetting reviewSetting = reviewSettingDbManager.getReviewSetting(aId);
+
       for (User user : users) {
         String username = user.getUsername();
-        ResponseEntity<Object> reviewStatus = getReviewStatus(username);
         JSONObject ob = new JSONObject();
         ob.put("username", username);
         ob.put("name", user.getName());
         ob.put("display", user.getDisplay());
-        ob.put("reviewStatus", reviewStatus.getBody());
+        int currentRound = 1;
+        JSONArray userRoundArray = new JSONArray();
+        for(currentRound = 1; currentRound <= rounds; currentRound++) {
+          JSONObject roundObject = new JSONObject();
+          roundObject.put("round", currentRound);
+          roundObject.put("amount", reviewSetting.getAmount());
+          roundObject.put("count", getReviewCompletedCount(aId, user.getId(), currentRound));
+
+          userRoundArray.add(roundObject);
+        }
+        ob.put("reviewRound", userRoundArray);
 
         array.add(ob);
       }
