@@ -15,6 +15,7 @@ let createReviewRecord: string = environment.NEW_SERVER_URL + '/peerReview/creat
 let getSourceCode: string = environment.NEW_SERVER_URL + '/peerReview/sourceCode';
 
 let getOneUserReviewedRecord: string = environment.NEW_SERVER_URL + '/peerReview/record/oneUser';
+let getOneUserReviewedRoundStatus: string = environment.NEW_SERVER_URL + '/peerReview/status/oneUser';
 
 export const PeerReviewAPI = {
     getAllReviewedRecord: getAllReviewedRecord,
@@ -26,5 +27,6 @@ export const PeerReviewAPI = {
     getReviewStatusPageDetail: getReviewStatusPageDetail,
     createReviewRecord: createReviewRecord,
     getSourceCode: getSourceCode,
-    getOneUserReviewedRecord: getOneUserReviewedRecord
+    getOneUserReviewedRecord: getOneUserReviewedRecord,
+    getOneUserReviewedRoundStatus: getOneUserReviewedRoundStatus
 }

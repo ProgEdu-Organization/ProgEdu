@@ -18,6 +18,7 @@ export class ReviewRoundStudashboardComponent implements OnInit {
 
   public assignmentTable: Array<any> = new Array<any>();
   public reviewDetail: Array<any> = new Array<any>();
+  public reviewStatus: Array<any> = new Array<any>();
   public studentCommitRecord: JSON;
   public username: string;
   public assignmentName: string;
@@ -62,6 +63,12 @@ export class ReviewRoundStudashboardComponent implements OnInit {
   async getReviewDetail() {
     this.reviewRoundStudashboardService.getReviewDetail(this.username, this.assignmentName).subscribe(response => {
       this.reviewDetail = response.allStatusDetail;
+    })
+  }
+
+  async getReviewRoundStatus() {
+    this.reviewRoundStudashboardService.getReviewRoundStatus(this.username, this.assignmentName).subscribe(response => {
+      this.reviewStatus = response;
     })
   }
 
