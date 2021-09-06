@@ -58,7 +58,8 @@ public class PeerReviewService {
           @RequestParam("username") String username,
           @RequestParam("reviewedName") String reviewedName,
           @RequestParam("assignmentName") String assignmentName,
-          @RequestParam("reviewRecord") String reviewRecord) {
+          @RequestParam("reviewRecord") String reviewRecord,
+          @RequestParam("round") int round) {
 
     HttpHeaders headers = new HttpHeaders();
     headers.add("Access-Control-Allow-Origin", "*");
@@ -102,7 +103,7 @@ public class PeerReviewService {
 //      pairMatchingDbManager.updatePairMatchingById(status, pmId);
 
 
-      ReviewOrder reviewOrderSett = reviewOrderDbManager.getReviewOrderByPmId(pmId);
+      ReviewOrder reviewOrderSett = reviewOrderDbManager.getAllReviewOrderByPmId(pmId, round);
       //TODO 還要把ReviewOrderData根據review order 跟 peerMatchingId加到資料庫
 
       // 4. Check which time have been reviewed, and upload the review order

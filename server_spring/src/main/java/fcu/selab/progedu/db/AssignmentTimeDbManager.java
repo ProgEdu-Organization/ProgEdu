@@ -38,7 +38,7 @@ public class AssignmentTimeDbManager {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(AssignmentDbManager.class);
 
-  private AssignmentTimeDbManager(){
+  private AssignmentTimeDbManager() {
 
   }
 
@@ -247,7 +247,7 @@ public class AssignmentTimeDbManager {
     }
     return assignmentTime;
   }
-  public void deleteAssignmentTimeById(int id){
+  public void deleteAssignmentTimeById(int id) {
     String sql = "DELETE FROM Assignment_Time WHERE aid = ?";
 
     Connection conn = null;
@@ -267,7 +267,7 @@ public class AssignmentTimeDbManager {
     }
   }
 
-  public void deleteAssignmentTimeByName(String name){
+  public void deleteAssignmentTimeByName(String name) {
     String sql = "DELETE FROM Assignment_Time a_t JOIN Assignment a ON a.id = a_t.aId WHERE a.name = ?";
 
     Connection conn = null;

@@ -39,17 +39,16 @@ public class ReviewOrderDbManager {
    * @param reviewOrder review status
    * @throws SQLException sqlException
    */
-  public void insertReviewOrder(int pmId, ReviewStatusEnum reviewStatusEnum, int reviewOrder) throws SQLException {
+  public void insertReviewOrder(int pmId, ReviewStatusEnum reviewStatusEnum, int reviewOrder) {
     String sql = "INSERT INTO Review_Order(pmId, status, reviewOrder) VALUES (? ,? , ?)";
 
     Connection conn = null;
     PreparedStatement preStmt = null;
 
-    int reviewStatus = reviewStatusDbManager.getReviewStatusIdByStatus(reviewStatusEnum.toString());
-
     try {
       conn = database.getConnection();
       preStmt = conn.prepareStatement(sql);
+      int reviewStatus = reviewStatusDbManager.getReviewStatusIdByStatus(reviewStatusEnum.toString());
 
       preStmt.setInt(1, pmId);
       preStmt.setInt(2, reviewStatus);
@@ -71,37 +70,38 @@ public class ReviewOrderDbManager {
    * @return review order
    * @throws SQLException exception
    */
-//  public List<ReviewOrder> getAllReviewOrderByPmId(int pmId) throws SQLException {
-//
-//    String sql = "SELECT * FROM ProgEdu.Review_Order WHERE pmId = ?";
-//
-//    Connection conn = null;
-//    PreparedStatement preStmt = null;
-//    ResultSet rs = null;
-//
-//    ReviewOrder reviewOrder = new ReviewOrder();
-//
-//    try {
-//      conn = database.getConnection();
-//      preStmt = conn.prepareStatement(sql);
-//
-//      preStmt.setInt(1, pmId);
-//      rs = preStmt.executeQuery();
-//      while (rs.next()) {
-//        int statusId = rs.getInt("status");
-//        reviewOrder.setId(rs.getInt("id"));
-//        reviewOrder.setPmId(pmId);
-//        reviewOrder.setReviewStatusEnum(reviewStatusDbManager.getReviewStatusById(statusId));
-//        reviewOrder.setReviewOrder(rs.getInt("reviewOrder"));
-//      }
-//    } catch (SQLException e) {
-//      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
-//      LOGGER.error(e.getMessage());
-//    } finally {
-//      CloseDBUtil.closeAll(rs, preStmt, conn);
-//    }
-//    return reviewOrder;
-//  }
+  public ReviewOrder getAllReviewOrderByPmId(int pmId, int round) {
+
+    String sql = "SELECT * FROM ProgEdu.Review_Order WHERE pmId = ? AND round = ?";
+
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
+
+    ReviewOrder reviewOrder = new ReviewOrder();
+
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
+      preStmt.setInt(1, pmId);
+      preStmt.setInt(2, round);
+      rs = preStmt.executeQuery();
+      while (rs.next()) {
+        int statusId = rs.getInt("status");
+        reviewOrder.setId(rs.getInt("id"));
+        reviewOrder.setPmId(pmId);
+        reviewOrder.setReviewStatusEnum(reviewStatusDbManager.getReviewStatusById(statusId));
+        reviewOrder.setReviewOrder(rs.getInt("round"));
+      }
+    } catch (SQLException e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(rs, preStmt, conn);
+    }
+    return reviewOrder;
+  }
 
 
   /**
@@ -111,7 +111,7 @@ public class ReviewOrderDbManager {
    * @return review ststus enum
    * @throws SQLException exception
    */
-  public List<ReviewOrder> getReviewOrderByAid(int aId, int round) throws SQLException {
+  public List<ReviewOrder> getReviewOrderByAid(int aId, int round) {
     String sql = "SELECT r_o.* FROM Pair_Matching AS p_m, " +
             "Assignment_User AS a_u, Review_Order AS r_o " +
             "WHERE p_m.auId = a_u.id AND p_m.id = r_o.pmId AND a_u.aId = ? AND r_o.round = ?";
@@ -151,7 +151,6 @@ public class ReviewOrderDbManager {
    *
    * @param id review order id
    * @param status status
-   * @param reviewOrder review order
    */
   public void updateReviewStatusById(int id, int status) {
     String sql = "UPDATE Review_Order SET status = ? WHERE id = ?";

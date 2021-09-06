@@ -27,8 +27,6 @@ public class ReviewSettingDbManager {
    *
    * @param aid         assignment Id
    * @param amount      reviewer amount
-   * @param releaseTime releaseTime
-   * @param deadline    deadline
    */
   public void insertReviewSetting(int aid, int amount, int round) throws SQLException {
     String query = "INSERT INTO Review_Setting(aId, amount, round)"
