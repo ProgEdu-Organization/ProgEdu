@@ -225,4 +225,39 @@ public class ReviewOrderDbManager {
     }
     return reviewStatusEnum;
   }
+
+  /**
+   * get review order id by review order and pmId.
+   *
+   * @param pmId peer match id
+   * @param reviewOrder review order
+   * @return roId review order id
+   */
+  public int getReviewOrderId(int pmId, int reviewOrder) {
+    String sql = "SELECT `id` FROM ProgEdu.Review_Order WHERE `pmId` = ? AND `reviewOrder` = ?";
+    int roId = -1;
+
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
+
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
+      preStmt.setInt(1, pmId);
+      preStmt.setInt(2, reviewOrder);
+
+      rs = preStmt.executeQuery();
+      while (rs.next()) {
+        roId = rs.getInt("id");
+      }
+    } catch (SQLException e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(rs, preStmt, conn);
+    }
+    return roId;
+  }
 }

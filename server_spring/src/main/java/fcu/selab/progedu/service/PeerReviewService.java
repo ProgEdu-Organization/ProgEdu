@@ -99,7 +99,10 @@ public class PeerReviewService {
       // 3. Upload the status of pair matching
       int status = reviewStatusDbManager
               .getReviewStatusIdByStatus(ReviewStatusEnum.COMPLETED.getTypeName());
-      pairMatchingDbManager.updatePairMatchingById(status, pmId);
+
+
+      ReviewOrder reviewOrderSett = reviewOrderDbManager.getReviewOrderByPmId(pmId);
+      //TODO 還要把ReviewOrderData根據review order 跟 peerMatchingId加到資料庫
 
       // 4. Check which time have been reviewed, and upload the review order
       if (!reviewRecordDbManager.isFirstTimeReviewRecord(pmId)) {

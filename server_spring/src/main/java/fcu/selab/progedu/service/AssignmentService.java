@@ -17,6 +17,7 @@ import fcu.selab.progedu.utils.JavaIoUtile;
 import fcu.selab.progedu.utils.ZipHandler;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
+import net.minidev.json.JSONValue;
 import net.minidev.json.parser.JSONParser;
 import org.apache.commons.io.IOUtils;
 import org.gitlab.api.models.GitlabProject;
@@ -35,10 +36,8 @@ import org.jsoup.nodes.Document;
 
 import java.io.*;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.TimeZone;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 import org.springframework.web.multipart.MultipartFile;
 
@@ -440,20 +439,20 @@ public class AssignmentService {
           @RequestParam("assignmentName") String assignmentName,
           @RequestParam("releaseTime") Date releaseTime, @RequestParam("deadline") Date deadline,
           @RequestParam("readMe") String readMe,
-          @RequestParam("order") String assignmentCompileOrdersAndScore, @RequestParam("action") AssignmentActionEnum actionEnum) {
+          @RequestParam("order") String assignmentCompileOrdersAndScore) {
 
     HttpHeaders headers = new HttpHeaders();
     headers.add("Access-Control-Allow-Origin", "*");
-
+    //
     int aid = dbManager.getAssignmentIdByName(assignmentName);
-    AssignmentTime assignmentTime = new AssignmentTime();
-    assignmentTime.setReleaseTime(releaseTime);
-    assignmentTime.setDeadline(deadline);
+    dbManager.editAssignment(readMe, aid);
 
     List<AssignmentTime> assignmentTimes = atDbManager.getAssignmentTimeByName(assignmentName);
 
-//    atDbManager.editAssignmentTime(assignmentTime, atId);
-    dbManager.editAssignment(readMe, aid);
+    assignmentTimes.get(0).setReleaseTime(releaseTime);
+    assignmentTimes.get(0).setDeadline(deadline);
+
+    atDbManager.editAssignmentTime(assignmentTimes.get(0));
 
     if (!assignmentCompileOrdersAndScore.isEmpty()) {
       List<Integer> aaIds = aaDbManager.getAssignmentAssessmentIdByaId(aid);
@@ -496,7 +495,6 @@ public class AssignmentService {
       gitlabService.deleteProjects(name);
 
       // delete Jenkins
-
       List<User> users = userService.getStudents();
 
       for (User user : users) {
@@ -781,6 +779,67 @@ public class AssignmentService {
 
   }
 
+  @GetMapping("assignmentType")
+  public ResponseEntity<Object> getAssignmentType(
+          @RequestParam("assignmentName") String assignmentName) {
 
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("Access-Control-Allow-Origin", "*");
 
+    try {
+      List<AssignmentTime> assignmentTimes = atDbManager.getAssignmentTimeByName(assignmentName);
+      int assignmentTimesLength = assignmentTimes.size();
+      JSONObject assignmentTypeObject = new JSONObject();
+
+      if(assignmentTimesLength == 1 || assignmentTimesLength == 0) {
+        assignmentTypeObject.put("type", "autoAssignment");
+      } else {
+        assignmentTypeObject.put("type", "peerReview");
+      }
+      return new ResponseEntity<Object>(assignmentTypeObject, headers, HttpStatus.OK);
+    } catch (Exception e) {
+      return new ResponseEntity<Object>(e.getMessage(), headers, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  @PostMapping("peerReview/edit")
+  public ResponseEntity<Object> editPeerReview(
+                  @RequestParam("assignmentName") String assignmentName,
+                  @RequestParam("readMe") String readMe,
+                  @RequestParam("reviewTimes") String reviewTimes) {
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("Access-Control-Allow-Origin", "*");
+    //
+    int aid = dbManager.getAssignmentIdByName(assignmentName);
+    dbManager.editAssignment(readMe, aid);
+
+    List<AssignmentTime> assignmentTimes = atDbManager.getAssignmentTimeNameById(aid);
+    JSONArray jsonArray = (JSONArray) JSONValue.parse(reviewTimes);
+    SimpleDateFormat formatter = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", Locale.ENGLISH);
+    try {
+      for(int i = 0; i < jsonArray.size(); i++) {
+        JSONObject object = (JSONObject) jsonArray.get(i);
+        for(String assignmentAction : object.keySet()) {
+
+          for(AssignmentTime assignmentTime : assignmentTimes) {
+
+            if(assignmentTime.getActionEnum().equals(AssignmentActionEnum.getAssignmentActionEnum(assignmentAction))) {
+              JSONObject timeObject = (JSONObject) object.get(assignmentAction);
+              Date startTime = formatter.parse(timeObject.get("startTime").toString());
+              Date endTime = formatter.parse(timeObject.get("endTime").toString());
+              assignmentTime.setReleaseTime(startTime);
+              assignmentTime.setDeadline(endTime);
+            }
+          }
+        }
+      }
+      for(AssignmentTime assignmentTime : assignmentTimes) {
+        atDbManager.editAssignmentTime(assignmentTime);
+      }
+
+      return new ResponseEntity<Object>(headers, HttpStatus.OK);
+    } catch (Exception e) {
+      return new ResponseEntity<Object>(headers, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
 }
