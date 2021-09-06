@@ -693,49 +693,4 @@ public class PeerReviewService {
 
   }
 
-  /**
-   * get all review round
-   */
-  /*@GetMapping("record/status/allUsers")
-  public ResponseEntity<Object> getAllReviewRound(
-          @RequestParam("assignmentName") String assignmentName) {
-
-    HttpHeaders headers = new HttpHeaders();
-    headers.add("Content-Type", "application/json");
-    headers.add("Access-Control-Allow-Origin", "*");
-
-    JSONArray allReviewRoundStatusArray = new JSONArray();
-
-    List<User> users = userDbManager.getAllUsers();
-    for (User user : users) {
-      int uid = user.getId();
-      int round = 0;
-      JSONObject oneUser = new JSONObject();
-      oneUser.put("name" , user.getName());
-      Assignment assignment = assignmentDbManager.getAssignmentByName(assignmentName);
-      List<AssignmentTime> assignmentTimes = assignmentTimeDbManager.getAssignmentTimeByName(assignmentName);
-      JSONArray reviewRoundArray = new JSONArray();
-      for (AssignmentTime assignmentTime : assignmentTimes) {
-        if (assignmentTime.getActionEnum().equals(AssignmentActionEnum.APPROVE) || assignmentTime.getActionEnum().equals(AssignmentActionEnum.REVIEW)) {
-          JSONObject assignmentTimeObject = new JSONObject();
-          round += 1;
-          assignmentTimeObject.put("round", round);
-
-          ReviewSetting reviewSetting = null;
-          try {
-            reviewSetting = reviewSettingDbManager.getReviewSetting(assignment.getId());
-          } catch (SQLException e) {
-            e.printStackTrace();
-          }
-          assignmentTimeObject.put("amount", reviewSetting.getAmount());
-
-          reviewRoundArray.add(assignmentTimeObject);
-        }
-      }
-      oneUser.put("reviewRound", reviewRoundArray);
-
-    }
-
-  }*/
-
 }
