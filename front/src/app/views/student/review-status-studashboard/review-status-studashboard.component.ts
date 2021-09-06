@@ -7,8 +7,6 @@ import { TimeService } from '../../../services/time.service';
 import { Router } from '@angular/router';
 import { StudentEventsService } from '../../../services/student-events-log.service';
 
-
-
 @Component({
   selector: 'app-review-status-studashboard',
   templateUrl: './review-status-studashboard.component.html',
@@ -23,6 +21,7 @@ export class ReviewStatusStudashboardComponent implements OnInit {
     private jwtService?: JwtService, private router?: Router, private studentEventsService?: StudentEventsService) {
     this.emitStudentEvent();
   }
+
   emitStudentEvent() {
     // review status dashboard viewed event emit
     const viewed_event: StudentEvent = {
@@ -32,7 +31,6 @@ export class ReviewStatusStudashboardComponent implements OnInit {
     };
     this.studentEventsService.createReviewRecord(viewed_event);
   }
-
 
   async ngOnInit() {
     this.username = new User(this.jwtService).getUsername();

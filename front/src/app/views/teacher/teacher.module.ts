@@ -1,4 +1,5 @@
 import { ReviewStatusDashboardComponent } from './review-status-dashboard/review-status-dashboard.component';
+import { ReviewRoundDashboardComponent } from './review-round-dashboard/review-round-dashboard.component';
 import { ReviewDashboardComponent } from './review-dashboard/review-dashboard.component';
 import { HttpClientModule } from '@angular/common/http';
 import { ReviewMetricsManagementComponent } from './review-metrics-management/review-metrics-management.component';
@@ -64,6 +65,7 @@ import { SortablejsModule } from 'ngx-sortablejs';
         ReviewMetricsManagementComponent,
         ReviewDashboardComponent,
         ReviewStatusDashboardComponent,
+        ReviewRoundDashboardComponent
     ]
 })
 export class TeacherModule { }

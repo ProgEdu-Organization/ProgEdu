@@ -91,7 +91,7 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
       name: [undefined, [Validators.required, Validators.pattern('^[a-zA-Z0-9-_]{3,10}')]],
       releaseTime: [new Date(now_time).toISOString().slice(0, 17) + '00', Validators.required],
       deadline: [new Date(now_time).toISOString().slice(0, 17) + '00', Validators.required],
-      reviewTime: this.fb.array(this.reviewRoundTime.map(round => this.fb.group({
+      reviewTimes: this.fb.array(this.reviewRoundTime.map(round => this.fb.group({
         startTime: [new Date(now_time).toISOString().slice(0, 17) + '00', Validators.required],
         endTime: [new Date(now_time).toISOString().slice(0, 17) + '00', Validators.required],
         reviewStartTime: [new Date(now_time).toISOString().slice(0, 17) + '00', Validators.required],
@@ -127,7 +127,7 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
     const releaseTime = 'releaseTime';
     const deadline = 'deadline';
     const description = 'description';
-    const reviewTime = 'reviewTime';
+    const reviewTimes = 'reviewTimes';
     const commitRecordCount = 'commitRecordCount';
     const type = 'type';
     this.assignment.get(name).valueChanges.subscribe(
@@ -170,7 +170,7 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
         val.length !== 0 ? this.showIsValidById(commitRecordCount) : this.showIsInvalidById(commitRecordCount);
       }
     );
-    this.assignment.get(reviewTime).valueChanges.subscribe(
+    this.assignment.get(reviewTimes).valueChanges.subscribe(
       val => {
         val.length !== 0? this.reviewTimeCheck():this.reviewTimeInValid();
       }
@@ -178,7 +178,7 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
   }
 
   get roundTimeArray() {
-    return (<FormArray>this.assignment.get('reviewTime')).controls;
+    return (<FormArray>this.assignment.get('reviewTimes')).controls;
   }
 
   setShowAssessment(showAssessment: boolean) {
@@ -226,7 +226,7 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
           this.roundTimeArray.pop();
         }
         this.assignment.patchValue({
-          reviewTime:[{
+          reviewTimes:[{
             startTime: new Date(now_time).toISOString().slice(0, 17) + '00',
             endTime: new Date(now_time).toISOString().slice(0, 17) + '00',
             reviewStartTime: new Date(now_time).toISOString().slice(0, 17) + '00',
@@ -242,7 +242,7 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
 
   addRoundNums() {
     const now_time = Date.now() - (new Date().getTimezoneOffset() * 60 * 1000);
-    (<FormArray>this.assignment.get('reviewTime')).push(
+    (<FormArray>this.assignment.get('reviewTimes')).push(
       this.fb.group({
         startTime: new Date(now_time).toISOString().slice(0, 17) + '00', 
         endTime: new Date(now_time).toISOString().slice(0, 17) + '00',
@@ -254,7 +254,7 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
   }
 
   removeRound(index: number) {
-    (<FormArray>this.assignment.get('reviewTime')).removeAt(index);
+    (<FormArray>this.assignment.get('reviewTimes')).removeAt(index);
   }
 
   addReviewMetrics() {

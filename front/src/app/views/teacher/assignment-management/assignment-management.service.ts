@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../../../environments/environment';
 import { FormGroup } from '@angular/forms';
 import { AddJwtTokenHttpClient } from '../../../services/add-jwt-token.service';
 
@@ -29,6 +28,7 @@ export class AssignmentManagementService {
   DELETE_ASSIGNMENT_API = AssignmentAPI.deleteAssignment;
   EDIT_ASSIGNMENT_API = AssignmentAPI.editAssignment;
   ASSIGNMENT_ORDER = AssignmentAPI.getAssignmentOrder;
+  ASSIGNMENT_TYPE = AssignmentAPI.getAssignmentType;
 
   constructor(private addJwtTokenHttpClient: AddJwtTokenHttpClient) { }
   
@@ -57,6 +57,12 @@ export class AssignmentManagementService {
     const params = new HttpParams()
       .set('fileName',assignmentName);
     return this.addJwtTokenHttpClient.get(this.ASSIGNMENT_ORDER, { params });
+  }
+
+  getAssignmentType(assignmentName: string): Observable<any> {
+    const params = new HttpParams()
+      .set('fileName',assignmentName);
+    return this.addJwtTokenHttpClient.get(this.ASSIGNMENT_TYPE, { params });
   }
 
 }
