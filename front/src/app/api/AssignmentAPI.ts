@@ -30,6 +30,8 @@ let getAssignmentFile: string = environment.NEW_SERVER_URL + '/assignment/getAss
 
 let modifyAssignmentOrderFile: string = environment.NEW_SERVER_URL + '/assignment/order';
 
+let getAssignmentType: string = environment.NEW_SERVER_URL + '/assignment/assignmentType';
+
 
 
 export const AssignmentAPI = {
@@ -47,5 +49,6 @@ export const AssignmentAPI = {
     deleteAssignment: deleteAssignment,
 
     getAssignmentFile: getAssignmentFile,
-    modifyAssignmentOrderFile: modifyAssignmentOrderFile
+    modifyAssignmentOrderFile: modifyAssignmentOrderFile,
+    getAssignmentType: getAssignmentType
 }

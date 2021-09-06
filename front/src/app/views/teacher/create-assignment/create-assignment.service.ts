@@ -103,8 +103,6 @@ export class CreateAssignmentService {
       reviewTime.insert(round, roundGroup);
       round++;
     })
-
-    console.log(reviewTime.value);
     
     formData.append('assignmentName', assignment.value.name);
     formData.append('readMe', assignment.value.description);
