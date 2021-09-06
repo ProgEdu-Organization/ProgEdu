@@ -81,7 +81,6 @@ public class ChartService {
         List<AssignmentTime> assignmentTimes = assignmentTimeDbManager.getAssignmentTimeByName(name);
         for (AssignmentTime assignmentTime : assignmentTimes){
           commits.put("name", name);
-
           commits.put("releaseTime", dateFormat.format(assignmentTime.getReleaseTime()));
           commits.put("deadline",  dateFormat.format(assignmentTime.getDeadline()));
           commits.put("commits", array);

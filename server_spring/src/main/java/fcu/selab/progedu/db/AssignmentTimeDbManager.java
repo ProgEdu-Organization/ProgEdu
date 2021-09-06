@@ -147,6 +147,42 @@ public class AssignmentTimeDbManager {
     return assignmentTimeList;
   }
 
+  /**
+   * get assignment time name by id
+   * @param aId aid
+   * @return assignment name
+   */
+  public List<AssignmentTime> getAssignmentTimeWithReviewActionById(int aId) {
+    String sql = "SELECT * FROM ProgEdu.Assignment_Time WHERE aaId = 2 AND aId = ?";
+
+    List<AssignmentTime> assignmentTimeList = new ArrayList<>();
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
+
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+      preStmt.setInt(1, aId);
+
+      rs = preStmt.executeQuery();
+      while (rs.next()) {
+        AssignmentTime assignmentTime = new AssignmentTime();
+        assignmentTime.setAId(aId);
+        assignmentTime.setActionEnum(AssignmentActionEnum.REVIEW);
+        assignmentTime.setReleaseTime(rs.getTimestamp("releaseTime"));
+        assignmentTime.setDeadline(rs.getTimestamp("deadline"));
+        assignmentTimeList.add(assignmentTime);
+      }
+    } catch (Exception e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(rs, preStmt, conn);
+    }
+    return assignmentTimeList;
+  }
+
   public void editAssignmentTime(AssignmentTime assignmentTime) {
     String sql = "UPDATE Assignment_Time SET releaseTime = ? , deadline = ? WHERE aId ? AND aaId = ?";
 

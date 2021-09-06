@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.TimeZone;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+
+//import org.graalvm.compiler.nodes.calc.ObjectEqualsNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -98,7 +100,7 @@ public class PeerReviewService {
       // 3. Upload the status of pair matching
       int status = reviewStatusDbManager
               .getReviewStatusIdByStatus(ReviewStatusEnum.COMPLETED.getTypeName());
-      pairMatchingDbManager.updatePairMatchingById(status, pmId);
+//      pairMatchingDbManager.updatePairMatchingById(status, pmId);
 
       // 4. Check which time have been reviewed, and upload the review order
       if (!reviewRecordDbManager.isFirstTimeReviewRecord(pmId)) {
@@ -168,9 +170,9 @@ public class PeerReviewService {
 
 
         jsonObject.put("count", getReviewCompletedCount(assignment.getId(), reviewId));
-        jsonObject.put("status", reviewerStatus(assignment.getId(),
-            reviewId, reviewSetting.getAmount()).getTypeName());
-              jsonArray.add(jsonObject);
+//        jsonObject.put("status", reviewerStatus(assignment.getId(),
+//            reviewId, reviewSetting.getAmount()).getTypeName());
+//              jsonArray.add(jsonObject);
       }
     return new ResponseEntity<Object>(jsonArray, headers, HttpStatus.OK);
     } catch (Exception e) {
@@ -221,9 +223,9 @@ public class PeerReviewService {
 
     for (PairMatching pairMatching : pairMatchingList) {
       //List<ReviewRecord> reviewRecords = reviewRecordDbManager.getReviewRecordByPairMatchingId();
-      if (pairMatching.getReviewStatusEnum().equals(ReviewStatusEnum.COMPLETED)) {
-        count++;
-      }
+//      if (pairMatching.getReviewStatusEnum().equals(ReviewStatusEnum.COMPLETED)) {
+//        count++;
+//      }
     }
 
     return count;
@@ -245,12 +247,12 @@ public class PeerReviewService {
     }
 
     for (PairMatching pairMatching : pairMatchingList) {
-      if (pairMatching.getReviewStatusEnum().equals(ReviewStatusEnum.UNCOMPLETED)) {
-        resultStatus = "DONE";
-        break;
-      } else if (pairMatching.getReviewStatusEnum().equals(ReviewStatusEnum.COMPLETED)) {
-        resultStatus = "REVIEWED";
-      }
+//      if (pairMatching.getReviewStatusEnum().equals(ReviewStatusEnum.UNCOMPLETED)) {
+//        resultStatus = "DONE";
+//        break;
+//      } else if (pairMatching.getReviewStatusEnum().equals(ReviewStatusEnum.COMPLETED)) {
+//        resultStatus = "REVIEWED";
+//      }
     }
 
     return resultStatus;
@@ -299,62 +301,64 @@ public class PeerReviewService {
    * @param username       user name
    * @param assignmentName assignment name
    */
-  @GetMapping("status/detail")
-  public ResponseEntity<Object> getReviewStatusDetail(@RequestParam("username") String username,
-                                                      @RequestParam("assignmentName") String assignmentName) {
-    HttpHeaders headers = new HttpHeaders();
-    headers.add("Content-Type", "application/json");
-    headers.add("Access-Control-Allow-Origin", "*");
 
-    try {
-      JSONObject result = new JSONObject();
-      JSONArray array = new JSONArray();
-      int reviewId = userDbManager.getUserIdByUsername(username);
-      int assignmentId = assignmentDbManager.getAssignmentIdByName(assignmentName);
-      ReviewSetting reviewSetting = reviewSettingDbManager.getReviewSetting(assignmentId);
-      List<PairMatching> pairMatchingList = pairMatchingDbManager
-              .getPairMatchingByAidAndReviewId(assignmentId, reviewId);
-
-      for (PairMatching pairMatching : pairMatchingList) {
-        JSONObject reviewed = new JSONObject();
-        JSONArray reviewDetailArray = new JSONArray();
-        int order = reviewRecordDbManager.getLatestRound(pairMatching.getId());
-        List<ReviewRecord> reviewRecordList =
-                reviewRecordDbManager.getReviewRecordByPairMatchingId(pairMatching.getId(), order);
-
-        int userId = assignmentUserDbManager.getUidById(pairMatching.getAuId());
-        reviewed.put("id", userId);
-        reviewed.put("name", userDbManager.getUsername(userId));
-        if (reviewRecordList.isEmpty()) {
-          reviewed.put("status", false);
-        } else {
-          reviewed.put("status", true);
-          for (ReviewRecord reviewRecord : reviewRecordList) {
-            JSONObject ob = new JSONObject();
-            int metricsId = reviewSettingMetricsDbManager
-                    .getReviewMetricsIdByRsmId(reviewRecord.getRsmId());
-            ob.put("score", reviewRecord.getScore());
-            ob.put("feedback", reviewRecord.getFeedback());
-            ob.put("time", reviewRecord.getTime());
-            ob.put("metrics", reviewMetricsDbManager.getReviewMetricsById(metricsId));
-            int scoreModeId = reviewMetricsDbManager.getScoreModeIdById(metricsId);
-            ob.put("scoreMode", scoreModeDbManager.getScoreModeDescById(scoreModeId).getTypeName());
-            reviewDetailArray.add(ob);
-          }
-          reviewed.put("totalCount", order);
-          reviewed.put("Detail", reviewDetailArray);
-        }
-//        reviewed.put("reviewDeadline", reviewSetting.getDeadline());
-
-        array.add(reviewed);
-      }
-
-      result.put("allStatusDetail", array);
-      return new ResponseEntity<Object>(result, headers, HttpStatus.OK);
-    } catch (Exception e) {
-      return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-  }
+  //TODO
+//  @GetMapping("status/detail")
+//  public ResponseEntity<Object> getReviewStatusDetail(@RequestParam("username") String username,
+//                                                      @RequestParam("assignmentName") String assignmentName) {
+//    HttpHeaders headers = new HttpHeaders();
+//    headers.add("Content-Type", "application/json");
+//    headers.add("Access-Control-Allow-Origin", "*");
+//
+//    try {
+//      JSONObject result = new JSONObject();
+//      JSONArray array = new JSONArray();
+//      int reviewId = userDbManager.getUserIdByUsername(username);
+//      int assignmentId = assignmentDbManager.getAssignmentIdByName(assignmentName);
+//      ReviewSetting reviewSetting = reviewSettingDbManager.getReviewSetting(assignmentId);
+//      List<PairMatching> pairMatchingList = pairMatchingDbManager
+//              .getPairMatchingByAidAndReviewId(assignmentId, reviewId);
+//
+//      for (PairMatching pairMatching : pairMatchingList) {
+//        JSONObject reviewed = new JSONObject();
+//        JSONArray reviewDetailArray = new JSONArray();
+//        int order = reviewRecordDbManager.getLatestRound(pairMatching.getId());
+//        List<ReviewRecord> reviewRecordList =
+////                reviewRecordDbManager.getReviewRecordByPairMatchingId(pairMatching.getId(), order);
+//
+//        int userId = assignmentUserDbManager.getUidById(pairMatching.getAuId());
+//        reviewed.put("id", userId);
+//        reviewed.put("name", userDbManager.getUsername(userId));
+//        if (reviewRecordList.isEmpty()) {
+//          reviewed.put("status", false);
+//        } else {
+//          reviewed.put("status", true);
+//          for (ReviewRecord reviewRecord : reviewRecordList) {
+//            JSONObject ob = new JSONObject();
+//            int metricsId = reviewSettingMetricsDbManager
+//                    .getReviewMetricsIdByRsmId(reviewRecord.getRsmId());
+//            ob.put("score", reviewRecord.getScore());
+//            ob.put("feedback", reviewRecord.getFeedback());
+//            ob.put("time", reviewRecord.getTime());
+//            ob.put("metrics", reviewMetricsDbManager.getReviewMetricsById(metricsId));
+//            int scoreModeId = reviewMetricsDbManager.getScoreModeIdById(metricsId);
+//            ob.put("scoreMode", scoreModeDbManager.getScoreModeDescById(scoreModeId).getTypeName());
+//            reviewDetailArray.add(ob);
+//          }
+//          reviewed.put("totalCount", order);
+//          reviewed.put("Detail", reviewDetailArray);
+//        }
+////        reviewed.put("reviewDeadline", reviewSetting.getDeadline());
+//
+//        array.add(reviewed);
+//      }
+//
+//      result.put("allStatusDetail", array);
+//      return new ResponseEntity<Object>(result, headers, HttpStatus.OK);
+//    } catch (Exception e) {
+//      return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+//    }
+//  }
 
   /**
    * get review details from specific reviewer, assignment name and page
@@ -364,53 +368,53 @@ public class PeerReviewService {
    * @param userId         user id
    * @param page           page
    */
-  @GetMapping("status/detail/page") // Todo 這目前還沒用到 先沒呼叫
-  public ResponseEntity<Object> getReviewedStatusDetailPagination(@RequestParam("username") String username,
-                                                                  @RequestParam("assignmentName") String assignmentName,
-                                                                  @RequestParam("userId") int userId,
-                                                                  @RequestParam("page") int page) {
-    HttpHeaders headers = new HttpHeaders();
-    headers.add("Content-Type", "application/json");
-    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
-
-    ResponseEntity<Object> response = null;
-
-    try {
-      JSONObject result = new JSONObject();
-      JSONArray array = new JSONArray();
-      int reviewId = userDbManager.getUserIdByUsername(username);
-      int assignmentId = assignmentDbManager.getAssignmentIdByName(assignmentName);
-      int auId = assignmentUserDbManager.getAuid(assignmentId, userId);
-      PairMatching pairMatching = pairMatchingDbManager
-              .getPairMatchingByAuIdReviewId(auId, reviewId);
-      int order = reviewRecordDbManager.getLatestRound(pairMatching.getId());
-      List<ReviewRecord> reviewRecordList = reviewRecordDbManager
-              .getReviewRecordByPairMatchingId(pairMatching.getId(), order - page + 1);
-
-      result.put("id", userId);
-      result.put("name", userDbManager.getUsername(userId));
-      for (ReviewRecord reviewRecord : reviewRecordList) {
-        JSONObject ob = new JSONObject();
-        int metricsId = reviewSettingMetricsDbManager
-                .getReviewMetricsIdByRsmId(reviewRecord.getRsmId());
-        ob.put("score", reviewRecord.getScore());
-        ob.put("feedback", reviewRecord.getFeedback());
-        ob.put("time", dateFormat.format(reviewRecord.getTime()));
-        ob.put("metrics", reviewMetricsDbManager.getReviewMetricsById(metricsId));
-        int scoreModeId = reviewMetricsDbManager.getScoreModeIdById(metricsId);
-        ob.put("scoreMode", scoreModeDbManager.getScoreModeDescById(scoreModeId).getTypeName());
-        array.add(ob);
-      }
-      result.put("totalCount", order);
-      result.put("pagination", page);
-      result.put("Detail", array);
-
-      response = new ResponseEntity<Object>(result, headers, HttpStatus.OK);
-    } catch (Exception e) {
-      response = new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-    return response;
-  }
+//  @GetMapping("status/detail/page") // Todo 這目前還沒用到 先沒呼叫
+//  public ResponseEntity<Object> getReviewedStatusDetailPagination(@RequestParam("username") String username,
+//                                                                  @RequestParam("assignmentName") String assignmentName,
+//                                                                  @RequestParam("userId") int userId,
+//                                                                  @RequestParam("page") int page) {
+//    HttpHeaders headers = new HttpHeaders();
+//    headers.add("Content-Type", "application/json");
+//    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+//
+//    ResponseEntity<Object> response = null;
+//
+//    try {
+//      JSONObject result = new JSONObject();
+//      JSONArray array = new JSONArray();
+//      int reviewId = userDbManager.getUserIdByUsername(username);
+//      int assignmentId = assignmentDbManager.getAssignmentIdByName(assignmentName);
+//      int auId = assignmentUserDbManager.getAuid(assignmentId, userId);
+//      PairMatching pairMatching = pairMatchingDbManager
+//              .getPairMatchingByAuIdReviewId(auId, reviewId);
+//      int order = reviewRecordDbManager.getLatestRound(pairMatching.getId());
+//      List<ReviewRecord> reviewRecordList = reviewRecordDbManager
+//              .getReviewRecordByPairMatchingId(pairMatching.getId(), order - page + 1);
+//
+//      result.put("id", userId);
+//      result.put("name", userDbManager.getUsername(userId));
+//      for (ReviewRecord reviewRecord : reviewRecordList) {
+//        JSONObject ob = new JSONObject();
+//        int metricsId = reviewSettingMetricsDbManager
+//                .getReviewMetricsIdByRsmId(reviewRecord.getRsmId());
+//        ob.put("score", reviewRecord.getScore());
+//        ob.put("feedback", reviewRecord.getFeedback());
+//        ob.put("time", dateFormat.format(reviewRecord.getTime()));
+//        ob.put("metrics", reviewMetricsDbManager.getReviewMetricsById(metricsId));
+//        int scoreModeId = reviewMetricsDbManager.getScoreModeIdById(metricsId);
+//        ob.put("scoreMode", scoreModeDbManager.getScoreModeDescById(scoreModeId).getTypeName());
+//        array.add(ob);
+//      }
+//      result.put("totalCount", order);
+//      result.put("pagination", page);
+//      result.put("Detail", array);
+//
+//      response = new ResponseEntity<Object>(result, headers, HttpStatus.OK);
+//    } catch (Exception e) {
+//      response = new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+//    }
+//    return response;
+//  }
 
   /**
    * get user's hw detail which had been reviewed
@@ -418,70 +422,72 @@ public class PeerReviewService {
    * @param username       user name
    * @param assignmentName assignment name
    */
-  @GetMapping("record/detail")
-  public ResponseEntity<Object> getReviewedRecordDetail(@QueryParam("username") String username,
-                                                        @QueryParam("assignmentName") String assignmentName) {
 
-    HttpHeaders headers = new HttpHeaders();
-    headers.add("Content-Type", "application/json");
-    headers.add("Access-Control-Allow-Origin", "*");
-
-    ResponseEntity<Object> response = null;
-    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
-
-    try {
-      org.json.JSONObject result = new org.json.JSONObject();
-      org.json.JSONArray array = new org.json.JSONArray();
-      int userId = userDbManager.getUserIdByUsername(username);
-      int assignmentId = assignmentDbManager.getAssignmentIdByName(assignmentName);
-      ReviewSetting reviewSetting = reviewSettingDbManager.getReviewSetting(assignmentId);
-      int auId = assignmentUserDbManager.getAuid(assignmentId, userId);
-      List<PairMatching> pairMatchingList = pairMatchingDbManager.getPairMatchingByAuId(auId);
-
-      for (PairMatching pairMatching : pairMatchingList) {
-        org.json.JSONObject reviewer = new org.json.JSONObject();
-        org.json.JSONArray reviewDetailArray = new org.json.JSONArray();
-        int order = reviewRecordDbManager.getLatestRound(pairMatching.getId());
-        List<ReviewRecord> reviewRecordList =
-                reviewRecordDbManager.getReviewRecordByPairMatchingId(pairMatching.getId(), order);
-
-        reviewer.put("id", pairMatching.getReviewId());
-        reviewer.put("name", userDbManager.getUsername(pairMatching.getReviewId()));
-        if (reviewRecordList.isEmpty()) {
-          reviewer.put("status", false);
-        } else {
-          reviewer.put("status", true);
-          for (ReviewRecord reviewRecord : reviewRecordList) {
-            org.json.JSONObject ob = new org.json.JSONObject();
-            int metricsId = reviewSettingMetricsDbManager
-                    .getReviewMetricsIdByRsmId(reviewRecord.getRsmId());
-            ob.put("score", reviewRecord.getScore());
-            ob.put("feedback", reviewRecord.getFeedback());
-            ob.put("time", reviewRecord.getTime());
-            ob.put("metrics", reviewMetricsDbManager.getReviewMetricsById(metricsId));
-            int scoreModeId = reviewMetricsDbManager.getScoreModeIdById(metricsId);
-            ob.put("scoreMode", scoreModeDbManager.getScoreModeDescById(scoreModeId).getTypeName());
-            reviewDetailArray.put(ob);
-          }
-          reviewer.put("totalCount", order);
-          reviewer.put("Detail", reviewDetailArray);
-        }
-//        reviewer.put("reviewReleaseTime", dateFormat.format(reviewSetting.getReleaseTime()));
-//        reviewer.put("reviewDeadline", dateFormat.format(reviewSetting.getDeadline()));
-
-        array.put(reviewer);
-      }
-
-      result.put("allRecordDetail", array);
-
-      response = new ResponseEntity<Object>(result.toString(),headers,HttpStatus.OK);
-    } catch (Exception e) {
-      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
-      LOGGER.error(e.getMessage());
-      response = new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-    return response;
-  }
+  //TODO
+//  @GetMapping("record/detail")
+//  public ResponseEntity<Object> getReviewedRecordDetail(@QueryParam("username") String username,
+//                                                        @QueryParam("assignmentName") String assignmentName) {
+//
+//    HttpHeaders headers = new HttpHeaders();
+//    headers.add("Content-Type", "application/json");
+//    headers.add("Access-Control-Allow-Origin", "*");
+//
+//    ResponseEntity<Object> response = null;
+//    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+//
+//    try {
+//      org.json.JSONObject result = new org.json.JSONObject();
+//      org.json.JSONArray array = new org.json.JSONArray();
+//      int userId = userDbManager.getUserIdByUsername(username);
+//      int assignmentId = assignmentDbManager.getAssignmentIdByName(assignmentName);
+//      ReviewSetting reviewSetting = reviewSettingDbManager.getReviewSetting(assignmentId);
+//      int auId = assignmentUserDbManager.getAuid(assignmentId, userId);
+//      List<PairMatching> pairMatchingList = pairMatchingDbManager.getPairMatchingByAuId(auId);
+//
+//      for (PairMatching pairMatching : pairMatchingList) {
+//        org.json.JSONObject reviewer = new org.json.JSONObject();
+//        org.json.JSONArray reviewDetailArray = new org.json.JSONArray();
+//        int order = reviewRecordDbManager.getLatestRound(pairMatching.getId());
+//        List<ReviewRecord> reviewRecordList =
+//                reviewRecordDbManager.getReviewRecordByPairMatchingId(pairMatching.getId(), order);
+//
+//        reviewer.put("id", pairMatching.getReviewId());
+//        reviewer.put("name", userDbManager.getUsername(pairMatching.getReviewId()));
+//        if (reviewRecordList.isEmpty()) {
+//          reviewer.put("status", false);
+//        } else {
+//          reviewer.put("status", true);
+//          for (ReviewRecord reviewRecord : reviewRecordList) {
+//            org.json.JSONObject ob = new org.json.JSONObject();
+//            int metricsId = reviewSettingMetricsDbManager
+//                    .getReviewMetricsIdByRsmId(reviewRecord.getRsmId());
+//            ob.put("score", reviewRecord.getScore());
+//            ob.put("feedback", reviewRecord.getFeedback());
+//            ob.put("time", reviewRecord.getTime());
+//            ob.put("metrics", reviewMetricsDbManager.getReviewMetricsById(metricsId));
+//            int scoreModeId = reviewMetricsDbManager.getScoreModeIdById(metricsId);
+//            ob.put("scoreMode", scoreModeDbManager.getScoreModeDescById(scoreModeId).getTypeName());
+//            reviewDetailArray.put(ob);
+//          }
+//          reviewer.put("totalCount", order);
+//          reviewer.put("Detail", reviewDetailArray);
+//        }
+////        reviewer.put("reviewReleaseTime", dateFormat.format(reviewSetting.getReleaseTime()));
+////        reviewer.put("reviewDeadline", dateFormat.format(reviewSetting.getDeadline()));
+//
+//        array.put(reviewer);
+//      }
+//
+//      result.put("allRecordDetail", array);
+//
+//      response = new ResponseEntity<Object>(result.toString(),headers,HttpStatus.OK);
+//    } catch (Exception e) {
+//      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+//      LOGGER.error(e.getMessage());
+//      response = new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+//    }
+//    return response;
+//  }
 
   /**
    * get user's hw detail which had been reviewed
@@ -491,51 +497,51 @@ public class PeerReviewService {
    * @param reviewId       review id
    * @param page           page
    */
-  @GetMapping("record/detail/page") // Todo 前端沒用到 先不改
-  public ResponseEntity<Object> getReviewedRecordDetailPagination(@RequestParam("username") String username,
-                                                                  @RequestParam("assignmentName") String assignmentName,
-                                                                  @RequestParam("reviewId") int reviewId,
-                                                                  @RequestParam("page") int page) {
-    HttpHeaders headers = new HttpHeaders();
-    headers.add("Content-Type", "application/json");
-    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
-
-    ResponseEntity<Object> response = null;
-
-    try {
-      JSONObject result = new JSONObject();
-      JSONArray array = new JSONArray();
-      int userId = userDbManager.getUserIdByUsername(username);
-      int assignmentId = assignmentDbManager.getAssignmentIdByName(assignmentName);
-      int auId = assignmentUserDbManager.getAuid(assignmentId, userId);
-      PairMatching pairMatching = pairMatchingDbManager.getPairMatchingByAuIdReviewId(auId, reviewId);
-      int order = reviewRecordDbManager.getLatestRound(pairMatching.getId());
-      List<ReviewRecord> reviewRecordList = reviewRecordDbManager
-              .getReviewRecordByPairMatchingId(pairMatching.getId(), order - page + 1);
-
-      result.put("id", pairMatching.getReviewId());
-      result.put("name", userDbManager.getUsername(pairMatching.getReviewId()));
-      for (ReviewRecord reviewRecord : reviewRecordList) {
-        JSONObject ob = new JSONObject();
-        int metricsId = reviewSettingMetricsDbManager
-                .getReviewMetricsIdByRsmId(reviewRecord.getRsmId());
-        ob.put("score", reviewRecord.getScore());
-        ob.put("feedback", reviewRecord.getFeedback());
-        ob.put("time", dateFormat.format(reviewRecord.getTime()));
-        ob.put("metrics", reviewMetricsDbManager.getReviewMetricsById(metricsId));
-        int scoreModeId = reviewMetricsDbManager.getScoreModeIdById(metricsId);
-        ob.put("scoreMode", scoreModeDbManager.getScoreModeDescById(scoreModeId).getTypeName());
-        array.add(ob);
-      }
-      result.put("totalCount", order);
-      result.put("pagination", page);
-      result.put("Detail", array);
-
-      return new ResponseEntity<Object>(result, headers, HttpStatus.OK);
-    } catch (Exception e) {
-      return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-  }
+//  @GetMapping("record/detail/page") // Todo 前端沒用到 先不改
+//  public ResponseEntity<Object> getReviewedRecordDetailPagination(@RequestParam("username") String username,
+//                                                                  @RequestParam("assignmentName") String assignmentName,
+//                                                                  @RequestParam("reviewId") int reviewId,
+//                                                                  @RequestParam("page") int page) {
+//    HttpHeaders headers = new HttpHeaders();
+//    headers.add("Content-Type", "application/json");
+//    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+//
+//    ResponseEntity<Object> response = null;
+//
+//    try {
+//      JSONObject result = new JSONObject();
+//      JSONArray array = new JSONArray();
+//      int userId = userDbManager.getUserIdByUsername(username);
+//      int assignmentId = assignmentDbManager.getAssignmentIdByName(assignmentName);
+//      int auId = assignmentUserDbManager.getAuid(assignmentId, userId);
+//      PairMatching pairMatching = pairMatchingDbManager.getPairMatchingByAuIdReviewId(auId, reviewId);
+//      int order = reviewRecordDbManager.getLatestRound(pairMatching.getId());
+//      List<ReviewRecord> reviewRecordList = reviewRecordDbManager
+//              .getReviewRecordByPairMatchingId(pairMatching.getId(), order - page + 1);
+//
+//      result.put("id", pairMatching.getReviewId());
+//      result.put("name", userDbManager.getUsername(pairMatching.getReviewId()));
+//      for (ReviewRecord reviewRecord : reviewRecordList) {
+//        JSONObject ob = new JSONObject();
+//        int metricsId = reviewSettingMetricsDbManager
+//                .getReviewMetricsIdByRsmId(reviewRecord.getRsmId());
+//        ob.put("score", reviewRecord.getScore());
+//        ob.put("feedback", reviewRecord.getFeedback());
+//        ob.put("time", dateFormat.format(reviewRecord.getTime()));
+//        ob.put("metrics", reviewMetricsDbManager.getReviewMetricsById(metricsId));
+//        int scoreModeId = reviewMetricsDbManager.getScoreModeIdById(metricsId);
+//        ob.put("scoreMode", scoreModeDbManager.getScoreModeDescById(scoreModeId).getTypeName());
+//        array.add(ob);
+//      }
+//      result.put("totalCount", order);
+//      result.put("pagination", page);
+//      result.put("Detail", array);
+//
+//      return new ResponseEntity<Object>(result, headers, HttpStatus.OK);
+//    } catch (Exception e) {
+//      return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+//    }
+//  }
 
   /**
    * check reviewer status of his/her review job
@@ -543,29 +549,31 @@ public class PeerReviewService {
    * @param aid      assignment id
    * @param reviewId user id
    */
-  private ReviewStatusEnum reviewerStatus(int aid, int reviewId, int amount) throws SQLException {
-    List<PairMatching> pairMatchingList =
-            pairMatchingDbManager.getPairMatchingByAidAndReviewId(aid, reviewId);
-    ReviewStatusEnum resultStatus = ReviewStatusEnum.INIT;
-    int initCount = 0;
 
-    for (PairMatching pairMatching : pairMatchingList) {
-      if (pairMatching.getReviewStatusEnum().equals(ReviewStatusEnum.UNCOMPLETED)) {
-        resultStatus = ReviewStatusEnum.UNCOMPLETED;
-        break;
-      } else if (pairMatching.getReviewStatusEnum().equals(ReviewStatusEnum.COMPLETED)) {
-        resultStatus = ReviewStatusEnum.COMPLETED;
-      } else if (pairMatching.getReviewStatusEnum().equals(ReviewStatusEnum.INIT)) {
-        initCount++;
-      }
-    }
-
-    if (initCount == amount) {
-      resultStatus = ReviewStatusEnum.INIT;
-    }
-
-    return resultStatus;
-  }
+  //TODO
+//  private ReviewStatusEnum reviewerStatus(int aid, int reviewId, int amount) throws SQLException {
+//    List<PairMatching> pairMatchingList =
+//            pairMatchingDbManager.getPairMatchingByAidAndReviewId(aid, reviewId);
+//    ReviewStatusEnum resultStatus = ReviewStatusEnum.INIT;
+//    int initCount = 0;
+//
+//    for (PairMatching pairMatching : pairMatchingList) {
+//      if (pairMatching.getReviewStatusEnum().equals(ReviewStatusEnum.UNCOMPLETED)) {
+//        resultStatus = ReviewStatusEnum.UNCOMPLETED;
+//        break;
+//      } else if (pairMatching.getReviewStatusEnum().equals(ReviewStatusEnum.COMPLETED)) {
+//        resultStatus = ReviewStatusEnum.COMPLETED;
+//      } else if (pairMatching.getReviewStatusEnum().equals(ReviewStatusEnum.INIT)) {
+//        initCount++;
+//      }
+//    }
+//
+//    if (initCount == amount) {
+//      resultStatus = ReviewStatusEnum.INIT;
+//    }
+//
+//    return resultStatus;
+//  }
 
   /**
    * get metrics by specific assignment
@@ -696,7 +704,7 @@ public class PeerReviewService {
    */
   @GetMapping("record/status/allUsers")
   public ResponseEntity<Object> getAllReviewRound(
-          @RequestParam("assignmentName") String assignmentName) {
+      @RequestParam("assignmentName") String assignmentName) {
 
     HttpHeaders headers = new HttpHeaders();
     headers.add("Content-Type", "application/json");
@@ -705,16 +713,18 @@ public class PeerReviewService {
     JSONArray allReviewRoundStatusArray = new JSONArray();
 
     List<User> users = userDbManager.getAllUsers();
+    JSONObject oneUser = new JSONObject();
+    JSONArray reviewRoundArray = new JSONArray();
+
     for (User user : users) {
       int uid = user.getId();
       int round = 0;
-      JSONObject oneUser = new JSONObject();
-      oneUser.put("name" , user.getName());
+      oneUser.put("name", user.getName());
       Assignment assignment = assignmentDbManager.getAssignmentByName(assignmentName);
       List<AssignmentTime> assignmentTimes = assignmentTimeDbManager.getAssignmentTimeByName(assignmentName);
-      JSONArray reviewRoundArray = new JSONArray();
       for (AssignmentTime assignmentTime : assignmentTimes) {
-        if (assignmentTime.getActionEnum().equals(AssignmentActionEnum.APPROVE) || assignmentTime.getActionEnum().equals(AssignmentActionEnum.REVIEW)) {
+        if (assignmentTime.getActionEnum().equals(AssignmentActionEnum.APPROVE)
+            || assignmentTime.getActionEnum().equals(AssignmentActionEnum.REVIEW)) {
           JSONObject assignmentTimeObject = new JSONObject();
           round += 1;
           assignmentTimeObject.put("round", round);
@@ -727,14 +737,18 @@ public class PeerReviewService {
           }
           assignmentTimeObject.put("amount", reviewSetting.getAmount());
 
-
           reviewRoundArray.add(assignmentTimeObject);
         }
       }
       oneUser.put("reviewRound", reviewRoundArray);
 
     }
+    return new ResponseEntity<Object>(oneUser, HttpStatus.OK);
+  }
 
+  public int getAssignmentReviewStatus(int aId) {
+    int pmId = assignmentUserDbManager.getPmIdByAssignmentByAssignmentId(aId);
+    return pmId;
   }
 
 }

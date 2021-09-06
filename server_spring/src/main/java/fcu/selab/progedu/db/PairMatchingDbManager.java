@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fcu.selab.progedu.data.PairMatching;
+import fcu.selab.progedu.data.ReviewOrder;
 import fcu.selab.progedu.service.ReviewStatusEnum;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -201,7 +202,6 @@ public class PairMatchingDbManager {
         pairMatching.setReviewId(reviewId);
         pairMatchingList.add(pairMatching);
       }
-
     } finally {
       CloseDBUtil.closeAll(rs, preStmt, conn);
     }
@@ -353,64 +353,6 @@ public class PairMatchingDbManager {
   }
 
   /**
-   * Check the status had been update or not
-   *
-   * @param auId assignment user id
-   */
-//  public boolean checkStatusUpdated(int auId) throws SQLException {
-//    String query = "SELECT COUNT(status) AS count FROM Pair_Matching WHERE auId = ? AND status = 1";
-//    boolean haveUpdated = false;
-//
-//    Connection conn = null;
-//    PreparedStatement preStmt = null;
-//    ResultSet rs = null;
-//
-//    try {
-//      conn = database.getConnection();
-//      preStmt = conn.prepareStatement(query);
-//
-//      preStmt.setInt(1, auId);
-//      rs = preStmt.executeQuery();
-//      while (rs.next()) {
-//        int count = rs.getInt("count");
-//        if (count == 0) {
-//          haveUpdated = true;
-//        }
-//      }
-//
-//    } finally {
-//      CloseDBUtil.closeAll(rs, preStmt, conn);
-//    }
-//
-//    return haveUpdated;
-//  }
-
-  /**
-   * Upload status by id
-   *
-   * @param status review status
-   * @param id pair matching id
-   */
-//  public void updatePairMatchingById(int status, int id) throws SQLException {
-//    String query = "UPDATE ProgEdu.Pair_Matching SET status = ? WHERE id = ?";
-//
-//    Connection conn = null;
-//    PreparedStatement preStmt = null;
-//
-//    try {
-//
-//      conn = database.getConnection();
-//      preStmt = conn.prepareStatement(query);
-//
-//      preStmt.setInt(1, status);
-//      preStmt.setInt(2, id);
-//      preStmt.executeUpdate();
-//    } finally {
-//      CloseDBUtil.closeAll(preStmt, conn);
-//    }
-//  }
-
-  /**
    * Delete pair matching by id
    *
    * @param id pair matching id
@@ -477,5 +419,4 @@ public class PairMatchingDbManager {
       CloseDBUtil.closeAll(preStmt, conn);
     }
   }
-
 }

@@ -13,32 +13,35 @@ import fcu.selab.progedu.jenkinsconfig.JenkinsProjectConfig;
 import fcu.selab.progedu.jenkinsconfig.JenkinsProjectConfigFactory;
 import fcu.selab.progedu.jenkinsconfig.WebPipelineConfig;
 import fcu.selab.progedu.setting.MavenAssignmentSetting;
+import fcu.selab.progedu.utils.ExceptionUtil;
 import fcu.selab.progedu.utils.JavaIoUtile;
 import fcu.selab.progedu.utils.ZipHandler;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.gitlab.api.models.GitlabProject;
 import org.jsoup.Jsoup;
 import org.jsoup.select.Elements;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.JsonNode;
 
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Document;
 
 import java.io.*;
+import java.sql.Array;
+import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.TimeZone;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 import org.springframework.web.multipart.MultipartFile;
 
@@ -68,6 +71,7 @@ public class AssignmentService {
   private AssignmentTimeDbManager atDbManager = AssignmentTimeDbManager.getInstance();
   private CommitRecordDbManager crDbManager = CommitRecordDbManager.getInstance();
   private ScreenshotRecordDbManager srDbManager = ScreenshotRecordDbManager.getInstance();
+  private ReviewOrderDbManager roDbManager = ReviewOrderDbManager.getInstance();
 
 
   private final String tempDir = System.getProperty("java.io.tmpdir");
@@ -85,6 +89,8 @@ public class AssignmentService {
   public static AssignmentService getInstance() {
     return instance;
   }
+  private static final Logger LOGGER = LoggerFactory.getLogger(AssignmentService.class);
+
 
   public AssignmentService() {
     try {
@@ -247,6 +253,7 @@ public class AssignmentService {
     return new ResponseEntity<Object>(ob, headers, HttpStatus.OK);
   }
 
+  @SuppressWarnings("checkstyle:EmptyBlock")
   @PostMapping("peerReview/create")
   public ResponseEntity<Object> createPeerReview(
           @RequestParam("assignmentName") String assignmentName,
@@ -255,28 +262,62 @@ public class AssignmentService {
           @RequestParam("file") MultipartFile file,
           @RequestParam("amount") int amount,
           @RequestParam("metrics") String metrics,
-          @RequestParam("time") String time, @RequestParam("round") int round){
+          @RequestParam("time") String time, @RequestParam("round") int round) {
 
 
     HttpHeaders headers = new HttpHeaders();
     headers.add("Access-Control-Allow-Origin", "*");
+    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    final Map<String, String> map = new HashMap<String, String>();
     try {
-
       ArrayList<AssignmentTime> assignmentTimes = new ArrayList<AssignmentTime>();
 
-      //TODO 補時間
-       JSONObject jsonObject = (JSONObject) new JSONParser().parse(time);
-       for (int r = 0; r < round; r++){
-         Object ob = jsonObject.get(r);
-         assignmentTimes.add((AssignmentTime) ob);
-       }
+//      //TODO 補時間
 
-//      ObjectMapper mapper = new ObjectMapper();
-//      JsonNode actualObj = mapper.readTree(time);
+      JSONArray jsonArray = (JSONArray) new JSONParser().parse(time);
+//      System.out.println(jsonArray);
+      for (int i = 0; i < jsonArray.size(); i++) {
+        AssignmentTime doAssignmentTime = new AssignmentTime();
+        AssignmentTime reviewAssignmentTime = new AssignmentTime();
+        JSONObject ob = (JSONObject) jsonArray.get(i);
+
+        if  (ob.get("Do") != null && ob.get("Review") != null) {
+          //get do assignment start time and end time
+          JSONObject doObject = (JSONObject) ob.get("Do");
+          doAssignmentTime.setActionEnum(AssignmentActionEnum.DO);
+          doAssignmentTime.setReleaseTime(getJsonObjectTime(doObject, "start"));
+          doAssignmentTime.setDeadline(getJsonObjectTime(doObject, "end"));
+          assignmentTimes.add(i, doAssignmentTime);
+
+          //get review assignment start time and end time
+          JSONObject reviewObject = (JSONObject) ob.get("Review");
+          reviewAssignmentTime.setActionEnum(AssignmentActionEnum.REVIEW);
+          reviewAssignmentTime.setReleaseTime(getJsonObjectTime(reviewObject, "start"));
+          reviewAssignmentTime.setDeadline(getJsonObjectTime(reviewObject, "end"));
+          assignmentTimes.add(reviewAssignmentTime);
+        }
+        if  (ob.get("Fix") != null && ob.get("Approve") != null) {
+          //get do assignment start time and end time
+          JSONObject doObject = (JSONObject) ob.get("Fix");
+          doAssignmentTime.setActionEnum(AssignmentActionEnum.FIX);
+          doAssignmentTime.setReleaseTime(getJsonObjectTime(doObject, "start"));
+          doAssignmentTime.setDeadline(getJsonObjectTime(doObject, "end"));
+          assignmentTimes.add(i, doAssignmentTime);
+
+          //get review assignment start time and end time
+          JSONObject reviewObject = (JSONObject) ob.get("Approve");
+          reviewAssignmentTime.setActionEnum(AssignmentActionEnum.APPROVE);
+          reviewAssignmentTime.setReleaseTime(getJsonObjectTime(reviewObject, "start"));
+          reviewAssignmentTime.setDeadline(getJsonObjectTime(reviewObject, "end"));
+          assignmentTimes.add(reviewAssignmentTime);
+        }
+      }
+
+
 
       // 1. create assignment
-      createAssignment(assignmentName,
-              readMe, assignmentType, file, assignmentTimes);
+//      createAssignment(assignmentName,
+//              readMe, assignmentType, file, assignmentTimes);
 
       // 2. create peer review setting
       int assignmentId = dbManager.getAssignmentIdByName(assignmentName);
@@ -292,10 +333,22 @@ public class AssignmentService {
       // 4. set random reviewer and review status for each assignment_user
       randomPairMatching(amount, assignmentName);
 
+      // 5. setting review order init
+      List<PairMatching> pairMatchingList = pmDbManager.getPairMatchingByAuId(assignmentId);
+      for (PairMatching pairMatching : pairMatchingList) {
+        for (int i = 1; i <= round; i++) {
+          roDbManager.insertReviewOrder(pairMatching.getId(), ReviewStatusEnum.INIT, i);
+        }
+      }
+
       return new ResponseEntity<Object>(headers, HttpStatus.OK);
     } catch (Exception e) {
       return new ResponseEntity<Object>(e.getMessage(), headers, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+  }
+
+  public Timestamp getJsonObjectTime(JSONObject ob, String key) {
+    return Timestamp.valueOf((String) ob.get(key));
   }
 
 
@@ -307,15 +360,20 @@ public class AssignmentService {
 
     try {
       List<Assignment> assignmentList = dbManager.getAllReviewAssignment();
+
       TimeZone.setDefault(TimeZone.getTimeZone("Asia/Taipei"));
       Date current = new Date();
       for (Assignment assignment : assignmentList) {
-        // if (current.compareTo(assignment.getReleaseTime()) >= 0) {
-        //   updatePairMatchingStatusByAid(assignment.getId());
-        // }
-//        if (current.compareTo(atDbManager.getAssignmentTimeNameById(assignment.getId()).getReleaseTime()) >= 0) {
-//          updatePairMatchingStatusByAid(assignment.getId());
-//        }
+        List<AssignmentTime> assignmentTimeList = atDbManager.getAssignmentTimeWithReviewActionById(assignment.getId());
+        int reviewRound = 1;
+        for (AssignmentTime assignmentTime : assignmentTimeList) {
+          if (current.compareTo(assignmentTime.getReleaseTime()) >= 0
+                  && current.compareTo(assignmentTime.getDeadline()) <= 0) {
+            updateReviewOrderStatusByAid(assignment.getId(), reviewRound);
+            break;
+          }
+          reviewRound++;
+        }
       }
       JSONObject result = new JSONObject();
       List<JSONObject> array = new ArrayList<>();
@@ -325,10 +383,8 @@ public class AssignmentService {
         ob.put("id", assignment.getId());
         ob.put("name", assignment.getName());
         ob.put("createTime", assignment.getCreateTime());
-        // ob.put("deadline", assignment.getDeadline());
-        // ob.put("releaseTime", assignment.getReleaseTime());
-//        ob.put("releaseTime",atDbManager.getAssignmentTimeNameById(assignment.getId()).getReleaseTime());
-//        ob.put("deadline", atDbManager.getAssignmentTimeNameById(assignment.getId()).getDeadline());
+        ob.put("releaseTime",atDbManager.getAssignmentTimeNameById(assignment.getId()));
+        ob.put("deadline", atDbManager.getAssignmentTimeNameById(assignment.getId()));
         ob.put("display", assignment.isDisplay());
         ob.put("description", assignment.getDescription());
 
@@ -346,23 +402,11 @@ public class AssignmentService {
   }
 
 
-  public void updatePairMatchingStatusByAid(int aid) throws SQLException {
-    List<AssignmentUser> assignmentUserList = auDbManager.getAssignmentUserListByAid(aid);
-
-    for (AssignmentUser assignmentUser : assignmentUserList) {
-
-      if (!pmDbManager.checkStatusUpdated(assignmentUser.getId())) {
-        List<PairMatching> pmList = pmDbManager.getPairMatchingByAuId(assignmentUser.getId());
-
-        for (PairMatching pairMatching: pmList) {
-
-          if (pairMatching.getReviewStatusEnum().equals(ReviewStatusEnum.INIT)) {
-            int status = reviewStatusDbManager
-                    .getReviewStatusIdByStatus(ReviewStatusEnum.UNCOMPLETED.getTypeName());
-            pmDbManager.updatePairMatchingById(status, pairMatching.getId());
-          }
-        }
-      }
+  public void updateReviewOrderStatusByAid(int aid, int round) throws SQLException {
+    List<ReviewOrder> reviewOrderList = roDbManager.getReviewOrderByAid(aid, round);
+    for(ReviewOrder reviewOrder : reviewOrderList) {
+      int status = reviewStatusDbManager.getReviewStatusIdByStatus(reviewOrder.getReviewStatusEnum().getTypeName());
+      roDbManager.updateReviewStatusById(reviewOrder.getId(), status);
     }
   }
 
@@ -452,7 +496,7 @@ public class AssignmentService {
 
     List<AssignmentTime> assignmentTimes = atDbManager.getAssignmentTimeByName(assignmentName);
 
-//    atDbManager.editAssignmentTime(assignmentTime, atId);
+    atDbManager.editAssignmentTime(assignmentTime);
     dbManager.editAssignment(readMe, aid);
 
     if (!assignmentCompileOrdersAndScore.isEmpty()) {
@@ -611,7 +655,6 @@ public class AssignmentService {
         PairMatching pairMatching = new PairMatching();
         pairMatching.setAuId(assignmentUserList.get(mod).getId());
         pairMatching.setReviewId(userList.get(order).getId());
-        pairMatching.setReviewStatusEnum(ReviewStatusEnum.INIT);
 
         insertPairMatchingList.add(pairMatching);
       }

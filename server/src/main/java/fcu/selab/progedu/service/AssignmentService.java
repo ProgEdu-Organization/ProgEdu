@@ -250,9 +250,9 @@ public class AssignmentService {
       @FormDataParam("file") InputStream file,
       @FormDataParam("file") FormDataContentDisposition fileDetail,
       @FormDataParam("order") String assignmentCompileOrdersAndScore) {
-    
+
     Response response = null;
-    
+
     try {
       createAssignment(assignmentName, releaseTime, deadline, readMe,
           assignmentType, file, fileDetail);
@@ -686,9 +686,9 @@ public class AssignmentService {
     int aid = dbManager.getAssignmentIdByName(name);
     List<Integer> auidList = auDbManager.getAuids(aid);
     List<Integer> aaidList = aaDbManager.getAssignmentAssessmentIdByaId(aid);
-    
+
     for (int aaid : aaidList) {  //Assignment_Assessment
-      aaDbManager.deleteAssignmentAssessment(aaid); 
+      aaDbManager.deleteAssignmentAssessment(aaid);
     }
 
     for (int auid : auidList) { // CommitRecord
@@ -882,7 +882,7 @@ public class AssignmentService {
   @Path("order")
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   public Response modifyAssignmentOrderFile(
-      @FormDataParam("fileRadio") String fileType, 
+      @FormDataParam("fileRadio") String fileType,
       @FormDataParam("order") String assignmentCompileOrdersAndScore,
       @FormDataParam("assignmentName") String assignmentName) {
     Response response = null;
@@ -908,7 +908,7 @@ public class AssignmentService {
             + assignmentName + "_pom.xml");
         File assignmentSettingFile = new File(assignmentSettingDir
             + assignmentName + "/pom.xml");
-        
+
         JavaIoUtile.copyDirectoryCompatibilityMode(mavenPomXmlSettingFile, assignmentSettingFile);
 
         zipHandler.zipTestFolder(assignmentSettingDir + assignmentName);
@@ -927,19 +927,19 @@ public class AssignmentService {
    *
    * @param fileName fileName
    * @return zip file
-   * 
+   *
    */
   @GET
   @Path("getAssignmentFile")
   public Response getAssignmentFile(@QueryParam("fileName") String fileName) {
     String filePath = assignmentSettingDir + fileName + ".zip";
 
-    
+
     File file = new File(filePath);
 
     ResponseBuilder response = Response.ok((Object) file);
     response.header("Content-Disposition", "attachment;filename=" + fileName + ".zip");
-    
+
     return response.build();
   }
 
@@ -948,7 +948,7 @@ public class AssignmentService {
   *
   * @param fileName fileName
   * @return assignment order
-  * 
+  *
   */
   @GET
   @Path("getAssignmentOrder")
@@ -961,7 +961,7 @@ public class AssignmentService {
     }
     JSONObject ob = new JSONObject();
     ob.put("orders", orders);
-    
+
     return Response.ok().entity(ob.toString()).build();
   }
 }
