@@ -317,4 +317,30 @@ public class AssignmentTimeDbManager {
     return assignmentTime;
   }
 
+  public int getAssignmentTotalRound(int aId) {
+    String sql = "SELECT COUNT(*) AS round FROM ProgEdu.Assignment_Time WHERE aId = ?";
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
+    int round = 0;
+
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+      preStmt.setInt(1, aId);
+
+      rs = preStmt.executeQuery();
+      while (rs.next()) {
+        round = rs.getInt("round") / 2;
+      }
+    } catch (Exception e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(rs, preStmt, conn);
+    }
+
+    return round;
+  }
+
 }
