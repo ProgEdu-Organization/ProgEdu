@@ -9,8 +9,6 @@ import java.util.List;
 import java.util.TimeZone;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-
-//import org.graalvm.compiler.nodes.calc.ObjectEqualsNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -42,6 +40,7 @@ public class PeerReviewService {
   private ScoreModeDbManager scoreModeDbManager = ScoreModeDbManager.getInstance();
   private ReviewStatusDbManager reviewStatusDbManager = ReviewStatusDbManager.getInstance();
   private AssignmentTimeDbManager assignmentTimeDbManager = AssignmentTimeDbManager.getInstance();
+  private ReviewOrderDbManager reviewOrderDbManager = ReviewOrderDbManager.getInstance();
 
   private static final Logger LOGGER = LoggerFactory.getLogger(PeerReviewService.class);
 
@@ -102,6 +101,10 @@ public class PeerReviewService {
               .getReviewStatusIdByStatus(ReviewStatusEnum.COMPLETED.getTypeName());
 //      pairMatchingDbManager.updatePairMatchingById(status, pmId);
 
+
+      ReviewOrder reviewOrderSett = reviewOrderDbManager.getReviewOrderByPmId(pmId);
+      //TODO 還要把ReviewOrderData根據review order 跟 peerMatchingId加到資料庫
+
       // 4. Check which time have been reviewed, and upload the review order
       if (!reviewRecordDbManager.isFirstTimeReviewRecord(pmId)) {
         reviewOrder = reviewRecordDbManager.getLatestRound(pmId) + 1;
@@ -147,32 +150,31 @@ public class PeerReviewService {
 
     try {
       List<Assignment> assignmentList = assignmentDbManager.getAllReviewAssignment();
-      int reviewId = userDbManager.getUserIdByUsername(username);
       JSONArray jsonArray = new JSONArray();
-
+      int uId = userDbManager.getUserIdByUsername(username);
       for(Assignment assignment : assignmentList) {
+
+        List<PairMatching> pairMatchingList = pairMatchingDbManager.getPairMatchingByAidAndReviewId(assignment.getId(), uId);
+
         ReviewSetting reviewSetting = reviewSettingDbManager.getReviewSetting(assignment.getId());
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("assignmentName", assignment.getName());
         jsonObject.put("amount", reviewSetting.getAmount());
 
-        List<AssignmentTime> assignmentTimes = assignmentTimeDbManager.getAssignmentTimeByName(assignment.getName());
-        JSONArray assignmentArray = new JSONArray();
-        for (AssignmentTime assignmentTime : assignmentTimes) {
-          JSONObject assignmentObject = new JSONObject();
-          assignmentObject.put("action", assignmentTime.getActionEnum().toString());
-          assignmentObject.put("releaseTime", dateFormat.format(assignmentTime.getReleaseTime()));
-          assignmentObject.put("deadline", dateFormat.format(assignmentTime.getDeadline()));
-          assignmentArray.add(assignmentObject);
+        int rounds = assignmentTimeDbManager.getAssignmentTotalRound(assignment.getId());
+        int currentRound = 1;
+
+        for(PairMatching pairMatching : pairMatchingList) {
+          JSONArray roundArray = new JSONArray();
+          for(currentRound = 1; currentRound <= rounds; currentRound++) {
+            JSONObject roundObject = new JSONObject();
+            roundObject.put("round", currentRound);
+            roundObject.put("status", reviewOrderDbManager.getReviewStatusEnumByPmIdAndReviewOrder(pairMatching.getId(), currentRound));
+            roundArray.add(roundObject);
+          }
+          jsonObject.put("roundStatus", roundArray);
         }
-
-        jsonObject.put("assignmentTimes", assignmentArray);
-
-
-        jsonObject.put("count", getReviewCompletedCount(assignment.getId(), reviewId));
-//        jsonObject.put("status", reviewerStatus(assignment.getId(),
-//            reviewId, reviewSetting.getAmount()).getTypeName());
-//              jsonArray.add(jsonObject);
+        jsonArray.add(jsonObject);
       }
     return new ResponseEntity<Object>(jsonArray, headers, HttpStatus.OK);
     } catch (Exception e) {
@@ -182,9 +184,12 @@ public class PeerReviewService {
 
   /**
    * get all user's status of reviewing other's hw
+   *
+   * @param assignmentName assignment name
    */
   @GetMapping("/status/allUsers")
-  public ResponseEntity<Object> getAllReviewStatus() {
+  public ResponseEntity<Object> getAllReviewStatus(
+          @RequestParam("assignmentName") String assignmentName) {
 
     HttpHeaders headers = new HttpHeaders();
     headers.add("Content-Type", "application/json");
@@ -194,14 +199,27 @@ public class PeerReviewService {
       JSONArray array = new JSONArray();
       JSONObject result = new JSONObject();
       List<User> users = getStudents();
+      int aId = assignmentDbManager.getAssignmentIdByName(assignmentName);
+      int rounds = assignmentTimeDbManager.getAssignmentTotalRound(aId);
+      ReviewSetting reviewSetting = reviewSettingDbManager.getReviewSetting(aId);
+
       for (User user : users) {
         String username = user.getUsername();
-        ResponseEntity<Object> reviewStatus = getReviewStatus(username);
         JSONObject ob = new JSONObject();
         ob.put("username", username);
         ob.put("name", user.getName());
         ob.put("display", user.getDisplay());
-        ob.put("reviewStatus", reviewStatus.getBody());
+        int currentRound = 1;
+        JSONArray userRoundArray = new JSONArray();
+        for(currentRound = 1; currentRound <= rounds; currentRound++) {
+          JSONObject roundObject = new JSONObject();
+          roundObject.put("round", currentRound);
+          roundObject.put("amount", reviewSetting.getAmount());
+          roundObject.put("count", getReviewCompletedCount(aId, user.getId(), currentRound));
+
+          userRoundArray.add(roundObject);
+        }
+        ob.put("reviewRound", userRoundArray);
 
         array.add(ob);
       }
@@ -214,18 +232,17 @@ public class PeerReviewService {
     }
   }
 
-  private int getReviewCompletedCount(int aid, int reviewId) throws SQLException {
+  private int getReviewCompletedCount(int aid, int reviewId, int reviewOrder) throws SQLException {
     List<PairMatching> pairMatchingList =
             pairMatchingDbManager.getPairMatchingByAidAndReviewId(aid, reviewId);
     int count = 0;
     List<AssignmentTime> assignmentTimes = assignmentTimeDbManager.getAssignmentTimeNameById(aid);
 
-
     for (PairMatching pairMatching : pairMatchingList) {
       //List<ReviewRecord> reviewRecords = reviewRecordDbManager.getReviewRecordByPairMatchingId();
-//      if (pairMatching.getReviewStatusEnum().equals(ReviewStatusEnum.COMPLETED)) {
-//        count++;
-//      }
+      if (reviewOrderDbManager.getReviewStatusEnumByPmIdAndReviewOrder(pairMatching.getId(), reviewOrder).equals(ReviewStatusEnum.COMPLETED)) {
+        count++;
+      }
     }
 
     return count;
@@ -246,6 +263,7 @@ public class PeerReviewService {
       return resultStatus;
     }
 
+    //TODO
     for (PairMatching pairMatching : pairMatchingList) {
 //      if (pairMatching.getReviewStatusEnum().equals(ReviewStatusEnum.UNCOMPLETED)) {
 //        resultStatus = "DONE";
@@ -704,7 +722,7 @@ public class PeerReviewService {
    */
   @GetMapping("record/status/allUsers")
   public ResponseEntity<Object> getAllReviewRound(
-      @RequestParam("assignmentName") String assignmentName) {
+          @RequestParam("assignmentName") String assignmentName) {
 
     HttpHeaders headers = new HttpHeaders();
     headers.add("Content-Type", "application/json");
