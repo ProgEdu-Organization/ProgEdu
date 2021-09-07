@@ -1,6 +1,8 @@
 package fcu.selab.progedu.data;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class Assignment {
 
@@ -19,6 +21,8 @@ public class Assignment {
   private ProjectTypeEnum type;
 
   private boolean display = true;
+
+  private List<AssessmentTime> assessmentTimeList = new ArrayList<>();
 
   public int getId() {
     return id;
@@ -52,6 +56,14 @@ public class Assignment {
     this.deadline = deadline;
   }
 
+  public Date getReleaseTime() {
+    return releaseTime;
+  }
+
+  public void setReleaseTime(Date releaseTime) {
+    this.releaseTime = releaseTime;
+  }
+
   public String getDescription() {
     return description;
   }
@@ -68,14 +80,6 @@ public class Assignment {
     return this.type = type;
   }
 
-  public Date getReleaseTime() {
-    return releaseTime;
-  }
-
-  public void setReleaseTime(Date releaseTime) {
-    this.releaseTime = releaseTime;
-  }
-
   public boolean isDisplay() {
     return display;
   }
@@ -83,4 +87,13 @@ public class Assignment {
   public void setDisplay(boolean display) {
     this.display = display;
   }
+
+  public List<AssessmentTime> getAssignment() {
+    return assessmentTimeList;
+  }
+
+  public void setAssignment(List<AssessmentTime> assessmentTimeList) {
+    this.assessmentTimeList = assessmentTimeList;
+  }
+
 }
