@@ -65,7 +65,7 @@ public class AssignmentService {
   private AssignmentAssessmentDbManager aaDbManager = AssignmentAssessmentDbManager.getInstance();
   private CommitStatusDbManager csDbManager = CommitStatusDbManager.getInstance();
   private ReviewRecordDbManager rrDbManager = ReviewRecordDbManager.getInstance();
-
+  private AssessmentTimeDbManager assessmentTimeDbManager = AssessmentTimeDbManager.getInstance();
   private CommitRecordDbManager crDbManager = CommitRecordDbManager.getInstance();
   private ScreenshotRecordDbManager srDbManager = ScreenshotRecordDbManager.getInstance();
 
@@ -107,10 +107,16 @@ public class AssignmentService {
 
     HttpHeaders headers = new HttpHeaders();
     //
+    List<AssessmentTime> assessmentTimes = new ArrayList<>();
+    AssessmentTime autoAssessmentAssignmentTime = new AssessmentTime();
+    autoAssessmentAssignmentTime.setAssessmentActionEnum(AssessmentActionEnum.AUTO);
+    autoAssessmentAssignmentTime.setStartTime(releaseTime);
+    autoAssessmentAssignmentTime.setEndTime(deadline);
+    assessmentTimes.add(autoAssessmentAssignmentTime);
 
     try {
       createAssignment(assignmentName, releaseTime, deadline, readMe,
-              assignmentType, file);
+              assignmentType, file, assessmentTimes);
       addOrder(assignmentCompileOrdersAndScore, assignmentName);
 
       return new ResponseEntity<Object>(headers, HttpStatus.OK);
@@ -151,7 +157,8 @@ public class AssignmentService {
           @RequestParam("assignmentName") String assignmentName,
           @RequestParam("releaseTime") Date releaseTime, @RequestParam("deadline") Date deadline,
           @RequestParam("readMe") String readMe, @RequestParam("fileRadio") String assignmentType,
-          @RequestParam("file") MultipartFile file) {
+          @RequestParam("file") MultipartFile file,
+          @RequestParam("assessmentTimes") List<AssessmentTime> assessmentTimes) {
 
 
     HttpHeaders headers = new HttpHeaders();
@@ -191,7 +198,7 @@ public class AssignmentService {
 
     // 9. import project information to database
     ProjectTypeEnum projectTypeEnum = ProjectTypeEnum.getProjectTypeEnum(assignmentType);
-    addProject(assignmentName, releaseTime, deadline, readMe, projectTypeEnum);
+    addProject(assignmentName, releaseTime, deadline, readMe, projectTypeEnum, assessmentTimes);
 
 
     List<User> users = userService.getStudents();
@@ -233,9 +240,11 @@ public class AssignmentService {
     try {
 
       // 1. create assignment
+      //TODO 要改 加上assessmentTime
+      /*
       createAssignment(assignmentName,
               releaseTime, deadline, readMe, assignmentType, file);
-
+      */
       // 2. create peer review setting
       int assignmentId = dbManager.getAssignmentIdByName(assignmentName);
       rsDbManager.insertReviewSetting(assignmentId, amount, reviewStartTime, reviewEndTime);
@@ -296,7 +305,7 @@ public class AssignmentService {
     }
   }
 
-
+  //TODO pairMatching 沒有 status 要拔掉
   public void updatePairMatchingStatusByAid(int aid) throws SQLException {
     List<AssignmentUser> assignmentUserList = auDbManager.getAssignmentUserListByAid(aid);
 
@@ -306,12 +315,13 @@ public class AssignmentService {
         List<PairMatching> pmList = pmDbManager.getPairMatchingByAuId(assignmentUser.getId());
 
         for (PairMatching pairMatching: pmList) {
-
+          /*
           if (pairMatching.getReviewStatusEnum().equals(ReviewStatusEnum.INIT)) {
             int status = reviewStatusDbManager
                     .getReviewStatusIdByStatus(ReviewStatusEnum.UNCOMPLETED.getTypeName());
             pmDbManager.updatePairMatchingById(status, pairMatching.getId());
           }
+          */
         }
       }
     }
@@ -448,17 +458,22 @@ public class AssignmentService {
   }
 
   public void addProject(String name, Date releaseTime, Date deadline, String readMe,
-                         ProjectTypeEnum projectType) {
+                         ProjectTypeEnum projectType, List<AssessmentTime> assessmentTimes) {
     Assignment assignment = new Assignment();
     Date date = tomcatService.getCurrentTime();
     assignment.setName(name);
     assignment.setCreateTime(date);
-    assignment.setReleaseTime(releaseTime);
-    assignment.setDeadline(deadline);
+    //assignment.setReleaseTime(releaseTime);
+    //assignment.setDeadline(deadline);
     assignment.setDescription(readMe);
     assignment.setType(projectType);
+    assignment.setAssessmentTimeList(assessmentTimes);
+
 
     dbManager.addAssignment(assignment);
+    for(AssessmentTime assessmentTime : assignment.getAssessmentTimeList()) {
+      assessmentTimeDbManager.addAssignmentTime(name, assessmentTime);
+    }
   }
 
   private void createAssignmentSettingsV2(String username, String assignmentName) {
@@ -547,8 +562,10 @@ public class AssignmentService {
         PairMatching pairMatching = new PairMatching();
         pairMatching.setAuId(assignmentUserList.get(mod).getId());
         pairMatching.setReviewId(userList.get(order).getId());
+        //TODO pairMatching 沒有 status 改到 reviewRecord status
+        /*
         pairMatching.setReviewStatusEnum(ReviewStatusEnum.INIT);
-
+        */
         insertPairMatchingList.add(pairMatching);
       }
 
@@ -797,7 +814,5 @@ public class AssignmentService {
     }
 
   }
-
-
 
 }

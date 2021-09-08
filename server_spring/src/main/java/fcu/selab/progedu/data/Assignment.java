@@ -88,11 +88,11 @@ public class Assignment {
     this.display = display;
   }
 
-  public List<AssessmentTime> getAssignment() {
+  public List<AssessmentTime> getAssessmentTimeList() {
     return assessmentTimeList;
   }
 
-  public void setAssignment(List<AssessmentTime> assessmentTimeList) {
+  public void setAssessmentTimeList(List<AssessmentTime> assessmentTimeList) {
     this.assessmentTimeList = assessmentTimeList;
   }
 
