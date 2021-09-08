@@ -11,6 +11,7 @@ import { ChartsModule } from 'ng2-charts';
 import { SharedModule } from '../shared/shared.module';
 import { GroupStudashboardComponent } from './group-studashboard/group-studashboard.component';
 import { ReviewStatusAssignmentChooseComponent } from './review-status-assignment-choose/review-status-assignment-choose.component';
+import { ReviewRoundStudashboardComponent } from './review-round-studashboard/review-round-studashboard.component';
 
 @NgModule({
   imports: [
@@ -26,6 +27,7 @@ import { ReviewStatusAssignmentChooseComponent } from './review-status-assignmen
     GroupStudashboardComponent,
     ReviewStudashboardComponent,
     ReviewStatusStudashboardComponent,
+    ReviewRoundStudashboardComponent,
     ReviewStatusAssignmentChooseComponent
   ],
 })

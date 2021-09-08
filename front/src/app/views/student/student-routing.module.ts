@@ -9,6 +9,7 @@ import { ReviewStudashboardComponent } from './review-studashboard/review-studas
 import { ReviewStatusStudashboardComponent } from './review-status-studashboard/review-status-studashboard.component';
 import { ReviewAssignmentChooseComponent } from '../shared/review-assignment-choose/review-assignment-choose.component';
 import { ReviewStatusAssignmentChooseComponent } from './review-status-assignment-choose/review-status-assignment-choose.component';
+import { ReviewRoundStudashboardComponent } from './review-round-studashboard/review-round-studashboard.component';
 
 const routes: Routes = [
   {
@@ -51,6 +52,13 @@ const routes: Routes = [
     component: ReviewStatusStudashboardComponent,
     data: {
       title: 'Peer Review Status Dashboard'
+    }
+  },
+  {
+    path: 'peerReviewRoundDashboard',
+    component: ReviewRoundStudashboardComponent,
+    data: {
+      title: 'Peer Review Round Dashboard'
     }
   },
   {
