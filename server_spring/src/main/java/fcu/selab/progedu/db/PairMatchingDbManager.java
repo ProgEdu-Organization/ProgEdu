@@ -62,8 +62,8 @@ public class PairMatchingDbManager {
    */
   public void insertPairMatchingList(List<PairMatching> pairMatchingList) throws SQLException {
     for (PairMatching pairMatching: pairMatchingList) {
-      insertPairMatching(pairMatching.getAuId(), pairMatching.getReviewId(),
-          pairMatching.getReviewStatusEnum());
+      //insertPairMatching(pairMatching.getAuId(), pairMatching.getReviewId(),
+      //    pairMatching.getReviewStatusEnum());
     }
   }
 
@@ -95,7 +95,7 @@ public class PairMatchingDbManager {
         pairMatching.setId(id);
         pairMatching.setAuId(auId);
         pairMatching.setReviewId(reviewId);
-        pairMatching.setReviewStatusEnum(status);
+        //pairMatching.setReviewStatusEnum(status);
         pairMatchingList.add(pairMatching);
       }
 
@@ -134,7 +134,7 @@ public class PairMatchingDbManager {
         pairMatching.setId(id);
         pairMatching.setAuId(auId);
         pairMatching.setReviewId(reviewId);
-        pairMatching.setReviewStatusEnum(status);
+        //pairMatching.setReviewStatusEnum(status);
       }
 
     } finally {
@@ -172,7 +172,7 @@ public class PairMatchingDbManager {
         pairMatching.setId(id);
         pairMatching.setAuId(auId);
         pairMatching.setReviewId(reviewId);
-        pairMatching.setReviewStatusEnum(status);
+        //pairMatching.setReviewStatusEnum(status);
       }
 
     } finally {
@@ -212,7 +212,7 @@ public class PairMatchingDbManager {
         pairMatching.setId(id);
         pairMatching.setAuId(auId);
         pairMatching.setReviewId(reviewId);
-        pairMatching.setReviewStatusEnum(status);
+        //pairMatching.setReviewStatusEnum(status);
         pairMatchingList.add(pairMatching);
       }
 
@@ -288,7 +288,7 @@ public class PairMatchingDbManager {
         pairMatching.setId(id);
         pairMatching.setAuId(auId);
         pairMatching.setReviewId(reviewId);
-        pairMatching.setReviewStatusEnum(status);
+        //pairMatching.setReviewStatusEnum(status);
         pairMatchingList.add(pairMatching);
       }
 
@@ -328,7 +328,7 @@ public class PairMatchingDbManager {
         pairMatching.setId(id);
         pairMatching.setAuId(auId);
         pairMatching.setReviewId(reviewId);
-        pairMatching.setReviewStatusEnum(status);
+        //pairMatching.setReviewStatusEnum(status);
         pairMatchingList.add(pairMatching);
       }
     } finally {
