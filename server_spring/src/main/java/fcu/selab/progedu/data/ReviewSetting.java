@@ -10,6 +10,10 @@ public class ReviewSetting {
 
   private int amount;
 
+  private Date releaseTime;
+
+  private Date deadline;
+
   private int round;
 
   public int getId() {
@@ -34,6 +38,22 @@ public class ReviewSetting {
 
   public void setAmount(int amount) {
     this.amount = amount;
+  }
+
+  public Date getDeadline() {
+    return deadline;
+  }
+
+  public void setDeadline(Date deadline) {
+    this.deadline = deadline;
+  }
+
+  public Date getReleaseTime() {
+    return releaseTime;
+  }
+
+  public void setReleaseTime(Date releaseTime) {
+    this.releaseTime = releaseTime;
   }
 
   public int getRound() {
