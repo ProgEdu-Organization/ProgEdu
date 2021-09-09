@@ -48,15 +48,17 @@ public class AssessmentTimeDbManager {
     Connection conn = null;
     PreparedStatement preStmt = null;
 
+
     try {
       Timestamp startTime = new Timestamp(assessmentTime.getStartTime().getTime());
       Timestamp endTime = new Timestamp(assessmentTime.getEndTime().getTime());
-
+      
+      int aId = aDb.getAssignmentIdByName(assignmentName);
       int actionId = aaDb.getAssessmentActionIdByAction(assessmentTime.getAssessmentActionEnum().toString());
       conn = database.getConnection();
       preStmt = conn.prepareStatement(sql);
 
-      preStmt.setInt(1, aDb.getAssignmentIdByName(assignmentName)); //aId
+      preStmt.setInt(1, aId); //aId
       preStmt.setInt(2, actionId); //aaId
       preStmt.setTimestamp(3, startTime); //releaseTime
       preStmt.setTimestamp(4, endTime); //deadlineTime

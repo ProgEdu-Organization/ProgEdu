@@ -154,7 +154,7 @@ public class AssignmentDbManager {
    * @return id
    */
   public int getAssignmentIdByName(String assignmentName) {
-    String query = "SELECT `id` FROM ProgEdu.Assignment WHERE `name` = '?'";
+    String query = "SELECT id FROM Assignment WHERE name = ?";
     int id = -1;
 
     Connection conn = null;
