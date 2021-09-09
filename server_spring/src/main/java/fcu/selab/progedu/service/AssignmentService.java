@@ -471,6 +471,7 @@ public class AssignmentService {
 
 
     dbManager.addAssignment(assignment);
+
     for(AssessmentTime assessmentTime : assignment.getAssessmentTimeList()) {
       assessmentTimeDbManager.addAssignmentTime(name, assessmentTime);
     }

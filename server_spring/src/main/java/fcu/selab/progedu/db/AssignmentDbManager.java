@@ -154,30 +154,26 @@ public class AssignmentDbManager {
    * @return id
    */
   public int getAssignmentIdByName(String assignmentName) {
-    String query = "SELECT id FROM Assignment WHERE name = ?";
+    String query = "SELECT `id` FROM ProgEdu.Assignment WHERE `name` = '?'";
     int id = -1;
 
     Connection conn = null;
     PreparedStatement preStmt = null;
-
+    ResultSet rs = null;
 
     try {
-
       conn = database.getConnection();
       preStmt = conn.prepareStatement(query);
-
-
       preStmt.setString(1, assignmentName);
-      try (ResultSet rs = preStmt.executeQuery();) {
-        while (rs.next()) {
-          id = rs.getInt("id");
-        }
+      rs = preStmt.executeQuery();
+      while (rs.next()) {
+        id = rs.getInt("id");
       }
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
     } finally {
-      CloseDBUtil.closeAll(preStmt, conn);
+      CloseDBUtil.closeAll(rs, preStmt, conn);
     }
     return id;
   }
