@@ -17,6 +17,7 @@ import fcu.selab.progedu.utils.JavaIoUtile;
 import fcu.selab.progedu.utils.ZipHandler;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
+import net.minidev.json.JSONValue;
 import org.apache.commons.io.IOUtils;
 import org.gitlab.api.models.GitlabProject;
 import org.jsoup.Jsoup;
@@ -33,10 +34,8 @@ import org.jsoup.nodes.Document;
 
 import java.io.*;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.TimeZone;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.springframework.web.multipart.MultipartFile;
@@ -68,6 +67,7 @@ public class AssignmentService {
   private AssessmentTimeDbManager assessmentTimeDbManager = AssessmentTimeDbManager.getInstance();
   private CommitRecordDbManager crDbManager = CommitRecordDbManager.getInstance();
   private ScreenshotRecordDbManager srDbManager = ScreenshotRecordDbManager.getInstance();
+  private AssessmentActionDbManager assessmentActionDbManager = AssessmentActionDbManager.getInstance();
 
 
   private final String tempDir = System.getProperty("java.io.tmpdir");
@@ -115,6 +115,7 @@ public class AssignmentService {
     assessmentTimes.add(autoAssessmentAssignmentTime);
 
     try {
+      //TODO 等確定好了要把 releaseTime deadLine拿掉
       createAssignment(assignmentName, releaseTime, deadline, readMe,
               assignmentType, file, assessmentTimes);
       addOrder(assignmentCompileOrdersAndScore, assignmentName);
@@ -232,22 +233,44 @@ public class AssignmentService {
           @RequestParam("amount") int amount,
           @RequestParam("reviewStartTime") Date reviewStartTime,
           @RequestParam("reviewEndTime") Date reviewEndTime,
-          @RequestParam("metrics") String metrics) {
-
+          @RequestParam("metrics") String metrics,
+          @RequestParam("assessmentTimes") String assessmentTimes) {
 
     HttpHeaders headers = new HttpHeaders();
     //
     try {
 
       // 1. create assignment
-      //TODO 要改 加上assessmentTime
+      JSONArray jsonArray = (JSONArray) JSONValue.parse(assessmentTimes);
+      SimpleDateFormat formatter = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", Locale.ENGLISH);
+      List<AssessmentTime> assessmentTimeList = new ArrayList<>();
+      int totalRounds = jsonArray.size() / 2;
+
+      for(int i = 0; i < jsonArray.size(); i++) {
+        JSONObject object = (JSONObject) jsonArray.get(i);
+        for(String assessmentAction : object.keySet()) {
+          JSONObject timeObject = (JSONObject) object.get(assessmentAction);
+          Date startTime = formatter.parse(timeObject.get("startTime").toString());
+          Date endTime = formatter.parse(timeObject.get("endTime").toString());
+          AssessmentTime assessmentTime = new AssessmentTime();
+          int actionId = assessmentActionDbManager.getAssessmentActionIdByAction(assessmentAction);
+          assessmentTime.setAssessmentActionEnum(assessmentActionDbManager.getAssessmentActionById(actionId));
+          assessmentTime.setStartTime(startTime);
+          assessmentTime.setEndTime(endTime);
+          assessmentTimeList.add(assessmentTime);
+        }
+      }
+      createAssignment(assignmentName, releaseTime, deadline, readMe,
+              assignmentType, file, assessmentTimeList);
       /*
       createAssignment(assignmentName,
               releaseTime, deadline, readMe, assignmentType, file);
       */
       // 2. create peer review setting
       int assignmentId = dbManager.getAssignmentIdByName(assignmentName);
-      rsDbManager.insertReviewSetting(assignmentId, amount, reviewStartTime, reviewEndTime);
+      //rsDbManager.insertReviewSetting(assignmentId, amount, reviewStartTime, reviewEndTime);
+
+      rsDbManager.insertReviewSetting(assignmentId, amount, totalRounds);
 
       // 3. set review metrics for specific peer review
       int reviewSettingId = rsDbManager.getReviewSettingIdByAid(assignmentId);
