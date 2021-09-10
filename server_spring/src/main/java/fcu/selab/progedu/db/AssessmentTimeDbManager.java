@@ -76,7 +76,7 @@ public class AssessmentTimeDbManager {
    * @return assignment time
    */
   public List<AssessmentTime> getAssessmentTimeByName(String name) {
-    String sql = "SELECT a_t.* FROM ProgEdu.AssessmentTime a_t join ProgEdu.Assignment a on a.id = a_t.aId where a.name = ?";
+    String sql = "SELECT a_t.* FROM ProgEdu.Assessment_Time a_t join ProgEdu.Assignment a on a.id = a_t.aId where a.name = ?";
 
     List<AssessmentTime> assignmentTimeList = new ArrayList<>();
     Connection conn = null;
