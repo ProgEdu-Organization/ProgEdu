@@ -231,12 +231,15 @@ public class PeerReviewService {
     }
 
     for (PairMatching pairMatching : pairMatchingList) {
+      //TODO pairMatching 沒有 status 改到 reviewRecord status
+      /*
       if (pairMatching.getReviewStatusEnum().equals(ReviewStatusEnum.UNCOMPLETED)) {
         resultStatus = "DONE";
         break;
       } else if (pairMatching.getReviewStatusEnum().equals(ReviewStatusEnum.COMPLETED)) {
         resultStatus = "REVIEWED";
       }
+      */
     }
 
     return resultStatus;

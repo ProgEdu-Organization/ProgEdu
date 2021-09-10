@@ -83,12 +83,12 @@ public class ReviewRecordDbManager {
         String feedback = rs.getString("feedback");
         int reviewOrder = rs.getInt("reviewOrder");
         reviewRecord.setId(id);
-        reviewRecord.setPmId(pmId);
+        //reviewRecord.setPmId(pmId);
         reviewRecord.setRsmId(rsmId);
         reviewRecord.setScore(score);
         reviewRecord.setTime(time);
         reviewRecord.setFeedback(feedback);
-        reviewRecord.setReviewOrder(reviewOrder);
+        //reviewRecord.setReviewOrder(reviewOrder);
       }
     } finally {
       CloseDBUtil.closeAll(rs, preStmt, conn);
@@ -127,12 +127,12 @@ public class ReviewRecordDbManager {
         int reviewOrder = rs.getInt("reviewOrder");
         ReviewRecord reviewRecord = new ReviewRecord();
         reviewRecord.setId(id);
-        reviewRecord.setPmId(pmId);
+        //reviewRecord.setPmId(pmId);
         reviewRecord.setRsmId(rsmId);
         reviewRecord.setScore(score);
         reviewRecord.setTime(time);
         reviewRecord.setFeedback(feedback);
-        reviewRecord.setReviewOrder(reviewOrder);
+        //reviewRecord.setReviewOrder(reviewOrder);
         reviewRecordList.add(reviewRecord);
       }
     } finally {
