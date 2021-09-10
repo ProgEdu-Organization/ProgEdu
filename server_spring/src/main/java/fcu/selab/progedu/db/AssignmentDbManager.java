@@ -75,6 +75,57 @@ public class AssignmentDbManager {
   }
 
   /**
+   * Add assignment to database and get auto increase id
+   *
+   * @param assignment Project
+   */
+  public int addAssignmentAndGetId(Assignment assignment) {
+    String sql = "INSERT INTO Assignment(`name`, `createTime`, `description`,"
+            + " `type`, `display`)"
+            + " VALUES(?, ?, ?, ?, ?)";
+
+    String sqlGetId = "SELECT LAST_INSERT_ID() as id";
+    // Todo above [hasTemplate, zipChecksum, zipUrl] is not need
+
+    int id = 0;
+    int typeId = atDb.getTypeIdByName(assignment.getType().getTypeName());
+    Timestamp createTime = new Timestamp(assignment.getCreateTime().getTime());
+    /*
+    Timestamp deadlineTime = new Timestamp(assignment.getDeadline().getTime());
+    Timestamp releaseTime = new Timestamp(assignment.getReleaseTime().getTime());
+    */
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
+
+    try {
+
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
+      preStmt.setString(1, assignment.getName());
+      preStmt.setTimestamp(2, createTime);
+      preStmt.setString(3, assignment.getDescription());
+      preStmt.setInt(4, typeId);
+      preStmt.setBoolean(5, assignment.isDisplay());
+      preStmt.executeUpdate();
+
+      preStmt = conn.prepareStatement(sqlGetId);
+      rs = preStmt.executeQuery();
+      while (rs.next()) {
+        id = rs.getInt("id");
+      }
+
+    } catch (SQLException e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(rs, preStmt, conn);
+    }
+    return id;
+  }
+
+  /**
    * get assignment info by assignment name
    * 
    * @param name assignment name

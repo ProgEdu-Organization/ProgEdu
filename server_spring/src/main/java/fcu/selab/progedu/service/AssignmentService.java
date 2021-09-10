@@ -470,10 +470,10 @@ public class AssignmentService {
     assignment.setAssessmentTimeList(assessmentTimes);
 
 
-    dbManager.addAssignment(assignment);
-
+    //dbManager.addAssignment(assignment);
+    int aId = dbManager.addAssignmentAndGetId(assignment);
     for(AssessmentTime assessmentTime : assignment.getAssessmentTimeList()) {
-      assessmentTimeDbManager.addAssignmentTime(name, assessmentTime);
+      assessmentTimeDbManager.addAssignmentTime(aId, assessmentTime);
     }
   }
 

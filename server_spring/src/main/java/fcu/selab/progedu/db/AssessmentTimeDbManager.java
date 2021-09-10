@@ -42,7 +42,7 @@ public class AssessmentTimeDbManager {
    * @param assignmentName assignment name
    * @param assessmentTime assignment time
    */
-  public void addAssignmentTime(String assignmentName, AssessmentTime assessmentTime)  {
+  public void addAssignmentTime(int aId, AssessmentTime assessmentTime)  {
     String sql = "INSERT INTO ProgEdu.Assessment_Time(`aId`, `aaId`, `startTime`, `endTime`) VALUES(?, ?, ?, ?)";
 
     Connection conn = null;
@@ -53,7 +53,6 @@ public class AssessmentTimeDbManager {
       Timestamp startTime = new Timestamp(assessmentTime.getStartTime().getTime());
       Timestamp endTime = new Timestamp(assessmentTime.getEndTime().getTime());
       
-      int aId = aDb.getAssignmentIdByName(assignmentName);
       int actionId = aaDb.getAssessmentActionIdByAction(assessmentTime.getAssessmentActionEnum().toString());
       conn = database.getConnection();
       preStmt = conn.prepareStatement(sql);
