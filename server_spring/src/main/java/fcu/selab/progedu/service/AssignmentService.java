@@ -243,7 +243,6 @@ public class AssignmentService {
       SimpleDateFormat formatter = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", Locale.ENGLISH);
       List<AssessmentTime> assessmentTimeList = new ArrayList<>();
       int totalRounds = jsonArray.size();
-
       for(int i = 0; i < jsonArray.size(); i++) {
         JSONObject object = (JSONObject) jsonArray.get(i);
         for(String assessmentAction : object.keySet()) {
@@ -282,6 +281,7 @@ public class AssignmentService {
 
       return new ResponseEntity<Object>(headers, HttpStatus.OK);
     } catch (Exception e) {
+      e.printStackTrace();
       return new ResponseEntity<Object>(e.getMessage(), headers, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }

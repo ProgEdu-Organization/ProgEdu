@@ -39,7 +39,7 @@ public class AssessmentTimeDbManager {
 
   /**
    * Add assignment time to db
-   * @param assignmentName assignment name
+   * @param aId assignment id
    * @param assessmentTime assignment time
    */
   public void addAssignmentTime(int aId, AssessmentTime assessmentTime)  {
@@ -52,7 +52,7 @@ public class AssessmentTimeDbManager {
     try {
       Timestamp startTime = new Timestamp(assessmentTime.getStartTime().getTime());
       Timestamp endTime = new Timestamp(assessmentTime.getEndTime().getTime());
-      
+
       int actionId = aaDb.getAssessmentActionIdByAction(assessmentTime.getAssessmentActionEnum().toString());
       conn = database.getConnection();
       preStmt = conn.prepareStatement(sql);
