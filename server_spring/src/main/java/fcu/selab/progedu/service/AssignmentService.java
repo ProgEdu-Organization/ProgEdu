@@ -115,7 +115,6 @@ public class AssignmentService {
     assessmentTimes.add(autoAssessmentAssignmentTime);
 
     try {
-      //TODO 等確定好了要把 releaseTime deadLine拿掉
       createAssignment(assignmentName, readMe,
               assignmentType, file, assessmentTimes);
       addOrder(assignmentCompileOrdersAndScore, assignmentName);
