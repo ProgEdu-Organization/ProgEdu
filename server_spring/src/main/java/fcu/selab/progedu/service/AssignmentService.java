@@ -213,18 +213,41 @@ public class AssignmentService {
   @GetMapping("getAllAssignments")
   public ResponseEntity<Object> getAllAssignments() {
 
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("Access-Control-Allow-Origin", "*");
 
     List<Assignment> assignments = dbManager.getAllAssignment();
+
     JSONObject ob = new JSONObject();
-    ob.put("allAssignments", assignments);
-    return new ResponseEntity<Object>(ob, HttpStatus.OK);
+    JSONArray jsonArray = new JSONArray();
+    for(Assignment assignment : assignments) {
+      int aId = assignment.getId();
+      List<AssessmentTime> assessmentTimes = assessmentTimeDbManager.getAssignmentTimeNameById(aId);
+      JSONObject jsonObject = new JSONObject();
+      jsonObject.put("id", aId);
+      jsonObject.put("name", assignment.getName());
+      jsonObject.put("createTime", assignment.getCreateTime());
+      JSONArray jsonArrayTime = new JSONArray();
+      for (AssessmentTime assessmentTime : assessmentTimes) {
+        JSONObject jsonObjectTime = new JSONObject();
+        jsonObjectTime.put("assessmentAction", assessmentTime.getAssessmentActionEnum().toString());
+        jsonObjectTime.put("startTime", assessmentTime.getStartTime());
+        jsonObjectTime.put("endTime", assessmentTime.getEndTime());
+        jsonArrayTime.add(jsonObjectTime);
+      }
+      jsonObject.put("assignmentTimes", jsonArrayTime);
+      jsonObject.put("description", assignment.getDescription());
+      jsonObject.put("type", assignment.getType());
+      jsonObject.put("display", assignment.isDisplay());
+      jsonArray.add(jsonObject);
+    }
+    ob.put("allAssignments", jsonArray);
+    return new ResponseEntity<Object>(ob, headers, HttpStatus.OK);
   }
 
   @PostMapping("peerReview/create")
   public ResponseEntity<Object> createPeerReview(
           @RequestParam("assignmentName") String assignmentName,
-          @RequestParam("releaseTime") Date releaseTime,
-          @RequestParam("deadline") Date deadline,
           @RequestParam("readMe") String readMe,
           @RequestParam("fileRadio") String assignmentType,
           @RequestParam("file") MultipartFile file,
