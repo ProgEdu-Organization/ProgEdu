@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import fcu.selab.progedu.data.AssessmentTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -314,7 +315,7 @@ public class AssignmentDbManager {
    */
   public List<Assignment> getAllAssignment() {
     List<Assignment> assignments = new ArrayList<>();
-    String sql = "SELECT id, name, createTime, deadline, releaseTime, display, description "
+    String sql = "SELECT id, name, createTime, display, description "
             + "FROM Assignment;";
 
 
@@ -334,10 +335,10 @@ public class AssignmentDbManager {
         assignment.setId(rs.getInt("id"));
         assignment.setName(rs.getString("name"));
         assignment.setCreateTime(rs.getTimestamp("createTime"));
-        //assignment.setDeadline(rs.getTimestamp("deadline"));
-        //assignment.setReleaseTime(rs.getTimestamp("releaseTime"));
         assignment.setDisplay(rs.getBoolean("display"));
         assignment.setDescription(rs.getString("description"));
+        List<AssessmentTime> assessmentTimes = assessmentTimeDbManager.getAssignmentTimeNameById(assignment.getId());
+        assignment.setAssessmentTimeList(assessmentTimes);
         assignments.add(assignment);
       }
     } catch (SQLException e) {

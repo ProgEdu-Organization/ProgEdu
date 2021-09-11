@@ -222,13 +222,12 @@ public class AssignmentService {
     JSONArray jsonArray = new JSONArray();
     for(Assignment assignment : assignments) {
       int aId = assignment.getId();
-      List<AssessmentTime> assessmentTimes = assessmentTimeDbManager.getAssignmentTimeNameById(aId);
       JSONObject jsonObject = new JSONObject();
       jsonObject.put("id", aId);
       jsonObject.put("name", assignment.getName());
       jsonObject.put("createTime", assignment.getCreateTime());
       JSONArray jsonArrayTime = new JSONArray();
-      for (AssessmentTime assessmentTime : assessmentTimes) {
+      for (AssessmentTime assessmentTime : assignment.getAssessmentTimeList()) {
         JSONObject jsonObjectTime = new JSONObject();
         jsonObjectTime.put("assessmentAction", assessmentTime.getAssessmentActionEnum().toString());
         jsonObjectTime.put("startTime", assessmentTime.getStartTime());
