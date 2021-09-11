@@ -116,7 +116,7 @@ public class AssignmentService {
 
     try {
       //TODO 等確定好了要把 releaseTime deadLine拿掉
-      createAssignment(assignmentName, releaseTime, deadline, readMe,
+      createAssignment(assignmentName, readMe,
               assignmentType, file, assessmentTimes);
       addOrder(assignmentCompileOrdersAndScore, assignmentName);
 
@@ -156,7 +156,6 @@ public class AssignmentService {
   @PostMapping("/create")
   public ResponseEntity<Object> createAssignment( // 把readme 的圖片處理拿掉 因為太複雜了
           @RequestParam("assignmentName") String assignmentName,
-          @RequestParam("releaseTime") Date releaseTime, @RequestParam("deadline") Date deadline,
           @RequestParam("readMe") String readMe, @RequestParam("fileRadio") String assignmentType,
           @RequestParam("file") MultipartFile file,
           @RequestParam("assessmentTimes") List<AssessmentTime> assessmentTimes) {
@@ -199,7 +198,7 @@ public class AssignmentService {
 
     // 9. import project information to database
     ProjectTypeEnum projectTypeEnum = ProjectTypeEnum.getProjectTypeEnum(assignmentType);
-    addProject(assignmentName, releaseTime, deadline, readMe, projectTypeEnum, assessmentTimes);
+    addProject(assignmentName, readMe, projectTypeEnum, assessmentTimes);
 
 
     List<User> users = userService.getStudents();
@@ -257,7 +256,7 @@ public class AssignmentService {
           assessmentTimeList.add(assessmentTime);
         }
       }
-      createAssignment(assignmentName, releaseTime, deadline, readMe,
+      createAssignment(assignmentName, readMe,
               assignmentType, file, assessmentTimeList);
       /*
       createAssignment(assignmentName,
@@ -478,18 +477,15 @@ public class AssignmentService {
     }
   }
 
-  public void addProject(String name, Date releaseTime, Date deadline, String readMe,
+  public void addProject(String name, String readMe,
                          ProjectTypeEnum projectType, List<AssessmentTime> assessmentTimes) {
     Assignment assignment = new Assignment();
     Date date = tomcatService.getCurrentTime();
     assignment.setName(name);
     assignment.setCreateTime(date);
-    //assignment.setReleaseTime(releaseTime);
-    //assignment.setDeadline(deadline);
     assignment.setDescription(readMe);
     assignment.setType(projectType);
     assignment.setAssessmentTimeList(assessmentTimes);
-
 
     //dbManager.addAssignment(assignment);
     int aId = dbManager.addAssignmentAndGetId(assignment);
