@@ -378,10 +378,10 @@ public class AssignmentDbManager {
         assignment.setId(rs.getInt("id"));
         assignment.setName(rs.getString("name"));
         assignment.setCreateTime(rs.getTimestamp("createTime"));
-        //assignment.setDeadline(rs.getTimestamp("deadline"));
-        //assignment.setReleaseTime(rs.getTimestamp("releaseTime"));
         assignment.setDisplay(rs.getBoolean("display"));
         assignment.setDescription(rs.getString("description"));
+        List<AssessmentTime> assessmentTimes = assessmentTimeDbManager.getAssignmentTimeNameById(assignment.getId());
+        assignment.setAssessmentTimeList(assessmentTimes);
         assignmentList.add(assignment);
       }
     } finally {

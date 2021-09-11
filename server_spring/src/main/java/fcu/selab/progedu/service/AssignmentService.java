@@ -234,7 +234,7 @@ public class AssignmentService {
         jsonObjectTime.put("endTime", assessmentTime.getEndTime());
         jsonArrayTime.add(jsonObjectTime);
       }
-      jsonObject.put("assignmentTimes", jsonArrayTime);
+      jsonObject.put("assessmentTimes", jsonArrayTime);
       jsonObject.put("description", assignment.getDescription());
       jsonObject.put("type", assignment.getType());
       jsonObject.put("display", assignment.isDisplay());
@@ -330,12 +330,18 @@ public class AssignmentService {
         ob.put("id", assignment.getId());
         ob.put("name", assignment.getName());
         ob.put("createTime", assignment.getCreateTime());
-        ob.put("deadline", assignment.getDeadline());
-        ob.put("releaseTime", assignment.getReleaseTime());
         ob.put("display", assignment.isDisplay());
         ob.put("description", assignment.getDescription());
-        ob.put("reviewReleaseTime", reviewSetting.getReleaseTime());
-        ob.put("reviewDeadline", reviewSetting.getDeadline());
+        JSONArray jsonArray = new JSONArray();
+        for(AssessmentTime assessmentTime : assignment.getAssessmentTimeList()) {
+          JSONObject assessmentObject = new JSONObject();
+          assessmentObject.put("assessmentAction", assessmentTime.getAssessmentActionEnum().toString());
+          assessmentObject.put("startTime", assessmentTime.getStartTime());
+          assessmentObject.put("endTime", assessmentTime.getEndTime());
+          jsonArray.add(assessmentObject);
+        }
+        ob.put("assessmentTimes", jsonArray);
+
         array.add(ob);
       }
       result.put("allReviewAssignments", array);
