@@ -231,8 +231,6 @@ public class AssignmentService {
           @RequestParam("fileRadio") String assignmentType,
           @RequestParam("file") MultipartFile file,
           @RequestParam("amount") int amount,
-          @RequestParam("reviewStartTime") Date reviewStartTime,
-          @RequestParam("reviewEndTime") Date reviewEndTime,
           @RequestParam("metrics") String metrics,
           @RequestParam("assessmentTimes") String assessmentTimes) {
 
@@ -244,7 +242,7 @@ public class AssignmentService {
       JSONArray jsonArray = (JSONArray) JSONValue.parse(assessmentTimes);
       SimpleDateFormat formatter = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", Locale.ENGLISH);
       List<AssessmentTime> assessmentTimeList = new ArrayList<>();
-      int totalRounds = jsonArray.size() / 2;
+      int totalRounds = jsonArray.size();
 
       for(int i = 0; i < jsonArray.size(); i++) {
         JSONObject object = (JSONObject) jsonArray.get(i);
