@@ -317,16 +317,17 @@ public class AssignmentService {
       List<Assignment> assignmentList = dbManager.getAllReviewAssignment();
       TimeZone.setDefault(TimeZone.getTimeZone("Asia/Taipei"));
       Date current = new Date();
+      /*
       for (Assignment assignment : assignmentList) {
         if (current.compareTo(assignment.getReleaseTime()) >= 0) {
           updatePairMatchingStatusByAid(assignment.getId());
         }
       }
+      */
       JSONObject result = new JSONObject();
       List<JSONObject> array = new ArrayList<>();
       for (Assignment assignment : assignmentList) {
         JSONObject ob = new JSONObject();
-        ReviewSetting reviewSetting = rsDbManager.getReviewSetting(assignment.getId());
         ob.put("id", assignment.getId());
         ob.put("name", assignment.getName());
         ob.put("createTime", assignment.getCreateTime());
@@ -348,6 +349,7 @@ public class AssignmentService {
 
       return new ResponseEntity<Object>(result, headers, HttpStatus.OK);
     } catch (Exception e) {
+      e.printStackTrace();
       return new ResponseEntity<Object>(e.getMessage(), headers, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }

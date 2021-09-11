@@ -1,7 +1,7 @@
 package fcu.selab.progedu.service;
 
 public enum AssessmentActionEnum {
-  DO("Do"), REVIEW("Review"), AUTO("Auto Assessment");
+  DO("Do"), REVIEW("Review"), AUTO("Auto");
 
   private String action;
 

@@ -113,7 +113,7 @@ public class AssessmentTimeDbManager {
    * @return assignment name
    */
   public List<AssessmentTime> getAssignmentTimeNameById(int aId) {
-    String sql = "SELECT * FROM Assignment_Time WHERE aId = ?";
+    String sql = "SELECT * FROM ProgEdu.Assessment_Time WHERE `aId` = ?";
 
     List<AssessmentTime> assessmentTimes = new ArrayList<>();
     Connection conn = null;
