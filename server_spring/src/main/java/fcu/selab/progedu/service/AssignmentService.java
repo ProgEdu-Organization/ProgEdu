@@ -316,6 +316,7 @@ public class AssignmentService {
     try {
       List<Assignment> assignmentList = dbManager.getAllReviewAssignment();
       TimeZone.setDefault(TimeZone.getTimeZone("Asia/Taipei"));
+      SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
       Date current = new Date();
       /*
       for (Assignment assignment : assignmentList) {
@@ -337,8 +338,8 @@ public class AssignmentService {
         for(AssessmentTime assessmentTime : assignment.getAssessmentTimeList()) {
           JSONObject assessmentObject = new JSONObject();
           assessmentObject.put("assessmentAction", assessmentTime.getAssessmentActionEnum().toString());
-          assessmentObject.put("startTime", assessmentTime.getStartTime());
-          assessmentObject.put("endTime", assessmentTime.getEndTime());
+          assessmentObject.put("startTime", dateFormat.format(assessmentTime.getStartTime()));
+          assessmentObject.put("endTime", dateFormat.format(assessmentTime.getEndTime()));
           jsonArray.add(assessmentObject);
         }
         ob.put("assessmentTimes", jsonArray);
@@ -382,7 +383,6 @@ public class AssignmentService {
 
     HttpHeaders headers = new HttpHeaders();
     //
-
     try {
       List<Assignment> assignmentList = dbManager.getAutoAssessment();
       JSONObject ob = new JSONObject();
@@ -399,7 +399,7 @@ public class AssignmentService {
 
     HttpHeaders headers = new HttpHeaders();
     //
-
+    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     Assignment assignment = dbManager.getAssignmentByName(assignmentName);
     JSONObject ob = new JSONObject();
     ob.put("description", assignment.getDescription());
@@ -408,8 +408,8 @@ public class AssignmentService {
     for(AssessmentTime assessmentTime : assignment.getAssessmentTimeList()) {
       JSONObject assessmentTimeObject = new JSONObject();
       assessmentTimeObject.put("assessmentAction", assessmentTime.getAssessmentActionEnum().toString());
-      assessmentTimeObject.put("startTime", assessmentTime.getStartTime());
-      assessmentTimeObject.put("endTime", assessmentTime.getEndTime());
+      assessmentTimeObject.put("startTime", dateFormat.format(assessmentTime.getStartTime()));
+      assessmentTimeObject.put("endTime", dateFormat.format(assessmentTime.getEndTime()));
       jsonArray.add(assessmentTimeObject);
     }
     ob.put("assessmentTimes", jsonArray);
