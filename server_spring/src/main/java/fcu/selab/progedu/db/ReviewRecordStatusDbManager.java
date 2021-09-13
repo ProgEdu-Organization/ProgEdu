@@ -117,4 +117,26 @@ public class ReviewRecordStatusDbManager {
     return latestRound;
   }
 
+  public void insertReviewRecordStatus(int pmId, ReviewStatusEnum reviewStatusEnum, int round) {
+    String sql = "INSERT INTO Review_Record_Status(pmId, status, round) VALUES (? ,? , ?)";
+
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+
+    try {
+      int reviewStatus = rsDbManager.getReviewStatusIdByStatus(reviewStatusEnum.getTypeName());
+
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
+      preStmt.setInt(1, pmId);
+      preStmt.setInt(2, reviewStatus);
+      preStmt.setInt(3, round);
+      preStmt.executeUpdate();
+    } catch (SQLException e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    }
+  }
+
 }

@@ -68,6 +68,7 @@ public class AssignmentService {
   private CommitRecordDbManager crDbManager = CommitRecordDbManager.getInstance();
   private ScreenshotRecordDbManager srDbManager = ScreenshotRecordDbManager.getInstance();
   private AssessmentActionDbManager assessmentActionDbManager = AssessmentActionDbManager.getInstance();
+  private ReviewRecordStatusDbManager rrsDbManager = ReviewRecordStatusDbManager.getInstance();
 
 
   private final String tempDir = System.getProperty("java.io.tmpdir");
@@ -298,6 +299,17 @@ public class AssignmentService {
 
       // 4. set random reviewer and review status for each assignment_user
       randomPairMatching(amount, assignmentName);
+
+      // 5. set review record status init
+      List<AssignmentUser> assignmentUserList = auDbManager.getAssignmentUserListByAid(assignmentId);
+      for (AssignmentUser assignmentUser : assignmentUserList) {
+        List<PairMatching> pairMatchingList = pmDbManager.getPairMatchingByAuId(assignmentUser.getId());
+        for (PairMatching pairMatching : pairMatchingList) {
+          for (int j = 0; j <= totalRounds; j++) {
+            rrsDbManager.insertReviewRecordStatus(pairMatching.getId(), ReviewStatusEnum.INIT, j);
+          }
+        }
+      }
 
       return new ResponseEntity<Object>(headers, HttpStatus.OK);
     } catch (Exception e) {
