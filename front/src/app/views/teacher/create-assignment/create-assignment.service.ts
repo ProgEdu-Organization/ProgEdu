@@ -111,7 +111,7 @@ export class CreateAssignmentService {
     formData.append('fileRadio', assignment.value.type);
     formData.append('file', assignment.value.file);
     formData.append('amount', assignment.value.commitRecordCount);
-    formData.append('reviewTime', JSON.stringify(reviewTime.value));
+    formData.append('assessmentTimes', JSON.stringify(reviewTime.value));
     formData.append('metrics', metrics.toString());
 
     return this.addJwtTokenHttpClient.post( this.CREATE_REVIEW_ASSIGNMENT_API, formData, createAssigmentOptions);
