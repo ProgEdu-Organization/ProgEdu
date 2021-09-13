@@ -39,7 +39,7 @@ public class AssessmentTimeDbManager {
 
   /**
    * Add assignment time to db
-   * @param assignmentName assignment name
+   * @param aId assignment id
    * @param assessmentTime assignment time
    */
   public void addAssignmentTime(int aId, AssessmentTime assessmentTime)  {
@@ -52,7 +52,7 @@ public class AssessmentTimeDbManager {
     try {
       Timestamp startTime = new Timestamp(assessmentTime.getStartTime().getTime());
       Timestamp endTime = new Timestamp(assessmentTime.getEndTime().getTime());
-      
+
       int actionId = aaDb.getAssessmentActionIdByAction(assessmentTime.getAssessmentActionEnum().toString());
       conn = database.getConnection();
       preStmt = conn.prepareStatement(sql);
@@ -105,5 +105,41 @@ public class AssessmentTimeDbManager {
       CloseDBUtil.closeAll(rs, preStmt, conn);
     }
     return assignmentTimeList;
+  }
+
+  /**
+   * get assignment time name by id
+   * @param aId aid
+   * @return assignment name
+   */
+  public List<AssessmentTime> getAssignmentTimeNameById(int aId) {
+    String sql = "SELECT * FROM ProgEdu.Assessment_Time WHERE `aId` = ?";
+
+    List<AssessmentTime> assessmentTimes = new ArrayList<>();
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
+
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+      preStmt.setInt(1, aId);
+
+      rs = preStmt.executeQuery();
+      while (rs.next()) {
+        AssessmentTime assessmentTime = new AssessmentTime();
+        assessmentTime.setAId(rs.getInt("aId"));
+        assessmentTime.setAssessmentActionEnum(aaDb.getAssessmentActionById(rs.getInt("aaId")));
+        assessmentTime.setStartTime(rs.getTimestamp("startTime"));
+        assessmentTime.setEndTime(rs.getTimestamp("endTime"));
+        assessmentTimes.add(assessmentTime);
+      }
+    } catch (Exception e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(rs, preStmt, conn);
+    }
+    return assessmentTimes;
   }
 }
