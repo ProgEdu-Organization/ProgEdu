@@ -27,15 +27,11 @@ public class ReviewSettingDbManager {
    *
    * @param aid         assignment Id
    * @param amount      reviewer amount
-   * @param releaseTime releaseTime
-   * @param deadline    deadline
+   * @param round       review round
    */
-  public void insertReviewSetting(int aid, int amount, Date releaseTime,
-                                  Date deadline) throws SQLException {
-    String query = "INSERT INTO Review_Setting(aId, amount, releaseTime, deadline)"
-        + " VALUES(?,?,?,?)";
-    Timestamp releaseTimestamp = new Timestamp(releaseTime.getTime());
-    Timestamp deadlineTimestamp = new Timestamp(deadline.getTime());
+  public void insertReviewSetting(int aid, int amount, int round) throws SQLException {
+    String query = "INSERT INTO Review_Setting(aId, amount, round)"
+        + " VALUES(?, ?, ?)";
     Connection conn = null;
     PreparedStatement preStmt = null;
 
@@ -45,8 +41,7 @@ public class ReviewSettingDbManager {
 
       preStmt.setInt(1, aid);
       preStmt.setInt(2, amount);
-      preStmt.setTimestamp(3, releaseTimestamp);
-      preStmt.setTimestamp(4, deadlineTimestamp);
+      preStmt.setInt(3, round);
       preStmt.executeUpdate();
     } finally {
       CloseDBUtil.closeAll(preStmt, conn);
@@ -85,6 +80,7 @@ public class ReviewSettingDbManager {
    *  Get all review setting
    */
   public List<ReviewSetting> getAllReviewSetting() throws SQLException {
+    //TODO reviewSetting 的時間要拔掉
     String query = "SELECT * FROM Review_Setting";
     List<ReviewSetting> reviewSettingList = new ArrayList<>();
     Connection conn = null;
@@ -101,13 +97,11 @@ public class ReviewSettingDbManager {
         int id = rs.getInt("id");
         int aid = rs.getInt("aId");
         int amount = rs.getInt("amount");
-        Date releaseTime = rs.getTimestamp("releaseTime");
-        Date deadline = rs.getTimestamp("deadline");
+        //Date releaseTime = rs.getTimestamp("releaseTime");
+        //Date deadline = rs.getTimestamp("deadline");
         reviewSetting.setId(id);
         reviewSetting.setaId(aid);
         reviewSetting.setAmount(amount);
-        reviewSetting.setReleaseTime(releaseTime);
-        reviewSetting.setDeadline(deadline);
       }
     } finally {
       CloseDBUtil.closeAll(rs, preStmt, conn);
