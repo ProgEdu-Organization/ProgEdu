@@ -149,10 +149,8 @@ public class AssignmentDbManager {
         while (rs.next()) {
           assignment.setName(name);
           assignment.setCreateTime(rs.getTimestamp("createTime"));
-          //assignment.setDeadline( rs.getTimestamp("deadline"));
           assignment.setDescription(rs.getString("description"));
           assignment.setType(atDb.getTypeNameById(rs.getInt("type")));
-          //assignment.setReleaseTime(rs.getTimestamp("releaseTime"));
           assignment.setDisplay(rs.getBoolean("display"));
           assignment.setAssessmentTimeList(assessmentTimeDbManager.getAssessmentTimeByName(name));
         }
@@ -417,6 +415,7 @@ public class AssignmentDbManager {
         //assignment.setReleaseTime(rs.getTimestamp("releaseTime"));
         assignment.setDisplay(rs.getBoolean("display"));
         assignment.setDescription(rs.getString("description"));
+        assignment.setAssessmentTimeList(assessmentTimeDbManager.getAssignmentTimeNameById(assignment.getId()));
         assignmentList.add(assignment);
       }
     } finally {

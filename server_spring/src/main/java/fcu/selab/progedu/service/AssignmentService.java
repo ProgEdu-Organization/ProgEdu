@@ -404,6 +404,15 @@ public class AssignmentService {
     JSONObject ob = new JSONObject();
     ob.put("description", assignment.getDescription());
     ob.put("deadline", assignment.getDeadline());
+    JSONArray jsonArray = new JSONArray();
+    for(AssessmentTime assessmentTime : assignment.getAssessmentTimeList()) {
+      JSONObject assessmentTimeObject = new JSONObject();
+      assessmentTimeObject.put("assessmentAction", assessmentTime.getAssessmentActionEnum().toString());
+      assessmentTimeObject.put("startTime", assessmentTime.getStartTime());
+      assessmentTimeObject.put("endTime", assessmentTime.getEndTime());
+      jsonArray.add(assessmentTimeObject);
+    }
+    ob.put("assessmentTimes", jsonArray);
     ob.put("type", assignment.getType());
     return new ResponseEntity<Object>(ob, headers, HttpStatus.OK);
   }
