@@ -17,6 +17,7 @@ import { ReviewMetricsManagementComponent } from './review-metrics-management/re
 import { ReviewStatusDashboardComponent } from './review-status-dashboard/review-status-dashboard.component';
 import { ReviewDashboardComponent } from './review-dashboard/review-dashboard.component';
 import { ReviewAssignmentChooseComponent } from '../shared/review-assignment-choose/review-assignment-choose.component';
+import { ReviewRoundDashboardComponent } from './review-round-dashboard/review-round-dashboard.component';
 
 const routes: Routes = [
   {
@@ -136,6 +137,13 @@ const routes: Routes = [
       title: 'Review Status Dashboard'
     }
   },
+  {
+    path: 'reviewRoundDashboard',
+    component: ReviewRoundDashboardComponent,
+    data: {
+      title: 'Review Round Dashboard'
+    }
+  }
 ];
 
 @NgModule({

@@ -21,7 +21,7 @@
         <table class='table table-striped' style="text-align:center;">
           <thead>
             <tr>
-              <th width="10%" class='text-left'>學生</th>
+              <th width="10%" class='text-left'></th>
               <ng-container *ngFor='let col of assignmentTable'>
                 <th width="10%" *ngIf='isRelease(col.reviewReleaseTime)'>
                   <div>{{col.name}}</div>
@@ -33,13 +33,14 @@
           <tbody>
             <tr *ngIf='studentCommitRecord'>
               <th class='text-left' width="10%">
-                {{username}}
+                review人數 / <br>PR round次數
               </th>
               <ng-container *ngFor='let review of studentCommitRecord'>
                 <th *ngIf='isRelease(review.reviewReleaseTime)'>
-                  <p id="{{username}}_{{review.assignmentName}}" class="square {{review.status}}">
-                    <a *ngIf='!isNA(review)' id="{{username}}_{{review.hw}}_{{review.count}}"
-                      href="#/studashboard/reviewStatusAssignmentChoose?username={{username}}&assignmentName={{review.assignmentName}}">{{review.count}}/{{review.amount}}</a>
+                  <p class="circle initialization">
+                    <a *ngIf='!isNA(review)'
+                      id="{{review.name}}_{{review.amount}}_{{review.round}}"
+                      style="color: white;" href="#/studashboard/peerReviewRoundDashboard?assignmentName={{review.assignmentName}}">{{review.amount}}/{{review.round}}</a>
                     <a *ngIf='isNA(review)'>N/A</a>
                   </p>
                 </th>

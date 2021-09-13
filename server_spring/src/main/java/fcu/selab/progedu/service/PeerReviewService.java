@@ -39,6 +39,8 @@ public class PeerReviewService {
   private ReviewSettingMetricsDbManager reviewSettingMetricsDbManager = ReviewSettingMetricsDbManager.getInstance();
   private ScoreModeDbManager scoreModeDbManager = ScoreModeDbManager.getInstance();
   private ReviewStatusDbManager reviewStatusDbManager = ReviewStatusDbManager.getInstance();
+  private ReviewRecordStatusDbManager reviewRecordStatusDbManager = ReviewRecordStatusDbManager.getInstance();
+
 
 
   private static final Logger LOGGER = LoggerFactory.getLogger(PeerReviewService.class);
@@ -76,6 +78,7 @@ public class PeerReviewService {
 
       // 1. Check this review record is expired or not,
       //    if it's expired, it won't create new review record
+
       if (createDate.compareTo(reviewSetting.getDeadline()) >= 0) {
         return new ResponseEntity<>("This review has been expired.", headers,
                 HttpStatus.INTERNAL_SERVER_ERROR);
@@ -128,7 +131,9 @@ public class PeerReviewService {
    */
   @GetMapping("/status/oneUser")
   public ResponseEntity<Object> getReviewStatus(
-          @RequestParam("username") String username) {
+          @RequestParam("username") String username,
+          @RequestParam("round") int round
+  ) {
 
     HttpHeaders headers = new HttpHeaders();
     headers.add("Content-Type", "application/json");
@@ -150,9 +155,8 @@ public class PeerReviewService {
         jsonObject.put("deadline", dateFormat.format(assignment.getDeadline()));
         jsonObject.put("reviewReleaseTime", dateFormat.format(reviewSetting.getReleaseTime()));
         jsonObject.put("reviewDeadline", dateFormat.format(reviewSetting.getDeadline()));
-        jsonObject.put("count", getReviewCompletedCount(assignment.getId(), reviewId));
-        jsonObject.put("status", reviewerStatus(assignment.getId(),
-            reviewId, reviewSetting.getAmount()).getTypeName());
+        jsonObject.put("count", getReviewCompletedCount(assignment.getId(), reviewId, round));
+        jsonObject.put("status", reviewerStatus(assignment.getId(), reviewId, reviewSetting.getAmount(), round));
 
 				jsonArray.add(jsonObject);
 			}
@@ -196,20 +200,18 @@ public class PeerReviewService {
     }
   }
 
-  private int getReviewCompletedCount(int aid, int reviewId) throws SQLException {
+  private int getReviewCompletedCount(int aid, int reviewId, int round) throws SQLException {
     List<PairMatching> pairMatchingList =
             pairMatchingDbManager.getPairMatchingByAidAndReviewId(aid, reviewId);
     int count = 0;
 
     for (PairMatching pairMatching : pairMatchingList) {
-      //TODO pairMatching 沒有 status 改到 reviewRecord status
-      /*
-      if (pairMatching.getReviewStatusEnum().equals(ReviewStatusEnum.COMPLETED)) {
+      ReviewRecordStatus reviewRecordStatus = reviewRecordStatusDbManager.getReviewRecordStatusByPairMatchingIdAndRound(pairMatching.getId(), round);
+
+      if (reviewRecordStatus.getReviewStatusEnum().equals(ReviewStatusEnum.COMPLETED)) {
         count++;
       }
-      */
     }
-
     return count;
   }
 
@@ -249,7 +251,10 @@ public class PeerReviewService {
    * @param username user name
    */
   @GetMapping("record/oneUser")
-  public ResponseEntity<Object> getReviewedRecord(@QueryParam("username") String username) {
+  public ResponseEntity<Object> getReviewedRecord(
+          @QueryParam("username") String username,
+          @QueryParam("round") int round
+  ) {
 
     HttpHeaders headers = new HttpHeaders();
     headers.add("Content-Type", "application/json");
@@ -530,23 +535,23 @@ public class PeerReviewService {
    * @param aid      assignment id
    * @param reviewId user id
    */
-  private ReviewStatusEnum reviewerStatus(int aid, int reviewId, int amount) throws SQLException {
+  private ReviewStatusEnum reviewerStatus(int aid, int reviewId, int amount, int round) throws SQLException {
     List<PairMatching> pairMatchingList =
             pairMatchingDbManager.getPairMatchingByAidAndReviewId(aid, reviewId);
     ReviewStatusEnum resultStatus = ReviewStatusEnum.INIT;
     int initCount = 0;
 
     for (PairMatching pairMatching : pairMatchingList) {
-      //TODO pairMatching 沒有 status 改到 reviewRecord status
-      /*
-      if (pairMatching.getReviewStatusEnum().equals(ReviewStatusEnum.UNCOMPLETED)) {
+      ReviewRecordStatus reviewRecordStatus = reviewRecordStatusDbManager.getReviewRecordStatusByPairMatchingIdAndRound(pairMatching.getId(), round);
+
+      if(reviewRecordStatus.getReviewStatusEnum().equals(ReviewStatusEnum.UNCOMPLETED)) {
         resultStatus = ReviewStatusEnum.UNCOMPLETED;
         break;
-      } else if (pairMatching.getReviewStatusEnum().equals(ReviewStatusEnum.COMPLETED)) {
+      } else if (reviewRecordStatus.getReviewStatusEnum().equals(ReviewStatusEnum.COMPLETED)) {
         resultStatus = ReviewStatusEnum.COMPLETED;
-      } else if (pairMatching.getReviewStatusEnum().equals(ReviewStatusEnum.INIT)) {
+      } else if (reviewRecordStatus.getReviewStatusEnum().equals(ReviewStatusEnum.INIT)) {
         initCount++;
-      }*/
+      }
     }
 
     if (initCount == amount) {

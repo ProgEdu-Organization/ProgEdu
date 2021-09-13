@@ -10,8 +10,11 @@ import java.util.List;
 
 import fcu.selab.progedu.data.PairMatching;
 import fcu.selab.progedu.service.ReviewStatusEnum;
+import fcu.selab.progedu.utils.ExceptionUtil;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import static fcu.selab.progedu.status.Status.LOGGER;
 
 public class PairMatchingDbManager {
 
@@ -262,7 +265,7 @@ public class PairMatchingDbManager {
    */
   public List<PairMatching> getPairMatchingByAidAndReviewId(int aid, int reviewId)
       throws SQLException {
-    String query = "SELECT pm.id, pm.auId, pm.reviewId, pm.status FROM "
+    String query = "SELECT pm.id, pm.auId, pm.reviewId FROM "
         + "Pair_Matching AS pm, Assignment_User AS au "
         + "WHERE au.id = pm.auId AND au.aId = ? AND pm.reviewId = ?;";
     List<PairMatching> pairMatchingList = new ArrayList<>();
@@ -283,7 +286,6 @@ public class PairMatchingDbManager {
       while (rs.next()) {
         int id = rs.getInt("id");
         int auId = rs.getInt("auId");
-        ReviewStatusEnum status = rsDb.getReviewStatusById(rs.getInt("status"));
         PairMatching pairMatching = new PairMatching();
         pairMatching.setId(id);
         pairMatching.setAuId(auId);
@@ -291,7 +293,6 @@ public class PairMatchingDbManager {
         //pairMatching.setReviewStatusEnum(status);
         pairMatchingList.add(pairMatching);
       }
-
     } finally {
       CloseDBUtil.closeAll(rs, preStmt, conn);
     }
