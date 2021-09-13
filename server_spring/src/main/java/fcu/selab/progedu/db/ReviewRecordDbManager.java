@@ -11,6 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fcu.selab.progedu.data.ReviewRecord;
+import fcu.selab.progedu.utils.ExceptionUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ReviewRecordDbManager {
 
@@ -21,6 +24,8 @@ public class ReviewRecordDbManager {
   }
 
   private IDatabase database = MySqlDatabase.getInstance();
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(ReviewRecordDbManager.class);
 
   /**
    * Insert review record into db
@@ -223,5 +228,35 @@ public class ReviewRecordDbManager {
       CloseDBUtil.closeAll(preStmt, conn);
     }
   }
+  public ReviewRecord getReviewRecordByRrsId(int rrsId) {
+    ReviewRecord reviewRecord = new ReviewRecord();
+    String sql = "";
 
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
+
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
+      preStmt.setInt(1, rrsId);
+      rs = preStmt.executeQuery();
+
+      while (rs.next()) {
+        reviewRecord.setId(rs.getInt("id"));
+        reviewRecord.setRrsId(rrsId);
+        reviewRecord.setRsmId(rs.getInt("rsmId"));
+        reviewRecord.setScore(rs.getInt("score"));
+        reviewRecord.setTime(rs.getTimestamp("time"));
+        reviewRecord.setFeedback(rs.getString("feedback"));
+      }
+    } catch (SQLException e) {
+      LOGGER.error(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.debug(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(rs, preStmt, conn);
+    }
+    return reviewRecord;
+  }
 }

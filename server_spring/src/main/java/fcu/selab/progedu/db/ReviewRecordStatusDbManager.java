@@ -60,4 +60,61 @@ public class ReviewRecordStatusDbManager {
     return reviewRecordStatus;
   }
 
+  public List<ReviewRecordStatus> getAllReviewRecordStatusByPairMatchingId(int pmId) {
+    String sql = "SELECT RRS.* FROM ProgEdu.Pair_Matching AS PM, ProgEdu.Review_Record_Status AS RRS WHERE PM.id = RRS.pmId AND PM.id = ?;";
+    List<ReviewRecordStatus> reviewRecordStatusList = new ArrayList<>();
+
+    Connection conn = null;
+    PreparedStatement stmt = null;
+    ResultSet rs = null;
+    try {
+      conn = database.getConnection();
+      stmt = conn.prepareStatement(sql);
+
+      stmt.setInt(1, pmId);
+
+      rs = stmt.executeQuery();
+      while (rs.next()) {
+        ReviewRecordStatus reviewRecordStatus = new ReviewRecordStatus();
+        reviewRecordStatus.setId(rs.getInt("id"));
+        reviewRecordStatus.setPmId(pmId);
+        reviewRecordStatus.setReviewStatusEnum(rsDbManager.getReviewStatusById(rs.getInt("status")));
+        reviewRecordStatus.setRound(rs.getInt("round"));
+        reviewRecordStatusList.add(reviewRecordStatus);
+      }
+    } catch (SQLException e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(rs, stmt, conn);
+    }
+    return reviewRecordStatusList;
+  }
+
+  public int getLatestReviewRound(int pmId) {
+    String sql = "SELECT MAX(round) AS latestRound FROM Review_Record_Status WHERE pmId = ?";
+    int latestRound = -1;
+
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
+
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
+      preStmt.setInt(1, pmId);
+      rs = preStmt.executeQuery();
+      while (rs.next()) {
+        latestRound = rs.getInt("latestRound");
+      }
+    } catch (SQLException e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(rs, preStmt, conn);
+    }
+    return latestRound;
+  }
+
 }
