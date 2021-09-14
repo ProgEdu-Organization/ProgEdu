@@ -537,7 +537,6 @@ public class AssignmentService {
     assignment.setType(projectType);
     assignment.setAssessmentTimeList(assessmentTimes);
 
-    //dbManager.addAssignment(assignment);
     int aId = dbManager.addAssignmentAndGetId(assignment);
     for(AssessmentTime assessmentTime : assignment.getAssessmentTimeList()) {
       assessmentTimeDbManager.addAssignmentTime(aId, assessmentTime);

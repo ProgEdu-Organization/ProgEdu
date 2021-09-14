@@ -40,6 +40,7 @@ public class PeerReviewService {
   private ScoreModeDbManager scoreModeDbManager = ScoreModeDbManager.getInstance();
   private ReviewStatusDbManager reviewStatusDbManager = ReviewStatusDbManager.getInstance();
   private ReviewRecordStatusDbManager reviewRecordStatusDbManager = ReviewRecordStatusDbManager.getInstance();
+  private AssessmentTimeDbManager assessmentTimeDbManager = AssessmentTimeDbManager.getInstance();
 
 
 
@@ -75,10 +76,18 @@ public class PeerReviewService {
       int auId = assignmentUserDbManager.getAuid(assignmentId, reviewedId);
       int pmId = pairMatchingDbManager.getPairMatchingIdByAuIdReviewId(auId, userId);
       int reviewOrder = 1;
+      TimeZone.setDefault(TimeZone.getTimeZone("Asia/Taipei"));
+      Date currentDate = new Date();
+      AssessmentTime assessmentTime = assessmentTimeDbManager.getAssignmentTimeByTimeAndName(assignmentName, currentDate);
+
+      if (assessmentTime == null || assessmentTime.getAssessmentActionEnum().equals(AssessmentActionEnum.DO)) {
+        return new ResponseEntity<>("Not allow to review", headers,
+                HttpStatus.INTERNAL_SERVER_ERROR);
+      }
 
       // 1. Check this review record is expired or not,
       //    if it's expired, it won't create new review record
-
+      /*
       if (createDate.compareTo(reviewSetting.getDeadline()) >= 0) {
         return new ResponseEntity<>("This review has been expired.", headers,
                 HttpStatus.INTERNAL_SERVER_ERROR);
@@ -90,7 +99,7 @@ public class PeerReviewService {
         return new ResponseEntity<>("This review hasn't been released.", headers,
                 HttpStatus.INTERNAL_SERVER_ERROR);
       }
-
+      */
       // 3. Upload the status of pair matching
       int status = reviewStatusDbManager
               .getReviewStatusIdByStatus(ReviewStatusEnum.COMPLETED.getTypeName());
@@ -371,16 +380,20 @@ public class PeerReviewService {
       JSONArray array = new JSONArray();
       for (Assignment assignment : assignmentList) {
         int auId = assignmentUserDbManager.getAuid(assignment.getId(), userId);
-        ReviewSetting reviewSetting = reviewSettingDbManager.getReviewSetting(assignment.getId());
         JSONObject ob = new JSONObject();
         int commitRecordCount = commitRecordDbManager.getCommitCount(auId);
         ob.put("assignmentName", assignment.getName());
-        ob.put("releaseTime", dateFormat.format(assignment.getReleaseTime()));
-        ob.put("deadline", dateFormat.format(assignment.getDeadline()));
         ob.put("commitRecordCount", commitRecordCount);
-        ob.put("reviewReleaseTime", dateFormat.format(reviewSetting.getReleaseTime()));
-        ob.put("reviewDeadline", dateFormat.format(reviewSetting.getDeadline()));
         ob.put("reviewStatus", reviewedRecordStatus(auId, commitRecordCount));
+        JSONArray jsonArray = new JSONArray();
+        for(AssessmentTime assessmentTime : assignment.getAssessmentTimeList()) {
+          JSONObject assessmentTimeObject = new JSONObject();
+          assessmentTimeObject.put("assessmentAction", assessmentTime.getAssessmentActionEnum().toString());
+          assessmentTimeObject.put("startTime", dateFormat.format(assessmentTime.getStartTime()));
+          assessmentTimeObject.put("endTime", dateFormat.format(assessmentTime.getEndTime()));
+          jsonArray.add(assessmentTimeObject);
+        }
+        ob.put("assessmentTimes", jsonArray);
         array.add(ob);
       }
       return new ResponseEntity<Object>(array, headers, HttpStatus.OK);
