@@ -214,9 +214,6 @@ public class AssignmentService {
   @GetMapping("getAllAssignments")
   public ResponseEntity<Object> getAllAssignments() {
 
-    HttpHeaders headers = new HttpHeaders();
-    headers.add("Access-Control-Allow-Origin", "*");
-
     List<Assignment> assignments = dbManager.getAllAssignment();
 
     JSONObject ob = new JSONObject();
@@ -242,7 +239,7 @@ public class AssignmentService {
       jsonArray.add(jsonObject);
     }
     ob.put("allAssignments", jsonArray);
-    return new ResponseEntity<Object>(ob, headers, HttpStatus.OK);
+    return new ResponseEntity<Object>(ob, HttpStatus.OK);
   }
 
   @PostMapping("peerReview/create")
