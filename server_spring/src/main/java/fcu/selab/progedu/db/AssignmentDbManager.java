@@ -412,8 +412,6 @@ public class AssignmentDbManager {
         assignment.setId(rs.getInt("id"));
         assignment.setName(rs.getString("name"));
         assignment.setCreateTime(rs.getTimestamp("createTime"));
-        //assignment.setDeadline(rs.getTimestamp("deadline"));
-        //assignment.setReleaseTime(rs.getTimestamp("releaseTime"));
         assignment.setDisplay(rs.getBoolean("display"));
         assignment.setDescription(rs.getString("description"));
         assignment.setAssessmentTimeList(assessmentTimeDbManager.getAssignmentTimeNameById(assignment.getId()));

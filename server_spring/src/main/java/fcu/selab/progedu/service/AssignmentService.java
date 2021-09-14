@@ -415,7 +415,6 @@ public class AssignmentService {
     Assignment assignment = dbManager.getAssignmentByName(assignmentName);
     JSONObject ob = new JSONObject();
     ob.put("description", assignment.getDescription());
-    ob.put("deadline", assignment.getDeadline());
     JSONArray jsonArray = new JSONArray();
     for(AssessmentTime assessmentTime : assignment.getAssessmentTimeList()) {
       JSONObject assessmentTimeObject = new JSONObject();

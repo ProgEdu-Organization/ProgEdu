@@ -48,22 +48,6 @@ public class Assignment {
     this.name = name;
   }
 
-  public Date getDeadline() {
-    return deadline;
-  }
-
-  public void setDeadline(Date deadline) {
-    this.deadline = deadline;
-  }
-
-  public Date getReleaseTime() {
-    return releaseTime;
-  }
-
-  public void setReleaseTime(Date releaseTime) {
-    this.releaseTime = releaseTime;
-  }
-
   public String getDescription() {
     return description;
   }
