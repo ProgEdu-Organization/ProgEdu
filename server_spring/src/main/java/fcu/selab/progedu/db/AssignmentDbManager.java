@@ -147,6 +147,7 @@ public class AssignmentDbManager {
       stmt.setString(1, name);
       try (ResultSet rs = stmt.executeQuery();) {
         while (rs.next()) {
+          assignment.setId(rs.getInt("id"));
           assignment.setName(name);
           assignment.setCreateTime(rs.getTimestamp("createTime"));
           assignment.setDescription(rs.getString("description"));

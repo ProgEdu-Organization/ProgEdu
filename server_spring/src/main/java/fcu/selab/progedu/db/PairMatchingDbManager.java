@@ -33,12 +33,10 @@ public class PairMatchingDbManager {
    *
    * @param auId     assignment Id
    * @param reviewId user Id
-   * @param status   status
    */
-  public void insertPairMatching(int auId, int reviewId, ReviewStatusEnum status)
+  public void insertPairMatching(int auId, int reviewId)
       throws SQLException {
-    String query = "INSERT INTO Pair_Matching(auId, reviewId, status) VALUES(?,?,?)";
-    int statusId = rsDb.getReviewStatusIdByStatus(status.getTypeName());
+    String query = "INSERT INTO Pair_Matching(auId, reviewId) VALUES(?,?)";
 
     Connection conn = null;
     PreparedStatement preStmt = null;
@@ -50,7 +48,6 @@ public class PairMatchingDbManager {
 
       preStmt.setInt(1, auId);
       preStmt.setInt(2, reviewId);
-      preStmt.setInt(3, statusId);
       preStmt.executeUpdate();
     } finally {
       CloseDBUtil.closeAll(preStmt, conn);
@@ -65,8 +62,7 @@ public class PairMatchingDbManager {
    */
   public void insertPairMatchingList(List<PairMatching> pairMatchingList) throws SQLException {
     for (PairMatching pairMatching: pairMatchingList) {
-      //insertPairMatching(pairMatching.getAuId(), pairMatching.getReviewId(),
-      //    pairMatching.getReviewStatusEnum());
+      insertPairMatching(pairMatching.getAuId(), pairMatching.getReviewId());
     }
   }
 
@@ -210,12 +206,10 @@ public class PairMatchingDbManager {
       while (rs.next()) {
         int id = rs.getInt("id");
         int reviewId = rs.getInt("reviewId");
-        ReviewStatusEnum status = rsDb.getReviewStatusById(rs.getInt("status"));
         PairMatching pairMatching = new PairMatching();
         pairMatching.setId(id);
         pairMatching.setAuId(auId);
         pairMatching.setReviewId(reviewId);
-        //pairMatching.setReviewStatusEnum(status);
         pairMatchingList.add(pairMatching);
       }
 
