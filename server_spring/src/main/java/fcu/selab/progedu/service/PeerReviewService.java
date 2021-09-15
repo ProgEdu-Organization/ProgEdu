@@ -186,24 +186,28 @@ public class PeerReviewService {
       JSONArray array = new JSONArray();
       Assignment assignment = assignmentDbManager.getAssignmentByName(assignmentName);
       int userId = userDbManager.getUserIdByUsername(username);
+      System.out.println(userId);
+      System.out.println(assignment.getId());
       int auid = assignmentUserDbManager.getAuid(assignment.getId(), userId);
+      System.out.println(auid);
       List<PairMatching> pairMatchingList = pairMatchingDbManager.getPairMatchingByAuId(auid);
 
-      result.put("assignmentName", assignment.getName());
-      result.put("display", assignment.isDisplay());
+
+      System.out.println(pairMatchingList);
       for (PairMatching pairMatching : pairMatchingList) {
         JSONObject ob = new JSONObject();
-        ob.put("reviewId", pairMatching.getReviewId());
-        ob.put("reviewName", userDbManager.getUsername(auid));
+        result.put("assignmentName", assignment.getName());
+        result.put("display", assignment.isDisplay());
         //round
         List<ReviewRecordStatus> reviewRecordStatusList = reviewRecordStatusDbManager.getAllReviewRecordStatusByPairMatchingId(pairMatching.getId());
         for(ReviewRecordStatus reviewRecordStatus : reviewRecordStatusList) {
           JSONObject reviewRound = new JSONObject();
+          reviewRound.put("reviewId", pairMatching.getReviewId());
+          reviewRound.put("reviewName", userDbManager.getUsername(pairMatching.getReviewId()));
           reviewRound.put("round", reviewRecordStatus.getRound());
           reviewRound.put("status", reviewRecordStatus.getReviewStatusEnum());
           array.add(reviewRound);
         }
-        result.put("reivew", ob);
       }
         result.put("reviewRound", array);
 
