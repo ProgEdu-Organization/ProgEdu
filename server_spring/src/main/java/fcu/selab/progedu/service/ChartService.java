@@ -1,9 +1,8 @@
 package fcu.selab.progedu.service;
+import fcu.selab.progedu.data.AssessmentTime;
 import fcu.selab.progedu.data.CommitRecord;
-import fcu.selab.progedu.db.AssignmentDbManager;
-import fcu.selab.progedu.db.AssignmentUserDbManager;
-import fcu.selab.progedu.db.CommitRecordDbManager;
-import fcu.selab.progedu.db.CommitStatusDbManager;
+import fcu.selab.progedu.db.*;
+import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -12,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Date;
@@ -25,6 +25,7 @@ public class ChartService {
   private AssignmentUserDbManager assignmentUserDbManager = AssignmentUserDbManager.getInstance();
   private CommitStatusDbManager commitStatusDbManager = CommitStatusDbManager.getInstance();
   private CommitRecordDbManager commitRecordDbManager = CommitRecordDbManager.getInstance();
+  private AssessmentTimeDbManager assessmentTimeDbManager = AssessmentTimeDbManager.getInstance();
 
   /**
    * get all commit record.
@@ -39,6 +40,8 @@ public class ChartService {
     List<String> assignmentNames =  assignmentService.getAllAssignmentNames();
     // Step2  find all commitRecord id by using assignment's id.
     JSONObject ob = new JSONObject();
+    SimpleDateFormat dateFormat = new SimpleDateFormat(
+            "yyyy-MM-dd HH:mm:ss.S");
 
     List<JSONObject> assignments = new ArrayList<>();
 
@@ -69,8 +72,15 @@ public class ChartService {
           }
         });
         commits.put("name", name);
-        commits.put("releaseTime", assignmentDbManager.getAssignmentByName(name).getReleaseTime());
-        commits.put("deadline", assignmentDbManager.getAssignmentByName(name).getDeadline());
+        JSONArray jsonArray = new JSONArray();
+        for(AssessmentTime assessmentTime : assessmentTimeDbManager.getAssessmentTimeByName(name)) {
+          JSONObject assessmentTimeObject = new JSONObject();
+          assessmentTimeObject.put("assessmentAction", assessmentTime.getAssessmentActionEnum().toString());
+          assessmentTimeObject.put("startTime", dateFormat.format(assessmentTime.getStartTime()));
+          assessmentTimeObject.put("endTime", dateFormat.format(assessmentTime.getEndTime()));
+          jsonArray.add(assessmentTimeObject);
+        }
+        commits.put("assessmentTimes", jsonArray);
         commits.put("commits", array);
       });
       assignments.add(commits);
