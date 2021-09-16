@@ -14,7 +14,7 @@ export class ReviewRoundStudashboardService {
 
   ALL_COMMIT_API = PeerReviewAPI.getReviewStatus;
   ALL_ASSIGNMENT_API = AssignmentAPI.getAllPeerReviewAssignment;
-  ALL_ROUND_STATUS_API = PeerReviewAPI.getOneUserRoundStatus;
+  ALL_ROUND_STATUS_API = PeerReviewAPI.getReviewRoundStatus;
   constructor(private addJwtTokenHttpClient: AddJwtTokenHttpClient) { }
 
   getStudentCommitRecord(username: string): Observable<any> {
