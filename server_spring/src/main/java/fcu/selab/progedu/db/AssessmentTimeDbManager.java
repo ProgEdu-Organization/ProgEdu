@@ -142,4 +142,40 @@ public class AssessmentTimeDbManager {
     }
     return assessmentTimes;
   }
+
+  public AssessmentTime getAssignmentTimeByTimeAndName(String name, Date time) {
+    String sql = "SELECT a_t.* FROM ProgEdu.Assignment_Time a_t join ProgEdu.Assignment a on a.id = a_t.aId WHERE " +
+            "a.name = ? AND ( ? between a_t.startTime and a_t.endTime)";
+
+    Timestamp dateStamp = new Timestamp(time.getTime());
+
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
+    AssessmentTime assessmentTime = null;
+
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
+      preStmt.setString(1, name);
+      preStmt.setTimestamp(2, dateStamp);
+
+      rs = preStmt.executeQuery();
+      while (rs.next()) {
+        assessmentTime = new AssessmentTime();
+        assessmentTime.setAId(rs.getInt("aId"));
+        assessmentTime.setAssessmentActionEnum(aaDb.getAssessmentActionById(rs.getInt("aaId")));
+        assessmentTime.setStartTime(rs.getTimestamp("startTime"));
+        assessmentTime.setEndTime(rs.getTimestamp("endTime"));
+      }
+
+    } catch (Exception e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(rs, preStmt, conn);
+    }
+    return assessmentTime;
+  }
 }

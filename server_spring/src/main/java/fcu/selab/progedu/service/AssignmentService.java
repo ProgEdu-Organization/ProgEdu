@@ -214,9 +214,6 @@ public class AssignmentService {
   @GetMapping("getAllAssignments")
   public ResponseEntity<Object> getAllAssignments() {
 
-    HttpHeaders headers = new HttpHeaders();
-    headers.add("Access-Control-Allow-Origin", "*");
-
     List<Assignment> assignments = dbManager.getAllAssignment();
 
     JSONObject ob = new JSONObject();
@@ -242,7 +239,7 @@ public class AssignmentService {
       jsonArray.add(jsonObject);
     }
     ob.put("allAssignments", jsonArray);
-    return new ResponseEntity<Object>(ob, headers, HttpStatus.OK);
+    return new ResponseEntity<Object>(ob, HttpStatus.OK);
   }
 
   @PostMapping("peerReview/create")
@@ -328,6 +325,7 @@ public class AssignmentService {
     try {
       List<Assignment> assignmentList = dbManager.getAllReviewAssignment();
       TimeZone.setDefault(TimeZone.getTimeZone("Asia/Taipei"));
+      SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
       Date current = new Date();
       /*
       for (Assignment assignment : assignmentList) {
@@ -349,8 +347,8 @@ public class AssignmentService {
         for(AssessmentTime assessmentTime : assignment.getAssessmentTimeList()) {
           JSONObject assessmentObject = new JSONObject();
           assessmentObject.put("assessmentAction", assessmentTime.getAssessmentActionEnum().toString());
-          assessmentObject.put("startTime", assessmentTime.getStartTime());
-          assessmentObject.put("endTime", assessmentTime.getEndTime());
+          assessmentObject.put("startTime", dateFormat.format(assessmentTime.getStartTime()));
+          assessmentObject.put("endTime", dateFormat.format(assessmentTime.getEndTime()));
           jsonArray.add(assessmentObject);
         }
         ob.put("assessmentTimes", jsonArray);
@@ -394,7 +392,6 @@ public class AssignmentService {
 
     HttpHeaders headers = new HttpHeaders();
     //
-
     try {
       List<Assignment> assignmentList = dbManager.getAutoAssessment();
       JSONObject ob = new JSONObject();
@@ -411,11 +408,19 @@ public class AssignmentService {
 
     HttpHeaders headers = new HttpHeaders();
     //
-
+    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     Assignment assignment = dbManager.getAssignmentByName(assignmentName);
     JSONObject ob = new JSONObject();
     ob.put("description", assignment.getDescription());
-    ob.put("deadline", assignment.getDeadline());
+    JSONArray jsonArray = new JSONArray();
+    for(AssessmentTime assessmentTime : assignment.getAssessmentTimeList()) {
+      JSONObject assessmentTimeObject = new JSONObject();
+      assessmentTimeObject.put("assessmentAction", assessmentTime.getAssessmentActionEnum().toString());
+      assessmentTimeObject.put("startTime", dateFormat.format(assessmentTime.getStartTime()));
+      assessmentTimeObject.put("endTime", dateFormat.format(assessmentTime.getEndTime()));
+      jsonArray.add(assessmentTimeObject);
+    }
+    ob.put("assessmentTimes", jsonArray);
     ob.put("type", assignment.getType());
     return new ResponseEntity<Object>(ob, headers, HttpStatus.OK);
   }
@@ -528,7 +533,6 @@ public class AssignmentService {
     assignment.setType(projectType);
     assignment.setAssessmentTimeList(assessmentTimes);
 
-    //dbManager.addAssignment(assignment);
     int aId = dbManager.addAssignmentAndGetId(assignment);
     for(AssessmentTime assessmentTime : assignment.getAssessmentTimeList()) {
       assessmentTimeDbManager.addAssignmentTime(aId, assessmentTime);
