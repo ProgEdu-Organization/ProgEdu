@@ -23,8 +23,8 @@
           <tr *ngFor="let assignment of assignments">
             <td>{{assignment.name}}</td>
             <td>{{assignment.createTime | date:'short'}}</td>
-            <td>{{assignment.releaseTime | date:'short'}}</td>
-            <td>{{assignment.deadline | date:'short'}}</td>
+            <td>{{assignment.assessmentTimes[0].startTime | date:'short'}}</td>
+            <td>{{assignment.assessmentTimes[0].endTime | date:'short'}}</td>
             <td><button id="{{assignment.name}}" class="btn btn-info" data-toggle="modal"
                 (click)="editModal.show();setSelectAssignment(assignment);getAssignmentOrder()"><i class="cui-pencil icons"></i></button>
             </td>
