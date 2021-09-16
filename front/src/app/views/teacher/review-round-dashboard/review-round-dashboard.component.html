@@ -37,11 +37,11 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor='let student of allStudentCommitRecord | filter:search'>
+          <tr *ngFor='let student of allReviewRoundStatus| filter:search'>
             <th class='text-left' width="10%">
               {{student.name}}
             </th>
-            <th *ngFor='let review of student.reviewStatus'>
+            <th *ngFor='let review of student.reviewRound'>
               <p id="{{student.username}}_{{review.assignmentName}}" class="square {{review.status}}">
                 <a *ngIf='!isNA(review)'
                   id="{{student.username}}_{{review.assignmentName}}_{{review.count}}"

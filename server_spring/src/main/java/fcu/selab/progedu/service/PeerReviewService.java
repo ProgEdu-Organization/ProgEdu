@@ -260,6 +260,45 @@ public class PeerReviewService {
     }
   }
 
+  @GetMapping("/status/round/allUsers")
+  public ResponseEntity<Object> getAllReviewRoundStatus(
+          @RequestParam("assignmentName") String assignmentName) {
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("Content-Type", "application/json");
+    //
+
+    SimpleDateFormat dateFormat = new SimpleDateFormat(
+        "yyyy-MM-dd HH:mm:ss.S");
+
+    try {
+      List<Assignment> assignmentList = assignmentDbManager.getAllReviewAssignment();
+      //int reviewId = userDbManager.getUserIdByUsername(username);
+      int assignmentId = assignmentDbManager.getAssignmentIdByName(assignmentName);
+      List<AssignmentUser> assignmentUserList = assignmentUserDbManager.getAssignmentUserListByAid(assignmentId);
+      ReviewSetting reviewSetting = reviewSettingDbManager.getReviewSetting(assignmentId);
+      JSONArray jsonArray = new JSONArray();
+
+      for(AssignmentUser assignmentUser: assignmentUserList) {
+        int reviewId = assignmentUser.getUid();
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("name", userDbManager.getUsername(reviewId));
+        JSONArray reviewRound = new JSONArray();
+        for(int round = 0; round < reviewSetting.getRound(); round++) {
+          JSONObject roundStatus = new JSONObject();
+          roundStatus.put("amount", reviewSetting.getAmount());
+          roundStatus.put("count", getReviewCompletedCount(assignmentId, reviewId, round));
+          roundStatus.put("status", reviewerStatus(assignmentId, reviewId, reviewSetting.getAmount(), round));
+          reviewRound.add(roundStatus);
+        }
+        jsonObject.put("reviewRound", reviewRound);
+        jsonArray.add(jsonObject);
+      }
+      return new ResponseEntity<Object>(jsonArray, headers, HttpStatus.OK);
+    } catch (Exception e) {
+      return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
   private int getReviewCompletedCount(int aid, int reviewId, int round) throws SQLException {
     List<PairMatching> pairMatchingList =
             pairMatchingDbManager.getPairMatchingByAidAndReviewId(aid, reviewId);
