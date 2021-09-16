@@ -15,14 +15,15 @@ export class ReviewRoundDashboardComponent implements OnInit {
   public allStudentDatas = allStudentDatas;
   public data: Array<any> = new Array<any>();
   public assignmentTable: Array<any> = new Array<any>();
+  public round: Array<any> = [];
   public allReviewRoundStatus: Array<any> = new Array<any>();
   public allStudentCommitRecord: JSON;
   public search;
   constructor(private route: ActivatedRoute, private dashboardService: ReviewRoundDashboardService) { }
   async ngOnInit() {
     this.assignmentName = this.route.snapshot.queryParamMap.get('assignmentName');
-    await this.getAllAssignments();
-    await this.getAllStudent();
+    //await this.getAllAssignments();
+    //await this.getAllStudent();
     await this.getAllStudentReviewRoundStatus();
   }
 
@@ -45,6 +46,11 @@ export class ReviewRoundDashboardComponent implements OnInit {
   async getAllStudentReviewRoundStatus() {
     this.dashboardService.getReviewRoundStauts(this.assignmentName).subscribe(response => {
       this.allReviewRoundStatus = response;
+      this.round = [];
+      for(let i = 0; i < this.allReviewRoundStatus[0].reviewRound.length; i++) {
+        this.round.push(i);
+      }
+      console.log(this.round);
     })
   }
   
