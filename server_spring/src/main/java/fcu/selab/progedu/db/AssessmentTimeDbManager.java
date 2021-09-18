@@ -128,6 +128,7 @@ public class AssessmentTimeDbManager {
       rs = preStmt.executeQuery();
       while (rs.next()) {
         AssessmentTime assessmentTime = new AssessmentTime();
+        assessmentTime.setId(rs.getInt("id"));
         assessmentTime.setAId(rs.getInt("aId"));
         assessmentTime.setAssessmentActionEnum(aaDb.getAssessmentActionById(rs.getInt("aaId")));
         assessmentTime.setStartTime(rs.getTimestamp("startTime"));
