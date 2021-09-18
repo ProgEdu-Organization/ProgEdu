@@ -314,8 +314,8 @@ public class PeerReviewService {
     return count;
   }
 
-  @GetMapping("/status/round/detail")
-  public ResponseEntity<Object> getRoundReviewStatusDetail(
+  @GetMapping("/record/detail")
+  public ResponseEntity<Object> getRecordDetail(
           @RequestParam("username") String username,
           @RequestParam("assignmentName") String assignmentName
   ) {
