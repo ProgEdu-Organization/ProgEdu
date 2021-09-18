@@ -230,7 +230,7 @@ public class ReviewRecordDbManager {
   }
   public ReviewRecord getReviewRecordByRrsId(int rrsId) {
     ReviewRecord reviewRecord = new ReviewRecord();
-    String sql = "";
+    String sql = "SELECT * FROM ProgEdu.Review_Record WHERE rrsId = ?;";
 
     Connection conn = null;
     PreparedStatement preStmt = null;
