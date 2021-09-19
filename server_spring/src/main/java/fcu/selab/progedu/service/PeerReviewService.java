@@ -1,6 +1,7 @@
 package fcu.selab.progedu.service;
 
 import javax.ws.rs.QueryParam;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.TimeZone;
 import java.util.ArrayList;
@@ -557,6 +558,7 @@ public class PeerReviewService {
    * @param userId         user id
    * @param page           page
    */
+  /*
   @GetMapping("status/detail/page") // Todo 這目前還沒用到 先沒呼叫
   public ResponseEntity<Object> getReviewedStatusDetailPagination(@RequestParam("username") String username,
                                                                   @RequestParam("assignmentName") String assignmentName,
@@ -603,7 +605,7 @@ public class PeerReviewService {
       response = new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
     return response;
-  }
+  }*/
 
   /**
    * get user's hw detail which had been reviewed
@@ -733,6 +735,59 @@ public class PeerReviewService {
       return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }*/
+
+  @GetMapping("/status/round/detail")
+  public ResponseEntity<Object> getRoundStatusDetail(
+          @RequestParam("username") String username,
+          @RequestParam("assignmentName") String assignmentName,
+          @RequestParam("round") int round,
+          @RequestParam("order") int order
+  ) {
+
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("Content-Type", "application/json");
+
+    JSONObject result = new JSONObject();
+
+    try {
+      int reviewId = userDbManager.getUserIdByUsername(username);
+      int assignmentId = assignmentDbManager.getAssignmentIdByName(assignmentName);
+      ReviewSetting reviewSetting = reviewSettingDbManager.getReviewSetting(assignmentId);
+      List<PairMatching> pairMatchingList = pairMatchingDbManager.getPairMatchingByAidAndReviewId(assignmentId, reviewId);
+
+      PairMatching pairMatching = pairMatchingList.get(order-1);
+      JSONObject reviewed = new JSONObject();
+      JSONArray array = new JSONArray();
+      ReviewRecordStatus reviewRecordStatus = reviewRecordStatusDbManager.getReviewRecordStatusByPairMatchingIdAndRound(pairMatching.getId(), round);
+
+      int userId = assignmentUserDbManager.getUidById(pairMatching.getAuId());
+      reviewed.put("id", userId);
+      reviewed.put("name", userDbManager.getUsername(userId));
+      AssessmentTime assessmentTime = assessmentTimeDbManager.getAssignmentTimeNameById(assignmentId).get(round);
+      reviewed.put("reviewEndTime", assessmentTime.getEndTime());
+      ReviewRecord reviewRecord = reviewRecordDbManager.getReviewRecordByRrsId(reviewRecordStatus.getId());
+
+      if (reviewRecord.getRsmId() == 0) {
+        reviewed.put("status", false);
+      } else {
+        reviewed.put("status", true);
+        int metricsId = reviewSettingMetricsDbManager.getReviewMetricsIdByRsmId(reviewRecord.getRsmId());
+        JSONObject ob = new JSONObject();
+        ob.put("score", reviewRecord.getScore());
+        ob.put("feedback", reviewRecord.getFeedback());
+        ob.put("time", reviewRecord.getTime());
+        ob.put("metrics", reviewMetricsDbManager.getReviewMetricsById(metricsId));
+        int scoreModeId = reviewMetricsDbManager.getScoreModeIdById(metricsId);
+        ob.put("scoreMode", scoreModeDbManager.getScoreModeDescById(scoreModeId).getTypeName());
+      }
+      array.add(reviewed);
+      result.put("roundStatusDetail", array);
+      return new ResponseEntity<Object>(result, HttpStatus.OK);
+    } catch (Exception e) {
+      ExceptionUtil.getErrorInfoFromException(e);
+      return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
 
   /**
    * check reviewer status of his/her review job
