@@ -359,7 +359,6 @@ public class PeerReviewService {
                 ob.put("scoreMode", scoreModeDbManager.getScoreModeDescById(scoreModeId).getTypeName());
                 reviewDetailArray.add(ob);
               }
-
             } catch (Exception e) {
               LOGGER.error(ExceptionUtil.getErrorInfoFromException(e));
               LOGGER.debug(e.getMessage());
@@ -378,7 +377,43 @@ public class PeerReviewService {
     }
   }
 
+  @GetMapping("/record/detail/page")
+  public ResponseEntity<Object> getRecordDetailPage(
+          @RequestParam("username") String username,
+          @RequestParam("assignmentName") String assignmentName,
+          @RequestParam("reviewId") int reviewId,
+          @RequestParam("page") int page
+  ) {
 
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("Content-Type", "application/json");
+
+    try {
+      JSONObject ob = new JSONObject();
+      int userId = userDbManager.getUserIdByUsername(username);
+      int aId = assignmentDbManager.getAssignmentIdByName(assignmentName);
+
+      int auid = assignmentUserDbManager.getAuid(aId, userId);
+      ReviewSetting reviewSetting = reviewSettingDbManager.getReviewSetting(aId);
+      ob.put("reviewId",reviewId);
+      ob.put("reviewName", userDbManager.getUsername(reviewId));
+      ob.put("totalCount", reviewSetting.getRound());
+      ob.put("pagination", page);
+
+      PairMatching pairMatching = pairMatchingDbManager.getPairMatchingByAuIdReviewId(auid, reviewId);
+      System.out.println(pairMatching.getId());
+      ReviewRecordStatus reviewRecordStatus = reviewRecordStatusDbManager.getReviewRecordStatusByPairMatchingIdAndRound(pairMatching.getId(), page);
+      System.out.println(reviewRecordStatus.getRound());
+      System.out.println(reviewRecordStatus.getReviewStatusEnum());
+      ReviewRecord reviewRecord = reviewRecordDbManager.getReviewRecordByRrsId(reviewRecordStatus.getId());
+      ob.put("detail", reviewRecord);
+      return  new ResponseEntity<Object>(ob, headers, HttpStatus.OK);
+    } catch (Exception e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+      return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
 
   /**
    * check which reviewed status of specific assignment_user
@@ -576,6 +611,7 @@ public class PeerReviewService {
    * @param username       user name
    * @param assignmentName assignment name
    */
+  /*
   @GetMapping("record/detail")
   public ResponseEntity<Object> getReviewedRecordDetail(@QueryParam("username") String username,
                                                         @QueryParam("assignmentName") String assignmentName) {
@@ -641,6 +677,8 @@ public class PeerReviewService {
     return response;
   }
 
+   */
+
   /**
    * get user's hw detail which had been reviewed
    *
@@ -649,6 +687,7 @@ public class PeerReviewService {
    * @param reviewId       review id
    * @param page           page
    */
+  /*
   @GetMapping("record/detail/page") // Todo 前端沒用到 先不改
   public ResponseEntity<Object> getReviewedRecordDetailPagination(@RequestParam("username") String username,
                                                                   @RequestParam("assignmentName") String assignmentName,
@@ -693,7 +732,7 @@ public class PeerReviewService {
     } catch (Exception e) {
       return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
-  }
+  }*/
 
   /**
    * check reviewer status of his/her review job
