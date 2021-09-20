@@ -192,36 +192,33 @@ public class PeerReviewService {
             "yyyy-MM-dd HH:mm:ss.S");
 
     try {
-      JSONObject result = new JSONObject();
       JSONArray array = new JSONArray();
       Assignment assignment = assignmentDbManager.getAssignmentByName(assignmentName);
-      int userId = userDbManager.getUserIdByUsername(username);
-      System.out.println(userId);
-      System.out.println(assignment.getId());
-      int auid = assignmentUserDbManager.getAuid(assignment.getId(), userId);
-      System.out.println(auid);
-      List<PairMatching> pairMatchingList = pairMatchingDbManager.getPairMatchingByAuId(auid);
+      int reviewId = userDbManager.getUserIdByUsername(username);
+      ReviewSetting assignmentSetting = reviewSettingDbManager.getReviewSetting(assignment.getId());
+      int assignmentRound = assignmentSetting.getRound();
+      List<PairMatching> pairMatchingList = pairMatchingDbManager.getPairMatchingByAidAndReviewId(
+          assignment.getId(), reviewId
+      );
 
-
-      System.out.println(pairMatchingList);
       for (PairMatching pairMatching : pairMatchingList) {
         JSONObject ob = new JSONObject();
-        result.put("assignmentName", assignment.getName());
-        result.put("display", assignment.isDisplay());
+        ob.put("display", assignment.isDisplay());
         //round
         List<ReviewRecordStatus> reviewRecordStatusList = reviewRecordStatusDbManager.getAllReviewRecordStatusByPairMatchingId(pairMatching.getId());
-        for(ReviewRecordStatus reviewRecordStatus : reviewRecordStatusList) {
-          JSONObject reviewRound = new JSONObject();
-          reviewRound.put("reviewId", pairMatching.getReviewId());
-          reviewRound.put("reviewName", userDbManager.getUsername(pairMatching.getReviewId()));
-          reviewRound.put("round", reviewRecordStatus.getRound());
-          reviewRound.put("status", reviewRecordStatus.getReviewStatusEnum());
-          array.add(reviewRound);
+        JSONArray reviewRound = new JSONArray();
+        for(ReviewRecordStatus reviewRecordStatus: reviewRecordStatusList) {
+          JSONObject roundStatus = new JSONObject();
+          if(reviewRecordStatus.getRound() < assignmentRound) {
+            roundStatus.put("status", reviewRecordStatus.getReviewStatusEnum());
+            reviewRound.add(roundStatus);
+          }
         }
+        ob.put("name", userDbManager.getUsername(assignmentUserDbManager.getUidById(pairMatching.getAuId())));
+        ob.put("reviewRoundStatus", reviewRound);
+        array.add(ob);
       }
-        result.put("reviewRound", array);
-
-      return new ResponseEntity<Object>(result, headers, HttpStatus.OK);
+      return new ResponseEntity<Object>(array, headers, HttpStatus.OK);
     } catch (Exception e) {
       return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -680,14 +677,11 @@ public class PeerReviewService {
   }
 
    */
-
   /**
    * get user's hw detail which had been reviewed
    *
    * @param username       user name
    * @param assignmentName assignment name
-   * @param reviewId       review id
-   * @param page           page
    */
   /*
   @GetMapping("record/detail/page") // Todo 前端沒用到 先不改

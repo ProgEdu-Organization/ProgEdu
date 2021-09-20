@@ -35,7 +35,7 @@ export class ReviewStatusStudashboardComponent implements OnInit {
   async ngOnInit() {
     this.username = new User(this.jwtService).getUsername();
     await this.getAllAssignments();
-    await this.getStudentCommitRecords();
+    //await this.getStudentCommitRecords();
   }
 
   async getAllAssignments() {

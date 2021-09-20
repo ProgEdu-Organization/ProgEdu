@@ -343,6 +343,8 @@ public class AssignmentService {
         ob.put("createTime", assignment.getCreateTime());
         ob.put("display", assignment.isDisplay());
         ob.put("description", assignment.getDescription());
+        ob.put("amount", rsDbManager.getReviewSetting(assignment.getId()).getAmount());
+        ob.put("round", rsDbManager.getReviewSetting(assignment.getId()).getRound());
         JSONArray jsonArray = new JSONArray();
         for(AssessmentTime assessmentTime : assignment.getAssessmentTimeList()) {
           JSONObject assessmentObject = new JSONObject();
