@@ -198,6 +198,7 @@ public class PeerReviewService {
     try {
       JSONArray array = new JSONArray();
       Assignment assignment = assignmentDbManager.getAssignmentByName(assignmentName);
+      List<AssessmentTime> assessmentTimeList = assessmentTimeDbManager.getAssessmentTimeByName(assignmentName);
       int reviewId = userDbManager.getUserIdByUsername(username);
       ReviewSetting assignmentSetting = reviewSettingDbManager.getReviewSetting(assignment.getId());
       int assignmentRound = assignmentSetting.getRound();
@@ -211,15 +212,20 @@ public class PeerReviewService {
         //round
         List<ReviewRecordStatus> reviewRecordStatusList = reviewRecordStatusDbManager.getAllReviewRecordStatusByPairMatchingId(pairMatching.getId());
         JSONArray reviewRound = new JSONArray();
+        int timeIndex = 1;
         for(ReviewRecordStatus reviewRecordStatus: reviewRecordStatusList) {
           JSONObject roundStatus = new JSONObject();
-          if(reviewRecordStatus.getRound() < assignmentRound) {
+          if(reviewRecordStatus.getRound() <= assignmentRound) {
             roundStatus.put("status", reviewRecordStatus.getReviewStatusEnum());
+            roundStatus.put("startTime", assessmentTimeList.get(timeIndex).getStartTime());
+            roundStatus.put("endTime", assessmentTimeList.get(timeIndex).getEndTime());
             reviewRound.add(roundStatus);
+            timeIndex += 2;
           }
         }
         ob.put("name", userDbManager.getUsername(assignmentUserDbManager.getUidById(pairMatching.getAuId())));
         ob.put("reviewRoundStatus", reviewRound);
+        ob.put("round", assignmentSetting.getRound());
         array.add(ob);
       }
       return new ResponseEntity<Object>(array, headers, HttpStatus.OK);
