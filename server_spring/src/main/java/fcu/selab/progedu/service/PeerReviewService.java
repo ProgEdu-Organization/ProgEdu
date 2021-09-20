@@ -61,7 +61,9 @@ public class PeerReviewService {
           @RequestParam("username") String username,
           @RequestParam("reviewedName") String reviewedName,
           @RequestParam("assignmentName") String assignmentName,
-          @RequestParam("reviewRecord") String reviewRecord) {
+          @RequestParam("reviewRecord") String reviewRecord,
+          @RequestParam("round") int round
+  ) {
 
     HttpHeaders headers = new HttpHeaders();
     //
@@ -104,12 +106,13 @@ public class PeerReviewService {
       // 3. Upload the status of pair matching
       int status = reviewStatusDbManager
               .getReviewStatusIdByStatus(ReviewStatusEnum.COMPLETED.getTypeName());
-      pairMatchingDbManager.updatePairMatchingById(status, pmId);
+//      pairMatchingDbManager.updatePairMatchingById(status, pmId);
+        reviewRecordStatusDbManager.updateReviewRecordStatusByPmId(status, pmId, round);
 
       // 4. Check which time have been reviewed, and upload the review order
-      if (!reviewRecordDbManager.isFirstTimeReviewRecord(pmId)) {
+      /*if (!reviewRecordDbManager.isFirstTimeReviewRecord(pmId)) {
         reviewOrder = reviewRecordDbManager.getLatestReviewOrder(pmId) + 1;
-      }
+      }*/
 
       // 5. Insert new review record onto db
       org.json.JSONObject jsonObject = new org.json.JSONObject(reviewRecord);
@@ -120,11 +123,12 @@ public class PeerReviewService {
         int id = object.getInt("id");
         int score = object.getInt("score");
         String feedback = object.getString("feedback");
+        int rrsId = reviewRecordStatusDbManager.getIdByPmIdAndRound(pmId, round);
         int rsmId = reviewSettingMetricsDbManager
                 .getReviewSettingMetricsIdByRsIdRsmId(reviewSettingId, id);
 
         reviewRecordDbManager
-                .insertReviewRecord(pmId, rsmId, score, createDate, feedback, reviewOrder);
+                .insertReviewRecord(rrsId, rsmId, score, createDate, feedback);
       }
 
       return new ResponseEntity<>(headers, HttpStatus.OK);
@@ -393,19 +397,16 @@ public class PeerReviewService {
 
       int auid = assignmentUserDbManager.getAuid(aId, userId);
       ReviewSetting reviewSetting = reviewSettingDbManager.getReviewSetting(aId);
-      ob.put("reviewId",reviewId);
+      ob.put("reviewId", reviewId);
       ob.put("reviewName", userDbManager.getUsername(reviewId));
       ob.put("totalCount", reviewSetting.getRound());
       ob.put("pagination", page);
 
       PairMatching pairMatching = pairMatchingDbManager.getPairMatchingByAuIdReviewId(auid, reviewId);
-      System.out.println(pairMatching.getId());
       ReviewRecordStatus reviewRecordStatus = reviewRecordStatusDbManager.getReviewRecordStatusByPairMatchingIdAndRound(pairMatching.getId(), page);
-      System.out.println(reviewRecordStatus.getRound());
-      System.out.println(reviewRecordStatus.getReviewStatusEnum());
       ReviewRecord reviewRecord = reviewRecordDbManager.getReviewRecordByRrsId(reviewRecordStatus.getId());
       ob.put("detail", reviewRecord);
-      return  new ResponseEntity<Object>(ob, headers, HttpStatus.OK);
+      return new ResponseEntity<Object>(ob, headers, HttpStatus.OK);
     } catch (Exception e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());

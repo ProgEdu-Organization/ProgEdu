@@ -145,7 +145,7 @@ public class AssessmentTimeDbManager {
   }
 
   public AssessmentTime getAssignmentTimeByTimeAndName(String name, Date time) {
-    String sql = "SELECT a_t.* FROM ProgEdu.Assignment_Time a_t join ProgEdu.Assignment a on a.id = a_t.aId WHERE " +
+    String sql = "SELECT a_t.* FROM ProgEdu.Assessment_Time a_t join ProgEdu.Assignment a on a.id = a_t.aId WHERE " +
             "a.name = ? AND ( ? between a_t.startTime and a_t.endTime)";
 
     Timestamp dateStamp = new Timestamp(time.getTime());

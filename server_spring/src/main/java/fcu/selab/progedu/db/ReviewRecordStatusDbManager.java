@@ -139,4 +139,50 @@ public class ReviewRecordStatusDbManager {
     }
   }
 
+  public void updateReviewRecordStatusByPmId(int status, int pmId, int round) throws SQLException {
+    String query = "UPDATE ProgEdu.Review_Record_Status SET status = ? WHERE pmId = ? AND round = ?";
+
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+
+    try {
+
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(query);
+
+      preStmt.setInt(1, status);
+      preStmt.setInt(2, pmId);
+      preStmt.setInt(3, round);
+      preStmt.executeUpdate();
+    } finally {
+      CloseDBUtil.closeAll(preStmt, conn);
+    }
+  }
+
+  public int getIdByPmIdAndRound(int pmId, int round) {
+    String sql = "SELECT id FROM Review_Record_Status WHERE pmId = ? AND round = ?";
+    int id = 0;
+
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
+
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
+      preStmt.setInt(1, pmId);
+      preStmt.setInt(2, round);
+      rs = preStmt.executeQuery();
+      while (rs.next()) {
+        id = rs.getInt("id");
+      }
+    } catch (SQLException e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(rs, preStmt, conn);
+    }
+    return id;
+  }
 }

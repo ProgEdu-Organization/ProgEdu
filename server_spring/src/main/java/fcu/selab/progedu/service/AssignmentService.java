@@ -302,7 +302,7 @@ public class AssignmentService {
       for (AssignmentUser assignmentUser : assignmentUserList) {
         List<PairMatching> pairMatchingList = pmDbManager.getPairMatchingByAuId(assignmentUser.getId());
         for (PairMatching pairMatching : pairMatchingList) {
-          for (int j = 0; j <= totalRounds; j++) {
+          for (int j = 1; j <= totalRounds; j++) {
             rrsDbManager.insertReviewRecordStatus(pairMatching.getId(), ReviewStatusEnum.INIT, j);
           }
         }
