@@ -90,19 +90,19 @@ public class PeerReviewService {
 
       // 1. Check this review record is expired or not,
       //    if it's expired, it won't create new review record
-      /*
-      if (createDate.compareTo(reviewSetting.getDeadline()) >= 0) {
+
+      if (createDate.compareTo(assessmentTime.getEndTime()) >= 0) {
         return new ResponseEntity<>("This review has been expired.", headers,
                 HttpStatus.INTERNAL_SERVER_ERROR);
       }
 
       // 2. Check this review record has been release or not.
       //    PS. this won't happened, unless the student used this api in correct way
-      if (createDate.compareTo(reviewSetting.getReleaseTime()) < 0) {
+      if (createDate.compareTo(assessmentTime.getStartTime()) < 0) {
         return new ResponseEntity<>("This review hasn't been released.", headers,
                 HttpStatus.INTERNAL_SERVER_ERROR);
       }
-      */
+
       // 3. Upload the status of pair matching
       int status = reviewStatusDbManager
               .getReviewStatusIdByStatus(ReviewStatusEnum.COMPLETED.getTypeName());
