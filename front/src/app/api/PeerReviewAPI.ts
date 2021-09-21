@@ -16,6 +16,7 @@ let getSourceCode: string = environment.NEW_SERVER_URL + '/peerReview/sourceCode
 let getOneUserReviewedRecord: string = environment.NEW_SERVER_URL + '/peerReview/record/oneUser';
 let getReviewRoundStatus: string = environment.NEW_SERVER_URL + '/peerReview/status/round/oneUser';
 let getAllReviewRoundStatus: string = environment.NEW_SERVER_URL + '/peerReview/status/round/allUsers';
+let getReviewRoundStatusDetail: string = environment.NEW_SERVER_URL + '/peerReview/status/round/detail';
 
 export const PeerReviewAPI = {
     getAllReviewedRecord: getAllReviewedRecord,
@@ -28,5 +29,6 @@ export const PeerReviewAPI = {
     getSourceCode: getSourceCode,
     getOneUserReviewedRecord: getOneUserReviewedRecord,
     getReviewRoundStatus: getReviewRoundStatus,
-    getAllReviewRoundStatus: getAllReviewRoundStatus
+    getAllReviewRoundStatus: getAllReviewRoundStatus,
+    getReviewRoundStatusDetail: getReviewRoundStatusDetail
 }

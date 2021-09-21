@@ -14,7 +14,7 @@
               (click)="reviewFormFillModal.show();setReviewOne(i);emitReviewFormOpenedEvent();">
           </div>
           <div class="col-lg-6">
-            <p>Deadline: {{review.reviewDeadline | date:'short'}}</p>
+            <p>Deadline: {{review.reviewEndTime | date:'short'}}</p>
           </div>
           <div class="col-lg-6">
             <p>Review Form Unfinished, Please fill it before deadline.</p>

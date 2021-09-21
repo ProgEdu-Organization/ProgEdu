@@ -30,7 +30,7 @@ public class ReviewRecordDbManager {
   /**
    * Insert review record into db
    *
-   * @param pmId        pair matching Id
+   * @param rrsId       review record status Id
    * @param rsmId       review setting metrics Id
    * @param score       score
    * @param time        time
@@ -226,9 +226,9 @@ public class ReviewRecordDbManager {
       CloseDBUtil.closeAll(preStmt, conn);
     }
   }
-  public ReviewRecord getReviewRecordByRrsId(int rrsId) {
-    ReviewRecord reviewRecord = new ReviewRecord();
+  public List<ReviewRecord> getReviewRecordByRrsId(int rrsId) {
     String sql = "SELECT * FROM ProgEdu.Review_Record WHERE rrsId = ?;";
+    List<ReviewRecord> reviewRecordList = new ArrayList<>();
 
     Connection conn = null;
     PreparedStatement preStmt = null;
@@ -242,12 +242,14 @@ public class ReviewRecordDbManager {
       rs = preStmt.executeQuery();
 
       while (rs.next()) {
+        ReviewRecord reviewRecord = new ReviewRecord();
         reviewRecord.setId(rs.getInt("id"));
         reviewRecord.setRrsId(rrsId);
         reviewRecord.setRsmId(rs.getInt("rsmId"));
         reviewRecord.setScore(rs.getInt("score"));
         reviewRecord.setTime(rs.getTimestamp("time"));
         reviewRecord.setFeedback(rs.getString("feedback"));
+        reviewRecordList.add(reviewRecord);
       }
     } catch (SQLException e) {
       LOGGER.error(ExceptionUtil.getErrorInfoFromException(e));
@@ -255,6 +257,6 @@ public class ReviewRecordDbManager {
     } finally {
       CloseDBUtil.closeAll(rs, preStmt, conn);
     }
-    return reviewRecord;
+    return reviewRecordList;
   }
 }
