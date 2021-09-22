@@ -179,4 +179,31 @@ public class AssessmentTimeDbManager {
     }
     return assessmentTime;
   }
+
+  public void editAssignmentTime(AssessmentTime assessmentTime) {
+    String sql = "UPDATE Assessment_Time SET startTime = ? , endTime = ? WHERE id = ?";
+
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+
+    Timestamp startTimestamp = new Timestamp(assessmentTime.getStartTime().getTime());
+    Timestamp endTimestamp = new Timestamp(assessmentTime.getEndTime().getTime());
+
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
+      preStmt.setTimestamp(1, startTimestamp);
+      preStmt.setTimestamp(2, endTimestamp);
+      preStmt.setInt(3, assessmentTime.getId());
+      preStmt.executeUpdate();
+
+    } catch (Exception e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(preStmt, conn);
+    }
+  }
+
 }

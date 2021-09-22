@@ -459,36 +459,63 @@ public class AssignmentService {
   @PostMapping("edit")
   public ResponseEntity<Object> editProject(
           @RequestParam("assignmentName") String assignmentName,
-          @RequestParam("releaseTime") Date releaseTime, @RequestParam("deadline") Date deadline,
           @RequestParam("readMe") String readMe,
-          @RequestParam("order") String assignmentCompileOrdersAndScore) {
+          @RequestParam("order") String assignmentCompileOrdersAndScore,
+          @RequestParam("assessmentTimes") String assessmentTimes) {
 
     HttpHeaders headers = new HttpHeaders();
     //
+    try {
+      int aid = dbManager.getAssignmentIdByName(assignmentName);
+      List<AssessmentTime> assessmentTimeList = assessmentTimeDbManager.getAssessmentTimeByName(assignmentName);
 
-    int aid = dbManager.getAssignmentIdByName(assignmentName);
-    dbManager.editAssignment(deadline, releaseTime, readMe, aid);
+      dbManager.editAssignment(readMe, aid);
+      JSONArray jsonArray = (JSONArray) JSONValue.parse(assessmentTimes);
+      SimpleDateFormat formatter = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", Locale.ENGLISH);
 
+      for(int i = 0; i < jsonArray.size(); i++) {
+        JSONObject object = (JSONObject) jsonArray.get(i);
+        int round = 0;
+        for(String assessmentAction : object.keySet()) {
+          int index = i * 2 + round;
+          int aaId = assessmentActionDbManager.getAssessmentActionIdByAction(assessmentAction);
+          JSONObject timeObject = (JSONObject) object.get(assessmentAction);
+          Date startTime = formatter.parse(timeObject.get("startTime").toString());
+          Date endTime = formatter.parse(timeObject.get("endTime").toString());
 
+          assessmentTimeList.get(index).setAssessmentActionEnum(assessmentActionDbManager.getAssessmentActionById(aaId));
+          assessmentTimeList.get(index).setStartTime(startTime);
+          assessmentTimeList.get(index).setEndTime(endTime);
 
-    if (!assignmentCompileOrdersAndScore.isEmpty()) {
-      List<Integer> aaIds = aaDbManager.getAssignmentAssessmentIdByaId(aid);
-      List<Integer> scoresList = new ArrayList<>();
-
-      //order: Compile Failure:10, Coding Style Failure:80, Unit Test Failure:10
-      String[] ordersAndScores = assignmentCompileOrdersAndScore.split(", ");
-      for (String orderAndScore : ordersAndScores) {
-        String[] token = orderAndScore.split(":");
-        scoresList.add(Integer.valueOf(token[1]));
+          round++;
+        }
       }
-      for (int i = 0; i < scoresList.size(); i++) {
-        aaDbManager.updateScore(aid,
-                aaDbManager.getAssessmentOrder(aaIds.get(i)),
-                scoresList.get(i));
+
+      for(AssessmentTime assignmentTime : assessmentTimeList) {
+        assessmentTimeDbManager.editAssignmentTime(assignmentTime);
       }
+
+      if (!assignmentCompileOrdersAndScore.isEmpty()) {
+        List<Integer> aaIds = aaDbManager.getAssignmentAssessmentIdByaId(aid);
+        List<Integer> scoresList = new ArrayList<>();
+
+        //order: Compile Failure:10, Coding Style Failure:80, Unit Test Failure:10
+        String[] ordersAndScores = assignmentCompileOrdersAndScore.split(", ");
+        for (String orderAndScore : ordersAndScores) {
+          String[] token = orderAndScore.split(":");
+          scoresList.add(Integer.valueOf(token[1]));
+        }
+        for (int i = 0; i < scoresList.size(); i++) {
+          aaDbManager.updateScore(aid,
+                  aaDbManager.getAssessmentOrder(aaIds.get(i)),
+                  scoresList.get(i));
+        }
+      }
+
+      return new ResponseEntity<Object>(headers, HttpStatus.OK);
+    } catch (Exception e) {
+      return new ResponseEntity<Object>(headers, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-
-    return new ResponseEntity<Object>(headers, HttpStatus.OK);
   }
 
   @PostMapping("delete")
