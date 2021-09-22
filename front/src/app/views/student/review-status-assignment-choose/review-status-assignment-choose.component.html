@@ -12,7 +12,7 @@
         <!-- Review Form -->
         <div *ngIf="!review.status && !review.pagination">
           <div class="form-group row">
-            <span class="h2 col-md-10 ">Review Student {{i+1}}</span>
+            <span class="h2 col-md-10 ">Review Student {{order}}</span>
             <input type="button" class="btn btn-outline-primary col-sm-1" value="Fill Review Form"
               (click)="reviewFormFillModal.show();setReviewOne(i);emitReviewFormOpenedEvent();">
           </div>
@@ -28,7 +28,7 @@
         <div *ngIf="review.status || review.pagination">
           <span class="h2">
             <div class="form-group row">
-              <label class="h2 col-md-10">Review Student {{i+1}}</label>
+              <label class="h2 col-md-10">Review Student {{order}}</label>
               <!--<input type="button" class="btn btn-outline-primary col-sm-1" value="Fill Review Form"
                 (click)="reviewFormFillModal.show();setReviewOne(i);">-->
             </div>
