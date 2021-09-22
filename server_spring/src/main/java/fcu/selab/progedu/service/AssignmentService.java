@@ -302,7 +302,7 @@ public class AssignmentService {
       for (AssignmentUser assignmentUser : assignmentUserList) {
         List<PairMatching> pairMatchingList = pmDbManager.getPairMatchingByAuId(assignmentUser.getId());
         for (PairMatching pairMatching : pairMatchingList) {
-          for (int j = 0; j <= totalRounds; j++) {
+          for (int j = 1; j <= totalRounds; j++) {
             rrsDbManager.insertReviewRecordStatus(pairMatching.getId(), ReviewStatusEnum.INIT, j);
           }
         }
@@ -343,6 +343,8 @@ public class AssignmentService {
         ob.put("createTime", assignment.getCreateTime());
         ob.put("display", assignment.isDisplay());
         ob.put("description", assignment.getDescription());
+        ob.put("amount", rsDbManager.getReviewSetting(assignment.getId()).getAmount());
+        ob.put("round", rsDbManager.getReviewSetting(assignment.getId()).getRound());
         JSONArray jsonArray = new JSONArray();
         for(AssessmentTime assessmentTime : assignment.getAssessmentTimeList()) {
           JSONObject assessmentObject = new JSONObject();

@@ -28,26 +28,29 @@
             <thead>
               <tr>
                 <th width="10%" class='text-left'>學生</th>
-                <ng-container *ngFor='let col of assignmentTable'>
-                  <th width="10%" *ngIf='isRelease(col.reviewReleaseTime)'>
-                    <div>{{col.name}}</div>
+                <ng-container *ngFor='let col of [].constructor(round); let i = index'>
+                  <th width="10%">
+                    <div>Round {{i + 1}}</div>
                   </th>
                 </ng-container>
                 <th class='text-left'></th>
               </tr>
             </thead>
             <tbody>
-              <tr *ngIf='studentCommitRecord'>
+              <tr *ngFor='let student of roundStatus; let order = index'>
                 <th class='text-left' width="10%">
-                  {{username}}
+                  Student {{order + 1}}
                 </th>
-                <ng-container *ngFor='let review of studentCommitRecord'>
-                  <th *ngIf='isRelease(review.reviewReleaseTime)'>
-                    <p id="{{username}}_{{review.assignmentName}}" class="square {{review.status}}">
-                      <a *ngIf='!isNA(review)' id="{{username}}_{{review.hw}}_{{review.count}}"
-                        href="#/studashboard/reviewStatusAssignmentChoose?username={{username}}&assignmentName={{review.assignmentName}}">{{review.count}}/{{review.amount}}</a>
+                <ng-container *ngFor='let review of student.reviewRoundStatus; let roundIndex = index'>
+                  <th *ngIf='isRelease(review.startTime)'>
+                    <p id="{{username}}_{{review.startTime}}" class="circle {{review.status}}">
+                      <a *ngIf='!isNA(review)' id="{{username}}_{{review.status}}"
+                        href="#/studashboard/reviewStatusAssignmentChoose?username={{username}}&assignmentName={{assignmentName}}&round={{roundIndex+1}}&order={{order+1}}">0</a>
                       <a *ngIf='isNA(review)'>N/A</a>
                     </p>
+                  </th>
+                  <th *ngIf='!isRelease(review.startTime)'>
+                    <a>N/A</a>
                   </th>
                 </ng-container>
                 <th class='text-left'></th>

@@ -13,6 +13,7 @@ export class ReviewStatusAssignmentChooseService {
   ALL_STATUS_DETAIL_API = PeerReviewAPI.getReviewStatusDetail;
   REVIEW_METRICS_API = PeerReviewAPI.getReviewMetrics;
   REVIEW_STATUS_DETAIL_PAGE_API = environment.SERVER_URL + '/webapi/peerReview/status/detail/page'; //todo 沒用到
+  ROUND_STATUS_DETAIL_API = PeerReviewAPI.getReviewRoundStatusDetail;
   CREATE_REVIEW_RECORD_API = PeerReviewAPI.createReviewRecord;
   constructor(private addJwtTokenHttpClient: AddJwtTokenHttpClient) { }
 
@@ -21,6 +22,15 @@ export class ReviewStatusAssignmentChooseService {
       .set('username', username)
       .set('assignmentName', assignmentName);
     return this.addJwtTokenHttpClient.get(this.ALL_STATUS_DETAIL_API, { params });
+  }
+
+  getReviewRoundDetail(username :string, assignmentName: string, round: string, order: string) {
+    const params = new HttpParams()
+      .set('username', username)
+      .set('assignmentName', assignmentName)
+      .set('round', round)
+      .set('order', order);
+    return this.addJwtTokenHttpClient.get(this.ROUND_STATUS_DETAIL_API, { params });
   }
 
   getReviewMetrics(assignmentName: string): Observable<any> {

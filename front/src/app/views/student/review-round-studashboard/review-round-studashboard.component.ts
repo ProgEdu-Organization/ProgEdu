@@ -18,6 +18,7 @@ export class ReviewRoundStudashboardComponent implements OnInit {
 
   public assignmentTable: Array<any> = new Array<any>();
   public roundStatus: Array<any> = new Array<any>();
+  public round: number = 0;
   public studentCommitRecord: JSON;
   public username: string;
   public assignmentName: string;
@@ -40,9 +41,9 @@ export class ReviewRoundStudashboardComponent implements OnInit {
   async ngOnInit() {
     this.username = new User(this.jwtService).getUsername();
     this.assignmentName = this.route.snapshot.queryParamMap.get('assignmentName');
-    await this.getAllAssignments();
     //await this.getStudentCommitRecords();
     await this.getRoundStatus();
+    
   }
 
   async getAllAssignments() {
@@ -59,9 +60,10 @@ export class ReviewRoundStudashboardComponent implements OnInit {
   }
 
   async getRoundStatus() {
-    this.reviewRoundStudashboardService.getRoundStatus(this.username, this.assignmentName).subscribe(response => {
-      this.roundStatus = response.allReviewRoundStatus;
-    })
+    await this.reviewRoundStudashboardService.getRoundStatus(this.username, this.assignmentName).subscribe(response => {
+      this.roundStatus = response;
+      this.round = this.roundStatus[0].round;
+    });
   }
 
   isRelease(release: Date) {

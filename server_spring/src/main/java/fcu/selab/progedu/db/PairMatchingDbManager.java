@@ -167,7 +167,7 @@ public class PairMatchingDbManager {
       rs = preStmt.executeQuery();
       while (rs.next()) {
         int id = rs.getInt("id");
-        ReviewStatusEnum status = rsDb.getReviewStatusById(rs.getInt("status"));
+//        ReviewStatusEnum status = rsDb.getReviewStatusById(rs.getInt("status"));
         pairMatching.setId(id);
         pairMatching.setAuId(auId);
         pairMatching.setReviewId(reviewId);
