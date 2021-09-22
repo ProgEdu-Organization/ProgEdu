@@ -91,9 +91,9 @@ public class ReviewRecordStatusDbManager {
     return reviewRecordStatusList;
   }
 
-  public int getLatestReviewRound(int pmId) {
-    String sql = "SELECT MAX(round) AS latestRound FROM Review_Record_Status WHERE pmId = ?";
-    int latestRound = -1;
+  public ReviewRecordStatus getLatestCompletedReview(int pmId) {
+    String sql = "SELECT * FROM Review_Record_Status WHERE pmId = ? AND status = ? ORDER BY round desc LIMIT 1;";
+    ReviewRecordStatus latestCompletedReview = new ReviewRecordStatus();
 
     Connection conn = null;
     PreparedStatement preStmt = null;
@@ -104,9 +104,13 @@ public class ReviewRecordStatusDbManager {
       preStmt = conn.prepareStatement(sql);
 
       preStmt.setInt(1, pmId);
+      preStmt.setInt(2, 3);
       rs = preStmt.executeQuery();
       while (rs.next()) {
-        latestRound = rs.getInt("latestRound");
+        latestCompletedReview.setId(rs.getInt("id"));
+        latestCompletedReview.setPmId(rs.getInt("pmId"));
+        latestCompletedReview.setReviewStatusEnum(rsDbManager.getReviewStatusById(rs.getInt("status")));
+        latestCompletedReview.setRound(rs.getInt("round"));
       }
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
@@ -114,7 +118,7 @@ public class ReviewRecordStatusDbManager {
     } finally {
       CloseDBUtil.closeAll(rs, preStmt, conn);
     }
-    return latestRound;
+    return latestCompletedReview;
   }
 
   public void insertReviewRecordStatus(int pmId, ReviewStatusEnum reviewStatusEnum, int round) {

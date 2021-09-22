@@ -226,6 +226,7 @@ public class ReviewRecordDbManager {
       CloseDBUtil.closeAll(preStmt, conn);
     }
   }
+
   public List<ReviewRecord> getReviewRecordByRrsId(int rrsId) {
     String sql = "SELECT * FROM ProgEdu.Review_Record WHERE rrsId = ?;";
     List<ReviewRecord> reviewRecordList = new ArrayList<>();

@@ -344,7 +344,7 @@ public class PeerReviewService {
       for (PairMatching pairMatching : pairMatchingList) {
         JSONObject reviewed = new JSONObject();
         JSONArray reviewDetailArray = new JSONArray();
-        List<ReviewRecordStatus> reviewRecordStatusList = reviewRecordStatusDbManager.getAllReviewRecordStatusByPairMatchingId(pairMatching.getId());
+        ReviewRecordStatus latestCompleted = reviewRecordStatusDbManager.getLatestCompletedReview(pairMatching.getId());
         int reviewerId = pairMatching.getReviewId();
 
         reviewed.put("id", reviewerId);
@@ -353,14 +353,9 @@ public class PeerReviewService {
         reviewed.put("totalCount", reviewSetting.getAmount());
 
         //only get the latest completed round record
-        int latestRrsId = reviewRecordStatusList.get(0).getId();
-        for(ReviewRecordStatus reviewRecordStatus: reviewRecordStatusList) {
-          if(reviewRecordStatus.getReviewStatusEnum().equals(ReviewStatusEnum.COMPLETED) &&
-              reviewRecordStatus.getRound() > latestRrsId) {
-            latestRrsId = reviewRecordStatus.getId();
-          }
-        }
+        int latestRrsId = latestCompleted.getId();
         List<ReviewRecord> reviewRecordList = reviewRecordDbManager.getReviewRecordByRrsId(latestRrsId);
+
         if (reviewRecordList.isEmpty()) {
           reviewed.put("status", false);
         } else {
@@ -377,6 +372,7 @@ public class PeerReviewService {
             reviewDetailArray.add(ob);
           }
           reviewed.put("Detail", reviewDetailArray);
+          reviewed.put("displayRound", latestCompleted.getRound());  //the latest completed round
         }
         array.add(reviewed);
       }
