@@ -13,7 +13,7 @@ export class AssignmentChooseComponent implements OnInit {
   assignmentName: string;
 
   assignment = { type: '', description:'', assessmentTimes: new Array([]) };
-  commits: Array<any> = [];
+  commits: Array<any> = [{totalCommit:""}];
   gitlabAssignmentURL: string;
   feedbacks: JSON;
   selectedCommitNumber;

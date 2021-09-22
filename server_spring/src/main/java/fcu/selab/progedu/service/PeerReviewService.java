@@ -334,45 +334,41 @@ public class PeerReviewService {
     try {
       JSONObject result = new JSONObject();
       JSONArray array = new JSONArray();
-      int reviewId = userDbManager.getUserIdByUsername(username);
+      int userId = userDbManager.getUserIdByUsername(username);
       int assignmentId = assignmentDbManager.getAssignmentIdByName(assignmentName);
+      int auId = assignmentUserDbManager.getAuid(assignmentId, userId);
 
       ReviewSetting reviewSetting = reviewSettingDbManager.getReviewSetting(assignmentId);
-      List<PairMatching> pairMatchingList = pairMatchingDbManager.getPairMatchingByAidAndReviewId(assignmentId,reviewId);
+      List<PairMatching> pairMatchingList = pairMatchingDbManager.getPairMatchingByAuId(auId);
 
       for (PairMatching pairMatching : pairMatchingList) {
         JSONObject reviewed = new JSONObject();
         JSONArray reviewDetailArray = new JSONArray();
         List<ReviewRecordStatus> reviewRecordStatusList = reviewRecordStatusDbManager.getAllReviewRecordStatusByPairMatchingId(pairMatching.getId());
-        int userId = assignmentUserDbManager.getUidById(pairMatching.getAuId());
+        int reviewerId = pairMatching.getReviewId();
 
-        reviewed.put("id", userId);
-        reviewed.put("name", userDbManager.getUsername(userId));
-        reviewed.put("assignmentTime", assessmentTimeDbManager.getAssignmentTimeNameById(assignmentId));
-        if (reviewRecordStatusList.isEmpty()) {
+        reviewed.put("id", reviewerId);
+        reviewed.put("name", userDbManager.getUsername(reviewerId));
+        reviewed.put("assessmentTimes", assessmentTimeDbManager.getAssignmentTimeNameById(assignmentId));
+        reviewed.put("totalCount", reviewSetting.getAmount());
+
+        //only get first round record
+        int firstRrsId = reviewRecordStatusList.get(0).getId();
+        List<ReviewRecord> reviewRecordList = reviewRecordDbManager.getReviewRecordByRrsId(firstRrsId);
+        if (reviewRecordList.isEmpty()) {
           reviewed.put("status", false);
         } else {
           reviewed.put("status", true);
-          for (ReviewRecordStatus reviewRecordStatus : reviewRecordStatusList) {
+          for (ReviewRecord reviewRecord : reviewRecordList) {
             JSONObject ob = new JSONObject();
-            try {
-              List<ReviewRecord> reviewRecordList = reviewRecordDbManager.getReviewRecordByRrsId(reviewRecordStatus.getId());
-              for(ReviewRecord reviewRecord:reviewRecordList) {
-                if (reviewRecord != null) {
-                  int metricsId = reviewSettingMetricsDbManager.getReviewMetricsIdByRsmId(reviewRecord.getRsmId());
-                  int scoreModeId = reviewMetricsDbManager.getScoreModeIdById(metricsId);
-                  ob.put("score", reviewRecord.getScore());
-                  ob.put("feedback", reviewRecord.getFeedback());
-                  ob.put("time", reviewRecord.getTime());
-                  ob.put("metrics", reviewMetricsDbManager.getReviewMetricsById(metricsId));
-                  ob.put("scoreMode", scoreModeDbManager.getScoreModeDescById(scoreModeId).getTypeName());
-                  reviewDetailArray.add(ob);
-                }
-              }
-            } catch (Exception e) {
-              LOGGER.error(ExceptionUtil.getErrorInfoFromException(e));
-              LOGGER.debug(e.getMessage());
-            }
+            int metricsId = reviewSettingMetricsDbManager.getReviewMetricsIdByRsmId(reviewRecord.getRsmId());
+            int scoreModeId = reviewMetricsDbManager.getScoreModeIdById(metricsId);
+            ob.put("score", reviewRecord.getScore());
+            ob.put("feedback", reviewRecord.getFeedback());
+            ob.put("time", reviewRecord.getTime());
+            ob.put("metrics", reviewMetricsDbManager.getReviewMetricsById(metricsId));
+            ob.put("scoreMode", scoreModeDbManager.getScoreModeDescById(scoreModeId).getTypeName());
+            reviewDetailArray.add(ob);
           }
           reviewed.put("Detail", reviewDetailArray);
         }
@@ -692,12 +688,12 @@ public class PeerReviewService {
    * @param username       user name
    * @param assignmentName assignment name
    */
-  /*
-  @GetMapping("record/detail/page") // Todo 前端沒用到 先不改
+
+  @GetMapping("record/detail/page")
   public ResponseEntity<Object> getReviewedRecordDetailPagination(@RequestParam("username") String username,
                                                                   @RequestParam("assignmentName") String assignmentName,
                                                                   @RequestParam("reviewId") int reviewId,
-                                                                  @RequestParam("page") int page) {
+                                                                  @RequestParam("round") int round) {
     HttpHeaders headers = new HttpHeaders();
     headers.add("Content-Type", "application/json");
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
@@ -711,11 +707,10 @@ public class PeerReviewService {
       int assignmentId = assignmentDbManager.getAssignmentIdByName(assignmentName);
       int auId = assignmentUserDbManager.getAuid(assignmentId, userId);
       PairMatching pairMatching = pairMatchingDbManager.getPairMatchingByAuIdReviewId(auId, reviewId);
-      int order = reviewRecordDbManager.getLatestReviewOrder(pairMatching.getId());
-      List<ReviewRecord> reviewRecordList = reviewRecordDbManager
-              .getReviewRecordByPairMatchingId(pairMatching.getId(), order - page + 1);
+      int rrsId = reviewRecordStatusDbManager.getIdByPmIdAndRound(pairMatching.getId(), round);
+      List<ReviewRecord> reviewRecordList = reviewRecordDbManager.getReviewRecordByRrsId(rrsId);
 
-      result.put("id", pairMatching.getReviewId());
+      result.put("id", reviewId);
       result.put("name", userDbManager.getUsername(pairMatching.getReviewId()));
       for (ReviewRecord reviewRecord : reviewRecordList) {
         JSONObject ob = new JSONObject();
@@ -729,15 +724,14 @@ public class PeerReviewService {
         ob.put("scoreMode", scoreModeDbManager.getScoreModeDescById(scoreModeId).getTypeName());
         array.add(ob);
       }
-      result.put("totalCount", order);
-      result.put("pagination", page);
+      result.put("round", round);
       result.put("Detail", array);
 
       return new ResponseEntity<Object>(result, headers, HttpStatus.OK);
     } catch (Exception e) {
       return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
-  }*/
+  }
 
   @GetMapping("/status/round/detail")
   public ResponseEntity<Object> getRoundStatusDetail(
@@ -952,5 +946,4 @@ public class PeerReviewService {
     }
 
   }
-
 }
