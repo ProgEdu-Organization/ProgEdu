@@ -110,7 +110,6 @@ export class ReviewStatusAssignmentChooseComponent implements OnInit {
         }
       );
     });
-    console.log(this.round);
   }
 
   feedbackChanged(event, id, metrics: any) {

@@ -352,9 +352,15 @@ public class PeerReviewService {
         reviewed.put("assessmentTimes", assessmentTimeDbManager.getAssignmentTimeNameById(assignmentId));
         reviewed.put("totalCount", reviewSetting.getAmount());
 
-        //only get first round record
-        int firstRrsId = reviewRecordStatusList.get(0).getId();
-        List<ReviewRecord> reviewRecordList = reviewRecordDbManager.getReviewRecordByRrsId(firstRrsId);
+        //only get the latest completed round record
+        int latestRrsId = reviewRecordStatusList.get(0).getId();
+        for(ReviewRecordStatus reviewRecordStatus: reviewRecordStatusList) {
+          if(reviewRecordStatus.getReviewStatusEnum().equals(ReviewStatusEnum.COMPLETED) &&
+              reviewRecordStatus.getRound() > latestRrsId) {
+            latestRrsId = reviewRecordStatus.getId();
+          }
+        }
+        List<ReviewRecord> reviewRecordList = reviewRecordDbManager.getReviewRecordByRrsId(latestRrsId);
         if (reviewRecordList.isEmpty()) {
           reviewed.put("status", false);
         } else {
@@ -455,7 +461,7 @@ public class PeerReviewService {
    */
   @GetMapping("record/oneUser")
   public ResponseEntity<Object> getReviewedRecord(@QueryParam("username") String username) {
-
+    TimeZone.setDefault(TimeZone.getTimeZone("Asia/Taipei"));
     HttpHeaders headers = new HttpHeaders();
     headers.add("Content-Type", "application/json");
     //

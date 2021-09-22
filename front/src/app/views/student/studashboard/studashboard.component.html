@@ -29,8 +29,8 @@
           <thead>
             <tr>
               <th width="10%" class='text-left'>學生</th>
-              <ng-container *ngFor='let col of assignmentTable'>
-                <th width="10%" *ngIf='isRelease(col.releaseTime)'>
+              <ng-container *ngFor='let col of assignmentTable; let i = index'>
+                <th width="10%" *ngIf='isRelease(col.assessmentTimeList[0].startTime)'>
                   <div>{{col.name}}</div>
                 </th>
               </ng-container>
