@@ -688,12 +688,12 @@ public class PeerReviewService {
    * @param username       user name
    * @param assignmentName assignment name
    */
-  /*
-  @GetMapping("record/detail/page") // Todo 前端沒用到 先不改
+
+  @GetMapping("record/detail/page")
   public ResponseEntity<Object> getReviewedRecordDetailPagination(@RequestParam("username") String username,
                                                                   @RequestParam("assignmentName") String assignmentName,
                                                                   @RequestParam("reviewId") int reviewId,
-                                                                  @RequestParam("page") int page) {
+                                                                  @RequestParam("round") int round) {
     HttpHeaders headers = new HttpHeaders();
     headers.add("Content-Type", "application/json");
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
@@ -707,11 +707,10 @@ public class PeerReviewService {
       int assignmentId = assignmentDbManager.getAssignmentIdByName(assignmentName);
       int auId = assignmentUserDbManager.getAuid(assignmentId, userId);
       PairMatching pairMatching = pairMatchingDbManager.getPairMatchingByAuIdReviewId(auId, reviewId);
-      int order = reviewRecordDbManager.getLatestReviewOrder(pairMatching.getId());
-      List<ReviewRecord> reviewRecordList = reviewRecordDbManager
-              .getReviewRecordByPairMatchingId(pairMatching.getId(), order - page + 1);
+      int rrsId = reviewRecordStatusDbManager.getIdByPmIdAndRound(pairMatching.getId(), round);
+      List<ReviewRecord> reviewRecordList = reviewRecordDbManager.getReviewRecordByRrsId(rrsId);
 
-      result.put("id", pairMatching.getReviewId());
+      result.put("id", reviewId);
       result.put("name", userDbManager.getUsername(pairMatching.getReviewId()));
       for (ReviewRecord reviewRecord : reviewRecordList) {
         JSONObject ob = new JSONObject();
@@ -725,15 +724,14 @@ public class PeerReviewService {
         ob.put("scoreMode", scoreModeDbManager.getScoreModeDescById(scoreModeId).getTypeName());
         array.add(ob);
       }
-      result.put("totalCount", order);
-      result.put("pagination", page);
+      result.put("round", round);
       result.put("Detail", array);
 
       return new ResponseEntity<Object>(result, headers, HttpStatus.OK);
     } catch (Exception e) {
       return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
-  }*/
+  }
 
   @GetMapping("/status/round/detail")
   public ResponseEntity<Object> getRoundStatusDetail(
@@ -948,5 +946,4 @@ public class PeerReviewService {
     }
 
   }
-
 }
