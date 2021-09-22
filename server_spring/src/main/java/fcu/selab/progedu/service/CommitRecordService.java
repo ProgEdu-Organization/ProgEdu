@@ -90,16 +90,19 @@ public class CommitRecordService {
         JSONObject lastCommitRecord = new JSONObject();
         org.json.JSONObject lastCommitRecordJson = commitRecordDb.getLastCommitRecord(auId);
 
-        String commitReleaseTime = dateFormat.format(lastCommitRecordJson.get("commitTime"));
-        lastCommitRecord.put("commitNumber", lastCommitRecordJson.get("commitNumber"));
-        lastCommitRecord.put("commitTime", commitReleaseTime);
-        lastCommitRecord.put("status", lastCommitRecordJson.get("status"));
+        if (!lastCommitRecordJson.isNull("commitTime")) {
+          String commitReleaseTime = dateFormat.format(lastCommitRecordJson.get("commitTime"));
+          lastCommitRecord.put("commitNumber", lastCommitRecordJson.get("commitNumber"));
+          lastCommitRecord.put("commitTime", commitReleaseTime);
+          lastCommitRecord.put("status", lastCommitRecordJson.get("status"));
 
-        jsonObject.put("assignmentName", assignment.getName());
-        //jsonObject.put("releaseTime", assignmentReleaseTime);
-        jsonObject.put("startTime", dateFormat.format(assignment.getAssessmentTimeList().get(0).getStartTime()));
-        jsonObject.put("commitRecord", lastCommitRecord);
-        jsonArray.add(jsonObject);
+          jsonObject.put("assignmentName", assignment.getName());
+          //jsonObject.put("releaseTime", assignmentReleaseTime);
+          jsonObject.put("startTime", dateFormat.format(assignment.getAssessmentTimeList().get(0).getStartTime()));
+          jsonObject.put("commitRecord", lastCommitRecord);
+          jsonArray.add(jsonObject);
+        }
+
       }
     } catch (Exception e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
