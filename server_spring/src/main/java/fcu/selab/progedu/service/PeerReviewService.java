@@ -389,6 +389,7 @@ public class PeerReviewService {
     }
   }
 
+  /*
   @GetMapping("/record/detail/page")
   public ResponseEntity<Object> getRecordDetailPage(
           @RequestParam("username") String username,
@@ -422,7 +423,7 @@ public class PeerReviewService {
       LOGGER.error(e.getMessage());
       return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
-  }
+  }*/
 
   /**
    * check which reviewed status of specific assignment_user

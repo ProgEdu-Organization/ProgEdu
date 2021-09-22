@@ -43,7 +43,7 @@
                 {{username}}
               </th>
               <ng-container *ngFor='let commit of studentCommitRecord'>
-                <th *ngIf='isRelease(commit.releaseTime)'>
+                <th *ngIf='isRelease(commit.startTime)'>
                   <p id="{{username}}_{{commit.assignmentName}}" class="circle {{commit.commitRecord.status}}">
                     <a *ngIf='!isNA(commit)' id="{{username}}_{{commit.hw}}_{{commit.commit}}"
                       href="#/studashboard/assignmentChoose?username={{username}}&assignmentName={{commit.assignmentName}}">{{commit.commitRecord.commitNumber}}</a>
