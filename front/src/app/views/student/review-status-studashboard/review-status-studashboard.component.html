@@ -36,7 +36,7 @@
                 review人數 / <br>PR round次數
               </th>
               <ng-container *ngFor='let review of assignmentTable'>
-                <th *ngIf='isRelease(review.assessmentTimes[0].startTime)'>
+                <th>
                   <p class="circle initialization">
                     <a *ngIf='!isNA(review)'
                       id="{{review.name}}_{{review.amount}}_{{review.round}}"
