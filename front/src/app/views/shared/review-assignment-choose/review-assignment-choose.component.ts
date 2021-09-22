@@ -17,14 +17,16 @@ export class ReviewAssignmentChooseComponent implements OnInit {
   isTeacher: boolean = false;
   user: User;
 
-  assignment = { type: '', deadline: new Date()};
+  assignment = { type: '', deadline: new Date(), assessmentTimes: new Array([{}])};
+  assignmentTimes: Array<any> = [{assessmentAction:"", startTime:"", endTime:""}];
 
   commits: Array<any> = [];
   gitlabAssignmentURL: string;
   feedbacks: JSON;
   selectedCommitNumber;
   screenshotUrls: Array<string>;
-  reviewFeedbacks: JSON;
+  reviewFeedbacks: [{assessmentTimes:[{startTime:"", endTime:""}]}];
+  review
 
   public Editor = ClassicEditor;
   public editorConfig = { toolbar: [] };
@@ -79,6 +81,7 @@ export class ReviewAssignmentChooseComponent implements OnInit {
   getAssignment() {
     this.assignmentService.getAssignment(this.assignmentName).subscribe(response => {
       this.assignment = response;
+      this.assignmentTimes = response.assessmentTimes;
       //this.assignment.deadline = this.timeService.getUTCTime(this.assignment.deadline);
     });
   }
