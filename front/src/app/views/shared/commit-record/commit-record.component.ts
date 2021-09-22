@@ -12,7 +12,7 @@ const commitRow = 5;
 export class CommitRecordComponent implements OnInit, OnChanges {
   @Input() type: string;
   @Input() showCommiter: boolean = false;
-  @Input() commits: Array<any>;
+  @Input() commits: Array<any> = [{totalCommit:""}];
   @Input() feedbacks: JSON;
   @Input() screenshotUrls: Array<any>;
   @Output() messageToEmit = new EventEmitter<string>();
