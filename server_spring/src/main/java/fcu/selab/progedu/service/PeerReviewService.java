@@ -350,6 +350,7 @@ public class PeerReviewService {
         reviewed.put("id", reviewerId);
         reviewed.put("name", userDbManager.getUsername(reviewerId));
         reviewed.put("assessmentTimes", assessmentTimeDbManager.getAssignmentTimeNameById(assignmentId));
+        reviewed.put("totalCount", reviewSetting.getAmount());
 
         //only get first round record
         int firstRrsId = reviewRecordStatusList.get(0).getId();
