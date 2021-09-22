@@ -345,11 +345,11 @@ public class PeerReviewService {
         JSONObject reviewed = new JSONObject();
         JSONArray reviewDetailArray = new JSONArray();
         List<ReviewRecordStatus> reviewRecordStatusList = reviewRecordStatusDbManager.getAllReviewRecordStatusByPairMatchingId(pairMatching.getId());
-        int reviewerId = assignmentUserDbManager.getUidById(pairMatching.getAuId());
+        int reviewerId = pairMatching.getReviewId();
 
         reviewed.put("id", reviewerId);
         reviewed.put("name", userDbManager.getUsername(reviewerId));
-        reviewed.put("assignmentTime", assessmentTimeDbManager.getAssignmentTimeNameById(assignmentId));
+        reviewed.put("assessmentTimes", assessmentTimeDbManager.getAssignmentTimeNameById(assignmentId));
 
         //only get first round record
         int firstRrsId = reviewRecordStatusList.get(0).getId();

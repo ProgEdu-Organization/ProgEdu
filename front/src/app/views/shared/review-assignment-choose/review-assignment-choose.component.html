@@ -22,13 +22,19 @@
           </div>
           <hr />
           <span class="h2">Deadline</span>
-          <p style="margin: 10px;">{{assignment.deadline | date:'short'}}</p>
+          <div *ngFor="let time of assignmentTimes; let i = index">
+            <p *ngIf="time.assessmentAction == 'DO'" style="margin: 10px;">Round {{(i+2)/2}}: {{time.endTime | date:'short'}}</p>
+          </div>
           <hr />
           <span class="h2">Review Start Time</span>
-          <p style="margin: 10px;">{{reviewFeedbacks[0].reviewReleaseTime | date:'short'}}</p>
+          <div *ngFor="let time of assignmentTimes; let i = index">
+            <p *ngIf="time.assessmentAction == 'REVIEW'" style="margin: 10px;">Round {{(i+1)/2}}: {{time.startTime | date:'short'}}</p>
+          </div>
           <hr />
           <span class="h2">Review End Time</span>
-          <p style="margin: 10px;">{{reviewFeedbacks[0].reviewDeadline | date:'short'}}</p>
+          <div *ngFor="let time of assignmentTimes; let i = index">
+            <p *ngIf="time.assessmentAction == 'REVIEW'" style="margin: 10px;">Round {{(i+1)/2}}: {{time.endTime | date:'short'}}</p>
+          </div>
         </div>
       </div>
       <hr>
