@@ -110,6 +110,7 @@ export class ReviewStatusAssignmentChooseComponent implements OnInit {
         }
       );
     });
+    console.log(this.round);
   }
 
   feedbackChanged(event, id, metrics: any) {
@@ -247,7 +248,7 @@ export class ReviewStatusAssignmentChooseComponent implements OnInit {
       this.reviewRecords[i] = reviewRecord;
     }
     this.reviewStatusAssignmentChooseService.createReviewRecord(this.username, this.allReviewDetail[this.reviewOne].name,
-      this.assignmentName, { allReviewRecord: this.reviewRecords }).subscribe(
+      this.assignmentName, { allReviewRecord: this.reviewRecords }, this.round).subscribe(
         response => {
           window.location.reload();
         },
