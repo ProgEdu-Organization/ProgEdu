@@ -530,7 +530,7 @@ public class AssignmentDbManager {
    * @param readMe      readMe
    * @param id          id
    */
-  public void editAssignment(Date deadline, Date releaseTime, String readMe, int id) {
+  public void editAssignment(String readMe, int id) {
     /*
     Timestamp deadlinetime = new Timestamp(deadline.getTime());
     Timestamp releasetime = new Timestamp(releaseTime.getTime());
@@ -545,10 +545,6 @@ public class AssignmentDbManager {
 
       conn = database.getConnection();
       preStmt = conn.prepareStatement(sql);
-      /*
-      preStmt.setTimestamp(1, deadlinetime);
-      preStmt.setTimestamp(2, releasetime);
-      */
       preStmt.setString(1, readMe);
       preStmt.setInt(2, id);
       preStmt.executeUpdate();
