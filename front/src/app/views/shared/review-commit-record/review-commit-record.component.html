@@ -2,12 +2,13 @@
   <ng-container *ngFor="let reviewFeedback of reviewFeedbacks;index as i;">
     <span class="h2">
       <div class="form-group row">
-        <label class="col-md-7 col-form-label">Peer Review Result</label>
+        <label class="col-md-7 col-form-label">Peer Review Result - {{i+1}}</label>
         <label class="col-md-5 col-form-label" style="text-align: right;" *ngIf=isTeacher>Scorer：
           {{reviewFeedback.name}}</label>
       </div>
     </span>
     <div class="card-body" id='reviewFeedback-bar'>
+      <h3 style="padding-bottom: 10px;">Round {{currentReviewPagination[i]}}</h3>
       <table class='table table-responsive-sm table-bordered table-hover table-outline'>
         <thead class="thead-light">
           <tr>

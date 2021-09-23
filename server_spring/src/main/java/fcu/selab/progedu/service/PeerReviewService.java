@@ -372,7 +372,7 @@ public class PeerReviewService {
             reviewDetailArray.add(ob);
           }
           reviewed.put("Detail", reviewDetailArray);
-          reviewed.put("displayRound", latestCompleted.getRound());  //the latest completed round
+          reviewed.put("latestCompletedRound", latestCompleted.getRound());  //the latest completed round
         }
         array.add(reviewed);
       }

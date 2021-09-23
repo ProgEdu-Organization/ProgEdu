@@ -36,13 +36,16 @@
                 review人數 / <br>PR round次數
               </th>
               <ng-container *ngFor='let review of assignmentTable'>
-                <th>
+                <th *ngIf='isRelease(review.assessmentTimes[1].startTime)'>
                   <p class="circle initialization">
                     <a *ngIf='!isNA(review)'
                       id="{{review.name}}_{{review.amount}}_{{review.round}}"
                       style="color: white;" href="#/studashboard/peerReviewRoundDashboard?assignmentName={{review.name}}">{{review.amount}}/{{review.round}}</a>
                     <a *ngIf='isNA(review)'>N/A</a>
                   </p>
+                </th>
+                <th *ngIf='!isRelease(review.assessmentTimes[1].startTime)'>
+                  <a>N/A</a>
                 </th>
               </ng-container>
               <th class='text-left'></th>

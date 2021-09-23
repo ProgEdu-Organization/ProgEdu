@@ -40,6 +40,9 @@ export class ReviewCommitRecordComponent implements OnInit, OnChanges {
     this.maxReviewPagination = new Array(count);
     for (let i = 0 ; i < count ; i++) {
       this.currentReviewPagination[i] = 1;
+      if(this.reviewFeedbacks[i].latestCompletedRound !== undefined) {
+        this.currentReviewPagination[i] = this.reviewFeedbacks[i].latestCompletedRound;
+      }
       this.maxReviewPagination[i] = this.reviewFeedbacks[i].totalCount;
       if (this.maxReviewPagination[i] === undefined) {
         this.maxReviewPagination[i] = 1;
