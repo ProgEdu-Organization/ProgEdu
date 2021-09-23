@@ -279,8 +279,6 @@ public class PeerReviewService {
         "yyyy-MM-dd HH:mm:ss.S");
 
     try {
-      List<Assignment> assignmentList = assignmentDbManager.getAllReviewAssignment();
-      //int reviewId = userDbManager.getUserIdByUsername(username);
       int assignmentId = assignmentDbManager.getAssignmentIdByName(assignmentName);
       List<AssignmentUser> assignmentUserList = assignmentUserDbManager.getAssignmentUserListByAid(assignmentId);
       ReviewSetting reviewSetting = reviewSettingDbManager.getReviewSetting(assignmentId);
@@ -291,7 +289,7 @@ public class PeerReviewService {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("name", userDbManager.getUsername(reviewId));
         JSONArray reviewRound = new JSONArray();
-        for(int round = 0; round < reviewSetting.getRound(); round++) {
+        for(int round = 1; round <= reviewSetting.getRound(); round++) {
           JSONObject roundStatus = new JSONObject();
           roundStatus.put("amount", reviewSetting.getAmount());
           roundStatus.put("count", getReviewCompletedCount(assignmentId, reviewId, round));
