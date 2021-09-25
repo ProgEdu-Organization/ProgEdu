@@ -42,7 +42,7 @@
               {{student.name}}
             </th>
             <th *ngFor='let review of student.reviewRound'>
-              <p id="{{student.username}}_{{review.assignmentName}}" class="square {{review.status}}">
+              <p id="{{student.username}}_{{review.assignmentName}}" class="square {{getStatus(review.status, review.amount, review.count)}}">
                 <a *ngIf='!isNA(review)'
                   id="{{student.username}}_{{review.assignmentName}}_{{review.count}}"
                   style="color: white;">{{review.count}}/{{review.amount}}</a>

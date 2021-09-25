@@ -50,8 +50,19 @@ export class ReviewRoundDashboardComponent implements OnInit {
       for(let i = 0; i < this.allReviewRoundStatus[0].reviewRound.length; i++) {
         this.round.push(i);
       }
-      console.log(this.round);
     })
+  }
+
+  getStatus(status: string, amount: number, count: number) {
+    if (status == "COMPLETED") {
+      if (count < amount) {
+        return "POR";
+      } else {
+        return status;
+      }
+    } else {
+      return status;
+    }
   }
   
   isNA(commit: any) {
