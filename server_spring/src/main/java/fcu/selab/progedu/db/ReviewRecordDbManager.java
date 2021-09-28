@@ -37,9 +37,9 @@ public class ReviewRecordDbManager {
    * @param feedback    feedback
    */
   public void insertReviewRecord(int rrsId, int rsmId, int score, Date time,
-                                 String feedback) throws SQLException {
-    String query = "INSERT INTO Review_Record(rrsId, rsmId, score, time, feedback)"
-        + " VALUES (?,?,?,?,?);";
+                                 String feedback, int teacherReview) throws SQLException {
+    String query = "INSERT INTO Review_Record(rrsId, rsmId, score, time, feedback, teacherReview)"
+        + " VALUES (?,?,?,?,?,?);";
     Timestamp timeTimestamp = new Timestamp(time.getTime());
     Connection conn = null;
     PreparedStatement preStmt = null;
@@ -53,6 +53,7 @@ public class ReviewRecordDbManager {
       preStmt.setInt(3, score);
       preStmt.setTimestamp(4, timeTimestamp);
       preStmt.setString(5, feedback);
+      preStmt.setInt(6, teacherReview);
       preStmt.executeUpdate();
     } finally {
       CloseDBUtil.closeAll(preStmt, conn);
