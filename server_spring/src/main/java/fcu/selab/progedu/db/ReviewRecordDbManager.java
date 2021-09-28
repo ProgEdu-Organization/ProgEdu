@@ -84,14 +84,15 @@ public class ReviewRecordDbManager {
         int score = rs.getInt("score");
         Date time = rs.getTimestamp("time");
         String feedback = rs.getString("feedback");
-        int reviewOrder = rs.getInt("reviewOrder");
+        int teacherReview = rs.getInt("teacherReview");
         reviewRecord.setId(id);
         //reviewRecord.setPmId(pmId);
         reviewRecord.setRsmId(rsmId);
         reviewRecord.setScore(score);
         reviewRecord.setTime(time);
         reviewRecord.setFeedback(feedback);
-        //reviewRecord.setReviewOrder(reviewOrder);
+        reviewRecord.setTeacherReview(teacherReview);
+
       }
     } finally {
       CloseDBUtil.closeAll(rs, preStmt, conn);
@@ -127,7 +128,7 @@ public class ReviewRecordDbManager {
         int score = rs.getInt("score");
         Date time = rs.getTimestamp("time");
         String feedback = rs.getString("feedback");
-        int reviewOrder = rs.getInt("reviewOrder");
+        int teacherReview = rs.getInt("teacherReview");
         ReviewRecord reviewRecord = new ReviewRecord();
         reviewRecord.setId(id);
         //reviewRecord.setPmId(pmId);
@@ -135,7 +136,7 @@ public class ReviewRecordDbManager {
         reviewRecord.setScore(score);
         reviewRecord.setTime(time);
         reviewRecord.setFeedback(feedback);
-        //reviewRecord.setReviewOrder(reviewOrder);
+        reviewRecord.setTeacherReview(teacherReview);
         reviewRecordList.add(reviewRecord);
       }
     } finally {
@@ -250,6 +251,7 @@ public class ReviewRecordDbManager {
         reviewRecord.setScore(rs.getInt("score"));
         reviewRecord.setTime(rs.getTimestamp("time"));
         reviewRecord.setFeedback(rs.getString("feedback"));
+        reviewRecord.setTeacherReview(rs.getInt("teacherReview"));
         reviewRecordList.add(reviewRecord);
       }
     } catch (SQLException e) {
