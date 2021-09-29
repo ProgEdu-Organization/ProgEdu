@@ -16,6 +16,8 @@ public class ReviewRecord {
 
   private String feedback;
 
+  private int teacherReview;
+
   public int getId() {
     return id;
   }
@@ -62,6 +64,14 @@ public class ReviewRecord {
 
   public void setFeedback(String feedback) {
     this.feedback = feedback;
+  }
+
+  public int getTeacherReview() {
+    return this.teacherReview;
+  }
+
+  public void setTeacherReview(int teacherReview) {
+    this.teacherReview = teacherReview;
   }
 
 }

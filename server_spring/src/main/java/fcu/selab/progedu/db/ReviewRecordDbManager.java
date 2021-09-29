@@ -37,9 +37,9 @@ public class ReviewRecordDbManager {
    * @param feedback    feedback
    */
   public void insertReviewRecord(int rrsId, int rsmId, int score, Date time,
-                                 String feedback) throws SQLException {
-    String query = "INSERT INTO Review_Record(rrsId, rsmId, score, time, feedback)"
-        + " VALUES (?,?,?,?,?);";
+                                 String feedback, int teacherReview) throws SQLException {
+    String query = "INSERT INTO Review_Record(rrsId, rsmId, score, time, feedback, teacherReview)"
+        + " VALUES (?,?,?,?,?,?);";
     Timestamp timeTimestamp = new Timestamp(time.getTime());
     Connection conn = null;
     PreparedStatement preStmt = null;
@@ -53,6 +53,7 @@ public class ReviewRecordDbManager {
       preStmt.setInt(3, score);
       preStmt.setTimestamp(4, timeTimestamp);
       preStmt.setString(5, feedback);
+      preStmt.setInt(6, teacherReview);
       preStmt.executeUpdate();
     } finally {
       CloseDBUtil.closeAll(preStmt, conn);
@@ -84,14 +85,15 @@ public class ReviewRecordDbManager {
         int score = rs.getInt("score");
         Date time = rs.getTimestamp("time");
         String feedback = rs.getString("feedback");
-        int reviewOrder = rs.getInt("reviewOrder");
+        int teacherReview = rs.getInt("teacherReview");
         reviewRecord.setId(id);
         //reviewRecord.setPmId(pmId);
         reviewRecord.setRsmId(rsmId);
         reviewRecord.setScore(score);
         reviewRecord.setTime(time);
         reviewRecord.setFeedback(feedback);
-        //reviewRecord.setReviewOrder(reviewOrder);
+        reviewRecord.setTeacherReview(teacherReview);
+
       }
     } finally {
       CloseDBUtil.closeAll(rs, preStmt, conn);
@@ -127,7 +129,7 @@ public class ReviewRecordDbManager {
         int score = rs.getInt("score");
         Date time = rs.getTimestamp("time");
         String feedback = rs.getString("feedback");
-        int reviewOrder = rs.getInt("reviewOrder");
+        int teacherReview = rs.getInt("teacherReview");
         ReviewRecord reviewRecord = new ReviewRecord();
         reviewRecord.setId(id);
         //reviewRecord.setPmId(pmId);
@@ -135,7 +137,7 @@ public class ReviewRecordDbManager {
         reviewRecord.setScore(score);
         reviewRecord.setTime(time);
         reviewRecord.setFeedback(feedback);
-        //reviewRecord.setReviewOrder(reviewOrder);
+        reviewRecord.setTeacherReview(teacherReview);
         reviewRecordList.add(reviewRecord);
       }
     } finally {
@@ -250,6 +252,7 @@ public class ReviewRecordDbManager {
         reviewRecord.setScore(rs.getInt("score"));
         reviewRecord.setTime(rs.getTimestamp("time"));
         reviewRecord.setFeedback(rs.getString("feedback"));
+        reviewRecord.setTeacherReview(rs.getInt("teacherReview"));
         reviewRecordList.add(reviewRecord);
       }
     } catch (SQLException e) {

@@ -128,7 +128,92 @@ public class PeerReviewService {
                 .getReviewSettingMetricsIdByRsIdRsmId(reviewSettingId, id);
 
         reviewRecordDbManager
-                .insertReviewRecord(rrsId, rsmId, score, createDate, feedback);
+                .insertReviewRecord(rrsId, rsmId, score, createDate, feedback, 0);
+      }
+
+      return new ResponseEntity<>(headers, HttpStatus.OK);
+    } catch (Exception e) {
+      return new ResponseEntity<Object>(e.getMessage(), headers, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+  }
+
+  /**
+   * insert review record by specific user, reviewed and assignment name
+   *
+   * @param username       user name
+   * @param reviewedName   reviewed name
+   * @param assignmentName assignment name
+   * @param reviewRecord   review record
+   */
+  @PostMapping("teacher/create")
+  public ResponseEntity<Object> createTeacherReviewRecord(
+          @RequestParam("username") String username,
+          @RequestParam("reviewedName") String reviewedName,
+          @RequestParam("assignmentName") String assignmentName,
+          @RequestParam("reviewRecord") String reviewRecord,
+          @RequestParam("round") int round
+  ) {
+
+    HttpHeaders headers = new HttpHeaders();
+    //
+
+    try {
+      int userId = userDbManager.getUserIdByUsername(username);
+      int reviewedId = userDbManager.getUserIdByUsername(reviewedName);
+      int assignmentId = assignmentDbManager.getAssignmentIdByName(assignmentName);
+      ReviewSetting reviewSetting = reviewSettingDbManager.getReviewSetting(assignmentId);
+      TimeZone.setDefault(TimeZone.getTimeZone("Asia/Taipei"));
+      Date createDate = new Date();
+      int reviewSettingId = reviewSetting.getId();
+      int auId = assignmentUserDbManager.getAuid(assignmentId, reviewedId);
+      int pmId = pairMatchingDbManager.getPairMatchingIdByAuIdReviewId(auId, userId);
+      int reviewOrder = 1;
+      TimeZone.setDefault(TimeZone.getTimeZone("Asia/Taipei"));
+      Date currentDate = new Date();
+      AssessmentTime assessmentTime = assessmentTimeDbManager.getAssignmentTimeByTimeAndName(assignmentName, currentDate);
+
+      // 1. Check this review record is expired or not,
+      //    if it's expired, it won't create new review record
+
+      if (createDate.compareTo(assessmentTime.getEndTime()) >= 0) {
+        return new ResponseEntity<>("This review has been expired.", headers,
+                HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+
+      // 2. Check this review record has been release or not.
+      //    PS. this won't happened, unless the student used this api in correct way
+      if (createDate.compareTo(assessmentTime.getStartTime()) < 0) {
+        return new ResponseEntity<>("This review hasn't been released.", headers,
+                HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+
+      // 3. Upload the status of pair matching
+      int status = reviewStatusDbManager
+              .getReviewStatusIdByStatus(ReviewStatusEnum.COMPLETED.getTypeName());
+//      pairMatchingDbManager.updatePairMatchingById(status, pmId);
+      reviewRecordStatusDbManager.updateReviewRecordStatusByPmId(status, pmId, round);
+
+      // 4. Check which time have been reviewed, and upload the review order
+      /*if (!reviewRecordDbManager.isFirstTimeReviewRecord(pmId)) {
+        reviewOrder = reviewRecordDbManager.getLatestReviewOrder(pmId) + 1;
+      }*/
+
+      // 5. Insert new review record onto db
+      org.json.JSONObject jsonObject = new org.json.JSONObject(reviewRecord);
+      org.json.JSONArray jsonArray = jsonObject.getJSONArray("allReviewRecord");
+
+      for (int i = 0; i < jsonArray.length(); i++) {
+        org.json.JSONObject object = jsonArray.getJSONObject(i);
+        int id = object.getInt("id");
+        int score = object.getInt("score");
+        String feedback = object.getString("feedback");
+        int rrsId = reviewRecordStatusDbManager.getIdByPmIdAndRound(pmId, round);
+        int rsmId = reviewSettingMetricsDbManager
+                .getReviewSettingMetricsIdByRsIdRsmId(reviewSettingId, id);
+
+        reviewRecordDbManager
+                .insertReviewRecord(rrsId, rsmId, score, createDate, feedback, 0);
       }
 
       return new ResponseEntity<>(headers, HttpStatus.OK);
