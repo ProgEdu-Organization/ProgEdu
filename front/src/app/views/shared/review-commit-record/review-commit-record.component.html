@@ -12,33 +12,28 @@
       <table class='table table-responsive-sm table-bordered table-hover table-outline'>
         <thead class="thead-light">
           <tr>
-            <th class='w-60'>Topic</th>
-            <th class='w-30'>Time</th>
-            <th class='w-10'>Result</th>
-            <th class='w-60'>Feedback</th>
+            <th class='w-40'>Metrics</th>
+            <th class='w-5'>Review Result</th>
+            <th class='w-70'>Feedback</th>
           </tr>
         </thead>
         <tr *ngFor="let reviewDetail of reviewFeedback.Detail" id='reviewFeedback-bar'>
           <td>
             {{reviewDetail.metrics}}
           </td>
-          <td>
-            {{ reviewDetail.time | date:'short'}}
-          </td>
           <ng-container *ngIf="reviewDetail.scoreMode === 'yesNoMode'">
             <td *ngIf="reviewDetail.score===1">
-              Yes
+              Pass
             </td>
             <td *ngIf="reviewDetail.score===2" style="color:red;">
-              No
+              Fail
             </td>
           </ng-container>
           <td *ngIf="reviewDetail.scoreMode === 'numberScore'">
             {{ reviewDetail.score}}
           </td>
-          <td>
-            <button type="button" class="btn btn-secondary"
-              (click)="openReviewFeedbackModal(reviewDetail);reviewFormModal.show()">Feedback Information</button>
+          <td *ngIf="reviewDetail.feedback">
+              {{ reviewDetail.feedback }}
           </td>
         </tr>
       </table>
