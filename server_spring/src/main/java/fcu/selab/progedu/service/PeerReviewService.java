@@ -181,13 +181,6 @@ public class PeerReviewService {
                 HttpStatus.INTERNAL_SERVER_ERROR);
       }
 
-      // 2. Check this review record has been release or not.
-      //    PS. this won't happened, unless the student used this api in correct way
-      if (createDate.compareTo(assessmentTime.getStartTime()) < 0) {
-        return new ResponseEntity<>("This review hasn't been released.", headers,
-                HttpStatus.INTERNAL_SERVER_ERROR);
-      }
-
       // 3. Upload the status of pair matching
       int status = reviewStatusDbManager
               .getReviewStatusIdByStatus(ReviewStatusEnum.COMPLETED.getTypeName());
@@ -213,7 +206,7 @@ public class PeerReviewService {
                 .getReviewSettingMetricsIdByRsIdRsmId(reviewSettingId, id);
 
         reviewRecordDbManager
-                .insertReviewRecord(rrsId, rsmId, score, createDate, feedback, 0);
+                .insertReviewRecord(rrsId, rsmId, score, createDate, feedback, 1);
       }
 
       return new ResponseEntity<>(headers, HttpStatus.OK);
