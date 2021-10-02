@@ -801,6 +801,7 @@ public class PeerReviewService {
         ob.put("metrics", reviewMetricsDbManager.getReviewMetricsById(metricsId));
         int scoreModeId = reviewMetricsDbManager.getScoreModeIdById(metricsId);
         ob.put("scoreMode", scoreModeDbManager.getScoreModeDescById(scoreModeId).getTypeName());
+        ob.put("teacherReview", reviewRecord.getTeacherReview());
         array.add(ob);
       }
       result.put("round", round);
