@@ -263,4 +263,52 @@ public class ReviewRecordDbManager {
     }
     return reviewRecordList;
   }
+
+  public List<Integer> getReviewScore(int pmId, int round) {
+    String sql = "select pm.*, rrs.*, rr.* from Review_Record as rr, Review_Record_Status as rrs, Pair_Matching as pm where pm.id = rrs.pmId and rrs.id = rr.rrsId and pm.id = ? and rrs.round = ?";
+    List<Integer> scoreInteger = new ArrayList<>();
+
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
+
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+      preStmt.setInt(1, pmId);
+      preStmt.setInt(2, round);
+      rs = preStmt.executeQuery();
+      while (rs.next()) {
+        int score = rs.getInt("score");
+        scoreInteger.add(score);
+      }
+    } catch (SQLException e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(rs, preStmt, conn);
+    }
+    return scoreInteger;
+  }
+
+  public void updateReviewScore(int id, int reviewScore) {
+    String sql = "UPDATE Review_Record set reviewScore = ? where id = ?";
+
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
+      preStmt.setInt(1, reviewScore);
+      preStmt.setInt(2, id);
+      preStmt.executeUpdate();
+    } catch (SQLException e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(preStmt, conn);
+    }
+  }
 }
