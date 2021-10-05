@@ -291,6 +291,32 @@ public class ReviewRecordDbManager {
     return scoreInteger;
   }
 
+  public int getReviewRecordIdByRrsIdAndRsmId(int rrsId, int rsmId) {
+    String sql = "SELECT id FROM Review_Record WHERE rrsId = ? AND rsmId = ?";
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
+    int id = 0;
+
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
+      preStmt.setInt(1, rrsId);
+      preStmt.setInt(2, rsmId);
+      rs = preStmt.executeQuery();
+      while (rs.next()) {
+        id = rs.getInt("id");
+      }
+    } catch (SQLException e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(preStmt, conn);
+    }
+    return id;
+  }
+
   public void updateReviewScore(int id, int reviewScore) {
     String sql = "UPDATE Review_Record set reviewScore = ? where id = ?";
 
