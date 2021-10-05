@@ -43,6 +43,7 @@ export class ReviewCommitRecordComponent implements OnInit, OnChanges {
   feedbackInit: boolean = false;
   submitDisabled: boolean = true;
   reviewOne: number;
+  isShowReviewButton: Array<boolean>;
   @ViewChildren('radioYes') public reviewYesRadio: any;
   @ViewChildren('radioNo') public reviewNoRadio: any;
   @ViewChildren('feedbackInput') public feedbackInput: any;
@@ -94,6 +95,7 @@ export class ReviewCommitRecordComponent implements OnInit, OnChanges {
     const count = Object(this.reviewFeedbacks).length;
     this.currentReviewPagination = new Array(count);
     this.maxReviewPagination = new Array(count);
+    this.isShowReviewButton = new Array(count);
     for (let i = 0 ; i < count ; i++) {
       this.currentReviewPagination[i] = 1;
       if(this.reviewFeedbacks[i].latestCompletedRound !== undefined) {
@@ -103,6 +105,7 @@ export class ReviewCommitRecordComponent implements OnInit, OnChanges {
       if (this.maxReviewPagination[i] === undefined) {
         this.maxReviewPagination[i] = 1;
       }
+      this.isShowReviewButton[i] = !this.reviewFeedbacks[i].status;
     }
   }
 
@@ -122,7 +125,7 @@ export class ReviewCommitRecordComponent implements OnInit, OnChanges {
     this.changePagination(this.currentPagination);
   }
 
-  nextReviewPage(index: number) { // Todo 好像根本沒用到
+  nextReviewPage(index: number) {
     if (this.currentReviewPagination[index] >= this.maxReviewPagination[index]) {
       return;
     }
@@ -130,7 +133,7 @@ export class ReviewCommitRecordComponent implements OnInit, OnChanges {
     this.changeReviewPagination(this.currentReviewPagination[index], index);
   }
 
-  preReviewPage(index: number) { // // Todo 好像根本沒用到
+  preReviewPage(index: number) {
     if (this.currentReviewPagination[index] <= 1) {
       return;
     }
@@ -158,6 +161,7 @@ export class ReviewCommitRecordComponent implements OnInit, OnChanges {
     this.reviewCommitRecordService.getReviewPageDetail(this.assignmentName, this.username, this.reviewFeedbacks[index].id.toString(),
      pageNumber.toString() ).subscribe(response => {
       this.reviewFeedbacks[index] = response;
+      this.checkIsShowReviewButton(index);
     });
   }
 
@@ -304,11 +308,11 @@ export class ReviewCommitRecordComponent implements OnInit, OnChanges {
     this.reviewOne = index;
   }
 
-  isShowReviewButton(order: number) {
-    if(this.reviewFeedbacks[order].status == false) {
-      return true;
+  checkIsShowReviewButton(order: number) {
+    if(Array(this.reviewFeedbacks[order].Detail)[0] == undefined || Array(this.reviewFeedbacks[order].Detail)[0].length == []) {
+      this.isShowReviewButton[order] = true;
     } else {
-      return false;
+      this.isShowReviewButton[order] = false;
     }
   }
 

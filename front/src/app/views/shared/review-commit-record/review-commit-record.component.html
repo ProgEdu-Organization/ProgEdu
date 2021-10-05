@@ -10,7 +10,7 @@
     <div class="card-body" id='reviewFeedback-bar'>
       <div class="form-group row">
         <h3 class="col-md-10" style="padding-bottom: 10px;">Round {{currentReviewPagination[i]}}</h3>
-        <input *ngIf="isTeacher && isShowReviewButton(i)" type="button" class="btn btn-outline-primary col-sm-1 col-md-2" value="Fill Review Form"
+        <input *ngIf="isTeacher && isShowReviewButton[i]" type="button" class="btn btn-outline-primary col-sm-1 col-md-2" value="Fill Review Form"
                 (click)="reviewFormFillModal.show();setReviewOne(i);emitReviewFormOpenedEvent();">
       </div>
       <table class='table table-responsive-sm table-bordered table-hover table-outline'>
