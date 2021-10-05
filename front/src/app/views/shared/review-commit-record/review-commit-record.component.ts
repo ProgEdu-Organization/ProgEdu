@@ -280,10 +280,8 @@ export class ReviewCommitRecordComponent implements OnInit, OnChanges {
       };
       this.reviewRecords[i] = reviewRecord;
     }
-    //========================================== 
-    //the first username and round should be fix
     this.reviewStatusAssignmentChooseService.createReviewRecord(this.reviewFeedbacks[this.reviewOne].name, this.username,
-      this.assignmentName, { allReviewRecord: this.reviewRecords }, this.currentReviewPagination[this.reviewOne].toString()).subscribe(
+      this.assignmentName, { allReviewRecord: this.reviewRecords }, this.currentReviewPagination[this.reviewOne].toString(), this.isTeacher).subscribe(
         response => {
           window.location.reload();
         },

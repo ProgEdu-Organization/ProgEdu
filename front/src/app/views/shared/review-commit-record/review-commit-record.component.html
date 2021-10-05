@@ -19,6 +19,7 @@
             <th class='w-40'>Metrics</th>
             <th class='w-5'>Review Result</th>
             <th class='w-70'>Feedback</th>
+            <th class='w-5'>Assistance Degree</th>
           </tr>
         </thead>
         <tr *ngFor="let reviewDetail of reviewFeedback.Detail" id='reviewFeedback-bar'>
@@ -39,6 +40,7 @@
           <td *ngIf="reviewDetail.feedback">
               {{ reviewDetail.feedback }}
           </td>
+          <td *ngIf="reviewDetail.feedback"></td>
         </tr>
       </table>
       <hr>

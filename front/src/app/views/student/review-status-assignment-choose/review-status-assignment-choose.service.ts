@@ -48,13 +48,14 @@ export class ReviewStatusAssignmentChooseService {
     return this.addJwtTokenHttpClient.get(this.REVIEW_STATUS_DETAIL_PAGE_API, { params }  );
   }
 
-  createReviewRecord(username: string, reviewedName: string , assignmentName: string, reviewRecord: any, round: string): Observable<any> {
+  createReviewRecord(username: string, reviewedName: string , assignmentName: string, reviewRecord: any, round: string, isTeacher: boolean): Observable<any> {
     const formData = new FormData();
     formData.append('username', username);
     formData.append('reviewedName', reviewedName);
     formData.append('assignmentName', assignmentName);
     formData.append('reviewRecord',  JSON.stringify(reviewRecord).toString());
     formData.append('round', round);
+    formData.append('isTeacher', isTeacher.toString());
     return this.addJwtTokenHttpClient.post(this.CREATE_REVIEW_RECORD_API, formData );
   }
 
