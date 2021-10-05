@@ -8,7 +8,11 @@
       </div>
     </span>
     <div class="card-body" id='reviewFeedback-bar'>
-      <h3 style="padding-bottom: 10px;">Round {{currentReviewPagination[i]}}</h3>
+      <div class="form-group row">
+        <h3 class="col-md-10" style="padding-bottom: 10px;">Round {{currentReviewPagination[i]}}</h3>
+        <input *ngIf="isTeacher && isShowReviewButton(i)" type="button" class="btn btn-outline-primary col-sm-1 col-md-2" value="Fill Review Form"
+                (click)="reviewFormFillModal.show();setReviewOne(i);emitReviewFormOpenedEvent();">
+      </div>
       <table class='table table-responsive-sm table-bordered table-hover table-outline'>
         <thead class="thead-light">
           <tr>
@@ -156,6 +160,82 @@
     </ng-container>
   </div>
 </div>
+
+<!-- Review Form Fill Modal -->
+<div bsModal #reviewFormFillModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title col-md-6">Review Form</h4>
+        <button type="button" class="btn btn-outline-primary col-md-3" (click)="downloadSourceCode()">Download Source
+          Code</button>
+        <button type="button" class="close" (click)="reviewFormFillModal.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <!--Review Form Fill Main-->
+      <form class="form-horizontal">
+        <div class="modal-body">
+          <ng-container *ngFor="let metric of reviewMetrics;index as i">
+            <div class="form-group row">
+              <label class="col-md-10 col-form-label" for="metrics"> {{i+1}}. {{metric.metrics}} ?</label>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="method{{i}}" #radioYes id="methodRadio1" type="radio"
+                  (change)="answerChanged($event,metric)">Yes
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="method{{i}}" #radioNo id="methodRadio2" type="radio"
+                  (change)="answerChanged($event,metric)">No
+              </div>
+              <ng-container *ngIf="metric.mode === 'SCOREMODE'">
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="method{{i}}" #radioScore id="methodRadio1"
+                    type="radio">1
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="method{{i}}" #radioScore id="methodRadio2"
+                    type="radio">2
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="method{{i}}" #radioScore id="methodRadio2"
+                    type="radio">3
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="method{{i}}" #radioScore id="methodRadio2"
+                    type="radio">4
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="method{{i}}" #radioScore id="methodRadio2"
+                    type="radio">5
+                </div>
+              </ng-container>
+              <div class="col-md-12">
+                <div class="col-md-12">
+                  <div class="col-md-12">
+                    <p>{{metric.description}}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-12">
+              <p>Feedback:</p>
+              <div class="col-md-12">
+                <textarea id="feedback" name="feedback{{i}}" rows="3" class="form-control" #feedbackInput type="text"
+                  placeholder="Write down new suggest..." (change)="feedbackChanged($event,i,metric)"></textarea>
+              </div>
+            </div>
+            <br>
+          </ng-container>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" [disabled]='submitDisabled'
+              (click)="createReviewForm();reviewFormFillModal.hide();">Submit</button>
+          </div>
+        </div>
+      </form>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 
 <!-- Review Form Modal -->
 <div bsModal #reviewFormModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
