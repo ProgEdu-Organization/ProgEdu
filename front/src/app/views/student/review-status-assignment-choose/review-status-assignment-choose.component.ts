@@ -247,7 +247,7 @@ export class ReviewStatusAssignmentChooseComponent implements OnInit {
       this.reviewRecords[i] = reviewRecord;
     }
     this.reviewStatusAssignmentChooseService.createReviewRecord(this.username, this.allReviewDetail[this.reviewOne].name,
-      this.assignmentName, { allReviewRecord: this.reviewRecords }, this.round).subscribe(
+      this.assignmentName, { allReviewRecord: this.reviewRecords }, this.round, false).subscribe(
         response => {
           window.location.reload();
         },
