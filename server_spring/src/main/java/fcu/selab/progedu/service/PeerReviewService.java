@@ -133,6 +133,9 @@ public class PeerReviewService {
                 .insertReviewRecord(rrsId, rsmId, score, createDate, feedback, 0);
       }
 
+      // 6. When create review record check round is pass or fail
+      roundCheck(assignmentName, username, round);
+
       return new ResponseEntity<>(headers, HttpStatus.OK);
     } catch (Exception e) {
       return new ResponseEntity<Object>(e.getMessage(), headers, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -1034,11 +1037,7 @@ public class PeerReviewService {
 
   }
 
-  public void roundCheck(
-          @RequestParam("assignmentName") String assignmentName,
-          @RequestParam("username") String username,
-          @RequestParam("round") int round
-  ) {
+  public void roundCheck(String assignmentName, String username, int round) {
     try {
       int aId = assignmentDbManager.getAssignmentIdByName(assignmentName);
       int uId = userDbManager.getUserIdByUsername(username);
