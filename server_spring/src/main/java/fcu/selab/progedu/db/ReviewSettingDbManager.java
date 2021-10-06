@@ -11,10 +11,15 @@ import java.util.Date;
 import java.util.List;
 
 import fcu.selab.progedu.data.ReviewSetting;
+import fcu.selab.progedu.utils.ExceptionUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ReviewSettingDbManager {
 
   private static ReviewSettingDbManager dbManager = new ReviewSettingDbManager();
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(ReviewSettingDbManager.class);
 
   public static ReviewSettingDbManager getInstance() {
     return dbManager;
@@ -139,6 +144,33 @@ public class ReviewSettingDbManager {
       CloseDBUtil.closeAll(rs, preStmt, conn);
     }
     return reviewSetting;
+  }
+
+  public int getReviewRoundByAId(int aId) {
+    String sql = "SELECT round FROM Review_Setting WHERE aId = ?";
+    int reviewRound = 0;
+
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
+
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
+      preStmt.setInt(1, aId);
+      rs =  preStmt.executeQuery();
+
+      while (rs.next()) {
+        reviewRound = rs.getInt("round");
+      }
+    } catch (SQLException e) {
+      LOGGER.error(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.debug(e.toString());
+    } finally {
+      CloseDBUtil.closeAll(rs, preStmt, conn);
+    }
+    return reviewRound;
   }
 
 
