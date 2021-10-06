@@ -40,7 +40,11 @@
           <td *ngIf="reviewDetail.feedback">
               {{ reviewDetail.feedback }}
           </td>
-          <td *ngIf="reviewDetail.feedback"></td>
+          <td *ngIf="reviewDetail.score == 2">
+            <button type="button" class="btn btn-secondary"
+              (click)="openReviewFeedbackModal(reviewDetail);reviewFormModal.show()">Grading Feedback</button>
+          </td>
+          <td *ngIf="reviewDetail.score == 1">Pass</td>
         </tr>
       </table>
       <hr>
@@ -245,39 +249,23 @@
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title col-md-6">Review Result</h4>
+        <h4 class="modal-title col-md-6">Grading Feedback</h4>
         <button type="button" class="close" (click)="reviewFormModal.hide()" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <!--Review Form Main-->
-      <form class="form-horizontal" *ngIf="onClickedReviewDetail">
-        <div class="modal-body">
-          <div class="form-group row">
-            <label class="col-md-9 col-form-label" for="description"> {{onClickedReviewDetail.metrics}}</label>
-            <ng-container *ngIf="onClickedReviewDetail.scoreMode === 'yesNoMode'">
-              <ng-container *ngIf="onClickedReviewDetail.score===1">
-                Yes
-              </ng-container>
-              <ng-container *ngIf="onClickedReviewDetail.score===2">
-                <div class="form-check form-check-inline mr-1" style="color:red;">
-                  No
-                </div>
-              </ng-container>
-            </ng-container>
-            <div class="form-check form-check-inline mr-1" *ngIf="onClickedReviewDetail.scoreMode === 'numberScore'">
-              {{ onClickedReviewDetail.score}}
-            </div>
-          </div>
-          <div class="col-md-12">
-            <p>Feedback:</p>
-            <div class="col-md-12">
-              <textarea readonly id="feedback" name="feedback" rows="3" class="form-control"
-                type="text">{{onClickedReviewDetail.feedback}}</textarea>
-            </div>
-
+      <form class="form-horizontal">
+        <div class="modal-body" *ngFor="let col of [].constructor(5); let i = index">
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="method{{i}}" #radioScore id="methodRadio1"
+              type="radio">{{i+1}}
           </div>
           <br>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" [disabled]='submitDisabled'
+            (click)="createReviewForm();reviewFormFillModal.hide();">Submit</button>
         </div>
       </form>
     </div><!-- /.modal-content -->
