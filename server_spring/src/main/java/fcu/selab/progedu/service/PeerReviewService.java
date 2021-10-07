@@ -11,6 +11,7 @@ import java.util.TimeZone;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 
+import io.swagger.models.auth.In;
 import net.minidev.json.JSONValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -134,7 +135,7 @@ public class PeerReviewService {
       }
 
       // 6. When create review record check round is pass or fail
-      roundCheck(assignmentName, username, round);
+      roundCheck(assignmentName, reviewedName, round);
 
       return new ResponseEntity<>(headers, HttpStatus.OK);
     } catch (Exception e) {
@@ -162,6 +163,7 @@ public class PeerReviewService {
 
     HttpHeaders headers = new HttpHeaders();
     //
+    System.out.println("teacher review record");
 
     try {
       int userId = userDbManager.getUserIdByUsername(username);
@@ -213,6 +215,10 @@ public class PeerReviewService {
         reviewRecordDbManager
                 .insertReviewRecord(rrsId, rsmId, score, createDate, feedback, 1);
       }
+
+      // 6. When create review record check round is pass or fail
+      System.out.println("Round Check");
+      roundCheck(assignmentName, username, round);
 
       return new ResponseEntity<>(headers, HttpStatus.OK);
     } catch (Exception e) {
@@ -1032,6 +1038,7 @@ public class PeerReviewService {
   }
 
   public void roundCheck(String assignmentName, String username, int round) {
+    System.out.println("Round Check" + assignmentName + username + round);
     try {
       int aId = assignmentDbManager.getAssignmentIdByName(assignmentName);
       int uId = userDbManager.getUserIdByUsername(username);
@@ -1041,7 +1048,8 @@ public class PeerReviewService {
       List<Integer> scoreList = new ArrayList<>();
 
       for (PairMatching pairMatching : pairMatchingList) {
-        List<Integer> score = reviewRecordDbManager.getReviewScore(pairMatching.getId(), 1);
+        int rrsId = reviewRecordStatusDbManager.getIdByPmIdAndRound(pairMatching.getId(), round);
+        List<Integer> score = reviewRecordDbManager.getScoreListByRrsId(rrsId);
         if (score.isEmpty()) {
           return;
         } else {

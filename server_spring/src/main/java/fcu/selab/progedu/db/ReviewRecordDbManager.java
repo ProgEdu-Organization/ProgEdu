@@ -264,8 +264,8 @@ public class ReviewRecordDbManager {
     return reviewRecordList;
   }
 
-  public List<Integer> getReviewScore(int pmId, int round) {
-    String sql = "select pm.*, rrs.*, rr.* from Review_Record as rr, Review_Record_Status as rrs, Pair_Matching as pm where pm.id = rrs.pmId and rrs.id = rr.rrsId and pm.id = ? and rrs.round = ?";
+  public List<Integer> getScoreListByRrsId(int rrsId) {
+    String sql = "SELECT * FROM Review_Record WHERE rrsId = ?";
     List<Integer> scoreInteger = new ArrayList<>();
 
     Connection conn = null;
@@ -275,8 +275,7 @@ public class ReviewRecordDbManager {
     try {
       conn = database.getConnection();
       preStmt = conn.prepareStatement(sql);
-      preStmt.setInt(1, pmId);
-      preStmt.setInt(2, round);
+      preStmt.setInt(1, rrsId);
       rs = preStmt.executeQuery();
       while (rs.next()) {
         int score = rs.getInt("score");
