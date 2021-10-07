@@ -15,6 +15,7 @@ export class ReviewStatusAssignmentChooseService {
   REVIEW_STATUS_DETAIL_PAGE_API = environment.SERVER_URL + '/webapi/peerReview/status/detail/page'; //todo 沒用到
   ROUND_STATUS_DETAIL_API = PeerReviewAPI.getReviewRoundStatusDetail;
   CREATE_REVIEW_RECORD_API = PeerReviewAPI.createReviewRecord;
+  CREATE_TEACHER_REVIEW_RECORD_API = PeerReviewAPI.createTeacherReviewRecord;
   constructor(private addJwtTokenHttpClient: AddJwtTokenHttpClient) { }
 
   getReviewDetail(username: string, assignmentName: string): Observable<any> {
@@ -55,8 +56,11 @@ export class ReviewStatusAssignmentChooseService {
     formData.append('assignmentName', assignmentName);
     formData.append('reviewRecord',  JSON.stringify(reviewRecord).toString());
     formData.append('round', round);
-    formData.append('isTeacher', isTeacher.toString());
-    return this.addJwtTokenHttpClient.post(this.CREATE_REVIEW_RECORD_API, formData );
+    if(isTeacher == false) {
+      return this.addJwtTokenHttpClient.post(this.CREATE_REVIEW_RECORD_API, formData );
+    } else {
+      return this.addJwtTokenHttpClient.post(this.CREATE_TEACHER_REVIEW_RECORD_API, formData );
+    }
   }
 
 }
