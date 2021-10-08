@@ -437,6 +437,7 @@ public class PeerReviewService {
         reviewed.put("name", userDbManager.getUsername(reviewerId));
         reviewed.put("assessmentTimes", assessmentTimeDbManager.getAssignmentTimeNameById(assignmentId));
         reviewed.put("totalCount", reviewSetting.getAmount());
+        reviewed.put("latestCompletedRound", latestCompleted.getRound());  //the latest completed round
 
         //only get the latest completed round record
         int latestRrsId = latestCompleted.getId();
@@ -458,7 +459,6 @@ public class PeerReviewService {
             reviewDetailArray.add(ob);
           }
           reviewed.put("Detail", reviewDetailArray);
-          reviewed.put("latestCompletedRound", latestCompleted.getRound());  //the latest completed round
         }
         array.add(reviewed);
       }
