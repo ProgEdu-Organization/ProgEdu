@@ -810,6 +810,9 @@ public class PeerReviewService {
         int metricsId = reviewSettingMetricsDbManager
                 .getReviewMetricsIdByRsmId(reviewRecord.getRsmId());
         ob.put("score", reviewRecord.getScore());
+        if(reviewRecord.getScore() == 2 && reviewRecord.getReviewScore() != -1) {
+          ob.put("feedbackScore", reviewRecord.getReviewScore());
+        }
         ob.put("feedback", reviewRecord.getFeedback());
         ob.put("time", dateFormat.format(reviewRecord.getTime()));
         ob.put("metrics", reviewMetricsDbManager.getReviewMetricsById(metricsId));
