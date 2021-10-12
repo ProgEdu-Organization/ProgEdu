@@ -37,18 +37,15 @@
             <table class='table table-responsive-sm table-bordered table-hover table-outline'>
               <thead class="thead-light">
                 <tr>
-                  <th class='w-60'>Topic</th>
-                  <th class='w-10'>Time</th>
-                  <th class='w-10'>Result</th>
-                  <th class='w-60'>Feedback</th>
+                  <th class='w-20'>審查項目</th>
+                  <th class='w-10'>審查結果</th>
+                  <th class='w-60'>審查意見</th>
+                  <th class='w-10'>審查意見的幫助程度</th>
                 </tr>
               </thead>
               <tr *ngFor="let reviewDetail of review.Detail" id='reviewFeedback-bar'>
                 <td>
                   {{reviewDetail.metrics}}
-                </td>
-                <td>
-                  {{ reviewDetail.time | date:'short'}}
                 </td>
                 <ng-container *ngIf="reviewDetail.scoreMode === 'yesNoMode'">
                   <td *ngIf="reviewDetail.score===1">
@@ -62,9 +59,13 @@
                   {{ reviewDetail.score}}
                 </td>
                 <td>
-                  <button type="button" class="btn btn-secondary"
+                  <!--<button type="button" class="btn btn-secondary"
                     (click)="openReviewFeedbackModal(reviewDetail);reviewFormModal.show();reviewFeedbackEvent(reviewDetail,review.name)">Feedback
-                    Information</button>
+                    Information</button>-->
+                  <div *ngIf="reviewDetail.feedback">{{reviewDetail.feedback}}</div>
+                </td>
+                <td>
+                  {{ reviewDetail.feedbackScore }}
                 </td>
               </tr>
             </table>
