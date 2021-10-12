@@ -2,7 +2,6 @@ import { ReviewCommitRecordService } from './review-commit-record.service';
 import { ReviewStatusAssignmentChooseService } from '../../student/review-status-assignment-choose/review-status-assignment-choose.service';
 import { Component, OnInit, OnChanges, Input, Output, EventEmitter, ViewChild, ViewChildren } from '@angular/core';
 import { ModalDirective } from 'ngx-bootstrap/modal';
-import { Router } from '@angular/router';
 import { AddJwtTokenHttpClient } from '../../../services/add-jwt-token.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { PeerReviewAPI } from '../../../api/PeerReviewAPI';
@@ -34,6 +33,8 @@ export class ReviewCommitRecordComponent implements OnInit, OnChanges {
   maxPagination: number;
   commitNumber = 1;
   onClickedReviewDetail: JSON;
+  onClickedFeedbackRound: number;
+  onClickedMetricOrder: number;
   reviewMetrics: JSON;
   metricsCount: number;
   errorResponse: HttpErrorResponse;
@@ -42,16 +43,18 @@ export class ReviewCommitRecordComponent implements OnInit, OnChanges {
   feedbackInputLast: any;
   feedbackInit: boolean = false;
   submitDisabled: boolean = true;
+  feedbackSubmitDisabled: boolean = true;
   reviewOne: number;
   isShowReviewButton: Array<boolean>;
   @ViewChildren('radioYes') public reviewYesRadio: any;
   @ViewChildren('radioNo') public reviewNoRadio: any;
+  @ViewChildren('radioFeedbackScore') public feedbackScoreRadio: any;
   @ViewChildren('feedbackInput') public feedbackInput: any;
   @ViewChild('reviewFormFillModal', { static: false }) public reviewFormFillModal: ModalDirective;
-  @ViewChild('reviewFormModal', { static: false }) public reviewFormModal: ModalDirective;
+  @ViewChild('feedbackFormFillModal', { static: false }) public feedbackFormFillModal: ModalDirective;
 
   constructor(private reviewCommitRecordService: ReviewCommitRecordService, private addJwtTokenHttpClient: AddJwtTokenHttpClient,
-    private reviewStatusAssignmentChooseService: ReviewStatusAssignmentChooseService, private router?: Router) { }
+    private reviewStatusAssignmentChooseService: ReviewStatusAssignmentChooseService) { }
 
   emitReviewFormOpenedEvent() {
     // progedu review_status review_form opened event emit
@@ -99,7 +102,11 @@ export class ReviewCommitRecordComponent implements OnInit, OnChanges {
     for (let i = 0 ; i < count ; i++) {
       this.currentReviewPagination[i] = 1;
       if(this.reviewFeedbacks[i].latestCompletedRound !== undefined) {
-        this.currentReviewPagination[i] = this.reviewFeedbacks[i].latestCompletedRound;
+        if(this.reviewFeedbacks[i].latestCompletedRound !== 0) {
+          this.currentReviewPagination[i] = this.reviewFeedbacks[i].latestCompletedRound;
+        } else {
+          this.currentReviewPagination[i] = 1;
+        }
       }
       this.maxReviewPagination[i] = this.reviewFeedbacks[i].totalCount;
       if (this.maxReviewPagination[i] === undefined) {
@@ -165,8 +172,10 @@ export class ReviewCommitRecordComponent implements OnInit, OnChanges {
     });
   }
 
-  openReviewFeedbackModal(detail: JSON) {
+  openReviewFeedbackModal(studentOrder: number, round: number, detail: JSON, metricOrder: number) {
     this.onClickedReviewDetail = detail;
+    this.onClickedFeedbackRound = round;
+    this.onClickedMetricOrder = metricOrder;
   }
 
 
@@ -267,6 +276,18 @@ export class ReviewCommitRecordComponent implements OnInit, OnChanges {
     }
   }
 
+  checkFeedbackForm() {
+    let i = 0;
+    const feedbackScoreRadios = this.feedbackScoreRadio.toArray();
+    for (i = 0; i < feedbackScoreRadios.length; i++) {
+      if (feedbackScoreRadios[i].nativeElement.checked === true) {
+        this.feedbackSubmitDisabled = false;
+        return;
+      }
+    }
+    this.feedbackSubmitDisabled = true;
+  }
+
   createReviewForm() {
     const feedbacks = this.feedbackInput.toArray();
     const yesRadios = this.reviewYesRadio.toArray();
@@ -300,6 +321,26 @@ export class ReviewCommitRecordComponent implements OnInit, OnChanges {
       }
     };
     this.emitStudentEvent(review_form_event);*/
+  }
+
+  createFeedbackForm() {
+    const feedbackScoreRadios = this.feedbackScoreRadio.toArray();
+    let score = 0;
+    for(let i = 0; i < feedbackScoreRadios.length; i++) {
+      if(feedbackScoreRadios[i].nativeElement.checked === true) {
+        score = i + 1;
+      }
+    }
+    this.reviewStatusAssignmentChooseService.createFeedbackScore(this.assignmentName, this.username, this.reviewFeedbacks[this.reviewOne].id,
+      this.onClickedFeedbackRound, this.reviewMetrics[this.onClickedMetricOrder].id, score).subscribe(
+        response => {
+          window.location.reload();
+        },
+        error => {
+          this.errorTitle = 'Create feedback score failed.';
+          this.errorResponse = error;
+        }
+    );
   }
 
   setReviewOne(index: number) {
