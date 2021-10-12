@@ -41,6 +41,7 @@
                   <th class='w-10'>Time</th>
                   <th class='w-10'>Result</th>
                   <th class='w-60'>Feedback</th>
+                  <th class='w-10'>Feedback Score</th>
                 </tr>
               </thead>
               <tr *ngFor="let reviewDetail of review.Detail" id='reviewFeedback-bar'>
@@ -65,6 +66,9 @@
                   <button type="button" class="btn btn-secondary"
                     (click)="openReviewFeedbackModal(reviewDetail);reviewFormModal.show();reviewFeedbackEvent(reviewDetail,review.name)">Feedback
                     Information</button>
+                </td>
+                <td>
+                  {{ reviewDetail.feedbackScore }}
                 </td>
               </tr>
             </table>

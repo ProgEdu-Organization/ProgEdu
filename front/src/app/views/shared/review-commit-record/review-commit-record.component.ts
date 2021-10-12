@@ -172,7 +172,7 @@ export class ReviewCommitRecordComponent implements OnInit, OnChanges {
     });
   }
 
-  openReviewFeedbackModal(studentOrder: number, round: number, detail: JSON, metricOrder: number) {
+  openReviewFeedbackModal(round: number, detail: JSON, metricOrder: number) {
     this.onClickedReviewDetail = detail;
     this.onClickedFeedbackRound = round;
     this.onClickedMetricOrder = metricOrder;
@@ -325,10 +325,10 @@ export class ReviewCommitRecordComponent implements OnInit, OnChanges {
 
   createFeedbackForm() {
     const feedbackScoreRadios = this.feedbackScoreRadio.toArray();
-    let score = 0;
+    let score = -1;
     for(let i = 0; i < feedbackScoreRadios.length; i++) {
       if(feedbackScoreRadios[i].nativeElement.checked === true) {
-        score = i + 1;
+        score = i;
       }
     }
     this.reviewStatusAssignmentChooseService.createFeedbackScore(this.assignmentName, this.username, this.reviewFeedbacks[this.reviewOne].id,
