@@ -316,8 +316,8 @@ public class ReviewRecordDbManager {
     return id;
   }
 
-  public void updateReviewScore(int id, int reviewScore) {
-    String sql = "UPDATE Review_Record set reviewScore = ? where id = ?";
+  public void updateReviewScore(int rrsId, int rsmId, int reviewScore) {
+    String sql = "UPDATE Review_Record SET reviewScore = ? WHERE rrsId = ? AND rsmId = ?";
 
     Connection conn = null;
     PreparedStatement preStmt = null;
@@ -327,7 +327,8 @@ public class ReviewRecordDbManager {
       preStmt = conn.prepareStatement(sql);
 
       preStmt.setInt(1, reviewScore);
-      preStmt.setInt(2, id);
+      preStmt.setInt(2, rrsId);
+      preStmt.setInt(3, rsmId);
       preStmt.executeUpdate();
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));

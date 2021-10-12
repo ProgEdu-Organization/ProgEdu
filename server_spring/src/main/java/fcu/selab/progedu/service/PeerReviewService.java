@@ -1077,38 +1077,29 @@ public class PeerReviewService {
   }
 
   @PostMapping("/review/score")
-  public ResponseEntity<Object> reviewAllFeedbackScore(
-          @RequestParam("rrsId") int rrsId,
-          @RequestParam("rsmId") int rsmId,
-          @RequestParam("score") int[] score
-  ) {
+  public void reviewFeedbackScore(
+          @RequestParam("assignmentName") String assignmentName,
+          @RequestParam("username") String username,
+          @RequestParam("reviewerId") int reviewerId,
+          @RequestParam("round") int round,
+          @RequestParam("rmId") int rmId,
+          @RequestParam("feedbackScore") int feedbackScore) {
 
     HttpHeaders headers = new HttpHeaders();
     headers.add("Content-Type", "application/json");
 
     try {
-      for (int i = 0; i < score.length; i++) {
-        reviewOneFeedbackScore(rrsId, rsmId, score[i]);
-      }
-    } catch (Exception e) {
-      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
-      LOGGER.error(e.getMessage());
-      return new ResponseEntity<Object>(e.getMessage(), headers, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-    return new ResponseEntity<Object>(headers, HttpStatus.OK);
-  }
+      int aId = assignmentDbManager.getAssignmentIdByName(assignmentName);
+      int uId = userDbManager.getUserIdByUsername(username);
+      int auId = assignmentUserDbManager.getAuid(aId, uId);
 
-  public void reviewOneFeedbackScore(
-          @RequestParam("rrsId") int rrsId,
-          @RequestParam("rsmId") int rsmId,
-          @RequestParam("reviewScore") int reviewScore) {
+      PairMatching pairMatching = pairMatchingDbManager.getPairMatchingByAuIdReviewId(auId, reviewerId);
+      ReviewRecordStatus reviewRecordStatus = reviewRecordStatusDbManager.getReviewRecordStatusByPairMatchingIdAndRound(pairMatching.getId(), round);
 
-    HttpHeaders headers = new HttpHeaders();
-    headers.add("Content-Type", "application/json");
+      ReviewSetting reviewSetting = reviewSettingDbManager.getReviewSetting(aId);
+      int rsmId = reviewSettingMetricsDbManager.getReviewSettingMetricsIdByRsIdRsmId(reviewSetting.getId(), rmId);
 
-    try {
-      int reviewRecordId = reviewRecordDbManager.getReviewRecordIdByRrsIdAndRsmId(rrsId, rsmId);
-      reviewRecordDbManager.updateReviewScore(reviewRecordId, reviewScore);
+      reviewRecordDbManager.updateReviewScore(reviewRecordStatus.getId(), rsmId, feedbackScore);
     } catch (Exception e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
