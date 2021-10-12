@@ -86,6 +86,7 @@ public class ReviewRecordDbManager {
         Date time = rs.getTimestamp("time");
         String feedback = rs.getString("feedback");
         int teacherReview = rs.getInt("teacherReview");
+        int reviewScore = rs.getInt("reviewScore");
         reviewRecord.setId(id);
         //reviewRecord.setPmId(pmId);
         reviewRecord.setRsmId(rsmId);
@@ -93,6 +94,7 @@ public class ReviewRecordDbManager {
         reviewRecord.setTime(time);
         reviewRecord.setFeedback(feedback);
         reviewRecord.setTeacherReview(teacherReview);
+        reviewRecord.setReviewScore(reviewScore);
 
       }
     } finally {
@@ -130,6 +132,7 @@ public class ReviewRecordDbManager {
         Date time = rs.getTimestamp("time");
         String feedback = rs.getString("feedback");
         int teacherReview = rs.getInt("teacherReview");
+        int reviewScore = rs.getInt("reviewScore");
         ReviewRecord reviewRecord = new ReviewRecord();
         reviewRecord.setId(id);
         //reviewRecord.setPmId(pmId);
@@ -138,6 +141,7 @@ public class ReviewRecordDbManager {
         reviewRecord.setTime(time);
         reviewRecord.setFeedback(feedback);
         reviewRecord.setTeacherReview(teacherReview);
+        reviewRecord.setReviewScore(reviewScore);
         reviewRecordList.add(reviewRecord);
       }
     } finally {
@@ -253,6 +257,7 @@ public class ReviewRecordDbManager {
         reviewRecord.setTime(rs.getTimestamp("time"));
         reviewRecord.setFeedback(rs.getString("feedback"));
         reviewRecord.setTeacherReview(rs.getInt("teacherReview"));
+        reviewRecord.setReviewScore(rs.getInt("reviewScore"));
         reviewRecordList.add(reviewRecord);
       }
     } catch (SQLException e) {

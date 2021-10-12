@@ -456,6 +456,9 @@ public class PeerReviewService {
             ob.put("time", reviewRecord.getTime());
             ob.put("metrics", reviewMetricsDbManager.getReviewMetricsById(metricsId));
             ob.put("scoreMode", scoreModeDbManager.getScoreModeDescById(scoreModeId).getTypeName());
+            if(reviewRecord.getScore() == 2) {
+              ob.put("feedbackScore", reviewRecord.getReviewScore());
+            }
             reviewDetailArray.add(ob);
           }
           reviewed.put("Detail", reviewDetailArray);

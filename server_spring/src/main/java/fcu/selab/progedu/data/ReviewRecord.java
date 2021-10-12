@@ -18,6 +18,8 @@ public class ReviewRecord {
 
   private int teacherReview;
 
+  private int reviewScore;
+
   public int getId() {
     return id;
   }
@@ -72,6 +74,14 @@ public class ReviewRecord {
 
   public void setTeacherReview(int teacherReview) {
     this.teacherReview = teacherReview;
+  }
+
+  public int getReviewScore() {
+    return this.reviewScore;
+  }
+
+  public void setReviewScore(int reviewScore) {
+    this.reviewScore = reviewScore;
   }
 
 }
