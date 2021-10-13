@@ -43,7 +43,7 @@
                 </th>
                 <ng-container *ngFor='let review of student.reviewRoundStatus; let roundIndex = index'>
                   <th *ngIf='isRelease(review.startTime)'>
-                    <p id="{{username}}_{{review.startTime}}" class="circle {{review.status}}">
+                    <p id="{{username}}_{{review.startTime}}" class="circle {{getStatus(review.status, review.endTime)}}">
                       <a *ngIf='!isNA(review)' id="{{username}}_{{review.status}}"
                         href="#/studashboard/reviewStatusAssignmentChoose?username={{username}}&assignmentName={{assignmentName}}&round={{roundIndex+1}}&order={{order+1}}">0</a>
                       <a *ngIf='isNA(review)'>N/A</a>

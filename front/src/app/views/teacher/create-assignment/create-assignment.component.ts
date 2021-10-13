@@ -418,7 +418,7 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
     }
     this.assignment.get('assOrder').setValue(this.orderString);
     if (this.assignment.get('name').invalid) {
-      window.open(environment.SERVER_URL + '/resources/MvnQuickStart.zip');
+      window.open(environment.NEW_SERVER_URL + '/assignment/getMvnAssignmentFile');
     } else {
       this.createService.modifyOrder(this.assignment).subscribe(
         (response) => {

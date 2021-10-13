@@ -66,6 +66,21 @@ export class ReviewRoundStudashboardComponent implements OnInit {
     });
   }
 
+  getStatus(status: string, endTime: Date) {
+    const now_time = new Date().getTime();
+    const deadline = new Date(endTime).getTime();
+    if (status == "COMPLETED") {
+      return status;
+    } else if (status == "INIT") {
+      if (now_time >= deadline) {
+        return "UNCOMPLETED";
+      } else {
+        return "INIT";
+      }
+    }
+    return "INIT";
+  }
+
   isRelease(release: Date) {
     const now_time = new Date().getTime();
     const realease_time = new Date(release).getTime();
