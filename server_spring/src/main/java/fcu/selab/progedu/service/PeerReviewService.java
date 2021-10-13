@@ -183,10 +183,10 @@ public class PeerReviewService {
       // 1. Check this review record is expired or not,
       //    if it's expired, it won't create new review record
 
-      if (createDate.compareTo(assessmentTime.getEndTime()) >= 0) {
+      /*if (createDate.compareTo(assessmentTime.getEndTime()) >= 0) {
         return new ResponseEntity<>("This review has been expired.", headers,
                 HttpStatus.INTERNAL_SERVER_ERROR);
-      }
+      }*/
 
       // 3. Upload the status of pair matching
       int status = reviewStatusDbManager
