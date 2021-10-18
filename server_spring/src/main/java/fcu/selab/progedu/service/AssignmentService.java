@@ -118,7 +118,9 @@ public class AssignmentService {
     try {
       createAssignment(assignmentName, readMe,
               assignmentType, file, assessmentTimes);
-      addOrder(assignmentCompileOrdersAndScore, assignmentName);
+      if (!assignmentCompileOrdersAndScore.isEmpty()) {
+        addOrder(assignmentCompileOrdersAndScore, assignmentName);
+      }
 
       return new ResponseEntity<Object>(headers, HttpStatus.OK);
     } catch (Exception e) {
@@ -163,7 +165,6 @@ public class AssignmentService {
 
     HttpHeaders headers = new HttpHeaders();
     //
-
 
     // 1. Create root project and get project id and url
     gitlabService.createRootProject(assignmentName);

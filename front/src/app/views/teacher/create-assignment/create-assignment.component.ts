@@ -245,7 +245,7 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
     const now_time = Date.now() - (new Date().getTimezoneOffset() * 60 * 1000);
     (<FormArray>this.assignment.get('reviewTime')).push(
       this.fb.group({
-        startTime: new Date(now_time).toISOString().slice(0, 17) + '00', 
+        startTime: new Date(now_time).toISOString().slice(0, 17) + '00',
         endTime: new Date(now_time).toISOString().slice(0, 17) + '00',
         reviewStartTime: new Date(now_time).toISOString().slice(0, 17) + '00',
         reviewEndTime: new Date(now_time).toISOString().slice(0, 17) + '00'
@@ -379,7 +379,8 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
               this.progressModal.hide();
             });
         } else {
-          this.createService.createAssignment(this.assignment).subscribe(
+          this.assignment.get('assOrder').setValue('');
+          this.createService.createAssignmentWithOrder(this.assignment).subscribe(
             (response) => {
               this.router.navigate(['./dashboard/assignmentManagement']);
             },
@@ -459,5 +460,5 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
     this.androidTabStatus.isOpen = false;
   }
 
-  
+
 }
