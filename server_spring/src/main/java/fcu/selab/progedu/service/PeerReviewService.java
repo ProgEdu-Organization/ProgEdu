@@ -516,25 +516,26 @@ public class PeerReviewService {
    * @param auId              assignment_user id
    * @param commitRecordCount commit record count
    */
-  public String reviewedRecordStatus(int auId, int commitRecordCount)
+  public JSONObject reviewedRecordStatus(int auId, int commitRecordCount)
           throws SQLException {
     List<PairMatching> pairMatchingList = pairMatchingDbManager.getPairMatchingByAuId(auId);
-    String resultStatus = "INIT";
+      JSONObject resultStatus = new JSONObject();
 
     if (commitRecordCount == 1) {
+      resultStatus.put(String.valueOf(commitRecordCount), "INIT");
       return resultStatus;
     }
 
     for (PairMatching pairMatching : pairMatchingList) {
-      //TODO pairMatching 沒有 status 改到 reviewRecord status
-      /*
-      if (pairMatching.getReviewStatusEnum().equals(ReviewStatusEnum.UNCOMPLETED)) {
-        resultStatus = "DONE";
-        break;
-      } else if (pairMatching.getReviewStatusEnum().equals(ReviewStatusEnum.COMPLETED)) {
-        resultStatus = "REVIEWED";
+      List<ReviewRecordStatus> reviewRecordStatusList = reviewRecordStatusDbManager.getAllReviewRecordStatusByPairMatchingId(pairMatching.getId());
+      for (ReviewRecordStatus reviewRecordStatus : reviewRecordStatusList) {
+        if (reviewRecordStatus.getReviewStatusEnum().equals(ReviewStatusEnum.UNCOMPLETED)) {
+          resultStatus.put(String.valueOf(reviewRecordStatus.getPmId() + reviewRecordStatus.getRound()),"DONE");
+        } else if (reviewRecordStatus.getReviewStatusEnum().equals(ReviewStatusEnum.COMPLETED)) {
+          resultStatus.put(String.valueOf(reviewRecordStatus.getPmId() + reviewRecordStatus.getRound()),"REVIEWED");
+        }
       }
-      */
+
     }
 
     return resultStatus;
