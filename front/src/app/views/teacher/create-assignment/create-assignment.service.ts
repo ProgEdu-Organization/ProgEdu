@@ -35,10 +35,22 @@ export class CreateAssignmentService {
   createAssignment(assignment: FormGroup): Observable<any> {
 
     const formData = new FormData();
+    const reviewTime = new FormArray([]);
+
+    let action = new FormGroup({});
+    let roundGroup = new FormGroup({});
+
+    action.addControl('startTime', assignment.controls.releaseTime);
+    action.addControl('endTime', assignment.controls.deadline);
+    action.get('startTime').setValue(new Date(action.value.startTime).toUTCString())
+    action.get('endTime').setValue(new Date(action.value.endTime).toUTCString())
+    roundGroup.addControl('Do', action);
+    reviewTime.insert(0, roundGroup);
 
     formData.append('assignmentName', assignment.value.name);
-    formData.append('releaseTime', new Date(assignment.value.releaseTime).toUTCString());
-    formData.append('deadline', new Date(assignment.value.deadline).toUTCString());
+    //formData.append('releaseTime', new Date(assignment.value.releaseTime).toUTCString());
+    //formData.append('deadline', new Date(assignment.value.deadline).toUTCString());
+    formData.append('assessmentTimes', JSON.stringify(reviewTime.value));
     formData.append('readMe', assignment.value.description);
     formData.append('fileRadio', assignment.value.type);
     formData.append('file', assignment.value.file);
