@@ -206,4 +206,20 @@ public class AssessmentTimeDbManager {
     }
   }
 
+  /**
+   * Delete assignment_time from database by aId
+   *
+   */
+  public void deleteAssignmentTimeByAid(int aId) {
+    String sql = "DELETE FROM Assessment_Time WHERE aId = ?";
+    try (Connection conn = database.getConnection();
+         PreparedStatement preStmt = conn.prepareStatement(sql)) {
+      preStmt.setInt(1, aId);
+      preStmt.executeUpdate();
+    } catch (SQLException e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    }
+  }
+
 }

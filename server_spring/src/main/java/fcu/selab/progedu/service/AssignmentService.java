@@ -711,6 +711,7 @@ public class AssignmentService {
       crDbManager.deleteRecord(auid);
     }
     auDbManager.deleteAssignmentUserByAid(aid);// Assignment_User
+    assessmentTimeDbManager.deleteAssignmentTimeByAid(aid);//Assignment_Time
     dbManager.deleteAssignment(name);// Assignment
 
   }
