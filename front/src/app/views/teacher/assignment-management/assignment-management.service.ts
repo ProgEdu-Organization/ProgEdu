@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
-import { FormGroup } from '@angular/forms';
+import { FormGroup, FormArray } from '@angular/forms';
 import { AddJwtTokenHttpClient } from '../../../services/add-jwt-token.service';
 
 import { AssignmentAPI } from '../../../api/AssignmentAPI';
@@ -38,9 +38,31 @@ export class AssignmentManagementService {
 
   editAssignment(assignment: FormGroup): Observable<any> {
     const form = new FormData();
+    const reviewTime = new FormArray([]);
+    let round = 0;
+
+    (<FormArray>assignment.get('reviewTime')).controls.forEach(element => {
+      let action = new FormGroup({});
+      let reviewAction = new FormGroup({});
+      let roundGroup = new FormGroup({});
+      element.get('startTime').setValue(new Date(element.get('startTime').value).toUTCString());
+      element.get('endTime').setValue(new Date(element.get('endTime').value).toUTCString());
+      action.addControl('startTime', element.get('startTime'));
+      action.addControl('endTime', element.get('endTime'));
+      roundGroup.addControl('Do', action);
+      element.get('reviewStartTime').setValue(new Date(element.get('reviewStartTime').value).toUTCString());
+      element.get('reviewEndTime').setValue(new Date(element.get('reviewEndTime').value).toUTCString());
+      reviewAction.addControl('startTime', element.get('reviewStartTime'));
+      reviewAction.addControl('endTime', element.get('reviewEndTime'));
+      roundGroup.addControl('Review', reviewAction);
+      reviewTime.insert(round, roundGroup);
+      round++;
+    })
+
     form.append('assignmentName', assignment.get('name').value);
-    form.append('releaseTime', new Date(assignment.get('releaseTime').value).toUTCString());
-    form.append('deadline', new Date(assignment.get('deadline').value).toUTCString());
+    //form.append('releaseTime', new Date(assignment.get('releaseTime').value).toUTCString());
+    //form.append('deadline', new Date(assignment.get('deadline').value).toUTCString());
+    form.append('assessmentTimes', JSON.stringify(reviewTime.value));
     form.append('readMe', assignment.get('description').value);
     form.append('order', assignment.get('order').value);
 
