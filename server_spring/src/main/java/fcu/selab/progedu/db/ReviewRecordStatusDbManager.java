@@ -189,4 +189,26 @@ public class ReviewRecordStatusDbManager {
     }
     return id;
   }
+
+  /**
+   * delete review record status by pmId
+   * @param pmId pmId
+   * @throws SQLException SQLException
+   */
+  public void deleteReviewRecordStatusByPmId(int pmId) throws SQLException {
+    String query = "DELETE FROM Review_Record_Status WHERE pmId = ?";
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(query);
+
+      preStmt.setInt(1, pmId);
+      preStmt.executeUpdate();
+    } finally {
+      CloseDBUtil.closeAll(preStmt, conn);
+    }
+  }
+
 }

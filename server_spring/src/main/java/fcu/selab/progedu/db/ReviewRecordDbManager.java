@@ -211,27 +211,6 @@ public class ReviewRecordDbManager {
     return latestCount;
   }
 
-  /**
-   * delete review record by pair matching id
-   *
-   * @param pmId pair matching id
-   * @throws SQLException SQLException
-   */
-  public void deleteReviewRecordByPmId(int pmId) throws SQLException {
-    String query = "DELETE FROM Review_Record WHERE pmId = ?";
-    Connection conn = null;
-    PreparedStatement preStmt = null;
-
-    try {
-      conn = database.getConnection();
-      preStmt = conn.prepareStatement(query);
-
-      preStmt.setInt(1, pmId);
-      preStmt.executeUpdate();
-    } finally {
-      CloseDBUtil.closeAll(preStmt, conn);
-    }
-  }
 
   public List<ReviewRecord> getReviewRecordByRrsId(int rrsId) {
     String sql = "SELECT * FROM ProgEdu.Review_Record WHERE rrsId = ?;";
@@ -338,6 +317,27 @@ public class ReviewRecordDbManager {
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(preStmt, conn);
+    }
+  }
+
+  /**
+   * delete review record by rrsId
+   * @param rrsId rrsId
+   * @throws SQLException SQLException
+   */
+  public void deleteReviewRecordByRrsId(int rrsId) throws SQLException {
+    String query = "DELETE FROM Review_Record WHERE rrsId = ?";
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(query);
+
+      preStmt.setInt(1, rrsId);
+      preStmt.executeUpdate();
     } finally {
       CloseDBUtil.closeAll(preStmt, conn);
     }
