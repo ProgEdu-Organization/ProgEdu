@@ -674,7 +674,9 @@ public class AssignmentService {
   }
 
   /**
-   *  delete assignment form pair review db
+   * delete assignment form pair review db.
+   * @param assignmentName assignment name
+   * @throws SQLException SQLException
    */
   public void deleteReviewDatabase(String assignmentName) throws SQLException {
     int aid = dbManager.getAssignmentIdByName(assignmentName);
@@ -684,7 +686,11 @@ public class AssignmentService {
     for (AssignmentUser au : auList) {
       List<PairMatching> pmList = pmDbManager.getPairMatchingByAuId(au.getId());
       for (PairMatching pm : pmList) {
-        rrDbManager.deleteReviewRecordByPmId(pm.getId());
+        List<ReviewRecordStatus> reviewRecordStatusList = rrsDbManager.getAllReviewRecordStatusByPairMatchingId(pm.getId());
+        for (ReviewRecordStatus reviewRecordStatus : reviewRecordStatusList) {
+          rrDbManager.deleteReviewRecordByRrsId(reviewRecordStatus.getId());
+        }
+        rrsDbManager.deleteReviewRecordStatusByPmId(pm.getId());
         pmDbManager.deletePairMatchingById(pm.getId());
       }
     }
