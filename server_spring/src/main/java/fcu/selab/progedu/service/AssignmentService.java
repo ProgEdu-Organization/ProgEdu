@@ -606,7 +606,9 @@ public class AssignmentService {
 
       JenkinsService jenkinsService = JenkinsService.getInstance();
 
+      System.out.println("=================");
       jenkinsService.createJobV2(jobName, jenkinsProjectConfig.getXmlConfig());
+      System.out.println("=================");
       jenkinsService.buildJob(jobName);
 
     } catch (Exception e) {
