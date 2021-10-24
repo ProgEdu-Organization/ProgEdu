@@ -607,6 +607,7 @@ public class AssignmentService {
       JenkinsService jenkinsService = JenkinsService.getInstance();
 
       System.out.println("=================");
+      System.out.println("GETXMLCONFIG"+jenkinsProjectConfig.getXmlConfig());
       jenkinsService.createJobV2(jobName, jenkinsProjectConfig.getXmlConfig());
       System.out.println("=================");
       jenkinsService.buildJob(jobName);
