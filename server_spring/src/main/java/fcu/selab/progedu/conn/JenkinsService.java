@@ -47,18 +47,11 @@ public class JenkinsService {
    */
   public JenkinsService() {
     try {
-      System.out.println("=====================================");
       jenkinsConfig = JenkinsConfig.getInstance();
-      System.out.println(jenkinsConfig);
       jenkinsRootUrl = jenkinsConfig.getJenkinsRootUrl();
-      System.out.println(jenkinsRootUrl);
       jenkinsRootUsername = jenkinsConfig.getJenkinsRootUsername();
-      System.out.println(jenkinsRootUsername);
       jenkinsRootPassword = jenkinsConfig.getJenkinsRootPassword();
-      System.out.println(jenkinsRootPassword);
       jenkinsApiToken = jenkinsConfig.getJenkinsApiToken();
-      System.out.println(jenkinsApiToken);
-      System.out.println("=====================================");
 
     } catch (LoadConfigFailureException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
