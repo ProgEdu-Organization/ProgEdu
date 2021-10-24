@@ -39,10 +39,16 @@ public class JavacConfig extends JenkinsProjectConfig {
       DocumentBuilder builder = factory.newDocumentBuilder();
       this.xmlDocument = builder.parse(baseFile);
 
+      System.out.println("=================");
       setGitLabProjectUrl(projectUrl);
+      System.out.println(projectUrl);
       setProgEduUpdateUrl(updateDbUrl);
+      System.out.println(updateDbUrl);
       setProgEduUpdateUsername(username);
+      System.out.println(username);
       setProgEduUpdateProjectName(projectName);
+      System.out.println(projectName);
+      System.out.println("=================");
 
       // Todo 這目前無效, 已經沒有 test資料夾了
 //    String assignmentPath = System.getProperty("java.io.tmpdir") + "/tests/" + projectName;
