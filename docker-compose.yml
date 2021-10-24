@@ -69,8 +69,6 @@ services:
       - server-logs:/usr/local/tomcat/logs
       - server-images:/usr/local/tomcat/images
 
-
-
   front-end:
     build:
       context: ./front
@@ -81,9 +79,8 @@ services:
       - "${FRONT_END_PORT}:80"
     restart: always
 
-
   jenkins:
-    image: fcumselab/fcu-progedu-jenkins:test-dind
+    image: fcumselab/fcu-progedu-jenkins:release-1.1.0
     deploy:
       resources:
         limits:
@@ -105,7 +102,6 @@ services:
       - jenkins_home-workspace:/var/jenkins_home/workspace
       - jenkins-docker-certs:/certs/client:ro
       # - /dev/kvm:/dev/kvm // for android, but now it not need
-
 
   docker:
     image: docker:dind
@@ -141,9 +137,7 @@ services:
       - mongo:/data/db
     command: mongod --auth
 
-
 volumes:
-
   mysql: {}
 
   gitlab-config: {}
