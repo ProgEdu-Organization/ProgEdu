@@ -18,9 +18,6 @@ public class JenkinsProjectConfigFactory {
 
     switch (projectTypeEnum) {
       case JAVAC:
-        System.out.println("=================");
-        System.out.println(projectTypeEnum.getTypeName().toString());
-        System.out.println("=================");
         return new JavacConfig(projectUrl, updateDbUrl,
               username, assignmentName);
       case MAVEN:
