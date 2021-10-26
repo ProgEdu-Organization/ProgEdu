@@ -7,7 +7,7 @@
     <div class="card-body">
       <div class='row'>
         <div class="col-lg-6">
-          <span class="h2">Git Project</span>
+          <span class="h2">Git 專案</span>
           <div class='row'>
             <div class="col-md-8">
               <input type="text" class="form-control" value="{{gitlabAssignmentURL}}" readonly>
@@ -15,25 +15,25 @@
             <button button (click)='copyToClipboard()'><i class="fa fa-copy fa-lg"></i></button>
           </div>
           <hr />
-          <span class="h2">Assignment Description</span>
+          <span class="h2">作業敘述</span>
           <div style="margin: 10px;">
             <ckeditor [(ngModel)]="assignment.description" [editor]="Editor" [disabled]="true" [config]='editorConfig'>
             </ckeditor>
           </div>
           <hr />
-          <span class="h2">Deadline</span>
+          <span class="h2">作業截止時間</span>
           <div *ngFor="let time of assignmentTimes; let i = index">
-            <p *ngIf="time.assessmentAction == 'DO'" style="margin: 10px;">Round {{(i+2)/2}}: {{time.endTime | date:'short'}}</p>
+            <p *ngIf="time.assessmentAction == 'DO'" style="margin: 10px;">第{{(i+2)/2}}輪: {{time.endTime | date:'short'}}</p>
           </div>
           <hr />
-          <span class="h2">Review Start Time</span>
+          <span class="h2">審查開始時間</span>
           <div *ngFor="let time of assignmentTimes; let i = index">
-            <p *ngIf="time.assessmentAction == 'REVIEW'" style="margin: 10px;">Round {{(i+1)/2}}: {{time.startTime | date:'short'}}</p>
+            <p *ngIf="time.assessmentAction == 'REVIEW'" style="margin: 10px;">第{{(i+1)/2}}輪: {{time.startTime | date:'short'}}</p>
           </div>
           <hr />
-          <span class="h2">Review End Time</span>
+          <span class="h2">審查結束時間</span>
           <div *ngFor="let time of assignmentTimes; let i = index">
-            <p *ngIf="time.assessmentAction == 'REVIEW'" style="margin: 10px;">Round {{(i+1)/2}}: {{time.endTime | date:'short'}}</p>
+            <p *ngIf="time.assessmentAction == 'REVIEW'" style="margin: 10px;">第{{(i+1)/2}}輪: {{time.endTime | date:'short'}}</p>
           </div>
         </div>
       </div>
