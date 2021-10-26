@@ -42,7 +42,7 @@
           </td>
           <td *ngIf="reviewDetail.score == 2">
             <button *ngIf="reviewDetail.feedbackScore === undefined" type="button" class="btn btn-secondary"
-              (click)="setReviewOne(i);openReviewFeedbackModal(currentReviewPagination[i], reviewDetail, j);feedbackFormFillModal.show()">Grading Feedback</button>
+              (click)="setReviewOne(i);openReviewFeedbackModal(currentReviewPagination[i], reviewDetail, j);feedbackFormFillModal.show()">審查意見的幫助程度</button>
               <div *ngIf="reviewDetail.feedbackScore !== undefined">{{reviewDetail.feedbackScore}}</div>
           </td>
           <td *ngIf="reviewDetail.score == 1">Pass</td>
@@ -250,7 +250,7 @@
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title col-md-6">Grading Feedback</h4>
+        <h4 class="modal-title col-md-6">審查意見的幫助程度</h4>
         <button type="button" class="close" (click)="feedbackFormFillModal.hide()" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
