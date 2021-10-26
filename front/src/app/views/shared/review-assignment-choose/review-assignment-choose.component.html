@@ -21,7 +21,7 @@
             </ckeditor>
           </div>
           <hr />
-          <span class="h2">作業截止日</span>
+          <span class="h2">作業截止時間</span>
           <div *ngFor="let time of assignmentTimes; let i = index">
             <p *ngIf="time.assessmentAction == 'DO'" style="margin: 10px;">第{{(i+2)/2}}輪: {{time.endTime | date:'short'}}</p>
           </div>
