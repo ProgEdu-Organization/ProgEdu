@@ -232,13 +232,13 @@ public class AssessmentTimeDbManager {
     PreparedStatement preStmt = null;
     ResultSet rs = null;
     AssessmentTime assessmentTime = null;
-    int round;
+    int round = 1;
 
     try {
       conn = database.getConnection();
       preStmt = conn.prepareStatement(sql);
 
-      preStmt.setString(1, aId);
+      preStmt.setInt(1, aId);
 
       rs = preStmt.executeQuery();
 
