@@ -2,14 +2,14 @@
   <ng-container *ngFor="let reviewFeedback of reviewFeedbacks;index as i;">
     <span class="h2">
       <div class="form-group row">
-        <label class="col-md-7 col-form-label">Peer Review Result - {{i+1}}</label>
-        <label class="col-md-5 col-form-label" style="text-align: right;" *ngIf=isTeacher>Reviewer：
+        <label class="col-md-7 col-form-label">審查結果 - {{i+1}}</label>
+        <label class="col-md-5 col-form-label" style="text-align: right;" *ngIf=isTeacher>審查人：
           {{reviewFeedback.name}}</label>
       </div>
     </span>
     <div class="card-body" id='reviewFeedback-bar'>
       <div class="form-group row">
-        <h3 class="col-md-10" style="padding-bottom: 10px;">Round {{currentReviewPagination[i]}}</h3>
+        <h3 class="col-md-10" style="padding-bottom: 10px;">第 {{currentReviewPagination[i]}} 輪</h3>
         <input *ngIf="isTeacher && isShowReviewButton[i]" type="button" class="btn btn-outline-primary col-sm-1 col-md-2" value="Fill Review Form"
                 (click)="reviewFormFillModal.show();setReviewOne(i);emitReviewFormOpenedEvent();">
       </div>
