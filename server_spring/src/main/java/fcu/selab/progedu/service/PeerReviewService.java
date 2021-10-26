@@ -516,7 +516,7 @@ public class PeerReviewService {
    * @param auId              assignment_user id
    * @param commitRecordCount commit record count
    */
-  public String reviewedRecordStatus(int auId, int commitRecordCount)
+  public String reviewedRecordStatus(int auId, int commitRecordCount, int aId)
           throws SQLException {
     List<PairMatching> pairMatchingList = pairMatchingDbManager.getPairMatchingByAuId(auId);
     String resultStatus = "INIT";
@@ -525,17 +525,18 @@ public class PeerReviewService {
       return resultStatus;
     }
 
-    /*
+
     for (PairMatching pairMatching : pairMatchingList) {
-      List<ReviewRecordStatus> reviewRecordStatusList = reviewRecordStatusDbManager.getAllReviewRecordStatusByPairMatchingId(pairMatching.getId());
-      for (ReviewRecordStatus reviewRecordStatus : reviewRecordStatusList) {
-        if (reviewRecordStatus.getReviewStatusEnum().equals(ReviewStatusEnum.UNCOMPLETED)) {
-          resultStatus.put(String.valueOf(reviewRecordStatus.getPmId() + reviewRecordStatus.getRound()),"DONE");
-        } else if (reviewRecordStatus.getReviewStatusEnum().equals(ReviewStatusEnum.COMPLETED)) {
-          resultStatus.put(String.valueOf(reviewRecordStatus.getPmId() + reviewRecordStatus.getRound()),"REVIEWED");
-        }
+      int currentRound = assessmentTimeDbManager.getCurrentRound(aId);
+      ReviewRecordStatus reviewRecordStatus = reviewRecordStatusDbManager.getReviewRecordStatusByPairMatchingIdAndRound(pairMatching.getId(), currentRound);
+      
+      if (reviewRecordStatus.getReviewStatusEnum().equals(ReviewStatusEnum.UNCOMPLETED)) {
+        resultStatus = "DONE";
+      } else if (reviewRecordStatus.getReviewStatusEnum().equals(ReviewStatusEnum.COMPLETED)) {
+        resultStatus = "REVIEWED";
       }
-    }*/
+
+    }
 
     return resultStatus;
   }
@@ -563,7 +564,7 @@ public class PeerReviewService {
         int commitRecordCount = commitRecordDbManager.getCommitCount(auId);
         ob.put("assignmentName", assignment.getName());
         ob.put("commitRecordCount", commitRecordCount);
-        ob.put("reviewStatus", reviewedRecordStatus(auId, commitRecordCount));
+        ob.put("reviewStatus", reviewedRecordStatus(auId, commitRecordCount, assignment.getId()));
         JSONArray jsonArray = new JSONArray();
         for (AssessmentTime assessmentTime : assignment.getAssessmentTimeList()) {
           JSONObject assessmentTimeObject = new JSONObject();

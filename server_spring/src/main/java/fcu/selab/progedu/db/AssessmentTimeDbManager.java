@@ -222,4 +222,36 @@ public class AssessmentTimeDbManager {
     }
   }
 
+  /**
+   * get current round from database by aId
+   *
+   */
+  public Integer getCurrentRound(int aId) {
+    String sql = "SELECT CEILING(COUNT(*)) AS round FROM ProgEdu.Assessment_Time WHERE (aId = ? AND endTime <= now())";
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
+    AssessmentTime assessmentTime = null;
+    int round;
+
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
+      preStmt.setString(1, aId);
+
+      rs = preStmt.executeQuery();
+
+      while (rs.next()) {
+        round = rs.getInt("round");
+      }
+
+    } catch (Exception e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(rs, preStmt, conn);
+    }
+    return round;
+  }
 }
