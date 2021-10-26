@@ -227,7 +227,7 @@ public class AssessmentTimeDbManager {
    *
    */
   public Integer getCurrentRound(int aId) {
-    String sql = "SELECT CEILING(COUNT(*)) AS round FROM ProgEdu.Assessment_Time WHERE (aId = ? AND endTime <= now())";
+    String sql = "SELECT CEILING(COUNT(*) / 2) AS round FROM ProgEdu.Assessment_Time WHERE (aId = ? AND endTime <= now())";
     Connection conn = null;
     PreparedStatement preStmt = null;
     ResultSet rs = null;
