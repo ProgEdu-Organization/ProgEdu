@@ -31,7 +31,7 @@
               Pass
             </td>
             <td *ngIf="reviewDetail.score===2" style="color:red;">
-              Fail
+              Failed
             </td>
           </ng-container>
           <td *ngIf="reviewDetail.scoreMode === 'numberScore'">
@@ -41,9 +41,10 @@
               {{ reviewDetail.feedback }}
           </td>
           <td *ngIf="reviewDetail.score == 2">
-            <button *ngIf="reviewDetail.feedbackScore === undefined" type="button" class="btn btn-secondary"
-              (click)="setReviewOne(i);openReviewFeedbackModal(currentReviewPagination[i], reviewDetail, j);feedbackFormFillModal.show()">審查意見的幫助程度</button>
-              <div *ngIf="reviewDetail.feedbackScore !== undefined">{{reviewDetail.feedbackScore}}</div>
+            <button *ngIf="reviewDetail.feedbackScore == undefined" type="button" class="btn btn-secondary"
+              (click)="setReviewOne(i);openReviewFeedbackModal(currentReviewPagination[i], reviewDetail, j);feedbackFormFillModal.show()">
+                對審查意見進行評分</button>
+              <div *ngIf="reviewDetail.feedbackScore !== undefined">{{getFeedbackScoreDetail(reviewDetail.feedbackScore)}}</div>
           </td>
           <td *ngIf="reviewDetail.score == 1">Pass</td>
         </tr>
