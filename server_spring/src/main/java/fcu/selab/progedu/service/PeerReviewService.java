@@ -516,16 +516,16 @@ public class PeerReviewService {
    * @param auId              assignment_user id
    * @param commitRecordCount commit record count
    */
-  public JSONObject reviewedRecordStatus(int auId, int commitRecordCount)
+  public String reviewedRecordStatus(int auId, int commitRecordCount)
           throws SQLException {
     List<PairMatching> pairMatchingList = pairMatchingDbManager.getPairMatchingByAuId(auId);
-      JSONObject resultStatus = new JSONObject();
+    String resultStatus = "INIT";
 
     if (commitRecordCount == 1) {
-      resultStatus.put(String.valueOf(commitRecordCount), "INIT");
       return resultStatus;
     }
 
+    /*
     for (PairMatching pairMatching : pairMatchingList) {
       List<ReviewRecordStatus> reviewRecordStatusList = reviewRecordStatusDbManager.getAllReviewRecordStatusByPairMatchingId(pairMatching.getId());
       for (ReviewRecordStatus reviewRecordStatus : reviewRecordStatusList) {
@@ -535,8 +535,7 @@ public class PeerReviewService {
           resultStatus.put(String.valueOf(reviewRecordStatus.getPmId() + reviewRecordStatus.getRound()),"REVIEWED");
         }
       }
-
-    }
+    }*/
 
     return resultStatus;
   }
