@@ -605,7 +605,6 @@ public class AssignmentService {
       }
 
       JenkinsService jenkinsService = JenkinsService.getInstance();
-
       jenkinsService.createJobV2(jobName, jenkinsProjectConfig.getXmlConfig());
       jenkinsService.buildJob(jobName);
 
