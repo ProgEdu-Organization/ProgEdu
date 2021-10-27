@@ -19,13 +19,13 @@ public class JwtConfig {
   private static Key key = null;
   private static JwtConfig jwtConfig = null;
   private static final Logger LOGGER = LoggerFactory.getLogger(JwtConfig.class);
-  
+
   private JwtConfig() {
     key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
   }
-  
+
   /**
-   * 
+   *
    * @return jwt class
    */
   public static JwtConfig getInstance() {
@@ -34,16 +34,16 @@ public class JwtConfig {
     }
     return jwtConfig;
   }
-  
+
   /**
-   * create the jwt 
+   * create the jwt
    * @return token
    */
   public String generateToken(String userRole, String userName, String name) {
-    
+
     String jws = Jwts.builder().setIssuer("progedu").setSubject(userRole).setAudience(userName)
             .claim("name", name)
-        .setExpiration(new Date((new Date()).getTime() +  24 * 60 * 60 * 1000 ))
+        .setExpiration(new Date((new Date()).getTime() +  24 * 60 * 60 * 2000))
         .setId(UUID.randomUUID().toString()).signWith(key).compact(); // just an example id
     return jws;
   }
@@ -56,9 +56,9 @@ public class JwtConfig {
             .setId(UUID.randomUUID().toString()).signWith(key).compact(); // just an example id
     return jws;
   }
-  
+
   /**
-   * 
+   *
    */
   public boolean validateToken(String jwsToken) {
     boolean isValidate = false;
@@ -68,10 +68,10 @@ public class JwtConfig {
     } catch (JwtException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
-    } 
+    }
     return isValidate;
   }
-  
+
   /**
    * using the key to encode the jwt
    *  key
@@ -83,5 +83,5 @@ public class JwtConfig {
     }
     return null;
   }
-  
+
 }
