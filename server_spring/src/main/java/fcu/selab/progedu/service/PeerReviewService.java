@@ -982,7 +982,7 @@ public class PeerReviewService {
       int projectId = gitlabProject.getId();
       // Todo 以下有安全性問題 會公開gitlab 的 api
       String test = gitlabConfig.getGitlabHostUrl() + "/api/v4/projects/" + projectId
-              + "/repository/archive?PRIVATE-TOKEN=" + gitlabConfig.getGitlabApiToken();
+              + "/repository/archive?private_token=" + gitlabConfig.getGitlabApiToken();
 
       JSONObject result = new JSONObject();
       result.put("url", test);
