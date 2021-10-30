@@ -288,4 +288,21 @@ export class ReviewStatusAssignmentChooseComponent implements OnInit {
     this.reviewOne = index;
   }
 
+  getFeedbackScoreDetail(score: number) {
+    switch(score) {
+      case 0:
+        return "沒有意義的審查意見"
+      case 1:
+        return "較沒有幫助的審查意見"
+      case 2:
+        return "一般的審查意見"
+      case 3:
+        return "有幫助的審查意見"
+      case 4:
+        return "非常有幫助且詳細的審查意見"
+      default:
+        return ""
+    }
+  }
+
 }
