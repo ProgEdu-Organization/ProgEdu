@@ -65,7 +65,7 @@
                   <div *ngIf="reviewDetail.feedback">{{reviewDetail.feedback}}</div>
                 </td>
                 <td>
-                  {{ reviewDetail.feedbackScore }}
+                  <div *ngIf="reviewDetail.feedbackScore !== undefined">{{getFeedbackScoreDetail(reviewDetail.feedbackScore)}}</div>
                 </td>
               </tr>
             </table>
@@ -192,7 +192,7 @@
           <div class="col-md-12">
             <p>FeedBack:</p>
             <div class="col-md-12">
-              <textarea readonly id="feedback" name="feedback" rows="3" class="form-control" type="text" 
+              <textarea readonly id="feedback" name="feedback" rows="3" class="form-control" type="text"
               >{{onClickedReviewDetail.feedback}}</textarea>
             </div>
           </div>
