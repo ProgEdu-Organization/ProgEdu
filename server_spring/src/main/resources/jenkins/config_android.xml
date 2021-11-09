@@ -1,0 +1,176 @@
+<?xml version="1.1" encoding="UTF-8" ?>
+<project>
+    <actions/>
+    <description></description>
+    <keepDependencies>false</keepDependencies>
+    <properties>
+        <com.dabsquared.gitlabjenkins.connection.GitLabConnectionProperty
+                plugin="gitlab-plugin@1.5.13">
+            <gitLabConnection>gitlab</gitLabConnection>
+        </com.dabsquared.gitlabjenkins.connection.GitLabConnectionProperty>
+    </properties>
+    <scm class="hudson.plugins.git.GitSCM" plugin="git@4.0.0">
+        <configVersion>2</configVersion>
+        <userRemoteConfigs>
+            <hudson.plugins.git.UserRemoteConfig>
+                <url>http://140.134.26.71:49000/M0806615/TEST.git</url>
+                <credentialsId>gitlab_root</credentialsId>
+            </hudson.plugins.git.UserRemoteConfig>
+        </userRemoteConfigs>
+        <branches>
+            <hudson.plugins.git.BranchSpec>
+                <name>*/master</name>
+            </hudson.plugins.git.BranchSpec>
+        </branches>
+        <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+        <submoduleCfg class="list"/>
+        <extensions/>
+    </scm>
+    <canRoam>true</canRoam>
+    <disabled>false</disabled>
+    <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+    <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+    <triggers>
+        <com.dabsquared.gitlabjenkins.GitLabPushTrigger plugin="gitlab-plugin@1.5.13">
+            <spec></spec>
+            <triggerOnPush>true</triggerOnPush>
+            <triggerOnMergeRequest>true</triggerOnMergeRequest>
+            <triggerOnPipelineEvent>false</triggerOnPipelineEvent>
+            <triggerOnAcceptedMergeRequest>false</triggerOnAcceptedMergeRequest>
+            <triggerOnClosedMergeRequest>false</triggerOnClosedMergeRequest>
+            <triggerOnApprovedMergeRequest>false</triggerOnApprovedMergeRequest>
+            <triggerOpenMergeRequestOnPush>never</triggerOpenMergeRequestOnPush>
+            <triggerOnNoteRequest>true</triggerOnNoteRequest>
+            <noteRegex>Jenkins please retry a build</noteRegex>
+            <ciSkip>true</ciSkip>
+            <skipWorkInProgressMergeRequest>true</skipWorkInProgressMergeRequest>
+            <setBuildDescription>true</setBuildDescription>
+            <branchFilterType>All</branchFilterType>
+            <includeBranchesSpec></includeBranchesSpec>
+            <excludeBranchesSpec></excludeBranchesSpec>
+            <sourceBranchRegex></sourceBranchRegex>
+            <targetBranchRegex></targetBranchRegex>
+            <secretToken>{AQAAABAAAAAQkwwSb4ydiKnvK8yYKsG2nnImKYU7doeja+YXYaKTNyo=}</secretToken>
+            <pendingBuildName></pendingBuildName>
+            <cancelPendingBuildsOnUpdate>false</cancelPendingBuildsOnUpdate>
+        </com.dabsquared.gitlabjenkins.GitLabPushTrigger>
+    </triggers>
+    <concurrentBuild>false</concurrentBuild>
+    <builders>
+        <hudson.plugins.build__timeout.BuildStepWithTimeout plugin="build-timeout@1.19">
+            <strategy class="hudson.plugins.build_timeout.impl.AbsoluteTimeOutStrategy">
+                <timeoutMinutes>15</timeoutMinutes>
+            </strategy>
+            <buildStep class="org.jenkinsci.plugins.AssessmentBuilder"
+                       plugin="jenkins-progedu@1.0-SNAPSHOT">
+                <jobName>M0806615_TEST</jobName>
+                <testFileName>TEST</testFileName>
+                <proDetailUrl>http://140.134.26.71:49999/webapi/assignment/checksum?proName=TEST
+                </proDetailUrl>
+                <testFileUrl>
+                    http://140.134.26.71:49999/webapi/assignment/getTestFile?filePath=/usr/local/tomcat/temp/tests/TEST.zip
+                </testFileUrl>
+                <testFileChecksum>943566933</testFileChecksum>
+                <testFilePath></testFilePath>
+            </buildStep>
+            <operationList class="empty-list"/>
+        </hudson.plugins.build__timeout.BuildStepWithTimeout>
+        <io.jenkins.plugins.androidScreenshot.AndroidScreenShotBuilder
+                plugin="AndroidScreenshotPlugin@1.0"/>
+        <hudson.plugins.build__timeout.BuildStepWithTimeout plugin="build-timeout@1.19">
+            <strategy class="hudson.plugins.build_timeout.impl.AbsoluteTimeOutStrategy">
+                <timeoutMinutes>3</timeoutMinutes>
+            </strategy>
+            <buildStep class="hudson.plugins.gradle.Gradle" plugin="gradle@1.34">
+                <switches></switches>
+                <tasks>clean assemble lint checkstyle test connectedAndroidTest</tasks>
+                <rootBuildScriptDir></rootBuildScriptDir>
+                <buildFile></buildFile>
+                <gradleName>Global</gradleName>
+                <useWrapper>false</useWrapper>
+                <makeExecutable>false</makeExecutable>
+                <useWorkspaceAsHome>false</useWorkspaceAsHome>
+                <wrapperLocation></wrapperLocation>
+                <passAllAsSystemProperties>false</passAllAsSystemProperties>
+                <projectProperties></projectProperties>
+                <passAllAsProjectProperties>false</passAllAsProjectProperties>
+            </buildStep>
+            <operationList class="empty-list"/>
+        </hudson.plugins.build__timeout.BuildStepWithTimeout>
+        <hudson.plugins.build__timeout.BuildStepWithTimeout plugin="build-timeout@1.19">
+            <strategy class="hudson.plugins.build_timeout.impl.AbsoluteTimeOutStrategy">
+                <timeoutMinutes>5</timeoutMinutes>
+            </strategy>
+            <buildStep class="hudson.tasks.Shell">
+                <command>if [ -d &quot;target&quot; ]; then
+                    echo &quot;Foder target exists.&quot;
+                    else
+                    echo &quot;create target foder&quot;
+                    mkdir target &amp;&amp; mkdir target/screenshot
+                    echo &quot;create target/screenshot forder&quot;
+                    fi
+
+                    adb pull /storage/sdcard/app_spoon-screenshots/ ./target/screenshot/
+                    find ./target -iname *.png | while read line; do mv $line ./target/screenshot/;
+                    done
+                </command>
+            </buildStep>
+            <operationList class="empty-list"/>
+        </hudson.plugins.build__timeout.BuildStepWithTimeout>
+    </builders>
+    <publishers>
+        <hudson.tasks.ArtifactArchiver>
+            <artifacts>target/screenshot/</artifacts>
+            <allowEmptyArchive>true</allowEmptyArchive>
+            <onlyIfSuccessful>false</onlyIfSuccessful>
+            <fingerprint>false</fingerprint>
+            <defaultExcludes>true</defaultExcludes>
+            <caseSensitive>true</caseSensitive>
+        </hudson.tasks.ArtifactArchiver>
+        <org.jenkinsci.plugins.UpdatingDbPublisher plugin="jenkins-progedu@1.0-SNAPSHOT">
+            <progeduDbUrl>http://140.134.26.71:49999/webapi/commits/update</progeduDbUrl>
+            <user>M0806615</user>
+            <proName>TEST</proName>
+        </org.jenkinsci.plugins.UpdatingDbPublisher>
+        <io.jenkins.plugins.progupdatetodb.UpdateToDbPublisher plugin="progeduDB@1.0-SNAPSHOT">
+            <progeduAPIUrl>http://140.134.26.71:49999/webapi</progeduAPIUrl>
+            <jenkinsUsername>M0806615</jenkinsUsername>
+            <jenkinsAssignmentName>TEST</jenkinsAssignmentName>
+            <pngPath>/target/screenshot</pngPath>
+        </io.jenkins.plugins.progupdatetodb.UpdateToDbPublisher>
+        <hudson.plugins.ws__cleanup.WsCleanup plugin="ws-cleanup@0.37">
+            <patterns class="empty-list"/>
+            <deleteDirs>false</deleteDirs>
+            <skipWhenFailed>false</skipWhenFailed>
+            <cleanWhenSuccess>true</cleanWhenSuccess>
+            <cleanWhenUnstable>true</cleanWhenUnstable>
+            <cleanWhenFailure>true</cleanWhenFailure>
+            <cleanWhenNotBuilt>true</cleanWhenNotBuilt>
+            <cleanWhenAborted>true</cleanWhenAborted>
+            <notFailBuild>false</notFailBuild>
+            <cleanupMatrixParent>false</cleanupMatrixParent>
+            <externalDelete></externalDelete>
+            <disableDeferredWipeout>false</disableDeferredWipeout>
+        </hudson.plugins.ws__cleanup.WsCleanup>
+    </publishers>
+    <buildWrappers>
+        <hudson.plugins.android__emulator.AndroidEmulator plugin="android-emulator@3.0">
+            <osVersion>android-22</osVersion>
+            <screenDensity>mdpi</screenDensity>
+            <screenResolution>WVGA</screenResolution>
+            <deviceLocale>en_US</deviceLocale>
+            <targetAbi>x86</targetAbi>
+            <sdCardSize>50M</sdCardSize>
+            <avdNameSuffix>M0806615_TEST</avdNameSuffix>
+            <hardwareProperties/>
+            <wipeData>false</wipeData>
+            <showWindow>false</showWindow>
+            <useSnapshots>false</useSnapshots>
+            <deleteAfterBuild>true</deleteAfterBuild>
+            <startupDelay>3</startupDelay>
+            <startupTimeout>180</startupTimeout>
+            <commandLineOptions>-no-window -noaudio -no-boot-anim</commandLineOptions>
+            <executable></executable>
+        </hudson.plugins.android__emulator.AndroidEmulator>
+    </buildWrappers>
+</project>

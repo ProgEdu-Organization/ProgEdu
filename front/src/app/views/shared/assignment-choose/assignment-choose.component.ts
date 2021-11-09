@@ -47,7 +47,7 @@ export class AssignmentChooseComponent implements OnInit {
       });
   }
 
-  getCommitDetail() {
+  getCommitDetail() { // Todo 這沒用到
     this.assignmentService.getCommitDetail(this.assignmentName, this.username).subscribe(response => {
       this.commits = response;
       this.selectedCommitNumber = this.commits.length;

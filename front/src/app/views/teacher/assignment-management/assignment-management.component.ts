@@ -40,7 +40,7 @@ export class AssignmentManagementComponent implements OnInit {
     placeholder: 'Write the assignment description in here!',
     ckfinder: {
       // Upload the images to the server using the CKFinder QuickUpload command.
-      uploadUrl: environment.SERVER_URL + `/webapi/assignment/uploadImage`
+      uploadUrl: environment.SERVER_URL + `/webapi/assignment/uploadImage` //Todo 這即將捨棄
     }
   };
 
@@ -84,12 +84,6 @@ export class AssignmentManagementComponent implements OnInit {
         val.length !== 0 ? this.showIsValidById(description) : this.hideIsInvalidById(description);
       }
     );
-  }
-
-  updateTestCase($event) {
-    if ($event.target.files) {
-      this.assignmentForm.get('file').setValue($event.target.files[0]);
-    }
   }
 
   selectChangeHandler(status:string, $event) {

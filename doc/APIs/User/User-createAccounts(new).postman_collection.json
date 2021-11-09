@@ -1,0 +1,48 @@
+{
+	"info": {
+		"_postman_id": "8a965f0f-c58c-4109-9c15-8517fa665311",
+		"name": "User/createAccounts(new)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "createAccounts(new)",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/C:/D/245lab/ProgEdu/code/ProgEdu/server/doc/postman-test/StudentTemplateForTest.csv"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{spring_url}}/user/upload",
+					"host": [
+						"{{spring_url}}"
+					],
+					"path": [
+						"user",
+						"upload"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

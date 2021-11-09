@@ -11,6 +11,7 @@ import { ModalDirective } from 'ngx-bootstrap/modal';
 import { JwtService } from '../../../services/jwt.service';
 import { HttpClient } from '@angular/common/http';
 import { AddJwtTokenHttpClient } from '../../../services/add-jwt-token.service';
+import { PeerReviewAPI } from '../../../api/PeerReviewAPI';
 
 @Component({
   selector: 'app-review-status-assignment-choose',
@@ -180,7 +181,7 @@ export class ReviewStatusAssignmentChooseComponent implements OnInit {
     }
   }
 
-  nextReviewPage(index: number) {
+  nextReviewPage(index: number) { // Todo 沒用到
     if (this.currentReviewPagination[index] >= this.maxReviewPagination[index]) {
       return;
     }
@@ -188,7 +189,7 @@ export class ReviewStatusAssignmentChooseComponent implements OnInit {
     this.changeReviewPagination(this.currentReviewPagination[index], index);
   }
 
-  preReviewPage(index: number) {
+  preReviewPage(index: number) { // Todo 沒用到
     if (this.currentReviewPagination[index] <= 1) {
       return;
     }
@@ -196,7 +197,7 @@ export class ReviewStatusAssignmentChooseComponent implements OnInit {
     this.changeReviewPagination(this.currentReviewPagination[index], index);
   }
 
-  changeReviewPagination(pageNumber: number, index: number) {
+  changeReviewPagination(pageNumber: number, index: number) { // Todo 沒用到
     if (pageNumber <= 0 || pageNumber > this.maxReviewPagination[index]) {
       return;
     }
@@ -268,7 +269,7 @@ export class ReviewStatusAssignmentChooseComponent implements OnInit {
     };
     this.emitStudentEvent(review_form_event);
 
-    let downloadApi = this.addJwtTokenHttpClient.get(environment.SERVER_URL + '/webapi/peerReview/sourceCode?username='
+    let downloadApi = this.addJwtTokenHttpClient.get(PeerReviewAPI.getSourceCode + '?username='
     + this.allReviewDetail[this.reviewOne].name + '&assignmentName=' + this.assignmentName);
 
     downloadApi.subscribe(function (res){

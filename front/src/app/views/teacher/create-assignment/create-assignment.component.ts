@@ -26,7 +26,8 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
   isDropup: boolean = true;
   autoClose: boolean = false;
   assignment: FormGroup;
-  SERVER_URL: string = environment.SERVER_URL;
+
+  NEW_SERVER_URL: string = environment.NEW_SERVER_URL;
 
   errorResponse: HttpErrorResponse;
   errorTitle: string;
@@ -76,7 +77,7 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
     placeholder: 'Write the assignment description in here!',
     ckfinder: {
       // Upload the images to the server using the CKFinder QuickUpload command.
-      uploadUrl: environment.SERVER_URL + `/webapi/image`
+      uploadUrl: environment.SERVER_URL + `/webapi/image` // Todo 這即將捨棄
     }
   };
 
@@ -363,7 +364,7 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
     }
     this.assignment.get('assOrder').setValue(this.orderString);
     if (this.assignment.get('name').invalid) {
-      window.open(environment.SERVER_URL + '/resources/MvnQuickStart.zip');
+      window.open(environment.NEW_SERVER_URL + '/assignment/getMvnAssignmentFile');
     } else {
       this.createService.modifyOrder(this.assignment).subscribe(
         (response) => {
