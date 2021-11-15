@@ -12,11 +12,11 @@ public class AndroidCheckstyleFailure implements Status {
     String feedbackStart = "Task :app:checkStyle";
     String feedbackEnd = "FAILURE: Build failed with an exception.";
     feedback = consoleText.substring(consoleText.indexOf(feedbackStart) + feedbackStart.length(),
-        consoleText.indexOf(feedbackEnd));
+        consoleText.indexOf(feedbackEnd) + feedbackEnd.length());
     /**
-     * Remove /var/jenkins_home/workspace/
+     * Remove /data
      */
-    return feedback.replaceAll("/var/jenkins_home/workspace", "").trim();
+    return feedback.replaceAll("/data", "").trim();
   }
 
   @Override
