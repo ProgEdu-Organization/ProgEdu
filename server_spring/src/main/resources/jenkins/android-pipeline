@@ -13,7 +13,7 @@ pipeline {
                 credentialsId: 'gitlab_root',
                 url: '{GitLab-url}'
             }
-        }{other stages}
+        }//{other stages}
     }
 
     post {
