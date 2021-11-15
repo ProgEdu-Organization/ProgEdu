@@ -3,6 +3,7 @@ package fcu.selab.progedu.jenkinsconfig;
 import fcu.selab.progedu.utils.ExceptionUtil;
 import fcu.selab.progedu.utils.JavaIoUtile;
 
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -12,6 +13,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -105,12 +107,9 @@ public class AndroidPipelineConfig extends JenkinsProjectConfig {
                                  String username, String projectName) {
         String newPipeLine = "";
         try {
-            URL androidPipelineUrl = this.getClass().getResource("/jenkins/android-pipeline");
-            Path androidPipelinePath = Paths.get(androidPipelineUrl.toURI());
-            File androidPipelineFile = androidPipelinePath.toFile();
+            InputStream webPipeline = this.getClass().getResourceAsStream("/jenkins/android-pipeline");
 
-
-            String pipeLine = JavaIoUtile.readFileToString(androidPipelineFile);
+            String pipeLine = IOUtils.toString(webPipeline, StandardCharsets.UTF_8);
             pipeLine = pipeLine.replaceFirst("\\{GitLab-url\\}", projectUrl);
             pipeLine = pipeLine.replaceFirst("\\{ProgEdu-server-updateDbUrl\\}", updateDbUrl);
             pipeLine = pipeLine.replaceFirst("\\{ProgEdu-user-name\\}", username);
