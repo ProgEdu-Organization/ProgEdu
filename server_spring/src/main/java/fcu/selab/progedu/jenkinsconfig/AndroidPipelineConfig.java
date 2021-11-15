@@ -10,6 +10,7 @@ import org.w3c.dom.Document;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
+import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -19,8 +20,9 @@ public class AndroidPipelineConfig extends JenkinsProjectConfig {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AndroidPipelineConfig.class);
 
-    URL baseUrl = this.getClass().getResource("/jenkins/pipelineConfig.xml");
+    InputStream baseConfig = this.getClass().getResourceAsStream("/jenkins/pipelineConfig.xml");
     Document xmlDocument;
+
 
     /**
      * AndroidConfig
@@ -31,13 +33,11 @@ public class AndroidPipelineConfig extends JenkinsProjectConfig {
                                  String username, String projectName) {
 
         try {
-            Path basePath = Paths.get(this.baseUrl.toURI());
-            File baseFile = basePath.toFile();
 
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 //    factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl",true); // Todo 我不知道這個要不要刪掉, 先註解起來保留
             DocumentBuilder builder = factory.newDocumentBuilder();
-            this.xmlDocument = builder.parse(baseFile);
+            this.xmlDocument = builder.parse(baseConfig);
 
             setJenkinsPipeline(projectUrl, updateDbUrl, username, projectName);
 
@@ -57,13 +57,11 @@ public class AndroidPipelineConfig extends JenkinsProjectConfig {
                                  String username, String projectName, String order) {
 
         try {
-            Path basePath = Paths.get(this.baseUrl.toURI());
-            File baseFile = basePath.toFile();
 
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 //    factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl",true); // Todo 我不知道這個要不要刪掉, 先註解起來保留
             DocumentBuilder builder = factory.newDocumentBuilder();
-            this.xmlDocument = builder.parse(baseFile);
+            this.xmlDocument = builder.parse(baseConfig);
 
             setJenkinsPipelineWithOrder(projectUrl, updateDbUrl, username, projectName, order);
 

@@ -12,7 +12,7 @@ class AndroidPipelineConfigTest {
 
     @Test
     public void createPipeline() {
-        System.out.println(androidPipelineConfig1.getXmlConfig());
+        System.out.println(androidPipelineConfig2.getXmlConfig());
     }
 
     @Test
