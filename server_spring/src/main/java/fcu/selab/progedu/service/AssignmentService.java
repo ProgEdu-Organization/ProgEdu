@@ -9,6 +9,7 @@ import fcu.selab.progedu.conn.TomcatService;
 import fcu.selab.progedu.data.*;
 import fcu.selab.progedu.db.*;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
+import fcu.selab.progedu.jenkinsconfig.AndroidPipelineConfig;
 import fcu.selab.progedu.jenkinsconfig.JenkinsProjectConfig;
 import fcu.selab.progedu.jenkinsconfig.JenkinsProjectConfigFactory;
 import fcu.selab.progedu.jenkinsconfig.WebPipelineConfig;
@@ -134,6 +135,14 @@ public class AssignmentService {
         ordersList.add("utf");
       } else if (token[0].equals("Coding Style Failure")) {
         ordersList.add("csf");
+      } else if (token[0].equals("HTML Failure")) {
+        ordersList.add("whf");
+      } else if (token[0].equals("CSS Failure")) {
+        ordersList.add("wsf");
+      } else if (token[0].equals("JavaScript Failure")) {
+        ordersList.add("wef");
+      } else if (token[0].equals("UI Test Failure")) {
+        ordersList.add("uitf");
       }
       scoresList.add(token[1]);
     }
@@ -490,6 +499,9 @@ public class AssignmentService {
         jenkinsProjectConfig = new WebPipelineConfig(projectUrl, updateDbUrl,
                 username, assignmentName,
                 courseConfig.getTomcatServerIp() + "/publicApi/commits/screenshot/updateURL");
+      } else if ( assignmentTypeEnum.equals(ProjectTypeEnum.ANDROID) ) {
+        jenkinsProjectConfig = new AndroidPipelineConfig(projectUrl, updateDbUrl,
+                username, assignmentName);
       } else {
         jenkinsProjectConfig = JenkinsProjectConfigFactory
                 .getJenkinsProjectConfig(assignmentTypeEnum.getTypeName(), projectUrl, updateDbUrl,
