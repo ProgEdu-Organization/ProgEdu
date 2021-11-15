@@ -134,6 +134,14 @@ public class AssignmentService {
         ordersList.add("utf");
       } else if (token[0].equals("Coding Style Failure")) {
         ordersList.add("csf");
+      } else if (token[0].equals("HTML Failure")) {
+        ordersList.add("whf");
+      } else if (token[0].equals("CSS Failure")) {
+        ordersList.add("wsf");
+      } else if (token[0].equals("JavaScript Failure")) {
+        ordersList.add("wef");
+      } else if (token[0].equals("UI Test Failure")) {
+        ordersList.add("uitf");
       }
       scoresList.add(token[1]);
     }
