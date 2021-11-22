@@ -108,6 +108,43 @@ public class AssessmentTimeDbManager {
   }
 
   /**
+   * get assignment review time by assignment name
+   * @param aId assignment id
+   * @return assignment review time
+   */
+  public List<AssessmentTime> getAssignmentReviewTimeNameById(int aId) {
+    String sql = "SELECT * FROM ProgEdu.Assessment_Time WHERE `aId` = ? AND aaId = 3";
+
+    List<AssessmentTime> assessmentTimes = new ArrayList<>();
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
+
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+      preStmt.setInt(1, aId);
+
+      rs = preStmt.executeQuery();
+      while (rs.next()) {
+        AssessmentTime assessmentTime = new AssessmentTime();
+        assessmentTime.setId(rs.getInt("id"));
+        assessmentTime.setAId(rs.getInt("aId"));
+        assessmentTime.setAssessmentActionEnum(aaDb.getAssessmentActionById(rs.getInt("aaId")));
+        assessmentTime.setStartTime(rs.getTimestamp("startTime"));
+        assessmentTime.setEndTime(rs.getTimestamp("endTime"));
+        assessmentTimes.add(assessmentTime);
+      }
+    } catch (Exception e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(rs, preStmt, conn);
+    }
+    return assessmentTimes;
+  }
+
+  /**
    * get assignment time name by id
    * @param aId aid
    * @return assignment name

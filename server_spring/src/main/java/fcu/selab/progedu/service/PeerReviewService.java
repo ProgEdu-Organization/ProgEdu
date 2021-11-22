@@ -858,7 +858,7 @@ public class PeerReviewService {
       int userId = assignmentUserDbManager.getUidById(pairMatching.getAuId());
       reviewed.put("id", userId);
       reviewed.put("name", userDbManager.getUsername(userId));
-      AssessmentTime assessmentTime = assessmentTimeDbManager.getAssignmentTimeNameById(assignmentId).get(round);
+      AssessmentTime assessmentTime = assessmentTimeDbManager.getAssignmentReviewTimeNameById(assignmentId).get(round-1);
       reviewed.put("reviewEndTime", assessmentTime.getEndTime());
       List<ReviewRecord> reviewRecordList = reviewRecordDbManager.getReviewRecordByRrsId(reviewRecordStatus.getId());
 
