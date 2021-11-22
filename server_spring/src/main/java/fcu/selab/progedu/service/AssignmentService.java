@@ -110,8 +110,9 @@ public class AssignmentService {
     //
 
     try {
-      createAssignment(assignmentName, releaseTime, deadline, readMe,
-              assignmentType, file);
+      AssignmentWithOrderCreator assignmentWithOrderCreator = new AssignmentWithOrderCreator();
+      assignmentWithOrderCreator.createAssignment(assignmentName, releaseTime, deadline, readMe, assignmentType,
+          file, assignmentCompileOrdersAndScore);
       addOrder(assignmentCompileOrdersAndScore, assignmentName);
 
       return new ResponseEntity<Object>(headers, HttpStatus.OK);
@@ -240,10 +241,10 @@ public class AssignmentService {
     HttpHeaders headers = new HttpHeaders();
     //
     try {
-
+      AssignmentWithoutOrderCreator assignmentWithoutOrderCreator = new AssignmentWithoutOrderCreator();
       // 1. create assignment
-      createAssignment(assignmentName,
-              releaseTime, deadline, readMe, assignmentType, file);
+      assignmentWithoutOrderCreator.createAssignment(assignmentName,
+          releaseTime, deadline, readMe, assignmentType, file);
 
       // 2. create peer review setting
       int assignmentId = dbManager.getAssignmentIdByName(assignmentName);
