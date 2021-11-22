@@ -493,6 +493,29 @@ public class AssignmentService {
               + "/webapi";
       String updateDbUrl = courseConfig.getTomcatServerIp() + "/publicApi/update/commits";
 
+      //
+      String orderString = "";
+      List<String> ordersList = new ArrayList<>();
+      String[] ordersAndScores = aaDbManager.getAssignmentOrderAndScore(
+          dbManager.getAssignmentIdByName(assignmentName)).split(", ");
+      while (ordersList.size() == 0) {
+        ordersAndScores = aaDbManager.getAssignmentOrderAndScore(
+            dbManager.getAssignmentIdByName(assignmentName)).split(", ");
+      }
+      for (String orderAndScore : ordersAndScores) {
+        String[] token = orderAndScore.split(":");
+        ordersList.add(token[0]);
+      }
+      if (ordersList.isEmpty() != true) {
+        for (int i = 0; i < ordersList.size(); i++) {
+          orderString += ordersList.get(i);
+          if (i < ordersList.size() - 1) {
+            orderString += ", ";
+          }
+        }
+      }
+      //
+
       ProjectTypeEnum assignmentTypeEnum = dbManager.getAssignmentType(assignmentName);
 
       JenkinsProjectConfig jenkinsProjectConfig;
@@ -502,7 +525,7 @@ public class AssignmentService {
                 courseConfig.getTomcatServerIp() + "/publicApi/commits/screenshot/updateURL");
       } else if ( assignmentTypeEnum.equals(ProjectTypeEnum.ANDROID) ) {
         jenkinsProjectConfig = new AndroidPipelineConfig(projectUrl, updateDbUrl,
-                username, assignmentName);
+                username, assignmentName, orderString);
       } else {
         jenkinsProjectConfig = JenkinsProjectConfigFactory
                 .getJenkinsProjectConfig(assignmentTypeEnum.getTypeName(), projectUrl, updateDbUrl,
