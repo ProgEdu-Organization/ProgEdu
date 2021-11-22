@@ -141,6 +141,9 @@ export class AssignmentManagementComponent implements OnInit {
           } else if (statusScore[0] == 'WEB_ESLINT_FAILURE') {
             this.statusScore.set("JavaScript Failure", statusScore[1]);
             this.order.push("JavaScript Failure");
+          } else if (statusScore[0] == 'UI_TEST_FAILURE') {
+            this.statusScore.set("UI Test Failure", statusScore[1]);
+            this.order.push("UI Test Failure");
           }
         }
       }
