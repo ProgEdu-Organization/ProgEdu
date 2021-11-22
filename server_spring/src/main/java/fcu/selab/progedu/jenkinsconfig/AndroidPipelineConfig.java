@@ -142,12 +142,9 @@ public class AndroidPipelineConfig extends JenkinsProjectConfig {
       ordersList.add(temp[0]);
     }
     try {
-      URL androidPipelineUrl = this.getClass().getResource("/jenkins/android-pipeline");
-      Path androidPipelinePath = Paths.get(androidPipelineUrl.toURI());
-      File androidPipelineFile = androidPipelinePath.toFile();
+      InputStream androidPipeline = this.getClass().getResourceAsStream("/jenkins/android-pipeline");
 
-
-      String pipeLine = JavaIoUtile.readFileToString(androidPipelineFile);
+      String pipeLine = IOUtils.toString(androidPipeline, StandardCharsets.UTF_8);
       pipeLine = pipeLine.replaceFirst("\\{GitLab-url\\}", projectUrl);
       pipeLine = pipeLine.replaceFirst("\\{ProgEdu-server-updateDbUrl\\}", updateDbUrl);
       pipeLine = pipeLine.replaceFirst("\\{ProgEdu-user-name\\}", username);
