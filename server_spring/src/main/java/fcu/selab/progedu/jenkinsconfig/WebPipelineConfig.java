@@ -59,8 +59,8 @@ public class WebPipelineConfig extends JenkinsProjectConfig {
 
       this.xmlDocument = builder.parse(baseConfig);
 
-      createPipelineWithOrder(projectUrl, updateDbUrl, username,
-              projectName, updateScreenShotDb, order);
+      setJenkinsPipelineWithOrder(projectUrl, updateDbUrl, username,
+          projectName, updateScreenShotDb, order);
 
     } catch (Exception e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
@@ -81,6 +81,16 @@ public class WebPipelineConfig extends JenkinsProjectConfig {
 
     String pipeline = createPipeline(projectUrl, updateDbUrl, username,
                                      projectName, updateScreenShotDb);
+
+    this.xmlDocument.getElementsByTagName("script").item(0).setTextContent(pipeline);
+  }
+
+  private void setJenkinsPipelineWithOrder(String projectUrl, String updateDbUrl, String username,
+                                           String projectName, String updateScreenShotDb,
+                                           String order) {
+
+    String pipeline = createPipelineWithOrder(projectUrl, updateDbUrl, username,
+        projectName, updateScreenShotDb, order);
 
     this.xmlDocument.getElementsByTagName("script").item(0).setTextContent(pipeline);
   }
