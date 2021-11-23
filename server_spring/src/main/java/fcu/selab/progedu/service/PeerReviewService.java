@@ -520,13 +520,39 @@ public class PeerReviewService {
           throws SQLException {
     List<PairMatching> pairMatchingList = pairMatchingDbManager.getPairMatchingByAuId(auId);
     String resultStatus = "INIT";
+    int aid = assignmentUserDbManager.getAidById(auId);
+    AssessmentActionEnum currentAction = getAssignmentCurrentAction(aid);
+    int currentRound = getAssignmentCurrentRound(aid);
 
-    if (commitRecordCount == 1) {
-      return resultStatus;
+    if(currentAction.equals(AssessmentActionEnum.DO)) {
+      if (commitRecordCount <= 1) {
+        return resultStatus;
+      } else if (commitRecordCount > 1) {
+        resultStatus = "DONE";
+        return resultStatus;
+      }
     }
 
-    /*
-    for (PairMatching pairMatching : pairMatchingList) {
+    int reviewerAmount = reviewSettingDbManager.getReviewSettingAmountByAId(aid);
+    int completedCount = 0;
+    for(PairMatching pairMatching : pairMatchingList) {
+      ReviewRecordStatus reviewRecordStatus =
+          reviewRecordStatusDbManager.getReviewRecordStatusByPairMatchingIdAndRound(pairMatching.getId(), currentRound);
+      if(reviewRecordStatus.getReviewStatusEnum().equals(ReviewStatusEnum.COMPLETED)) {
+        completedCount++;
+      }
+    }
+
+    if(commitRecordCount > 1) {
+      resultStatus = "Done";
+    }
+    if(completedCount > 0 && completedCount < reviewerAmount) {
+      resultStatus = "UNDER_REVIEW";
+    } else if (completedCount == reviewerAmount) {
+      resultStatus = "REVIEWED";
+    }
+
+    /*for (PairMatching pairMatching : pairMatchingList) {
       List<ReviewRecordStatus> reviewRecordStatusList = reviewRecordStatusDbManager.getAllReviewRecordStatusByPairMatchingId(pairMatching.getId());
       for (ReviewRecordStatus reviewRecordStatus : reviewRecordStatusList) {
         if (reviewRecordStatus.getReviewStatusEnum().equals(ReviewStatusEnum.UNCOMPLETED)) {
@@ -538,6 +564,38 @@ public class PeerReviewService {
     }*/
 
     return resultStatus;
+  }
+
+  public AssessmentActionEnum getAssignmentCurrentAction(int aid) {
+    AssessmentActionEnum action = AssessmentActionEnum.DO;
+
+    TimeZone.setDefault(TimeZone.getTimeZone("Asia/Taipei"));
+    Date currentDate = new Date();
+    List<AssessmentTime> assessmentTimeList = assessmentTimeDbManager.getAssignmentTimeNameById(aid);
+    for(AssessmentTime assessmentTime : assessmentTimeList) {
+      if(currentDate.compareTo(assessmentTime.getEndTime()) < 0
+          && currentDate.compareTo(assessmentTime.getStartTime()) > 0) {
+        action = assessmentTime.getAssessmentActionEnum();
+      }
+    }
+    return action;
+  }
+
+  public int getAssignmentCurrentRound(int aid) {
+    TimeZone.setDefault(TimeZone.getTimeZone("Asia/Taipei"));
+    Date currentDate = new Date();
+    List<AssessmentTime> assessmentTimeList = assessmentTimeDbManager.getAssignmentTimeNameById(aid);
+    int round = 0;
+    for(AssessmentTime assessmentTime : assessmentTimeList) {
+      if(assessmentTime.getAssessmentActionEnum().equals(AssessmentActionEnum.DO)) {
+        round++;
+      }
+      if(currentDate.compareTo(assessmentTime.getEndTime()) < 0
+          && currentDate.compareTo(assessmentTime.getStartTime()) > 0) {
+        break;
+      }
+    }
+    return round;
   }
 
   /**
