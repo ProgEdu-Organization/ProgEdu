@@ -90,7 +90,8 @@ export class ReviewMetricsManagementComponent implements OnInit {
       }
     );
   }
-  editAssessment(description: string, link: string, mode: string): void {
+  editAssessment(metrics: string, description: string, link: string, mode: string): void {
+    this.selectedAssessment.metrics = metrics;
     this.selectedAssessment.description = description;
     this.selectedAssessment.link = link;
     this.selectedAssessment.mode = (mode === 'Yes No mode' ? 1 : 2);
