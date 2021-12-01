@@ -170,12 +170,13 @@ public class CategoryMetricsService {
   @CrossOrigin(origins = "*")
   @PutMapping("metrics/edit")
   public ResponseEntity<Object> editMetrics(@QueryParam("id") int id,
+                              @QueryParam("metrics") String metrics,
                               @QueryParam("mode") int mode,
                               @QueryParam("description") String description,
                               @QueryParam("link") String link) {
 
     try {
-      reviewMetricsDbManager.editReviewMetricsById(id, mode, description, link);
+      reviewMetricsDbManager.editReviewMetricsById(id, metrics, mode, description, link);
       return new ResponseEntity<Object>(HttpStatus.OK);
     } catch (Exception e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
