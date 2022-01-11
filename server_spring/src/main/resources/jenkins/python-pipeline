@@ -1,0 +1,49 @@
+pipeline {
+    agent any
+    stages {
+        stage('pull environment') {
+            steps {
+                sh 'docker pull yachi77/progedu-python:latest'
+            }
+        }
+        stage('get source') {
+            steps {
+                git branch: 'master',
+                credentialsId: 'gitlab_root',
+                url: '{GitLab-url}'
+            }
+        }
+
+        stage('Parallel'){
+            parallel {
+                stage("Build") {
+                    steps {
+                        sh 'python -m compileall {ProgEdu-project-name}'
+                    }
+                }
+                stage("Coding Style") {
+                    steps {
+                        sh 'flake8 --filename=*.py'
+                    }
+                }
+                 stage('Pytest'){
+                    steps{
+                        sh 'python -m  pytest {ProgEdu-project-name}'
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+
+        always {
+            sh "curl --location --request POST '{ProgEdu-server-updateDbUrl}' \
+                             --header 'Content-Type: application/x-www-form-urlencoded' \
+                             --data-urlencode 'user={ProgEdu-user-name}' \
+                             --data-urlencode 'proName={ProgEdu-project-name}'"
+            cleanWs()
+        }
+    }
+
+}
