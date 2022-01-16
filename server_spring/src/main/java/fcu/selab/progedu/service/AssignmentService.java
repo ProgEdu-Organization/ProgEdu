@@ -9,6 +9,7 @@ import fcu.selab.progedu.conn.TomcatService;
 import fcu.selab.progedu.data.*;
 import fcu.selab.progedu.db.*;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
+import fcu.selab.progedu.jenkinsconfig.AndroidPipelineConfig;
 import fcu.selab.progedu.jenkinsconfig.JenkinsProjectConfig;
 import fcu.selab.progedu.jenkinsconfig.JenkinsProjectConfigFactory;
 import fcu.selab.progedu.jenkinsconfig.WebPipelineConfig;
@@ -143,6 +144,14 @@ public class AssignmentService {
         ordersList.add("utf");
       } else if (token[0].equals("Coding Style Failure")) {
         ordersList.add("csf");
+      } else if (token[0].equals("HTML Failure")) {
+        ordersList.add("whf");
+      } else if (token[0].equals("CSS Failure")) {
+        ordersList.add("wsf");
+      } else if (token[0].equals("JavaScript Failure")) {
+        ordersList.add("wef");
+      } else if (token[0].equals("UI Test Failure")) {
+        ordersList.add("uitf");
       }
       scoresList.add(token[1]);
     }
@@ -256,7 +265,7 @@ public class AssignmentService {
     HttpHeaders headers = new HttpHeaders();
     //
     try {
-
+      AssignmentWithoutOrderCreator assignmentWithoutOrderCreator = new AssignmentWithoutOrderCreator();
       // 1. create assignment
       JSONArray jsonArray = (JSONArray) JSONValue.parse(assessmentTimes);
       SimpleDateFormat formatter = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", Locale.ENGLISH);
@@ -591,6 +600,29 @@ public class AssignmentService {
               + "/webapi";
       String updateDbUrl = courseConfig.getTomcatServerIp() + "/publicApi/update/commits";
 
+      //
+      String orderString = "";
+      List<String> ordersList = new ArrayList<>();
+      String[] ordersAndScores = aaDbManager.getAssignmentOrderAndScore(
+          dbManager.getAssignmentIdByName(assignmentName)).split(", ");
+      while (ordersList.size() == 0) {
+        ordersAndScores = aaDbManager.getAssignmentOrderAndScore(
+            dbManager.getAssignmentIdByName(assignmentName)).split(", ");
+      }
+      for (String orderAndScore : ordersAndScores) {
+        String[] token = orderAndScore.split(":");
+        ordersList.add(token[0]);
+      }
+      if (ordersList.isEmpty() != true) {
+        for (int i = 0; i < ordersList.size(); i++) {
+          orderString += ordersList.get(i);
+          if (i < ordersList.size() - 1) {
+            orderString += ", ";
+          }
+        }
+      }
+      //
+
       ProjectTypeEnum assignmentTypeEnum = dbManager.getAssignmentType(assignmentName);
 
       JenkinsProjectConfig jenkinsProjectConfig;
@@ -598,6 +630,9 @@ public class AssignmentService {
         jenkinsProjectConfig = new WebPipelineConfig(projectUrl, updateDbUrl,
                 username, assignmentName,
                 courseConfig.getTomcatServerIp() + "/publicApi/commits/screenshot/updateURL");
+      } else if ( assignmentTypeEnum.equals(ProjectTypeEnum.ANDROID) ) {
+        jenkinsProjectConfig = new AndroidPipelineConfig(projectUrl, updateDbUrl,
+                username, assignmentName, orderString);
       } else {
         jenkinsProjectConfig = JenkinsProjectConfigFactory
                 .getJenkinsProjectConfig(assignmentTypeEnum.getTypeName(), projectUrl, updateDbUrl,
