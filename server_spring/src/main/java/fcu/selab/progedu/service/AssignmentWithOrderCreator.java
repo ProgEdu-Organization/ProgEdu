@@ -201,8 +201,8 @@ public class AssignmentWithOrderCreator {
     Date date = tomcatService.getCurrentTime();
     assignment.setName(name);
     assignment.setCreateTime(date);
-    assignment.setReleaseTime(releaseTime);
-    assignment.setDeadline(deadline);
+    //assignment.setReleaseTime(releaseTime);
+    //assignment.setDeadline(deadline);
     assignment.setDescription(readMe);
     assignment.setType(projectType);
     adbManager.addAssignment(assignment);
