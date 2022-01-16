@@ -131,7 +131,7 @@
           <div class="form-group row">
             <label class="col-md-2 col-form-label" for="description"> Metrics : </label>
             <div class="col-md-9">
-              <textarea id="Metrics" name="Metrics" rows="3" class="form-control" #metricsbox type="text" 
+              <textarea id="Metrics" name="Metrics" rows="3" class="form-control" #metricsbox type="text"
                 [value]="selectedCategory?selectedCategory.metrics:''"  placeholder="Write down new Metrics..."></textarea>
             </div>
           </div>
@@ -239,13 +239,16 @@
         <div class="modal-body">
           <div class="form-group row">
             <label class="col-md-2 col-form-label" for="description"> Name : </label>
-            <label class="col-md-2 col-form-label" for="description" *ngIf="selectedAssessment">{{selectedAssessment.metrics}}</label>
+            <div class="col-md-9">
+              <textarea id="Metrics" name="metrics" rows="3" class="form-control" #assementMetricsEditBox type="text" [value]="selectedAssessment?selectedAssessment.metrics:''" placeholder="Write down new metrics name."></textarea>
+            </div>
+<!--            <label class="col-md-2 col-form-label" for="description" *ngIf="selectedAssessment">{{selectedAssessment.metrics}}</label>-->
           </div>
           <div class="form-group row">
             <label class="col-md-2 col-form-label" for="description"> Description : </label>
             <div class="col-md-9">
-              <textarea id="Description" name="Description" rows="3" class="form-control" #assementDescriptionEditBox
-                type="text" [value]="selectedAssessment?selectedAssessment.description:''"  
+              <textarea id="Description" name="Description" rows="1" class="form-control" #assementDescriptionEditBox
+                type="text" [value]="selectedAssessment?selectedAssessment.description:''"
                 placeholder="Write down new Description..."></textarea>
             </div>
           </div>
@@ -269,7 +272,7 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary" (click)="assessmentMetricsEditModal.hide();editAssessment(assementDescriptionEditBox.value
+          <button type="button" class="btn btn-primary" (click)="assessmentMetricsEditModal.hide();editAssessment(assementMetricsEditBox.value, assementDescriptionEditBox.value
           ,assementLinkEditBox.value,assementModeEditBox.value)">Submit</button>
         </div>
       </form>

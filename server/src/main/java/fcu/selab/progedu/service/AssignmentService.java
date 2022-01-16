@@ -34,10 +34,12 @@ import fcu.selab.progedu.db.ReviewRecordDbManager;
 import fcu.selab.progedu.db.ReviewSettingDbManager;
 import fcu.selab.progedu.db.ReviewSettingMetricsDbManager;
 import fcu.selab.progedu.db.ReviewStatusDbManager;
+import fcu.selab.progedu.jenkinsconfig.AndroidPipelineConfig;
 import fcu.selab.progedu.jenkinsconfig.JenkinsProjectConfig;
 import fcu.selab.progedu.jenkinsconfig.JenkinsProjectConfigFactory;
 import fcu.selab.progedu.jenkinsconfig.MavenPipelineConfig;
 import fcu.selab.progedu.jenkinsconfig.WebPipelineConfig;
+import fcu.selab.progedu.setting.WebAssignmentSetting;
 import fcu.selab.progedu.utils.JavaIoUtile;
 import org.json.JSONArray;
 import org.jsoup.nodes.Document;
@@ -73,6 +75,7 @@ import fcu.selab.progedu.utils.ExceptionUtil;
 import fcu.selab.progedu.utils.Linux;
 import fcu.selab.progedu.utils.ZipHandler;
 import fcu.selab.progedu.setting.MavenAssignmentSetting;
+import fcu.selab.progedu.service.AssignmentWithOrderCreator;
 
 @Path("assignment/")
 public class AssignmentService {
@@ -111,6 +114,7 @@ public class AssignmentService {
   private final String testDir = tempDir + "/tests/";
   private final String assignmentSettingDir = tempDir + "/assignmentSetting/";
   private final String mavenPomXmlSettingDir = tempDir + "/mavenPomXmlSetting/";
+  private final String webConfigXmlSettingDir = tempDir + "/webConfigXmlSetting/";
 
   // System.getProperty("catalina.base") is /usr/local/tomcat, in tomcat container
   private final String projectDir = System.getProperty("catalina.base");
@@ -254,9 +258,10 @@ public class AssignmentService {
     Response response = null;
     
     try {
-      createAssignment(assignmentName, releaseTime, deadline, readMe,
-          assignmentType, file, fileDetail);
-      addOrder(assignmentCompileOrdersAndScore, assignmentName);
+      AssignmentWithOrderCreator awoc = new AssignmentWithOrderCreator();
+      awoc.createAssignment(assignmentName, releaseTime, deadline, readMe,
+          assignmentType, file, fileDetail, assignmentCompileOrdersAndScore);
+      addOrder(assignmentCompileOrdersAndScore, assignmentName);    
 
       response = Response.ok().build();
     } catch (Exception e) {
@@ -302,7 +307,8 @@ public class AssignmentService {
     try {
 
       // 1. create assignment
-      createAssignment(assignmentName,
+      AssignmentWithoutOrderCreator awooc = new AssignmentWithoutOrderCreator();
+      awooc.createAssignment(assignmentName,
           releaseTime, deadline, readMe, assignmentType, file, fileDetail);
 
       // 2. create peer review setting
@@ -509,6 +515,14 @@ public class AssignmentService {
         ordersList.add("utf");
       } else if (token[0].equals("Coding Style Failure")) {
         ordersList.add("csf");
+      } else if (token[0].equals("HTML Failure")) {
+        ordersList.add("whf");
+      } else if (token[0].equals("CSS Failure")) {
+        ordersList.add("wsf");
+      } else if (token[0].equals("JavaScript Failure")) {
+        ordersList.add("wef");
+      } else if (token[0].equals("UI Test Failure")) {
+        ordersList.add("uitf");
       }
       scoresList.add(token[1]);
     }
@@ -745,13 +759,38 @@ public class AssignmentService {
               + "/webapi";
       String updateDbUrl = courseConfig.getTomcatServerIp() + "/publicApi/update/commits";
 
+      //
+      String orderString = "";
+      List<String> ordersList = new ArrayList<>();
+      String[] ordersAndScores = aaDbManager.getAssignmentOrderAndScore(
+          dbManager.getAssignmentIdByName(assignmentName)).split(", ");
+      while (ordersList.size() == 0) {
+        ordersAndScores = aaDbManager.getAssignmentOrderAndScore(
+            dbManager.getAssignmentIdByName(assignmentName)).split(", ");
+      }
+      for (String orderAndScore : ordersAndScores) {
+        String[] token = orderAndScore.split(":");
+        ordersList.add(token[0]);
+      }
+      if (ordersList.isEmpty() != true) {
+        for (int i = 0; i < ordersList.size(); i++) {
+          orderString += ordersList.get(i);
+          if (i < ordersList.size() - 1) {
+            orderString += ", ";
+          }
+        }
+      }
+      //
       ProjectTypeEnum assignmentTypeEnum = dbManager.getAssignmentType(assignmentName);
-
       JenkinsProjectConfig jenkinsProjectConfig;
       if ( assignmentTypeEnum.equals(ProjectTypeEnum.WEB) ) {
         jenkinsProjectConfig = new WebPipelineConfig(projectUrl, updateDbUrl,
                 username, assignmentName,
-                courseConfig.getTomcatServerIp() + "/publicApi/commits/screenshot/updateURL");
+                courseConfig.getTomcatServerIp() + "/publicApi/commits/screenshot/updateURL",
+            orderString);
+      } else if ( assignmentTypeEnum.equals(ProjectTypeEnum.ANDROID) ) {
+        jenkinsProjectConfig = new AndroidPipelineConfig(projectUrl, updateDbUrl,
+            username, assignmentName, orderString);
       } else {
         jenkinsProjectConfig = JenkinsProjectConfigFactory
                 .getJenkinsProjectConfig(assignmentTypeEnum.getTypeName(), projectUrl, updateDbUrl,
@@ -908,10 +947,22 @@ public class AssignmentService {
             + assignmentName + "_pom.xml");
         File assignmentSettingFile = new File(assignmentSettingDir
             + assignmentName + "/pom.xml");
-        
         JavaIoUtile.copyDirectoryCompatibilityMode(mavenPomXmlSettingFile, assignmentSettingFile);
 
         zipHandler.zipTestFolder(assignmentSettingDir + assignmentName);
+      } else if (fileType.equals("web")) {
+        String configWebXmlPath =
+            this.getClass().getResource("/jenkins/config_web.xml").getPath();
+
+        WebAssignmentSetting was = new WebAssignmentSetting();
+        was.createAssignmentSetting(ordersList, assignmentName,
+            webConfigXmlSettingDir);
+
+        File webConfigXmlSettingFile = new File(webConfigXmlSettingDir
+            + assignmentName + "_config_web.xml");
+        File assignmentSettingFile = new File(configWebXmlPath);
+        JavaIoUtile.copyDirectoryCompatibilityMode(
+            webConfigXmlSettingFile, assignmentSettingFile);
       }
       response = Response.ok().build();
     } catch (Exception e) {
@@ -934,7 +985,6 @@ public class AssignmentService {
   public Response getAssignmentFile(@QueryParam("fileName") String fileName) {
     String filePath = assignmentSettingDir + fileName + ".zip";
 
-    
     File file = new File(filePath);
 
     ResponseBuilder response = Response.ok((Object) file);

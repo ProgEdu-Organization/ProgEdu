@@ -60,6 +60,7 @@ export class ReviewMetricsManagementService {
   }
   editMetrics(assessment: Assessment): Observable<any> {
     const params = new HttpParams()
+    .set('metrics', assessment.metrics.toString())
     .set('id', assessment.id.toString())
     .set('mode', assessment.mode.toString())
     .set('description', assessment.description)

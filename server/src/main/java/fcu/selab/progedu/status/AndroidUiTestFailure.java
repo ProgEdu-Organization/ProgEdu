@@ -16,7 +16,7 @@ public class AndroidUiTestFailure implements Status {
     String feedbackEnd = "FAILURE: Build failed with an exception.";
     feedback = consoleText.substring(consoleText.indexOf(feedbackStart),
             consoleText.indexOf(feedbackEnd) + feedbackEnd.length());
-    /* UI Test Failure Will occur to differen place */
+    /* UI Test Failure Will occur to different place */
     return feedback.trim();
   }
 
