@@ -168,8 +168,7 @@ public class AssignmentWithoutOrderCreator {
       } else if (assignmentTypeEnum.equals(ProjectTypeEnum.PYTHON)) {
         jenkinsProjectConfig = new PythonPipelineConfig(projectUrl, updateDbUrl,
                 username, assignmentName);
-      }
-      else {
+      } else {
         jenkinsProjectConfig = JenkinsProjectConfigFactory
             .getJenkinsProjectConfig(assignmentTypeEnum.getTypeName(), projectUrl, updateDbUrl,
                 username, assignmentName);

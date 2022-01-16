@@ -14,10 +14,7 @@ import fcu.selab.progedu.db.AssignmentDbManager;
 import fcu.selab.progedu.db.AssignmentUserDbManager;
 import fcu.selab.progedu.db.UserDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
-import fcu.selab.progedu.jenkinsconfig.AndroidPipelineConfig;
-import fcu.selab.progedu.jenkinsconfig.JenkinsProjectConfig;
-import fcu.selab.progedu.jenkinsconfig.JenkinsProjectConfigFactory;
-import fcu.selab.progedu.jenkinsconfig.WebPipelineConfig;
+import fcu.selab.progedu.jenkinsconfig.*;
 import fcu.selab.progedu.utils.ExceptionUtil;
 import fcu.selab.progedu.utils.JavaIoUtile;
 import fcu.selab.progedu.utils.ZipHandler;
@@ -158,6 +155,9 @@ public class AssignmentWithOrderCreator {
       } else if ( assignmentTypeEnum.equals(ProjectTypeEnum.ANDROID) ) {
         jenkinsProjectConfig = new AndroidPipelineConfig(projectUrl, updateDbUrl,
             username, assignmentName, assignmentOrderAndScores);
+      } else if (assignmentTypeEnum.equals(ProjectTypeEnum.PYTHON)) {
+        jenkinsProjectConfig = new PythonPipelineConfig(projectUrl, updateDbUrl,
+                username, assignmentName); //TODO 要加ORDER
       } else {
         jenkinsProjectConfig = JenkinsProjectConfigFactory
             .getJenkinsProjectConfig(assignmentTypeEnum.getTypeName(), projectUrl, updateDbUrl,
