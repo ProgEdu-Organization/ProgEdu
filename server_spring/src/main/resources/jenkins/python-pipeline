@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage('pull environment') {
             steps {
-                sh 'docker pull yachi77/progedu-python:latest'
+                sh 'docker pull yachi77/progedu-python:v1'
             }
         }
         stage('get source') {
@@ -14,25 +14,30 @@ pipeline {
             }
         }
 
-        stage('Parallel'){
-            parallel {
-                stage("Build") {
-                    steps {
-                        sh 'python -m compileall {ProgEdu-project-name}'
-                    }
-                }
-                stage("Coding Style") {
-                    steps {
-                        sh 'flake8 --filename=*.py'
-                    }
-                }
-                 stage('Pytest'){
-                    steps{
-                        sh 'python -m  pytest {ProgEdu-project-name}'
-                    }
-                }
+        stage("Build") {
+            steps {
+                sh '''
+                docker run --privileged -i -v $PWD:/tmp yachi77/progedu-python:v1 bash -c 'cd tmp/; python -m compileall {ProgEdu-project-name}'
+                '''
             }
         }
+
+        stage("Coding Style") {
+            steps {
+                sh '''
+                docker run --privileged -i -v $PWD:/tmp yachi77/progedu-python:v1 bash -c ' cd tmp/; flake8 --filename=*.py'
+                '''
+
+            }
+        }
+         stage('Pytest'){
+            steps{
+                sh '''
+                docker run --privileged -i -v $PWD:/tmp yachi77/progedu-python:v1 bash -c 'cd tmp/; python -m  pytest {ProgEdu-project-name}'
+                '''
+            }
+        }
+       
     }
 
     post {
