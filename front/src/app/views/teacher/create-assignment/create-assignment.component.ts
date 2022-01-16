@@ -20,6 +20,7 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
   javaTabStatus: { isOpen: boolean } = { isOpen: false };
   androidTabStatus: { isOpen: boolean } = { isOpen: false };
   webTabStatus: { isOpen: boolean } = { isOpen: false };
+  pythonTabStatus: { isOpen: boolean } = { isOpen: false };
   autoAssignmentStatus: { isOpen: boolean } = { isOpen: true };
   peerReviewStatus: { isOpen: boolean } = { isOpen: false };
   disabled: boolean = false;
@@ -420,6 +421,7 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
     this.javaTabStatus.isOpen = false;
     this.webTabStatus.isOpen = false;
     this.androidTabStatus.isOpen = false;
+    this.pythonTabStatus.isOpen = false;
   }
 
   
