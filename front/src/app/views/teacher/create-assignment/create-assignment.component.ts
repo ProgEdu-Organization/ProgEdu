@@ -331,6 +331,8 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
       tempOrder = this.appOrder;
       tempStatusScore = this.appStatusScore;
       orderString = "Compile Failure:" + this.appStatusScore.get("Compile Failure") + ", ";
+    } else if (this.assignment.get('type').value == 'python') {
+      orderString = "Compile Failure:0";
     }
     for (let i = 0; i < tempOrder.length; i++) {
       if (tempStatusScore.get(tempOrder[i]) == undefined) {
@@ -348,7 +350,7 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
       this.progressModal.show();
       if (!this.peerReviewStatus.isOpen) {
         if (this.assignment.get('type').value == 'maven' || this.assignment.get('type').value == 'web'
-            || this.assignment.get('type').value == 'android') {
+            || this.assignment.get('type').value == 'android' || this.assignment.get('type').value == 'python') {
           this.createService.createAssignmentWithOrder(this.assignment).subscribe(
             (response) => {
               this.router.navigate(['./dashboard/assignmentManagement']);
