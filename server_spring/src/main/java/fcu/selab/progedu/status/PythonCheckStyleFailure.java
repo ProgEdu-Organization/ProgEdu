@@ -11,7 +11,6 @@ public class PythonCheckStyleFailure implements Status {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(PythonCheckStyleFailure.class);
 
-
   @Override
   public String extractFailureMsg(String consoleText) {
     try {
