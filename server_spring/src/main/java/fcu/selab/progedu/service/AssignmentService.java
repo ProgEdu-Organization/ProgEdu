@@ -600,7 +600,7 @@ public class AssignmentService {
               + "/webapi";
       String updateDbUrl = courseConfig.getTomcatServerIp() + "/publicApi/update/commits";
 
-      //
+      /*
       String orderString = "";
       List<String> ordersList = new ArrayList<>();
       String[] ordersAndScores = aaDbManager.getAssignmentOrderAndScore(
@@ -621,7 +621,7 @@ public class AssignmentService {
           }
         }
       }
-      //
+      */
 
       ProjectTypeEnum assignmentTypeEnum = dbManager.getAssignmentType(assignmentName);
 
@@ -632,7 +632,7 @@ public class AssignmentService {
                 courseConfig.getTomcatServerIp() + "/publicApi/commits/screenshot/updateURL");
       } else if ( assignmentTypeEnum.equals(ProjectTypeEnum.ANDROID) ) {
         jenkinsProjectConfig = new AndroidPipelineConfig(projectUrl, updateDbUrl,
-                username, assignmentName, orderString);
+                username, assignmentName);
       } else {
         jenkinsProjectConfig = JenkinsProjectConfigFactory
                 .getJenkinsProjectConfig(assignmentTypeEnum.getTypeName(), projectUrl, updateDbUrl,
