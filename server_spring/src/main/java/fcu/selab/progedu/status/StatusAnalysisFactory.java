@@ -42,7 +42,9 @@ public class StatusAnalysisFactory {
         return androidStatusFactory.getStatus(statusType);
 
       case PYTHON:
-
+        PythonStatusFactory pythonStatusFactory = new PythonStatusFactory();
+        return pythonStatusFactory.getStatus(statusType);
+        
       default: {
         return null;
       }
