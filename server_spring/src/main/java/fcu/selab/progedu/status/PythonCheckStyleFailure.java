@@ -18,9 +18,10 @@ public class PythonCheckStyleFailure implements Status {
     try {
       String checkstyleInfo;
       String checkstyleStart = "flake8 --filename=*.py";
-      String checkstyleEnd = "[Pipeline] }\r\n[Pipeline] // stage\r\n[Pipeline] stage\r\n[Pipeline] { (Pytest)\r\n";
-      checkstyleInfo = consoleText.substring(consoleText.indexOf(checkstyleStart),consoleText.indexOf(checkstyleEnd));
-      checkstyleInfo = checkstyleInfo.replace("flake8 --filename=*.py\r\n", "");
+      String checkstyleEnd = "[Pipeline] }\n";
+      checkstyleInfo = consoleText.substring(consoleText.indexOf(checkstyleStart));
+      checkstyleInfo = checkstyleInfo.substring(0, checkstyleInfo.indexOf(checkstyleEnd));
+      checkstyleInfo = checkstyleInfo.replace("flake8 --filename=*.py\n", "");
 
       return checkstyleInfo;
     } catch (Exception e) {

@@ -17,7 +17,13 @@ pipeline {
         stage("Build") {
             steps {
                 sh '''
+                echo "python build start"
+                '''
+                sh '''
                 docker run --privileged -i -v $PWD:/tmp yachi77/progedu-python:v1 bash -c 'cd tmp/; python -m compileall {ProgEdu-project-name}'
+                '''
+                sh '''
+                echo "python build end"
                 '''
             }
         }
@@ -25,15 +31,26 @@ pipeline {
         stage("Coding Style") {
             steps {
                 sh '''
+                echo "python check style start"
+                '''
+                sh '''
                 docker run --privileged -i -v $PWD:/tmp yachi77/progedu-python:v1 bash -c ' cd tmp/; flake8 --filename=*.py'
                 '''
-
+                sh '''
+                echo "python check style end"
+                '''
             }
         }
          stage('Pytest'){
             steps{
                 sh '''
+                echo "python test start"
+                '''
+                sh '''
                 docker run --privileged -i -v $PWD:/tmp yachi77/progedu-python:v1 bash -c 'cd tmp/; python -m  pytest {ProgEdu-project-name}'
+                '''
+                sh '''
+                echo "python test end"
                 '''
             }
         }
