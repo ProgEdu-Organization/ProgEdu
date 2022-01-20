@@ -285,7 +285,11 @@ public class AssignmentService {
           assessmentTimeList.add(assessmentTime);
         }
       }
+      /*
       createAssignment(assignmentName, readMe,
+              assignmentType, file, assessmentTimeList);
+      */
+      assignmentWithoutOrderCreator.createAssignment(assignmentName, readMe,
               assignmentType, file, assessmentTimeList);
       /*
       createAssignment(assignmentName,
