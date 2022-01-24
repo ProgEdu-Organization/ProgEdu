@@ -53,7 +53,6 @@ public class AssignmentWithoutOrderCreator {
   private CourseConfig courseConfig = CourseConfig.getInstance();
   private GitlabConfig gitlabData = GitlabConfig.getInstance();
 
-  private AssignmentDbManager dbManager = AssignmentDbManager.getInstance();
   private AssessmentTimeDbManager assessmentTimeDbManager = AssessmentTimeDbManager.getInstance();
   private AssignmentDbManager adbManager = AssignmentDbManager.getInstance();
   private UserDbManager userDbManager = UserDbManager.getInstance();
@@ -286,7 +285,7 @@ public class AssignmentWithoutOrderCreator {
     assignment.setType(projectType);
     assignment.setAssessmentTimeList(assessmentTimes);
 
-    int aId = dbManager.addAssignmentAndGetId(assignment);
+    int aId = adbManager.addAssignmentAndGetId(assignment);
     for(AssessmentTime assessmentTime : assignment.getAssessmentTimeList()) {
       assessmentTimeDbManager.addAssignmentTime(aId, assessmentTime);
     }

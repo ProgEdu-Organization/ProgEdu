@@ -117,11 +117,16 @@ public class AssignmentService {
     assessmentTimes.add(autoAssessmentAssignmentTime);
 
     try {
+      AssignmentWithOrderCreator assignmentWithOrderCreator = new AssignmentWithOrderCreator();
+      assignmentWithOrderCreator.createAssignment(assignmentName, readMe, assignmentType, file,
+          assessmentTimes, assignmentCompileOrdersAndScore);
+      addOrder(assignmentCompileOrdersAndScore, assignmentName);
+      /*
       createAssignment(assignmentName, readMe,
               assignmentType, file, assessmentTimes);
       if (!assignmentCompileOrdersAndScore.isEmpty()) {
         addOrder(assignmentCompileOrdersAndScore, assignmentName);
-      }
+      }*/
 
       return new ResponseEntity<Object>(headers, HttpStatus.OK);
     } catch (Exception e) {
@@ -285,10 +290,6 @@ public class AssignmentService {
           assessmentTimeList.add(assessmentTime);
         }
       }
-      /*
-      createAssignment(assignmentName, readMe,
-              assignmentType, file, assessmentTimeList);
-      */
       assignmentWithoutOrderCreator.createAssignment(assignmentName, readMe,
               assignmentType, file, assessmentTimeList);
       /*
