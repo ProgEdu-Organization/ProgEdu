@@ -10,6 +10,9 @@
           <span class="ovol UTF">
             Done
           </span>
+          <span class="ovol UNDER_REVIEW">
+            Under Review
+          </span>
           <span class="ovol BS">
             Reviewed
           </span>
@@ -23,7 +26,7 @@
             <tr>
               <th width="10%" class='text-left'>學生</th>
               <ng-container *ngFor='let col of assignmentTable'>
-                <th width="10%" *ngIf='isRelease(col.releaseTime)'>
+                <th width="10%" *ngIf='isRelease(col.assessmentTimes[0].startTime)'>
                   <div>{{col.name}}</div>
                 </th>
               </ng-container>
@@ -36,7 +39,7 @@
                 {{username}}
               </th>
               <ng-container *ngFor='let review of studentCommitRecord'>
-                <th *ngIf='isRelease(review.releaseTime)'>
+                <th *ngIf='isRelease(review.assessmentTimes[0].startTime)'>
                   <p id="{{username}}_{{review.assignmentName}}" class="circle {{review.reviewStatus}}">
                     <a *ngIf='!isNA(review)' id="{{username}}_{{review.hw}}_{{review.commitRecordCount}}"
                       href="#/studashboard/reviewAssignmentChoose?username={{username}}&assignmentName={{review.assignmentName}}">{{review.commitRecordCount}}</a>

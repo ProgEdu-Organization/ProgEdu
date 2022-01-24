@@ -6,7 +6,7 @@ public class ReviewRecord {
 
   private int id;
 
-  private int pmId;
+  private int rrsId;
 
   private int rsmId;
 
@@ -16,7 +16,9 @@ public class ReviewRecord {
 
   private String feedback;
 
-  private int reviewOrder;
+  private int teacherReview;
+
+  private int reviewScore;
 
   public int getId() {
     return id;
@@ -26,12 +28,12 @@ public class ReviewRecord {
     this.id = id;
   }
 
-  public int getPmId() {
-    return pmId;
+  public int getRrsId() {
+    return rrsId;
   }
 
-  public void setPmId(int pmId) {
-    this.pmId = pmId;
+  public void setRrsId(int rrsId) {
+    this.rrsId = rrsId;
   }
 
   public int getRsmId() {
@@ -66,11 +68,20 @@ public class ReviewRecord {
     this.feedback = feedback;
   }
 
-  public int getReviewOrder() {
-    return reviewOrder;
+  public int getTeacherReview() {
+    return this.teacherReview;
   }
 
-  public void setReviewOrder(int reviewOrder) {
-    this.reviewOrder = reviewOrder;
+  public void setTeacherReview(int teacherReview) {
+    this.teacherReview = teacherReview;
   }
+
+  public int getReviewScore() {
+    return this.reviewScore;
+  }
+
+  public void setReviewScore(int reviewScore) {
+    this.reviewScore = reviewScore;
+  }
+
 }

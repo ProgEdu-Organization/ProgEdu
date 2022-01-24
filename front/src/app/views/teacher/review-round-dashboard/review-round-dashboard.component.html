@@ -1,0 +1,58 @@
+<div class="animated fadeIn">
+  <div><a href="#/dashboard/reviewStatusDashboard"><button class="btn btn-primary" type="button">
+    < Back</button></a>
+  </div><br>
+  <div class='card'>
+    <div class='card-header'>
+      <div class='input-group'>
+        <span class="input-group-prepend">
+          <button class="btn btn-primary" type="button" [disabled]='true'><i class="fa fa-search"></i></button></span>
+        <input type='text' placeholder="Search" class='form-control col-md-2' [(ngModel)]='search'>
+        <div class='ml-auto'>
+          <span class="ovol NB">
+            Initial
+          </span>
+          <span class="ovol POR">
+            Process of Review
+          </span>
+          <span class="ovol CPF">
+            Unfinished Review
+          </span>
+          <span class="ovol BS">
+            Completed Reviewed
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class='card-body' style="overflow-x:auto;">
+      <div>
+        <h3 class='text-left'>{{assignmentName}}</h3>
+      </div>
+      <table class='table table-striped' style="text-align:center;">
+        <thead>
+          <tr>
+            <th width="15%" class='text-left'>學生</th>
+            <th width="10%" *ngFor='let round of round;let i = index'>Round {{i + 1}}</th>
+            <th class='text-left'></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor='let student of allReviewRoundStatus | filter:search'>
+            <th class='text-left' width="10%">
+              {{student.name}}
+            </th>
+            <th *ngFor='let review of student.reviewRound'>
+              <p id="{{student.username}}_{{review.assignmentName}}" class="square {{getStatus(review.status, review.amount, review.count)}}">
+                <a *ngIf='!isNA(review)'
+                  id="{{student.username}}_{{review.assignmentName}}_{{review.count}}"
+                  style="color: white;">{{review.count}}/{{review.amount}}</a>
+                <a *ngIf='isNA(review)'>N/A</a>
+              </p>
+            </th>
+            <th class='text-left'></th>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

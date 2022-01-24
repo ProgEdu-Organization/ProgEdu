@@ -13,7 +13,7 @@ import { StudentEventsService } from '../../../services/student-events-log.servi
   templateUrl: './studashboard.component.html'
 })
 export class StudashboardComponent implements OnInit {
-  public assignmentTable: Array<any> = new Array<any>();
+  public assignmentTable: Array<any> = [{assessmentTimeList:[{startTime:"", endTime:""}]}];
   public studentCommitRecord: JSON;
   public username: string;
   constructor(private studashboardService: StudashboardService, private timeService: TimeService,

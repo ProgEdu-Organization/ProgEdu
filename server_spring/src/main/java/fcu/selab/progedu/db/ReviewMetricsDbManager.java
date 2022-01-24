@@ -187,9 +187,9 @@ public class ReviewMetricsDbManager {
    * @param description description
    * @param link        link
    */
-  public void editReviewMetricsById(int id, int mode, String description, String link)
+  public void editReviewMetricsById(int id, String metrics, int mode, String description, String link)
       throws SQLException {
-    String query = "UPDATE Review_Metrics SET mode = ?, description = ?, link = ? WHERE id = ?";
+    String query = "UPDATE Review_Metrics SET metrics = ?, mode = ?, description = ?, link = ? WHERE id = ?";
     Connection conn = null;
     PreparedStatement preStmt = null;
 
@@ -197,10 +197,11 @@ public class ReviewMetricsDbManager {
       conn = database.getConnection();
       preStmt = conn.prepareStatement(query);
 
-      preStmt.setInt(1, mode);
-      preStmt.setString(2, description);
-      preStmt.setString(3, link);
-      preStmt.setInt(4, id);
+      preStmt.setString(1, metrics);
+      preStmt.setInt(2, mode);
+      preStmt.setString(3, description);
+      preStmt.setString(4, link);
+      preStmt.setInt(5, id);
       preStmt.executeUpdate();
     } finally {
       CloseDBUtil.closeAll(preStmt, conn);

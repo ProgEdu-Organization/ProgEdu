@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, SystemJsNgModuleLoader } from '@angular/c
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { Router } from '@angular/router';
 import { AssignmentManagementService } from './assignment-management.service';
-import { FormBuilder, Validators, FormGroup } from '@angular/forms';
+import { FormBuilder, Validators, FormGroup, FormArray } from '@angular/forms';
 import { TimeService } from '../../../services/time.service'
 import { HttpErrorResponse } from '@angular/common/http';
 
@@ -31,6 +31,9 @@ export class AssignmentManagementComponent implements OnInit {
   type: string = 'Waiting';
   isDeleteProgress = false;
   showAssessment: boolean = false;
+  isPeerReview: boolean = false;
+
+  reviewRoundTime = [{startTime: '', endTime:'', reviewStartTime:'', reviewEndTime:''}];
 
   order = [];
   statusScore = new Map([["Compile Failure", "0"]]);
@@ -54,6 +57,12 @@ export class AssignmentManagementComponent implements OnInit {
       name: [''],
       releaseTime: [, Validators.required],
       deadline: [, Validators.required],
+      reviewTime: this.fb.array(this.reviewRoundTime.map(round => this.fb.group({
+        startTime: [, Validators.required],
+        endTime: [, Validators.required],
+        reviewStartTime: [, Validators.required],
+        reviewEndTime: [, Validators.required]
+      }))),
       description: ['', Validators.required],
       file: [],
       rememberMe: [true],
@@ -67,6 +76,7 @@ export class AssignmentManagementComponent implements OnInit {
     const releaseTime = 'releaseTime';
     const deadline = 'deadline';
     const description = 'description';
+    const reviewTime = 'reviewTime';
 
     this.assignmentForm.get(releaseTime).valueChanges.subscribe(
       val => {
@@ -82,6 +92,12 @@ export class AssignmentManagementComponent implements OnInit {
     this.assignmentForm.get(description).valueChanges.subscribe(
       val => {
         val.length !== 0 ? this.showIsValidById(description) : this.hideIsInvalidById(description);
+      }
+    );
+
+    this.assignmentForm.get(reviewTime).valueChanges.subscribe(
+      val => {
+        val.length !== 0? this.reviewTimeCheck():this.reviewTimeInValid();
       }
     );
   }
@@ -194,18 +210,93 @@ export class AssignmentManagementComponent implements OnInit {
     $('#' + id).removeClass('is-invalid');
   }
 
+  showIsInvalidById(id: string) {
+    $('#' + id).removeClass('is-valid');
+    $('#' + id).addClass('is-invalid');
+  }
+
   hideIsInvalidById(id: string) {
     $('#' + id).removeClass('is-valid');
     $('#' + id).addClass('is-invalid');
   }
 
+  reviewTimeInValid() {
+    for(let round = 0; round < this.roundTimeArray.length; round++) {
+      this.showIsInvalidById(round.toString() + '_startTime');
+      this.showIsInvalidById(round.toString() + '_endTime');
+      this.showIsInvalidById(round.toString() + '_reviewStartTime');
+      this.showIsInvalidById(round.toString() + '_reviewEndTime');
+    }
+  }
+
+  reviewTimeCheck() {
+    for(let round = 0; round < this.roundTimeArray.length; round++) {
+      this.showIsValidById(round.toString() + '_startTime');
+      this.showIsValidById(round.toString() + '_endTime');
+      this.showIsValidById(round.toString() + '_reviewStartTime');
+      this.showIsValidById(round.toString() + '_reviewEndTime');
+
+      // auto assessment release time should be after previous review end time
+      if (round > 0 && Date.parse(this.roundTimeArray[round].get('startTime').value) < Date.parse(this.roundTimeArray[round - 1].get('reviewEndTime').value)) {
+        this.showIsInvalidById(round.toString() + '_startTime');
+      }
+      // auto assessment deadline should be after auto assessment release time
+      if (Date.parse(this.roundTimeArray[round].get('endTime').value) < Date.parse(this.roundTimeArray[round].get('startTime').value)) {
+        this.showIsInvalidById(round.toString() + '_endTime');
+      }
+      // review start time should be after deadline
+      if (Date.parse(this.roundTimeArray[round].get('reviewStartTime').value) < Date.parse(this.roundTimeArray[round].get('endTime').value)) {
+        this.showIsInvalidById(round.toString() + '_reviewStartTime');
+      }
+      // review end time should be after review start time
+      if (Date.parse(this.roundTimeArray[round].get('reviewEndTime').value) < Date.parse(this.roundTimeArray[round].get('reviewStartTime').value)) {
+        this.showIsInvalidById(round.toString() + '_reviewEndTime');
+      }
+    }
+  }
+
+  get roundTimeArray() {
+    return (<FormArray>this.assignmentForm.get('reviewTime')).controls;
+  }
+
   setSelectAssignment(assignment: any) {
+    const assignmentTime = <FormArray>assignment.assessmentTimes;
+    (<FormArray>this.assignmentForm.get('reviewTime')).clear();
     if (assignment) {
       this.assignmentName = assignment.name;
       this.assignmentForm.get('description').setValue(assignment.description);
-      this.assignmentForm.get('releaseTime').setValue(this.timeService.getUTCTime(assignment.releaseTime).toISOString().slice(0, 17) + '00');
-      this.assignmentForm.get('deadline').setValue(this.timeService.getUTCTime(assignment.deadline).toISOString().slice(0, 17) + '00');
+      this.assignmentForm.get('releaseTime').setValue(this.timeService.getUTCTime(assignmentTime[0].startTime).toISOString().slice(0, 17) + '00');
+      this.assignmentForm.get('deadline').setValue(this.timeService.getUTCTime(assignmentTime[0].endTime).toISOString().slice(0, 17) + '00');
     }
+    if (assignmentTime.length > 1) {
+      this.isPeerReview = true;
+      let round = 0
+      for(let i = 0; i < assignmentTime.length; i++) {
+        if(i % 2 == 0) {
+          this.addRoundNums();
+          this.roundTimeArray[round].get('startTime').setValue(this.timeService.getUTCTime(assignmentTime[i].startTime).toISOString().slice(0, 17) + '00');
+          this.roundTimeArray[round].get('endTime').setValue(this.timeService.getUTCTime(assignmentTime[i].endTime).toISOString().slice(0, 17) + '00');
+        } else {
+          this.roundTimeArray[round].get('reviewStartTime').setValue(this.timeService.getUTCTime(assignmentTime[i].startTime).toISOString().slice(0, 17) + '00');
+          this.roundTimeArray[round].get('reviewEndTime').setValue(this.timeService.getUTCTime(assignmentTime[i].endTime).toISOString().slice(0, 17) + '00');
+          round++;
+        }
+      }
+    } else {
+      this.isPeerReview = false;
+    }
+  }
+
+  addRoundNums() {
+    const now_time = Date.now() - (new Date().getTimezoneOffset() * 60 * 1000);
+    (<FormArray>this.assignmentForm.get('reviewTime')).push(
+      this.fb.group({
+        startTime: new Date(now_time).toISOString().slice(0, 17) + '00',
+        endTime: new Date(now_time).toISOString().slice(0, 17) + '00',
+        reviewStartTime: new Date(now_time).toISOString().slice(0, 17) + '00',
+        reviewEndTime: new Date(now_time).toISOString().slice(0, 17) + '00'
+      })
+    );
   }
 
   editAssignment() {

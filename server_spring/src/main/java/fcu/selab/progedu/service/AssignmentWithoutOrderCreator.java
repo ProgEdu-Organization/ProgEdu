@@ -6,9 +6,11 @@ import fcu.selab.progedu.config.JenkinsConfig;
 import fcu.selab.progedu.conn.GitlabService;
 import fcu.selab.progedu.conn.JenkinsService;
 import fcu.selab.progedu.conn.TomcatService;
+import fcu.selab.progedu.data.AssessmentTime;
 import fcu.selab.progedu.data.Assignment;
 import fcu.selab.progedu.data.ProjectTypeEnum;
 import fcu.selab.progedu.data.User;
+import fcu.selab.progedu.db.AssessmentTimeDbManager;
 import fcu.selab.progedu.db.AssignmentAssessmentDbManager;
 import fcu.selab.progedu.db.AssignmentDbManager;
 import fcu.selab.progedu.db.AssignmentUserDbManager;
@@ -51,6 +53,7 @@ public class AssignmentWithoutOrderCreator {
   private CourseConfig courseConfig = CourseConfig.getInstance();
   private GitlabConfig gitlabData = GitlabConfig.getInstance();
 
+  private AssessmentTimeDbManager assessmentTimeDbManager = AssessmentTimeDbManager.getInstance();
   private AssignmentDbManager adbManager = AssignmentDbManager.getInstance();
   private UserDbManager userDbManager = UserDbManager.getInstance();
   private AssignmentUserDbManager auDbManager = AssignmentUserDbManager.getInstance();
@@ -135,6 +138,63 @@ public class AssignmentWithoutOrderCreator {
     JavaIoUtile.deleteDirectory(new File(uploadDir));
   }
 
+  /**
+   * Create assignment
+   *
+   * @param assignmentName assignment name
+   * @param readMe         read me
+   * @param assignmentType assignment type
+   * @param file           file
+   * @throws Exception abc
+   */
+  public void createAssignment(String assignmentName,
+                               String readMe, String assignmentType,
+                               MultipartFile file, List<AssessmentTime> assessmentTimes) {
+
+    // 1. Create root project and get project id and url
+    gitlabService.createRootProject(assignmentName);
+
+    // 2. Clone the project
+    final String cloneDirectoryPath = gitlabService.cloneProject(gitlabRootUsername,
+        assignmentName);
+
+    // 3. Store Zip File to uploads folder if file is not empty
+    String filePath = "";
+    try {
+      filePath = tomcatService.storeFileToUploadsFolder(file.getInputStream(), file.getName());
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
+
+    // 4. Unzip the uploaded file to cloneDirectoryPath
+    zipHandler.unzipFile(filePath, cloneDirectoryPath);
+
+    // 5. Add .gitkeep if folder is empty.
+    JavaIoUtile.addFile2EmptyFolder(new File(cloneDirectoryPath), ".gitkeep");
+
+    if (!readMe.equals("<br>") || !"".equals(readMe) || !readMe.isEmpty()) {
+      // Add readme to folder
+      JavaIoUtile.createUtf8FileFromString(readMe, new File(cloneDirectoryPath, "README.md"));
+    }
+
+    // 8. git push
+    gitlabService.pushProject(cloneDirectoryPath);
+
+    // 9. import project information to database
+    ProjectTypeEnum projectTypeEnum = ProjectTypeEnum.getProjectTypeEnum(assignmentType);
+    addProject(assignmentName, readMe, projectTypeEnum, assessmentTimes);
+
+
+    List<User> users = userService.getStudents();
+    for (User user : users) {
+      createAssignmentSettingsV2(user.getUsername(), assignmentName);
+    }
+
+    // 10. remove project file
+    JavaIoUtile.deleteDirectory(new File(uploadDir));
+  }
+
   private void createAssignmentSettingsV2(String username, String assignmentName) {
 
     addAuid(username, assignmentName);
@@ -207,11 +267,27 @@ public class AssignmentWithoutOrderCreator {
     Date date = tomcatService.getCurrentTime();
     assignment.setName(name);
     assignment.setCreateTime(date);
-    assignment.setReleaseTime(releaseTime);
-    assignment.setDeadline(deadline);
+    //assignment.setReleaseTime(releaseTime);
+    //assignment.setDeadline(deadline);
     assignment.setDescription(readMe);
     assignment.setType(projectType);
 
     adbManager.addAssignment(assignment);
+  }
+
+  public void addProject(String name, String readMe,
+                         ProjectTypeEnum projectType, List<AssessmentTime> assessmentTimes) {
+    Assignment assignment = new Assignment();
+    Date date = tomcatService.getCurrentTime();
+    assignment.setName(name);
+    assignment.setCreateTime(date);
+    assignment.setDescription(readMe);
+    assignment.setType(projectType);
+    assignment.setAssessmentTimeList(assessmentTimes);
+
+    int aId = adbManager.addAssignmentAndGetId(assignment);
+    for(AssessmentTime assessmentTime : assignment.getAssessmentTimeList()) {
+      assessmentTimeDbManager.addAssignmentTime(aId, assessmentTime);
+    }
   }
 }
