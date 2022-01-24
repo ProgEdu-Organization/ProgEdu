@@ -11,10 +11,15 @@ import java.util.Date;
 import java.util.List;
 
 import fcu.selab.progedu.data.ReviewSetting;
+import fcu.selab.progedu.utils.ExceptionUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ReviewSettingDbManager {
 
   private static ReviewSettingDbManager dbManager = new ReviewSettingDbManager();
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(ReviewSettingDbManager.class);
 
   public static ReviewSettingDbManager getInstance() {
     return dbManager;
@@ -27,15 +32,11 @@ public class ReviewSettingDbManager {
    *
    * @param aid         assignment Id
    * @param amount      reviewer amount
-   * @param releaseTime releaseTime
-   * @param deadline    deadline
+   * @param round       review round
    */
-  public void insertReviewSetting(int aid, int amount, Date releaseTime,
-                                  Date deadline) throws SQLException {
-    String query = "INSERT INTO Review_Setting(aId, amount, releaseTime, deadline)"
-        + " VALUES(?,?,?,?)";
-    Timestamp releaseTimestamp = new Timestamp(releaseTime.getTime());
-    Timestamp deadlineTimestamp = new Timestamp(deadline.getTime());
+  public void insertReviewSetting(int aid, int amount, int round) throws SQLException {
+    String query = "INSERT INTO Review_Setting(aId, amount, round)"
+        + " VALUES(?, ?, ?)";
     Connection conn = null;
     PreparedStatement preStmt = null;
 
@@ -45,8 +46,7 @@ public class ReviewSettingDbManager {
 
       preStmt.setInt(1, aid);
       preStmt.setInt(2, amount);
-      preStmt.setTimestamp(3, releaseTimestamp);
-      preStmt.setTimestamp(4, deadlineTimestamp);
+      preStmt.setInt(3, round);
       preStmt.executeUpdate();
     } finally {
       CloseDBUtil.closeAll(preStmt, conn);
@@ -85,6 +85,7 @@ public class ReviewSettingDbManager {
    *  Get all review setting
    */
   public List<ReviewSetting> getAllReviewSetting() throws SQLException {
+    //TODO reviewSetting 的時間要拔掉
     String query = "SELECT * FROM Review_Setting";
     List<ReviewSetting> reviewSettingList = new ArrayList<>();
     Connection conn = null;
@@ -101,13 +102,9 @@ public class ReviewSettingDbManager {
         int id = rs.getInt("id");
         int aid = rs.getInt("aId");
         int amount = rs.getInt("amount");
-        Date releaseTime = rs.getTimestamp("releaseTime");
-        Date deadline = rs.getTimestamp("deadline");
         reviewSetting.setId(id);
         reviewSetting.setaId(aid);
         reviewSetting.setAmount(amount);
-        reviewSetting.setReleaseTime(releaseTime);
-        reviewSetting.setDeadline(deadline);
       }
     } finally {
       CloseDBUtil.closeAll(rs, preStmt, conn);
@@ -137,18 +134,43 @@ public class ReviewSettingDbManager {
       while (rs.next()) {
         int id = rs.getInt("id");
         int amount = rs.getInt("amount");
-        Date releaseTime = rs.getTimestamp("releaseTime");
-        Date deadline = rs.getTimestamp("deadline");
+        int round = rs.getInt("round");
         reviewSetting.setId(id);
         reviewSetting.setaId(aid);
         reviewSetting.setAmount(amount);
-        reviewSetting.setReleaseTime(releaseTime);
-        reviewSetting.setDeadline(deadline);
+        reviewSetting.setRound(round);
       }
     } finally {
       CloseDBUtil.closeAll(rs, preStmt, conn);
     }
     return reviewSetting;
+  }
+
+  public int getReviewRoundByAId(int aId) {
+    String sql = "SELECT round FROM Review_Setting WHERE aId = ?";
+    int reviewRound = 0;
+
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
+
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
+      preStmt.setInt(1, aId);
+      rs =  preStmt.executeQuery();
+
+      while (rs.next()) {
+        reviewRound = rs.getInt("round");
+      }
+    } catch (SQLException e) {
+      LOGGER.error(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.debug(e.toString());
+    } finally {
+      CloseDBUtil.closeAll(rs, preStmt, conn);
+    }
+    return reviewRound;
   }
 
 

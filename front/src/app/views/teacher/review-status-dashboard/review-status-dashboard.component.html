@@ -9,6 +9,9 @@
           <span class="ovol NB">
             Initial
           </span>
+          <span class="ovol POR">
+            Process of Review
+          </span>
           <span class="ovol CPF">
             Unfinished Review
           </span>
@@ -22,12 +25,24 @@
       <table class='table table-striped' style="text-align:center;">
         <thead>
           <tr>
-            <th width="10%" class='text-left'>學生</th>
+            <th width="15%" class='text-left'></th>
             <th width="10%" *ngFor='let col of assignmentTable'>{{col.name}}</th>
             <th class='text-left'></th>
           </tr>
+          <tr>
+            <th width="15%" class='text-left'>review人數 / <br>PR round次數</th>
+            <th width="10%" *ngFor='let review of assignmentTable'>
+              <p class="circle initialization">
+                <a *ngIf='!isNA(review)'
+                  id="{{review.name}}_{{review.amount}}_{{review.round}}"
+                  style="color: white;" href="#/dashboard/reviewRoundDashboard?assignmentName={{review.name}}">{{review.amount}}/{{review.round}}</a>
+                <a *ngIf='isNA(review)'>N/A</a>
+              </p>
+            </th>
+            <th class='text-left'></th>
+          </tr>
         </thead>
-        <tbody>
+        <!--<tbody>
           <tr *ngFor='let student of allStudentCommitRecord | filter:search'>
             <th class='text-left' width="10%">
               {{student.name}}
@@ -42,7 +57,7 @@
             </th>
             <th class='text-left'></th>
           </tr>
-        </tbody>
+        </tbody>-->
       </table>
     </div>
   </div>

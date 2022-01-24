@@ -14,6 +14,8 @@ public class ReviewSetting {
 
   private Date deadline;
 
+  private int round;
+
   public int getId() {
     return id;
   }
@@ -52,5 +54,13 @@ public class ReviewSetting {
 
   public void setReleaseTime(Date releaseTime) {
     this.releaseTime = releaseTime;
+  }
+
+  public int getRound() {
+    return round;
+  }
+
+  public void setRound(int round) {
+    this.round = round;
   }
 }

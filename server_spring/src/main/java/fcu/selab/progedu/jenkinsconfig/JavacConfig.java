@@ -8,6 +8,7 @@ import org.w3c.dom.Document;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
+import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -16,7 +17,8 @@ public class JavacConfig extends JenkinsProjectConfig {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(JavacConfig.class);
 
-  URL baseUrl = this.getClass().getResource("/jenkins/config_javac.xml");
+//  URL baseUrl = this.getClass().getResource("/jenkins/config_javac.xml");
+  InputStream baseConfig = this.getClass().getResourceAsStream("/jenkins/config_javac.xml");
   Document xmlDocument;
 
   /**
@@ -31,13 +33,13 @@ public class JavacConfig extends JenkinsProjectConfig {
                      String username, String projectName) {
 
     try {
-      Path basePath = Paths.get(this.baseUrl.toURI());
-      File baseFile = basePath.toFile();
+//      Path basePath = Paths.get(this.baseUrl.toURI());
+//      File baseFile = basePath.toFile();
 
       DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 //    factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl",true); // Todo 我不知道這個要不要刪掉, 先註解起來保留
       DocumentBuilder builder = factory.newDocumentBuilder();
-      this.xmlDocument = builder.parse(baseFile);
+      this.xmlDocument = builder.parse(baseConfig);
 
       setGitLabProjectUrl(projectUrl);
       setProgEduUpdateUrl(updateDbUrl);

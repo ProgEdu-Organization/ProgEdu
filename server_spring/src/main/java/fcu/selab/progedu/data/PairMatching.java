@@ -10,8 +10,6 @@ public class PairMatching {
 
   private int reviewId;
 
-  private ReviewStatusEnum reviewStatusEnum;
-
   public int getId() {
     return id;
   }
@@ -36,11 +34,4 @@ public class PairMatching {
     this.reviewId = reviewId;
   }
 
-  public ReviewStatusEnum getReviewStatusEnum() {
-    return reviewStatusEnum;
-  }
-
-  public void setReviewStatusEnum(ReviewStatusEnum reviewStatusEnum) {
-    this.reviewStatusEnum = reviewStatusEnum;
-  }
 }

@@ -11,16 +11,15 @@ import { allStudentDatas } from '../../../containers/default-layout/_nav';
 })
 export class ReviewStatusDashboardComponent implements OnInit {
 
-
   public allStudentDatas = allStudentDatas;
   public data: Array<any> = new Array<any>();
   public assignmentTable: Array<any> = new Array<any>();
-  public allStudentCommitRecord: JSON;
+  //public allStudentCommitRecord: JSON;
   public search;
   constructor(private dashboardService: ReviewStatusDashboardService) { }
   async ngOnInit() {
     await this.getAllAssignments();
-    await this.getAllStudent();
+    //await this.getAllStudent();
   }
 
   async getAllAssignments() {
@@ -29,7 +28,7 @@ export class ReviewStatusDashboardComponent implements OnInit {
     });
   }
 
-  async getAllStudent() {
+  /*async getAllStudent() {
     // clear student array
     this.dashboardService.getAllStudentCommitRecord().subscribe(response => {
       this.allStudentCommitRecord = response.allReviewStatus;
@@ -38,7 +37,8 @@ export class ReviewStatusDashboardComponent implements OnInit {
       }
 
     });
-  }
+  }*/
+
   isNA(commit: any) {
     if (JSON.stringify(commit.commitRecord) !== '{}') {
       return false;

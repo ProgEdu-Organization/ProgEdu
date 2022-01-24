@@ -22,6 +22,8 @@ export class ReviewStatusAssignmentChooseComponent implements OnInit {
 
   username: string;
   assignmentName: string;
+  round: string;
+  order: string;
   allReviewDetail: JSON;
   reviewMetrics: JSON; // Queston
   currentReviewPagination: Array<number>;
@@ -67,6 +69,8 @@ export class ReviewStatusAssignmentChooseComponent implements OnInit {
   async ngOnInit() {
     this.username = this.route.snapshot.queryParamMap.get('username');
     this.assignmentName = this.route.snapshot.queryParamMap.get('assignmentName');
+    this.round = this.route.snapshot.queryParamMap.get('round');
+    this.order = this.route.snapshot.queryParamMap.get('order');
     // review status assignment viewed event emit
     const viewed_event: StudentEvent = {
       name: 'progedu.review_status.assignment.viewed',
@@ -75,7 +79,7 @@ export class ReviewStatusAssignmentChooseComponent implements OnInit {
     };
     this.emitStudentEvent(viewed_event);
     // review record
-    this.reviewStatusAssignmentChooseService.getReviewDetail(this.username, this.assignmentName).subscribe(response => {
+    /*this.reviewStatusAssignmentChooseService.getReviewDetail(this.username, this.assignmentName).subscribe(response => {
       this.allReviewDetail = response.allStatusDetail;
       const count = Object(this.allReviewDetail).length;
       this.currentReviewPagination = new Array(count);
@@ -84,6 +88,10 @@ export class ReviewStatusAssignmentChooseComponent implements OnInit {
         this.currentReviewPagination[i] = 1;
         this.maxReviewPagination[i] = this.allReviewDetail[i].totalCount;
       }
+    });*/
+    // review round record
+    this.reviewStatusAssignmentChooseService.getReviewRoundDetail(this.username, this.assignmentName, this.round, this.order).subscribe(response => {
+      this.allReviewDetail = response.roundStatusDetail;
     });
     // get review metrics
     this.reviewStatusAssignmentChooseService.getReviewMetrics(this.assignmentName).subscribe(response => {
@@ -239,7 +247,7 @@ export class ReviewStatusAssignmentChooseComponent implements OnInit {
       this.reviewRecords[i] = reviewRecord;
     }
     this.reviewStatusAssignmentChooseService.createReviewRecord(this.username, this.allReviewDetail[this.reviewOne].name,
-      this.assignmentName, { allReviewRecord: this.reviewRecords }).subscribe(
+      this.assignmentName, { allReviewRecord: this.reviewRecords }, this.round, false).subscribe(
         response => {
           window.location.reload();
         },
@@ -278,6 +286,23 @@ export class ReviewStatusAssignmentChooseComponent implements OnInit {
   }
   setReviewOne(index: number) {
     this.reviewOne = index;
+  }
+
+  getFeedbackScoreDetail(score: number) {
+    switch(score) {
+      case 0:
+        return "沒有意義的審查意見"
+      case 1:
+        return "較沒有幫助的審查意見"
+      case 2:
+        return "一般的審查意見"
+      case 3:
+        return "有幫助的審查意見"
+      case 4:
+        return "非常有幫助且詳細的審查意見"
+      default:
+        return ""
+    }
   }
 
 }
