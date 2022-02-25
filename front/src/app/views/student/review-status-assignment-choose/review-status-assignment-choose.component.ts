@@ -167,21 +167,21 @@ export class ReviewStatusAssignmentChooseComponent implements OnInit {
   }
 
   checkReviewForm() {
-    // check if feedback is empty
+    // check if answer is empty
     let i = 0;
-    for (i = 0 ; i < this.feedbackInputLast.length ; i++) {
-      if (this.feedbackInputLast[i] === '') {
-        this.submitDisabled = true;
-        return;
-      }
-    }
-    // check if anser is empty
     const yesRadios = this.reviewYesRadio.toArray();
     const noRadios = this.reviewNoRadio.toArray();
     for (i = 0 ; i < yesRadios.length ; i++ ) {
       if (yesRadios[i].nativeElement.checked === false && noRadios[i].nativeElement.checked === false) {
           this.submitDisabled = true;
           return;
+      }
+    }
+    // check if feedback is empty
+    for (i = 0 ; i < this.feedbackInputLast.length ; i++) {
+      if (noRadios[i].nativeElement.checked === true && this.feedbackInputLast[i] === '') {
+        this.submitDisabled = true;
+        return;
       }
     }
     if ( i === yesRadios.length ) {
