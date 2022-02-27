@@ -310,12 +310,17 @@ public class JenkinsService {
 
   private String filterCommitMessage(String console) {
     StringBuilder sb = new StringBuilder(console);
-    String startStr = "Commit message: ";
-    String endStr = "\n";
-    int startIndex = console.indexOf(startStr);
-    int endIndex = console.indexOf(endStr, startIndex);
-    // Delete commit message
-    sb.delete(startIndex, endIndex);
+    try {
+      String startStr = "Commit message: ";
+      String endStr = "\n";
+      int startIndex = console.indexOf(startStr);
+      int endIndex = console.indexOf(endStr, startIndex);
+      // Delete commit message
+      sb.delete(startIndex, endIndex);
+    } catch (Exception e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    }
     return sb.toString();
   }
 
