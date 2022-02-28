@@ -53,5 +53,4 @@ public class PythonUnitTestFailure implements Status  {
     }
     return feedbackList;
   }
-  }
 }

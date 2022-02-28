@@ -13,7 +13,18 @@ public class PythonCompileFailure implements Status {
 
    @Override
    public String extractFailureMsg(String consoleText) {
-     return null;
+     try {
+       String compileInfo;
+       String compileInfoStart = "python -m compileall";
+       String compileInfoEnd = "[Pipeline] }\n";
+       compileInfoInfo = consoleText.substring(consoleText.indexOf(checkstyleStart));
+       compileInfoInfo = checkstyleInfo.substring(0, checkstyleInfo.indexOf(checkstyleEnd));
+       return compileInfo;
+     } catch (Exception e) {
+       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+       LOGGER.error(e.getMessage());
+       return "ExtractFailureMsg Method Error";
+     }
    }
 
    @Override
