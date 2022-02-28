@@ -1,10 +1,13 @@
 package fcu.selab.progedu.status;
 
 import fcu.selab.progedu.data.FeedBack;
+import fcu.selab.progedu.utils.ExceptionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class PythonCompileFailure implements Status {
 
@@ -17,8 +20,8 @@ public class PythonCompileFailure implements Status {
        String compileInfo;
        String compileInfoStart = "python -m compileall";
        String compileInfoEnd = "[Pipeline] }\n";
-       compileInfoInfo = consoleText.substring(consoleText.indexOf(checkstyleStart));
-       compileInfoInfo = checkstyleInfo.substring(0, checkstyleInfo.indexOf(checkstyleEnd));
+       compileInfo = consoleText.substring(consoleText.indexOf(compileInfoStart));
+       compileInfo = compileInfo.substring(0, compileInfo.indexOf(compileInfoEnd));
        return compileInfo;
      } catch (Exception e) {
        LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
@@ -29,6 +32,29 @@ public class PythonCompileFailure implements Status {
 
    @Override
    public ArrayList<FeedBack> formatExamineMsg(String consoleText) {
-     return null;
+     ArrayList<FeedBack> feedbackList = new ArrayList<>();
+
+     try {
+       Pattern pattern = Pattern.compile("(Compiling)(.*?)(...)(\n)(File )(.*?)(line )(\\d{2})(\n)(.*?)(\n)(.*?)(\n)(.*?)(:)(.*?)(\n)");
+       Matcher matcher = pattern.matcher(consoleText);
+       while (matcher.find()) {
+         String fileName = matcher.group(6);
+         String line = matcher.group(8);
+         String message = matcher.group(10);
+
+         feedbackList.add(new FeedBack(
+             StatusEnum.COMPILE_FAILURE, fileName, line, message, "", ""));
+       }
+       if (feedbackList.isEmpty()) {
+         feedbackList.add(
+             new FeedBack(StatusEnum.COMPILE_FAILURE,
+                 "Please notify teacher or assistant this situation, thank you!", ""));
+       }
+     } catch (Exception e) {
+       feedbackList.add(
+           new FeedBack(StatusEnum.COMPILE_FAILURE,
+               "UnitTest ArrayList error", e.getMessage()));
+     }
+     return feedbackList;
    }
 }
