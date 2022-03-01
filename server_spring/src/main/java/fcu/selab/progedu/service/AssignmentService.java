@@ -18,6 +18,7 @@ import fcu.selab.progedu.utils.JavaIoUtile;
 import fcu.selab.progedu.utils.ZipHandler;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
+import net.minidev.json.JSONValue;
 import org.apache.commons.io.IOUtils;
 import org.gitlab.api.models.GitlabProject;
 import org.jsoup.Jsoup;
@@ -34,10 +35,8 @@ import org.jsoup.nodes.Document;
 
 import java.io.*;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.TimeZone;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.springframework.web.multipart.MultipartFile;
@@ -66,9 +65,11 @@ public class AssignmentService {
   private AssignmentAssessmentDbManager aaDbManager = AssignmentAssessmentDbManager.getInstance();
   private CommitStatusDbManager csDbManager = CommitStatusDbManager.getInstance();
   private ReviewRecordDbManager rrDbManager = ReviewRecordDbManager.getInstance();
-
+  private AssessmentTimeDbManager assessmentTimeDbManager = AssessmentTimeDbManager.getInstance();
   private CommitRecordDbManager crDbManager = CommitRecordDbManager.getInstance();
   private ScreenshotRecordDbManager srDbManager = ScreenshotRecordDbManager.getInstance();
+  private AssessmentActionDbManager assessmentActionDbManager = AssessmentActionDbManager.getInstance();
+  private ReviewRecordStatusDbManager rrsDbManager = ReviewRecordStatusDbManager.getInstance();
 
 
   private final String tempDir = System.getProperty("java.io.tmpdir");
@@ -108,12 +109,24 @@ public class AssignmentService {
 
     HttpHeaders headers = new HttpHeaders();
     //
+    List<AssessmentTime> assessmentTimes = new ArrayList<>();
+    AssessmentTime autoAssessmentAssignmentTime = new AssessmentTime();
+    autoAssessmentAssignmentTime.setAssessmentActionEnum(AssessmentActionEnum.AUTO);
+    autoAssessmentAssignmentTime.setStartTime(releaseTime);
+    autoAssessmentAssignmentTime.setEndTime(deadline);
+    assessmentTimes.add(autoAssessmentAssignmentTime);
 
     try {
       AssignmentWithOrderCreator assignmentWithOrderCreator = new AssignmentWithOrderCreator();
-      assignmentWithOrderCreator.createAssignment(assignmentName, releaseTime, deadline, readMe, assignmentType,
-          file, assignmentCompileOrdersAndScore);
+      assignmentWithOrderCreator.createAssignment(assignmentName, readMe, assignmentType, file,
+          assessmentTimes, assignmentCompileOrdersAndScore);
       addOrder(assignmentCompileOrdersAndScore, assignmentName);
+      /*
+      createAssignment(assignmentName, readMe,
+              assignmentType, file, assessmentTimes);
+      if (!assignmentCompileOrdersAndScore.isEmpty()) {
+        addOrder(assignmentCompileOrdersAndScore, assignmentName);
+      }*/
 
       return new ResponseEntity<Object>(headers, HttpStatus.OK);
     } catch (Exception e) {
@@ -159,14 +172,13 @@ public class AssignmentService {
   @PostMapping("/create")
   public ResponseEntity<Object> createAssignment( // 把readme 的圖片處理拿掉 因為太複雜了
           @RequestParam("assignmentName") String assignmentName,
-          @RequestParam("releaseTime") Date releaseTime, @RequestParam("deadline") Date deadline,
           @RequestParam("readMe") String readMe, @RequestParam("fileRadio") String assignmentType,
-          @RequestParam("file") MultipartFile file) {
+          @RequestParam("file") MultipartFile file,
+          @RequestParam("assessmentTimes") List<AssessmentTime> assessmentTimes) {
 
 
     HttpHeaders headers = new HttpHeaders();
     //
-
 
     // 1. Create root project and get project id and url
     gitlabService.createRootProject(assignmentName);
@@ -201,7 +213,7 @@ public class AssignmentService {
 
     // 9. import project information to database
     ProjectTypeEnum projectTypeEnum = ProjectTypeEnum.getProjectTypeEnum(assignmentType);
-    addProject(assignmentName, releaseTime, deadline, readMe, projectTypeEnum);
+    addProject(assignmentName, readMe, projectTypeEnum, assessmentTimes);
 
 
     List<User> users = userService.getStudents();
@@ -217,38 +229,78 @@ public class AssignmentService {
   @GetMapping("getAllAssignments")
   public ResponseEntity<Object> getAllAssignments() {
 
-
     List<Assignment> assignments = dbManager.getAllAssignment();
+
     JSONObject ob = new JSONObject();
-    ob.put("allAssignments", assignments);
+    JSONArray jsonArray = new JSONArray();
+    for(Assignment assignment : assignments) {
+      int aId = assignment.getId();
+      JSONObject jsonObject = new JSONObject();
+      jsonObject.put("id", aId);
+      jsonObject.put("name", assignment.getName());
+      jsonObject.put("createTime", assignment.getCreateTime());
+      JSONArray jsonArrayTime = new JSONArray();
+      for (AssessmentTime assessmentTime : assignment.getAssessmentTimeList()) {
+        JSONObject jsonObjectTime = new JSONObject();
+        jsonObjectTime.put("assessmentAction", assessmentTime.getAssessmentActionEnum().toString());
+        jsonObjectTime.put("startTime", assessmentTime.getStartTime());
+        jsonObjectTime.put("endTime", assessmentTime.getEndTime());
+        jsonArrayTime.add(jsonObjectTime);
+      }
+      jsonObject.put("assessmentTimes", jsonArrayTime);
+      jsonObject.put("description", assignment.getDescription());
+      jsonObject.put("type", assignment.getType());
+      jsonObject.put("display", assignment.isDisplay());
+      jsonArray.add(jsonObject);
+    }
+    ob.put("allAssignments", jsonArray);
     return new ResponseEntity<Object>(ob, HttpStatus.OK);
   }
 
   @PostMapping("peerReview/create")
   public ResponseEntity<Object> createPeerReview(
           @RequestParam("assignmentName") String assignmentName,
-          @RequestParam("releaseTime") Date releaseTime,
-          @RequestParam("deadline") Date deadline,
           @RequestParam("readMe") String readMe,
           @RequestParam("fileRadio") String assignmentType,
           @RequestParam("file") MultipartFile file,
           @RequestParam("amount") int amount,
-          @RequestParam("reviewStartTime") Date reviewStartTime,
-          @RequestParam("reviewEndTime") Date reviewEndTime,
-          @RequestParam("metrics") String metrics) {
-
+          @RequestParam("metrics") String metrics,
+          @RequestParam("assessmentTimes") String assessmentTimes) {
 
     HttpHeaders headers = new HttpHeaders();
     //
     try {
       AssignmentWithoutOrderCreator assignmentWithoutOrderCreator = new AssignmentWithoutOrderCreator();
       // 1. create assignment
-      assignmentWithoutOrderCreator.createAssignment(assignmentName,
-          releaseTime, deadline, readMe, assignmentType, file);
-
+      JSONArray jsonArray = (JSONArray) JSONValue.parse(assessmentTimes);
+      SimpleDateFormat formatter = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", Locale.ENGLISH);
+      List<AssessmentTime> assessmentTimeList = new ArrayList<>();
+      int totalRounds = jsonArray.size();
+      for(int i = 0; i < jsonArray.size(); i++) {
+        JSONObject object = (JSONObject) jsonArray.get(i);
+        for(String assessmentAction : object.keySet()) {
+          JSONObject timeObject = (JSONObject) object.get(assessmentAction);
+          Date startTime = formatter.parse(timeObject.get("startTime").toString());
+          Date endTime = formatter.parse(timeObject.get("endTime").toString());
+          AssessmentTime assessmentTime = new AssessmentTime();
+          int actionId = assessmentActionDbManager.getAssessmentActionIdByAction(assessmentAction);
+          assessmentTime.setAssessmentActionEnum(assessmentActionDbManager.getAssessmentActionById(actionId));
+          assessmentTime.setStartTime(startTime);
+          assessmentTime.setEndTime(endTime);
+          assessmentTimeList.add(assessmentTime);
+        }
+      }
+      assignmentWithoutOrderCreator.createAssignment(assignmentName, readMe,
+              assignmentType, file, assessmentTimeList);
+      /*
+      createAssignment(assignmentName,
+              releaseTime, deadline, readMe, assignmentType, file);
+      */
       // 2. create peer review setting
       int assignmentId = dbManager.getAssignmentIdByName(assignmentName);
-      rsDbManager.insertReviewSetting(assignmentId, amount, reviewStartTime, reviewEndTime);
+      //rsDbManager.insertReviewSetting(assignmentId, amount, reviewStartTime, reviewEndTime);
+
+      rsDbManager.insertReviewSetting(assignmentId, amount, totalRounds);
 
       // 3. set review metrics for specific peer review
       int reviewSettingId = rsDbManager.getReviewSettingIdByAid(assignmentId);
@@ -260,8 +312,20 @@ public class AssignmentService {
       // 4. set random reviewer and review status for each assignment_user
       randomPairMatching(amount, assignmentName);
 
+      // 5. set review record status init
+      List<AssignmentUser> assignmentUserList = auDbManager.getAssignmentUserListByAid(assignmentId);
+      for (AssignmentUser assignmentUser : assignmentUserList) {
+        List<PairMatching> pairMatchingList = pmDbManager.getPairMatchingByAuId(assignmentUser.getId());
+        for (PairMatching pairMatching : pairMatchingList) {
+          for (int j = 1; j <= totalRounds; j++) {
+            rrsDbManager.insertReviewRecordStatus(pairMatching.getId(), ReviewStatusEnum.INIT, j);
+          }
+        }
+      }
+
       return new ResponseEntity<Object>(headers, HttpStatus.OK);
     } catch (Exception e) {
+      e.printStackTrace();
       return new ResponseEntity<Object>(e.getMessage(), headers, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
@@ -276,37 +340,48 @@ public class AssignmentService {
     try {
       List<Assignment> assignmentList = dbManager.getAllReviewAssignment();
       TimeZone.setDefault(TimeZone.getTimeZone("Asia/Taipei"));
+      SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
       Date current = new Date();
+      /*
       for (Assignment assignment : assignmentList) {
         if (current.compareTo(assignment.getReleaseTime()) >= 0) {
           updatePairMatchingStatusByAid(assignment.getId());
         }
       }
+      */
       JSONObject result = new JSONObject();
       List<JSONObject> array = new ArrayList<>();
       for (Assignment assignment : assignmentList) {
         JSONObject ob = new JSONObject();
-        ReviewSetting reviewSetting = rsDbManager.getReviewSetting(assignment.getId());
         ob.put("id", assignment.getId());
         ob.put("name", assignment.getName());
         ob.put("createTime", assignment.getCreateTime());
-        ob.put("deadline", assignment.getDeadline());
-        ob.put("releaseTime", assignment.getReleaseTime());
         ob.put("display", assignment.isDisplay());
         ob.put("description", assignment.getDescription());
-        ob.put("reviewReleaseTime", reviewSetting.getReleaseTime());
-        ob.put("reviewDeadline", reviewSetting.getDeadline());
+        ob.put("amount", rsDbManager.getReviewSetting(assignment.getId()).getAmount());
+        ob.put("round", rsDbManager.getReviewSetting(assignment.getId()).getRound());
+        JSONArray jsonArray = new JSONArray();
+        for(AssessmentTime assessmentTime : assignment.getAssessmentTimeList()) {
+          JSONObject assessmentObject = new JSONObject();
+          assessmentObject.put("assessmentAction", assessmentTime.getAssessmentActionEnum().toString());
+          assessmentObject.put("startTime", dateFormat.format(assessmentTime.getStartTime()));
+          assessmentObject.put("endTime", dateFormat.format(assessmentTime.getEndTime()));
+          jsonArray.add(assessmentObject);
+        }
+        ob.put("assessmentTimes", jsonArray);
+
         array.add(ob);
       }
       result.put("allReviewAssignments", array);
 
       return new ResponseEntity<Object>(result, headers, HttpStatus.OK);
     } catch (Exception e) {
+      e.printStackTrace();
       return new ResponseEntity<Object>(e.getMessage(), headers, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
-
+  //TODO pairMatching 沒有 status 要拔掉
   public void updatePairMatchingStatusByAid(int aid) throws SQLException {
     List<AssignmentUser> assignmentUserList = auDbManager.getAssignmentUserListByAid(aid);
 
@@ -316,12 +391,13 @@ public class AssignmentService {
         List<PairMatching> pmList = pmDbManager.getPairMatchingByAuId(assignmentUser.getId());
 
         for (PairMatching pairMatching: pmList) {
-
+          /*
           if (pairMatching.getReviewStatusEnum().equals(ReviewStatusEnum.INIT)) {
             int status = reviewStatusDbManager
                     .getReviewStatusIdByStatus(ReviewStatusEnum.UNCOMPLETED.getTypeName());
             pmDbManager.updatePairMatchingById(status, pairMatching.getId());
           }
+          */
         }
       }
     }
@@ -333,7 +409,6 @@ public class AssignmentService {
 
     HttpHeaders headers = new HttpHeaders();
     //
-
     try {
       List<Assignment> assignmentList = dbManager.getAutoAssessment();
       JSONObject ob = new JSONObject();
@@ -350,11 +425,19 @@ public class AssignmentService {
 
     HttpHeaders headers = new HttpHeaders();
     //
-
+    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     Assignment assignment = dbManager.getAssignmentByName(assignmentName);
     JSONObject ob = new JSONObject();
     ob.put("description", assignment.getDescription());
-    ob.put("deadline", assignment.getDeadline());
+    JSONArray jsonArray = new JSONArray();
+    for(AssessmentTime assessmentTime : assignment.getAssessmentTimeList()) {
+      JSONObject assessmentTimeObject = new JSONObject();
+      assessmentTimeObject.put("assessmentAction", assessmentTime.getAssessmentActionEnum().toString());
+      assessmentTimeObject.put("startTime", dateFormat.format(assessmentTime.getStartTime()));
+      assessmentTimeObject.put("endTime", dateFormat.format(assessmentTime.getEndTime()));
+      jsonArray.add(assessmentTimeObject);
+    }
+    ob.put("assessmentTimes", jsonArray);
     ob.put("type", assignment.getType());
     return new ResponseEntity<Object>(ob, headers, HttpStatus.OK);
   }
@@ -391,36 +474,63 @@ public class AssignmentService {
   @PostMapping("edit")
   public ResponseEntity<Object> editProject(
           @RequestParam("assignmentName") String assignmentName,
-          @RequestParam("releaseTime") Date releaseTime, @RequestParam("deadline") Date deadline,
           @RequestParam("readMe") String readMe,
-          @RequestParam("order") String assignmentCompileOrdersAndScore) {
+          @RequestParam("order") String assignmentCompileOrdersAndScore,
+          @RequestParam("assessmentTimes") String assessmentTimes) {
 
     HttpHeaders headers = new HttpHeaders();
     //
+    try {
+      int aid = dbManager.getAssignmentIdByName(assignmentName);
+      List<AssessmentTime> assessmentTimeList = assessmentTimeDbManager.getAssessmentTimeByName(assignmentName);
 
-    int aid = dbManager.getAssignmentIdByName(assignmentName);
-    dbManager.editAssignment(deadline, releaseTime, readMe, aid);
+      dbManager.editAssignment(readMe, aid);
+      JSONArray jsonArray = (JSONArray) JSONValue.parse(assessmentTimes);
+      SimpleDateFormat formatter = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", Locale.ENGLISH);
 
+      for(int i = 0; i < jsonArray.size(); i++) {
+        JSONObject object = (JSONObject) jsonArray.get(i);
+        int round = 0;
+        for(String assessmentAction : object.keySet()) {
+          int index = i * 2 + round;
+          int aaId = assessmentActionDbManager.getAssessmentActionIdByAction(assessmentAction);
+          JSONObject timeObject = (JSONObject) object.get(assessmentAction);
+          Date startTime = formatter.parse(timeObject.get("startTime").toString());
+          Date endTime = formatter.parse(timeObject.get("endTime").toString());
 
+          assessmentTimeList.get(index).setAssessmentActionEnum(assessmentActionDbManager.getAssessmentActionById(aaId));
+          assessmentTimeList.get(index).setStartTime(startTime);
+          assessmentTimeList.get(index).setEndTime(endTime);
 
-    if (!assignmentCompileOrdersAndScore.isEmpty()) {
-      List<Integer> aaIds = aaDbManager.getAssignmentAssessmentIdByaId(aid);
-      List<Integer> scoresList = new ArrayList<>();
-
-      //order: Compile Failure:10, Coding Style Failure:80, Unit Test Failure:10
-      String[] ordersAndScores = assignmentCompileOrdersAndScore.split(", ");
-      for (String orderAndScore : ordersAndScores) {
-        String[] token = orderAndScore.split(":");
-        scoresList.add(Integer.valueOf(token[1]));
+          round++;
+        }
       }
-      for (int i = 0; i < scoresList.size(); i++) {
-        aaDbManager.updateScore(aid,
-                aaDbManager.getAssessmentOrder(aaIds.get(i)),
-                scoresList.get(i));
+
+      for(AssessmentTime assignmentTime : assessmentTimeList) {
+        assessmentTimeDbManager.editAssignmentTime(assignmentTime);
       }
+
+      if (!assignmentCompileOrdersAndScore.isEmpty()) {
+        List<Integer> aaIds = aaDbManager.getAssignmentAssessmentIdByaId(aid);
+        List<Integer> scoresList = new ArrayList<>();
+
+        //order: Compile Failure:10, Coding Style Failure:80, Unit Test Failure:10
+        String[] ordersAndScores = assignmentCompileOrdersAndScore.split(", ");
+        for (String orderAndScore : ordersAndScores) {
+          String[] token = orderAndScore.split(":");
+          scoresList.add(Integer.valueOf(token[1]));
+        }
+        for (int i = 0; i < scoresList.size(); i++) {
+          aaDbManager.updateScore(aid,
+                  aaDbManager.getAssessmentOrder(aaIds.get(i)),
+                  scoresList.get(i));
+        }
+      }
+
+      return new ResponseEntity<Object>(headers, HttpStatus.OK);
+    } catch (Exception e) {
+      return new ResponseEntity<Object>(headers, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-
-    return new ResponseEntity<Object>(headers, HttpStatus.OK);
   }
 
   @PostMapping("delete")
@@ -457,18 +567,20 @@ public class AssignmentService {
     }
   }
 
-  public void addProject(String name, Date releaseTime, Date deadline, String readMe,
-                         ProjectTypeEnum projectType) {
+  public void addProject(String name, String readMe,
+                         ProjectTypeEnum projectType, List<AssessmentTime> assessmentTimes) {
     Assignment assignment = new Assignment();
     Date date = tomcatService.getCurrentTime();
     assignment.setName(name);
     assignment.setCreateTime(date);
-    assignment.setReleaseTime(releaseTime);
-    assignment.setDeadline(deadline);
     assignment.setDescription(readMe);
     assignment.setType(projectType);
+    assignment.setAssessmentTimeList(assessmentTimes);
 
-    dbManager.addAssignment(assignment);
+    int aId = dbManager.addAssignmentAndGetId(assignment);
+    for(AssessmentTime assessmentTime : assignment.getAssessmentTimeList()) {
+      assessmentTimeDbManager.addAssignmentTime(aId, assessmentTime);
+    }
   }
 
   private void createAssignmentSettingsV2(String username, String assignmentName) {
@@ -493,7 +605,7 @@ public class AssignmentService {
               + "/webapi";
       String updateDbUrl = courseConfig.getTomcatServerIp() + "/publicApi/update/commits";
 
-      //
+      /*
       String orderString = "";
       List<String> ordersList = new ArrayList<>();
       String[] ordersAndScores = aaDbManager.getAssignmentOrderAndScore(
@@ -514,7 +626,7 @@ public class AssignmentService {
           }
         }
       }
-      //
+      */
 
       ProjectTypeEnum assignmentTypeEnum = dbManager.getAssignmentType(assignmentName);
 
@@ -525,7 +637,7 @@ public class AssignmentService {
                 courseConfig.getTomcatServerIp() + "/publicApi/commits/screenshot/updateURL");
       } else if ( assignmentTypeEnum.equals(ProjectTypeEnum.ANDROID) ) {
         jenkinsProjectConfig = new AndroidPipelineConfig(projectUrl, updateDbUrl,
-                username, assignmentName, orderString);
+                username, assignmentName);
       } else {
         jenkinsProjectConfig = JenkinsProjectConfigFactory
                 .getJenkinsProjectConfig(assignmentTypeEnum.getTypeName(), projectUrl, updateDbUrl,
@@ -533,7 +645,6 @@ public class AssignmentService {
       }
 
       JenkinsService jenkinsService = JenkinsService.getInstance();
-
       jenkinsService.createJobV2(jobName, jenkinsProjectConfig.getXmlConfig());
       jenkinsService.buildJob(jobName);
 
@@ -583,8 +694,10 @@ public class AssignmentService {
         PairMatching pairMatching = new PairMatching();
         pairMatching.setAuId(assignmentUserList.get(mod).getId());
         pairMatching.setReviewId(userList.get(order).getId());
+        //TODO pairMatching 沒有 status 改到 reviewRecord status
+        /*
         pairMatching.setReviewStatusEnum(ReviewStatusEnum.INIT);
-
+        */
         insertPairMatchingList.add(pairMatching);
       }
 
@@ -600,7 +713,9 @@ public class AssignmentService {
   }
 
   /**
-   *  delete assignment form pair review db
+   * delete assignment form pair review db.
+   * @param assignmentName assignment name
+   * @throws SQLException SQLException
    */
   public void deleteReviewDatabase(String assignmentName) throws SQLException {
     int aid = dbManager.getAssignmentIdByName(assignmentName);
@@ -610,7 +725,11 @@ public class AssignmentService {
     for (AssignmentUser au : auList) {
       List<PairMatching> pmList = pmDbManager.getPairMatchingByAuId(au.getId());
       for (PairMatching pm : pmList) {
-        rrDbManager.deleteReviewRecordByPmId(pm.getId());
+        List<ReviewRecordStatus> reviewRecordStatusList = rrsDbManager.getAllReviewRecordStatusByPairMatchingId(pm.getId());
+        for (ReviewRecordStatus reviewRecordStatus : reviewRecordStatusList) {
+          rrDbManager.deleteReviewRecordByRrsId(reviewRecordStatus.getId());
+        }
+        rrsDbManager.deleteReviewRecordStatusByPmId(pm.getId());
         pmDbManager.deletePairMatchingById(pm.getId());
       }
     }
@@ -637,6 +756,7 @@ public class AssignmentService {
       crDbManager.deleteRecord(auid);
     }
     auDbManager.deleteAssignmentUserByAid(aid);// Assignment_User
+    assessmentTimeDbManager.deleteAssignmentTimeByAid(aid);//Assignment_Time
     dbManager.deleteAssignment(name);// Assignment
 
   }
@@ -833,7 +953,5 @@ public class AssignmentService {
     }
 
   }
-
-
 
 }

@@ -12,7 +12,7 @@ const commitRow = 5;
 export class CommitRecordComponent implements OnInit, OnChanges {
   @Input() type: string;
   @Input() showCommiter: boolean = false;
-  @Input() commits: Array<any>;
+  @Input() commits: Array<any> = [{totalCommit:""}];
   @Input() feedbacks: JSON;
   @Input() screenshotUrls: Array<any>;
   @Output() messageToEmit = new EventEmitter<string>();
@@ -23,7 +23,7 @@ export class CommitRecordComponent implements OnInit, OnChanges {
   displayCommits: Array<any>;
   currentPagination: number = 1;
   maxPagination: number;
-  commitNumber;
+  commitNumber: number = 0;
   totalCommits: number;
   constructor(private route: ActivatedRoute, private assignmentService: AssignmentChoosedService, 
     private timeService: TimeService, private projectService: ProjectChoosedService) { }
@@ -33,10 +33,6 @@ export class CommitRecordComponent implements OnInit, OnChanges {
     this.assignmentName = this.route.snapshot.queryParamMap.get('assignmentName');
     this.groupName = this.route.snapshot.queryParamMap.get('groupName');
     this.projectName = this.route.snapshot.queryParamMap.get('projectName');
-    if (this.commitNumber == null) {
-      this.commitNumber = this.commits[0].totalCommit;
-      this.updateFeedback(this.commitNumber);
-    }
   }
 
   ngOnChanges() {
@@ -44,9 +40,9 @@ export class CommitRecordComponent implements OnInit, OnChanges {
       this.changePagination(this.currentPagination);
       this.maxPagination = Math.ceil(this.commits[0].totalCommit / commitRow);
     }
-    if (this.commitNumber == null) {
-      this.commitNumber = this.commits[0].totalCommit;
-      this.totalCommits = this.commits[0].totalCommit;
+    if (this.commitNumber == 0 && this.commits[0].totalCommit !== undefined) {
+      this.commitNumber = Number(this.commits[0].totalCommit);
+      this.totalCommits = Number(this.commits[0].totalCommit);
       //this.updateFeedback(this.commitNumber);
     }
   }

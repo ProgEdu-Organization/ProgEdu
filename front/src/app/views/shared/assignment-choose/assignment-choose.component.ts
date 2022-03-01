@@ -12,8 +12,8 @@ export class AssignmentChooseComponent implements OnInit {
   username: string;
   assignmentName: string;
 
-  assignment = { type: '', deadline: new Date() };
-  commits: Array<any> = [];
+  assignment = { type: '', description:'', assessmentTimes: new Array([]) };
+  commits: Array<any> = [{totalCommit:""}];
   gitlabAssignmentURL: string;
   feedbacks: JSON;
   selectedCommitNumber;
@@ -90,7 +90,7 @@ export class AssignmentChooseComponent implements OnInit {
   getAssignment() {
     this.assignmentService.getAssignment(this.assignmentName).subscribe(response => {
       this.assignment = response;
-      //this.assignment.deadline = this.timeService.getUTCTime(this.assignment.deadline);
+      //this.assignment.assessmentTimes[0].endTime = this.timeService.getUTCTime(this.assignment.assessmentTimes[0].endTime);
     });
   }
 

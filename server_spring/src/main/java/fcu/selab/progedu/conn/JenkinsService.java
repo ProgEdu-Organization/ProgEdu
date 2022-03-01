@@ -11,13 +11,16 @@ import java.util.Base64;
 import java.util.List;
 
 import org.apache.http.Consts;
+import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
 import org.json.JSONObject;
@@ -49,6 +52,7 @@ public class JenkinsService {
       jenkinsRootUsername = jenkinsConfig.getJenkinsRootUsername();
       jenkinsRootPassword = jenkinsConfig.getJenkinsRootPassword();
       jenkinsApiToken = jenkinsConfig.getJenkinsApiToken();
+
     } catch (LoadConfigFailureException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
@@ -178,7 +182,9 @@ public class JenkinsService {
       post.setEntity(se);
 
       HttpClient client = new DefaultHttpClient();
-      client.execute(post);
+      HttpResponse response = client.execute(post);
+      System.out.println(response);
+      System.out.println(response.getEntity());
 
     } catch (IOException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
@@ -304,12 +310,17 @@ public class JenkinsService {
 
   private String filterCommitMessage(String console) {
     StringBuilder sb = new StringBuilder(console);
-    String startStr = "Commit message: ";
-    String endStr = "\n";
-    int startIndex = console.indexOf(startStr);
-    int endIndex = console.indexOf(endStr, startIndex);
-    // Delete commit message
-    sb.delete(startIndex, endIndex);
+    try {
+      String startStr = "Commit message: ";
+      String endStr = "\n";
+      int startIndex = console.indexOf(startStr);
+      int endIndex = console.indexOf(endStr, startIndex);
+      // Delete commit message
+      sb.delete(startIndex, endIndex);
+    } catch (Exception e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    }
     return sb.toString();
   }
 

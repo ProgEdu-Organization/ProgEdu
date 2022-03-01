@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import fcu.selab.progedu.data.AssessmentTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,6 +20,7 @@ import fcu.selab.progedu.utils.ExceptionUtil;
 
 public class AssignmentDbManager {
   AssignmentTypeDbManager atDb = AssignmentTypeDbManager.getInstance();
+  AssessmentTimeDbManager assessmentTimeDbManager = AssessmentTimeDbManager.getInstance();
 
   private static AssignmentDbManager dbManager = new AssignmentDbManager();
 
@@ -40,16 +42,17 @@ public class AssignmentDbManager {
    * @param assignment Project
    */
   public void addAssignment(Assignment assignment) {
-    String sql = "INSERT INTO Assignment(`name`, `createTime`, `deadline`, `description`,"
-        + " `type`, `releaseTime`, `display`)"
-        + " VALUES(?, ?, ?, ?, ?, ?, ?)";
+    String sql = "INSERT INTO Assignment(`name`, `createTime`, `description`,"
+        + " `type`, `display`)"
+        + " VALUES(?, ?, ?, ?, ?)";
     // Todo above [hasTemplate, zipChecksum, zipUrl] is not need
 
     int typeId = atDb.getTypeIdByName(assignment.getType().getTypeName());
     Timestamp createTime = new Timestamp(assignment.getCreateTime().getTime());
+    /*
     Timestamp deadlineTime = new Timestamp(assignment.getDeadline().getTime());
     Timestamp releaseTime = new Timestamp(assignment.getReleaseTime().getTime());
-
+    */
     Connection conn = null;
     PreparedStatement preStmt = null;
 
@@ -60,11 +63,9 @@ public class AssignmentDbManager {
 
       preStmt.setString(1, assignment.getName());
       preStmt.setTimestamp(2, createTime);
-      preStmt.setTimestamp(3, deadlineTime);
-      preStmt.setString(4, assignment.getDescription());
-      preStmt.setInt(5, typeId);
-      preStmt.setTimestamp(6, releaseTime);
-      preStmt.setBoolean(7, assignment.isDisplay());
+      preStmt.setString(3, assignment.getDescription());
+      preStmt.setInt(4, typeId);
+      preStmt.setBoolean(5, assignment.isDisplay());
       preStmt.executeUpdate();
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
@@ -72,6 +73,57 @@ public class AssignmentDbManager {
     } finally {
       CloseDBUtil.closeAll(preStmt, conn);
     }
+  }
+
+  /**
+   * Add assignment to database and get auto increase id
+   *
+   * @param assignment Project
+   */
+  public int addAssignmentAndGetId(Assignment assignment) {
+    String sql = "INSERT INTO Assignment(`name`, `createTime`, `description`,"
+            + " `type`, `display`)"
+            + " VALUES(?, ?, ?, ?, ?)";
+
+    String sqlGetId = "SELECT LAST_INSERT_ID() as id";
+    // Todo above [hasTemplate, zipChecksum, zipUrl] is not need
+
+    int id = 0;
+    int typeId = atDb.getTypeIdByName(assignment.getType().getTypeName());
+    Timestamp createTime = new Timestamp(assignment.getCreateTime().getTime());
+    /*
+    Timestamp deadlineTime = new Timestamp(assignment.getDeadline().getTime());
+    Timestamp releaseTime = new Timestamp(assignment.getReleaseTime().getTime());
+    */
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
+
+    try {
+
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
+      preStmt.setString(1, assignment.getName());
+      preStmt.setTimestamp(2, createTime);
+      preStmt.setString(3, assignment.getDescription());
+      preStmt.setInt(4, typeId);
+      preStmt.setBoolean(5, assignment.isDisplay());
+      preStmt.executeUpdate();
+
+      preStmt = conn.prepareStatement(sqlGetId);
+      rs = preStmt.executeQuery();
+      while (rs.next()) {
+        id = rs.getInt("id");
+      }
+
+    } catch (SQLException e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(rs, preStmt, conn);
+    }
+    return id;
   }
 
   /**
@@ -95,13 +147,13 @@ public class AssignmentDbManager {
       stmt.setString(1, name);
       try (ResultSet rs = stmt.executeQuery();) {
         while (rs.next()) {
+          assignment.setId(rs.getInt("id"));
           assignment.setName(name);
           assignment.setCreateTime(rs.getTimestamp("createTime"));
-          assignment.setDeadline( rs.getTimestamp("deadline"));
           assignment.setDescription(rs.getString("description"));
           assignment.setType(atDb.getTypeNameById(rs.getInt("type")));
-          assignment.setReleaseTime(rs.getTimestamp("releaseTime"));
           assignment.setDisplay(rs.getBoolean("display"));
+          assignment.setAssessmentTimeList(assessmentTimeDbManager.getAssessmentTimeByName(name));
         }
       }
     } catch (SQLException e) {
@@ -158,25 +210,21 @@ public class AssignmentDbManager {
 
     Connection conn = null;
     PreparedStatement preStmt = null;
-
+    ResultSet rs = null;
 
     try {
-
       conn = database.getConnection();
       preStmt = conn.prepareStatement(query);
-
-
       preStmt.setString(1, assignmentName);
-      try (ResultSet rs = preStmt.executeQuery();) {
-        while (rs.next()) {
-          id = rs.getInt("id");
-        }
+      rs = preStmt.executeQuery();
+      while (rs.next()) {
+        id = rs.getInt("id");
       }
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
     } finally {
-      CloseDBUtil.closeAll(preStmt, conn);
+      CloseDBUtil.closeAll(rs, preStmt, conn);
     }
     return id;
   }
@@ -266,7 +314,7 @@ public class AssignmentDbManager {
    */
   public List<Assignment> getAllAssignment() {
     List<Assignment> assignments = new ArrayList<>();
-    String sql = "SELECT id, name, createTime, deadline, releaseTime, display, description "
+    String sql = "SELECT id, name, createTime, display, description "
             + "FROM Assignment;";
 
 
@@ -286,10 +334,10 @@ public class AssignmentDbManager {
         assignment.setId(rs.getInt("id"));
         assignment.setName(rs.getString("name"));
         assignment.setCreateTime(rs.getTimestamp("createTime"));
-        assignment.setDeadline(rs.getTimestamp("deadline"));
-        assignment.setReleaseTime(rs.getTimestamp("releaseTime"));
         assignment.setDisplay(rs.getBoolean("display"));
         assignment.setDescription(rs.getString("description"));
+        List<AssessmentTime> assessmentTimes = assessmentTimeDbManager.getAssignmentTimeNameById(assignment.getId());
+        assignment.setAssessmentTimeList(assessmentTimes);
         assignments.add(assignment);
       }
     } catch (SQLException e) {
@@ -306,8 +354,8 @@ public class AssignmentDbManager {
    *
    */
   public List<Assignment> getAllReviewAssignment() throws SQLException { // Todo 應該不用丟出錯誤
-    String query = "SELECT assign.id, assign.name, assign.createTime, assign.deadline, "
-        + "assign.releaseTime, assign.display, assign.description "
+    String query = "SELECT assign.id, assign.name, assign.createTime, "
+        + "assign.display, assign.description "
         + "FROM Assignment AS assign, Review_Setting AS review "
         + "WHERE assign.id = review.aId ORDER BY assign.id";
     List<Assignment> assignmentList = new ArrayList<>();
@@ -329,10 +377,10 @@ public class AssignmentDbManager {
         assignment.setId(rs.getInt("id"));
         assignment.setName(rs.getString("name"));
         assignment.setCreateTime(rs.getTimestamp("createTime"));
-        assignment.setDeadline(rs.getTimestamp("deadline"));
-        assignment.setReleaseTime(rs.getTimestamp("releaseTime"));
         assignment.setDisplay(rs.getBoolean("display"));
         assignment.setDescription(rs.getString("description"));
+        List<AssessmentTime> assessmentTimes = assessmentTimeDbManager.getAssignmentTimeNameById(assignment.getId());
+        assignment.setAssessmentTimeList(assessmentTimes);
         assignmentList.add(assignment);
       }
     } finally {
@@ -345,7 +393,7 @@ public class AssignmentDbManager {
    * get auto assessment which is not assign as peer review
    */
   public List<Assignment> getAutoAssessment() throws SQLException {
-    String query = "SELECT id, name, createTime, deadline, releaseTime, display, description "
+    String query = "SELECT id, name, createTime, display, description "
         + "FROM Assignment WHERE id NOT IN (SELECT aId FROM Review_Setting);";
     List<Assignment> assignmentList = new ArrayList<>();
 
@@ -364,10 +412,9 @@ public class AssignmentDbManager {
         assignment.setId(rs.getInt("id"));
         assignment.setName(rs.getString("name"));
         assignment.setCreateTime(rs.getTimestamp("createTime"));
-        assignment.setDeadline(rs.getTimestamp("deadline"));
-        assignment.setReleaseTime(rs.getTimestamp("releaseTime"));
         assignment.setDisplay(rs.getBoolean("display"));
         assignment.setDescription(rs.getString("description"));
+        assignment.setAssessmentTimeList(assessmentTimeDbManager.getAssignmentTimeNameById(assignment.getId()));
         assignmentList.add(assignment);
       }
     } finally {
@@ -445,9 +492,11 @@ public class AssignmentDbManager {
    */
   public void editAssignment(Date deadline, Date releaseTime, String readMe, long checksum,
       int id) {
+    /*
     Timestamp deadlinetime = new Timestamp(deadline.getTime());
     Timestamp releasetime = new Timestamp(releaseTime.getTime());
-    String sql = "UPDATE Assignment SET deadline = ?, releaseTime = ?, description = ?,"
+    */
+    String sql = "UPDATE Assignment SET description = ?,"
         + "zipChecksum = ? WHERE id = ?";
 
     Connection conn = null;
@@ -457,12 +506,13 @@ public class AssignmentDbManager {
 
       conn = database.getConnection();
       preStmt = conn.prepareStatement(sql);
-
+      /*
       preStmt.setTimestamp(1, deadlinetime);
       preStmt.setTimestamp(2, releasetime);
-      preStmt.setString(3, readMe);
-      preStmt.setLong(4, checksum);
-      preStmt.setInt(5, id);
+      */
+      preStmt.setString(1, readMe);
+      preStmt.setLong(2, checksum);
+      preStmt.setInt(3, id);
       preStmt.executeUpdate();
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
@@ -480,10 +530,12 @@ public class AssignmentDbManager {
    * @param readMe      readMe
    * @param id          id
    */
-  public void editAssignment(Date deadline, Date releaseTime, String readMe, int id) {
+  public void editAssignment(String readMe, int id) {
+    /*
     Timestamp deadlinetime = new Timestamp(deadline.getTime());
     Timestamp releasetime = new Timestamp(releaseTime.getTime());
-    String sql = "UPDATE Assignment SET deadline = ?, releaseTime = ?, "
+    */
+    String sql = "UPDATE Assignment SET "
         + "description = ? WHERE id = ?";
 
     Connection conn = null;
@@ -493,11 +545,8 @@ public class AssignmentDbManager {
 
       conn = database.getConnection();
       preStmt = conn.prepareStatement(sql);
-
-      preStmt.setTimestamp(1, deadlinetime);
-      preStmt.setTimestamp(2, releasetime);
-      preStmt.setString(3, readMe);
-      preStmt.setInt(4, id);
+      preStmt.setString(1, readMe);
+      preStmt.setInt(2, id);
       preStmt.executeUpdate();
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));

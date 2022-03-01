@@ -2,7 +2,7 @@ import { Category, Assessment } from './../review-metrics-management/Category';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { FormGroup } from '@angular/forms';
+import { FormArray, FormGroup } from '@angular/forms';
 import { environment } from '../../../../environments/environment';
 import {AddJwtTokenHttpClient} from '../../../services/add-jwt-token.service';
 import { JwtService } from '../../../services/jwt.service';
@@ -35,10 +35,22 @@ export class CreateAssignmentService {
   createAssignment(assignment: FormGroup): Observable<any> {
 
     const formData = new FormData();
+    const reviewTime = new FormArray([]);
+
+    let action = new FormGroup({});
+    let roundGroup = new FormGroup({});
+
+    action.addControl('startTime', assignment.controls.releaseTime);
+    action.addControl('endTime', assignment.controls.deadline);
+    action.get('startTime').setValue(new Date(action.value.startTime).toUTCString())
+    action.get('endTime').setValue(new Date(action.value.endTime).toUTCString())
+    roundGroup.addControl('Do', action);
+    reviewTime.insert(0, roundGroup);
 
     formData.append('assignmentName', assignment.value.name);
-    formData.append('releaseTime', new Date(assignment.value.releaseTime).toUTCString());
-    formData.append('deadline', new Date(assignment.value.deadline).toUTCString());
+    //formData.append('releaseTime', new Date(assignment.value.releaseTime).toUTCString());
+    //formData.append('deadline', new Date(assignment.value.deadline).toUTCString());
+    formData.append('assessmentTimes', JSON.stringify(reviewTime.value));
     formData.append('readMe', assignment.value.description);
     formData.append('fileRadio', assignment.value.type);
     formData.append('file', assignment.value.file);
@@ -81,18 +93,37 @@ export class CreateAssignmentService {
     return this.addJwtTokenHttpClient.get(this.GET_METRICS_API , { params });
   }
 
-  createPeerReviewAssignment(assigememt: FormGroup, metrics: number[]): Observable<any> {
+  createPeerReviewAssignment(assignment: FormGroup, metrics: number[]): Observable<any> {
     const formData = new FormData();
+    const reviewTime = new FormArray([]);
+    let round = 0;
 
-    formData.append('assignmentName', assigememt.value.name);
-    formData.append('releaseTime', new Date(assigememt.value.releaseTime).toUTCString());
-    formData.append('deadline', new Date(assigememt.value.deadline).toUTCString());
-    formData.append('readMe', assigememt.value.description);
-    formData.append('fileRadio', assigememt.value.type);
-    formData.append('file', assigememt.value.file);
-    formData.append('amount', assigememt.value.commitRecordCount);
-    formData.append('reviewStartTime', new Date(assigememt.value.reviewReleaseTime).toUTCString());
-    formData.append('reviewEndTime', new Date(assigememt.value.reviewDeadline).toUTCString());
+    (<FormArray>assignment.get('reviewTime')).controls.forEach(element => {
+      let action = new FormGroup({});
+      let reviewAction = new FormGroup({});
+      let roundGroup = new FormGroup({});
+      element.get('startTime').setValue(new Date(element.get('startTime').value).toUTCString());
+      element.get('endTime').setValue(new Date(element.get('endTime').value).toUTCString());
+      action.addControl('startTime', element.get('startTime'));
+      action.addControl('endTime', element.get('endTime'));
+      roundGroup.addControl('Do', action);
+      element.get('reviewStartTime').setValue(new Date(element.get('reviewStartTime').value).toUTCString());
+      element.get('reviewEndTime').setValue(new Date(element.get('reviewEndTime').value).toUTCString());
+      reviewAction.addControl('startTime', element.get('reviewStartTime'));
+      reviewAction.addControl('endTime', element.get('reviewEndTime'));
+      roundGroup.addControl('Review', reviewAction);
+      reviewTime.insert(round, roundGroup);
+      round++;
+    })
+
+    console.log(reviewTime.value);
+    
+    formData.append('assignmentName', assignment.value.name);
+    formData.append('readMe', assignment.value.description);
+    formData.append('fileRadio', assignment.value.type);
+    formData.append('file', assignment.value.file);
+    formData.append('amount', assignment.value.commitRecordCount);
+    formData.append('assessmentTimes', JSON.stringify(reviewTime.value));
     formData.append('metrics', metrics.toString());
 
     return this.addJwtTokenHttpClient.post( this.CREATE_REVIEW_ASSIGNMENT_API, formData, createAssigmentOptions);

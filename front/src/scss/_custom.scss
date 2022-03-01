@@ -32,7 +32,8 @@
 .red,
 .CPF,
 .cpf,
-.uncompleted {
+.uncompleted,
+.UNCOMPLETED {
   background: #ff6284;
 }
 
@@ -40,6 +41,7 @@
 .BS,
 .bs,
 .completed,
+.COMPLETED,
 .REVIEWED {
   background: #1e90ff;
 }
@@ -69,6 +71,10 @@
 .ALF,
 .alf {
   background: #ffc229;
+}
+
+.UNDER_REVIEW {
+  background: #fd993b;
 }
 
 .green,

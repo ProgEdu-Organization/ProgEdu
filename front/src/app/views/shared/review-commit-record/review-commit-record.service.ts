@@ -9,16 +9,16 @@ import {AddJwtTokenHttpClient} from '../../../services/add-jwt-token.service';
 })
 export class ReviewCommitRecordService {
 
-  REVIEW_DETAIL_PAGE_API = environment.SERVER_URL + '/webapi/peerReview/record/detail/page'; // Todo 沒用到
+  REVIEW_DETAIL_PAGE_API = environment.NEW_SERVER_URL + '/peerReview/record/detail/page'; // Todo 沒用到
 
   constructor(private addJwtTokenHttpClient: AddJwtTokenHttpClient) { }
 
-  getReviewPageDetail(assignmentName: string, username: string, reviewId: string, page: string): Observable<any> {
+  getReviewPageDetail(assignmentName: string, username: string, reviewId: string, round: string): Observable<any> {
     const params = new HttpParams()
       .set('username', username)
       .set('assignmentName', assignmentName)
       .set('reviewId', reviewId)
-      .set('page', page);
+      .set('round', round);
     return this.addJwtTokenHttpClient.get(this.REVIEW_DETAIL_PAGE_API, { params }  );
   }
 

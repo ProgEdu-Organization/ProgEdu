@@ -1,4 +1,7 @@
 <div class="animated fadeIn">
+  <div><a href="#/studashboard/peerReviewRoundDashboard?assignmentName={{assignmentName}}"><button class="btn btn-primary" type="button">
+    < Back</button></a>
+</div><br>
   <div *ngIf='reviewMetrics' class="card">
     <div class="card-header">
       <i class="cui-pencil icons"></i>
@@ -9,12 +12,12 @@
         <!-- Review Form -->
         <div *ngIf="!review.status && !review.pagination">
           <div class="form-group row">
-            <span class="h2 col-md-10 ">Review Student {{i+1}}</span>
+            <span class="h2 col-md-10 ">Review Student {{order}}</span>
             <input type="button" class="btn btn-outline-primary col-sm-1" value="Fill Review Form"
               (click)="reviewFormFillModal.show();setReviewOne(i);emitReviewFormOpenedEvent();">
           </div>
           <div class="col-lg-6">
-            <p>Deadline: {{review.reviewDeadline | date:'short'}}</p>
+            <p>Deadline: {{review.reviewEndTime | date:'short'}}</p>
           </div>
           <div class="col-lg-6">
             <p>Review Form Unfinished, Please fill it before deadline.</p>
@@ -25,7 +28,7 @@
         <div *ngIf="review.status || review.pagination">
           <span class="h2">
             <div class="form-group row">
-              <label class="h2 col-md-10">Review Student {{i+1}}</label>
+              <label class="h2 col-md-10">Review Student {{order}}</label>
               <!--<input type="button" class="btn btn-outline-primary col-sm-1" value="Fill Review Form"
                 (click)="reviewFormFillModal.show();setReviewOne(i);">-->
             </div>
@@ -34,18 +37,15 @@
             <table class='table table-responsive-sm table-bordered table-hover table-outline'>
               <thead class="thead-light">
                 <tr>
-                  <th class='w-60'>Topic</th>
-                  <th class='w-10'>Time</th>
-                  <th class='w-10'>Result</th>
-                  <th class='w-60'>Feedback</th>
+                  <th class='w-20'>審查項目</th>
+                  <th class='w-10'>審查結果</th>
+                  <th class='w-60'>審查意見</th>
+                  <th class='w-10'>審查意見的幫助程度</th>
                 </tr>
               </thead>
               <tr *ngFor="let reviewDetail of review.Detail" id='reviewFeedback-bar'>
                 <td>
                   {{reviewDetail.metrics}}
-                </td>
-                <td>
-                  {{ reviewDetail.time | date:'short'}}
                 </td>
                 <ng-container *ngIf="reviewDetail.scoreMode === 'yesNoMode'">
                   <td *ngIf="reviewDetail.score===1">
@@ -59,9 +59,13 @@
                   {{ reviewDetail.score}}
                 </td>
                 <td>
-                  <button type="button" class="btn btn-secondary"
+                  <!--<button type="button" class="btn btn-secondary"
                     (click)="openReviewFeedbackModal(reviewDetail);reviewFormModal.show();reviewFeedbackEvent(reviewDetail,review.name)">Feedback
-                    Information</button>
+                    Information</button>-->
+                  <div *ngIf="reviewDetail.feedback">{{reviewDetail.feedback}}</div>
+                </td>
+                <td>
+                  <div *ngIf="reviewDetail.feedbackScore !== undefined">{{getFeedbackScoreDetail(reviewDetail.feedbackScore)}}</div>
                 </td>
               </tr>
             </table>
@@ -188,7 +192,7 @@
           <div class="col-md-12">
             <p>FeedBack:</p>
             <div class="col-md-12">
-              <textarea readonly id="feedback" name="feedback" rows="3" class="form-control" type="text" 
+              <textarea readonly id="feedback" name="feedback" rows="3" class="form-control" type="text"
               >{{onClickedReviewDetail.feedback}}</textarea>
             </div>
           </div>
