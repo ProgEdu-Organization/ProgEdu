@@ -2,6 +2,7 @@ import { ReviewStatusDashboardService } from './../review-status-dashboard/revie
 import { ReviewDashboardComponent } from './../review-dashboard/review-dashboard.component';
 import { Component, OnInit } from '@angular/core';
 import { allStudentDatas } from '../../../containers/default-layout/_nav';
+import { FormControl, FormGroup, FormArray, FormBuilder, Validators } from '@angular/forms';
 
 
 @Component({
@@ -45,4 +46,22 @@ export class ReviewStatusDashboardComponent implements OnInit {
     }
     return true;
   }
+  
+  getStatus(index: number) {
+    let createTime = this.assignmentTable[index].createTime;
+    let assessmentTimes = this.assignmentTable[index].assessmentTimes;
+    const now_time = Date.now() - (new Date().getTimezoneOffset() * 60 * 1000);
+    
+    if (now_time > Date.parse(assessmentTimes[assessmentTimes.length - 1].endTime)) {
+      return "completed"
+    } else {
+      if (now_time < Date.parse(assessmentTimes[0].startTime)) {
+        return "initialization";
+      } else {
+        return "por";
+      }
+    }
+
+  }
+
 }
