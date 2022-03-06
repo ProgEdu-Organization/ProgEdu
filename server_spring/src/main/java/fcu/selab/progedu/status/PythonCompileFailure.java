@@ -35,7 +35,7 @@ public class PythonCompileFailure implements Status {
      ArrayList<FeedBack> feedbackList = new ArrayList<>();
 
      try {
-       Pattern pattern = Pattern.compile("(Compiling)(.*?)(...)(\n)(File )(.*?)(line )(\\d{2})(\n)(.*?)(\n)(.*?)(\n)(.*?)(:)(.*?)(\n)");
+       Pattern pattern = Pattern.compile("(Compiling)(.*?)(...)(\n)(.*?)(File )(.*?)(line )(\\d{2})(\n)(.*?)(\n)(.*?)(\n)(.*?)(:)(.*?)(\n)");
        Matcher matcher = pattern.matcher(consoleText);
        while (matcher.find()) {
          String fileName = matcher.group(6);
