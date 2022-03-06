@@ -10,13 +10,10 @@
             Initial
           </span>
           <span class="ovol POR">
-            Process of Review
-          </span>
-          <span class="ovol CPF">
-            Unfinished Review
+            Ongoing
           </span>
           <span class="ovol BS">
-            Completed Reviewed
+            End
           </span>
         </div>
       </div>
@@ -30,12 +27,12 @@
             <th class='text-left'></th>
           </tr>
           <tr>
-            <th width="15%" class='text-left'>review人數 / <br>PR round次數</th>
-            <th width="10%" *ngFor='let review of assignmentTable'>
-              <p class="circle initialization">
+            <th width="15%" class='text-left'>Now Round / <br>Total Round</th>
+            <th width="10%" *ngFor='let review of assignmentTable; index as i'>
+              <p class="circle {{getStatus(i)}}">
                 <a *ngIf='!isNA(review)'
                   id="{{review.name}}_{{review.amount}}_{{review.round}}"
-                  style="color: white;" href="#/dashboard/reviewRoundDashboard?assignmentName={{review.name}}">{{review.amount}}/{{review.round}}</a>
+                  style="color: white;" href="#/dashboard/reviewRoundDashboard?assignmentName={{review.name}}">{{getNowRound(i)}}/{{review.round}}</a>
                 <a *ngIf='isNA(review)'>N/A</a>
               </p>
             </th>
