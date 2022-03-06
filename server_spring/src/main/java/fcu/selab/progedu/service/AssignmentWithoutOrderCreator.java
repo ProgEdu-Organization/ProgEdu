@@ -18,6 +18,7 @@ import fcu.selab.progedu.db.UserDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.jenkinsconfig.JenkinsProjectConfig;
 import fcu.selab.progedu.jenkinsconfig.JenkinsProjectConfigFactory;
+import fcu.selab.progedu.jenkinsconfig.PythonPipelineConfig;
 import fcu.selab.progedu.jenkinsconfig.WebPipelineConfig;
 import fcu.selab.progedu.utils.ExceptionUtil;
 import fcu.selab.progedu.utils.JavaIoUtile;
@@ -53,7 +54,6 @@ public class AssignmentWithoutOrderCreator {
   private CourseConfig courseConfig = CourseConfig.getInstance();
   private GitlabConfig gitlabData = GitlabConfig.getInstance();
 
-  private AssignmentDbManager dbManager = AssignmentDbManager.getInstance();
   private AssessmentTimeDbManager assessmentTimeDbManager = AssessmentTimeDbManager.getInstance();
   private AssignmentDbManager adbManager = AssignmentDbManager.getInstance();
   private UserDbManager userDbManager = UserDbManager.getInstance();
@@ -225,6 +225,9 @@ public class AssignmentWithoutOrderCreator {
         jenkinsProjectConfig = new WebPipelineConfig(projectUrl, updateDbUrl,
             username, assignmentName,
             courseConfig.getTomcatServerIp() + "/publicApi/commits/screenshot/updateURL");
+      } else if (assignmentTypeEnum.equals(ProjectTypeEnum.PYTHON)) {
+        jenkinsProjectConfig = new PythonPipelineConfig(projectUrl, updateDbUrl,
+                username, assignmentName);
       } else {
         jenkinsProjectConfig = JenkinsProjectConfigFactory
             .getJenkinsProjectConfig(assignmentTypeEnum.getTypeName(), projectUrl, updateDbUrl,
@@ -286,7 +289,7 @@ public class AssignmentWithoutOrderCreator {
     assignment.setType(projectType);
     assignment.setAssessmentTimeList(assessmentTimes);
 
-    int aId = dbManager.addAssignmentAndGetId(assignment);
+    int aId = adbManager.addAssignmentAndGetId(assignment);
     for(AssessmentTime assessmentTime : assignment.getAssessmentTimeList()) {
       assessmentTimeDbManager.addAssignmentTime(aId, assessmentTime);
     }

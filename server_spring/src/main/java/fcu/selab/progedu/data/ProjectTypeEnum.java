@@ -4,7 +4,8 @@ public enum ProjectTypeEnum {
   JAVAC("javac"),
   MAVEN("maven"),
   WEB("web"),
-  ANDROID("android");
+  ANDROID("android"),
+  PYTHON("python");
 
   private String type;
 
