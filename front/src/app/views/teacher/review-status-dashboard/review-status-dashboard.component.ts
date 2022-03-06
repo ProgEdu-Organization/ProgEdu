@@ -61,7 +61,20 @@ export class ReviewStatusDashboardComponent implements OnInit {
         return "por";
       }
     }
+  }
 
+  getNowRound(index: number) {
+    const now_time = Date.now() - (new Date().getTimezoneOffset() * 60 * 1000);
+    let assessmentTimes = this.assignmentTable[index].assessmentTimes;
+    let round = 0;
+    for(let i = 0; i < assessmentTimes.length; i+=2) {
+      if (now_time < this.assignmentTable[i].assessmentTimes) {
+        break;
+      } else {
+        round++;
+      }
+    }
+    return round;
   }
 
 }

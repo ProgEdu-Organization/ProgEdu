@@ -27,7 +27,7 @@
             <th class='text-left'></th>
           </tr>
           <tr>
-            <th width="15%" class='text-left'>review人數 / <br>PR round次數</th>
+            <th width="15%" class='text-left'>Now Round / <br>Total Round</th>
             <th width="10%" *ngFor='let review of assignmentTable; index as i'>
               <p class="circle {{getStatus(i)}}">
                 <a *ngIf='!isNA(review)'
