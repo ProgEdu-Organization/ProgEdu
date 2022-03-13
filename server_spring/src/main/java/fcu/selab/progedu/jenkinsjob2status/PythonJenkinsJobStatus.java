@@ -14,14 +14,14 @@ public class PythonJenkinsJobStatus extends JenkinsJobStatus {
       JenkinsService jenkinsService = JenkinsService.getInstance();
       String console = jenkinsService.getConsole(jenkinsJobName, buildCount);
 
-      if (statusService.isBuildSuccess(console)) {
-        status = StatusEnum.BUILD_SUCCESS;
+      if (statusService.isPythonCompileFailure(console)) {
+        status = StatusEnum.COMPILE_FAILURE;
       } else if (statusService.isPythonUnitTestFailure(console)) {
         status = StatusEnum.UNIT_TEST_FAILURE;
       } else if (statusService.isPythonCheckstyleFailure(console)) {
         status = StatusEnum.CHECKSTYLE_FAILURE;
       } else {
-        status = StatusEnum.COMPILE_FAILURE;
+        status = StatusEnum.BUILD_SUCCESS;
       }
     }
     return status;

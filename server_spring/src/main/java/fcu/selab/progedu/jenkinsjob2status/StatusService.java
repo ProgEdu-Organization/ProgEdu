@@ -208,4 +208,18 @@ public class StatusService {
     return isPythonUnitTestError;
   }
 
+  /**
+   * Python is compile error
+   *
+   * @param console jenkins job console text
+   * @return boolean
+   */
+  public boolean isPythonCompileFailure(String console) {
+    boolean isPythonCompileError = false;
+    if (console.contains("python build start") && !console.contains("python build end")) {
+      isPythonCompileError = true;
+    }
+    return isPythonCompileError;
+  }
+
 }
