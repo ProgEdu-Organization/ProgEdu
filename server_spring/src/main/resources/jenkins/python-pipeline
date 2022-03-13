@@ -20,7 +20,7 @@ pipeline {
                 echo "python build start"
                 '''
                 sh '''
-                docker run --privileged -i -v $PWD:/tmp yachi77/progedu-python:v1 bash -c 'cd tmp/; python -m compileall {ProgEdu-project-name}'
+                docker run --privileged -i -v $PWD:/tmp yachi77/progedu-python:v1 bash -c 'cd tmp/; python -m compileall $(ls -d */)'
                 '''
                 sh '''
                 echo "python build end"
@@ -47,7 +47,7 @@ pipeline {
                 echo "python test start"
                 '''
                 sh '''
-                docker run --privileged -i -v $PWD:/tmp yachi77/progedu-python:v1 bash -c 'cd tmp/; python -m  pytest {ProgEdu-project-name}'
+                docker run --privileged -i -v $PWD:/tmp yachi77/progedu-python:v1 bash -c 'cd tmp/; python -m  pytest $(ls -d */)'
                 '''
                 sh '''
                 echo "python test end"
