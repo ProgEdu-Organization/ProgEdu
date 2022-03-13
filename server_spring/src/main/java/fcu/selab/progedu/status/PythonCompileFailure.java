@@ -38,8 +38,8 @@ public class PythonCompileFailure implements Status {
        Pattern pattern = Pattern.compile("(.*?)(File )(.*?)(line )(\\d{1,4})(\n)(.*?)(\n)(.*?)(\n)(.*?)(\n)");
        Matcher matcher = pattern.matcher(consoleText);
        while (matcher.find()) {
-         String fileName = matcher.group(6);
-         String line = matcher.group(8);
+         String fileName = matcher.group(3);
+         String line = matcher.group(5);
          String message = matcher.group(7) + matcher.group(8) + matcher.group(9) + matcher.group(10) + matcher.group(11);
 
          feedbackList.add(new FeedBack(
