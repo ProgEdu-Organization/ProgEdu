@@ -29,8 +29,7 @@ public class PythonUnitTestFailure implements Status  {
   @Override
   public ArrayList<FeedBack> formatExamineMsg(String consoleText) {
     ArrayList<FeedBack> feedbackList = new ArrayList<>();
-
-    String suggest = "https://www.python.org/dev/peps/pep-0008/";
+    
     try {
       Pattern pattern = Pattern.compile("(.*?)(_)(.*?)(.py)(::)(.*?)(\n)");
       Matcher matcher = pattern.matcher(consoleText);
@@ -39,7 +38,7 @@ public class PythonUnitTestFailure implements Status  {
         String message = matcher.group(6);
 
         feedbackList.add(new FeedBack(
-                StatusEnum.UNIT_TEST_FAILURE, fileName, "", message, "", suggest));
+                StatusEnum.UNIT_TEST_FAILURE, fileName, "", message, "", ""));
       }
       if (feedbackList.isEmpty()) {
         feedbackList.add(
