@@ -875,6 +875,25 @@ public class AssignmentService {
 
   }
 
+  @GetMapping(
+          value ="getPythonAssignmentFile",
+          produces = MediaType.APPLICATION_OCTET_STREAM_VALUE
+  )
+  public ResponseEntity<Object>  getPythonAssignmentFile() throws Exception{
+
+    HttpHeaders headers = new HttpHeaders();
+
+    //
+    headers.add("Content-Disposition", "attachment;filename=" + "PythonQuickStart.zip");
+
+    InputStream targetStream = this.getClass().getResourceAsStream("/sample/PythonQuickStart.zip");
+
+
+    byte[] assignmentFile = IOUtils.toByteArray(targetStream);
+    return new ResponseEntity<Object>(assignmentFile, headers, HttpStatus.OK);
+
+  }
+
 
 
 
