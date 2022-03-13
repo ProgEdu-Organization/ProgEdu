@@ -1,0 +1,71 @@
+pipeline {
+    agent any
+    stages {
+        stage('pull environment') {
+            steps {
+                sh 'docker pull yachi77/progedu-python:v1'
+            }
+        }
+        stage('get source') {
+            steps {
+                git branch: 'master',
+                credentialsId: 'gitlab_root',
+                url: '{GitLab-url}'
+            }
+        }
+
+        stage("Build") {
+            steps {
+                sh '''
+                echo "python build start"
+                '''
+                sh '''
+                docker run --privileged -i -v $PWD:/tmp yachi77/progedu-python:v1 bash -c 'cd tmp/; python -m compileall $(ls -d */)'
+                '''
+                sh '''
+                echo "python build end"
+                '''
+            }
+        }
+
+        stage("Coding Style") {
+            steps {
+                sh '''
+                echo "python check style start"
+                '''
+                sh '''
+                docker run --privileged -i -v $PWD:/tmp yachi77/progedu-python:v1 bash -c ' cd tmp/; flake8 --filename=*.py'
+                '''
+                sh '''
+                echo "python check style end"
+                '''
+            }
+        }
+         stage('Pytest'){
+            steps{
+                sh '''
+                echo "python test start"
+                '''
+                sh '''
+                docker run --privileged -i -v $PWD:/tmp yachi77/progedu-python:v1 bash -c 'cd tmp/; python -m  pytest $(ls -d */)'
+                '''
+                sh '''
+                echo "python test end"
+                '''
+            }
+        }
+
+    }
+
+    post {
+
+        always {
+            sh "curl --location --request POST '{ProgEdu-server-updateDbUrl}' \
+                             --header 'Content-Type: application/x-www-form-urlencoded' \
+                             --data-urlencode 'user={ProgEdu-user-name}' \
+                             --data-urlencode 'proName={ProgEdu-project-name}'"
+            cleanWs()
+        }
+    }
+
+}

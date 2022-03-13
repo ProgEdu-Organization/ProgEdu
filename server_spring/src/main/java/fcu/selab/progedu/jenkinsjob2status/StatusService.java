@@ -179,4 +179,47 @@ public class StatusService {
     }
     return isCompileFailureOfUnitTestError;
   }
+
+  /**
+   * Python is lint error
+   *
+   * @param console jenkins job console text
+   * @return boolean
+   */
+  public boolean isPythonCheckstyleFailure(String console) {
+    boolean isPythonCheckstyleError = false;
+    if (console.contains("python check style start") && !console.contains("python check style end")) {
+      isPythonCheckstyleError = true;
+    }
+    return isPythonCheckstyleError;
+  }
+
+  /**
+   * Python is unit test error
+   *
+   * @param console jenkins job console text
+   * @return boolean
+   */
+  public boolean isPythonUnitTestFailure(String console) {
+    boolean isPythonUnitTestError = false;
+    if (console.contains("python test start") && !console.contains("python test end")) {
+      isPythonUnitTestError = true;
+    }
+    return isPythonUnitTestError;
+  }
+
+  /**
+   * Python is compile error
+   *
+   * @param console jenkins job console text
+   * @return boolean
+   */
+  public boolean isPythonCompileFailure(String console) {
+    boolean isPythonCompileError = false;
+    if (console.contains("python build start") && !console.contains("python build end")) {
+      isPythonCompileError = true;
+    }
+    return isPythonCompileError;
+  }
+
 }

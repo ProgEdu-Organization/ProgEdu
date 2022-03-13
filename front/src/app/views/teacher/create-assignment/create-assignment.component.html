@@ -358,6 +358,31 @@
                 </div>
               </div>
             </tab>
+            <!--Python-->
+            <tab heading="Python" (click)="selectedAssignmentType('Python')">
+              <div class="form-group row">
+                <label class="col-md-3 col-form-label">Python File</label>
+                <div class="col-md-9">
+                  <div class="btn-group" dropdown [isOpen]="pythonTabStatus.isOpen" placement="top">
+                    <button dropdownToggle type="button" class="btn btn-primary dropdown-toggle">
+                      <i class="icon-cloud-download"></i><span class="caret"> template</span>
+                    </button>
+                    <ul *dropdownMenu class="dropdown-menu" role="menu">
+                      <li role="menuitem"><a class="dropdown-item" href="{{NEW_SERVER_URL}}/assignment/getPythonAssignmentFile"
+                          download>PythonQuickStart.zip</a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-md-3 col-form-label" for="file-input">Upload your Assignment example (accept zip)
+                </label>
+                <div class="col-md-9">
+                  <input type="file" name="file-input" (change)='fileListener($event)'>
+                </div>
+              </div>
+            </tab>
           </tabset>
         </div>
         <!--/.col-->

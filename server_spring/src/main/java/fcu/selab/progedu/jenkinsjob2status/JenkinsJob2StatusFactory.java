@@ -20,6 +20,8 @@ public class JenkinsJob2StatusFactory {
         return new WebJenkinsJobStatus();
       case ANDROID:
         return new AndroidJenkinsJobStatus();
+      case PYTHON:
+        return new PythonJenkinsJobStatus();
       default:
         return null;
     }
