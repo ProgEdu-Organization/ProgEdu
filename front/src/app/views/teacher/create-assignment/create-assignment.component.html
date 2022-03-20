@@ -360,6 +360,36 @@
             </tab>
             <!--Python-->
             <tab heading="Python" (click)="selectedAssignmentType('Python')">
+              <div *ngIf="!peerReviewStatus.isOpen">
+                <div class="form-group row">
+                  <div class="col-md-3">Assignment Assessment</div>
+                  <div class="col-md-3">Status :</div>
+                  <div class="col-md-2">Order & Score :</div>       
+                </div>
+                <div class="form-group row">
+                  <div class="col-md-3"></div>
+                  <div class="col-md-3">
+                    <ul class="list-group sortable" [sortablejs]="pyStatus" [sortablejsOptions]="normalOptions">
+                      <li class="list-group-item" *ngFor="let item of pyStatus">{{ item }}</li>
+                    </ul>
+                  </div>
+                  <div class="col-md-2">
+                    <li class="list-group-item sortable" draggable="false" style="cursor: not-allowed; 
+                          background-color: white;">1.&nbsp;Compile Failure
+                          <select class="form-control" (change)="selectChangeHandler('python', 'Compile Failure', $event)">
+                            <option *ngFor="let op of getScoreOptions(pyOrder, pyStatusScore, 'Compile Failure')" value="{{ op }}">{{ op }}%</option>
+                          </select>
+                      </li>
+                    <ul class="list-group sortable" [sortablejs]="pyOrder" [sortablejsOptions]="normalOptions">
+                      <li class="list-group-item" *ngFor="let item of pyOrder; let i = index;">{{ i + 2 }}. {{ item }}
+                        <select class="form-control" (change)="selectChangeHandler('python', item, $event)">
+                          <option *ngFor="let op of getScoreOptions(pyOrder, pyStatusScore, item)" value="{{ op }}">{{ op }}%</option>
+                        </select>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
               <div class="form-group row">
                 <label class="col-md-3 col-form-label">Python File</label>
                 <div class="col-md-9">
