@@ -30,17 +30,5 @@ public class PythonPipelineConfigTest {
     System.out.println(result1);
     System.out.println("=========================================================");
   }
-
-  @Test
-  public void test() {
-    String newPipeLine = "";
-    String order = "Compile Failure:10, Unit Test Failure:20, Coding Style Failure:30";
-    ArrayList<String> ordersList = new ArrayList<>();
-    String[] orderTokens = order.split(", ");
-    for (int i = 0; i < orderTokens.length; i++) {
-      String[] temp = orderTokens[i].split(":");
-      ordersList.add(temp[0]);
-    }
-    System.out.println(ordersList);
-  }
+  
 }

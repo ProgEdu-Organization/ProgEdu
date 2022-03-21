@@ -184,14 +184,14 @@ public class PythonPipelineConfig extends JenkinsProjectConfig{
         dockerCommand = dockerCommand.replaceAll("\\{stage_name\\}", "build");
         result = dockerCommand.replaceFirst("\\{python_command\\}", command);
         break;
-      case "Unit Test Failure":
+      case "Coding Style Failure":
         command = "flake8 --filename=*.py";
-        dockerCommand = dockerCommand.replaceAll("\\{stage_name\\}", "test");
+        dockerCommand = dockerCommand.replaceAll("\\{stage_name\\}", "check style");
         result = dockerCommand.replaceFirst("\\{python_command\\}", command);
         break;
-      case "Coding Style Failure":
+      case "Unit Test Failure":
         command = "python -m  pytest \\$(ls -d */)";
-        dockerCommand = dockerCommand.replaceAll("\\{stage_name\\}", "check style");
+        dockerCommand = dockerCommand.replaceAll("\\{stage_name\\}", "test");
         result = dockerCommand.replaceFirst("\\{python_command\\}", command);
         break;
       default:
