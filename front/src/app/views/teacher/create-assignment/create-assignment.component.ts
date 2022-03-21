@@ -50,6 +50,7 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
   javaStatusScore = new Map([["Compile Failure", "0"]]);
   webStatusScore = new Map();
   appStatusScore = new Map([["Compile Failure", "0"]]);
+  pyStatusScore = new Map([["Compile Failure", "0"]]);
 
   javaStatus = [
     "Unit Test Failure",
@@ -69,9 +70,15 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
     "UI Test Failure"
   ];
 
+  pyStatus = [
+    "Coding Style Failure",
+    "Unit Test Failure"
+  ]
+
   javaOrder = [];
   webOrder = [];
   appOrder = [];
+  pyOrder = [];
 
   normalOptions: SortablejsOptions = {
     group: 'normal-group',
@@ -196,7 +203,8 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
     let tempOrder = order;
     let tempStatusScore = statusScore;
 
-    if (statusScore == this.javaStatusScore || statusScore == this.appStatusScore) {
+    if (statusScore == this.javaStatusScore || statusScore == this.appStatusScore 
+      || statusScore == this.pyStatusScore) {
       sum += Number(statusScore.get('Compile Failure'));
     }
 
@@ -229,6 +237,8 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
     } else if (type == 'android') {
       this.appStatusScore.set(status, $event.target.value);
       console.log(this.appStatusScore);
+    } else if (type == 'python') {
+      this.pyStatusScore.set(status, $event.target.value);
     }
   }
 
@@ -386,7 +396,9 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
       tempStatusScore = this.appStatusScore;
       orderString = "Compile Failure:" + this.appStatusScore.get("Compile Failure") + ", ";
     } else if (this.assignment.get('type').value == 'python') {
-      orderString = "Compile Failure:0";
+      tempOrder = this.pyOrder;
+      tempStatusScore = this.pyStatusScore;
+      orderString = "Compile Failure:" + this.pyStatusScore.get("Compile Failure") + ", ";
     }
     for (let i = 0; i < tempOrder.length; i++) {
       if (tempStatusScore.get(tempOrder[i]) == undefined) {

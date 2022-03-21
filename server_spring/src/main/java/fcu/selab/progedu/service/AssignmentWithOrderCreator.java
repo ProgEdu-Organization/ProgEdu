@@ -217,7 +217,7 @@ public class AssignmentWithOrderCreator {
             username, assignmentName, assignmentOrderAndScores);
       } else if (assignmentTypeEnum.equals(ProjectTypeEnum.PYTHON)) {
         jenkinsProjectConfig = new PythonPipelineConfig(projectUrl, updateDbUrl,
-                username, assignmentName); //TODO 要加ORDER
+                username, assignmentName, assignmentOrderAndScores);
       } else {
         jenkinsProjectConfig = JenkinsProjectConfigFactory
             .getJenkinsProjectConfig(assignmentTypeEnum.getTypeName(), projectUrl, updateDbUrl,
