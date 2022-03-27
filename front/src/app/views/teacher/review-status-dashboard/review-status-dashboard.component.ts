@@ -68,7 +68,7 @@ export class ReviewStatusDashboardComponent implements OnInit {
     let assessmentTimes = this.assignmentTable[index].assessmentTimes;
     let round = 0;
     for(let i = 0; i < assessmentTimes.length; i+=2) {
-      if (now_time < this.assignmentTable[i].assessmentTimes) {
+      if (now_time < assessmentTimes[i].startTime) {
         break;
       } else {
         round++;
