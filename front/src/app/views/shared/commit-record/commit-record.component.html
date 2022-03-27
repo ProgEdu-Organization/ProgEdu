@@ -1,100 +1,99 @@
 <div *ngIf='displayCommits'>
-  <span class="h2">&ensp;Commit Record</span>
-  <div class="card-body">
-    <div class='col-md-12 d-flex flex-row text'>
-      <span class="ovol NB ">
-        Not Build
-      </span>
-      <span *ngIf="type !== 'WEB'" class="ovol CPF">
-        Compile Failure
-      </span>
-      <span class="ovol CSF">
-        Coding Style Failure
-      </span>
-      <span *ngIf="type === 'WEB'" class="ovol WHF">
-        HTML Failure
-      </span>
-      <span *ngIf="type === 'WEB'" class="ovol WSF">
-        CSS Failure
-      </span>
-      <span *ngIf="type === 'WEB'" class="ovol WEF">
-        JavaScript Failure
-      </span>
-      <!-- <p class="ovol plagirism" style="padding: 5px 10px;"><fmt:message key="dashboard_p_plagiarism"/></p> -->
-      <span class="ovol UTF">
-        Unit Test Failure
-      </span>
-      <span *ngIf="type === 'ANDROID'" class="ovol UITF">
-        UI Test Failure
-      </span>
-      <span class="ovol BS">
-        Build Success
-      </span>
-    </div>
-    <hr>
-    <div class="col-lg-12 h-25 mw-5">
-      <table class='table table-striped table-responsive-sm text-center'>
-        <thead class="thead-light">
-          <tr>
-            <th>Commit</th>
-            <th>Light</th>
-            <th>Date</th>
-            <th>Commit Message</th>
-            <th *ngIf='showCommiter'>Committer</th>
-            <th *ngIf="isShowScreenshot()">Screenshot</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let commit of displayCommits" id='feedback-bar' (click)='updateFeedback(commit.number)'>
-            <td class='w-10'>{{commit.number}}</td>
-            <td>
-              <p class="circle {{commit.status}}"></p>
-            </td>
-            <td class='w-25'>{{commit.time | date:'short'}}</td>
-            <td class='w-50'>{{commit.message}}</td>
-            <td *ngIf='showCommiter'>{{commit.committer}}</td>
-            <td *ngIf="isShowScreenshot()"><button class="btn btn-primary" (click)='screenshot.screenshotModal.show();'>
-                <i class="cui-screen-desktop"></i></button></td>
-          </tr>
-        </tbody>
-      </table>
-      <pagination [totalItems]="totalCommits"  [(ngModel)]="currentPage"  [itemsPerPage]="5" 
-      [maxSize]="10" (pageChanged)="pageChanged($event)"  previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;" 
-      lastText="&raquo;" [boundaryLinks]="true"></pagination>
-    </div>
-    <hr>
-    <span><a>
-        <h3>Feedback Information {{commitNumber}}</h3>
-      </a></span>
-    <table class='table table-responsive-sm table-bordered table-hover table-outline'>
+  <span class="h2">Commit Record</span>
+  <p></p>
+  <div class='col-md-12 d-flex flex-row text'>
+    <span class="ovol NB ">
+      Not Build
+    </span>
+    <span *ngIf="type !== 'WEB'" class="ovol CPF">
+      Compile Failure
+    </span>
+    <span class="ovol CSF">
+      Coding Style Failure
+    </span>
+    <span *ngIf="type === 'WEB'" class="ovol WHF">
+      HTML Failure
+    </span>
+    <span *ngIf="type === 'WEB'" class="ovol WSF">
+      CSS Failure
+    </span>
+    <span *ngIf="type === 'WEB'" class="ovol WEF">
+      JavaScript Failure
+    </span>
+    <!-- <p class="ovol plagirism" style="padding: 5px 10px;"><fmt:message key="dashboard_p_plagiarism"/></p> -->
+    <span class="ovol UTF">
+      Unit Test Failure
+    </span>
+    <span *ngIf="type === 'ANDROID'" class="ovol UITF">
+      UI Test Failure
+    </span>
+    <span class="ovol BS">
+      Build Success
+    </span>
+  </div>
+  <hr>
+  <div class="col-lg-12 h-25 mw-5">
+    <table class='table table-striped table-responsive-sm text-center'>
       <thead class="thead-light">
         <tr>
-          <th class='w-20'>fileName</th>
-          <th class='w-10'>Line</th>
-          <th class='w-30'>Message</th>
-          <th class='w-30'>Symptom</th>
-          <th>Suggest</th>
+          <th>Commit</th>
+          <th>Light</th>
+          <th>Date</th>
+          <th>Commit Message</th>
+          <th *ngIf='showCommiter'>Committer</th>
+          <th *ngIf="isShowScreenshot()">Screenshot</th>
         </tr>
       </thead>
-      <tr *ngFor="let feedback of feedbacks" id='feedback-bar'>
-        <td>
-          <pre>{{feedback.fileName}}</pre>
-        </td>
-        <td>
-          <pre>{{feedback.line}}</pre>
-        </td>
-        <td>
-          <pre [innerHTML]='feedback.message | lineBreaks'></pre>
-        </td>
-        <td>
-          <pre>{{feedback.symptom}}</pre>
-        </td>
-        <td>
-          <pre><a href='{{feedback.suggest}}' target="blank">{{feedback.suggest}}</a></pre>
-        </td>
-      </tr>
+      <tbody>
+        <tr *ngFor="let commit of displayCommits" id='feedback-bar' (click)='updateFeedback(commit.number)'>
+          <td class='w-10'>{{commit.number}}</td>
+          <td>
+            <p class="circle {{commit.status}}"></p>
+          </td>
+          <td class='w-25'>{{commit.time | date:'short'}}</td>
+          <td class='w-50'>{{commit.message}}</td>
+          <td *ngIf='showCommiter'>{{commit.committer}}</td>
+          <td *ngIf="isShowScreenshot()"><button class="btn btn-primary" (click)='screenshot.screenshotModal.show();'>
+              <i class="cui-screen-desktop"></i></button></td>
+        </tr>
+      </tbody>
     </table>
+    <pagination [totalItems]="totalCommits"  [(ngModel)]="currentPage"  [itemsPerPage]="5" 
+    [maxSize]="10" (pageChanged)="pageChanged($event)"  previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;" 
+    lastText="&raquo;" [boundaryLinks]="true"></pagination>
   </div>
+  <hr>
+  <span><a>
+    <h2>Feedback Information {{commitNumber}}</h2>
+    </a></span>
+  <table class='table table-responsive-sm table-bordered table-hover table-outline'>
+    <thead class="thead-light">
+      <tr>
+        <th class='w-20'>fileName</th>
+        <th class='w-10'>Line</th>
+        <th class='w-30'>Message</th>
+        <th class='w-30'>Symptom</th>
+        <th>Suggest</th>
+      </tr>
+    </thead>
+    <tr *ngFor="let feedback of feedbacks" id='feedback-bar'>
+      <td>
+        <pre>{{feedback.fileName}}</pre>
+      </td>
+      <td>
+        <pre>{{feedback.line}}</pre>
+      </td>
+      <td>
+        <pre [innerHTML]='feedback.message | lineBreaks'></pre>
+      </td>
+      <td>
+        <pre>{{feedback.symptom}}</pre>
+      </td>
+      <td>
+        <pre><a href='{{feedback.suggest}}' target="blank">{{feedback.suggest}}</a></pre>
+      </td>
+    </tr>
+  </table>
 </div>
 <app-screenshot [screenshotUrls]=screenshotUrls [commitNumber]=commitNumber [type]=type #screenshot>
 </app-screenshot>
