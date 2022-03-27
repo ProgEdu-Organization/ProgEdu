@@ -15,6 +15,29 @@
   margin: 0px auto;
 }
 
+.square_b {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius: 5px;
+  border-style:solid; 
+  margin: 0px auto; 
+  height: 30px;
+  width: 80px;
+}
+
+.end {
+  border-color: red;
+}
+
+.ongoing {
+  border-color:#00DD00;
+}
+
+.not_allow {
+  border-color: #878787;
+}
+
 .ovol {
   border-radius: 5px;
   font-weight: bold;

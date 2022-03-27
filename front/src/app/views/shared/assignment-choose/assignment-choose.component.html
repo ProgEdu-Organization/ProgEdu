@@ -1,4 +1,7 @@
 <div class="animated fadeIn">
+  <div *ngIf="isTeacher"><a href="#/dashboard"><button class="btn btn-primary" type="button">
+    < Back</button></a>
+  </div><br>
   <div *ngIf='assignment' class="card">
     <div class="card-header">
       <i class="cui-pencil icons"></i>
@@ -7,7 +10,7 @@
     <div class="card-body">
       <div class='row'>
         <div class="col-lg-6">
-          <span class="h2">Git Project</span>
+          <span class="h2">Git 專案</span>
           <div class='row'>
             <div class="col-md-8">
               <input type="text" class="form-control" value="{{gitlabAssignmentURL}}" readonly>
@@ -15,7 +18,7 @@
             <button button (click)='copyToClipboard()'><i class="fa fa-copy fa-lg"></i></button>
           </div>
           <hr />
-          <span class="h2">Assignment Description</span>
+          <span class="h2">作業敘述</span>
           <div style="margin: 10px;">
             <ckeditor [(ngModel)]="assignment.description" [editor]="Editor" [disabled]="true" [config]='editorConfig'>
             </ckeditor>
