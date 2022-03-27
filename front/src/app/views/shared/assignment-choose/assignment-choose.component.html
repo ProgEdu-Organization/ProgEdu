@@ -8,29 +8,31 @@
       <label>{{assignmentName}}</label>
     </div>
     <div class="card-body">
-      <div class='row'>
-        <div class="col-lg-6">
-          <span class="h2">Git 專案</span>
-          <div class='row'>
-            <div class="col-md-8">
-              <input type="text" class="form-control" value="{{gitlabAssignmentURL}}" readonly>
+      <div style="padding: 10px">
+        <div class='row'>
+          <div class="col-lg-6">
+            <span class="h2">Git 專案</span>
+            <div class='row'>
+              <div class="col-md-8">
+                <input type="text" class="form-control" value="{{gitlabAssignmentURL}}" readonly>
+              </div>
+              <button button (click)='copyToClipboard()'><i class="fa fa-copy fa-lg"></i></button>
             </div>
-            <button button (click)='copyToClipboard()'><i class="fa fa-copy fa-lg"></i></button>
+            <hr />
+            <span class="h2">作業敘述</span>
+            <div style="margin: 10px;">
+              <ckeditor [(ngModel)]="assignment.description" [editor]="Editor" [disabled]="true" [config]='editorConfig'>
+              </ckeditor>
+            </div>
+            <hr />
+            <span class="h2">Deadline</span>
+            <p style="margin: 10px;">{{assignment.assessmentTimes[0].endTime | date:'short'}}</p>
           </div>
-          <hr />
-          <span class="h2">作業敘述</span>
-          <div style="margin: 10px;">
-            <ckeditor [(ngModel)]="assignment.description" [editor]="Editor" [disabled]="true" [config]='editorConfig'>
-            </ckeditor>
-          </div>
-          <hr />
-          <span class="h2">Deadline</span>
-          <p style="margin: 10px;">{{assignment.assessmentTimes[0].endTime | date:'short'}}</p>
         </div>
+        <hr>
+        <app-commit-record [type]=assignment.type [commits]=commits [feedbacks]=feedbacks [screenshotUrls]=screenshotUrls
+          (messageToEmit)="updateFeedback($event)"></app-commit-record>
       </div>
-      <hr>
-      <app-commit-record [type]=assignment.type [commits]=commits [feedbacks]=feedbacks [screenshotUrls]=screenshotUrls
-        (messageToEmit)="updateFeedback($event)"></app-commit-record>
     </div>
   </div>
 </div>
