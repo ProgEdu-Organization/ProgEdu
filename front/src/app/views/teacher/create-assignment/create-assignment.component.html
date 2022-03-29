@@ -358,6 +358,61 @@
                 </div>
               </div>
             </tab>
+            <!--Python-->
+            <tab heading="Python" (click)="selectedAssignmentType('Python')">
+              <div *ngIf="!peerReviewStatus.isOpen">
+                <div class="form-group row">
+                  <div class="col-md-3">Assignment Assessment</div>
+                  <div class="col-md-3">Status :</div>
+                  <div class="col-md-2">Order & Score :</div>       
+                </div>
+                <div class="form-group row">
+                  <div class="col-md-3"></div>
+                  <div class="col-md-3">
+                    <ul class="list-group sortable" [sortablejs]="pyStatus" [sortablejsOptions]="normalOptions">
+                      <li class="list-group-item" *ngFor="let item of pyStatus">{{ item }}</li>
+                    </ul>
+                  </div>
+                  <div class="col-md-2">
+                    <li class="list-group-item sortable" draggable="false" style="cursor: not-allowed; 
+                          background-color: white;">1.&nbsp;Compile Failure
+                          <select class="form-control" (change)="selectChangeHandler('python', 'Compile Failure', $event)">
+                            <option *ngFor="let op of getScoreOptions(pyOrder, pyStatusScore, 'Compile Failure')" value="{{ op }}">{{ op }}%</option>
+                          </select>
+                      </li>
+                    <ul class="list-group sortable" [sortablejs]="pyOrder" [sortablejsOptions]="normalOptions">
+                      <li class="list-group-item" *ngFor="let item of pyOrder; let i = index;">{{ i + 2 }}. {{ item }}
+                        <select class="form-control" (change)="selectChangeHandler('python', item, $event)">
+                          <option *ngFor="let op of getScoreOptions(pyOrder, pyStatusScore, item)" value="{{ op }}">{{ op }}%</option>
+                        </select>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-md-3 col-form-label">Python File</label>
+                <div class="col-md-9">
+                  <div class="btn-group" dropdown [isOpen]="pythonTabStatus.isOpen" placement="top">
+                    <button dropdownToggle type="button" class="btn btn-primary dropdown-toggle">
+                      <i class="icon-cloud-download"></i><span class="caret"> template</span>
+                    </button>
+                    <ul *dropdownMenu class="dropdown-menu" role="menu">
+                      <li role="menuitem"><a class="dropdown-item" href="{{NEW_SERVER_URL}}/assignment/getPythonAssignmentFile"
+                          download>PythonQuickStart.zip</a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-md-3 col-form-label" for="file-input">Upload your Assignment example (accept zip)
+                </label>
+                <div class="col-md-9">
+                  <input type="file" name="file-input" (change)='fileListener($event)'>
+                </div>
+              </div>
+            </tab>
           </tabset>
         </div>
         <!--/.col-->

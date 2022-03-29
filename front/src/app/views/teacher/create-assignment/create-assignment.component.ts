@@ -20,6 +20,7 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
   javaTabStatus: { isOpen: boolean } = { isOpen: false };
   androidTabStatus: { isOpen: boolean } = { isOpen: false };
   webTabStatus: { isOpen: boolean } = { isOpen: false };
+  pythonTabStatus: { isOpen: boolean } = { isOpen: false };
   autoAssignmentStatus: { isOpen: boolean } = { isOpen: true };
   peerReviewStatus: { isOpen: boolean } = { isOpen: false };
   disabled: boolean = false;
@@ -49,6 +50,7 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
   javaStatusScore = new Map([["Compile Failure", "0"]]);
   webStatusScore = new Map();
   appStatusScore = new Map([["Compile Failure", "0"]]);
+  pyStatusScore = new Map([["Compile Failure", "0"]]);
 
   javaStatus = [
     "Unit Test Failure",
@@ -68,9 +70,15 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
     "UI Test Failure"
   ];
 
+  pyStatus = [
+    "Coding Style Failure",
+    "Unit Test Failure"
+  ]
+
   javaOrder = [];
   webOrder = [];
   appOrder = [];
+  pyOrder = [];
 
   normalOptions: SortablejsOptions = {
     group: 'normal-group',
@@ -195,7 +203,8 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
     let tempOrder = order;
     let tempStatusScore = statusScore;
 
-    if (statusScore == this.javaStatusScore || statusScore == this.appStatusScore) {
+    if (statusScore == this.javaStatusScore || statusScore == this.appStatusScore 
+      || statusScore == this.pyStatusScore) {
       sum += Number(statusScore.get('Compile Failure'));
     }
 
@@ -228,6 +237,8 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
     } else if (type == 'android') {
       this.appStatusScore.set(status, $event.target.value);
       console.log(this.appStatusScore);
+    } else if (type == 'python') {
+      this.pyStatusScore.set(status, $event.target.value);
     }
   }
 
@@ -384,6 +395,10 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
       tempOrder = this.appOrder;
       tempStatusScore = this.appStatusScore;
       orderString = "Compile Failure:" + this.appStatusScore.get("Compile Failure") + ", ";
+    } else if (this.assignment.get('type').value == 'python') {
+      tempOrder = this.pyOrder;
+      tempStatusScore = this.pyStatusScore;
+      orderString = "Compile Failure:" + this.pyStatusScore.get("Compile Failure") + ", ";
     }
     for (let i = 0; i < tempOrder.length; i++) {
       if (tempStatusScore.get(tempOrder[i]) == undefined) {
@@ -401,7 +416,7 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
       this.progressModal.show();
       if (!this.peerReviewStatus.isOpen) {
         if (this.assignment.get('type').value == 'maven' || this.assignment.get('type').value == 'web'
-            || this.assignment.get('type').value == 'android') {
+            || this.assignment.get('type').value == 'android' || this.assignment.get('type').value == 'python') {
           this.createService.createAssignmentWithOrder(this.assignment).subscribe(
             (response) => {
               this.router.navigate(['./dashboard/assignmentManagement']);
@@ -475,6 +490,7 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
     this.javaTabStatus.isOpen = false;
     this.webTabStatus.isOpen = false;
     this.androidTabStatus.isOpen = false;
+    this.pythonTabStatus.isOpen = false;
   }
 
 

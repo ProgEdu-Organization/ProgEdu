@@ -29,6 +29,9 @@ public class JenkinsProjectConfigFactory {
       case ANDROID:
         return new AndroidPipelineConfig(projectUrl, updateDbUrl,
                 username, assignmentName);
+      case PYTHON:
+        return new PythonPipelineConfig(projectUrl, updateDbUrl,
+                username, assignmentName);
       default:
         return null;
     }

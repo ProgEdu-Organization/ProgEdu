@@ -18,6 +18,7 @@ import fcu.selab.progedu.db.UserDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.jenkinsconfig.JenkinsProjectConfig;
 import fcu.selab.progedu.jenkinsconfig.JenkinsProjectConfigFactory;
+import fcu.selab.progedu.jenkinsconfig.PythonPipelineConfig;
 import fcu.selab.progedu.jenkinsconfig.WebPipelineConfig;
 import fcu.selab.progedu.utils.ExceptionUtil;
 import fcu.selab.progedu.utils.JavaIoUtile;
@@ -224,6 +225,9 @@ public class AssignmentWithoutOrderCreator {
         jenkinsProjectConfig = new WebPipelineConfig(projectUrl, updateDbUrl,
             username, assignmentName,
             courseConfig.getTomcatServerIp() + "/publicApi/commits/screenshot/updateURL");
+      } else if (assignmentTypeEnum.equals(ProjectTypeEnum.PYTHON)) {
+        jenkinsProjectConfig = new PythonPipelineConfig(projectUrl, updateDbUrl,
+                username, assignmentName);
       } else {
         jenkinsProjectConfig = JenkinsProjectConfigFactory
             .getJenkinsProjectConfig(assignmentTypeEnum.getTypeName(), projectUrl, updateDbUrl,

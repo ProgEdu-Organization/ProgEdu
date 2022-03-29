@@ -1,5 +1,7 @@
 import { Component, OnInit, SystemJsNgModuleLoader } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { User } from '../../../models/user';
+import { JwtService } from '../../../services/jwt.service';
 import { TimeService } from '../../../services/time.service'
 import { AssignmentChoosedService } from './assignment-choose.service';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
@@ -11,6 +13,8 @@ import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 export class AssignmentChooseComponent implements OnInit {
   username: string;
   assignmentName: string;
+  user: User;
+  isTeacher: boolean = false;
 
   assignment = { type: '', description:'', assessmentTimes: new Array([]) };
   commits: Array<any> = [{totalCommit:""}];
@@ -24,11 +28,18 @@ export class AssignmentChooseComponent implements OnInit {
   public editorConfig = { toolbar: [] };
 
   constructor(private route: ActivatedRoute, private assignmentService: AssignmentChoosedService,
-    private timeService: TimeService) { }
+    private timeService: TimeService, private jwtService?: JwtService) { }
 
   async ngOnInit() {
     this.username = this.route.snapshot.queryParamMap.get('username');
     this.assignmentName = this.route.snapshot.queryParamMap.get('assignmentName');
+    this.user = new User(this.jwtService);
+    if (this.user.isTeacher) {
+      this.isTeacher = true;
+    } else {
+      this.isTeacher = false;
+    }
+    
     await this.getAssignment();
     await this.getGitAssignmentURL();
     //await this.getCommitDetail();

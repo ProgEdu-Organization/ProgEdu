@@ -1,0 +1,29 @@
+pipeline {
+    agent any
+    stages {
+        stage('pull environment') {
+            steps {
+                sh 'docker pull yachi77/progedu-python:v1'
+            }
+        }
+        stage('get source') {
+            steps {
+                git branch: 'master',
+                credentialsId: 'gitlab_root',
+                url: '{GitLab-url}'
+            }
+        }//{other stages}
+    }
+
+    post {
+
+        always {
+            sh "curl --location --request POST '{ProgEdu-server-updateDbUrl}' \
+                             --header 'Content-Type: application/x-www-form-urlencoded' \
+                             --data-urlencode 'user={ProgEdu-user-name}' \
+                             --data-urlencode 'proName={ProgEdu-project-name}'"
+            cleanWs()
+        }
+    }
+
+}

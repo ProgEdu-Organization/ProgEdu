@@ -3,6 +3,7 @@ export enum assignmentTypeEnum {
   Javac = 'javac',
   Maven = 'maven',
   Android = 'android',
-  Web = 'web'
+  Web = 'web',
+  Python = 'python'
 }
 
