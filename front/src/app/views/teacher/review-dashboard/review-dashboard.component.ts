@@ -36,11 +36,55 @@ export class ReviewDashboardComponent implements OnInit {
 
     });
   }
+
   isNA(commit: any) {
     if (JSON.stringify(commit.commitRecord) !== '{}') {
       return false;
     }
     return true;
+  }
+
+  getStatusString(index: number) {
+    let createTime = this.assignmentTable[index].createTime;
+    let assessmentTimes = this.assignmentTable[index].assessmentTimes;
+    const now_time = Date.now() - (new Date().getTimezoneOffset() * 60 * 1000);
+    
+    if (now_time > Date.parse(assessmentTimes[assessmentTimes.length - 1].endTime)) {
+      return "已結束"
+    } else {
+      if (now_time < Date.parse(assessmentTimes[0].startTime)) {
+        return "未開放";
+      } else {
+        return "進行中";
+      }
+    }
+  }
+
+  getStatus(index: number) {
+    let createTime = this.assignmentTable[index].createTime;
+    let assessmentTimes = this.assignmentTable[index].assessmentTimes;
+    const now_time = Date.now() - (new Date().getTimezoneOffset() * 60 * 1000);
+    
+    if (now_time > Date.parse(assessmentTimes[assessmentTimes.length - 1].endTime)) {
+      return "end"
+    } else {
+      if (now_time < Date.parse(assessmentTimes[0].startTime)) {
+        return "not_allow";
+      } else {
+        return "ongoing";
+      }
+    }
+  }
+  
+  getMaxAssignmentRound() {
+    let count = 0;
+    for(let i = 0; i < this.assignmentTable.length; i++) {
+      let assessmentTimes = this.assignmentTable[i].assessmentTimes;
+      if(assessmentTimes.length/2 > count) {
+        count = assessmentTimes.length/2;
+      }
+    }
+    return count;
   }
 
 }

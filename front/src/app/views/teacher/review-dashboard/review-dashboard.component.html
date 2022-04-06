@@ -29,6 +29,41 @@
             <th width="10%" *ngFor='let col of assignmentTable'>{{col.name}}</th>
             <th class='text-left'></th>
           </tr>
+          <tr>
+            <th width="10%" class='text-left' style="vertical-align: middle">Status</th>
+            <th width="10%" *ngFor='let col of assignmentTable; index as i'>
+              <p class="square_b {{getStatus(i)}}">
+                {{getStatusString(i)}}
+              </p></th>
+            <th class='text-left'></th>
+          </tr>
+          <tr>
+            <th width="10%" class='text-left'>Release Time</th>
+            <th width="10%" *ngFor='let col of assignmentTable'>{{col.assessmentTimes[0].startTime | date:'yyyy-MM-dd'}}</th>
+            <th class='text-left'></th>
+          </tr>
+          <tr>
+            <th width="10%" class='text-left'>Deadline</th>
+            <th width="10%" *ngFor='let col of assignmentTable'>{{col.assessmentTimes[0].endTime | date:'yyyy-MM-dd'}}</th>
+            <th class='text-left'></th>
+          </tr>
+          <ng-container *ngFor="let item of [].constructor(getMaxAssignmentRound()); let i = index">
+            <tr>
+              <th width="10%" class='text-left'>審查 Round {{ i + 1 }}</th>
+              <th width="10%" *ngFor='let col of assignmentTable'></th>
+              <th class='text-left'></th>
+            </tr>
+            <tr>
+              <th width="10%" class='text-left'>Release Time</th>
+              <th width="10%" *ngFor='let col of assignmentTable'>{{col.assessmentTimes[i*2 + 1].startTime | date:'yyyy-MM-dd'}}</th>
+              <th class='text-left'></th>
+            </tr>
+            <tr>
+              <th width="10%" class='text-left'>Deadline</th>
+              <th width="10%" *ngFor='let col of assignmentTable'>{{col.assessmentTimes[i*2 + 1].endTime | date:'yyyy-MM-dd'}}</th>
+              <th class='text-left'></th>
+            </tr>
+          </ng-container>
         </thead>
         <tbody>
           <tr *ngFor='let student of allStudentCommitRecord | filter:search'>
