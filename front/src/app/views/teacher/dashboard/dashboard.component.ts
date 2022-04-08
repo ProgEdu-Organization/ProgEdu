@@ -13,6 +13,7 @@ export class DashboardComponent implements OnInit {
   public assignmentTable: Array<any> = new Array<any>();
   public allStudentCommitRecord: JSON;
   public search;
+  public readonly now_time = Date.now() - (new Date().getTimezoneOffset() * 60 * 1000);
   constructor(private dashboardService: DashboardService) { }
   async ngOnInit() {
     await this.getAllAssignments();
@@ -50,12 +51,11 @@ export class DashboardComponent implements OnInit {
   getStatusString(index: number) {
     let createTime = this.assignmentTable[index].createTime;
     let assessmentTimes = this.assignmentTable[index].assessmentTimes;
-    const now_time = Date.now() - (new Date().getTimezoneOffset() * 60 * 1000);
     
-    if (now_time > Date.parse(assessmentTimes[assessmentTimes.length - 1].endTime)) {
+    if (this.now_time > Date.parse(assessmentTimes[assessmentTimes.length - 1].endTime)) {
       return "已結束"
     } else {
-      if (now_time < Date.parse(assessmentTimes[0].startTime)) {
+      if (this.now_time < Date.parse(assessmentTimes[0].startTime)) {
         return "未開放";
       } else {
         return "進行中";
@@ -66,12 +66,11 @@ export class DashboardComponent implements OnInit {
   getStatus(index: number) {
     let createTime = this.assignmentTable[index].createTime;
     let assessmentTimes = this.assignmentTable[index].assessmentTimes;
-    const now_time = Date.now() - (new Date().getTimezoneOffset() * 60 * 1000);
     
-    if (now_time > Date.parse(assessmentTimes[assessmentTimes.length - 1].endTime)) {
+    if (this.now_time > Date.parse(assessmentTimes[assessmentTimes.length - 1].endTime)) {
       return "end"
     } else {
-      if (now_time < Date.parse(assessmentTimes[0].startTime)) {
+      if (this.now_time < Date.parse(assessmentTimes[0].startTime)) {
         return "not_allow";
       } else {
         return "ongoing";

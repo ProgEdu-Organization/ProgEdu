@@ -14,6 +14,7 @@ export class ReviewDashboardComponent implements OnInit {
   public assignmentTable: Array<any> = new Array<any>();
   public allStudentCommitRecord: JSON;
   public search;
+  public readonly now_time = Date.now() - (new Date().getTimezoneOffset() * 60 * 1000);
   constructor(private dashboardService: ReviewDashboardService) { }
   async ngOnInit() {
     await this.getAllAssignments();
@@ -47,15 +48,25 @@ export class ReviewDashboardComponent implements OnInit {
   getStatusString(index: number) {
     let createTime = this.assignmentTable[index].createTime;
     let assessmentTimes = this.assignmentTable[index].assessmentTimes;
-    const now_time = Date.now() - (new Date().getTimezoneOffset() * 60 * 1000);
     
-    if (now_time > Date.parse(assessmentTimes[assessmentTimes.length - 1].endTime)) {
+    if(this.now_time > Date.parse(assessmentTimes[assessmentTimes.length - 1].endTime)) {
       return "已結束"
     } else {
-      if (now_time < Date.parse(assessmentTimes[0].startTime)) {
+      if(this.now_time < Date.parse(assessmentTimes[0].startTime)) {
         return "未開放";
       } else {
-        return "進行中";
+        let count = 0;
+        while(this.now_time > Date.parse(assessmentTimes[count].endTime)) {
+          count++;
+        }
+        if(assessmentTimes[count].assessmentAction === "DO") {
+          return "HW進行中";
+        } else if(assessmentTimes[count].assessmentAction === "REVIEW"){
+          let round = (count + 1) / 2;
+          return "PR"+ round.toString() + "進行中";
+        } else {
+          return "進行中";
+        }
       }
     }
   }
@@ -63,12 +74,11 @@ export class ReviewDashboardComponent implements OnInit {
   getStatus(index: number) {
     let createTime = this.assignmentTable[index].createTime;
     let assessmentTimes = this.assignmentTable[index].assessmentTimes;
-    const now_time = Date.now() - (new Date().getTimezoneOffset() * 60 * 1000);
     
-    if (now_time > Date.parse(assessmentTimes[assessmentTimes.length - 1].endTime)) {
+    if(this.now_time > Date.parse(assessmentTimes[assessmentTimes.length - 1].endTime)) {
       return "end"
     } else {
-      if (now_time < Date.parse(assessmentTimes[0].startTime)) {
+      if(this.now_time < Date.parse(assessmentTimes[0].startTime)) {
         return "not_allow";
       } else {
         return "ongoing";

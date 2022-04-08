@@ -72,7 +72,7 @@
               <br>
               {{student.name}}
             </th>
-            <th *ngFor='let review of student.commitRecord'>
+            <th *ngFor='let review of student.commitRecord' width="10%">
               <p id="{{student.username}}_{{review.assignmentName}}" class="circle {{review.reviewStatus}}">
                 <a *ngIf='!isNA(review)'
                   id="{{student.username}}_{{review.assignmentName}}_{{review.commitRecordCount}}"
