@@ -14,6 +14,7 @@ export class ReviewDashboardComponent implements OnInit {
   public assignmentTable: Array<any> = new Array<any>();
   public allStudentCommitRecord: JSON;
   public search;
+  public readonly now_time = Date.now() - (new Date().getTimezoneOffset() * 60 * 1000);
   constructor(private dashboardService: ReviewDashboardService) { }
   async ngOnInit() {
     await this.getAllAssignments();
@@ -36,11 +37,64 @@ export class ReviewDashboardComponent implements OnInit {
 
     });
   }
+
   isNA(commit: any) {
     if (JSON.stringify(commit.commitRecord) !== '{}') {
       return false;
     }
     return true;
+  }
+
+  getStatusString(index: number) {
+    let createTime = this.assignmentTable[index].createTime;
+    let assessmentTimes = this.assignmentTable[index].assessmentTimes;
+    
+    if(this.now_time > Date.parse(assessmentTimes[assessmentTimes.length - 1].endTime)) {
+      return "已結束"
+    } else {
+      if(this.now_time < Date.parse(assessmentTimes[0].startTime)) {
+        return "未開放";
+      } else {
+        let count = 0;
+        while(this.now_time > Date.parse(assessmentTimes[count].endTime)) {
+          count++;
+        }
+        if(assessmentTimes[count].assessmentAction === "DO") {
+          return "HW進行中";
+        } else if(assessmentTimes[count].assessmentAction === "REVIEW"){
+          let round = (count + 1) / 2;
+          return "PR"+ round.toString() + "進行中";
+        } else {
+          return "進行中";
+        }
+      }
+    }
+  }
+
+  getStatus(index: number) {
+    let createTime = this.assignmentTable[index].createTime;
+    let assessmentTimes = this.assignmentTable[index].assessmentTimes;
+    
+    if(this.now_time > Date.parse(assessmentTimes[assessmentTimes.length - 1].endTime)) {
+      return "end"
+    } else {
+      if(this.now_time < Date.parse(assessmentTimes[0].startTime)) {
+        return "not_allow";
+      } else {
+        return "ongoing";
+      }
+    }
+  }
+  
+  getMaxAssignmentRound() {
+    let count = 0;
+    for(let i = 0; i < this.assignmentTable.length; i++) {
+      let assessmentTimes = this.assignmentTable[i].assessmentTimes;
+      if(assessmentTimes.length/2 > count) {
+        count = assessmentTimes.length/2;
+      }
+    }
+    return count;
   }
 
 }
