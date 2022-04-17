@@ -23,6 +23,7 @@
             <ckeditor [(ngModel)]="assignment.description" [editor]="Editor" [disabled]="true" [config]='editorConfig'>
             </ckeditor>
           </div>
+          <!--
           <hr />
           <span class="h2">作業截止時間</span>
           <div *ngFor="let time of assignmentTimes; let i = index">
@@ -38,7 +39,24 @@
           <div *ngFor="let time of assignmentTimes; let i = index">
             <p *ngIf="time.assessmentAction == 'REVIEW'" style="margin: 10px;">第{{(i+1)/2}}輪: {{time.endTime | date:'short'}}</p>
           </div>
+          -->
         </div>
+      </div>
+      <hr/>
+      <div class="row">
+        <ul class="timeline" id="timeline" style="overflow:auto;">
+          <li *ngFor="let time of assignmentTimes; index as i" class="li {{isCompleted(i)}}" >
+            <div class="timestamp" style="text-align: center;">
+              <span>{{time.endTime | date:'yyyy.MM.dd'}}<br>{{time.endTime | date:'shortTime'}}</span>
+            </div>
+            <div class="status">
+              <h6 style="text-align:center;" *ngIf="i == 0"> &emsp;作業截止&emsp;<br>第一輪審查開始</h6>
+              <h6 style="text-align:center;" *ngIf="i == 1"> 第一輪審查結束<br>作業修改開始</h6>
+              <h6 style="text-align:center;" *ngIf="i == 2"> 作業修改截止<br>第二輪審查開始</h6>
+              <h6 style="text-align:center;" *ngIf="i == 3"> 第二輪審查開始<br>確認審查結果</h6>
+            </div>
+          </li>
+         </ul>
       </div>
       <hr>
       <app-review-commit-record [type]=assignment.type [commits]=commits [feedbacks]=feedbacks [screenshotUrls]=screenshotUrls [reviewFeedbacks]=reviewFeedbacks
