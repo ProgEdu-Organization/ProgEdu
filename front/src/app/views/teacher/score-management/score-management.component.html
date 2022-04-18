@@ -7,7 +7,7 @@
             <h5 class="card-title" style="font-weight: bold; padding: 10px;">新增成績</h5>
             <div class="card">
               <div class="card-body">
-                <form (ngSubmit)="addMultipleStudent()">
+                <form [formGroup]="score" (ngSubmit)="uploadMultipleScore()">
                     <div class="form-group row">
                         <label class="col-md-6 col-form-label" for="file-input">範例檔案
                         </label>

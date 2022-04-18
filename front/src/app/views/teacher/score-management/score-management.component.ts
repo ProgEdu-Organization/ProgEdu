@@ -75,4 +75,8 @@ export class ScoreManagementComponent implements OnInit {
     
   }
 
+  public uploadMultipleScore() {
+
+  }
+
 }
