@@ -52,6 +52,12 @@ export class ScoreManagementComponent implements OnInit {
     
   }
 
+  changeFileListener(e: { target: { files: File[]; }; }) {
+    this.addMultipleScoreSuccessful = false;
+    this.addMultipleScoreErrorMsg = '';
+    this.multipleScoreFile = e.target.files[0];
+  }
+
   public uploadMultipleScore() {
 
   }
