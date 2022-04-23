@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ScoreManagementService } from './score-management.service';
 import { environment } from '../../../../environments/environment';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { assignmentMethodEnum } from './assignmentMethodEnum.enum';
 import * as $ from 'jquery';
 @Component({
   selector: 'app-student-management',
@@ -23,7 +24,7 @@ export class ScoreManagementComponent implements OnInit {
   async ngOnInit() {
     await this.getAllScore();
     this.scoreForm = this.fb.group({
-      type: ['', Validators.required],
+      method: [assignmentMethodEnum['Assignment']],
       assignmentName: ['', Validators.pattern('^[a-zA-Z0-9-_]{4,20}')],
     });
     this.onChange();
