@@ -9,55 +9,32 @@ import * as $ from 'jquery';
 })
 export class ScoreManagementComponent implements OnInit {
   public users: Array<any> = new Array<any>();
-  public oneStudentForm: FormGroup;
-  public multipleStudentFile: File;
+  public scoreForm: FormGroup;
+  public multipleScoreFile: File;
   public NEW_SERVER_URL = environment.NEW_SERVER_URL;
   public isCollapsed = true;
-  public addOneStudentErrorMsg = '';
-  public addOneStudentSuccessful: boolean = false;
-  public addMultipleStudentErrorMsg = '';
-  public addMultipleStudentSuccessful: boolean = false;
+  public addOneScoreErrorMsg = '';
+  public addOneScoreSuccessful: boolean = false;
+  public addMultipleScoreErrorMsg = '';
+  public addMultipleScoreSuccessful: boolean = false;
   public progressbar : boolean = false;
   constructor(private scoreService: ScoreManagementService, private fb: FormBuilder) { }
 
   async ngOnInit() {
-    await this.getAllUser();
-    this.oneStudentForm = this.fb.group({
-      role: ['', Validators.required],
-      name: ['', Validators.required],
-      username: ['', Validators.pattern('^[a-zA-Z0-9-_]{4,20}')],
-      password: ['', Validators.pattern('^[a-zA-Z0-9-_]{8,20}')],
-      email: ['', [Validators.required, Validators.email]],
-      isDisplayed: [true],
-      rememberMe: [true]
+    await this.getAllScore();
+    this.scoreForm = this.fb.group({
+      type: ['', Validators.required],
+      assignmentName: ['', Validators.pattern('^[a-zA-Z0-9-_]{4,20}')],
     });
     this.onChange();
   }
 
   onChange() {
-    const name = 'name';
-    const username = 'username';
-    const password = 'password';
-    const email = 'email';
+    const assignmentName = 'assignmentName';
 
-    this.oneStudentForm.get(name).valueChanges.subscribe(
+    this.scoreForm.get(assignmentName).valueChanges.subscribe(
       () => {
-        this.oneStudentForm.get(name).valid ? this.showIsValidById(name) : this.hideIsInvalidById(name);
-      });
-
-    this.oneStudentForm.get(username).valueChanges.subscribe(
-      () => {
-        this.oneStudentForm.get(username).valid ? this.showIsValidById(username) : this.hideIsInvalidById(username);
-      });
-
-    this.oneStudentForm.get(password).valueChanges.subscribe(
-      () => {
-        this.oneStudentForm.get(password).valid ? this.showIsValidById(password) : this.hideIsInvalidById(password);
-      });
-
-    this.oneStudentForm.get(email).valueChanges.subscribe(
-      () => {
-        this.oneStudentForm.get(email).valid ? this.showIsValidById(email) : this.hideIsInvalidById(email);
+        this.scoreForm.get(assignmentName).valid ? this.showIsValidById(assignmentName) : this.hideIsInvalidById(assignmentName);
       });
   }
 
@@ -71,7 +48,7 @@ export class ScoreManagementComponent implements OnInit {
     $('#' + id).addClass('is-invalid');
   }
 
-  async getAllUser() {
+  async getAllScore() {
     
   }
 
