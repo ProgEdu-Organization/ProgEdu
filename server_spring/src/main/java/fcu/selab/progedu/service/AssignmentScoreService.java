@@ -26,7 +26,7 @@ public class AssignmentScoreService {
   private AssignmentDbManager assignmentDbManager = AssignmentDbManager.getInstance();
   private AssignmentUserDbManager assignmentUserDbManager = AssignmentUserDbManager.getInstance();
 
-  @PostMapping("/assignment/score/upload")
+  @PostMapping("/assignment/upload")
   public ResponseEntity<Object> uploadAssignmentScore(
           @RequestParam("assignmentName") String assignmentName,
           @RequestParam("file") MultipartFile uploadedInputStream) {

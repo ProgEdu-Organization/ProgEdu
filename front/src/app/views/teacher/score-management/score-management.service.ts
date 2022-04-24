@@ -24,10 +24,9 @@ export class ScoreManagementService {
   ADD_MULTIPLE_SCORE_API = ScoreAPI.addScoreByCsv;
   constructor(private addJwtTokenHttpClient: AddJwtTokenHttpClient) { }
 
-  addMultipleScore(assignment: FormGroup, file: File) {
+  addMultipleAssignmentScore(assignment: FormGroup, file: File) {
     const formData = new FormData();
     formData.append('assignmentName', assignment.value.assignmentName);
-    formData.append('method', assignment.value.method);
     formData.append('file', file);
     return this.addJwtTokenHttpClient.post(this.ADD_MULTIPLE_SCORE_API, formData, addMultipleScoreOptions);
   }

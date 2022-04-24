@@ -62,17 +62,19 @@ export class ScoreManagementComponent implements OnInit {
   public uploadMultipleScore() {
     this.progressbar = true;
     if(this.multipleScoreFile != null) {
-      this.scoreService.addMultipleScore(this.scoreForm, this.multipleScoreFile).subscribe(
-        (response) => {
-          this.progressbar = false;
-          this.getAllScore();
-          this.addMultipleScoreSuccessful = true;
-          this.addMultipleScoreErrorMsg = '';
-        },
-        error => {
-          this.addMultipleScoreErrorMsg = error.error;
-        }
-      )
+      if (this.scoreForm.value.method == assignmentMethodEnum['Assignment']) {
+        this.scoreService.addMultipleAssignmentScore(this.scoreForm, this.multipleScoreFile).subscribe(
+          (response) => {
+            this.progressbar = false;
+            this.getAllScore();
+            this.addMultipleScoreSuccessful = true;
+            this.addMultipleScoreErrorMsg = '';
+          },
+          error => {
+            this.addMultipleScoreErrorMsg = error.error;
+          }
+        )
+      }
     }
   }
 
