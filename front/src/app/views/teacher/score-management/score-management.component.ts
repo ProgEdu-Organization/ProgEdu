@@ -5,7 +5,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { assignmentMethodEnum } from './assignmentMethodEnum.enum';
 import * as $ from 'jquery';
 @Component({
-  selector: 'app-student-management',
+  selector: 'app-score-management',
   templateUrl: './score-management.component.html'
 })
 export class ScoreManagementComponent implements OnInit {
@@ -25,7 +25,7 @@ export class ScoreManagementComponent implements OnInit {
     await this.getAllScore();
     this.scoreForm = this.fb.group({
       method: [assignmentMethodEnum['Assignment']],
-      assignmentName: ['', Validators.pattern('^[a-zA-Z0-9-_]{4,20}')],
+      assignmentName: [undefined, [Validators.required, Validators.pattern('^[a-zA-Z0-9-_]{3,10}')]],
     });
     this.onChange();
   }
@@ -60,7 +60,20 @@ export class ScoreManagementComponent implements OnInit {
   }
 
   public uploadMultipleScore() {
-
+    this.progressbar = true;
+    if(this.multipleScoreFile != null) {
+      this.scoreService.addMultipleScore(this.scoreForm, this.multipleScoreFile).subscribe(
+        (response) => {
+          this.progressbar = false;
+          this.getAllScore();
+          this.addMultipleScoreSuccessful = true;
+          this.addMultipleScoreErrorMsg = '';
+        },
+        error => {
+          this.addMultipleScoreErrorMsg = error.error;
+        }
+      )
+    }
   }
 
 }
