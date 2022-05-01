@@ -33,10 +33,20 @@
                           </div>
                         </div>
                     </div>
-                    <div class="form-group row">
+                    <ng-container *ngIf="scoreForm.value.method == 'Assignment'">
+                      <div class="form-group row">
                         <label class="col-md-4 col-form-label" for="assignmentName">作業名稱</label>
-                        <input type="text" class="form-control col-md-6" id="assignmentName" formControlName="assignmentName" placeholder="Enter Assignment Name">
-                    </div>
+                        <select class="form-control col-md-6" formControlName="assignmentName">
+                          <option *ngFor="let assignment of assignmentTable; index as i" [ngValue]="assignment.name">{{assignment.name}}</option>
+                        </select>
+                      </div>
+                    </ng-container>
+                    <ng-container *ngIf="scoreForm.value.method == 'Exam'">
+                      <div class="form-group row">
+                        <label class="col-md-4 col-form-label" for="examName">作業名稱</label>
+                        <input type="text" class="form-control col-md-6" id="examName" formControlName="examName" placeholder="Enter Exam Name">
+                      </div>
+                    </ng-container>
                     <div class="form-group row">
                         <label class="col-md-6 col-form-label" for="file-input">上傳檔案(accept csv)
                         </label>

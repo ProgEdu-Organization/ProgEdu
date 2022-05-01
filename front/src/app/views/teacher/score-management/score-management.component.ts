@@ -10,6 +10,7 @@ import * as $ from 'jquery';
 })
 export class ScoreManagementComponent implements OnInit {
   public users: Array<any> = new Array<any>();
+  public assignmentTable: Array<any> = new Array<any>();
   public scoreForm: FormGroup;
   public multipleScoreFile: File;
   public NEW_SERVER_URL = environment.NEW_SERVER_URL;
@@ -22,10 +23,12 @@ export class ScoreManagementComponent implements OnInit {
   constructor(private scoreService: ScoreManagementService, private fb: FormBuilder) { }
 
   async ngOnInit() {
+    await this.getAllAssignments();
     await this.getAllScore();
     this.scoreForm = this.fb.group({
       method: [assignmentMethodEnum['Assignment']],
-      assignmentName: [undefined, [Validators.required, Validators.pattern('^[a-zA-Z0-9-_]{3,10}')]],
+      assignmentName: [undefined, Validators.required],
+      examName: [undefined, [Validators.required, Validators.pattern('^[a-zA-Z0-9-_]{3,10}')]],
     });
     this.onChange();
   }
@@ -37,7 +40,15 @@ export class ScoreManagementComponent implements OnInit {
       () => {
         this.scoreForm.get(assignmentName).valid ? this.showIsValidById(assignmentName) : this.hideIsInvalidById(assignmentName);
       });
+
   }
+
+  async getAllAssignments() {
+    this.scoreService.getAllAssignments().subscribe(response => {
+      this.assignmentTable = response.allAssignments;
+    });
+  }
+
 
   showIsValidById(id: string) {
     $('#' + id).addClass('is-valid');
@@ -60,10 +71,23 @@ export class ScoreManagementComponent implements OnInit {
   }
 
   public uploadMultipleScore() {
+    console.log(this.scoreForm.value.method);
     this.progressbar = true;
     if(this.multipleScoreFile != null) {
       if (this.scoreForm.value.method == assignmentMethodEnum['Assignment']) {
         this.scoreService.addMultipleAssignmentScore(this.scoreForm, this.multipleScoreFile).subscribe(
+          (response) => {
+            this.progressbar = false;
+            this.getAllScore();
+            this.addMultipleScoreSuccessful = true;
+            this.addMultipleScoreErrorMsg = '';
+          },
+          error => {
+            this.addMultipleScoreErrorMsg = error.error;
+          }
+        )
+      } else {
+        this.scoreService.addMultipleExamScore(this.scoreForm, this.multipleScoreFile).subscribe(
           (response) => {
             this.progressbar = false;
             this.getAllScore();

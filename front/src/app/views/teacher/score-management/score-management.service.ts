@@ -20,15 +20,27 @@ const addMultipleScoreOptions = ({
 
 
 export class ScoreManagementService {
-  GET_ASSIGNMENTS_API = AssignmentAPI.getAllAssignments;
-  ADD_MULTIPLE_SCORE_API = ScoreAPI.addScoreByCsv;
+  ALL_ASSIGNMENTS_API = AssignmentAPI.getAllAssignments;
+  ADD_ASSIGNMENT_SCORE_API = ScoreAPI.addAssignmentScoreByCsv;
+  ADD_EXAM_SCORE_API = ScoreAPI.addExamScoreByCsv;
   constructor(private addJwtTokenHttpClient: AddJwtTokenHttpClient) { }
 
   addMultipleAssignmentScore(assignment: FormGroup, file: File) {
     const formData = new FormData();
     formData.append('assignmentName', assignment.value.assignmentName);
     formData.append('file', file);
-    return this.addJwtTokenHttpClient.post(this.ADD_MULTIPLE_SCORE_API, formData, addMultipleScoreOptions);
+    return this.addJwtTokenHttpClient.post(this.ADD_ASSIGNMENT_SCORE_API, formData, addMultipleScoreOptions);
+  }
+
+  addMultipleExamScore(assignment: FormGroup, file: File) {
+    const formData = new FormData();
+    formData.append('examName', assignment.value.examName);
+    formData.append('file', file);
+    return this.addJwtTokenHttpClient.post(this.ADD_EXAM_SCORE_API, formData, addMultipleScoreOptions);
+  }
+
+  getAllAssignments(): Observable<any> {
+    return this.addJwtTokenHttpClient.get(this.ALL_ASSIGNMENTS_API);
   }
 
 }
