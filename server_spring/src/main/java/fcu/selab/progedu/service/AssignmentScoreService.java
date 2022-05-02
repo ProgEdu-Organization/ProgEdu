@@ -12,6 +12,7 @@ import fcu.selab.progedu.db.UserDbManager;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -51,7 +52,7 @@ public class AssignmentScoreService {
         int uid = userDbManager.getUserIdByUsername(userName);
         int auid =assignmentUserDbManager.getAuid(aid, uid);
 
-        int score = Integer.valueOf(csvReader.get("score"));
+        int score = Integer.valueOf(csvReader.get("Score"));
 
         assignmentScore.setAuid(auid);
         assignmentScore.setScore(score);
@@ -94,7 +95,7 @@ public class AssignmentScoreService {
         assignmentUserDbManager.addAssignmentUser(aid, uid);
         int auid =assignmentUserDbManager.getAuid(aid, uid);
 
-        int score = Integer.valueOf(csvReader.get("score"));
+        int score = Integer.valueOf(csvReader.get("Score"));
 
         assignmentScore.setAuid(auid);
         assignmentScore.setScore(score);
@@ -109,4 +110,5 @@ public class AssignmentScoreService {
       return new ResponseEntity<Object>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
 }
