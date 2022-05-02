@@ -9,11 +9,14 @@ import fcu.selab.progedu.db.AssignmentDbManager;
 import fcu.selab.progedu.db.AssignmentScoreDbManager;
 import fcu.selab.progedu.db.AssignmentUserDbManager;
 import fcu.selab.progedu.db.UserDbManager;
+import net.minidev.json.JSONArray;
+import net.minidev.json.JSONObject;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStreamReader;
 import java.util.Date;
+import java.util.List;
 
 @RestController
 @RequestMapping(value ="/score")
@@ -111,4 +115,24 @@ public class AssignmentScoreService {
     }
   }
 
+  @GetMapping("/allScore/mean")
+  public ResponseEntity<Object> getAllScoreMean() {
+    HttpHeaders headers = new HttpHeaders();
+    JSONArray jsonArray = new JSONArray();
+
+    try {
+      List<Integer> assignmentIds = assignmentScoreDbManager.getAllGradedAssignments();
+      for (int assignmentId : assignmentIds) {
+        JSONObject ob = new JSONObject();
+        int averageScore = assignmentScoreDbManager.getAssignmentMeanByAssignmentId(assignmentId);
+        ob.put("assignmentId", assignmentId);
+        ob.put("averageScore", averageScore);
+        jsonArray.add(ob);
+      }
+
+      return new ResponseEntity<Object>(jsonArray, headers, HttpStatus.OK);
+    } catch (Exception e) {
+      return new ResponseEntity<Object>(e.getMessage(), headers, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
 }

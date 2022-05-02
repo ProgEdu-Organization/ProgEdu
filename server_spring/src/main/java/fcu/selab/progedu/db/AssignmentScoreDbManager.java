@@ -7,7 +7,10 @@ import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AssignmentScoreDbManager {
 
@@ -47,4 +50,81 @@ public class AssignmentScoreDbManager {
     }
   }
 
+  /**
+   * get assignment score by assignment id
+   *
+   * @param aid Assignment id
+   * @return assignment score mean
+   */
+  public int getAssignmentMeanByAssignmentId(int aid) {
+    String sql = "SELECT `score` FROM (" +
+            "SELECT avg(`score`) AS `score`, `aid` FROM ProgEdu.Assignment_Score " +
+            "INNER JOIN ProgEdu.Assignment_User ON auId = Assignment_User.id GROUP BY `aId`)" +
+            " AS Assignment_Average WHERE `aid` = ? ";
+
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
+    int score = 0;
+
+    try {
+
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
+      preStmt.setInt(1, aid);
+      preStmt.executeUpdate();
+
+      preStmt = conn.prepareStatement(sql);
+      rs = preStmt.executeQuery();
+      while (rs.next()) {
+        score = rs.getInt("score");
+      }
+
+    } catch (SQLException e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(rs, preStmt, conn);
+    }
+    return score;
+  }
+
+  /**
+   * Get all graded assignments ids
+   *
+   * @return assignment id list
+   */
+  public List<Integer> getAllGradedAssignments() {
+    String sql = "SELECT `aid` FROM (" +
+            "SELECT avg(`score`) AS `score`, `aid` FROM ProgEdu.Assignment_Score " +
+            "INNER JOIN ProgEdu.Assignment_User ON `auId` = Assignment_User.id GROUP BY `aId`) " +
+            "AS Assignment_Average";
+
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
+    List<Integer> assignmentIds = new ArrayList<>();
+
+    try {
+
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+
+      preStmt.executeUpdate();
+
+      preStmt = conn.prepareStatement(sql);
+      rs = preStmt.executeQuery();
+      while (rs.next()) {
+        assignmentIds.add(rs.getInt("aid"));
+      }
+
+    } catch (SQLException e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(rs, preStmt, conn);
+    }
+    return assignmentIds;
+  }
 }
