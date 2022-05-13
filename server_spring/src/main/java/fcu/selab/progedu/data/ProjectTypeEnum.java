@@ -5,7 +5,8 @@ public enum ProjectTypeEnum {
   MAVEN("maven"),
   WEB("web"),
   ANDROID("android"),
-  PYTHON("python");
+  PYTHON("python"),
+  EXAM("exam");
 
   private String type;
 

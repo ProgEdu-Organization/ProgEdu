@@ -33,6 +33,7 @@ import { CreateGroupComponent } from './create-group/create-group.component';
 
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { SortablejsModule } from 'ngx-sortablejs';
+import { ScoreManagementComponent } from './score-management/score-management.component';
 
 @NgModule({
     imports: [
@@ -65,7 +66,8 @@ import { SortablejsModule } from 'ngx-sortablejs';
         ReviewMetricsManagementComponent,
         ReviewDashboardComponent,
         ReviewStatusDashboardComponent,
-        ReviewRoundDashboardComponent
+        ReviewRoundDashboardComponent,
+        ScoreManagementComponent
     ]
 })
 export class TeacherModule { }

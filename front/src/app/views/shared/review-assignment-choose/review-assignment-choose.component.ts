@@ -26,6 +26,7 @@ export class ReviewAssignmentChooseComponent implements OnInit {
   selectedCommitNumber;
   screenshotUrls: Array<string>;
   reviewFeedbacks: [{assessmentTimes:[{startTime:"", endTime:""}]}];
+  public readonly now_time = Date.now() - (new Date().getTimezoneOffset() * 60 * 1000);
   review
 
   public Editor = ClassicEditor;
@@ -143,6 +144,14 @@ export class ReviewAssignmentChooseComponent implements OnInit {
           this.screenshotUrls = resopnse.urls;
         }
       );
+    }
+  }
+
+  isCompleted(index: number){
+    if(this.now_time > Date.parse(this.assignmentTimes[index].endTime)) {
+      return "complete";
+    } else {
+      return "";
     }
   }
 
