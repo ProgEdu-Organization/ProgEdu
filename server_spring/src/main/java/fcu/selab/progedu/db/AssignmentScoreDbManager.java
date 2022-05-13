@@ -107,6 +107,7 @@ public class AssignmentScoreDbManager {
 
       conn = database.getConnection();
       preStmt = conn.prepareStatement(sql);
+
       rs = preStmt.executeQuery();
 
       while (rs.next()) {
@@ -120,6 +121,40 @@ public class AssignmentScoreDbManager {
       CloseDBUtil.closeAll(rs, preStmt, conn);
     }
     return assignmentIds;
+  }
+
+  /**
+   * Get score by auId
+   *
+   * @param auId Assignment User id
+   * @return assignment id list
+   */
+  public int getScoreByAuId(int auId) {
+    String sql = "SELECT `score` FROM ProgEdu.Assignment_Score WHERE `auId` = ?";
+
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
+    int score = -1;
+    try {
+
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+      preStmt.setInt(1, auId);
+
+      rs = preStmt.executeQuery();
+
+      while (rs.next()) {
+        score = rs.getInt("score");
+      }
+
+    } catch (SQLException e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(rs, preStmt, conn);
+    }
+    return score;
   }
 
   /**
