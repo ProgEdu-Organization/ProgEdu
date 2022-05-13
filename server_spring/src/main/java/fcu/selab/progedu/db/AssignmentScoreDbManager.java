@@ -73,9 +73,6 @@ public class AssignmentScoreDbManager {
       preStmt = conn.prepareStatement(sql);
 
       preStmt.setInt(1, aid);
-      preStmt.executeUpdate();
-
-      preStmt = conn.prepareStatement(sql);
       rs = preStmt.executeQuery();
       while (rs.next()) {
         score = rs.getInt("score");
