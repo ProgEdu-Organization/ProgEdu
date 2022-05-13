@@ -1,6 +1,6 @@
 import { environment } from '../../environments/environment';
 
-let getScores: string = environment.NEW_SERVER_URL + '/score/getScores';
+let getAvgScores: string = environment.NEW_SERVER_URL + '/score/allScore/mean';
 
 let addAssignmentScoreByCsv: string = environment.NEW_SERVER_URL + '/score/assignment/upload';
 
@@ -8,7 +8,7 @@ let addExamScoreByCsv: string = environment.NEW_SERVER_URL + '/score/exam/upload
 
 
 export const ScoreAPI = {
-    getScores: getScores,
+    getAvgScores: getAvgScores,
     addAssignmentScoreByCsv: addAssignmentScoreByCsv,
-    addExamScoreByCsv: addExamScoreByCsv
+    addExamScoreByCsv: addExamScoreByCsv,
 }

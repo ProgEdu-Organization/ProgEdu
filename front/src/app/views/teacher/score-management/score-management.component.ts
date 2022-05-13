@@ -11,6 +11,7 @@ import * as $ from 'jquery';
 export class ScoreManagementComponent implements OnInit {
   public users: Array<any> = new Array<any>();
   public assignmentTable: Array<any> = new Array<any>();
+  public avgScoreTable: Array<any> = new Array<any>();
   public scoreForm: FormGroup;
   public multipleScoreFile: File;
   public NEW_SERVER_URL = environment.NEW_SERVER_URL;
@@ -24,10 +25,10 @@ export class ScoreManagementComponent implements OnInit {
 
   async ngOnInit() {
     await this.getAllAssignments();
-    await this.getAllScore();
+    await this.getAllAvgScore();
     this.scoreForm = this.fb.group({
       method: [assignmentMethodEnum['Assignment']],
-      assignmentName: [undefined, Validators.required],
+      assignmentName: [''],
       examName: [undefined, [Validators.required, Validators.pattern('^[a-zA-Z0-9-_]{3,10}')]],
     });
     this.onChange();
@@ -43,10 +44,16 @@ export class ScoreManagementComponent implements OnInit {
 
   }
 
+  async getAllAvgScore() {
+    this.scoreService.getAllAvgScore().subscribe(response => {
+      this.avgScoreTable = response;
+    })
+  }
+
   async getAllAssignments() {
     this.scoreService.getAllAssignments().subscribe(response => {
       this.assignmentTable = response.allAssignments;
-    });
+    })
   }
 
 
@@ -58,10 +65,6 @@ export class ScoreManagementComponent implements OnInit {
   hideIsInvalidById(id: string) {
     $('#' + id).removeClass('is-valid');
     $('#' + id).addClass('is-invalid');
-  }
-
-  async getAllScore() {
-    
   }
 
   changeFileListener(e: { target: { files: File[]; }; }) {
@@ -78,7 +81,7 @@ export class ScoreManagementComponent implements OnInit {
         this.scoreService.addMultipleAssignmentScore(this.scoreForm, this.multipleScoreFile).subscribe(
           (response) => {
             this.progressbar = false;
-            this.getAllScore();
+            this.getAllAvgScore();
             this.addMultipleScoreSuccessful = true;
             this.addMultipleScoreErrorMsg = '';
           },
@@ -90,7 +93,7 @@ export class ScoreManagementComponent implements OnInit {
         this.scoreService.addMultipleExamScore(this.scoreForm, this.multipleScoreFile).subscribe(
           (response) => {
             this.progressbar = false;
-            this.getAllScore();
+            this.getAllAvgScore();
             this.addMultipleScoreSuccessful = true;
             this.addMultipleScoreErrorMsg = '';
           },

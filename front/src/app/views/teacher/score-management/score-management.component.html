@@ -36,7 +36,7 @@
                     <ng-container *ngIf="scoreForm.value.method == 'Assignment'">
                       <div class="form-group row">
                         <label class="col-md-4 col-form-label" for="assignmentName">作業名稱</label>
-                        <select class="form-control col-md-6" formControlName="assignmentName">
+                        <select class="form-control col-md-6" formControlName="assignmentName" placeholder="Enter assignment Name">
                           <option *ngFor="let assignment of assignmentTable; index as i" [ngValue]="assignment.name">{{assignment.name}}</option>
                         </select>
                       </div>
@@ -94,13 +94,17 @@
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>HW1</td>
-                  <td>100</td>
-                  <td>
-                    <button class="btn btn-primary" type="button">查看</button>
-                  </td>
-                </tr>
+                <ng-container *ngFor="let avgScore of avgScoreTable">
+                  <tr>
+                    <td>{{ avgScore.assignmentName }}</td>
+                    <td>{{ avgScore.averageScore }}</td>
+                    <td>
+                      <a href="">
+                      <button class="btn btn-primary" type="button" >查看</button>
+                      </a>
+                    </td>
+                  </tr>
+                </ng-container>
               </tbody>
             </table>
           </div>
