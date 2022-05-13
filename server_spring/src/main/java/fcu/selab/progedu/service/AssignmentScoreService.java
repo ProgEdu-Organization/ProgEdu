@@ -125,7 +125,9 @@ public class AssignmentScoreService {
       for (int assignmentId : assignmentIds) {
         JSONObject ob = new JSONObject();
         int averageScore = assignmentScoreDbManager.getAssignmentMeanByAssignmentId(assignmentId);
+        String assignmentName = assignmentDbManager.getAssignmentNameById(assignmentId);
         ob.put("assignmentId", assignmentId);
+        ob.put("assignmentName", assignmentName);
         ob.put("averageScore", averageScore);
         jsonArray.add(ob);
       }
