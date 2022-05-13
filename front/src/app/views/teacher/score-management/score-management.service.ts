@@ -21,6 +21,7 @@ const addMultipleScoreOptions = ({
 
 export class ScoreManagementService {
   ALL_ASSIGNMENTS_API = AssignmentAPI.getAllAssignments;
+  ALL_AVERAGE_SCORE_API = ScoreAPI.getAvgScores;
   ADD_ASSIGNMENT_SCORE_API = ScoreAPI.addAssignmentScoreByCsv;
   ADD_EXAM_SCORE_API = ScoreAPI.addExamScoreByCsv;
   constructor(private addJwtTokenHttpClient: AddJwtTokenHttpClient) { }
@@ -41,6 +42,10 @@ export class ScoreManagementService {
 
   getAllAssignments(): Observable<any> {
     return this.addJwtTokenHttpClient.get(this.ALL_ASSIGNMENTS_API);
+  }
+
+  getAllAvgScore(): Observable<any> {
+    return this.addJwtTokenHttpClient.get(this.ALL_AVERAGE_SCORE_API);
   }
 
 }
