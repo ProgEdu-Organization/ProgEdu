@@ -129,7 +129,7 @@ public class AssignmentScoreDbManager {
    * Delete assignment score by auid
    *
    */
-  public void deleteAssignmentScoreByAuid(int auid) {
+  public void deleteAssignmentScoreByAuId(int auId) {
     String sql = "DELETE FROM ProgEdu.Assignment_Score WHERE (`auId` = ?)";
 
     Connection conn = null;
@@ -138,13 +138,41 @@ public class AssignmentScoreDbManager {
     try {
       conn = database.getConnection();
       preStmt = conn.prepareStatement(sql);
-      preStmt.setInt(1, auid);
+      preStmt.setInt(1, auId);
       preStmt.executeUpdate();
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
       LOGGER.error(e.getMessage());
     } finally {
       CloseDBUtil.closeAll(preStmt, conn);
+    }
+  }
+
+  /**
+   * Get all graded assignments ids
+   *
+   * @param auId Assignment User id
+   * @param score score
+   * @return assignment id list
+   */
+  public void updateAssignmentScoreByAuId(int auId, int score) {
+    String sql = "UPDATE ProgEdu.Assignment_Score SET `score` = ? WHERE (`auId` = ?)";
+
+    Connection connection = null;
+    PreparedStatement preStmt = null;
+
+    try {
+      connection = database.getConnection();
+      preStmt = connection.prepareStatement(sql);
+
+      preStmt.setInt(1, score);
+      preStmt.setInt(2, auId);
+      preStmt.executeUpdate();
+    } catch (SQLException e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(preStmt, connection);
     }
   }
 }

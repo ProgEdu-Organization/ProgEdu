@@ -145,11 +145,31 @@ public class AssignmentScoreService {
 
       int aid = assignmentDbManager.getAssignmentIdByName(assignmentName);
       List<Integer> auIds = assignmentUserDbManager.getAuids(aid);
-      for(int auid: auIds) {
-        assignmentScoreDbManager.deleteAssignmentScoreByAuid(auid);
+      for(int auId: auIds) {
+        assignmentScoreDbManager.deleteAssignmentScoreByAuId(auId);
       }
       return new ResponseEntity<Object>(headers, HttpStatus.OK);
     } catch (Exception e) {
+      return new ResponseEntity<Object>(e.getMessage(), headers, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  @PostMapping("/update")
+  public ResponseEntity<Object> updateAssignmentScore(
+          @RequestParam("assignmentName") String assignmentName,
+          @RequestParam("userName") String userName,
+          @RequestParam("score") int score) {
+
+    try {
+      HttpHeaders headers = new HttpHeaders();
+      int aid = assignmentDbManager.getAssignmentIdByName(assignmentName);
+      int uid = userDbManager.getUserIdByUsername(userName);
+      int auId = assignmentUserDbManager.getAuid(aid, uid);
+      assignmentScoreDbManager.updateAssignmentScoreByAuId(auId, score);
+
+      return new ResponseEntity<Object>(headers, HttpStatus.OK);
+    } catch (Exception e) {
+      HttpHeaders headers = new HttpHeaders();
       return new ResponseEntity<Object>(e.getMessage(), headers, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
