@@ -135,4 +135,22 @@ public class AssignmentScoreService {
       return new ResponseEntity<Object>(e.getMessage(), headers, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
+  @PostMapping("/delete")
+  public ResponseEntity<Object> deleteAssignmentScore(
+          @RequestParam("assignmentName") String assignmentName) {
+    HttpHeaders headers = new HttpHeaders();
+
+    try {
+
+      int aid = assignmentDbManager.getAssignmentIdByName(assignmentName);
+      List<Integer> auIds = assignmentUserDbManager.getAuids(aid);
+      for(int auid: auIds) {
+        assignmentScoreDbManager.deleteAssignmentScoreByAuid(auid);
+      }
+      return new ResponseEntity<Object>(headers, HttpStatus.OK);
+    } catch (Exception e) {
+      return new ResponseEntity<Object>(e.getMessage(), headers, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
 }

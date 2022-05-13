@@ -127,4 +127,27 @@ public class AssignmentScoreDbManager {
     }
     return assignmentIds;
   }
+
+  /**
+   * Delete assignment score by auid
+   *
+   */
+  public void deleteAssignmentScoreByAuid(int auid) {
+    String sql = "DELETE FROM ProgEdu.Assignment_Score WHERE (`auId` = ?)";
+
+    Connection conn = null;
+    PreparedStatement preStmt = null;
+
+    try {
+      conn = database.getConnection();
+      preStmt = conn.prepareStatement(sql);
+      preStmt.setInt(1, auid);
+      preStmt.executeUpdate();
+    } catch (SQLException e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    } finally {
+      CloseDBUtil.closeAll(preStmt, conn);
+    }
+  }
 }
