@@ -110,11 +110,8 @@ public class AssignmentScoreDbManager {
 
       conn = database.getConnection();
       preStmt = conn.prepareStatement(sql);
-
-      preStmt.executeUpdate();
-
-      preStmt = conn.prepareStatement(sql);
       rs = preStmt.executeQuery();
+
       while (rs.next()) {
         assignmentIds.add(rs.getInt("aid"));
       }
