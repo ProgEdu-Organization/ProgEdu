@@ -54,7 +54,7 @@ public class AssignmentScoreService {
         AssignmentScore assignmentScore = new AssignmentScore();
         String userName = csvReader.get("ID");
         int uid = userDbManager.getUserIdByUsername(userName);
-        int auid =assignmentUserDbManager.getAuid(aid, uid);
+        int auid = assignmentUserDbManager.getAuid(aid, uid);
 
         int score = Integer.valueOf(csvReader.get("Score"));
 
@@ -95,9 +95,9 @@ public class AssignmentScoreService {
         AssignmentScore assignmentScore = new AssignmentScore();
         String userName = csvReader.get("ID");
         int uid = userDbManager.getUserIdByUsername(userName);
-        
+
         assignmentUserDbManager.addAssignmentUser(aid, uid);
-        int auid =assignmentUserDbManager.getAuid(aid, uid);
+        int auid = assignmentUserDbManager.getAuid(aid, uid);
 
         int score = Integer.valueOf(csvReader.get("Score"));
 
@@ -117,10 +117,10 @@ public class AssignmentScoreService {
 
   @GetMapping("/allScore/mean")
   public ResponseEntity<Object> getAllScoreMean() {
-    HttpHeaders headers = new HttpHeaders();
     JSONArray jsonArray = new JSONArray();
 
     try {
+      HttpHeaders headers = new HttpHeaders();
       List<Integer> assignmentIds = assignmentScoreDbManager.getAllGradedAssignments();
       for (int assignmentId : assignmentIds) {
         JSONObject ob = new JSONObject();
@@ -134,6 +134,7 @@ public class AssignmentScoreService {
 
       return new ResponseEntity<Object>(jsonArray, headers, HttpStatus.OK);
     } catch (Exception e) {
+      HttpHeaders headers = new HttpHeaders();
       return new ResponseEntity<Object>(e.getMessage(), headers, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
@@ -147,7 +148,7 @@ public class AssignmentScoreService {
 
       int aid = assignmentDbManager.getAssignmentIdByName(assignmentName);
       List<Integer> auIds = assignmentUserDbManager.getAuids(aid);
-      for(int auId: auIds) {
+      for (int auId : auIds) {
         assignmentScoreDbManager.deleteAssignmentScoreByAuId(auId);
       }
       return new ResponseEntity<Object>(headers, HttpStatus.OK);
@@ -174,5 +175,32 @@ public class AssignmentScoreService {
       HttpHeaders headers = new HttpHeaders();
       return new ResponseEntity<Object>(e.getMessage(), headers, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+  }
+
+  @GetMapping("/allUser")
+  public ResponseEntity<Object> getAllUserScore(
+          @RequestParam("assignmentName") String assignmentName) {
+    HttpHeaders headers = new HttpHeaders();
+    JSONArray jsonArray = new JSONArray();
+
+    try {
+      int aid = assignmentDbManager.getAssignmentIdByName(assignmentName);
+      List<Integer> auIds = assignmentUserDbManager.getAuids(aid);
+
+      for (int auId : auIds) {
+        JSONObject ob = new JSONObject();
+        int score = assignmentScoreDbManager.getScoreByAuId(auId);
+        int uid = assignmentUserDbManager.getUidById(auId);
+        String userName = userDbManager.getUsername(uid);
+        ob.put("userName", userName);
+        ob.put("score", score);
+        jsonArray.add(ob);
+      }
+
+      return new ResponseEntity<Object>(jsonArray, headers, HttpStatus.OK);
+    } catch (Exception e) {
+      return new ResponseEntity<Object>(e.getMessage(), headers, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
   }
 }
