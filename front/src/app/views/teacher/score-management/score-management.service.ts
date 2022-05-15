@@ -8,6 +8,10 @@ import { UserAPI } from '../../../api/UserAPI';
 import { AssignmentAPI } from '../../../api/AssignmentAPI';
 import { ScoreAPI } from '../../../api/ScoreAPI';
 
+const deleteAssignmentOptions = ({
+  headers: new HttpHeaders({
+  })
+});
 
 const addMultipleScoreOptions = ({
   headers: new HttpHeaders(
@@ -24,6 +28,7 @@ export class ScoreManagementService {
   ALL_AVERAGE_SCORE_API = ScoreAPI.getAvgScores;
   ADD_ASSIGNMENT_SCORE_API = ScoreAPI.addAssignmentScoreByCsv;
   ADD_EXAM_SCORE_API = ScoreAPI.addExamScoreByCsv;
+  DELETE_ALL_SCORE_API = ScoreAPI.deleteAllScores;
   constructor(private addJwtTokenHttpClient: AddJwtTokenHttpClient) { }
 
   addMultipleAssignmentScore(assignment: FormGroup, file: File) {
@@ -38,6 +43,12 @@ export class ScoreManagementService {
     formData.append('examName', assignment.value.examName);
     formData.append('file', file);
     return this.addJwtTokenHttpClient.post(this.ADD_EXAM_SCORE_API, formData, addMultipleScoreOptions);
+  }
+
+  deleteAllScores(assignmentName: string): Observable<any> {
+    const params = new HttpParams()
+      .set('assignmentName',assignmentName);
+    return this.addJwtTokenHttpClient.post(this.DELETE_ALL_SCORE_API, params);
   }
 
   getAllAssignments(): Observable<any> {

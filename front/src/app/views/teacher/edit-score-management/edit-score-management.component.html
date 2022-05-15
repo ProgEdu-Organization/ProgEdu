@@ -8,13 +8,13 @@
         <div class="card">
           <div class="card-body">
             <h5 class="card-title" style="font-weight: bold; padding: 10px;">{{assignmentName}}</h5>
-            <table class="table">
+            <table class="table" [style.text-align]="'center'">
               <thead>
                 <tr>
                   <th>ID</th>
                   <th>Name</th>
                   <th>Score</th>
-                  <th></th>
+                  <th>Edit</th>
                 </tr>
               </thead>
               <tbody>
@@ -24,7 +24,7 @@
                     <td>{{assignmentScore.userName}}</td>
                     <td>{{assignmentScore.score}}</td>
                     <td>
-                      <button class="btn btn-primary" type="button" data-toggle="modal" (click)="editModal.show();setUserId(assignmentScore.userName);setEditScore(assignmentScore.score)">修改</button>
+                      <button class="btn btn-primary" type="button" data-toggle="modal" (click)="editModal.show();setUserId(assignmentScore.userName);setEditScore(assignmentScore.score)"><i class="cui-pencil icons"></i></button>
                     </td>
                   </tr>
                 </ng-container>
@@ -60,7 +60,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" (click)="editModal.hide();">Close</button>
-          <button type="submit" class="btn btn-primary" [disabled]='!editScoreForm.valid'>Save changes</button>
+          <button type="submit" class="btn btn-primary" [disabled]='checkForm()'>Save changes</button>
         </div>
       </form>
     </div><!-- /.modal-content -->
