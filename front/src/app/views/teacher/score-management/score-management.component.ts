@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 import { ScoreManagementService } from './score-management.service';
+import { HttpErrorResponse } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { assignmentMethodEnum } from './assignmentMethodEnum.enum';
@@ -9,6 +11,7 @@ import * as $ from 'jquery';
   templateUrl: './score-management.component.html'
 })
 export class ScoreManagementComponent implements OnInit {
+  @ViewChild('deleteModal', { static: true }) public deleteModal: ModalDirective;
   public users: Array<any> = new Array<any>();
   public assignmentTable: Array<any> = new Array<any>();
   public avgScoreTable: Array<any> = new Array<any>();
@@ -16,11 +19,17 @@ export class ScoreManagementComponent implements OnInit {
   public multipleScoreFile: File;
   public NEW_SERVER_URL = environment.NEW_SERVER_URL;
   public isCollapsed = true;
+  public isDeleteProgress = false;
+  public selectedAssignment = "";
   public addOneScoreErrorMsg = '';
   public addOneScoreSuccessful: boolean = false;
   public addMultipleScoreErrorMsg = '';
   public addMultipleScoreSuccessful: boolean = false;
   public progressbar : boolean = false;
+
+  errorResponse: HttpErrorResponse;
+  errorTitle: string;
+
   constructor(private scoreService: ScoreManagementService, private fb: FormBuilder) { }
 
   async ngOnInit() {
@@ -71,6 +80,42 @@ export class ScoreManagementComponent implements OnInit {
     this.addMultipleScoreSuccessful = false;
     this.addMultipleScoreErrorMsg = '';
     this.multipleScoreFile = e.target.files[0];
+  }
+
+  checkForm() {
+    if(!this.multipleScoreFile) {
+      return true;
+    }
+    if(this.scoreForm.get('method').value == assignmentMethodEnum['Assignment']) {
+      if(this.scoreForm.get('assignmentName').value == "") {
+        return true;
+      }
+    } else {
+      if(this.scoreForm.get('examName').invalid) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  setSelectedAssignment(assignmentName: string) {
+    this.selectedAssignment = assignmentName;
+  }
+
+  deleteScores(assignmentName: string) {
+    this.isDeleteProgress = true;
+
+    this.scoreService.deleteAllScores(assignmentName).subscribe(
+      response => {
+        this.deleteModal.hide();
+        this.getAllAvgScore();
+        this.isDeleteProgress = false;
+      },
+      error => {
+        this.errorTitle = 'Delete Score Error';
+        this.deleteModal.hide();
+        this.errorResponse = error;
+      });
   }
 
   public uploadMultipleScore() {

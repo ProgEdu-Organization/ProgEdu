@@ -17,6 +17,7 @@ export class EditScoreManagementComponent implements OnInit {
   public assignmentScoreTable: Array<any> = new Array<any>();
   public assignmentUserId: string;
   public editScoreForm: FormGroup;
+  public oldScore: number;
 
   errorResponse: HttpErrorResponse;
   errorTitle: string;
@@ -42,7 +43,15 @@ export class EditScoreManagementComponent implements OnInit {
   }
 
   setEditScore(score: number) {
+    this.oldScore = score;
     this.editScoreForm.get('score').setValue(score);
+  }
+
+  checkForm() {
+    if(this.editScoreForm.invalid || this.editScoreForm.get('score').value == this.oldScore) {
+      return true;
+    }
+    return false;
   }
 
   editScore() {

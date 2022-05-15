@@ -36,7 +36,7 @@
                     <ng-container *ngIf="scoreForm.value.method == 'Assignment'">
                       <div class="form-group row">
                         <label class="col-md-4 col-form-label" for="assignmentName">作業名稱</label>
-                        <select class="form-control col-md-6" formControlName="assignmentName" placeholder="Enter assignment Name">
+                        <select class="form-control col-md-5" formControlName="assignmentName" placeholder="Enter assignment Name">
                           <option *ngFor="let assignment of assignmentTable; index as i" [ngValue]="assignment.name">{{assignment.name}}</option>
                         </select>
                       </div>
@@ -44,7 +44,7 @@
                     <ng-container *ngIf="scoreForm.value.method == 'Exam'">
                       <div class="form-group row">
                         <label class="col-md-4 col-form-label" for="examName">作業名稱</label>
-                        <input type="text" class="form-control col-md-6" id="examName" formControlName="examName" placeholder="Enter Exam Name">
+                        <input type="text" class="form-control col-md-5" id="examName" formControlName="examName" placeholder="Enter Exam Name">
                       </div>
                     </ng-container>
                     <div class="form-group row">
@@ -66,7 +66,7 @@
                     <div *ngIf="addMultipleScoreErrorMsg.length !== 0" class='alert alert-danger alert-dismissible'>
                         Error Massage: {{addMultipleScoreErrorMsg}}</div>
                     <div class="form-group" style="text-align: right;">
-                        <button class="btn btn-primary" [disabled]='!multipleScoreFile' type="submit">Upload</button>
+                        <button class="btn btn-primary" [disabled]='checkForm()' type="submit">Upload</button>
                     </div>
                 </form>
                 <button class='btn btn-ghost-secondary active' (click)="isCollapsed = !isCollapsed">csv檔範例</button>
@@ -85,12 +85,13 @@
         <div class="card">
           <div class="card-body">
             <h5 class="card-title" style="font-weight: bold; padding: 10px;">成績列表</h5>
-            <table class="table">
+            <table class="table" [style.text-align]="'center'">
               <thead>
                 <tr>
-                  <th>Assignment Name</th>
+                  <th>Assignment</th>
                   <th>Average</th>
-                  <th></th>
+                  <th>List</th>
+                  <th>Delete</th>
                 </tr>
               </thead>
               <tbody>
@@ -100,8 +101,11 @@
                     <td>{{ avgScore.averageScore }}</td>
                     <td>
                       <a href="#/dashboard/scoreManagement/edit?assignmentName={{avgScore.assignmentName}}">
-                      <button class="btn btn-primary" type="button" >查看</button>
+                      <button class="btn btn-primary" type="button" data-toggle="modal"><i class="cui-list icons"></i></button>
                       </a>
+                    </td>
+                    <td>
+                      <button id="{{avgScore.assignmentName}}" class="btn btn-danger" type="button" data-toggle="modal" (click)="deleteModal.show();setSelectedAssignment(avgScore.assignmentName)"><i class="cui-trash icons"></i></button>
                     </td>
                   </tr>
                 </ng-container>
@@ -112,3 +116,30 @@
       </div>
     </div>
   </div>
+
+  <!--Alert Delete Assignment Modal-->
+<div bsModal #deleteModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="dangerModalLabel"
+aria-hidden="true">
+<div class="modal-dialog modal-danger" role="document">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h4 class="modal-title">Delete Score</h4>
+      <button type="button" class="close" (click)="deleteModal.hide()" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <!--Delete Assignment Main-->
+    <div class="modal-body">
+      <p>Do you Want to Delete this "{{selectedAssignment}}" Assignment Score Table ?&hellip;</p>
+      <div *ngIf='isDeleteProgress'>
+        <progressbar class="progress-bar progress-bar-striped progress-bar-animated" [value]="dynamic" [max]="max" [type]="type">
+        </progressbar>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" (click)="deleteModal.hide()">Close</button>
+      <button type="button" class="btn btn-danger" (click)="deleteScores(selectedAssignment)">Delete</button>
+    </div>
+  </div>
+</div>
+</div>
