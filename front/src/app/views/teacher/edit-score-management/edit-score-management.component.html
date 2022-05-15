@@ -1,0 +1,68 @@
+<div class="animated fadeIn">
+  <div><a href="#/dashboard/scoreManagement/"><button class="btn btn-primary" type="button">
+    < Back</button></a>
+  </div><br>
+    <!-- Nav tabs -->
+    <div class="row">
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title" style="font-weight: bold; padding: 10px;">{{assignmentName}}</h5>
+            <table class="table" [style.text-align]="'center'">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th>Score</th>
+                  <th>Edit</th>
+                </tr>
+              </thead>
+              <tbody>
+                <ng-container *ngFor="let assignmentScore of assignmentScoreTable">
+                  <tr>
+                    <td>{{assignmentScore.userName}}</td>
+                    <td>{{assignmentScore.userName}}</td>
+                    <td>{{assignmentScore.score}}</td>
+                    <td>
+                      <button class="btn btn-primary" type="button" data-toggle="modal" (click)="editModal.show();setUserId(assignmentScore.userName);setEditScore(assignmentScore.score)"><i class="cui-pencil icons"></i></button>
+                    </td>
+                  </tr>
+                </ng-container>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!--Edit Score Modal-->
+<div bsModal #editModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Edit Score &emsp;| &emsp;{{assignmentName}}&ensp;---&ensp;{{assignmentUserId}}</h4>
+        <button type="button" class="close" (click)="editModal.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <!--Edit Score Main-->
+      <form *ngIf='editScoreForm' class="form-horizontal" [formGroup]="editScoreForm" (ngSubmit)='editScore()'>
+        <div class="modal-body">
+          <div class="form-group row">
+            <label class="col-md-2 col-form-label text-right h3" for="score">Score: </label>
+            <div class="col-md-4">
+              <input type="text" class="form-control" id="score" formControlName='score' placeholder="Enter a Number">
+              <div *ngIf="!editScoreForm.get('score').valid" class='invalid-feedback'><span>Your must enter a number</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="editModal.hide();">Close</button>
+          <button type="submit" class="btn btn-primary" [disabled]='checkForm()'>Save changes</button>
+        </div>
+      </form>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

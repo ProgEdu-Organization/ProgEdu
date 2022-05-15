@@ -18,6 +18,8 @@ import { ReviewStatusDashboardComponent } from './review-status-dashboard/review
 import { ReviewDashboardComponent } from './review-dashboard/review-dashboard.component';
 import { ReviewAssignmentChooseComponent } from '../shared/review-assignment-choose/review-assignment-choose.component';
 import { ReviewRoundDashboardComponent } from './review-round-dashboard/review-round-dashboard.component';
+import { ScoreManagementComponent } from './score-management/score-management.component';
+import { EditScoreManagementComponent } from './edit-score-management/edit-score-management.component';
 
 const routes: Routes = [
   {
@@ -143,6 +145,25 @@ const routes: Routes = [
     data: {
       title: 'Review Round Dashboard'
     }
+  },
+  {
+    path: 'scoreManagement',
+    data: {
+      title: 'Score Management'
+    },
+    children: [
+      {
+        path: '',
+        component: ScoreManagementComponent,
+      },
+      {
+        path: 'edit',
+        component: EditScoreManagementComponent,
+        data: {
+          title: 'Edit Score'
+        }
+      }
+    ]
   }
 ];
 

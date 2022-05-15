@@ -1,0 +1,145 @@
+<div class="animated fadeIn">
+    <!-- Nav tabs -->
+    <div class="row">
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title" style="font-weight: bold; padding: 10px;">新增成績</h5>
+            <div class="card">
+              <div class="card-body">
+                <form *ngIf="scoreForm" [formGroup]="scoreForm" (ngSubmit)="uploadMultipleScore()">
+                    <div class="form-group row">
+                        <label class="col-md-6 col-form-label" for="file-input">範例檔案
+                        </label>
+                        <div class="col-md-6">
+                        <a href="{{NEW_SERVER_URL}}/score/getScoreCsvFile" download>
+                            <button class="btn btn-primary" type="button">Download</button>
+                        </a>
+                        </div>
+                    </div>
+                    <hr/>
+                    <div class="form-group row">
+                        <label class="col-md-4 col-form-label" for="method">類型</label>
+                        <div class="col-md-8">
+                          <div class="form-check form-check-inline mr-5">
+                            <input class="form-check-input" type="radio" name="method" id="methodRadio2" value="Assignment"
+                              formControlName="method">
+                            <label class="form-check-label" for="methodRadio2">Assignment</label>
+                          </div>
+                          <div class="form-check form-check-inline mr-5">
+                            <input class="form-check-input" type="radio" name="method" id="methodRadio1" value="Exam"
+                              formControlName="method">
+                            <label class="form-check-label" for="methodRadio1">Exam</label>
+                          </div>
+                        </div>
+                    </div>
+                    <ng-container *ngIf="scoreForm.value.method == 'Assignment'">
+                      <div class="form-group row">
+                        <label class="col-md-4 col-form-label" for="assignmentName">作業名稱</label>
+                        <select class="form-control col-md-5" formControlName="assignmentName" placeholder="Enter assignment Name">
+                          <option *ngFor="let assignment of assignmentTable; index as i" [ngValue]="assignment.name">{{assignment.name}}</option>
+                        </select>
+                      </div>
+                    </ng-container>
+                    <ng-container *ngIf="scoreForm.value.method == 'Exam'">
+                      <div class="form-group row">
+                        <label class="col-md-4 col-form-label" for="examName">作業名稱</label>
+                        <input type="text" class="form-control col-md-5" id="examName" formControlName="examName" placeholder="Enter Exam Name">
+                      </div>
+                    </ng-container>
+                    <div class="form-group row">
+                        <label class="col-md-6 col-form-label" for="file-input">上傳檔案(accept csv)
+                        </label>
+                        <div class="col-md-6">
+                        <input type="file" id="file-input" name="file-input" (change)="changeFileListener($event)">
+                        </div>
+                    </div>
+                    <div class="container-fluid">
+                        <div class="row">
+                        <br><br>
+                            <progressbar class="progress-striped" *ngIf="progressbar" [value]="150" [max]="150" type="succ" animate="true" striped="true">
+                            Loading
+                            </progressbar>
+                        </div>
+                    </div>
+                    <div *ngIf='addMultipleScoreSuccessful' class='alert alert-success'>Successful</div>
+                    <div *ngIf="addMultipleScoreErrorMsg.length !== 0" class='alert alert-danger alert-dismissible'>
+                        Error Massage: {{addMultipleScoreErrorMsg}}</div>
+                    <div class="form-group" style="text-align: right;">
+                        <button class="btn btn-primary" [disabled]='checkForm()' type="submit">Upload</button>
+                    </div>
+                </form>
+                <button class='btn btn-ghost-secondary active' (click)="isCollapsed = !isCollapsed">csv檔範例</button>
+                <div [collapse]="isCollapsed">
+                <hr>
+                <img
+                    src='data:image/png;base64,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'>
+                <hr>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title" style="font-weight: bold; padding: 10px;">成績列表</h5>
+            <table class="table" [style.text-align]="'center'">
+              <thead>
+                <tr>
+                  <th>Assignment</th>
+                  <th>Average</th>
+                  <th>List</th>
+                  <th>Delete</th>
+                </tr>
+              </thead>
+              <tbody>
+                <ng-container *ngFor="let avgScore of avgScoreTable">
+                  <tr>
+                    <td>{{ avgScore.assignmentName }}</td>
+                    <td>{{ avgScore.averageScore }}</td>
+                    <td>
+                      <a href="#/dashboard/scoreManagement/edit?assignmentName={{avgScore.assignmentName}}">
+                      <button class="btn btn-primary" type="button" data-toggle="modal"><i class="cui-list icons"></i></button>
+                      </a>
+                    </td>
+                    <td>
+                      <button id="{{avgScore.assignmentName}}" class="btn btn-danger" type="button" data-toggle="modal" (click)="deleteModal.show();setSelectedAssignment(avgScore.assignmentName)"><i class="cui-trash icons"></i></button>
+                    </td>
+                  </tr>
+                </ng-container>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--Alert Delete Assignment Modal-->
+<div bsModal #deleteModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="dangerModalLabel"
+aria-hidden="true">
+<div class="modal-dialog modal-danger" role="document">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h4 class="modal-title">Delete Score</h4>
+      <button type="button" class="close" (click)="deleteModal.hide()" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <!--Delete Assignment Main-->
+    <div class="modal-body">
+      <p>Do you Want to Delete this "{{selectedAssignment}}" Assignment Score Table ?&hellip;</p>
+      <div *ngIf='isDeleteProgress'>
+        <progressbar class="progress-bar progress-bar-striped progress-bar-animated" [value]="dynamic" [max]="max" [type]="type">
+        </progressbar>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" (click)="deleteModal.hide()">Close</button>
+      <button type="button" class="btn btn-danger" (click)="deleteScores(selectedAssignment)">Delete</button>
+    </div>
+  </div>
+</div>
+</div>
