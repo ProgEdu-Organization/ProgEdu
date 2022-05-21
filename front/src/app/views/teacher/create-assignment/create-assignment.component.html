@@ -77,7 +77,7 @@
                   <div class="col-md-1"></div>
                   <div class="col-md-1" *ngIf="i == 0"></div>
                   <div class="col-md-1 container" *ngIf="i !== 0">
-                    <button class="btn" (click)="removeRound(i)"><i class="fa fa-trash"></i>
+                    <button class="btn" type="button" (click)="removeRound(i)"><i class="fa fa-trash"></i>
                     </button>
                   </div>
                   <div class="col-md-2">&ensp;{{ i + 1 }}</div>
@@ -117,7 +117,7 @@
           <div class="form-group row" *ngIf="roundTimeArray.length < 4">
             <div class="col-md-2"></div>
             <div class="col-md-2">
-              <button class="btn btn-sm" (click)="addRoundNums()">+</button>
+              <button class="btn btn-sm" type="button" (click)="addRoundNums()">+</button>
             </div>
           </div>
 
@@ -162,7 +162,7 @@
               </select>
             </div>
             <div class="col-md-1 container mt-3">
-              <button class="btn" (click)="removeReviewMetrics(number)"><i class="fa fa-trash"></i>
+              <button class="btn" type="button" (click)="removeReviewMetrics(number)"><i class="fa fa-trash"></i>
               </button>
             </div>
           </div>
@@ -170,7 +170,7 @@
           <div class="form-group row">
             <div class="col-md-3"></div>
             <div *ngIf="reviewMetricsNums.length < 10">
-              <button class="btn btn-sm" (click)="addReviewMetrics()">+</button>
+              <button class="btn btn-sm" type="button" (click)="addReviewMetrics()">+</button>
             </div>
           </div>
         </div>

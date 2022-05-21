@@ -118,8 +118,7 @@
   </div>
 
   <!--Alert Delete Assignment Modal-->
-<div bsModal #deleteModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="dangerModalLabel"
-aria-hidden="true">
+<div bsModal #deleteModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="dangerModalLabel" aria-hidden="true">
 <div class="modal-dialog modal-danger" role="document">
   <div class="modal-content">
     <div class="modal-header">
@@ -130,7 +129,7 @@ aria-hidden="true">
     </div>
     <!--Delete Assignment Main-->
     <div class="modal-body">
-      <p>Do you Want to Delete this "{{selectedAssignment}}" Assignment Score Table ?&hellip;</p>
+      <p>Do you want to delete this "{{selectedAssignment}}" Assignment Score Table ?&hellip;</p>
       <div *ngIf='isDeleteProgress'>
         <progressbar class="progress-bar progress-bar-striped progress-bar-animated" [value]="dynamic" [max]="max" [type]="type">
         </progressbar>
