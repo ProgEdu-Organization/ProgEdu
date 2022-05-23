@@ -40,7 +40,7 @@ export class ScoreManagementService {
 
   addMultipleExamScore(assignment: FormGroup, file: File) {
     const formData = new FormData();
-    formData.append('examName', assignment.value.examName);
+    formData.append('assignmentName', assignment.value.examName);
     formData.append('file', file);
     return this.addJwtTokenHttpClient.post(this.ADD_EXAM_SCORE_API, formData, addMultipleScoreOptions);
   }
