@@ -11,7 +11,7 @@ export class DashboardComponent implements OnInit {
   public allStudentDatas = allStudentDatas;
   public data: Array<any> = new Array<any>();
   public assignmentTable: Array<any> = new Array<any>();
-  public allStudentCommitRecord: JSON;
+  public allStudentCommitRecord: Array<any> = new Array<any>();
   public search;
   public readonly now_time = Date.now() - (new Date().getTimezoneOffset() * 60 * 1000);
   constructor(private dashboardService: DashboardService) { }
@@ -23,19 +23,25 @@ export class DashboardComponent implements OnInit {
   async getAllAssignments() {
     this.dashboardService.getAllAssignments().subscribe(response => {
       this.assignmentTable = response.allAssignments;
+      //remove exam data
+      for(let i = 0; i < this.assignmentTable.length; i++) {
+        if(this.assignmentTable[i].type == "EXAM") {
+          this.assignmentTable.splice(i, 1);
+        }
+      }
     });
   }
 
   async getAllStudent() {
-    console.log("franky-test   getAllStudent()");
     // clear student array
     this.dashboardService.getAllStudentCommitRecord().subscribe(response => {
-
-      
 
       this.allStudentCommitRecord = response.allUsersCommitRecord;
       if (this.allStudentCommitRecord[0] === undefined) {
         this.assignmentTable.length = 0;
+      }
+      for(let i = 0; i < this.allStudentCommitRecord.length; i++) {
+        this.allStudentCommitRecord[i].commitRecord.splice(13, 1);
       }
 
     });
@@ -46,6 +52,13 @@ export class DashboardComponent implements OnInit {
       return false;
     }
     return true;
+  }
+
+  isExam(index: number) {
+    if(!this.assignmentTable[index]) {
+      return true;
+    }
+    return false;
   }
 
   getStatusString(index: number) {
