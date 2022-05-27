@@ -314,15 +314,12 @@ public class AssignmentDbManager {
    */
   public List<Assignment> getAllAssignment() {
     List<Assignment> assignments = new ArrayList<>();
-    String sql = "SELECT id, name, createTime, display, description "
+    String sql = "SELECT id, name, createTime, display, description, type "
             + "FROM Assignment;";
-
 
     Connection conn = null;
     Statement stmt = null;
     ResultSet rs = null;
-
-
 
     try {
       conn = database.getConnection();
@@ -336,6 +333,7 @@ public class AssignmentDbManager {
         assignment.setCreateTime(rs.getTimestamp("createTime"));
         assignment.setDisplay(rs.getBoolean("display"));
         assignment.setDescription(rs.getString("description"));
+        assignment.setType(atDb.getTypeNameById(rs.getInt("type")));
         List<AssessmentTime> assessmentTimes = assessmentTimeDbManager.getAssignmentTimeNameById(assignment.getId());
         assignment.setAssessmentTimeList(assessmentTimes);
         assignments.add(assignment);
@@ -524,9 +522,7 @@ public class AssignmentDbManager {
 
   /**
    * edit assignment
-   * 
-   * @param deadline    deadline
-   * @param releaseTime releaseTime
+   *
    * @param readMe      readMe
    * @param id          id
    */
