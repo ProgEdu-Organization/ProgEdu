@@ -391,7 +391,7 @@ public class AssignmentDbManager {
    * get auto assessment which is not assign as peer review
    */
   public List<Assignment> getAutoAssessment() throws SQLException {
-    String query = "SELECT id, name, createTime, display, description "
+    String query = "SELECT id, name, createTime, display, description, type "
         + "FROM Assignment WHERE id NOT IN (SELECT aId FROM Review_Setting);";
     List<Assignment> assignmentList = new ArrayList<>();
 
