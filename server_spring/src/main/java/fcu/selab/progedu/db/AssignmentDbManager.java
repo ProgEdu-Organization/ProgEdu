@@ -406,14 +406,17 @@ public class AssignmentDbManager {
       rs = stmt.executeQuery(query);
 
       while (rs.next()) {
-        Assignment assignment = new Assignment();
-        assignment.setId(rs.getInt("id"));
-        assignment.setName(rs.getString("name"));
-        assignment.setCreateTime(rs.getTimestamp("createTime"));
-        assignment.setDisplay(rs.getBoolean("display"));
-        assignment.setDescription(rs.getString("description"));
-        assignment.setAssessmentTimeList(assessmentTimeDbManager.getAssignmentTimeNameById(assignment.getId()));
-        assignmentList.add(assignment);
+        if(!atDb.getTypeNameById(rs.getInt("type")).equals(ProjectTypeEnum.EXAM)) {
+          Assignment assignment = new Assignment();
+          assignment.setId(rs.getInt("id"));
+          assignment.setName(rs.getString("name"));
+          assignment.setCreateTime(rs.getTimestamp("createTime"));
+          assignment.setDisplay(rs.getBoolean("display"));
+          assignment.setDescription(rs.getString("description"));
+          assignment.setType(atDb.getTypeNameById(rs.getInt("type")));
+          assignment.setAssessmentTimeList(assessmentTimeDbManager.getAssignmentTimeNameById(assignment.getId()));
+          assignmentList.add(assignment);
+        }
       }
     } finally {
       CloseDBUtil.closeAll(rs, stmt, conn);
