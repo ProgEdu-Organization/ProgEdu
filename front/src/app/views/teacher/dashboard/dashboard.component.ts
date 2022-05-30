@@ -27,6 +27,7 @@ export class DashboardComponent implements OnInit {
       for(let i = 0; i < this.assignmentTable.length; i++) {
         if(this.assignmentTable[i].type == "EXAM") {
           this.assignmentTable.splice(i, 1);
+          i--;
         }
       }
     });
