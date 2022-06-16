@@ -88,7 +88,8 @@
             <table class="table" [style.text-align]="'center'">
               <thead>
                 <tr>
-                  <th>Assignment</th>
+                  <th>Name</th>
+                  <th>Type</th>
                   <th>Average</th>
                   <th>List</th>
                   <th>Delete</th>
@@ -98,6 +99,7 @@
                 <ng-container *ngFor="let avgScore of avgScoreTable">
                   <tr>
                     <td>{{ avgScore.assignmentName }}</td>
+                    <td>{{ getType(avgScore.type) }}</td>
                     <td>{{ avgScore.averageScore }}</td>
                     <td>
                       <a href="#/dashboard/scoreManagement/edit?assignmentName={{avgScore.assignmentName}}">

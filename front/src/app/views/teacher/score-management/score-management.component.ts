@@ -102,6 +102,11 @@ export class ScoreManagementComponent implements OnInit {
     this.selectedAssignment = assignmentName;
   }
 
+  getType(type: string) {
+    if(type == "EXAM") return "Exam"
+    else return "Assignment"
+  }
+
   deleteScores(assignmentName: string) {
     this.isDeleteProgress = true;
 

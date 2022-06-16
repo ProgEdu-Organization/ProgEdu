@@ -126,9 +126,11 @@ public class AssignmentScoreService {
         JSONObject ob = new JSONObject();
         int averageScore = assignmentScoreDbManager.getAssignmentMeanByAssignmentId(assignmentId);
         String assignmentName = assignmentDbManager.getAssignmentNameById(assignmentId);
+        ProjectTypeEnum assignmentType = assignmentDbManager.getAssignmentType(assignmentName);
         ob.put("assignmentId", assignmentId);
         ob.put("assignmentName", assignmentName);
         ob.put("averageScore", averageScore);
+        ob.put("type", assignmentType);
         jsonArray.add(ob);
       }
 
