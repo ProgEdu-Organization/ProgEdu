@@ -17,6 +17,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 @RestController
 @RequestMapping(value ="/publicApi/update")
@@ -45,7 +46,9 @@ public class UpdateCommit {
     int commitNumber = db.getCommitCount(auId) + 1;
     Date date = new Date();
     DateFormat time = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss");
-    date = time.parse(time.format(Calendar.getInstance().getTime()));
+    Calendar calendar = Calendar.getInstance();
+    calendar.setTimeZone(TimeZone.getTimeZone("Asia/Taipei"));
+    date = time.parse(time.format(calendar.getTime()));
 
 
     int assignmentId = assignmentDb.getAssignmentTypeId(assignmentName);
