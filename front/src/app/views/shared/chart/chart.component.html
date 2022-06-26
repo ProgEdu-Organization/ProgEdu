@@ -1,6 +1,133 @@
 <div class="animated fadeIn">
+  <div class="row justify-content-md-center">
+    <div class="col-md-10">
+      <h3>
+        {{prAssignmentNameList[prAssignmentNameList.length-1]}}
+      </h3>
+      <div class="row">
+        <div class="col-md-3">
+          <div class="container teacher-chart-card">
+            <div class="container">
+              <div class="row" style="height: 50px">
+                {{userCount}}
+              </div>
+              <div class="row">
+                學生人數
+              </div>
+              <div class="row">
+                row3
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="container teacher-chart-card">
+            <div class="container">
+              <div class="row" style="height: 50px">
+                {{payAssignmentRate[payAssignmentRate.length-1]}}
+              </div>
+              <div class="row">
+                作業繳交率
+              </div>
+              <div class="row">
+                row3
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="container teacher-chart-card">
+            <div class="container">
+              <div class="row" style="height: 50px">
+                {{pr1Rate[pr1Rate.length-1]}}
+              </div>
+              <div class="row">
+                第一次審查率
+              </div>
+              <div class="row">
+                row3
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="container teacher-chart-card">
+            <div class="container">
+              <div class="row" style="height: 50px">
+                {{pr2Rate[pr2Rate.length-1]}}
+              </div>
+              <div class="row">
+                第二次審查率
+              </div>
+              <div class="row">
+                row3
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="area-interval"></div>
+  <div class="row justify-content-md-center">
+    <div class="col-md-10 border">
+      <div class="image-area-interval"></div>
+      <h3>
+        作業
+      </h3>
+      <div class="area-interval"></div>
+      <div class="row justify-content-md-center">
+        <div class="col-6 border test-font">
+          班級分布圖
+<!--          <canvas baseChart>-->
+
+<!--          </canvas>-->
+        </div>
+        <div class="col-6 border test-font">
+          Metrics錯誤數量
+          <app-bar-chart *ngIf='isBarChartReady' [barChartLabels]='labels' [barChartData]='barChartData'>
+          </app-bar-chart>
+        </div>
+      </div>
+      <div class="image-area-interval"></div>
+      <div class="row justify-content-md-center">
+        <div class="col-12 border test-font">
+          整學期Metrics分布圖
+        </div>
+      </div>
+      <div class="image-area-interval"></div>
+    </div>
+  </div>
+  <div class="area-interval"></div>
+  <div class="row justify-content-md-center">
+    <div class="col-md-10 border">
+      <div class="image-area-interval"></div>
+      <h3>
+        同儕審查
+      </h3>
+      <div class="row justify-content-md-center">
+        <div class="col-6 border test-font">
+          同儕審查參與率
+        </div>
+        <div class="col-6 border test-font">
+          修改作業率
+        </div>
+      </div>
+      <div class="image-area-interval"></div>
+      <div class="row justify-content-md-center">
+        <div class="col-6 border test-font">
+          全部通過比例
+        </div>
+        <div class="col-6 border">
+
+        </div>
+      </div>
+      <div class="image-area-interval"></div>
+    </div>
+  </div>
+  <div class="area-interval"></div>
   <!-- Nav tabs -->
-  <div class="row">
+  <div class="row justify-content-md-center">
     <div class="col-md-10">
       <tabset>
         <tab id="bar-chart" (selectTab)="getStatusResultData()">
@@ -22,13 +149,13 @@
             <ul *dropdownMenu class="dropdown-menu" role="menu">
               <li *ngFor='let commit of commits' role="menuitem">
                 <a class="dropdown-item" href="javascript:void(0);"
-                  (click)='getBubbleChartData(commit.name)'>{{commit.name}}</a>
+                   (click)='getBubbleChartData(commit.name)'>{{commit.name}}</a>
               </li>
             </ul>
           </div>
-          <hr />
+          <hr/>
           <app-bubble-chart *ngIf='isbubbleChartReady' [title]='selectedAssignment' [bubbleChartData]='bubbleChartData'
-            [bubbleChartLabels]='bubbleChartLabels'>
+                            [bubbleChartLabels]='bubbleChartLabels'>
           </app-bubble-chart>
         </tab>
       </tabset>
