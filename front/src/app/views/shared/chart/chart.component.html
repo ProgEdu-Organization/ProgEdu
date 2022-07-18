@@ -9,22 +9,7 @@
           <div class="container teacher-chart-card">
             <div class="container">
               <div class="row" style="height: 50px">
-                {{userCount}}
-              </div>
-              <div class="row">
-                學生人數
-              </div>
-              <div class="row">
-                row3
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="container teacher-chart-card">
-            <div class="container">
-              <div class="row" style="height: 50px">
-                {{payAssignmentRate[payAssignmentRate.length-1]}}
+                {{payAssignmentRateDisplay}} %
               </div>
               <div class="row">
                 作業繳交率
@@ -39,10 +24,10 @@
           <div class="container teacher-chart-card">
             <div class="container">
               <div class="row" style="height: 50px">
-                {{pr1Rate[pr1Rate.length-1]}}
+                {{pr1RateDisplay}} %
               </div>
               <div class="row">
-                第一次審查率
+                第一次審查完成率
               </div>
               <div class="row">
                 row3
@@ -54,10 +39,25 @@
           <div class="container teacher-chart-card">
             <div class="container">
               <div class="row" style="height: 50px">
-                {{pr2Rate[pr2Rate.length-1]}}
+                {{reviseRateDisplay}} %
               </div>
               <div class="row">
-                第二次審查率
+                作業修改率
+              </div>
+              <div class="row">
+                row3
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="container teacher-chart-card">
+            <div class="container">
+              <div class="row" style="height: 50px">
+                {{pr2RateDisplay}} %
+              </div>
+              <div class="row">
+                第二次審查完成率
               </div>
               <div class="row">
                 row3
@@ -78,13 +78,16 @@
       <div class="area-interval"></div>
       <div class="row justify-content-md-center">
         <div class="col-6 border test-font">
+          <div class="image-area-interval"></div>
           班級分布圖
-<!--          <canvas baseChart>-->
-
-<!--          </canvas>-->
+          <div class="image-area-interval"></div>
+          <app-scatter-chart *ngIf='isScatterChartReady' [scatterChartData]="scatterChartData" [scatterChartLabels]="scatterChartLabels"></app-scatter-chart>
+<!--        <app-scatter-chart></app-scatter-chart>-->
         </div>
         <div class="col-6 border test-font">
+          <div class="image-area-interval"></div>
           Metrics錯誤數量
+          <div class="image-area-interval"></div>
           <app-bar-chart *ngIf='isBarChartReady' [barChartLabels]='labels' [barChartData]='barChartData'>
           </app-bar-chart>
         </div>
@@ -115,11 +118,39 @@
       </div>
       <div class="image-area-interval"></div>
       <div class="row justify-content-md-center">
-        <div class="col-6 border test-font">
+        <div class="col-12 border test-font">
           全部通過比例
         </div>
-        <div class="col-6 border">
-
+      </div>
+      <div class="image-area-interval"></div>
+    </div>
+  </div>
+  <div class="row justify-content-md-center">
+    <div class="col-md-10 border">
+      <div class="image-area-interval"></div>
+      <h3>
+        考試成績
+      </h3>
+      <div class="row justify-content-md-center">
+        <div class="col-6 border test-font">
+          同儕審查參與率
+        </div>
+        <div class="col-6 border test-font">
+           班級分布
+        </div>
+      </div>
+      <div class="image-area-interval"></div>
+    </div>
+  </div>
+  <div class="row justify-content-md-center">
+    <div class="col-md-10 border">
+      <div class="image-area-interval"></div>
+      <h3>
+        回饋
+      </h3>
+      <div class="row justify-content-md-center">
+        <div class="col-12 border test-font">
+          回饋折線圖
         </div>
       </div>
       <div class="image-area-interval"></div>

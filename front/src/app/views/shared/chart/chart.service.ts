@@ -8,6 +8,8 @@ import {ChartAPI} from '../../../api/ChartAPI';
 import {UserAPI} from '../../../api/UserAPI';
 import {CommitRecordAPI} from '../../../api/CommitRecordAPI';
 import {AssignmentAPI} from '../../../api/AssignmentAPI';
+import {PeerReviewAPI} from '../../../api/PeerReviewAPI';
+import {ScoreAPI} from '../../../api/ScoreAPI';
 
 @Injectable({
   providedIn: 'root'
@@ -18,6 +20,8 @@ export class ChartService {
   PART_COMMIT_RECORD = CommitRecordAPI.getPartCommitRecord;
   COMMIT_RECORDS = CommitRecordAPI.getCommitRecord;
   PEER_REVIEW_ALL_ASSIGNMENT = AssignmentAPI.getAllPeerReviewAssignment;
+  PEER_REVIEW_STATUS_ROUND_ALL_USER = PeerReviewAPI.getAllReviewRoundStatus;
+  ALL_USERS_SCORE_API = ScoreAPI.getAllUserScore;
 
   constructor(private addJwtTokenHttpClient: AddJwtTokenHttpClient) {
   }
@@ -48,5 +52,15 @@ export class ChartService {
 
   getAllPeerReviewAssignment(): Observable<any> {
     return this.addJwtTokenHttpClient.get(this.PEER_REVIEW_ALL_ASSIGNMENT);
+  }
+
+  getPeerReviewStatusRoundAllUser(assignmentName: string): Observable<any> {
+    const params = new HttpParams()
+      .set('assignmentName', assignmentName);
+    return this.addJwtTokenHttpClient.get(this.PEER_REVIEW_STATUS_ROUND_ALL_USER, {params});
+  }
+  getAllUserScore(assignmentName: string): Observable<any> {
+    const params = new HttpParams().set('assignmentName', assignmentName);
+    return this.addJwtTokenHttpClient.get(this.ALL_USERS_SCORE_API, {params});
   }
 }

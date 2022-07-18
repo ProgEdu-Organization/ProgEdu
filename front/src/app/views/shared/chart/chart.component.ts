@@ -120,13 +120,14 @@ export class ChartComponent implements OnInit {
   public isMixedChartReady: boolean = false;
   userNameList: string[] = [];
   assignmentNameList: string[] = [];
-  assignmentSubmissionRate = new Map();
-  firstPRRate = new Map();
   secondPRRate = new Map();
   reviseSubmissionRate = new Map();
   public bubbleChartData: any[] = [];
   public bubbleChartLabels: Array<any> = [];
+  public scatterChartData: any[] = [];
+  public scatterChartLabels: Array<any> = [];
   public isbubbleChartReady = false;
+  public isScatterChartReady = false;
   public selectedAssignment = '';
   // 班級學生人數
   public userCount;
@@ -135,6 +136,10 @@ export class ChartComponent implements OnInit {
   public pr1Rate = [];
   public reviseRate = [];
   public pr2Rate = [];
+  public payAssignmentRateDisplay = 0;
+  public pr1RateDisplay = 0;
+  public reviseRateDisplay = 0;
+  public pr2RateDisplay = 0;
 
   constructor(private chartService: ChartService, private timeService: TimeService) {
   }
@@ -144,29 +149,16 @@ export class ChartComponent implements OnInit {
     await this.chartService.getAllCommits().subscribe(
       (response) => {
         this.commits = response.allCommitRecord;
-        for (let i = 0; i < this.commits.length; i++) {
-          if (this.commits[i].commits[0]) {
-            this.assignmentNameList.push(this.commits[i].name);
-          }
-        }
-        console.log(this.assignmentNameList);
         this.getStatusResultData();
         this.selectedAssignment = this.commits[0].name;
-        for (let i = 0; i < this.assignmentNameList.length; i++) {
-          for (let j = 0; j < this.userCount; j++) {
-            // tslint:disable-next-line:no-shadowed-variable
-            this.chartService.getCommitRecord(this.userNameList[j], this.assignmentNameList[i]).subscribe(response => {
-              this.commitsDetailEachStudent = response;
-              // console.log(this.commitsDetailEachStudent);
-            });
-          }
-        }
-        this.compareCommitTime();
       },
       (error) => {
         console.log('Get all assignments error');
       }
     );
+    await this.calReviewRate();
+    await this.initScatterData();
+    await this.getScatterData();
   }
 
   computeStatus(commits: any) {
@@ -268,12 +260,10 @@ export class ChartComponent implements OnInit {
   getAllUser() {
     this.chartService.getAllUser().subscribe(
       (response) => {
-        console.log(response);
         this.userCount = response.Users.length;
         for (let i = 0; i < response.Users.length; i++) {
           this.userNameList.push(response.Users[i].name);
         }
-        console.log(this.userNameList);
       },
       error => {
         console.log('Get all user error');
@@ -281,10 +271,39 @@ export class ChartComponent implements OnInit {
     );
   }
 
-  async compareCommitTime() {
+  initScatterData() {
+    for (let i = 0; i < this.userCount; i++) {
+      this.scatterChartData.push({
+        data: [],
+        labels: this.userNameList[i],
+        backgroundColor: 'transparent',
+        borderColor: 'transparent',
+        pointBackgroundColor: '#f9b115',
+        pointHoverBackgroundColor: '#f9b115',
+        pointHoverBorderColor: '#f9b115'
+      });
+    }
+  }
+
+  async getScatterData() {
+    this.scatterChartLabels = this.prAssignmentNameList;
+    // console.log(this.scatterChartData[0].labels);
+    console.log(this.scatterChartLabels);
+    // 取得特定作業的所有成績
+    for (let i = 0; i < this.prAssignmentNameList.length; i++) {
+      const response = await this.chartService.getAllUserScore(this.prAssignmentNameList[i]).toPromise();
+      for (let j = 0; j < this.userCount; j++) {
+        this.scatterChartData[j].data.push(Number(response[j].score));
+      }
+    }
+    // End
+    this.isScatterChartReady = true;
+    console.log(this.scatterChartData);
+    console.log(this.barChartData);
+  }
+
+  async calReviewRate() {
     const responseTimeLine = await this.chartService.getAllPeerReviewAssignment().toPromise();
-    let flag = 0;
-    console.log(responseTimeLine);
     // Rate Array 初始化
     for (let i = 0; i < responseTimeLine.allReviewAssignments.length; i++) {
       this.prAssignmentNameList.push(responseTimeLine.allReviewAssignments[i].name);
@@ -293,86 +312,31 @@ export class ChartComponent implements OnInit {
       this.reviseRate.push(0);
       this.pr2Rate.push(0);
     }
-    // 每個作業
-    for (let i = 0; i < responseTimeLine.allReviewAssignments.length; i++) {
-      // 作業開始
-      const assignmentStartTime = new Date(responseTimeLine.allReviewAssignments[i].assessmentTimes[0].startTime);
-      // 做作業死線
-      const assignmentEndTime = new Date(responseTimeLine.allReviewAssignments[i].assessmentTimes[0].endTime);
-      // 第一次PR開始
-      const PR1StartTime = new Date(responseTimeLine.allReviewAssignments[i].assessmentTimes[1].startTime);
-      // 第一次PR死線
-      const PR1EndTime = new Date(responseTimeLine.allReviewAssignments[i].assessmentTimes[1].endTime);
-      // 修改作業開始
-      const reviseStartTime = new Date(responseTimeLine.allReviewAssignments[i].assessmentTimes[2].startTime);
-      // 修改作業死線
-      const reviseEndTime = new Date(responseTimeLine.allReviewAssignments[i].assessmentTimes[2].endTime);
-      // 第二次PR開始
-      const PR2StartTime = new Date(responseTimeLine.allReviewAssignments[i].assessmentTimes[3].startTime);
-      // 第二次PR死線
-      const PR2EndTime = new Date(responseTimeLine.allReviewAssignments[i].assessmentTimes[3].endTime);
-      const createTime = new Date(responseTimeLine.allReviewAssignments[i].createTime);
-      console.log(responseTimeLine.allReviewAssignments[i].name);
-      for (let j = 0; j < this.userNameList.length; j++) {
-        console.log(this.userNameList[j]);
-        // tslint:disable-next-line:max-line-length
-        const responseGCR = await this.chartService.getCommitRecord(this.userNameList[j], responseTimeLine.allReviewAssignments[i].name).toPromise();
-        for (let k = 0; k < responseGCR.length; k++) {
-          // date 為每一個commit的時間
-          const date = new Date(responseGCR[k].time);
-          if (createTime < date && date < assignmentStartTime) {
-            console.log('init.');
-            console.log(date);
-            console.log(createTime);
-          } else if (assignmentStartTime < date && date < assignmentEndTime) {
-            console.log('做作業');
-            console.log(assignmentStartTime);
-            console.log(date);
-            console.log(assignmentEndTime);
-            if (flag === 0) {
-              this.payAssignmentRate[i] = this.payAssignmentRate[i] + 1;
-              flag = flag + 1;
-            }
-          } else if (PR1StartTime < date && date < PR1EndTime) {
-            console.log('PR1');
-            console.log(PR1StartTime);
-            console.log(date);
-            console.log(PR1EndTime);
-            if (flag === 1) {
-              this.pr1Rate[i] = this.pr1Rate[i] + 1;
-              flag = flag + 1;
-            }
-          } else if (reviseStartTime < date && date < reviseEndTime) {
-            console.log('Revise');
-            console.log(reviseStartTime);
-            console.log(date);
-            console.log(reviseEndTime);
-            if (flag === 2) {
-              this.reviseRate[i] = this.reviseRate[i] + 1;
-              flag = flag + 1;
-            }
-          } else if (PR2StartTime < date && date < PR2EndTime) {
-            console.log('PR2');
-            console.log(PR2StartTime);
-            console.log(date);
-            console.log(PR2EndTime);
-            if (flag === 3) {
-              this.pr2Rate[i] = this.pr2Rate[i] + 1;
-              flag = 0;
-            }
-          } else {
-            console.log('過期啦');
-            console.log(date);
-          }
-        }
-        flag = 0;
+    // 取得每個作業每個Round是否完成
+    for (let i = 0; i < this.prAssignmentNameList.length; i++) {
+      const response = await this.chartService.getPeerReviewStatusRoundAllUser(this.prAssignmentNameList[i]).toPromise();
+      let rateRound1 = 0;
+      let rateRound2 = 0;
+      const total = response[0].reviewRound[0].amount * this.userCount;
+      for (let j = 0; j < response.length; j++) {
+        rateRound1 = rateRound1 + response[j].reviewRound[0].count;
+        rateRound2 = rateRound2 + response[j].reviewRound[1].count;
+      }
+      if (rateRound1 !== 0) {
+        this.pr1Rate[i] = rateRound1 / total;
+        // 取小數點後一位
+        this.pr1Rate[i] = Math.round((this.pr1Rate[i] * 100 + Number.EPSILON) * 10) / 10;
+      } else {
+        this.pr1Rate[i] = rateRound1;
+      }
+      if (rateRound2 !== 0) {
+        this.pr2Rate[i] = rateRound2 / total;
+        // 取小數點後一位
+        this.pr2Rate[i] = Math.round((this.pr2Rate[i] * 100 + Number.EPSILON) * 10) / 10;
+      } else {
+        this.pr2Rate[i] = rateRound2;
       }
     }
-    console.log(this.prAssignmentNameList);
-    console.log(this.payAssignmentRate);
-    console.log(this.pr1Rate);
-    console.log(this.reviseRate);
-    console.log(this.pr2Rate);
   }
 
   test($event) {
