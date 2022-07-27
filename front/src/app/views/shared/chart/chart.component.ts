@@ -75,6 +75,54 @@ export class ChartComponent implements OnInit {
       hoverBorderColor: Status.success.color,
     },
   ];
+
+  public examBarChartData: any[] = [
+    {
+      data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], label: '',
+      backgroundColor: '#3399ff',
+      borderColor: '#3399ff',
+      hoverBackgroundColor: '#3399ff',
+      hoverBorderColor: '#3399ff',
+    }
+  ];
+
+  public prRateLineChartData: any[] = [
+    {
+      data: [],
+      label: 'Round 1',
+      backgroundColor: 'transparent',
+      borderColor: '#e55353',
+      pointBackgroundColor: '#e55353',
+      pointHoverBackgroundColor: '#e55353',
+      pointHoverBorderColor: '#e55353'
+    },
+    {
+      data: [],
+      label: 'Round 2',
+      backgroundColor: 'transparent',
+      borderColor: '#3399ff',
+      pointBackgroundColor: '#3399ff',
+      pointHoverBackgroundColor: '#3399ff',
+      pointHoverBorderColor: '#3399ff'
+    }
+  ];
+
+  public MetricsCountChartData: any[] = [
+    {
+      data: [], label: 'PR1',
+      backgroundColor: '#3399ff',
+      borderColor: '#3399ff',
+      hoverBackgroundColor: '#3399ff',
+      hoverBorderColor: '#3399ff',
+    },
+    {
+      data: [], label: 'PR2',
+      backgroundColor: '#e55353',
+      borderColor: '#e55353',
+      hoverBackgroundColor: '#e55353',
+      hoverBorderColor: '#e55353',
+    }
+  ];
   public isBarChartReady: boolean = false;
 
   public mixedChartData: Array<any> = [
@@ -128,7 +176,11 @@ export class ChartComponent implements OnInit {
   public scatterChartLabels: Array<any> = [];
   public isbubbleChartReady = false;
   public isScatterChartReady = false;
+  public isExamScoreTableReady = false;
+  public isPrRateLineChartReady = false;
+  public isExamScoreTableEmpty = true;
   public selectedAssignment = '';
+  public selectedExam = '';
   // 班級學生人數
   public userCount;
   public prAssignmentNameList = [];
@@ -136,10 +188,12 @@ export class ChartComponent implements OnInit {
   public pr1Rate = [];
   public reviseRate = [];
   public pr2Rate = [];
-  public payAssignmentRateDisplay = 0;
-  public pr1RateDisplay = 0;
-  public reviseRateDisplay = 0;
-  public pr2RateDisplay = 0;
+  public examNameList = ['Midterm', 'Final'];
+  public examScore = [];
+  public examScoreMax = -1;
+  public examScoreMin = -1;
+  public examScoreMAvg = -1;
+  public examRange = ['0-9', '10-19', '20-29', '30-39', '40-49', '50-59', '60-69', '70-79', '80-89', '90-99', '100'];
 
   constructor(private chartService: ChartService, private timeService: TimeService) {
   }
@@ -148,17 +202,23 @@ export class ChartComponent implements OnInit {
     await this.getAllUser();
     await this.chartService.getAllCommits().subscribe(
       (response) => {
+        console.log(response);
         this.commits = response.allCommitRecord;
         this.getStatusResultData();
         this.selectedAssignment = this.commits[0].name;
+        this.calPayAssignmentRate();
       },
       (error) => {
         console.log('Get all assignments error');
       }
     );
+    this.selectedExam = this.examNameList[0];
     await this.calReviewRate();
     await this.initScatterData();
     await this.getScatterData();
+    // Review Record Metrics
+    // await this.getReviewFeedback();
+    await this.getExamScore(this.selectedExam);
   }
 
   computeStatus(commits: any) {
@@ -257,6 +317,9 @@ export class ChartComponent implements OnInit {
     this.isbubbleChartReady = true;
   }
 
+  /**
+   * Get all user's name and user count.
+   */
   getAllUser() {
     this.chartService.getAllUser().subscribe(
       (response) => {
@@ -275,16 +338,19 @@ export class ChartComponent implements OnInit {
     for (let i = 0; i < this.userCount; i++) {
       this.scatterChartData.push({
         data: [],
-        labels: this.userNameList[i],
+        label: this.userNameList[i],
         backgroundColor: 'transparent',
         borderColor: 'transparent',
         pointBackgroundColor: '#f9b115',
         pointHoverBackgroundColor: '#f9b115',
-        pointHoverBorderColor: '#f9b115'
+        pointHoverBorderColor: '#f9b115',
       });
     }
   }
 
+  /**
+   * Get each assignment score of all user in class.
+   */
   async getScatterData() {
     this.scatterChartLabels = this.prAssignmentNameList;
     // console.log(this.scatterChartData[0].labels);
@@ -302,6 +368,23 @@ export class ChartComponent implements OnInit {
     console.log(this.barChartData);
   }
 
+  calPayAssignmentRate() {
+    // let rate = 0;
+    console.log('Commits' + this.commits.length);
+    for (let i = 0; i < this.commits.length; i++) {
+      console.log(this.commits[i]);
+      this.assignmentNameList.push(this.commits[i].name);
+      console.log(this.commits[i].commits.length);
+      for (let j = 0; j < this.commits[i].commits.length; j++) {
+
+      }
+    }
+    console.log(this.assignmentNameList);
+  }
+
+  /**
+   * Calculate each assignment's peer review rate and create all prAssignment array.
+   */
   async calReviewRate() {
     const responseTimeLine = await this.chartService.getAllPeerReviewAssignment().toPromise();
     // Rate Array 初始化
@@ -335,6 +418,130 @@ export class ChartComponent implements OnInit {
         this.pr2Rate[i] = Math.round((this.pr2Rate[i] * 100 + Number.EPSILON) * 10) / 10;
       } else {
         this.pr2Rate[i] = rateRound2;
+      }
+    }
+    this.prRateLineChartData[0].data = this.pr1Rate;
+    this.prRateLineChartData[1].data = this.pr2Rate;
+    this.isPrRateLineChartReady = true;
+  }
+
+  async getReviewFeedback() {
+    for (let i = 0; i < this.prAssignmentNameList.length; i++) {
+      const responseOfAssignment = await this.chartService.getAllPeerReviewAssignment().toPromise();
+      // console.log(responseOfAssignment);
+      const round = responseOfAssignment.allReviewAssignments[i].round;
+      for (let j = 0; j < this.userNameList.length; j++) {
+        const response = await this.chartService.getReviewFeedback(this.prAssignmentNameList[i], this.userNameList[j]).toPromise();
+        console.log(response);
+        // this.verifyDetailExist(response);
+        console.log(response);
+        console.log(this.prAssignmentNameList[i] + ' ' + this.userNameList[j]);
+        for (let k = 0; k < response.allRecordDetail.length; k++) {
+          for (let l = 1; l <= round; l++) {
+            console.log('Round' + l);
+            // tslint:disable-next-line:max-line-length
+            const response3 = await this.chartService.getReviewPageDetail(this.userNameList[j], this.prAssignmentNameList[i], response.allRecordDetail[k].id, l.toString()).toPromise();
+            console.log(response3);
+          }
+        }
+      }
+    }
+  }
+  //
+  // verifyDetailExist(response: Object) {
+  //   try {
+  //     console.log(response.allRecordDetail[2].Detail[2].feedbackScore);
+  //   } catch {
+  //     console.log('not Exist');
+  //   }
+  // }
+
+  /**
+   * Initial ExamBarChartData's data and labels.
+   */
+  initExamBarChartData() {
+    this.examBarChartData[0].label = '';
+    for (let i = 0; i < this.examBarChartData[0].data.length; i++) {
+      this.examBarChartData[0].data[i] = 0;
+    }
+  }
+
+  /**
+   * Get exam score array and get max、min score in exam.
+   * @param examName selected exam
+   */
+  async getExamScore(examName: string) {
+    // 初始化
+    this.selectedExam = examName;
+    this.isExamScoreTableEmpty = true;
+    this.isExamScoreTableReady = false;
+    let examScoreSum = 0;
+    this.examScore.splice(0, this.examScore.length);
+    this.initExamBarChartData();
+    // 初始化End
+    const response = await this.chartService.getAllUserScore(examName).toPromise();
+    for (let i = 0; i < response.length; i++) {
+      this.examScore.push(response[i].score);
+    }
+    console.log(examName);
+    console.log(this.examScore);
+    if (this.examScore.length === 0) {
+      console.log('Exam no data');
+    } else {
+      this.examScoreMax = Math.max.apply(null, this.examScore);
+      this.examScoreMin = Math.min.apply(null, this.examScore);
+      examScoreSum = this.examScore.reduce((previous, current) => current += previous);
+      this.examScoreMAvg = examScoreSum / this.examScore.length;
+      // 取小數點後一位
+      this.examScoreMAvg = Math.round((this.examScoreMAvg + Number.EPSILON) * 10) / 10;
+      this.isExamScoreTableEmpty = false;
+      this.examBarChartData[0].label = examName;
+      this.countExamDistributed(this.examScore);
+    }
+    this.isExamScoreTableReady = true;
+  }
+
+  /**
+   * Count Exam Score distribution.
+   * @param examScore The array of selected exam Score
+   */
+  countExamDistributed(examScore: any) {
+    for (let i = 0; i < this.examScore.length; i++) {
+      console.log(Math.floor(this.examScore[i] / 10));
+      switch (Math.floor(this.examScore[i] / 10)) {
+        case 10 :
+          this.examBarChartData[0].data[10] += 1;
+          break;
+        case 9 :
+          this.examBarChartData[0].data[9] += 1;
+          break;
+        case 8 :
+          this.examBarChartData[0].data[8] += 1;
+          break;
+        case 7 :
+          this.examBarChartData[0].data[7] += 1;
+          break;
+        case 6 :
+          this.examBarChartData[0].data[6] += 1;
+          break;
+        case 5 :
+          this.examBarChartData[0].data[5] += 1;
+          break;
+        case 4 :
+          this.examBarChartData[0].data[4] += 1;
+          break;
+        case 3 :
+          this.examBarChartData[0].data[3] += 1;
+          break;
+        case 2 :
+          this.examBarChartData[0].data[2] += 1;
+          break;
+        case 1 :
+          this.examBarChartData[0].data[1] += 1;
+          break;
+        case 0 :
+          this.examBarChartData[0].data[0] += 1;
+          break;
       }
     }
   }

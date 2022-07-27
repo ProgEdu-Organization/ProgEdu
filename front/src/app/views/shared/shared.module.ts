@@ -36,6 +36,7 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { ScatterChartComponent } from './chart/scatter-chart/scatter-chart.component';
+import { LineChartComponent } from './chart/line-chart/line-chart.component';
 
 @NgModule({
   imports: [
@@ -53,7 +54,7 @@ import { ScatterChartComponent } from './chart/scatter-chart/scatter-chart.compo
   declarations: [AssignmentChooseComponent, ReviewAssignmentChooseComponent, ProjectChooseComponent, GroupDashboardComponent,
     GroupFilterPipe, FilterPipe, CommitRecordComponent, DashboardStatusComponent, ScreenshotComponent, ErrorModalComponent,
     // tslint:disable-next-line:max-line-length
-    BarChartComponent, BubbleChartComponent, MixedChartComponent, ChartComponent, LineBreaksPipe, ReviewCommitRecordComponent, ScatterChartComponent ],
+    BarChartComponent, BubbleChartComponent, MixedChartComponent, ChartComponent, LineBreaksPipe, ReviewCommitRecordComponent, ScatterChartComponent, LineChartComponent ],
   exports: [AssignmentChooseComponent, ReviewAssignmentChooseComponent, GroupDashboardComponent, ProjectChooseComponent, GroupFilterPipe,
     FilterPipe, DashboardStatusComponent, ScreenshotComponent, ErrorModalComponent, LineBreaksPipe]
 })

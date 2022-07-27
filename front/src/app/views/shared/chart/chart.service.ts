@@ -22,6 +22,8 @@ export class ChartService {
   PEER_REVIEW_ALL_ASSIGNMENT = AssignmentAPI.getAllPeerReviewAssignment;
   PEER_REVIEW_STATUS_ROUND_ALL_USER = PeerReviewAPI.getAllReviewRoundStatus;
   ALL_USERS_SCORE_API = ScoreAPI.getAllUserScore;
+  REVIEW_FEEDBACK_API = PeerReviewAPI.getReviewedRecordDetail;
+  REVIEW_DETAIL_PAGE_API = PeerReviewAPI.getReviewPageDetail;
 
   constructor(private addJwtTokenHttpClient: AddJwtTokenHttpClient) {
   }
@@ -62,5 +64,19 @@ export class ChartService {
   getAllUserScore(assignmentName: string): Observable<any> {
     const params = new HttpParams().set('assignmentName', assignmentName);
     return this.addJwtTokenHttpClient.get(this.ALL_USERS_SCORE_API, {params});
+  }
+  getReviewFeedback(assignmentName: string, username: string): Observable<any> {
+    const params = new HttpParams()
+      .set('username', username)
+      .set('assignmentName', assignmentName);
+    return this.addJwtTokenHttpClient.get(this.REVIEW_FEEDBACK_API, { params });
+  }
+  getReviewPageDetail(username: string, assignmentName: string, reviewId: string, round: string) {
+    const params = new HttpParams()
+      .set('username', username)
+      .set('assignmentName', assignmentName)
+      .set('reviewId', reviewId)
+      .set('round', round);
+    return this.addJwtTokenHttpClient.get(this.REVIEW_DETAIL_PAGE_API, { params });
   }
 }

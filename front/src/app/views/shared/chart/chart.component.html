@@ -2,14 +2,14 @@
   <div class="row justify-content-md-center">
     <div class="col-md-10">
       <h3>
-        {{prAssignmentNameList[prAssignmentNameList.length-1]}}
+        {{prAssignmentNameList[prAssignmentNameList.length - 1]}}
       </h3>
       <div class="row">
         <div class="col-md-3">
           <div class="container teacher-chart-card">
             <div class="container">
               <div class="row" style="height: 50px">
-                {{payAssignmentRateDisplay}} %
+                {{payAssignmentRate[payAssignmentRate.length-1]}} %
               </div>
               <div class="row">
                 作業繳交率
@@ -24,7 +24,7 @@
           <div class="container teacher-chart-card">
             <div class="container">
               <div class="row" style="height: 50px">
-                {{pr1RateDisplay}} %
+                {{pr1Rate[pr1Rate.length-1]}} %
               </div>
               <div class="row">
                 第一次審查完成率
@@ -39,7 +39,7 @@
           <div class="container teacher-chart-card">
             <div class="container">
               <div class="row" style="height: 50px">
-                {{reviseRateDisplay}} %
+                {{reviseRate[reviseRate.length-1]}} %
               </div>
               <div class="row">
                 作業修改率
@@ -54,7 +54,7 @@
           <div class="container teacher-chart-card">
             <div class="container">
               <div class="row" style="height: 50px">
-                {{pr2RateDisplay}} %
+                {{pr2Rate[pr2Rate.length-1]}} %
               </div>
               <div class="row">
                 第二次審查完成率
@@ -79,17 +79,18 @@
       <div class="row justify-content-md-center">
         <div class="col-6 border test-font">
           <div class="image-area-interval"></div>
-          班級分布圖
+          班級成績分布圖
           <div class="image-area-interval"></div>
-          <app-scatter-chart *ngIf='isScatterChartReady' [scatterChartData]="scatterChartData" [scatterChartLabels]="scatterChartLabels"></app-scatter-chart>
-<!--        <app-scatter-chart></app-scatter-chart>-->
+          <app-scatter-chart *ngIf='isScatterChartReady' [scatterChartData]="scatterChartData"
+                             [scatterChartLabels]="scatterChartLabels" [scatterChartLegend]=false></app-scatter-chart>
         </div>
         <div class="col-6 border test-font">
           <div class="image-area-interval"></div>
           Metrics錯誤數量
           <div class="image-area-interval"></div>
-          <app-bar-chart *ngIf='isBarChartReady' [barChartLabels]='labels' [barChartData]='barChartData'>
-          </app-bar-chart>
+<!--          修改-->
+<!--          <app-bar-chart *ngIf='isBarChartReady' [barChartLabels]='labels' [barChartData]='barChartData'>-->
+<!--          </app-bar-chart>-->
         </div>
       </div>
       <div class="image-area-interval"></div>
@@ -110,7 +111,10 @@
       </h3>
       <div class="row justify-content-md-center">
         <div class="col-6 border test-font">
+          <div class="image-area-interval"></div>
           同儕審查參與率
+          <div class="image-area-interval"></div>
+          <app-line-chart *ngIf="isPrRateLineChartReady" [lineChartLabels]="prAssignmentNameList" [lineChartData]="prRateLineChartData"></app-line-chart>
         </div>
         <div class="col-6 border test-font">
           修改作業率
@@ -132,11 +136,65 @@
         考試成績
       </h3>
       <div class="row justify-content-md-center">
-        <div class="col-6 border test-font">
-          同儕審查參與率
+        <div class="image-area-interval"></div>
+        <div class="col-6 border test-font" *ngIf="isExamScoreTableReady">
+          <div class="image-area-interval"></div>
+          <div class="btn-group" dropdown>
+            <button dropdownToggle type="button" class="btn btn-primary dropdown-toggle">
+              {{selectedExam}} <span class="caret"></span>
+            </button>
+            <ul *dropdownMenu class="dropdown-menu" role="menu">
+              <li *ngFor='let examName of examNameList' role="menuitem">
+                <a class="dropdown-item" href="javascript:void(0);"
+                   (click)='getExamScore(examName)'>{{examName}}</a>
+              </li>
+            </ul>
+          </div>
+          <div class="image-area-interval"></div>
+          <table *ngIf="!isExamScoreTableEmpty; else isEmpty">
+            <tr>
+              <th>考試名稱</th>
+              <td>{{selectedExam}}</td>
+            </tr>
+            <tr>
+              <th>最高分</th>
+              <td>{{examScoreMax}}</td>
+            </tr>
+            <tr>
+              <th>班級平均</th>
+              <td>{{examScoreMAvg}}</td>
+            </tr>
+            <tr>
+              <th>最低分</th>
+              <td>{{examScoreMin}}</td>
+            </tr>
+          </table>
+          <ng-template #isEmpty>
+            <table *ngIf="isExamScoreTableEmpty">
+              <tr>
+                <th>考試名稱</th>
+                <td>{{selectedExam}}</td>
+              </tr>
+              <tr>
+                <th>最高分</th>
+                <td>N/A</td>
+              </tr>
+              <tr>
+                <th>班級平均</th>
+                <td>N/A</td>
+              </tr>
+              <tr>
+                <th>最低分</th>
+                <td>N/A</td>
+              </tr>
+            </table>
+          </ng-template>
+          <div class="image-area-interval"></div>
         </div>
-        <div class="col-6 border test-font">
-           班級分布
+        <div class="col-6 border test-font" *ngIf='isExamScoreTableReady'>
+          班級分布 - {{selectedExam}}
+          <app-bar-chart [barChartLabels]='examRange' [barChartData]='examBarChartData' [barChartLegend] = false>
+          </app-bar-chart>
         </div>
       </div>
       <div class="image-area-interval"></div>

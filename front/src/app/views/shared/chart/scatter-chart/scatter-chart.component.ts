@@ -9,6 +9,7 @@ export class ScatterChartComponent implements OnInit {
 
   @Input() scatterChartLabels: string[];
   @Input() scatterChartData: any[];
+  @Input() scatterChartLegend: boolean;
   public scatterChartOptions = {
     scaleShowVerticalLines: false,
     responsive: true
@@ -16,7 +17,7 @@ export class ScatterChartComponent implements OnInit {
 
   // public scatterChartLabels = ['HW1', 'HW2', 'HW3', 'HW4', 'HW5', 'HW6', 'HW7'];
   public scatterChartType = 'line';
-  public scatterChartLegend = true;
+  // public scatterChartLegend = false;
 
   // public scatterChartData = [
   //   {

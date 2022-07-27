@@ -8,8 +8,8 @@ import { Component, OnInit, Input, OnChanges} from '@angular/core';
 export class BarChartComponent implements OnInit, OnChanges {
   @Input() barChartLabels: string[];
   @Input() barChartData: any[];
+  @Input() barChartLegend: boolean;
   public barChartType = 'bar';
-  public barChartLegend = true;
   public barChartOptions: any = {
     scaleShowVerticalLines: true,
     responsive: true,
@@ -50,18 +50,18 @@ export class BarChartComponent implements OnInit, OnChanges {
   constructor() { }
 
   ngOnInit() {
-    
+
   }
 
   ngOnChanges(): void {
   }
-  
+
   public chartClicked(e: any): void {
-   
+
   }
 
   public chartHovered(e: any): void {
-    
+
   }
 
 
