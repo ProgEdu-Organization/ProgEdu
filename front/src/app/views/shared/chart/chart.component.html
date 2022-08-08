@@ -9,7 +9,7 @@
           <div class="container teacher-chart-card">
             <div class="container">
               <div class="row" style="height: 50px">
-                {{payAssignmentRate[payAssignmentRate.length-1]}} %
+                {{payAssignmentRate[payAssignmentRate.length - 1]}} %
               </div>
               <div class="row">
                 作業繳交率
@@ -70,13 +70,19 @@
   </div>
   <div class="area-interval"></div>
   <div class="row justify-content-md-center">
-    <div class="col-md-10 border">
+    <div class="col-md-10 border card-theme">
       <div class="image-area-interval"></div>
       <h3>
         作業
       </h3>
       <div class="area-interval"></div>
       <div class="row justify-content-md-center">
+        <div class="col-6 border test-font">
+          <div class="image-area-interval"></div>
+          作業繳交率
+          <div class="image-area-interval"></div>
+          <app-line-chart *ngIf="ispayAssignmentRateReady" [lineChartLabels]="prAssignmentNameList" [lineChartData]="payAssignmentRateLineChartData" [lineChartLegend]=false></app-line-chart>
+        </div>
         <div class="col-6 border test-font">
           <div class="image-area-interval"></div>
           班級成績分布圖
@@ -86,25 +92,44 @@
         </div>
         <div class="col-6 border test-font">
           <div class="image-area-interval"></div>
-          Metrics錯誤數量
+          <div class="row">
+            <div class="col-4">
+              <h4>
+                Metrics錯誤數量
+              </h4>
+            </div>
+            <div class="col-1">
+              <div class="btn-group" dropdown>
+                <button dropdownToggle type="button" class="btn btn-primary dropdown-toggle">
+                  {{selectedMetricsAssignment}} <span class="caret"></span>
+                </button>
+                <ul *dropdownMenu class="dropdown-menu" role="menu">
+                  <li *ngFor='let prAssignmentName of prAssignmentNameList' role="menuitem">
+                    <a class="dropdown-item" href="javascript:void(0);"
+                       (click)='setMetricsCountChartData(prAssignmentName)'>{{prAssignmentName}}</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
           <div class="image-area-interval"></div>
-<!--          修改-->
-<!--          <app-bar-chart *ngIf='isBarChartReady' [barChartLabels]='labels' [barChartData]='barChartData'>-->
-<!--          </app-bar-chart>-->
+          <app-bar-chart *ngIf='isMetricsCountChartReady' [barChartLabels]='allMetrics' [barChartData]='MetricsCountChartData'>
+          </app-bar-chart>
         </div>
-      </div>
-      <div class="image-area-interval"></div>
-      <div class="row justify-content-md-center">
-        <div class="col-12 border test-font">
+        <div class="col-6 border test-font">
+          <div class="image-area-interval"></div>
           整學期Metrics分布圖
+          <div class="image-area-interval"></div>
+<!--          TODO: 整學期Metrics分布圖-->
+          <app-scatter-chart *ngIf='isWholeSemesterMetricsChartReady' [scatterChartData]="wholeSemesterMetricsChartData"
+                             [scatterChartLabels]="allMetrics" [scatterChartLegend]=true></app-scatter-chart>
         </div>
       </div>
-      <div class="image-area-interval"></div>
     </div>
   </div>
   <div class="area-interval"></div>
   <div class="row justify-content-md-center">
-    <div class="col-md-10 border">
+    <div class="col-md-10 border card-theme">
       <div class="image-area-interval"></div>
       <h3>
         同儕審查
@@ -114,7 +139,7 @@
           <div class="image-area-interval"></div>
           同儕審查參與率
           <div class="image-area-interval"></div>
-          <app-line-chart *ngIf="isPrRateLineChartReady" [lineChartLabels]="prAssignmentNameList" [lineChartData]="prRateLineChartData"></app-line-chart>
+          <app-line-chart *ngIf="isPrRateLineChartReady" [lineChartLabels]="prAssignmentNameList" [lineChartData]="prRateLineChartData" [lineChartLegend]=true></app-line-chart>
         </div>
         <div class="col-6 border test-font">
           修改作業率
@@ -122,23 +147,26 @@
       </div>
       <div class="image-area-interval"></div>
       <div class="row justify-content-md-center">
-        <div class="col-12 border test-font">
-          全部通過比例
+        <div class="col-6 border test-font">
+          審查完全通過人數
+          <app-bar-chart *ngIf="isPassAllMetricsBarChartReady" [barChartLabels]='prAssignmentNameList' [barChartData]='passAllMetricsBarChartData' [barChartLegend] = true></app-bar-chart>
         </div>
+        <div class = "col-6 border test-font"></div>
       </div>
       <div class="image-area-interval"></div>
     </div>
   </div>
+  <div class="area-interval"></div>
   <div class="row justify-content-md-center">
-    <div class="col-md-10 border">
+    <div class="col-md-10 border card-theme">
       <div class="image-area-interval"></div>
-      <h3>
-        考試成績
-      </h3>
-      <div class="row justify-content-md-center">
-        <div class="image-area-interval"></div>
-        <div class="col-6 border test-font" *ngIf="isExamScoreTableReady">
-          <div class="image-area-interval"></div>
+      <div class="row">
+        <div class="col-2">
+          <h4>
+            考試成績
+          </h4>
+        </div>
+        <div class="col-1">
           <div class="btn-group" dropdown>
             <button dropdownToggle type="button" class="btn btn-primary dropdown-toggle">
               {{selectedExam}} <span class="caret"></span>
@@ -150,6 +178,12 @@
               </li>
             </ul>
           </div>
+        </div>
+      </div>
+      <div class="row justify-content-md-center">
+        <div class="image-area-interval"></div>
+        <div class="col-6 border test-font" *ngIf="isExamScoreTableReady">
+          <div class="image-area-interval"></div>
           <div class="image-area-interval"></div>
           <table *ngIf="!isExamScoreTableEmpty; else isEmpty">
             <tr>
@@ -200,15 +234,17 @@
       <div class="image-area-interval"></div>
     </div>
   </div>
+  <div class="area-interval"></div>
   <div class="row justify-content-md-center">
-    <div class="col-md-10 border">
+    <div class="col-md-10 border card-theme">
       <div class="image-area-interval"></div>
       <h3>
         回饋
       </h3>
       <div class="row justify-content-md-center">
         <div class="col-12 border test-font">
-          回饋折線圖
+          回饋分數折線圖
+          <app-line-chart *ngIf="isFeedbackScoreChartReady" [lineChartLabels]="prAssignmentNameList" [lineChartData]="feedbackLineChartData" [lineChartLegend]=true></app-line-chart>
         </div>
       </div>
       <div class="image-area-interval"></div>

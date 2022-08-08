@@ -9,6 +9,7 @@ export class LineChartComponent implements OnInit {
 
   @Input() lineChartLabels: string[];
   @Input() lineChartData: any[];
+  @Input() lineChartLegend: boolean;
   public lineChartOptions = {
     borderJoinStyle: 'miter',
     scaleShowVerticalLines: false,
@@ -17,7 +18,6 @@ export class LineChartComponent implements OnInit {
 
   // public lineChartLabels = ['HW1', 'HW2', 'HW3', 'HW4', 'HW5', 'HW6', 'HW7'];
   public lineChartType = 'line';
-  public lineChartLegend = true;
 
   // public lineChartData = [
   //   {

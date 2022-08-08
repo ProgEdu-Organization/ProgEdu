@@ -1,12 +1,21 @@
-.teacher-chart-card{
+body{
+  font-family: monospace, "Microsoft JhengHei", PingFang;
+}
+
+.teacher-chart-card {
   //width: 65%;
   background-color: #321fdb;
   color: #ffffff;
   border-radius: 10px;
 }
 
-.teacher-chart-card-title{
+.teacher-chart-card-title {
   font-size: medium;
+}
+
+.card-theme {
+  border-radius: 8px;
+  background-color: #FFFFFF;
 }
 
 .area-interval {
@@ -22,20 +31,28 @@
   font-size: 20px;
 }
 
-table{
+.set-center {
+  display: flex;
+  /* 水平置中 */
+  justify-content: center;
+  /* 垂直置中 */
+  align-items: center;
+}
+
+table {
   width: 100%;
   border-collapse: collapse;
 }
 
-table tr{
+table tr {
   border-bottom: solid 2px white;
 }
 
-table tr:last-child{
+table tr:last-child {
   border-bottom: none;
 }
 
-table th{
+table th {
   position: relative;
   width: 30%;
   background-color: #7d7d7d;
@@ -44,20 +61,20 @@ table th{
   padding: 10px 0;
 }
 
-table th:after{
+table th:after {
   display: block;
   content: "";
   width: 0px;
   height: 0px;
   position: absolute;
-  top:calc(50% - 10px);
-  right:-10px;
+  top: calc(50% - 10px);
+  right: -10px;
   border-left: 10px solid #7d7d7d;
   border-top: 10px solid transparent;
   border-bottom: 10px solid transparent;
 }
 
-table td{
+table td {
   text-align: left;
   width: 70%;
   text-align: center;

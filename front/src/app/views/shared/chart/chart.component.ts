@@ -5,6 +5,7 @@ import {TimeService} from '../../../services/time.service';
 import {NgxLoadingModule, ngxLoadingAnimationTypes} from 'ngx-loading';
 import {ChartsModule} from 'ng2-charts';
 import {FormsModule} from '@angular/forms';
+import {Category} from '../../teacher/review-metrics-management/Category';
 
 @Component({
   selector: 'app-chart',
@@ -86,6 +87,24 @@ export class ChartComponent implements OnInit {
     }
   ];
 
+  public passAllMetricsBarChartData: any[] = [
+    {
+      data: [], label: 'Round1',
+      backgroundColor: '#e55353',
+      borderColor: '#e55353',
+      hoverBackgroundColor: '#e55353',
+      hoverBorderColor: '#e55353',
+    },
+    {
+      data: [], label: 'Round2',
+      backgroundColor: '#3399ff',
+      borderColor: '#3399ff',
+      hoverBackgroundColor: '#3399ff',
+      hoverBorderColor: '#3399ff',
+    }
+  ];
+  public isPassAllMetricsBarChartReady = false;
+
   public prRateLineChartData: any[] = [
     {
       data: [],
@@ -106,6 +125,42 @@ export class ChartComponent implements OnInit {
       pointHoverBorderColor: '#3399ff'
     }
   ];
+
+  public payAssignmentRateLineChartData: any[] = [
+    {
+      data: [],
+      label: 'All assignment',
+      backgroundColor: 'transparent',
+      borderColor: '#e55353',
+      pointBackgroundColor: '#e55353',
+      pointHoverBackgroundColor: '#e55353',
+      pointHoverBorderColor: '#e55353'
+    }
+  ];
+
+  public feedbackLineChartData: any[] = [
+    // 平均
+    {
+      data: [],
+      label: 'FeedbackScore Avg',
+      backgroundColor: 'transparent',
+      borderColor: '#3399ff',
+      pointBackgroundColor: '#3399ff',
+      pointHoverBackgroundColor: '#3399ff',
+      pointHoverBorderColor: '#3399ff'
+    },
+    // 最高
+    {
+      data: [],
+      label: 'FeedbackScore Max',
+      backgroundColor: 'transparent',
+      borderColor: '#e55353',
+      pointBackgroundColor: '#e55353',
+      pointHoverBackgroundColor: '#e55353',
+      pointHoverBorderColor: '#e55353'
+    },
+  ];
+  public isFeedbackScoreChartReady = false;
 
   public MetricsCountChartData: any[] = [
     {
@@ -165,26 +220,36 @@ export class ChartComponent implements OnInit {
       borderColor: '#ced2d8'
     }
   ];
+
+  public prAssignmentDetail: Array<any> = [];
+
   public isMixedChartReady: boolean = false;
   userNameList: string[] = [];
   assignmentNameList: string[] = [];
   secondPRRate = new Map();
   reviseSubmissionRate = new Map();
+  categories: Category[];
   public bubbleChartData: any[] = [];
   public bubbleChartLabels: Array<any> = [];
   public scatterChartData: any[] = [];
+  public wholeSemesterMetricsChartData: any[] = [];
   public scatterChartLabels: Array<any> = [];
   public isbubbleChartReady = false;
   public isScatterChartReady = false;
   public isExamScoreTableReady = false;
   public isPrRateLineChartReady = false;
   public isExamScoreTableEmpty = true;
+  public ispayAssignmentRateReady = false;
+  public isMetricsCountChartReady = false;
+  public isWholeSemesterMetricsChartReady = false;
   public selectedAssignment = '';
+  public selectedMetricsAssignment = '';
   public selectedExam = '';
   // 班級學生人數
   public userCount;
   public prAssignmentNameList = [];
   public payAssignmentRate = [];
+  public allMetrics = [];
   public pr1Rate = [];
   public reviseRate = [];
   public pr2Rate = [];
@@ -200,9 +265,11 @@ export class ChartComponent implements OnInit {
 
   async ngOnInit() {
     await this.getAllUser();
+    await this.getAllCategorys();
+    await this.getPrAssignmentDetail();
     await this.chartService.getAllCommits().subscribe(
       (response) => {
-        console.log(response);
+        // console.log(response);
         this.commits = response.allCommitRecord;
         this.getStatusResultData();
         this.selectedAssignment = this.commits[0].name;
@@ -217,9 +284,15 @@ export class ChartComponent implements OnInit {
     await this.initScatterData();
     await this.getScatterData();
     // Review Record Metrics
-    // await this.getReviewFeedback();
+    this.selectedMetricsAssignment = this.prAssignmentNameList[0];
+    await this.getReviewFeedback();
+    await this.getFeedbackScore();
+    await this.getPassAllMetricsCount();
+    await this.setMetricsCountChartData(this.selectedMetricsAssignment);
+    await this.setWholeSemesterMetricsData();
     await this.getExamScore(this.selectedExam);
   }
+
 
   computeStatus(commits: any) {
     const statusCount = [0, 0, 0, 0, 0];
@@ -354,7 +427,7 @@ export class ChartComponent implements OnInit {
   async getScatterData() {
     this.scatterChartLabels = this.prAssignmentNameList;
     // console.log(this.scatterChartData[0].labels);
-    console.log(this.scatterChartLabels);
+    // console.log(this.scatterChartLabels);
     // 取得特定作業的所有成績
     for (let i = 0; i < this.prAssignmentNameList.length; i++) {
       const response = await this.chartService.getAllUserScore(this.prAssignmentNameList[i]).toPromise();
@@ -364,22 +437,102 @@ export class ChartComponent implements OnInit {
     }
     // End
     this.isScatterChartReady = true;
-    console.log(this.scatterChartData);
-    console.log(this.barChartData);
+    // console.log(this.scatterChartData);
+    // console.log(this.barChartData);
+  }
+
+  initWholeSemesterMetricsData() {
+    for (let i = 0; i < this.prAssignmentDetail.length; i++) {
+      this.wholeSemesterMetricsChartData.push(
+        {
+          data: [],
+          label: this.prAssignmentDetail[i].name,
+          backgroundColor: 'transparent',
+          borderColor: 'transparent',
+          pointBackgroundColor: '#f9b115',
+          pointHoverBackgroundColor: '#f9b115',
+          pointHoverBorderColor: '#f9b115',
+        }
+      );
+    }
+    this.wholeSemesterMetricsChartData.push(
+      {
+        data: [],
+        label: 'Average',
+        backgroundColor: 'transparent',
+        borderColor: 'transparent',
+        pointBackgroundColor: '#f9b115',
+        pointHoverBackgroundColor: '#f9b115',
+        pointHoverBorderColor: '#f9b115',
+      }
+    );
+  }
+
+  setWholeSemesterMetricsData() {
+    this.isWholeSemesterMetricsChartReady = false;
+    this.initWholeSemesterMetricsData();
+    // 整學期Metrics分布圖顏色
+    const colors = ['#321fdb', '#9da5b1', '#2eb85c', '#AFCBFF', '#f9b115', '#3399ff', '#F0A7A0', '#4f5d73', '#0E1C36', '#e55353'];
+    for (let i = 0; i < this.prAssignmentDetail.length; i++) {
+      // 記得改回 Round2
+      this.wholeSemesterMetricsChartData[i].data = this.prAssignmentDetail[i].round2;
+      this.wholeSemesterMetricsChartData[i].label = this.prAssignmentDetail[i].name;
+      this.wholeSemesterMetricsChartData[i].pointBackgroundColor = colors[i];
+      this.wholeSemesterMetricsChartData[i].pointHoverBackgroundColor = colors[i];
+      this.wholeSemesterMetricsChartData[i].pointHoverBorderColor = colors[i];
+      this.wholeSemesterMetricsChartData[i].borderColor = colors[i];
+    }
+    this.isWholeSemesterMetricsChartReady = true;
   }
 
   calPayAssignmentRate() {
     // let rate = 0;
-    console.log('Commits' + this.commits.length);
+    let count = 0;
     for (let i = 0; i < this.commits.length; i++) {
-      console.log(this.commits[i]);
-      this.assignmentNameList.push(this.commits[i].name);
-      console.log(this.commits[i].commits.length);
-      for (let j = 0; j < this.commits[i].commits.length; j++) {
-
+      if (this.prAssignmentNameList.includes(this.commits[i].name)) {
+        if (this.commits[i].commits.length === this.userCount) {
+          count = 0;
+        } else {
+          for (let j = 0; j < this.commits[i].commits.length; j++) {
+            if (this.commits[i].commits[j].number === 2) {
+              count += 1;
+            }
+          }
+        }
+        count = Math.round((count / this.userCount * 100 + Number.EPSILON) * 10) / 10;
+        this.payAssignmentRate.push(count);
+        this.payAssignmentRateLineChartData[0].data.push(count);
+        count = 0;
       }
     }
-    console.log(this.assignmentNameList);
+    this.ispayAssignmentRateReady = true;
+    // console.log(this.prAssignmentNameList);
+    // console.log(this.payAssignmentRate);
+  }
+
+  async getPrAssignmentDetail() {
+    const response = await this.chartService.getAllPeerReviewAssignment().toPromise();
+    for (let i = 0; i < response.allReviewAssignments.length; i++) {
+      this.prAssignmentDetail.push(
+        {
+          name: response.allReviewAssignments[i].name,
+          round: response.allReviewAssignments[i].round,
+          amount: response.allReviewAssignments[i].amount,
+          // round each metrics 錯誤總數
+          round1: [],
+          round2: [],
+          feedbackScoreMax: 0,
+          feedbackScoreCount: 0,
+          feedbackScoreTotal: 0,
+          passAllMetricsCountRound1: 0,
+          passAllMetricsCountRound2: 0
+        },
+      );
+      for (let j = 0; j < this.allMetrics.length; j++) {
+        this.prAssignmentDetail[i].round1.push(0);
+        this.prAssignmentDetail[i].round2.push(0);
+      }
+    }
   }
 
   /**
@@ -390,7 +543,7 @@ export class ChartComponent implements OnInit {
     // Rate Array 初始化
     for (let i = 0; i < responseTimeLine.allReviewAssignments.length; i++) {
       this.prAssignmentNameList.push(responseTimeLine.allReviewAssignments[i].name);
-      this.payAssignmentRate.push(0);
+      // this.payAssignmentRate.push(0);
       this.pr1Rate.push(0);
       this.reviseRate.push(0);
       this.pr2Rate.push(0);
@@ -426,35 +579,106 @@ export class ChartComponent implements OnInit {
   }
 
   async getReviewFeedback() {
-    for (let i = 0; i < this.prAssignmentNameList.length; i++) {
-      const responseOfAssignment = await this.chartService.getAllPeerReviewAssignment().toPromise();
-      // console.log(responseOfAssignment);
-      const round = responseOfAssignment.allReviewAssignments[i].round;
+    // 作業審查回合數
+    console.log(this.prAssignmentDetail[0].round);
+    for (let i = 0; i < this.prAssignmentDetail.length; i++) {
       for (let j = 0; j < this.userNameList.length; j++) {
-        const response = await this.chartService.getReviewFeedback(this.prAssignmentNameList[i], this.userNameList[j]).toPromise();
+        const response = await this.chartService.getReviewFeedback(this.prAssignmentDetail[i].name, this.userNameList[j]).toPromise();
+        console.log('作業名稱 ' + this.prAssignmentDetail[i].name + ' ' + '被審查者' + this.userNameList[j]);
         console.log(response);
-        // this.verifyDetailExist(response);
-        console.log(response);
-        console.log(this.prAssignmentNameList[i] + ' ' + this.userNameList[j]);
-        for (let k = 0; k < response.allRecordDetail.length; k++) {
-          for (let l = 1; l <= round; l++) {
-            console.log('Round' + l);
-            // tslint:disable-next-line:max-line-length
-            const response3 = await this.chartService.getReviewPageDetail(this.userNameList[j], this.prAssignmentNameList[i], response.allRecordDetail[k].id, l.toString()).toPromise();
-            console.log(response3);
+        if (response.allRecordDetail[0] !== undefined) {
+          for (let k = 0; k < this.prAssignmentDetail[i].amount; k++) {
+            let passMetricsCount = 0;
+            if (response.allRecordDetail[k].latestCompletedRound === 1) {
+              // console.log('last Round1');
+              // 回饋意見
+              console.log(response.allRecordDetail[k].Detail);
+              for (let l = 0; l < response.allRecordDetail[k].Detail.length; l++) {
+                if (response.allRecordDetail[k].Detail[l].score === 2) {
+                  this.prAssignmentDetail[i].round1[this.allMetrics.indexOf(response.allRecordDetail[k].Detail[l].metrics)] += 1;
+                } else if (response.allRecordDetail[k].Detail[l].score === 1) {
+                  passMetricsCount += 1;
+                }
+                if (response.allRecordDetail[k].Detail[l].feedbackScore !== undefined) {
+                  // console.log('FeedBack 存在');
+                  this.prAssignmentDetail[i].feedbackScoreCount += 1;
+                  if (response.allRecordDetail[k].Detail[l].feedbackScore > this.prAssignmentDetail[i].feedbackScoreMax) {
+                    this.prAssignmentDetail[i].feedbackScoreMax = response.allRecordDetail[k].Detail[l].feedbackScore;
+                  }
+                  this.prAssignmentDetail[i].feedbackScoreTotal += response.allRecordDetail[k].Detail[l].feedbackScore;
+                }
+              }
+              if (passMetricsCount === response.allRecordDetail[k].Detail.length && response.allRecordDetail[k].Detail.length !== 0) {
+                // console.log('Round1 All Pass');
+                this.prAssignmentDetail[i].passAllMetricsCountRound1 += 1;
+                passMetricsCount = 0;
+              }
+            } else if (response.allRecordDetail[k].latestCompletedRound === 2) {
+              // console.log('last Round2');
+              // tslint:disable-next-line:max-line-length
+              const reviewPageDetailResponse = await this.chartService.getReviewPageDetail(this.userNameList[j], this.prAssignmentNameList[i], response.allRecordDetail[k].id, '1').toPromise();
+              console.log(reviewPageDetailResponse.Detail);
+              for (let l = 0; l < reviewPageDetailResponse.Detail.length; l++) {
+                if (reviewPageDetailResponse.Detail[l].score === 2) {
+                  this.prAssignmentDetail[i].round1[this.allMetrics.indexOf(reviewPageDetailResponse.Detail[l].metrics)] += 1;
+                } else if (reviewPageDetailResponse.Detail[l].score === 1) {
+                  passMetricsCount += 1;
+                }
+                if (reviewPageDetailResponse.Detail[l].feedbackScore !== undefined) {
+                  // console.log('FeedBack 存在');
+                  this.prAssignmentDetail[i].feedbackScoreCount += 1;
+                  if (reviewPageDetailResponse.Detail[l].feedbackScore > this.prAssignmentDetail[i].feedbackScoreMax) {
+                    this.prAssignmentDetail[i].feedbackScoreMax = reviewPageDetailResponse.Detail[l].feedbackScore;
+                  }
+                  this.prAssignmentDetail[i].feedbackScoreTotal += reviewPageDetailResponse.Detail[l].feedbackScore;
+                }
+              }
+              if (passMetricsCount === reviewPageDetailResponse.Detail.length && reviewPageDetailResponse.Detail.length !== 0) {
+                // console.log('Round1 All Pass');
+                this.prAssignmentDetail[i].passAllMetricsCountRound1 += 1;
+                passMetricsCount = 0;
+              }
+              console.log(response.allRecordDetail[k].Detail);
+              for (let l = 0; l < response.allRecordDetail[k].Detail.length; l++) {
+                if (response.allRecordDetail[k].Detail[l].score === 2) {
+                  this.prAssignmentDetail[i].round2[this.allMetrics.indexOf(response.allRecordDetail[k].Detail[l].metrics)] += 1;
+                } else if (response.allRecordDetail[k].Detail[l].score === 1) {
+                  passMetricsCount += 1;
+                }
+                if (response.allRecordDetail[k].Detail[l].feedbackScore !== undefined) {
+                  // console.log('FeedBack 存在');
+                  this.prAssignmentDetail[i].feedbackScoreCount += 1;
+                  if (response.allRecordDetail[k].Detail[l].feedbackScore > this.prAssignmentDetail[i].feedbackScoreMax) {
+                    this.prAssignmentDetail[i].feedbackScoreMax = response.allRecordDetail[k].Detail[l].feedbackScore;
+                  }
+                  this.prAssignmentDetail[i].feedbackScoreTotal += response.allRecordDetail[k].Detail[l].feedbackScore;
+                }
+              }
+              if (passMetricsCount === response.allRecordDetail[k].Detail.length && response.allRecordDetail[k].Detail.length !== 0) {
+                // console.log('Round2 All Pass');
+                this.prAssignmentDetail[i].passAllMetricsCountRound2 += 1;
+                passMetricsCount = 0;
+              }
+            } else {
+              console.log('Not Review');
+            }
           }
+        } else {
+          console.log('Not join this assignment');
         }
       }
     }
+    for (let i = 0; i < this.prAssignmentDetail.length; i++) {
+      console.log(this.prAssignmentDetail[i].name);
+      console.log(this.prAssignmentDetail[i].round1);
+      console.log(this.prAssignmentDetail[i].round2);
+      console.log(this.prAssignmentDetail[i].feedbackScoreCount);
+      console.log(this.prAssignmentDetail[i].feedbackScoreTotal);
+      console.log(this.prAssignmentDetail[i].feedbackScoreMax);
+      console.log(this.prAssignmentDetail[i].passAllMetricsCountRound1);
+      console.log(this.prAssignmentDetail[i].passAllMetricsCountRound2);
+    }
   }
-  //
-  // verifyDetailExist(response: Object) {
-  //   try {
-  //     console.log(response.allRecordDetail[2].Detail[2].feedbackScore);
-  //   } catch {
-  //     console.log('not Exist');
-  //   }
-  // }
 
   /**
    * Initial ExamBarChartData's data and labels.
@@ -484,7 +708,6 @@ export class ChartComponent implements OnInit {
       this.examScore.push(response[i].score);
     }
     console.log(examName);
-    console.log(this.examScore);
     if (this.examScore.length === 0) {
       console.log('Exam no data');
     } else {
@@ -507,7 +730,6 @@ export class ChartComponent implements OnInit {
    */
   countExamDistributed(examScore: any) {
     for (let i = 0; i < this.examScore.length; i++) {
-      console.log(Math.floor(this.examScore[i] / 10));
       switch (Math.floor(this.examScore[i] / 10)) {
         case 10 :
           this.examBarChartData[0].data[10] += 1;
@@ -544,6 +766,53 @@ export class ChartComponent implements OnInit {
           break;
       }
     }
+  }
+
+  getFeedbackScore() {
+    let avg = 0;
+    for (let i = 0; i < this.prAssignmentDetail.length; i++) {
+      if (this.prAssignmentDetail[i].feedbackScoreCount === 0) {
+        avg = 0;
+      } else {
+        avg = this.prAssignmentDetail[i].feedbackScoreTotal / this.prAssignmentDetail[i].feedbackScoreCount;
+        avg = Math.round((avg + Number.EPSILON) * 10) / 10;
+      }
+      this.feedbackLineChartData[0].data.push(avg);
+      this.feedbackLineChartData[1].data.push(this.prAssignmentDetail[i].feedbackScoreMax);
+    }
+    this.isFeedbackScoreChartReady = true;
+  }
+
+  getPassAllMetricsCount() {
+    for (let i = 0; i < this.prAssignmentDetail.length; i++) {
+      this.passAllMetricsBarChartData[0].data.push(this.prAssignmentDetail[i].passAllMetricsCountRound1);
+      this.passAllMetricsBarChartData[1].data.push(this.prAssignmentDetail[i].passAllMetricsCountRound2);
+    }
+    this.isPassAllMetricsBarChartReady = true;
+  }
+
+  async getAllCategorys() {
+    const response = await this.chartService.getAllCategory().toPromise();
+    this.categories = response['allCategory'];
+    this.getAllMetrics();
+  }
+
+  async getAllMetrics() {
+    for (const category of this.categories) {
+      const response = await this.chartService.getMetrics(category).toPromise();
+      for (let i = 0; i < response.allMetrics.length; i++) {
+        this.allMetrics.push(response.allMetrics[i].metrics);
+      }
+    }
+    console.log(this.allMetrics);
+  }
+
+  setMetricsCountChartData(prAssignmentName: string) {
+    this.selectedMetricsAssignment = prAssignmentName;
+    this.isMetricsCountChartReady = false;
+    this.MetricsCountChartData[0].data = this.prAssignmentDetail[this.prAssignmentNameList.indexOf(prAssignmentName)].round1;
+    this.MetricsCountChartData[1].data = this.prAssignmentDetail[this.prAssignmentNameList.indexOf(prAssignmentName)].round2;
+    this.isMetricsCountChartReady = true;
   }
 
   test($event) {

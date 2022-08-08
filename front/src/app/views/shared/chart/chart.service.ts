@@ -10,6 +10,8 @@ import {CommitRecordAPI} from '../../../api/CommitRecordAPI';
 import {AssignmentAPI} from '../../../api/AssignmentAPI';
 import {PeerReviewAPI} from '../../../api/PeerReviewAPI';
 import {ScoreAPI} from '../../../api/ScoreAPI';
+import {Category} from '../../teacher/review-metrics-management/Category';
+import {CategoryMetricsAPI} from '../../../api/CategoryMetricsAPI';
 
 @Injectable({
   providedIn: 'root'
@@ -24,6 +26,8 @@ export class ChartService {
   ALL_USERS_SCORE_API = ScoreAPI.getAllUserScore;
   REVIEW_FEEDBACK_API = PeerReviewAPI.getReviewedRecordDetail;
   REVIEW_DETAIL_PAGE_API = PeerReviewAPI.getReviewPageDetail;
+  GET_ALL_CATEGORY_API = CategoryMetricsAPI.getCategory;
+  GET_METRICS_API = CategoryMetricsAPI.getMetrics;
 
   constructor(private addJwtTokenHttpClient: AddJwtTokenHttpClient) {
   }
@@ -78,5 +82,13 @@ export class ChartService {
       .set('reviewId', reviewId)
       .set('round', round);
     return this.addJwtTokenHttpClient.get(this.REVIEW_DETAIL_PAGE_API, { params });
+  }
+  getAllCategory(): Observable<any> {
+    return this.addJwtTokenHttpClient.get(this.GET_ALL_CATEGORY_API);
+  }
+  getMetrics(category: Category): Observable<any> {
+    const params = new HttpParams().
+    set('category', category.id.toString());
+    return this.addJwtTokenHttpClient.get(this.GET_METRICS_API , { params });
   }
 }
