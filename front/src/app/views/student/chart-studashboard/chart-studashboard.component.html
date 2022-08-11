@@ -30,7 +30,7 @@
             <div class="card">
               <div class="card-body">
                 <h5 class="card-title" style="font-weight: bold;">考試成績</h5>
-                <div class="btn-group col-md-3" dropdown>
+                <div class="btn-group" dropdown>
                   <button dropdownToggle type="button" class="btn btn-primary dropdown-toggle">
                     {{selectedExam}} <span class="caret"></span>
                   </button>
@@ -69,6 +69,60 @@
               <div class="card-body">
                 <h5 class="card-title" style="font-weight: bold;">班級分布</h5>
                 <app-bar-chart *ngIf="examBarChartDisplay" [barChartLabels]="examBarChartLabel" [barChartData]="examBarChartData" [barChartLegend]=false></app-bar-chart>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <h3 class="card-title" style="font-weight: bold; vertical-align: middle; padding-top: 2%;">排行</h3>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title" style="font-weight: bold;">作業成績排行</h5>
+                <div class="btn-group" dropdown>
+                  <button dropdownToggle type="button" class="btn btn-primary dropdown-toggle">
+                    {{selectedAssignment}} <span class="caret"></span>
+                  </button>
+                  <ul *dropdownMenu class="dropdown-menu" role="menu">
+                    <li *ngFor='let assignmentName of assignmentNameList' role="menuitem">
+                      <a class="dropdown-item" href="javascript:void(0);"
+                         (click)='updateAssignmentScoreRanking(assignmentName)'>{{assignmentName}}</a>
+                    </li>
+                  </ul>
+                </div>
+                <div class="row" style="padding-top: 5%;">
+                  <div class="col-md-2"></div>
+                  <table class="table col-md-8" [style.text-align]="'center'">
+                    <tbody>
+                      <tr class="row justify-content-md-center" *ngFor="let user of usersRankingByAssignmentScore; index as i">
+                        <td class="col-md-2"></td>
+                        <td class="col-md-6">{{i+1}}.&emsp;{{user}}</td>
+                        <td class="col-md-2"></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <div class="col-md-2"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title" style="font-weight: bold;">課程參與率排行</h5>
+                <div class="btn-group" dropdown>
+                  <button dropdownToggle type="button" class="btn btn-primary dropdown-toggle">
+                    {{selectedAssignment}} <span class="caret"></span>
+                  </button>
+                  <ul *dropdownMenu class="dropdown-menu" role="menu">
+                    <li *ngFor='let assignmentName of assignmentNameList' role="menuitem">
+                      <a class="dropdown-item" href="javascript:void(0);"
+                         (click)='updateAssignmentScoreRanking(assignmentName)'>{{assignmentName}}</a>
+                    </li>
+                  </ul>
+                </div>
               </div>
             </div>
           </div>

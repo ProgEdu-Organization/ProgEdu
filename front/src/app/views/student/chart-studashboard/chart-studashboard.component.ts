@@ -35,21 +35,32 @@ import { StudentChartService } from './chart-studashboard.service';
 })
 
 export class StudentChartComponent implements OnInit {
+  //Assignment
   public assignmentAvgScoreTable: Array<any> = new Array<any>();
-  public examAvgScoreTable: Array<any> = new Array<any>();
-  public examNameList: Array<any> = new Array<any>();
   public assignmentNameList: Array<any> = new Array<any>();
   public allAssignmentUserScore: Array<any> = new Array<any>();
+
+  //Exam
+  public examAvgScoreTable: Array<any> = new Array<any>();
+  public examNameList: Array<any> = new Array<any>();
   public allExamUserScore: Array<any> = new Array<any>();
   public userList: Array<any> = new Array<any>();
   public selectedExam: string;
   public selectedExamScore: string;
   public examAvgScore: string;
   public studentExamRank: string;
+
+  //Ranking
+  public selectedAssignment: string;
+  public usersRankingByAssignmentScore: Array<any> = new Array<any>();
+  public peerReviewCommitRecord: Array<any> = new Array<any>();
+
+  //Others
   public username: string;
   public assignmentScoreChartDisplay: boolean = false;
   public examBarChartDisplay: boolean = false;
   public scatterChartDisplay: boolean = false;
+
 
   constructor (private studentChartService: StudentChartService, private jwtService?: JwtService) { }
 
@@ -70,13 +81,16 @@ export class StudentChartComponent implements OnInit {
 
   async ngOnInit() {
     this.username = new User(this.jwtService).getUsername();
-    await this.getAllScore();
+    await this.initAllScoreChart();
+    await this.initParticipationData();
+    await this.initFeedbacksAndMetricsData();
   }
 
-  async getAllScore() {
+  async initAllScoreChart() {
     const avgScoreTable = await this.studentChartService.getAllAvgScore().toPromise();
     for(let i = 0; i < avgScoreTable.length; i++) {
       const userScores = await this.studentChartService.getAllUsersScore(avgScoreTable[i].assignmentName).toPromise();
+      //classify data
       if (avgScoreTable[i].type === 'EXAM') {
         this.examAvgScoreTable.push(avgScoreTable[i]);
         this.examNameList.push(avgScoreTable[i].assignmentName);
@@ -87,8 +101,9 @@ export class StudentChartComponent implements OnInit {
         this.allAssignmentUserScore.push(userScores);
       }
     }
-    //console.log(this.allExamUserScore);
     this.selectedExam = this.examAvgScoreTable[0].assignmentName;
+    this.selectedAssignment = this.assignmentAvgScoreTable[0].assignmentName;
+    this.updateAssignmentScoreRanking(this.selectedAssignment);
 
     //add average score data to assignment chart 
     for(let i = 0; i < this.assignmentAvgScoreTable.length; i++) {
@@ -114,7 +129,6 @@ export class StudentChartComponent implements OnInit {
       }
       this.assignmentScoreChartData[1].data.push(maxScore);
     }
-
     this.assignmentScoreChartDisplay = true;
 
     //init assignment scatter chart data
@@ -132,8 +146,18 @@ export class StudentChartComponent implements OnInit {
       })
     }
     this.scatterChartDisplay = true;
+
     //count exam score rank
     this.setExamScoreData(this.selectedExam);
+  }
+
+  async initParticipationData() {
+    this.peerReviewCommitRecord = await this.studentChartService.getOneUserPeerReviewCommitRecord(this.username).toPromise();
+    
+  }
+
+  async initFeedbacksAndMetricsData() {
+
   }
 
   getOneUserAssignmentScoreList(username: string) {
@@ -178,7 +202,6 @@ export class StudentChartComponent implements OnInit {
     this.updateExamDistributeData(examName);
   }
 
-
   updateExamDistributeData(examName: string) {
     this.examBarChartDisplay = false;
     this.examBarChartData = [
@@ -206,5 +229,25 @@ export class StudentChartComponent implements OnInit {
     return Math.max.apply(scoreArray)
   }
 
+  updateAssignmentScoreRanking(assignmentName: string) {
+    this.selectedAssignment = assignmentName;
+    this.usersRankingByAssignmentScore = [];
+    let selectedAssignmentIndex = 0;
+    for(let i = 0; i < this.assignmentNameList.length; i++) {
+      if(this.assignmentNameList[i] === assignmentName) {
+        selectedAssignmentIndex = i;
+        break;
+      }
+    }
+    //Sort array by score
+    const sortedUserScoreList = this.allAssignmentUserScore[selectedAssignmentIndex].sort(
+      function(a, b) {
+      return b.score - a.score;
+    });
+
+    for(let i = 0; i < 5; i++) {
+      this.usersRankingByAssignmentScore.push(sortedUserScoreList[i].userName);
+    }
+  }
 
 }
