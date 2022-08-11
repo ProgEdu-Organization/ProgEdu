@@ -10,6 +10,7 @@ import { ReviewStatusStudashboardComponent } from './review-status-studashboard/
 import { ReviewAssignmentChooseComponent } from '../shared/review-assignment-choose/review-assignment-choose.component';
 import { ReviewStatusAssignmentChooseComponent } from './review-status-assignment-choose/review-status-assignment-choose.component';
 import { ReviewRoundStudashboardComponent } from './review-round-studashboard/review-round-studashboard.component';
+import { StudentChartComponent } from './chart-studashboard/chart-studashboard.component';
 
 const routes: Routes = [
   {
@@ -75,6 +76,13 @@ const routes: Routes = [
       title: 'Project Choosed'
     }
   },
+  {
+    path: 'studentChartDashboard',
+    component: StudentChartComponent,
+    data: {
+      title: 'Student Chart'
+    }
+  }
 
 ];
 
