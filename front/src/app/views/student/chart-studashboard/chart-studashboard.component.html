@@ -27,7 +27,7 @@
         <h3 class="card-title" style="font-weight: bold; vertical-align: middle; padding-top: 2%;">考試</h3>
         <div class="row">
           <div class="col-md-6">
-            <div class="card">
+            <div class="card" [ngStyle]="{'background-color':examBackgroundColor}">
               <div class="card-body">
                 <h5 class="card-title" style="font-weight: bold;">考試成績</h5>
                 <div class="btn-group" dropdown>
@@ -69,6 +69,72 @@
               <div class="card-body">
                 <h5 class="card-title" style="font-weight: bold;">班級分布</h5>
                 <app-bar-chart *ngIf="examBarChartDisplay" [barChartLabels]="examBarChartLabel" [barChartData]="examBarChartData" [barChartLegend]=false></app-bar-chart>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <h3 class="card-title" style="font-weight: bold; vertical-align: middle; padding-top: 2%;">回饋</h3>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title" style="font-weight: bold;">星星數</h5>
+                <div class="col-md-6">
+                  <div class="card"  style="background-color: #321fdb; border-radius: 10px">
+                    <div class="card-body">
+                      <h5 class="card-title" style="font-weight: bold; color: #FFFFFF">
+                        星星數
+                      </h5>
+                      <h5 style="font-weight: bold; color: #FFFFFF">
+                        {{starAvg}}
+                      </h5>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title" style="font-weight: bold;">Feedback Top 5</h5>
+                <div class="row" style="padding-top: 5%;">
+                  <div class="col-md-2"></div>
+                  <table class="table col-md-8" [style.text-align]="'center'">
+                    <tbody>
+                    <tr class="row justify-content-md-center" *ngFor="let feedbackMsg of feedbackMsgTop; index as i">
+                      <td class="col-md-1"></td>
+                      <td class="col-md-8">{{i+1}}.&emsp;{{feedbackMsg}}</td>
+                      <td class="col-md-1"></td>
+                    </tr>
+                    </tbody>
+                  </table>
+                  <div class="col-md-2"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title" style="font-weight: bold;">Feedback Last 5</h5>
+                <div class="row" style="padding-top: 5%;">
+                  <div class="col-md-2"></div>
+                  <table class="table col-md-8" [style.text-align]="'center'">
+                    <tbody>
+                    <tr class="row justify-content-md-center" *ngFor="let feedbackMsg of feedbackMsgLast; index as i">
+                      <td class="col-md-1"></td>
+                      <td class="col-md-8">{{i+1}}.&emsp;{{feedbackMsg}}</td>
+                      <td class="col-md-1"></td>
+                    </tr>
+                    </tbody>
+                  </table>
+                  <div class="col-md-2"></div>
+                </div>
               </div>
             </div>
           </div>

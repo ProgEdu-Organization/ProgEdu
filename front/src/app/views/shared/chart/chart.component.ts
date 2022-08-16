@@ -221,30 +221,17 @@ export class ChartComponent implements OnInit {
     }
   ];
 
+  // 每一作業Detail
   public prAssignmentDetail: Array<any> = [];
-
-  public isMixedChartReady: boolean = false;
   userNameList: string[] = [];
-  assignmentNameList: string[] = [];
-  secondPRRate = new Map();
-  reviseSubmissionRate = new Map();
   categories: Category[];
-  public bubbleChartData: any[] = [];
+  // 圖表顯示資料變數
   public bubbleChartLabels: Array<any> = [];
+  public bubbleChartData: any[] = [];
+  public scatterChartLabels: Array<any> = [];
   public scatterChartData: any[] = [];
   public wholeSemesterMetricsChartData: any[] = [];
-  public scatterChartLabels: Array<any> = [];
-  public isbubbleChartReady = false;
-  public isScatterChartReady = false;
-  public isExamScoreTableReady = false;
-  public isPrRateLineChartReady = false;
   public isExamScoreTableEmpty = true;
-  public ispayAssignmentRateReady = false;
-  public isMetricsCountChartReady = false;
-  public isWholeSemesterMetricsChartReady = false;
-  public selectedAssignment = '';
-  public selectedMetricsAssignment = '';
-  public selectedExam = '';
   // 班級學生人數
   public userCount;
   public prAssignmentNameList = [];
@@ -253,12 +240,25 @@ export class ChartComponent implements OnInit {
   public pr1Rate = [];
   public reviseRate = [];
   public pr2Rate = [];
-  public examNameList = ['Midterm', 'Final'];
+  public examNameList = [];
   public examScore = [];
   public examScoreMax = -1;
   public examScoreMin = -1;
   public examScoreMAvg = -1;
   public examRange = ['0-9', '10-19', '20-29', '30-39', '40-49', '50-59', '60-69', '70-79', '80-89', '90-99', '100'];
+  // 圖表資料是否準備好
+  public isMixedChartReady: boolean = false;
+  public isbubbleChartReady = false;
+  public isScatterChartReady = false;
+  public isExamScoreTableReady = false;
+  public isPrRateLineChartReady = false;
+  public ispayAssignmentRateReady = false;
+  public isMetricsCountChartReady = false;
+  public isWholeSemesterMetricsChartReady = false;
+  // 下拉式預設選項變數
+  public selectedAssignment = '';
+  public selectedMetricsAssignment = '';
+  public selectedExam = '';
 
   constructor(private chartService: ChartService, private timeService: TimeService) {
   }
@@ -279,8 +279,8 @@ export class ChartComponent implements OnInit {
         console.log('Get all assignments error');
       }
     );
-    this.selectedExam = this.examNameList[0];
     await this.calReviewRate();
+    await this.calReviseRate();
     await this.initScatterData();
     await this.getScatterData();
     // Review Record Metrics
@@ -290,6 +290,8 @@ export class ChartComponent implements OnInit {
     await this.getPassAllMetricsCount();
     await this.setMetricsCountChartData(this.selectedMetricsAssignment);
     await this.setWholeSemesterMetricsData();
+    await this.initExamList();
+    this.selectedExam = this.examNameList[0];
     await this.getExamScore(this.selectedExam);
   }
 
@@ -432,7 +434,9 @@ export class ChartComponent implements OnInit {
     for (let i = 0; i < this.prAssignmentNameList.length; i++) {
       const response = await this.chartService.getAllUserScore(this.prAssignmentNameList[i]).toPromise();
       for (let j = 0; j < this.userCount; j++) {
-        this.scatterChartData[j].data.push(Number(response[j].score));
+        if (response[j]) {
+          this.scatterChartData[j].data.push(Number(response[j].score));
+        }
       }
     }
     // End
@@ -525,7 +529,8 @@ export class ChartComponent implements OnInit {
           feedbackScoreCount: 0,
           feedbackScoreTotal: 0,
           passAllMetricsCountRound1: 0,
-          passAllMetricsCountRound2: 0
+          passAllMetricsCountRound2: 0,
+          isReviseAssignment: []
         },
       );
       for (let j = 0; j < this.allMetrics.length; j++) {
@@ -600,12 +605,7 @@ export class ChartComponent implements OnInit {
                   passMetricsCount += 1;
                 }
                 if (response.allRecordDetail[k].Detail[l].feedbackScore !== undefined) {
-                  // console.log('FeedBack 存在');
-                  this.prAssignmentDetail[i].feedbackScoreCount += 1;
-                  if (response.allRecordDetail[k].Detail[l].feedbackScore > this.prAssignmentDetail[i].feedbackScoreMax) {
-                    this.prAssignmentDetail[i].feedbackScoreMax = response.allRecordDetail[k].Detail[l].feedbackScore;
-                  }
-                  this.prAssignmentDetail[i].feedbackScoreTotal += response.allRecordDetail[k].Detail[l].feedbackScore;
+                  this.countFeedbackScore(i, response.allRecordDetail[k].Detail[l].feedbackScore);
                 }
               }
               if (passMetricsCount === response.allRecordDetail[k].Detail.length && response.allRecordDetail[k].Detail.length !== 0) {
@@ -625,12 +625,7 @@ export class ChartComponent implements OnInit {
                   passMetricsCount += 1;
                 }
                 if (reviewPageDetailResponse.Detail[l].feedbackScore !== undefined) {
-                  // console.log('FeedBack 存在');
-                  this.prAssignmentDetail[i].feedbackScoreCount += 1;
-                  if (reviewPageDetailResponse.Detail[l].feedbackScore > this.prAssignmentDetail[i].feedbackScoreMax) {
-                    this.prAssignmentDetail[i].feedbackScoreMax = reviewPageDetailResponse.Detail[l].feedbackScore;
-                  }
-                  this.prAssignmentDetail[i].feedbackScoreTotal += reviewPageDetailResponse.Detail[l].feedbackScore;
+                  this.countFeedbackScore(i, reviewPageDetailResponse.Detail[l].feedbackScore);
                 }
               }
               if (passMetricsCount === reviewPageDetailResponse.Detail.length && reviewPageDetailResponse.Detail.length !== 0) {
@@ -646,12 +641,7 @@ export class ChartComponent implements OnInit {
                   passMetricsCount += 1;
                 }
                 if (response.allRecordDetail[k].Detail[l].feedbackScore !== undefined) {
-                  // console.log('FeedBack 存在');
-                  this.prAssignmentDetail[i].feedbackScoreCount += 1;
-                  if (response.allRecordDetail[k].Detail[l].feedbackScore > this.prAssignmentDetail[i].feedbackScoreMax) {
-                    this.prAssignmentDetail[i].feedbackScoreMax = response.allRecordDetail[k].Detail[l].feedbackScore;
-                  }
-                  this.prAssignmentDetail[i].feedbackScoreTotal += response.allRecordDetail[k].Detail[l].feedbackScore;
+                  this.countFeedbackScore(i, response.allRecordDetail[k].Detail[l].feedbackScore);
                 }
               }
               if (passMetricsCount === response.allRecordDetail[k].Detail.length && response.allRecordDetail[k].Detail.length !== 0) {
@@ -668,16 +658,7 @@ export class ChartComponent implements OnInit {
         }
       }
     }
-    for (let i = 0; i < this.prAssignmentDetail.length; i++) {
-      console.log(this.prAssignmentDetail[i].name);
-      console.log(this.prAssignmentDetail[i].round1);
-      console.log(this.prAssignmentDetail[i].round2);
-      console.log(this.prAssignmentDetail[i].feedbackScoreCount);
-      console.log(this.prAssignmentDetail[i].feedbackScoreTotal);
-      console.log(this.prAssignmentDetail[i].feedbackScoreMax);
-      console.log(this.prAssignmentDetail[i].passAllMetricsCountRound1);
-      console.log(this.prAssignmentDetail[i].passAllMetricsCountRound2);
-    }
+    this.testPrAsiignmentInformation();
   }
 
   /**
@@ -688,6 +669,16 @@ export class ChartComponent implements OnInit {
     for (let i = 0; i < this.examBarChartData[0].data.length; i++) {
       this.examBarChartData[0].data[i] = 0;
     }
+  }
+
+  async initExamList () {
+    const response = await this.chartService.getAllAvgScore().toPromise();
+    for (let i = 0; i < response.length; i++) {
+      if (response[i].type === 'EXAM') {
+        this.examNameList.push(response[i].assignmentName);
+      }
+    }
+    console.log(this.examNameList);
   }
 
   /**
@@ -768,6 +759,14 @@ export class ChartComponent implements OnInit {
     }
   }
 
+  countFeedbackScore(indexOfAssignment, feedbackScore: number) {
+    this.prAssignmentDetail[indexOfAssignment].feedbackScoreCount += 1;
+    if (feedbackScore > this.prAssignmentDetail[indexOfAssignment].feedbackScoreMax) {
+      this.prAssignmentDetail[indexOfAssignment].feedbackScoreMax = feedbackScore;
+    }
+    this.prAssignmentDetail[indexOfAssignment].feedbackScoreTotal += feedbackScore;
+  }
+
   getFeedbackScore() {
     let avg = 0;
     for (let i = 0; i < this.prAssignmentDetail.length; i++) {
@@ -813,6 +812,33 @@ export class ChartComponent implements OnInit {
     this.MetricsCountChartData[0].data = this.prAssignmentDetail[this.prAssignmentNameList.indexOf(prAssignmentName)].round1;
     this.MetricsCountChartData[1].data = this.prAssignmentDetail[this.prAssignmentNameList.indexOf(prAssignmentName)].round2;
     this.isMetricsCountChartReady = true;
+  }
+
+  testPrAsiignmentInformation() {
+    for (let i = 0; i < this.prAssignmentDetail.length; i++) {
+      console.log(this.prAssignmentDetail[i].name);
+      console.log(this.prAssignmentDetail[i].round1);
+      console.log(this.prAssignmentDetail[i].round2);
+      console.log(this.prAssignmentDetail[i].feedbackScoreCount);
+      console.log(this.prAssignmentDetail[i].feedbackScoreTotal);
+      console.log(this.prAssignmentDetail[i].feedbackScoreMax);
+      console.log(this.prAssignmentDetail[i].passAllMetricsCountRound1);
+      console.log(this.prAssignmentDetail[i].passAllMetricsCountRound2);
+    }
+  }
+
+  calReviseRate() {
+    console.log(this.commits);
+    // 判斷該作業是否為同儕審查類型作業
+    for (let i = 0; i < this.commits.length; i++) {
+      if (this.prAssignmentNameList.includes(this.commits[i].name)) {
+        console.log(this.commits[i].name);
+        console.log(this.commits[i].commits.length);
+        // for (let j = 0; j < this.commits[i].commits.length; j++) {
+        //   console.log();
+        // }
+      }
+    }
   }
 
   test($event) {

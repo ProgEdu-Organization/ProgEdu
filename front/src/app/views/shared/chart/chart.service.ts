@@ -24,6 +24,7 @@ export class ChartService {
   PEER_REVIEW_ALL_ASSIGNMENT = AssignmentAPI.getAllPeerReviewAssignment;
   PEER_REVIEW_STATUS_ROUND_ALL_USER = PeerReviewAPI.getAllReviewRoundStatus;
   ALL_USERS_SCORE_API = ScoreAPI.getAllUserScore;
+  ALL_AVERAGE_SCORE_API = ScoreAPI.getAvgScores;
   REVIEW_FEEDBACK_API = PeerReviewAPI.getReviewedRecordDetail;
   REVIEW_DETAIL_PAGE_API = PeerReviewAPI.getReviewPageDetail;
   GET_ALL_CATEGORY_API = CategoryMetricsAPI.getCategory;
@@ -68,6 +69,9 @@ export class ChartService {
   getAllUserScore(assignmentName: string): Observable<any> {
     const params = new HttpParams().set('assignmentName', assignmentName);
     return this.addJwtTokenHttpClient.get(this.ALL_USERS_SCORE_API, {params});
+  }
+  getAllAvgScore(): Observable<any> {
+    return this.addJwtTokenHttpClient.get(this.ALL_AVERAGE_SCORE_API);
   }
   getReviewFeedback(assignmentName: string, username: string): Observable<any> {
     const params = new HttpParams()

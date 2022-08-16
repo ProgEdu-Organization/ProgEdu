@@ -1,66 +1,54 @@
 <div class="animated fadeIn">
   <div class="row justify-content-md-center">
     <div class="col-md-10">
-      <h3>
-        {{prAssignmentNameList[prAssignmentNameList.length - 1]}}
-      </h3>
-      <div class="row">
-        <div class="col-md-3">
-          <div class="container teacher-chart-card">
-            <div class="container">
-              <div class="row" style="height: 50px">
-                {{payAssignmentRate[payAssignmentRate.length - 1]}} %
-              </div>
-              <div class="row">
-                作業繳交率
-              </div>
-              <div class="row">
-                row3
+      <div class="card">
+        <div class="card-title" style="font-weight: bold; vertical-align: middle; padding-top: 2%; font-size: large">{{ prAssignmentNameList[prAssignmentNameList.length-1] }}</div>
+        <div class="row">
+          <div class="col-md-3">
+            <div class="card"  style="background-color: #321fdb; border-radius: 10px">
+              <div class="card-body">
+                <h5 class="card-title" style="font-weight: bold; color: #FFFFFF">
+                  作業繳交率
+                </h5>
+                <h5 style="font-weight: bold; color: #FFFFFF">
+                  {{payAssignmentRate[payAssignmentRate.length - 1]}} %
+                </h5>
               </div>
             </div>
           </div>
-        </div>
-        <div class="col-md-3">
-          <div class="container teacher-chart-card">
-            <div class="container">
-              <div class="row" style="height: 50px">
-                {{pr1Rate[pr1Rate.length-1]}} %
-              </div>
-              <div class="row">
-                第一次審查完成率
-              </div>
-              <div class="row">
-                row3
+          <div class="col-md-3">
+            <div class="card"  style="background-color: #321fdb; border-radius: 10px">
+              <div class="card-body">
+                <h5 class="card-title" style="font-weight: bold; color: #FFFFFF">
+                  第一次審查完成率
+                </h5>
+                <h5 style="font-weight: bold; color: #FFFFFF">
+                  {{pr1Rate[pr1Rate.length - 1]}} %
+                </h5>
               </div>
             </div>
           </div>
-        </div>
-        <div class="col-md-3">
-          <div class="container teacher-chart-card">
-            <div class="container">
-              <div class="row" style="height: 50px">
-                {{reviseRate[reviseRate.length-1]}} %
-              </div>
-              <div class="row">
-                作業修改率
-              </div>
-              <div class="row">
-                row3
+          <div class="col-md-3">
+            <div class="card"  style="background-color: #321fdb; border-radius: 10px">
+              <div class="card-body">
+                <h5 class="card-title" style="font-weight: bold; color: #FFFFFF">
+                  作業修改率
+                </h5>
+                <h5 style="font-weight: bold; color: #FFFFFF">
+                  {{reviseRate[reviseRate.length - 1]}} %
+                </h5>
               </div>
             </div>
           </div>
-        </div>
-        <div class="col-md-3">
-          <div class="container teacher-chart-card">
-            <div class="container">
-              <div class="row" style="height: 50px">
-                {{pr2Rate[pr2Rate.length-1]}} %
-              </div>
-              <div class="row">
-                第二次審查完成率
-              </div>
-              <div class="row">
-                row3
+          <div class="col-md-3">
+            <div class="card"  style="background-color: #321fdb; border-radius: 10px">
+              <div class="card-body">
+                <h5 class="card-title" style="font-weight: bold; color: #FFFFFF">
+                  第二次審查完成率
+                </h5>
+                <h5 style="font-weight: bold; color: #FFFFFF">
+                  {{pr2Rate[pr2Rate.length - 1]}} %
+                </h5>
               </div>
             </div>
           </div>
@@ -68,105 +56,102 @@
       </div>
     </div>
   </div>
-  <div class="area-interval"></div>
+
   <div class="row justify-content-md-center">
-    <div class="col-md-10 border card-theme">
-      <div class="image-area-interval"></div>
-      <h3>
-        作業
-      </h3>
-      <div class="area-interval"></div>
-      <div class="row justify-content-md-center">
-        <div class="col-6 border test-font">
-          <div class="image-area-interval"></div>
-          作業繳交率
-          <div class="image-area-interval"></div>
-          <app-line-chart *ngIf="ispayAssignmentRateReady" [lineChartLabels]="prAssignmentNameList" [lineChartData]="payAssignmentRateLineChartData" [lineChartLegend]=false></app-line-chart>
-        </div>
-        <div class="col-6 border test-font">
-          <div class="image-area-interval"></div>
-          班級成績分布圖
-          <div class="image-area-interval"></div>
-          <app-scatter-chart *ngIf='isScatterChartReady' [scatterChartData]="scatterChartData"
-                             [scatterChartLabels]="scatterChartLabels" [scatterChartLegend]=false></app-scatter-chart>
-        </div>
-        <div class="col-6 border test-font">
-          <div class="image-area-interval"></div>
-          <div class="row">
-            <div class="col-4">
-              <h4>
-                Metrics錯誤數量
-              </h4>
-            </div>
-            <div class="col-1">
-              <div class="btn-group" dropdown>
-                <button dropdownToggle type="button" class="btn btn-primary dropdown-toggle">
-                  {{selectedMetricsAssignment}} <span class="caret"></span>
-                </button>
-                <ul *dropdownMenu class="dropdown-menu" role="menu">
-                  <li *ngFor='let prAssignmentName of prAssignmentNameList' role="menuitem">
-                    <a class="dropdown-item" href="javascript:void(0);"
-                       (click)='setMetricsCountChartData(prAssignmentName)'>{{prAssignmentName}}</a>
-                  </li>
-                </ul>
+    <div class="col-md-10">
+      <div class="card">
+        <h3 class="card-title" style="font-weight: bold; vertical-align: middle; padding-top: 2%;">作業</h3>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title" style="font-weight: bold;">作業繳交率</h5>
+                <app-line-chart *ngIf="ispayAssignmentRateReady" [lineChartLabels]="prAssignmentNameList"
+                                [lineChartData]="payAssignmentRateLineChartData"
+                                [lineChartLegend]=false></app-line-chart>
               </div>
             </div>
           </div>
-          <div class="image-area-interval"></div>
-          <app-bar-chart *ngIf='isMetricsCountChartReady' [barChartLabels]='allMetrics' [barChartData]='MetricsCountChartData'>
-          </app-bar-chart>
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title" style="font-weight: bold;">班級成績分布圖</h5>
+                <app-scatter-chart *ngIf='isScatterChartReady' [scatterChartData]="scatterChartData"
+                                   [scatterChartLabels]="scatterChartLabels"
+                                   [scatterChartLegend]=false></app-scatter-chart>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="col-6 border test-font">
-          <div class="image-area-interval"></div>
-          整學期Metrics分布圖
-          <div class="image-area-interval"></div>
-<!--          TODO: 整學期Metrics分布圖-->
-          <app-scatter-chart *ngIf='isWholeSemesterMetricsChartReady' [scatterChartData]="wholeSemesterMetricsChartData"
-                             [scatterChartLabels]="allMetrics" [scatterChartLegend]=true></app-scatter-chart>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title" style="font-weight: bold;">Metrics錯誤數量</h5>
+                <div class="btn-group" dropdown>
+                  <button dropdownToggle type="button" class="btn btn-primary dropdown-toggle">
+                    {{selectedMetricsAssignment}} <span class="caret"></span>
+                  </button>
+                  <ul *dropdownMenu class="dropdown-menu" role="menu">
+                    <li *ngFor='let prAssignmentName of prAssignmentNameList' role="menuitem">
+                      <a class="dropdown-item" href="javascript:void(0);"
+                         (click)='setMetricsCountChartData(prAssignmentName)'>{{prAssignmentName}}</a>
+                    </li>
+                  </ul>
+                </div>
+                <div style="padding-bottom: 2%"></div>
+                <app-bar-chart *ngIf='isMetricsCountChartReady' [barChartLabels]='allMetrics'
+                               [barChartData]='MetricsCountChartData'>
+                </app-bar-chart>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title" style="font-weight: bold;">整學期Metrics分布圖</h5>
+                <app-scatter-chart *ngIf='isWholeSemesterMetricsChartReady' [scatterChartData]="wholeSemesterMetricsChartData"
+                                   [scatterChartLabels]="allMetrics" [scatterChartLegend]=true></app-scatter-chart>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
-  <div class="area-interval"></div>
-  <div class="row justify-content-md-center">
-    <div class="col-md-10 border card-theme">
-      <div class="image-area-interval"></div>
-      <h3>
-        同儕審查
-      </h3>
-      <div class="row justify-content-md-center">
-        <div class="col-6 border test-font">
-          <div class="image-area-interval"></div>
-          同儕審查參與率
-          <div class="image-area-interval"></div>
-          <app-line-chart *ngIf="isPrRateLineChartReady" [lineChartLabels]="prAssignmentNameList" [lineChartData]="prRateLineChartData" [lineChartLegend]=true></app-line-chart>
+      <div class="card">
+        <h3 class="card-title" style="font-weight: bold; vertical-align: middle; padding-top: 2%;">同儕審查</h3>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title" style="font-weight: bold;">同儕審查參與率</h5>
+                <app-line-chart *ngIf="isPrRateLineChartReady" [lineChartLabels]="prAssignmentNameList"
+                                [lineChartData]="prRateLineChartData" [lineChartLegend]=true></app-line-chart>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title" style="font-weight: bold;">修改作業率</h5>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="col-6 border test-font">
-          修改作業率
+        <div class="row">
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title" style="font-weight: bold;">審查完全通過人數</h5>
+                <app-bar-chart *ngIf="isPassAllMetricsBarChartReady" [barChartLabels]='prAssignmentNameList'
+                               [barChartData]='passAllMetricsBarChartData' [barChartLegend]=true></app-bar-chart>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="image-area-interval"></div>
-      <div class="row justify-content-md-center">
-        <div class="col-6 border test-font">
-          審查完全通過人數
-          <app-bar-chart *ngIf="isPassAllMetricsBarChartReady" [barChartLabels]='prAssignmentNameList' [barChartData]='passAllMetricsBarChartData' [barChartLegend] = true></app-bar-chart>
-        </div>
-        <div class = "col-6 border test-font"></div>
-      </div>
-      <div class="image-area-interval"></div>
-    </div>
-  </div>
-  <div class="area-interval"></div>
-  <div class="row justify-content-md-center">
-    <div class="col-md-10 border card-theme">
-      <div class="image-area-interval"></div>
-      <div class="row">
-        <div class="col-2">
-          <h4>
-            考試成績
-          </h4>
-        </div>
-        <div class="col-1">
+      <div class="card">
+        <h3 class="card-title" style="font-weight: bold; vertical-align: middle; padding-top: 2%;">考試成績</h3>
+        <div class="row" style="padding-left: 2%">
           <div class="btn-group" dropdown>
             <button dropdownToggle type="button" class="btn btn-primary dropdown-toggle">
               {{selectedExam}} <span class="caret"></span>
@@ -179,75 +164,78 @@
             </ul>
           </div>
         </div>
-      </div>
-      <div class="row justify-content-md-center">
-        <div class="image-area-interval"></div>
-        <div class="col-6 border test-font" *ngIf="isExamScoreTableReady">
-          <div class="image-area-interval"></div>
-          <div class="image-area-interval"></div>
-          <table *ngIf="!isExamScoreTableEmpty; else isEmpty">
-            <tr>
-              <th>考試名稱</th>
-              <td>{{selectedExam}}</td>
-            </tr>
-            <tr>
-              <th>最高分</th>
-              <td>{{examScoreMax}}</td>
-            </tr>
-            <tr>
-              <th>班級平均</th>
-              <td>{{examScoreMAvg}}</td>
-            </tr>
-            <tr>
-              <th>最低分</th>
-              <td>{{examScoreMin}}</td>
-            </tr>
-          </table>
-          <ng-template #isEmpty>
-            <table *ngIf="isExamScoreTableEmpty">
-              <tr>
-                <th>考試名稱</th>
-                <td>{{selectedExam}}</td>
-              </tr>
-              <tr>
-                <th>最高分</th>
-                <td>N/A</td>
-              </tr>
-              <tr>
-                <th>班級平均</th>
-                <td>N/A</td>
-              </tr>
-              <tr>
-                <th>最低分</th>
-                <td>N/A</td>
-              </tr>
-            </table>
-          </ng-template>
-          <div class="image-area-interval"></div>
-        </div>
-        <div class="col-6 border test-font" *ngIf='isExamScoreTableReady'>
-          班級分布 - {{selectedExam}}
-          <app-bar-chart [barChartLabels]='examRange' [barChartData]='examBarChartData' [barChartLegend] = false>
-          </app-bar-chart>
-        </div>
-      </div>
-      <div class="image-area-interval"></div>
-    </div>
-  </div>
-  <div class="area-interval"></div>
-  <div class="row justify-content-md-center">
-    <div class="col-md-10 border card-theme">
-      <div class="image-area-interval"></div>
-      <h3>
-        回饋
-      </h3>
-      <div class="row justify-content-md-center">
-        <div class="col-12 border test-font">
-          回饋分數折線圖
-          <app-line-chart *ngIf="isFeedbackScoreChartReady" [lineChartLabels]="prAssignmentNameList" [lineChartData]="feedbackLineChartData" [lineChartLegend]=true></app-line-chart>
+        <div style="padding-bottom: 1%;"></div>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="card" *ngIf="isExamScoreTableReady">
+              <div class="card-body">
+                <h5 class="card-title" style="font-weight: bold;">作業成績</h5>
+                <table *ngIf="!isExamScoreTableEmpty; else isEmpty">
+                  <tr>
+                    <th>考試名稱</th>
+                    <td>{{selectedExam}}</td>
+                  </tr>
+                  <tr>
+                    <th>最高分</th>
+                    <td>{{examScoreMax}}</td>
+                  </tr>
+                  <tr>
+                    <th>班級平均</th>
+                    <td>{{examScoreMAvg}}</td>
+                  </tr>
+                  <tr>
+                    <th>最低分</th>
+                    <td>{{examScoreMin}}</td>
+                  </tr>
+                </table>
+                <ng-template #isEmpty>
+                  <table *ngIf="isExamScoreTableEmpty">
+                    <tr>
+                      <th>考試名稱</th>
+                      <td>{{selectedExam}}</td>
+                    </tr>
+                    <tr>
+                      <th>最高分</th>
+                      <td>N/A</td>
+                    </tr>
+                    <tr>
+                      <th>班級平均</th>
+                      <td>N/A</td>
+                    </tr>
+                    <tr>
+                      <th>最低分</th>
+                      <td>N/A</td>
+                    </tr>
+                  </table>
+                </ng-template>
+                </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-body" *ngIf='isExamScoreTableReady'>
+                <h5 class="card-title" style="font-weight: bold;">班級分布 - {{selectedExam}}</h5>
+                <app-bar-chart [barChartLabels]='examRange' [barChartData]='examBarChartData' [barChartLegend]=false>
+                </app-bar-chart>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="image-area-interval"></div>
+      <div class="card">
+        <h3 class="card-title" style="font-weight: bold; vertical-align: middle; padding-top: 2%;">回饋</h3>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title" style="font-weight: bold;">回饋分數折線圖</h5>
+                <app-line-chart *ngIf="isFeedbackScoreChartReady" [lineChartLabels]="prAssignmentNameList"
+                                [lineChartData]="feedbackLineChartData" [lineChartLegend]=true></app-line-chart>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
   <div class="area-interval"></div>
