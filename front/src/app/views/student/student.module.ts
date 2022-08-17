@@ -16,6 +16,7 @@ import { StudentChartComponent } from './chart-studashboard/chart-studashboard.c
 import { LineChartComponent } from './chart-studashboard/line-chart/line-chart.component';
 import { BarChartComponent } from './chart-studashboard/bar-chart/bar-chart.component';
 import { ScatterChartComponent } from './chart-studashboard/scatter-chart/scatter-chart.component';
+import { MixedChartComponent } from './chart-studashboard/mixed-chart/mixed-chart.component';
 
 @NgModule({
   imports: [
@@ -37,7 +38,8 @@ import { ScatterChartComponent } from './chart-studashboard/scatter-chart/scatte
     StudentChartComponent,
     LineChartComponent,
     BarChartComponent,
-    ScatterChartComponent
+    ScatterChartComponent,
+    MixedChartComponent
   ],
 })
 export class StudentModule { }

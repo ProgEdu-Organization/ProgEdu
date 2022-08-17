@@ -75,12 +75,33 @@
         </div>
       </div>
       <div class="card">
+        <h3 class="card-title" style="font-weight: bold; vertical-align: middle; padding-top: 2%;">能力</h3>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title" style="font-weight: bold;">能力雷達圖</h5>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title" style="font-weight: bold;">學期作業掌握度</h5>
+                <app-mixed-chart *ngIf='assignmentMasteryBarChartDisplay' [mixedChartLabels]='prAssignmentNameList' [mixedChartData]='assignmentMasteryBarChartData'>
+                </app-mixed-chart>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
         <h3 class="card-title" style="font-weight: bold; vertical-align: middle; padding-top: 2%;">回饋</h3>
         <div class="row">
           <div class="col-md-6">
             <div class="card">
               <div class="card-body">
-                <h5 class="card-title" style="font-weight: bold;">星星數</h5>
+                <h5 class="card-title" style="font-weight: bold;"></h5>
                 <div class="col-md-6">
                   <div class="card"  style="background-color: #321fdb; border-radius: 10px">
                     <div class="card-body">
@@ -178,17 +199,6 @@
             <div class="card">
               <div class="card-body">
                 <h5 class="card-title" style="font-weight: bold;">課程參與率排行</h5>
-                <div class="btn-group" dropdown>
-                  <button dropdownToggle type="button" class="btn btn-primary dropdown-toggle">
-                    {{selectedAssignment}} <span class="caret"></span>
-                  </button>
-                  <ul *dropdownMenu class="dropdown-menu" role="menu">
-                    <li *ngFor='let assignmentName of assignmentNameList' role="menuitem">
-                      <a class="dropdown-item" href="javascript:void(0);"
-                         (click)='updateAssignmentScoreRanking(assignmentName)'>{{assignmentName}}</a>
-                    </li>
-                  </ul>
-                </div>
               </div>
             </div>
           </div>

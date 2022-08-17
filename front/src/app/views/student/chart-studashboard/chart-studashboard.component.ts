@@ -5,6 +5,7 @@ import {NgxLoadingModule, ngxLoadingAnimationTypes} from 'ngx-loading';
 import {ChartsModule} from 'ng2-charts';
 import {FormsModule} from '@angular/forms';
 import {StudentChartService} from './chart-studashboard.service';
+import {Status} from '../../shared/chart/status';
 
 
 @Component({
@@ -40,6 +41,8 @@ export class StudentChartComponent implements OnInit {
   public assignmentNameList: Array<any> = new Array<any>();
   public allAssignmentUserScore: Array<any> = new Array<any>();
   public prAssignmentDetail: Array<any> = [];
+  public prAssignmentNameList: Array<any> = [];
+  public commits: Array<any>;
 
   // Exam
   public examAvgScoreTable: Array<any> = new Array<any>();
@@ -63,12 +66,16 @@ export class StudentChartComponent implements OnInit {
   public assignmentScoreChartDisplay: boolean = false;
   public examBarChartDisplay: boolean = false;
   public scatterChartDisplay: boolean = false;
+  public assignmentMasteryBarChartDisplay: boolean = false;
 
   // Feedback
   public feedbackMsgTop: Array<any> = [];
   public feedbackMsgLast: Array<any> = [];
   public star: Array<any> = [];
   public starAvg: string;
+
+  // participation
+  public participationOfEachUser: Array<any> = [];
 
   constructor(private studentChartService: StudentChartService, private jwtService?: JwtService) {
   }
@@ -88,14 +95,44 @@ export class StudentChartComponent implements OnInit {
     {data: [0, 0, 0, 0, 0, 0, 0, 0]},
   ];
 
+  assignmentMasteryBarChartData = [
+    {
+      data: [], label: 'Average', fill: false, type: 'line',
+      backgroundColor: '#f9b115',
+      borderColor: '#f9b115',
+      hoverBackgroundColor: '#f9b115',
+      hoverBorderColor: '#f9b115',
+    },
+    {
+      data: [], label: 'Max', fill: false, type: 'line',
+      backgroundColor: '#e55353',
+      borderColor: '#e55353',
+      hoverBackgroundColor: '#e55353',
+      hoverBorderColor: '#e55353',
+    },
+    {
+      data: [], label: 'Myself',
+      backgroundColor: '#3399ff',
+      borderColor: '#3399ff'
+    },
+  ];
+
   async ngOnInit() {
     this.username = new User(this.jwtService).getUsername();
+    await this.initAllCommit();
     await this.initAllScoreChart();
     await this.initPrAssignmentDetail();
     await this.initParticipationData();
     await this.initFeedbacksAndMetricsData();
     await this.getFeedbackScoreAvg();
     await this.getFeedbackDetail();
+    await this.setAssignmentMasteryData();
+    await this.getParticipationRank();
+  }
+
+  async initAllCommit() {
+    const response = await this.studentChartService.getAllCommits().toPromise();
+    this.commits = response.allCommitRecord;
   }
 
   async initAllScoreChart() {
@@ -113,7 +150,7 @@ export class StudentChartComponent implements OnInit {
         this.allAssignmentUserScore.push(userScores);
       }
     }
-    this.selectedExam = this.examAvgScoreTable[0].assignmentName;
+    this.selectedExam = this.examAvgScoreTable[this.examAvgScoreTable.length - 1].assignmentName;
     this.selectedAssignment = this.assignmentAvgScoreTable[0].assignmentName;
     this.updateAssignmentScoreRanking(this.selectedAssignment);
 
@@ -166,12 +203,33 @@ export class StudentChartComponent implements OnInit {
   async initPrAssignmentDetail() {
     const allPeerReviewAsignment = await this.studentChartService.getAllPeerReviewAssignment().toPromise();
     for (let i = 0; i < allPeerReviewAsignment.allReviewAssignments.length; i++) {
-      this.prAssignmentDetail.push({
+      this.prAssignmentNameList.push(allPeerReviewAsignment.allReviewAssignments[i].name);
+      this.prAssignmentDetail.push(
+        {
         name: allPeerReviewAsignment.allReviewAssignments[i].name,
         amount: allPeerReviewAsignment.allReviewAssignments[i].amount,
         round: allPeerReviewAsignment.allReviewAssignments[i].round,
-        deadline: allPeerReviewAsignment.allReviewAssignments[i].assessmentTimes
-      });
+        deadline: allPeerReviewAsignment.allReviewAssignments[i].assessmentTimes,
+        // Each Metrics是否通過
+        myAssignmentMastery: [],
+        // Metrics 通過數量
+        classAssignmentMasteryPassCount: []
+      }
+      );
+    }
+  }
+
+  initParticipation() {
+    for (let i = 0; i < this.userList.length; i++) {
+      this.participationOfEachUser.push(
+        {
+          name: this.userList[i].username,
+          isPayAssignment: [],
+          isPRRound1: [],
+          isReviseAssignment: [],
+          isPRRound2: []
+        }
+      );
     }
   }
 
@@ -188,32 +246,30 @@ export class StudentChartComponent implements OnInit {
     // 此使用者名稱
     // console.log(this.username);
     for (let i = this.prAssignmentDetail.length - 1; i >= 0; i--) {
-      console.log(this.prAssignmentDetail[i].name);
+      // console.log(this.prAssignmentDetail[i].name);
       const response = await this.studentChartService.getReviewFeedback(this.prAssignmentDetail[i].name, this.username).toPromise();
       for (let j = 0; j < response.allRecordDetail.length; j++) {
         if (response.allRecordDetail[j].Detail) {
           for (let k = 0; k < response.allRecordDetail[j].Detail.length; k++) {
             if (response.allRecordDetail[j].Detail[k].score === 1) {
-              console.log('已通過');
-              console.log(response.allRecordDetail[j].Detail[k].feedback);
+              // console.log('已通過');
+              // console.log(response.allRecordDetail[j].Detail[k].feedback);
               if (this.feedbackMsgTop.length < 5) {
                 this.feedbackMsgTop.push(response.allRecordDetail[j].Detail[k].feedback);
               }
             } else if (response.allRecordDetail[j].Detail[k].score === 2) {
-              console.log('未通過');
-              console.log(response.allRecordDetail[j].Detail[k].feedback);
+              // console.log('未通過');
+              // console.log(response.allRecordDetail[j].Detail[k].feedback);
               if (this.feedbackMsgLast.length < 5) {
                 this.feedbackMsgLast.push(response.allRecordDetail[j].Detail[k].feedback);
               }
             } else {
               console.log('Feedback score Error');
             }
-            console.log('Top length' + this.feedbackMsgTop.length);
-            console.log('Last length' + this.feedbackMsgLast.length);
             // 都達五則結束迴圈
             if (this.feedbackMsgTop.length === 5 && this.feedbackMsgLast.length === 5) {
-              console.log(this.feedbackMsgTop);
-              console.log(this.feedbackMsgLast);
+              // console.log(this.feedbackMsgTop);
+              // console.log(this.feedbackMsgLast);
               return;
             }
           }
@@ -248,6 +304,63 @@ export class StudentChartComponent implements OnInit {
     // console.log(this.starAvg);
   }
 
+  // 作業掌握度
+  async getAssignmentMastery () {
+    let count = 0;
+    // 每一作業
+    for (let i = 0; i < this.prAssignmentDetail.length; i++) {
+      // console.log(this.prAssignmentDetail[i].name);
+      // 每位同學
+      for (let j = 0; j < this.userList.length; j++) {
+        // console.log(this.userList[j].username);
+        // tslint:disable-next-line:max-line-length
+        const response = await this.studentChartService.getReviewFeedback(this.prAssignmentDetail[i].name, this.userList[j].username).toPromise();
+        // 每個審查
+        for (let k = 0; k < response.allRecordDetail.length; k++) {
+          if (response.allRecordDetail[k].Detail) {
+            // console.log(response.allRecordDetail[k].Detail);
+            // 每個 Metrics
+            for (let l = 0; l < response.allRecordDetail[k].Detail.length; l++) {
+              // console.log(response.allRecordDetail[k].Detail[l].score);
+              if (response.allRecordDetail[k].Detail[l].score === 1) {
+                count += 1;
+                // console.log('通過');
+              } else if (response.allRecordDetail[k].Detail[l].score === 2) {
+                // console.log('不通過');
+              }
+            }
+          }
+        }
+        this.prAssignmentDetail[i].classAssignmentMasteryPassCount.push(count);
+        count = 0;
+      }
+      // console.log(this.prAssignmentDetail[i].classAssignmentMasteryPassCount);
+    }
+    const nameList = Object.values(this.userList).map(item => item.username);
+    for (let i = 0; i < this.prAssignmentDetail.length; i++) {
+      let sum = 0;
+      // console.log(this.prAssignmentDetail[i].classAssignmentMasteryPassCount);
+      for (let j = 0; j < this.prAssignmentDetail[i].classAssignmentMasteryPassCount.length; j++) {
+        sum += this.prAssignmentDetail[i].classAssignmentMasteryPassCount[j];
+      }
+      // tslint:disable-next-line:max-line-length
+      this.assignmentMasteryBarChartData[0].data.push(Number((sum / this.prAssignmentDetail[i].classAssignmentMasteryPassCount.length).toFixed(1)));
+      this.assignmentMasteryBarChartData[1].data.push(Math.max(...this.prAssignmentDetail[i].classAssignmentMasteryPassCount));
+      // tslint:disable-next-line:max-line-length
+      this.assignmentMasteryBarChartData[2].data.push(this.prAssignmentDetail[i].classAssignmentMasteryPassCount[nameList.indexOf(this.username)]);
+    }
+    // console.log(this.assignmentMasteryBarChartData);
+  }
+
+  async setAssignmentMasteryData () {
+    await this.getAssignmentMastery();
+    for (let i = 0; i < this.prAssignmentDetail.length; i++) {
+      // console.log(this.prAssignmentDetail[i].myAssignmentMasteryPassCount);
+      this.assignmentMasteryBarChartData[0].data.push(this.prAssignmentDetail[i].myAssignmentMasteryPassCount);
+    }
+    this.assignmentMasteryBarChartDisplay = true;
+  }
+
   getOneUserAssignmentScoreList(username: string) {
     const scoreList = [];
     for (let i = 0; i < this.allAssignmentUserScore.length; i++) {
@@ -262,6 +375,7 @@ export class StudentChartComponent implements OnInit {
 
 
   setExamScoreData(examName: string) {
+    this.selectedExam = examName;
     for (let i = 0; i < this.examAvgScoreTable.length; i++) {
       if (this.examAvgScoreTable[i].assignmentName === examName) {
         this.examAvgScore = this.examAvgScoreTable[i].averageScore;
@@ -343,6 +457,29 @@ export class StudentChartComponent implements OnInit {
     }
   }
 
+  initNeedReviseNameList () {
+    for (let i = 0; i < this.prAssignmentDetail.length; i++) {
+      console.log(this.prAssignmentDetail[i].classAssignmentMasteryPassCount);
+    }
+  }
+
+  getParticipationRank () {
+    this.initParticipation();
+    console.log(this.participationOfEachUser);
+    console.log(this.commits);
+    this.initNeedReviseNameList();
+    // 每一作業
+    for (let i = 0; i < this.commits.length; i++) {
+      if (this.prAssignmentNameList.includes(this.commits[i].name)) {
+        console.log(this.commits[i].name);
+      }
+    }
+  }
+
+  /**
+   * 計算標準差
+   * @param scoreList
+   */
   calSD(scoreList: Array<any>) {
     let avg = 0;
     const len = scoreList.length;
