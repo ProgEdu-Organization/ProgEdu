@@ -117,6 +117,7 @@ WEB_JENKINS_ADMIN_PASSWORD=admin
    2. 設定 Connection name = gitlab
    3. 設定 GitLab host URL 為`.env`文件設定的 gitlab 網址
 ![](/readme-images/jenkins-gitlab-api.png)  
+   補充:如果在Jenkins找不到設定 **GitLab API Token**的地方，要檢查Jenkins版本和Jenkins套件版本有沒有太舊。
 
    4. 設定 Credentials:  如下步驟
       1. 按 Add > Jenkins
@@ -151,6 +152,22 @@ WEB_JENKINS_ADMIN_PASSWORD=admin
    - ID: 必須是 **gitlab_root**  
    
    6. 按OK
+
+## 
+
+## 設定後端
+
+ 1. 在linux系統中，cd進入後端的config資料夾中
+
+    ```
+    cd /server_spring/src/main/resources/config/
+    ```
+
+2. 將所有`.example`結尾的檔案改名(去掉`.example`)，並編輯它，它將為後端的相關建置。
+
+   i. 將`course_config.properties.example`，改名為`course_config.properties`，並依照在`.env`中的設定，填入課程相關資訊與TOMCAT IP地址。
+
+   ii. 其他config檔案也是依照在`.env`中的設定填入，總共五個檔案都需要修改。
 
 ## 
 
