@@ -83,9 +83,25 @@ export class StudentChartComponent implements OnInit {
   lineChartLegend = true;
 
   assignmentScoreChartData = [
-    {data: [], label: '班級平均', backgroundColor: 'transparent'},
-    {data: [], label: '班級最高', backgroundColor: 'transparent'},
-    {data: [], label: '自己', backgroundColor: 'transparent'}
+    {
+      data: [], label: '班級最高', fill: false, type: 'line',
+      backgroundColor: '#e55353',
+      borderColor: '#e55353',
+      hoverBackgroundColor: '#e55353',
+      hoverBorderColor: '#e55353',
+    },
+    {
+      data: [], label: '班級平均', fill: false, type: 'line',
+      backgroundColor: '#3399ff',
+      borderColor: '#3399ff',
+      hoverBackgroundColor: '#3399ff',
+      hoverBorderColor: '#3399ff',
+    },
+    {
+      data: [], label: '我的作業成績',
+      backgroundColor: '#FEEA87',
+      borderColor: '#FEEA87'
+    },
   ];
 
   public assignmentScatterChartData: Array<any> = [];
@@ -97,23 +113,23 @@ export class StudentChartComponent implements OnInit {
 
   assignmentMasteryBarChartData = [
     {
-      data: [], label: 'Average', fill: false, type: 'line',
-      backgroundColor: '#f9b115',
-      borderColor: '#f9b115',
-      hoverBackgroundColor: '#f9b115',
-      hoverBorderColor: '#f9b115',
+      data: [], label: '班級平均', fill: false, type: 'line',
+      backgroundColor: '#3399ff',
+      borderColor: '#3399ff',
+      hoverBackgroundColor: '#3399ff',
+      hoverBorderColor: '#3399ff',
     },
     {
-      data: [], label: 'Max', fill: false, type: 'line',
+      data: [], label: '班級最高', fill: false, type: 'line',
       backgroundColor: '#e55353',
       borderColor: '#e55353',
       hoverBackgroundColor: '#e55353',
       hoverBorderColor: '#e55353',
     },
     {
-      data: [], label: 'Myself',
-      backgroundColor: '#3399ff',
-      borderColor: '#3399ff'
+      data: [], label: '我的作業掌握度',
+      backgroundColor: '#FEEA87',
+      borderColor: '#FEEA87'
     },
   ];
 
@@ -126,7 +142,7 @@ export class StudentChartComponent implements OnInit {
     await this.initFeedbacksAndMetricsData();
     await this.getFeedbackScoreAvg();
     await this.getFeedbackDetail();
-    await this.setAssignmentMasteryData();
+    await this.getAssignmentMastery();
     await this.getParticipationRank();
   }
 
@@ -156,7 +172,7 @@ export class StudentChartComponent implements OnInit {
 
     // add average score data to assignment chart
     for (let i = 0; i < this.assignmentAvgScoreTable.length; i++) {
-      this.assignmentScoreChartData[0].data.push(this.assignmentAvgScoreTable[i].averageScore);
+      this.assignmentScoreChartData[1].data.push(this.assignmentAvgScoreTable[i].averageScore);
     }
 
     // add the highest score data and my score to assignment chart
@@ -176,7 +192,7 @@ export class StudentChartComponent implements OnInit {
           }
         }
       }
-      this.assignmentScoreChartData[1].data.push(maxScore);
+      this.assignmentScoreChartData[0].data.push(maxScore);
     }
     this.assignmentScoreChartDisplay = true;
 
@@ -206,15 +222,15 @@ export class StudentChartComponent implements OnInit {
       this.prAssignmentNameList.push(allPeerReviewAsignment.allReviewAssignments[i].name);
       this.prAssignmentDetail.push(
         {
-        name: allPeerReviewAsignment.allReviewAssignments[i].name,
-        amount: allPeerReviewAsignment.allReviewAssignments[i].amount,
-        round: allPeerReviewAsignment.allReviewAssignments[i].round,
-        deadline: allPeerReviewAsignment.allReviewAssignments[i].assessmentTimes,
-        // Each Metrics是否通過
-        myAssignmentMastery: [],
-        // Metrics 通過數量
-        classAssignmentMasteryPassCount: []
-      }
+          name: allPeerReviewAsignment.allReviewAssignments[i].name,
+          amount: allPeerReviewAsignment.allReviewAssignments[i].amount,
+          round: allPeerReviewAsignment.allReviewAssignments[i].round,
+          deadline: allPeerReviewAsignment.allReviewAssignments[i].assessmentTimes,
+          // Each Metrics是否通過
+          myAssignmentMastery: [],
+          // Metrics 通過數量
+          classAssignmentMasteryPassCount: []
+        }
       );
     }
   }
@@ -305,7 +321,7 @@ export class StudentChartComponent implements OnInit {
   }
 
   // 作業掌握度
-  async getAssignmentMastery () {
+  async getAssignmentMastery() {
     let count = 0;
     // 每一作業
     for (let i = 0; i < this.prAssignmentDetail.length; i++) {
@@ -350,14 +366,6 @@ export class StudentChartComponent implements OnInit {
       this.assignmentMasteryBarChartData[2].data.push(this.prAssignmentDetail[i].classAssignmentMasteryPassCount[nameList.indexOf(this.username)]);
     }
     // console.log(this.assignmentMasteryBarChartData);
-  }
-
-  async setAssignmentMasteryData () {
-    await this.getAssignmentMastery();
-    for (let i = 0; i < this.prAssignmentDetail.length; i++) {
-      // console.log(this.prAssignmentDetail[i].myAssignmentMasteryPassCount);
-      this.assignmentMasteryBarChartData[0].data.push(this.prAssignmentDetail[i].myAssignmentMasteryPassCount);
-    }
     this.assignmentMasteryBarChartDisplay = true;
   }
 
@@ -457,13 +465,13 @@ export class StudentChartComponent implements OnInit {
     }
   }
 
-  initNeedReviseNameList () {
+  initNeedReviseNameList() {
     for (let i = 0; i < this.prAssignmentDetail.length; i++) {
       console.log(this.prAssignmentDetail[i].classAssignmentMasteryPassCount);
     }
   }
 
-  getParticipationRank () {
+  getParticipationRank() {
     this.initParticipation();
     console.log(this.participationOfEachUser);
     console.log(this.commits);
@@ -508,10 +516,10 @@ export class StudentChartComponent implements OnInit {
       this.examBackgroundColor = '#ffffff';
     } else if (score >= average - SD) {
       // 黃色
-      this.examBackgroundColor = '#f9b115';
+      this.examBackgroundColor = '#FDF89B';
     } else {
       // 紅色
-      this.examBackgroundColor = '#e55353';
+      this.examBackgroundColor = '#F3869F';
     }
   }
 }

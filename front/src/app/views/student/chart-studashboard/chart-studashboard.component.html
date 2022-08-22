@@ -8,7 +8,9 @@
             <div class="card">
               <div class="card-body">
                 <h5 class="card-title" style="font-weight: bold;">作業成績</h5>
-                <app-line-chart *ngIf="assignmentScoreChartDisplay" [lineChartLabels]="assignmentNameList" [lineChartData]="assignmentScoreChartData" [lineChartLegend]=true></app-line-chart>
+<!--                <app-line-chart *ngIf="assignmentScoreChartDisplay" [lineChartLabels]="assignmentNameList" [lineChartData]="assignmentScoreChartData" [lineChartLegend]=true></app-line-chart>-->
+                <app-mixed-chart *ngIf='assignmentScoreChartDisplay' [mixedChartLabels]='assignmentNameList' [mixedChartData]='assignmentScoreChartData'>
+                </app-mixed-chart>
               </div>
             </div>
           </div>
@@ -96,33 +98,12 @@
         </div>
       </div>
       <div class="card">
-        <h3 class="card-title" style="font-weight: bold; vertical-align: middle; padding-top: 2%;">回饋</h3>
+        <h3 class="card-title" style="font-weight: bold; vertical-align: middle; padding-top: 2%;">最近收到的審查意見</h3>
         <div class="row">
           <div class="col-md-6">
             <div class="card">
               <div class="card-body">
-                <h5 class="card-title" style="font-weight: bold;"></h5>
-                <div class="col-md-6">
-                  <div class="card"  style="background-color: #321fdb; border-radius: 10px">
-                    <div class="card-body">
-                      <h5 class="card-title" style="font-weight: bold; color: #FFFFFF">
-                        星星數
-                      </h5>
-                      <h5 style="font-weight: bold; color: #FFFFFF">
-                        {{starAvg}}
-                      </h5>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-6">
-            <div class="card">
-              <div class="card-body">
-                <h5 class="card-title" style="font-weight: bold;">Feedback Top 5</h5>
+                <h5 class="card-title" style="font-weight: bold;">通過</h5>
                 <div class="row" style="padding-top: 5%;">
                   <div class="col-md-2"></div>
                   <table class="table col-md-8" [style.text-align]="'center'">
@@ -142,7 +123,7 @@
           <div class="col-md-6">
             <div class="card">
               <div class="card-body">
-                <h5 class="card-title" style="font-weight: bold;">Feedback Last 5</h5>
+                <h5 class="card-title" style="font-weight: bold;">未通過</h5>
                 <div class="row" style="padding-top: 5%;">
                   <div class="col-md-2"></div>
                   <table class="table col-md-8" [style.text-align]="'center'">
@@ -155,6 +136,30 @@
                     </tbody>
                   </table>
                   <div class="col-md-2"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <h3 class="card-title" style="font-weight: bold; vertical-align: middle; padding-top: 2%;">回饋</h3>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title" style="font-weight: bold;"></h5>
+                <div class="col-md-6">
+                  <div class="card"  style="background-color: #321fdb; border-radius: 10px">
+                    <div class="card-body">
+                      <h5 class="card-title" style="font-weight: bold; color: #FFFFFF">
+                        平均收到星星數
+                      </h5>
+                      <h5 style="font-weight: bold; color: #FFFFFF">
+                        {{starAvg}}
+                      </h5>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

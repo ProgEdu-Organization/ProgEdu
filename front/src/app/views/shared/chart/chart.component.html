@@ -87,7 +87,7 @@
           <div class="col-md-6">
             <div class="card">
               <div class="card-body">
-                <h5 class="card-title" style="font-weight: bold;">Metrics錯誤數量</h5>
+                <h5 class="card-title" style="font-weight: bold;">Metrics 錯誤數量</h5>
                 <div class="btn-group" dropdown>
                   <button dropdownToggle type="button" class="btn btn-primary dropdown-toggle">
                     {{selectedMetricsAssignment}} <span class="caret"></span>
@@ -106,12 +106,14 @@
               </div>
             </div>
           </div>
-          <div class="col-md-6">
+        </div>
+        <div class="row">
+          <div class="col-md-12">
             <div class="card">
               <div class="card-body">
-                <h5 class="card-title" style="font-weight: bold;">整學期Metrics分布圖</h5>
-                <app-scatter-chart *ngIf='isWholeSemesterMetricsChartReady' [scatterChartData]="wholeSemesterMetricsChartData"
-                                   [scatterChartLabels]="allMetrics" [scatterChartLegend]=true></app-scatter-chart>
+                <h5 class="card-title" style="font-weight: bold;">整學期 Metrics 錯誤數量分布圖</h5>
+                <app-mixed-chart *ngIf='isWholeSemesterMetricsChartReady' [mixedChartLabels]='allMetrics' [mixedChartData]='wholeSemesterMetricsChartData'>
+                </app-mixed-chart>
               </div>
             </div>
           </div>
@@ -229,8 +231,8 @@
             <div class="card">
               <div class="card-body">
                 <h5 class="card-title" style="font-weight: bold;">回饋分數折線圖</h5>
-                <app-line-chart *ngIf="isFeedbackScoreChartReady" [lineChartLabels]="prAssignmentNameList"
-                                [lineChartData]="feedbackLineChartData" [lineChartLegend]=true></app-line-chart>
+                <app-mixed-chart *ngIf='isFeedbackScoreChartReady' [mixedChartLabels]='prAssignmentNameList' [mixedChartData]='feedbackMixedChartData'>
+                </app-mixed-chart>
               </div>
             </div>
           </div>

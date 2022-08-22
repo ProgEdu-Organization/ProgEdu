@@ -89,14 +89,14 @@ export class ChartComponent implements OnInit {
 
   public passAllMetricsBarChartData: any[] = [
     {
-      data: [], label: 'Round1',
+      data: [], label: '第一次審查',
       backgroundColor: '#e55353',
       borderColor: '#e55353',
       hoverBackgroundColor: '#e55353',
       hoverBorderColor: '#e55353',
     },
     {
-      data: [], label: 'Round2',
+      data: [], label: '第二次審查',
       backgroundColor: '#3399ff',
       borderColor: '#3399ff',
       hoverBackgroundColor: '#3399ff',
@@ -108,7 +108,7 @@ export class ChartComponent implements OnInit {
   public prRateLineChartData: any[] = [
     {
       data: [],
-      label: 'Round 1',
+      label: '第一次審查',
       backgroundColor: 'transparent',
       borderColor: '#e55353',
       pointBackgroundColor: '#e55353',
@@ -117,7 +117,7 @@ export class ChartComponent implements OnInit {
     },
     {
       data: [],
-      label: 'Round 2',
+      label: '第二次審查',
       backgroundColor: 'transparent',
       borderColor: '#3399ff',
       pointBackgroundColor: '#3399ff',
@@ -138,40 +138,36 @@ export class ChartComponent implements OnInit {
     }
   ];
 
-  public feedbackLineChartData: any[] = [
-    // 平均
-    {
-      data: [],
-      label: 'FeedbackScore Avg',
-      backgroundColor: 'transparent',
-      borderColor: '#3399ff',
-      pointBackgroundColor: '#3399ff',
-      pointHoverBackgroundColor: '#3399ff',
-      pointHoverBorderColor: '#3399ff'
-    },
+  public feedbackMixedChartData: any[] = [
     // 最高
     {
-      data: [],
-      label: 'FeedbackScore Max',
+      data: [], fill: false, type: 'line',
+      label: '最高回饋星星數',
       backgroundColor: 'transparent',
       borderColor: '#e55353',
       pointBackgroundColor: '#e55353',
       pointHoverBackgroundColor: '#e55353',
       pointHoverBorderColor: '#e55353'
     },
+    // 平均
+    {
+      data: [], label: '平均回饋星星數',
+      backgroundColor: '#ced2d8',
+      borderColor: '#ced2d8'
+    }
   ];
   public isFeedbackScoreChartReady = false;
 
   public MetricsCountChartData: any[] = [
     {
-      data: [], label: 'PR1',
+      data: [], label: '第一次審查',
       backgroundColor: '#3399ff',
       borderColor: '#3399ff',
       hoverBackgroundColor: '#3399ff',
       hoverBorderColor: '#3399ff',
     },
     {
-      data: [], label: 'PR2',
+      data: [], label: '第二次審查',
       backgroundColor: '#e55353',
       borderColor: '#e55353',
       hoverBackgroundColor: '#e55353',
@@ -446,45 +442,56 @@ export class ChartComponent implements OnInit {
   }
 
   initWholeSemesterMetricsData() {
+    this.wholeSemesterMetricsChartData.push(
+      {
+        data: [], fill: false, type: 'line',
+        label: 'Average',
+        backgroundColor: 'transparent',
+        borderColor: '#e55353',
+        pointBackgroundColor: '#e55353',
+        pointHoverBackgroundColor: '#e55353',
+        pointHoverBorderColor: '#e55353',
+      }
+    );
     for (let i = 0; i < this.prAssignmentDetail.length; i++) {
       this.wholeSemesterMetricsChartData.push(
         {
           data: [],
           label: this.prAssignmentDetail[i].name,
-          backgroundColor: 'transparent',
-          borderColor: 'transparent',
-          pointBackgroundColor: '#f9b115',
-          pointHoverBackgroundColor: '#f9b115',
-          pointHoverBorderColor: '#f9b115',
+          backgroundColor: '#ced2d8',
+          borderColor: '#ced2d8',
+          hoverBackgroundColor: '#ced2d8',
+          hoverBorderColor: '#ced2d8',
         }
       );
     }
-    this.wholeSemesterMetricsChartData.push(
-      {
-        data: [],
-        label: 'Average',
-        backgroundColor: 'transparent',
-        borderColor: 'transparent',
-        pointBackgroundColor: '#f9b115',
-        pointHoverBackgroundColor: '#f9b115',
-        pointHoverBorderColor: '#f9b115',
-      }
-    );
+    for (let i = 0; i < this.prAssignmentDetail.length; i++) {
+      this.wholeSemesterMetricsChartData[0].data.push(0);
+    }
   }
 
   setWholeSemesterMetricsData() {
     this.isWholeSemesterMetricsChartReady = false;
     this.initWholeSemesterMetricsData();
     // 整學期Metrics分布圖顏色
-    const colors = ['#321fdb', '#9da5b1', '#2eb85c', '#AFCBFF', '#f9b115', '#3399ff', '#F0A7A0', '#4f5d73', '#0E1C36', '#e55353'];
+    const colors = ['#321fdb', '#9da5b1', '#2eb85c', '#AFCBFF', '#3399ff', '#F0A7A0', '#4f5d73', '#0E1C36', '#f9b115', '#55C6A9'];
     for (let i = 0; i < this.prAssignmentDetail.length; i++) {
       // 記得改回 Round2
-      this.wholeSemesterMetricsChartData[i].data = this.prAssignmentDetail[i].round2;
-      this.wholeSemesterMetricsChartData[i].label = this.prAssignmentDetail[i].name;
-      this.wholeSemesterMetricsChartData[i].pointBackgroundColor = colors[i];
-      this.wholeSemesterMetricsChartData[i].pointHoverBackgroundColor = colors[i];
-      this.wholeSemesterMetricsChartData[i].pointHoverBorderColor = colors[i];
-      this.wholeSemesterMetricsChartData[i].borderColor = colors[i];
+      this.wholeSemesterMetricsChartData[i + 1].data = this.prAssignmentDetail[i].round2;
+      this.wholeSemesterMetricsChartData[i + 1].label = this.prAssignmentDetail[i].name;
+      this.wholeSemesterMetricsChartData[i + 1].hoverBackgroundColor = colors[i];
+      this.wholeSemesterMetricsChartData[i + 1].hoverBorderColor = colors[i];
+      this.wholeSemesterMetricsChartData[i + 1].borderColor = colors[i];
+      this.wholeSemesterMetricsChartData[i + 1].backgroundColor = colors[i];
+      for (let j = 0; j < this.prAssignmentDetail[i].round2.length; j++) {
+        this.wholeSemesterMetricsChartData[0].data[j] += this.prAssignmentDetail[i].round2[j];
+      }
+    }
+    console.log(this.wholeSemesterMetricsChartData[0].data);
+    for (let i = 0; i < this.wholeSemesterMetricsChartData[0].data.length; i++) {
+      console.log(this.wholeSemesterMetricsChartData[0].data[i]);
+      // tslint:disable-next-line:max-line-length
+      this.wholeSemesterMetricsChartData[0].data[i] = Math.round(((this.wholeSemesterMetricsChartData[0].data[i] / this.prAssignmentDetail.length) + Number.EPSILON) * 10) / 10;
     }
     this.isWholeSemesterMetricsChartReady = true;
   }
@@ -583,12 +590,22 @@ export class ChartComponent implements OnInit {
     this.isPrRateLineChartReady = true;
   }
 
+  initFlag() {
+    let flag = [];
+    for (let i = 0; i < this.allMetrics.length; i++) {
+      flag.push(0);
+    }
+    return flag;
+  }
+
   async getReviewFeedback() {
     // 作業審查回合數
     console.log(this.prAssignmentDetail[0].round);
     for (let i = 0; i < this.prAssignmentDetail.length; i++) {
       for (let j = 0; j < this.userNameList.length; j++) {
         const response = await this.chartService.getReviewFeedback(this.prAssignmentDetail[i].name, this.userNameList[j]).toPromise();
+        const flagR1 = this.initFlag();
+        const flagR2 = this.initFlag();
         console.log('作業名稱 ' + this.prAssignmentDetail[i].name + ' ' + '被審查者' + this.userNameList[j]);
         console.log(response);
         if (response.allRecordDetail[0] !== undefined) {
@@ -776,8 +793,8 @@ export class ChartComponent implements OnInit {
         avg = this.prAssignmentDetail[i].feedbackScoreTotal / this.prAssignmentDetail[i].feedbackScoreCount;
         avg = Math.round((avg + Number.EPSILON) * 10) / 10;
       }
-      this.feedbackLineChartData[0].data.push(avg);
-      this.feedbackLineChartData[1].data.push(this.prAssignmentDetail[i].feedbackScoreMax);
+      this.feedbackMixedChartData[0].data.push(this.prAssignmentDetail[i].feedbackScoreMax);
+      this.feedbackMixedChartData[1].data.push(avg);
     }
     this.isFeedbackScoreChartReady = true;
   }
