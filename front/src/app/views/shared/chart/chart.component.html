@@ -87,7 +87,7 @@
           <div class="col-md-6">
             <div class="card">
               <div class="card-body">
-                <h5 class="card-title" style="font-weight: bold;">Metrics 錯誤數量</h5>
+                <h5 class="card-title" style="font-weight: bold;">Metrics 錯誤人數</h5>
                 <div class="btn-group" dropdown>
                   <button dropdownToggle type="button" class="btn btn-primary dropdown-toggle">
                     {{selectedMetricsAssignment}} <span class="caret"></span>
@@ -111,7 +111,7 @@
           <div class="col-md-12">
             <div class="card">
               <div class="card-body">
-                <h5 class="card-title" style="font-weight: bold;">整學期 Metrics 錯誤數量分布圖</h5>
+                <h5 class="card-title" style="font-weight: bold;">整學期 Metrics 錯誤人數分布圖</h5>
                 <app-mixed-chart *ngIf='isWholeSemesterMetricsChartReady' [mixedChartLabels]='allMetrics' [mixedChartData]='wholeSemesterMetricsChartData'>
                 </app-mixed-chart>
               </div>
