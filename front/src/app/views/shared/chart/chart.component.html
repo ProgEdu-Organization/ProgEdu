@@ -35,7 +35,7 @@
                   作業修改率
                 </h5>
                 <h5 style="font-weight: bold; color: #FFFFFF">
-                  {{reviseRate[reviseRate.length - 1]}} %
+                  {{reviseRateLineChartData[0].data[reviseRateLineChartData[0].data.length - 1]}} %
                 </h5>
               </div>
             </div>
@@ -135,6 +135,8 @@
             <div class="card">
               <div class="card-body">
                 <h5 class="card-title" style="font-weight: bold;">修改作業率</h5>
+                <app-line-chart *ngIf="isReviseRateLineChartReady" [lineChartLabels]="prAssignmentNameList"
+                                [lineChartData]="reviseRateLineChartData" [lineChartLegend]=true></app-line-chart>
               </div>
             </div>
           </div>

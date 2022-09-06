@@ -122,6 +122,27 @@ export class ChartComponent implements OnInit {
     }
   ];
 
+  public reviseRateLineChartData: any[] = [
+    {
+      data: [],
+      label: '修改作業率',
+      backgroundColor: 'transparent',
+      borderColor: '#3399ff',
+      pointBackgroundColor: '#3399ff',
+      pointHoverBackgroundColor: '#3399ff',
+      pointHoverBorderColor: '#3399ff'
+    },
+    {
+      data: [],
+      label: '修改作業且正確率',
+      backgroundColor: 'transparent',
+      borderColor: '#e55353',
+      pointBackgroundColor: '#e55353',
+      pointHoverBackgroundColor: '#e55353',
+      pointHoverBorderColor: '#e55353'
+    }
+  ];
+
   public payAssignmentRateLineChartData: any[] = [
     {
       data: [],
@@ -244,6 +265,7 @@ export class ChartComponent implements OnInit {
   public isScatterChartReady = false;
   public isExamScoreTableReady = false;
   public isPrRateLineChartReady = false;
+  public isReviseRateLineChartReady = false;
   public ispayAssignmentRateReady = false;
   public isMetricsCountChartReady = false;
   public isWholeSemesterMetricsChartReady = false;
@@ -961,7 +983,7 @@ export class ChartComponent implements OnInit {
     }
   }
 
-  calReviseRate() {
+  async calReviseRate() {
     // console.log(this.commits);
     // 判斷該作業是否為同儕審查類型作業
     // for (let i = 0; i < this.commits.length; i++) {
@@ -973,23 +995,148 @@ export class ChartComponent implements OnInit {
     //     // }
     //   }
     // }
-    let needReviseCount = 0;
-    let isReviseCount = 0;
-    let isReviseAndPassCount = 0;
+    const needReviseCount = [];
+    const isReviseCount = [];
+    const isReviseAndPassCount = [];
+    let commitsIndex = -1;
+    let tmp = -1;
     for (let i = 0; i < this.prAssignmentDetail.length; i++) {
+      needReviseCount.push(0);
+      isReviseCount.push(0);
+      isReviseAndPassCount.push(0);
       console.log(this.prAssignmentDetail[i].name);
+      for (let j = 0; j < this.commits.length; j++) {
+        if (this.commits[j].name === this.prAssignmentDetail[i].name) {
+          commitsIndex = j;
+          break;
+        }
+      }
+      console.log(this.commits[commitsIndex]);
       // 開放修改作業時間
-      console.log(this.prAssignmentDetail[i].assessmentTimes[2]);
+      console.log(this.commits[commitsIndex].assessmentTimes[2]);
       console.log(this.prAssignmentDetail[i].passAllMetricsCountRound1);
       console.log(this.prAssignmentDetail[i].passAllMetricsCountRound2);
       for (let j = 0; j < this.userNameList.length; j++) {
         // 若第一輪審查未通過，檢查在修改作業期間是否上傳commit
         if (this.prAssignmentDetail[i].passAllMetricsCountRound1[j] === 0) {
           // 計算需要修改作業人數
-          needReviseCount += 1;
+          needReviseCount[i] += 1;
+          // 找這個人的commit紀錄
+          for (let k = 0; k < this.commits[commitsIndex].commits.length; k++) {
+            if (this.commits[commitsIndex].commits[k].number === 1) {
+              tmp += 1;
+            }
+            if (tmp === j) {
+              console.log(tmp);
+              console.log(j);
+              console.log(this.commits[commitsIndex].commits[k]);
+              console.log('這位同學需要修改作業，判斷他有沒有修改動作');
+              let index = k + 1;
+              while (true) {
+                if (this.commits[commitsIndex].commits[index] !== undefined) {
+                  if (this.commits[commitsIndex].commits[index].number === 1) {
+                    break;
+                  } else {
+                    // console.log(this.commits[commitsIndex].commits[index].time);
+                    // 判斷是否在修改時間內
+                    // tslint:disable-next-line:max-line-length
+                    if (this.compareTime(this.commits[commitsIndex].commits[index].time, this.commits[commitsIndex].assessmentTimes[2].startTime, this.commits[commitsIndex].assessmentTimes[2].endTime)) {
+                      // 有修改
+                      isReviseCount[i] += 1;
+                      if (this.prAssignmentDetail[i].passAllMetricsCountRound2[j] === 1) {
+                        isReviseAndPassCount[i] += 1;
+                      }
+                      break;
+                    } else {
+                      // 沒有修改
+                    }
+                    index += 1;
+                  }
+                } else {
+                  break;
+                }
+              }
+              break;
+            }
+          }
+          tmp = -1;
         }
       }
+      console.log(needReviseCount[i]);
+      console.log(isReviseCount[i]);
+      console.log(isReviseAndPassCount[i]);
     }
+    this.setReviseRate(needReviseCount, isReviseCount, isReviseAndPassCount);
+  }
+
+  compareTime(commitTime: string, startTime: string, endTime: string) {
+    // 年 月 日 時 分
+    let commitTimeFormatted = [];
+    let startTimeFormatted = [];
+    let endTimeFormatted = [];
+    const commitTimeDate = new Date();
+    const startTimeDate = new Date();
+    const endTimeDate = new Date();
+    // console.log('commitTime');
+    // console.log(commitTime);
+    // console.log('startTime');
+    // console.log(startTime);
+    // console.log('endTime');
+    // console.log(endTime);
+    // tslint:disable-next-line:max-line-length
+    commitTimeFormatted = [Number(commitTime.split('-')[0]), Number(commitTime.split('-')[1]), Number(commitTime.split('-')[2].split('T')[0]), Number(commitTime.split('-')[2].split('T')[1].split(':')[0]) + 8, Number(commitTime.split('-')[2].split('T')[1].split(':')[1]), Number(commitTime.split('-')[2].split('T')[1].split(':')[2].split('.')[0])];
+    // console.log('commitTimeFormatted');
+    // console.log(commitTimeFormatted);
+    // tslint:disable-next-line:max-line-length
+    startTimeFormatted = [Number(startTime.split('-')[0]), Number(startTime.split('-')[1]), Number(startTime.split('-')[2].split(' ')[0]), Number(startTime.split('-')[2].split(' ')[1].split(':')[0]), Number(startTime.split('-')[2].split(' ')[1].split(':')[1])];
+    // console.log('startTimeFormatted');
+    // console.log(startTimeFormatted);
+    // tslint:disable-next-line:max-line-length
+    endTimeFormatted = [Number(endTime.split('-')[0]), Number(endTime.split('-')[1]), Number(endTime.split('-')[2].split(' ')[0]), Number(endTime.split('-')[2].split(' ')[1].split(':')[0]), Number(endTime.split('-')[2].split(' ')[1].split(':')[1])];
+    // console.log('endTimeFormatted');
+    // console.log(endTimeFormatted);
+    // date format
+    commitTimeDate.setFullYear(commitTimeFormatted[0]);
+    commitTimeDate.setMonth(commitTimeFormatted[1]);
+    commitTimeDate.setDate(commitTimeFormatted[2]);
+    commitTimeDate.setHours(commitTimeFormatted[3]);
+    commitTimeDate.setMinutes(commitTimeFormatted[4]);
+    commitTimeDate.setSeconds(commitTimeFormatted[5]);
+    startTimeDate.setFullYear(startTimeFormatted[0]);
+    startTimeDate.setMonth(startTimeFormatted[1]);
+    startTimeDate.setDate(startTimeFormatted[2]);
+    startTimeDate.setHours(startTimeFormatted[3]);
+    startTimeDate.setMinutes(startTimeFormatted[4]);
+    startTimeDate.setSeconds(0);
+    endTimeDate.setFullYear(endTimeFormatted[0]);
+    endTimeDate.setMonth(endTimeFormatted[1]);
+    endTimeDate.setDate(endTimeFormatted[2]);
+    endTimeDate.setHours(endTimeFormatted[3]);
+    endTimeDate.setMinutes(endTimeFormatted[4]);
+    endTimeDate.setSeconds(0);
+    console.log(commitTimeDate);
+    console.log(startTimeDate);
+    console.log(endTimeDate);
+    // 時間比較
+    if (startTimeDate < commitTimeDate && commitTimeDate < endTimeDate) {
+      console.log('有修改');
+      return true;
+    } else {
+      console.log('不在修改時間內');
+      return false;
+    }
+  }
+
+  setReviseRate(needReviseCount: any, isReviseCount: any, isReviseAndPassCount: any) {
+    for (let i = 0; i < this.prAssignmentDetail.length; i++) {
+      this.reviseRateLineChartData[0].data[i] = isReviseCount[i] / needReviseCount[i];
+      // 取小數點後一位
+      this.reviseRateLineChartData[0].data[i] = Math.round((this.reviseRateLineChartData[0].data[i] * 100 + Number.EPSILON) * 10) / 10;
+      this.reviseRateLineChartData[1].data[i] = isReviseAndPassCount[i] / needReviseCount[i];
+      // 取小數點後一位
+      this.reviseRateLineChartData[1].data[i] = Math.round((this.reviseRateLineChartData[1].data[i] * 100 + Number.EPSILON) * 10) / 10;
+    }
+    this.isReviseRateLineChartReady = true;
   }
 
   test($event) {
