@@ -1,11 +1,13 @@
 import {Component, OnInit, NgModule, CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {User} from '../../../models/user';
 import {JwtService} from '../../../services/jwt.service';
+import {TimeService} from '../../../services/time.service';
 import {NgxLoadingModule, ngxLoadingAnimationTypes} from 'ngx-loading';
 import {ChartsModule} from 'ng2-charts';
 import {FormsModule} from '@angular/forms';
 import {StudentChartService} from './chart-studashboard.service';
 import {Status} from '../../shared/chart/status';
+import {defaultThrottleConfig} from 'rxjs/internal-compatibility';
 
 
 @Component({
@@ -43,6 +45,7 @@ export class StudentChartComponent implements OnInit {
   public prAssignmentDetail: Array<any> = [];
   public prAssignmentNameList: Array<any> = [];
   public commits: Array<any>;
+  public prCommits: Array<any>;
 
   // Exam
   public examAvgScoreTable: Array<any> = new Array<any>();
@@ -60,6 +63,11 @@ export class StudentChartComponent implements OnInit {
   public selectedAssignment: string;
   public usersRankingByAssignmentScore: Array<any> = new Array<any>();
   public peerReviewCommitRecord: Array<any> = new Array<any>();
+  public peerReviewRound1ParticipationCount: Array<any> = [];
+  public peerReviewRound2ParticipationCount: Array<any> = [];
+  public allReviewStudentCount = 0;
+  public usersRankingByParticipation: Array<any> = [];
+  public participation: Array<any> = [];
 
   // Others
   public username: string;
@@ -69,6 +77,8 @@ export class StudentChartComponent implements OnInit {
   public assignmentMasteryBarChartDisplay: boolean = false;
 
   // Feedback
+  public feedbackMsgTopLabel: Array<any> = [];
+  public feedbackMsgLastLabel: Array<any> = [];
   public feedbackMsgTop: Array<any> = [];
   public feedbackMsgLast: Array<any> = [];
   public star: Array<any> = [];
@@ -76,6 +86,14 @@ export class StudentChartComponent implements OnInit {
 
   // participation
   public participationOfEachUser: Array<any> = [];
+
+  // Time Format
+  public commitTimeFormatted: Array<any> = [];
+  public startTimeFormatted: Array<any> = [];
+  public endTimeFormatted: Array<any> = [];
+  public commitTimeDate = new Date();
+  public startTimeDate = new Date();
+  public endTimeDate = new Date();
 
   constructor(private studentChartService: StudentChartService, private jwtService?: JwtService) {
   }
@@ -133,17 +151,29 @@ export class StudentChartComponent implements OnInit {
     },
   ];
 
+  RadarChartLabel = ['完成時間', '解決問題的能力', '找出問題的能力', '課程參與率', '課程掌握度'];
+  RadarChartData = [
+    {
+      data: [], label: '我的能力'
+    },
+    // {
+    //   data: [], label: '班級平均'
+    // },
+    // {
+    //   data: [], label: '班級最高'
+    // }
+  ];
+
   async ngOnInit() {
     this.username = new User(this.jwtService).getUsername();
     await this.initAllCommit();
     await this.initAllScoreChart();
     await this.initPrAssignmentDetail();
-    await this.initParticipationData();
-    await this.initFeedbacksAndMetricsData();
     await this.getFeedbackScoreAvg();
     await this.getFeedbackDetail();
     await this.getAssignmentMastery();
-    await this.getParticipationRank();
+    await this.updateClassParticipationRanking();
+    await this.getRadarData();
   }
 
   async initAllCommit() {
@@ -229,7 +259,13 @@ export class StudentChartComponent implements OnInit {
           // Each Metrics是否通過
           myAssignmentMastery: [],
           // Metrics 通過數量
-          classAssignmentMasteryPassCount: []
+          classAssignmentMasteryPassCount: [],
+          // 是否完成作業
+          classIsPayAssignment: [],
+          // 是否需要修改作業
+          isNeedRevise: [],
+          // 是否修改作業
+          isRevise: []
         }
       );
     }
@@ -249,15 +285,6 @@ export class StudentChartComponent implements OnInit {
     }
   }
 
-  async initParticipationData() {
-    this.peerReviewCommitRecord = await this.studentChartService.getOneUserPeerReviewCommitRecord(this.username).toPromise();
-
-  }
-
-  async initFeedbacksAndMetricsData() {
-
-  }
-
   async getFeedbackDetail() {
     // 此使用者名稱
     // console.log(this.username);
@@ -269,14 +296,14 @@ export class StudentChartComponent implements OnInit {
           for (let k = 0; k < response.allRecordDetail[j].Detail.length; k++) {
             if (response.allRecordDetail[j].Detail[k].score === 1) {
               // console.log('已通過');
-              // console.log(response.allRecordDetail[j].Detail[k].feedback);
               if (this.feedbackMsgTop.length < 5) {
+                this.feedbackMsgTopLabel.push(this.prAssignmentDetail[i].name);
                 this.feedbackMsgTop.push(response.allRecordDetail[j].Detail[k].feedback);
               }
             } else if (response.allRecordDetail[j].Detail[k].score === 2) {
               // console.log('未通過');
-              // console.log(response.allRecordDetail[j].Detail[k].feedback);
               if (this.feedbackMsgLast.length < 5) {
+                this.feedbackMsgLastLabel.push(this.prAssignmentDetail[i].name);
                 this.feedbackMsgLast.push(response.allRecordDetail[j].Detail[k].feedback);
               }
             } else {
@@ -284,8 +311,8 @@ export class StudentChartComponent implements OnInit {
             }
             // 都達五則結束迴圈
             if (this.feedbackMsgTop.length === 5 && this.feedbackMsgLast.length === 5) {
-              // console.log(this.feedbackMsgTop);
-              // console.log(this.feedbackMsgLast);
+              console.log(this.feedbackMsgTopLabel);
+              console.log(this.feedbackMsgLastLabel);
               return;
             }
           }
@@ -471,19 +498,6 @@ export class StudentChartComponent implements OnInit {
     }
   }
 
-  getParticipationRank() {
-    this.initParticipation();
-    console.log(this.participationOfEachUser);
-    console.log(this.commits);
-    this.initNeedReviseNameList();
-    // 每一作業
-    for (let i = 0; i < this.commits.length; i++) {
-      if (this.prAssignmentNameList.includes(this.commits[i].name)) {
-        console.log(this.commits[i].name);
-      }
-    }
-  }
-
   /**
    * 計算標準差
    * @param scoreList
@@ -520,6 +534,395 @@ export class StudentChartComponent implements OnInit {
     } else {
       // 紅色
       this.examBackgroundColor = '#F3869F';
+    }
+  }
+
+  async updateClassParticipationRanking() {
+    let sortParticipation = [];
+    // 有繳交作業數
+    let isPay = [];
+    // 有修改作業數
+    let isRevise = [];
+    // 需修改作業數
+    let needRevise = [];
+    for (let i = 0; i < this.userList.length; i++) {
+      this.participation.push(0);
+      isPay.push(0);
+      isRevise.push(0);
+      needRevise.push(0);
+    }
+
+    // 是否繳交作業
+    await this.classIsPayAssignment();
+    // 是否修改作業
+    await this.classIsEditAssignment();
+    // 是否PR
+    await this.classIsReview();
+
+    for (let i = 0; i < this.prAssignmentDetail.length; i++) {
+      for (let j = 0; j < this.prAssignmentDetail[i].classIsPayAssignment.length; j++) {
+        if (this.prAssignmentDetail[i].classIsPayAssignment[j]) {
+          isPay[j] += 1;
+        }
+        if (this.prAssignmentDetail[i].isRevise[j]) {
+          isRevise[j] += 1;
+        }
+        if (this.prAssignmentDetail[i].isNeedRevise[j]) {
+          needRevise[j] += 1;
+        }
+      }
+    }
+    for (let i = 0; i < this.userList.length; i++) {
+      // tslint:disable-next-line:max-line-length
+      this.participation[i] = (isPay[i] / this.prAssignmentDetail.length) * 0.25 + (isRevise[i] / needRevise[i]) * 0.25 + (this.peerReviewRound1ParticipationCount[i] / this.allReviewStudentCount) * 0.25 + (this.peerReviewRound2ParticipationCount[i] / this.allReviewStudentCount) * 0.25;
+    }
+    for (let i = 0; i < this.participation.length; i++) {
+      sortParticipation[i] = this.participation[i];
+    }
+    sortParticipation.sort();
+    for (let i = 1; i <= 5; i++) {
+      this.usersRankingByParticipation[i - 1] = this.participation.indexOf(sortParticipation[sortParticipation.length - i]);
+    }
+    for (let i = 0; i < this.usersRankingByParticipation.length; i++) {
+      this.usersRankingByParticipation[i] = this.userList[this.usersRankingByParticipation[i]].name;
+    }
+  }
+
+  /**
+   * 全班是否繳交作業紀錄
+   */
+  async classIsPayAssignment() {
+    let assignmentIndex = -1;
+    // 初始化班級是否繳交作業陣列
+    for (let i = 0; i < this.prAssignmentDetail.length; i++) {
+      for (let j = 0; j < this.userList.length; j++) {
+        this.prAssignmentDetail[i].classIsPayAssignment.push(false);
+      }
+    }
+    for (let i = 0; i < this.commits.length; i++) {
+      // 篩選是否為同儕審查之作業
+      if (this.prAssignmentNameList.includes(this.commits[i].name)) {
+        let count = -1;
+        assignmentIndex = this.prAssignmentNameList.indexOf(this.commits[i].name);
+        for (let j = 0; j < this.commits[i].commits.length; j++) {
+          if (this.commits[i].commits[j].number === 1) {
+            count += 1;
+          } else if (this.commits[i].commits[j].number === 2) {
+            this.prAssignmentDetail[assignmentIndex].classIsPayAssignment[count] = true;
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * 全班是否審查(含 1、2 Round)
+   */
+  async classIsReview() {
+    for (let i = 0; i < this.userList.length; i++) {
+      this.peerReviewRound1ParticipationCount.push(0);
+      this.peerReviewRound2ParticipationCount.push(0);
+    }
+    for (let i = 0; i < this.prAssignmentNameList.length; i++) {
+      const response = await this.studentChartService.getPeerReviewStatusRoundAllUser(this.prAssignmentNameList[i]).toPromise();
+      this.allReviewStudentCount += response[0].reviewRound[0].amount;
+      for (let j = 0; j < response.length; j++) {
+        // k = round數
+        for (let k = 0; k < response[j].reviewRound.length; k++) {
+          // 第一次PR
+          if (k === 0) {
+            this.peerReviewRound1ParticipationCount[j] += response[j].reviewRound[k].count;
+          } else if (k === 1) {
+            this.peerReviewRound2ParticipationCount[j] += response[j].reviewRound[k].count;
+          }
+        }
+      }
+    }
+    // 需要PR數
+    console.log(this.allReviewStudentCount);
+    // 有PR數
+    console.log(this.peerReviewRound1ParticipationCount);
+    console.log(this.peerReviewRound2ParticipationCount);
+  }
+
+  /**
+   * 全班是否修改作業紀錄
+   */
+  async classIsEditAssignment() {
+    //////////////////////////////////////////////////////////////////////
+    // 判斷學生是否需要修改作業
+    let pass = 0;
+    for (let i = 0; i < this.prAssignmentDetail.length; i++) {
+      // console.log(this.prAssignmentDetail[i].name);
+      for (let j = 0; j < this.userList.length; j++) {
+        this.prAssignmentDetail[i].isNeedRevise.push(true);
+        this.prAssignmentDetail[i].isRevise.push(false);
+        // console.log(this.userList[j].username);
+        const response = await this.studentChartService.getReviewFeedback(this.prAssignmentDetail[i].name, this.username).toPromise();
+        let tmp = 0;
+        // console.log(response.allRecordDetail);
+        for (let k = 0; k < response.allRecordDetail.length; k++) {
+          if (response.allRecordDetail[k].Detail) {
+            // console.log(response.allRecordDetail[k].Detail);
+            let count = 0;
+            for (let l = 0; l < response.allRecordDetail[k].Detail.length; l++) {
+              // console.log(response.allRecordDetail[k].Detail[l].score);
+              if (response.allRecordDetail[k].Detail[l].score === 1) {
+                // console.log('通過');
+                count += 1;
+              } else {
+                // console.log('未通過');
+              }
+              if (count === response.allRecordDetail[k].Detail.length) {
+                // console.log('好棒棒全部通過');
+                pass += 1;
+              }
+            }
+            if (pass === response.allRecordDetail.length) {
+              // console.log('審查者全部通過');
+              this.prAssignmentDetail[i].isNeedRevise[j] = false;
+            }
+            pass = 0;
+          } else {
+            tmp += 1;
+            if (tmp === response.allRecordDetail[k].totalCount) {
+              // 需要修改
+              // console.log('沒有人Review, 需要修改');
+            }
+          }
+        }
+      }
+    }
+    //////////////////////////////////////////////////////////////////////
+    console.log(this.commits);
+    let stuIndex = -1;
+    let assignmentIndex = -1;
+    let commitsIndex = -1;
+    for (let i = 0; i < this.prAssignmentDetail.length; i++) {
+      console.log(this.prAssignmentDetail[i].isNeedRevise);
+      assignmentIndex = i;
+      for (let j = 0; j < this.prAssignmentDetail[i].isNeedRevise.length; j++) {
+        // 需要修改作業的同學
+        if (this.prAssignmentDetail[i].isNeedRevise[j]) {
+          stuIndex = j;
+          // 找該作業的commit紀錄
+          for (let k = 0; k < this.commits.length; k++) {
+            if (this.commits[k].name === this.prAssignmentDetail[i].name) {
+              commitsIndex = k;
+              break;
+            }
+          }
+          let index = -1;
+          for (let k = 0; k < this.commits[commitsIndex].commits.length; k++) {
+            if (this.commits[commitsIndex].commits[k].number === 1) {
+              index += 1;
+            } else {
+              // tslint:disable-next-line:max-line-length
+              if (index === stuIndex && this.compareTime(this.commits[commitsIndex].commits[k].time, this.commits[commitsIndex].assessmentTimes[2].startTime, this.commits[commitsIndex].assessmentTimes[2].endTime)) {
+                // 有修改作業
+                console.log(this.prAssignmentDetail[assignmentIndex].name);
+                console.log(this.userList[stuIndex].name);
+                console.log('有修改作業');
+                this.prAssignmentDetail[assignmentIndex].isRevise[stuIndex] = true;
+                break;
+              }
+            }
+            if (index > stuIndex) {
+              break;
+            }
+          }
+        }
+      }
+    }
+    console.log(this.prAssignmentDetail);
+  }
+
+  async getRadarData() {
+    // 本學生Index
+    let stuIndex = 0;
+    let mesteryPassMetricsTotal = 0;
+    for (let i = 0; i < this.userList.length; i++) {
+      if (this.userList[i].name === this.username) {
+        stuIndex = i;
+        break;
+      }
+    }
+    await this.calCompleteTime();
+    await this.calAbilityToSolveProblem();
+    this.RadarChartData[0].data[2] = (Number(this.starAvg) / 4) * 100 ;
+    this.RadarChartData[0].data[3] = this.participation[stuIndex] * 100;
+    for (let i = 0; i < this.prAssignmentDetail.length; i++) {
+      mesteryPassMetricsTotal += this.prAssignmentDetail[i].classAssignmentMasteryPassCount[stuIndex];
+    }
+    this.RadarChartData[0].data[4] = mesteryPassMetricsTotal / this.prAssignmentDetail.length;
+  }
+
+  async calCompleteTime() {
+    const response = await this.studentChartService.getPartCommitDetail(this.username, this.prAssignmentDetail[8].name, '1').toPromise();
+    console.log(response);
+    if (response.length === 1) {
+      this.RadarChartData[0].data[0] = 0;
+    } else {
+      for (let i = 1; i <= response.length; i++) {
+        // console.log(response[response.length - i].time);
+        // tslint:disable-next-line:max-line-length
+        if (this.isInDoAssignmentTime(response[response.length - i].time, this.prAssignmentDetail[8].deadline[0].startTime, this.prAssignmentDetail[8].deadline[0].endTime)) {
+          // 100 - 計算完成時間佔總時間的幾趴
+          // console.log('計算時間');
+          // tslint:disable-next-line:max-line-length
+          this.RadarChartData[0].data[0] = (this.endTimeDate.getTime() - this.commitTimeDate.getTime()) / (this.endTimeDate.getTime() - this.startTimeDate.getTime());
+          // TODO 若第一頁都不在時間內
+          this.RadarChartData[0].data[0] = Math.round((this.RadarChartData[0].data[0] * 100 + Number.EPSILON) * 10) / 10;
+          // console.log(this.RadarChartData[0].data[0]);
+        }
+      }
+    }
+  }
+
+  compareTime(commitTime: string, startTime: string, endTime: string) {
+    // 年 月 日 時 分
+    let commitTimeFormatted = [];
+    let startTimeFormatted = [];
+    let endTimeFormatted = [];
+    const commitTimeDate = new Date();
+    const startTimeDate = new Date();
+    const endTimeDate = new Date();
+    // tslint:disable-next-line:max-line-length
+    commitTimeFormatted = [Number(commitTime.split('-')[0]), Number(commitTime.split('-')[1]), Number(commitTime.split('-')[2].split('T')[0]), Number(commitTime.split('-')[2].split('T')[1].split(':')[0]) + 8, Number(commitTime.split('-')[2].split('T')[1].split(':')[1]), Number(commitTime.split('-')[2].split('T')[1].split(':')[2].split('.')[0])];
+    // tslint:disable-next-line:max-line-length
+    startTimeFormatted = [Number(startTime.split('-')[0]), Number(startTime.split('-')[1]), Number(startTime.split('-')[2].split(' ')[0]), Number(startTime.split('-')[2].split(' ')[1].split(':')[0]), Number(startTime.split('-')[2].split(' ')[1].split(':')[1])];
+    // console.log('startTimeFormatted');
+    // console.log(startTimeFormatted);
+    // tslint:disable-next-line:max-line-length
+    endTimeFormatted = [Number(endTime.split('-')[0]), Number(endTime.split('-')[1]), Number(endTime.split('-')[2].split(' ')[0]), Number(endTime.split('-')[2].split(' ')[1].split(':')[0]), Number(endTime.split('-')[2].split(' ')[1].split(':')[1])];
+    // console.log('endTimeFormatted');
+    // console.log(endTimeFormatted);
+    // date format
+    commitTimeDate.setFullYear(commitTimeFormatted[0]);
+    commitTimeDate.setMonth(commitTimeFormatted[1]);
+    commitTimeDate.setDate(commitTimeFormatted[2]);
+    commitTimeDate.setHours(commitTimeFormatted[3]);
+    commitTimeDate.setMinutes(commitTimeFormatted[4]);
+    commitTimeDate.setSeconds(commitTimeFormatted[5]);
+    startTimeDate.setFullYear(startTimeFormatted[0]);
+    startTimeDate.setMonth(startTimeFormatted[1]);
+    startTimeDate.setDate(startTimeFormatted[2]);
+    startTimeDate.setHours(startTimeFormatted[3]);
+    startTimeDate.setMinutes(startTimeFormatted[4]);
+    startTimeDate.setSeconds(0);
+    endTimeDate.setFullYear(endTimeFormatted[0]);
+    endTimeDate.setMonth(endTimeFormatted[1]);
+    endTimeDate.setDate(endTimeFormatted[2]);
+    endTimeDate.setHours(endTimeFormatted[3]);
+    endTimeDate.setMinutes(endTimeFormatted[4]);
+    endTimeDate.setSeconds(0);
+    // console.log(commitTimeDate);
+    // console.log(startTimeDate);
+    // console.log(endTimeDate);
+    // 時間比較
+    if (startTimeDate < commitTimeDate && commitTimeDate < endTimeDate) {
+      // console.log('有修改');
+      return true;
+    } else {
+      // console.log('不在修改時間內');
+      return false;
+    }
+  }
+
+  isInDoAssignmentTime(commitTime: string, startTime: string, endTime: string) {
+    this.timeFormat(commitTime, startTime, endTime);
+    // 時間比較
+    if (this.startTimeDate < this.commitTimeDate && this.commitTimeDate < this.endTimeDate) {
+      // console.log('有修改');
+      return true;
+    } else {
+      // console.log('不在修改時間內');
+      return false;
+    }
+  }
+
+  timeFormat(commitTime: string, startTime: string, endTime: string) {
+    // console.log(commitTime);
+    // console.log(startTime);
+    // console.log(endTime);
+    // 年 月 日 時 分
+    // tslint:disable-next-line:max-line-length
+    this.commitTimeFormatted = [commitTime.split('-')[0], commitTime.split('-')[1], commitTime.split('-')[2].split(' ')[0], commitTime.split('-')[2].split(' ')[1].split(':')[0], commitTime.split('-')[2].split(' ')[1].split(':')[1], commitTime.split('-')[2].split(' ')[1].split(':')[2].split('.')[0]];
+    // tslint:disable-next-line:max-line-length
+    this.startTimeFormatted = [startTime.split('-')[0], startTime.split('-')[1], startTime.split('-')[2].split(' ')[0], startTime.split('-')[2].split(' ')[1].split(':')[0], startTime.split('-')[2].split(' ')[1].split(':')[1], startTime.split('-')[2].split(' ')[1].split(':')[2]];
+    this.endTimeFormatted = [endTime.split('-')[0], endTime.split('-')[1], endTime.split('-')[2].split(' ')[0], endTime.split('-')[2].split(' ')[1].split(':')[0], endTime.split('-')[2].split(' ')[1].split(':')[1], endTime.split('-')[2].split(' ')[1].split(':')[2]];
+    // console.log(this.commitTimeFormatted);
+    // console.log(this.startTimeFormatted);
+    // console.log(this.endTimeFormatted);
+    this.commitTimeDate.setFullYear(this.commitTimeFormatted[0]);
+    this.commitTimeDate.setMonth(this.commitTimeFormatted[1]);
+    this.commitTimeDate.setDate(this.commitTimeFormatted[2]);
+    this.commitTimeDate.setHours(this.commitTimeFormatted[3]);
+    this.commitTimeDate.setMinutes(this.commitTimeFormatted[4]);
+    this.commitTimeDate.setSeconds(this.commitTimeFormatted[5]);
+    this.startTimeDate.setFullYear(this.startTimeFormatted[0]);
+    this.startTimeDate.setMonth(this.startTimeFormatted[1]);
+    this.startTimeDate.setDate(this.startTimeFormatted[2]);
+    this.startTimeDate.setHours(this.startTimeFormatted[3]);
+    this.startTimeDate.setMinutes(this.startTimeFormatted[4]);
+    this.startTimeDate.setSeconds(0);
+    this.endTimeDate.setFullYear(this.endTimeFormatted[0]);
+    this.endTimeDate.setMonth(this.endTimeFormatted[1]);
+    this.endTimeDate.setDate(this.endTimeFormatted[2]);
+    this.endTimeDate.setHours(this.endTimeFormatted[3]);
+    this.endTimeDate.setMinutes(this.endTimeFormatted[4]);
+    this.endTimeDate.setSeconds(0);
+  }
+
+  async calAbilityToSolveProblem() {
+    // 已解決Metrics / 被提出Metrics
+    let alreadySolve = 0;
+    let beRaise = 0;
+    for (let i = 0; i < this.prAssignmentDetail.length; i++) {
+      const response = await this.studentChartService.getReviewFeedback(this.prAssignmentDetail[i].name, this.username).toPromise();
+      for (let j = 0; j < response.allRecordDetail.length; j++) {
+        if (response.allRecordDetail[j].Detail && response.allRecordDetail[j].latestCompletedRound === 2) {
+          // 判斷被提出的問題是否被解決
+          console.log('2R');
+          // 第一次審查結果
+          // tslint:disable-next-line:max-line-length
+          const reviewFeedbackPerStuR1 = await this.studentChartService.getReviewPageDetail(this.username, this.prAssignmentDetail[i].name, response.allRecordDetail[j].id, '1').toPromise();
+          console.log(reviewFeedbackPerStuR1.Detail);
+          console.log(response.allRecordDetail[j].Detail);
+          if (reviewFeedbackPerStuR1.Detail) {
+            for (let k = 0; k < reviewFeedbackPerStuR1.Detail.length; k++) {
+              // 判斷若第一次審查結果須修改第二次審查結果有沒有修改正確
+              if (reviewFeedbackPerStuR1.Detail[k].score === 2) {
+                beRaise += 1;
+                if (response.allRecordDetail[j].Detail[k].score === 1) {
+                  alreadySolve += 1;
+                }
+              }
+            }
+          } else {
+            // 第一輪沒有被審查第二輪才被審查
+          }
+        } else if (response.allRecordDetail[j].Detail && response.allRecordDetail[j].latestCompletedRound === 1) {
+          // 被提出問題但尚未解決
+          console.log('1R');
+          console.log(response.allRecordDetail[j].Detail);
+          for (let k = 0; k < response.allRecordDetail[j].Detail.length; k++) {
+            if (response.allRecordDetail[j].Detail[k].score === 2) {
+              beRaise += 1;
+            }
+          }
+        } else {
+          console.log('未獲得回覆');
+        }
+      }
+    }
+    console.log(beRaise);
+    console.log(alreadySolve);
+    // 若都沒有被提出問題
+    if (beRaise === 0) {
+      this.RadarChartData[0].data[1] = 100;
+    } else {
+      this.RadarChartData[0].data[1] = (alreadySolve / beRaise) * 100;
     }
   }
 }

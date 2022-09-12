@@ -8,6 +8,7 @@ import { UserAPI } from '../../../api/UserAPI';
 import { ChartAPI } from '../../../api/ChartAPI';
 import { PeerReviewAPI } from '../../../api/PeerReviewAPI';
 import {AssignmentAPI} from '../../../api/AssignmentAPI';
+import {CommitRecordAPI} from '../../../api/CommitRecordAPI';
 
 const editGroupOptions = ({
   headers: new HttpHeaders(
@@ -28,6 +29,8 @@ export class StudentChartService {
   PEER_REVIEW_ALL_ASSIGNMENT = AssignmentAPI.getAllPeerReviewAssignment;
   REVIEW_FEEDBACK_API = PeerReviewAPI.getReviewedRecordDetail;
   ROUND_STATUS_DETAIL_API = PeerReviewAPI.getReviewRoundStatusDetail;
+  PART_COMMIT_RECORD = CommitRecordAPI.getPartCommitRecord;
+  REVIEW_DETAIL_PAGE_API = PeerReviewAPI.getReviewPageDetail;
   constructor(private addJwtTokenHttpClient: AddJwtTokenHttpClient) { }
 
   getAllCommits(): Observable<any> {
@@ -78,6 +81,23 @@ export class StudentChartService {
       .set('round', round)
       .set('order', order);
     return this.addJwtTokenHttpClient.get(this.ROUND_STATUS_DETAIL_API, { params });
+  }
+
+  getPartCommitDetail(username: string, assignmentName: string, currentPage: string): Observable<any> {
+    const params = new HttpParams()
+      .set('username', username)
+      .set('assignmentName', assignmentName)
+      .set('currentPage', currentPage);
+    return this.addJwtTokenHttpClient.get(this.PART_COMMIT_RECORD, { params });
+  }
+
+  getReviewPageDetail(username: string, assignmentName: string, reviewId: string, round: string) {
+    const params = new HttpParams()
+      .set('username', username)
+      .set('assignmentName', assignmentName)
+      .set('reviewId', reviewId)
+      .set('round', round);
+    return this.addJwtTokenHttpClient.get(this.REVIEW_DETAIL_PAGE_API, { params });
   }
 
 }

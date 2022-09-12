@@ -83,6 +83,7 @@
             <div class="card">
               <div class="card-body">
                 <h5 class="card-title" style="font-weight: bold;">能力雷達圖</h5>
+                <app-radar-chart [radarChartLabels]="RadarChartLabel" [radarChartData]="RadarChartData"></app-radar-chart>
               </div>
             </div>
           </div>
@@ -108,9 +109,16 @@
                   <div class="col-md-2"></div>
                   <table class="table col-md-8" [style.text-align]="'center'">
                     <tbody>
+                    <tr class="row justify-content-md-center">
+                      <td class="col-md-1"></td>
+                      <td class="col-md-3">作業名稱</td>
+                      <td class="col-md-7">收到的回饋訊息</td>
+                      <td class="col-md-1"></td>
+                    </tr>
                     <tr class="row justify-content-md-center" *ngFor="let feedbackMsg of feedbackMsgTop; index as i">
                       <td class="col-md-1"></td>
-                      <td class="col-md-8">{{i+1}}.&emsp;{{feedbackMsg}}</td>
+                      <td class="col-md-3">{{feedbackMsgTopLabel[i]}}</td>
+                      <td class="col-md-7">{{feedbackMsg}}</td>
                       <td class="col-md-1"></td>
                     </tr>
                     </tbody>
@@ -128,9 +136,16 @@
                   <div class="col-md-2"></div>
                   <table class="table col-md-8" [style.text-align]="'center'">
                     <tbody>
+                    <tr class="row justify-content-md-center">
+                      <td class="col-md-1"></td>
+                      <td class="col-md-3">作業名稱</td>
+                      <td class="col-md-7">收到的回饋訊息</td>
+                      <td class="col-md-1"></td>
+                    </tr>
                     <tr class="row justify-content-md-center" *ngFor="let feedbackMsg of feedbackMsgLast; index as i">
                       <td class="col-md-1"></td>
-                      <td class="col-md-8">{{i+1}}.&emsp;{{feedbackMsg}}</td>
+                      <td class="col-md-3">{{feedbackMsgLastLabel[i]}}</td>
+                      <td class="col-md-7">{{feedbackMsg}}</td>
                       <td class="col-md-1"></td>
                     </tr>
                     </tbody>
@@ -189,7 +204,12 @@
                   <table class="table col-md-8" [style.text-align]="'center'">
                     <tbody>
                       <tr class="row justify-content-md-center" *ngFor="let user of usersRankingByAssignmentScore; index as i">
-                        <td class="col-md-2"></td>
+                        <div *ngIf="user === username; else empty">
+                          <td class="col-md-2"><img src="assets/img/quality.png"></td>
+                        </div>
+                        <ng-template #empty>
+                          <td class="col-md-2"></td>
+                        </ng-template>
                         <td class="col-md-6">{{i+1}}.&emsp;{{user}}</td>
                         <td class="col-md-2"></td>
                       </tr>
@@ -204,6 +224,24 @@
             <div class="card">
               <div class="card-body">
                 <h5 class="card-title" style="font-weight: bold;">課程參與率排行</h5>
+                <div class="row" style="padding-top: 5%;">
+                  <div class="col-md-2"></div>
+                  <table class="table col-md-8" [style.text-align]="'center'">
+                    <tbody>
+                    <tr class="row justify-content-md-center" *ngFor="let user of usersRankingByParticipation; index as i">
+                        <div *ngIf="user === username; else empty">
+                          <td class="col-md-2"><img src="assets/img/quality.png"></td>
+                        </div>
+                        <ng-template #empty>
+                          <td class="col-md-2"></td>
+                        </ng-template>
+                        <td class="col-md-6">{{i+1}}.&emsp;{{user}}</td>
+                        <td class="col-md-2"></td>
+                    </tr>
+                    </tbody>
+                  </table>
+                  <div class="col-md-2"></div>
+                </div>
               </div>
             </div>
           </div>

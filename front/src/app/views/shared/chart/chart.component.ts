@@ -970,31 +970,7 @@ export class ChartComponent implements OnInit {
     this.isMetricsCountChartReady = true;
   }
 
-  testPrAsiignmentInformation() {
-    for (let i = 0; i < this.prAssignmentDetail.length; i++) {
-      console.log(this.prAssignmentDetail[i].name);
-      console.log(this.prAssignmentDetail[i].round1);
-      console.log(this.prAssignmentDetail[i].round2);
-      console.log(this.prAssignmentDetail[i].feedbackScoreCount);
-      console.log(this.prAssignmentDetail[i].feedbackScoreTotal);
-      console.log(this.prAssignmentDetail[i].feedbackScoreMax);
-      console.log(this.prAssignmentDetail[i].passAllMetricsCountRound1);
-      console.log(this.prAssignmentDetail[i].passAllMetricsCountRound2);
-    }
-  }
-
   async calReviseRate() {
-    // console.log(this.commits);
-    // 判斷該作業是否為同儕審查類型作業
-    // for (let i = 0; i < this.commits.length; i++) {
-    //   if (this.prAssignmentNameList.includes(this.commits[i].name)) {
-    //     console.log(this.commits[i].name);
-    //     console.log(this.commits[i].commits);
-    //     // for (let j = 0; j < this.commits[i].commits.length; j++) {
-    //     //   console.log();
-    //     // }
-    //   }
-    // }
     const needReviseCount = [];
     const isReviseCount = [];
     const isReviseAndPassCount = [];
