@@ -477,11 +477,8 @@ export class StudentChartComponent implements OnInit {
     this.usersRankingByAssignmentScore = [];
     this.usersRankingIndex = [];
     let selectedAssignmentIndex = 0;
+    let sortedScoreListSelected = [];
     let index = -1;
-    let usersIndex = [];
-    let commitTime = [];
-    let commitTimeSort = [];
-    let rankingTmp = [];
     for (let i = 0; i < this.assignmentNameList.length; i++) {
       if (this.assignmentNameList[i] === assignmentName) {
         selectedAssignmentIndex = i;
@@ -494,43 +491,52 @@ export class StudentChartComponent implements OnInit {
         return b.score - a.score;
       });
 
-    // console.log(sortedUserScoreList);
-    // for (let i = 0; i < 5; i++) {
-    //   this.usersRankingByAssignmentScore.push(sortedUserScoreList[i].userName);
-    // }
     while (true) {
       index += 1;
-      if (rankingTmp.length === 5) {
-        // 如果下一位同學成績相同比commit時間
-        while (sortedUserScoreList[4].score === sortedUserScoreList[index].score) {
-          rankingTmp.push(sortedUserScoreList[index].userName);
-          usersIndex.push(index);
-          index += 1;
-          if (!sortedUserScoreList[index]) {
-            break;
+      if (sortedScoreListSelected.length === 5) {
+        if (sortedUserScoreList[index]) {
+          while (sortedUserScoreList[index].score === sortedScoreListSelected[4].score) {
+            sortedScoreListSelected.push(sortedUserScoreList[index]);
+            index += 1;
+            if (!sortedUserScoreList[index]) {
+              break;
+            }
           }
+        } else {
+          break;
         }
         break;
       } else {
-        rankingTmp.push(sortedUserScoreList[index].userName);
-        usersIndex.push(index);
+        sortedScoreListSelected.push(sortedUserScoreList[index]);
       }
     }
-    // username
-    // console.log(rankingTmp);
-    // index of user in sort array
-    // console.log(usersIndex);
-    for (let i = 0; i < rankingTmp.length; i++) {
+
+    for (let i = 0; i < sortedScoreListSelected.length; i++) {
       // tslint:disable-next-line:max-line-length
-      const response = await this.studentChartService.getPartCommitDetail(rankingTmp[i], assignmentName, '1').toPromise();
-      commitTime.push(Date.parse(response[response.length - 1].time));
+      const response = await this.studentChartService.getPartCommitDetail(sortedScoreListSelected[i].userName, assignmentName, '1').toPromise();
+      sortedScoreListSelected[i].commitTime = Date.parse(response[response.length - 1].time);
     }
-    for (let i = 0; i < commitTime.length; i++) {
-      commitTimeSort[i] = commitTime[i];
-    }
-    commitTimeSort.sort();
+
+    // 分數、時間排序
+    const result1 = [...sortedScoreListSelected].sort((a, b) => {
+      // 針對分數排序
+      if (a.score < b.score) {
+        return 1;
+      }
+      if (a.score > b.score) {
+        return -1;
+      }
+
+      // 分數相同，再針對commit time排序
+      if (a.commitTime < b.commitTime) {
+        return -1;
+      }
+      if (a.commitTime > b.commitTime) {
+        return 1;
+      }
+    });
     for (let i = 0; i < 5; i++) {
-      this.usersRankingByAssignmentScore[i] = rankingTmp[commitTime.indexOf(commitTimeSort[i])];
+      this.usersRankingByAssignmentScore.push(result1[i].userName);
     }
   }
 
