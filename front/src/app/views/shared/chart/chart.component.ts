@@ -980,18 +980,18 @@ export class ChartComponent implements OnInit {
       needReviseCount.push(0);
       isReviseCount.push(0);
       isReviseAndPassCount.push(0);
-      console.log(this.prAssignmentDetail[i].name);
+      // console.log(this.prAssignmentDetail[i].name);
       for (let j = 0; j < this.commits.length; j++) {
         if (this.commits[j].name === this.prAssignmentDetail[i].name) {
           commitsIndex = j;
           break;
         }
       }
-      console.log(this.commits[commitsIndex]);
+      // console.log(this.commits[commitsIndex]);
       // 開放修改作業時間
-      console.log(this.commits[commitsIndex].assessmentTimes[2]);
-      console.log(this.prAssignmentDetail[i].passAllMetricsCountRound1);
-      console.log(this.prAssignmentDetail[i].passAllMetricsCountRound2);
+      // console.log(this.commits[commitsIndex].assessmentTimes[2]);
+      // console.log(this.prAssignmentDetail[i].passAllMetricsCountRound1);
+      // console.log(this.prAssignmentDetail[i].passAllMetricsCountRound2);
       for (let j = 0; j < this.userNameList.length; j++) {
         // 若第一輪審查未通過，檢查在修改作業期間是否上傳commit
         if (this.prAssignmentDetail[i].passAllMetricsCountRound1[j] === 0) {
@@ -1003,10 +1003,10 @@ export class ChartComponent implements OnInit {
               tmp += 1;
             }
             if (tmp === j) {
-              console.log(tmp);
-              console.log(j);
-              console.log(this.commits[commitsIndex].commits[k]);
-              console.log('這位同學需要修改作業，判斷他有沒有修改動作');
+              // console.log(tmp);
+              // console.log(j);
+              // console.log(this.commits[commitsIndex].commits[k]);
+              // console.log('這位同學需要修改作業，判斷他有沒有修改動作');
               let index = k + 1;
               while (true) {
                 if (this.commits[commitsIndex].commits[index] !== undefined) {
@@ -1038,9 +1038,9 @@ export class ChartComponent implements OnInit {
           tmp = -1;
         }
       }
-      console.log(needReviseCount[i]);
-      console.log(isReviseCount[i]);
-      console.log(isReviseAndPassCount[i]);
+      // console.log(needReviseCount[i]);
+      // console.log(isReviseCount[i]);
+      // console.log(isReviseAndPassCount[i]);
     }
     this.setReviseRate(needReviseCount, isReviseCount, isReviseAndPassCount);
   }
@@ -1090,25 +1090,30 @@ export class ChartComponent implements OnInit {
     endTimeDate.setHours(endTimeFormatted[3]);
     endTimeDate.setMinutes(endTimeFormatted[4]);
     endTimeDate.setSeconds(0);
-    console.log(commitTimeDate);
-    console.log(startTimeDate);
-    console.log(endTimeDate);
+    // console.log(commitTimeDate);
+    // console.log(startTimeDate);
+    // console.log(endTimeDate);
     // 時間比較
     if (startTimeDate < commitTimeDate && commitTimeDate < endTimeDate) {
-      console.log('有修改');
+      // console.log('有修改');
       return true;
     } else {
-      console.log('不在修改時間內');
+      // console.log('不在修改時間內');
       return false;
     }
   }
 
   setReviseRate(needReviseCount: any, isReviseCount: any, isReviseAndPassCount: any) {
     for (let i = 0; i < this.prAssignmentDetail.length; i++) {
-      this.reviseRateLineChartData[0].data[i] = isReviseCount[i] / needReviseCount[i];
+      if (needReviseCount[i] === 0) {
+        this.reviseRateLineChartData[0].data[i] = 0;
+        this.reviseRateLineChartData[1].data[i] = 0;
+      } else {
+        this.reviseRateLineChartData[0].data[i] = isReviseCount[i] / needReviseCount[i];
+        this.reviseRateLineChartData[1].data[i] = isReviseAndPassCount[i] / needReviseCount[i];
+      }
       // 取小數點後一位
       this.reviseRateLineChartData[0].data[i] = Math.round((this.reviseRateLineChartData[0].data[i] * 100 + Number.EPSILON) * 10) / 10;
-      this.reviseRateLineChartData[1].data[i] = isReviseAndPassCount[i] / needReviseCount[i];
       // 取小數點後一位
       this.reviseRateLineChartData[1].data[i] = Math.round((this.reviseRateLineChartData[1].data[i] * 100 + Number.EPSILON) * 10) / 10;
     }

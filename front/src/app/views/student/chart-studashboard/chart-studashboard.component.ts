@@ -76,6 +76,7 @@ export class StudentChartComponent implements OnInit {
   public examBarChartDisplay: boolean = false;
   public scatterChartDisplay: boolean = false;
   public assignmentMasteryBarChartDisplay: boolean = false;
+  public timePercent: Array<any> = [];
 
   // Feedback
   public feedbackMsgTopLabel: Array<any> = [];
@@ -197,7 +198,12 @@ export class StudentChartComponent implements OnInit {
         this.allAssignmentUserScore.push(userScores);
       }
     }
-    this.selectedExam = this.examAvgScoreTable[this.examAvgScoreTable.length - 1].assignmentName;
+    console.log(this.examAvgScoreTable);
+    if (this.examAvgScoreTable.length === 0) {
+      this.selectedExam = '';
+    } else {
+      this.selectedExam = this.examAvgScoreTable[this.examAvgScoreTable.length - 1].assignmentName;
+    }
     this.selectedAssignment = this.assignmentAvgScoreTable[0].assignmentName;
     this.updateAssignmentScoreRanking(this.selectedAssignment);
 
@@ -457,12 +463,14 @@ export class StudentChartComponent implements OnInit {
         break;
       }
     }
-    for (let i = 0; i < this.allExamUserScore[selectedExamIndex].length; i++) {
-      let scoreRank = Math.floor(this.allExamUserScore[selectedExamIndex][i].score / 10);
-      if (scoreRank < 4) {
-        this.examBarChartData[0].data[7] += 1;
-      } else {
-        this.examBarChartData[0].data[10 - scoreRank] += 1;
+    if (this.allExamUserScore[selectedExamIndex]) {
+      for (let i = 0; i < this.allExamUserScore[selectedExamIndex].length; i++) {
+        let scoreRank = Math.floor(this.allExamUserScore[selectedExamIndex][i].score / 10);
+        if (scoreRank < 4) {
+          this.examBarChartData[0].data[7] += 1;
+        } else {
+          this.examBarChartData[0].data[10 - scoreRank] += 1;
+        }
       }
     }
     this.examBarChartDisplay = true;
@@ -806,23 +814,39 @@ export class StudentChartComponent implements OnInit {
   }
 
   async calCompleteTime() {
-    const response = await this.studentChartService.getPartCommitDetail(this.username, this.prAssignmentDetail[8].name, '1').toPromise();
-    // console.log(response);
-    if (response.length === 1) {
-      this.RadarChartData[0].data[0] = 0;
-    } else {
-      for (let i = 1; i <= response.length; i++) {
-        // console.log(response[response.length - i].time);
+    for (let i = 0; i < this.prAssignmentDetail.length; i++) {
+      let response = await this.studentChartService.getPartCommitDetail(this.username, this.prAssignmentDetail[i].name, '1').toPromise();
+      if (response[0].totalCommit === 1) {
+        this.timePercent[i] = 0;
+      } else if (Math.ceil(response[0].totalCommit / 5) === 1) {
+        // tslint:disable-next-line:radix
+        this.calTimePercent(i, response);
+      } else {
         // tslint:disable-next-line:max-line-length
-        if (this.isInDoAssignmentTime(response[response.length - i].time, this.prAssignmentDetail[8].deadline[0].startTime, this.prAssignmentDetail[8].deadline[0].endTime)) {
-          // 100 - 計算完成時間佔總時間的幾趴
-          // console.log('計算時間');
-          // tslint:disable-next-line:max-line-length
-          this.RadarChartData[0].data[0] = (this.endTimeDate.getTime() - this.commitTimeDate.getTime()) / (this.endTimeDate.getTime() - this.startTimeDate.getTime());
-          // TODO 若第一頁都不在時間內
-          this.RadarChartData[0].data[0] = Math.round((this.RadarChartData[0].data[0] * 100 + Number.EPSILON) * 10) / 10;
-          // console.log(this.RadarChartData[0].data[0]);
-        }
+        response = await this.studentChartService.getPartCommitDetail(this.username, this.prAssignmentDetail[i].name, Math.ceil(response[0].totalCommit / 5).toString()).toPromise();
+        this.calTimePercent(i, response);
+      }
+    }
+    let sum = 0;
+    for (let i = 0; i < this.timePercent.length; i++) {
+      sum += this.timePercent[i];
+    }
+    this.RadarChartData[0].data[0] = sum / this.timePercent.length;
+  }
+
+  calTimePercent (i: number, response: any) {
+    for (let j = 1; j <= response.length; j++) {
+      // console.log(response[response.length - i].time);
+      // tslint:disable-next-line:max-line-length
+      if (this.isInDoAssignmentTime(response[response.length - j].time, this.prAssignmentDetail[i].deadline[0].startTime, this.prAssignmentDetail[i].deadline[0].endTime)) {
+        // 100 - 計算完成時間佔總時間的幾趴
+        // console.log('計算時間');
+        // tslint:disable-next-line:max-line-length
+        this.timePercent[i] = (this.endTimeDate.getTime() - this.commitTimeDate.getTime()) / (this.endTimeDate.getTime() - this.startTimeDate.getTime());
+        // TODO 若第一頁都不在時間內
+        this.timePercent[i] = Math.round((this.timePercent[i] * 100 + Number.EPSILON) * 10) / 10;
+        // console.log(this.RadarChartData[0].data[0]);
+        break;
       }
     }
   }
