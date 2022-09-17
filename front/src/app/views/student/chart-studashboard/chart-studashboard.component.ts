@@ -67,8 +67,8 @@ export class StudentChartComponent implements OnInit {
   public peerReviewRound1ParticipationCount: Array<any> = [];
   public peerReviewRound2ParticipationCount: Array<any> = [];
   public allReviewStudentCount = 0;
-  public usersRankingByParticipation: Array<any> = [];
-  public participation: Array<any> = [];
+  public usersRankingByParticipation: Array<any> = new Array<any>();
+  public participation: Array<any> = new Array<any>();
 
   // Others
   public username: string;
@@ -176,6 +176,7 @@ export class StudentChartComponent implements OnInit {
     await this.getAssignmentMastery();
     await this.updateClassParticipationRanking();
     await this.getRadarData();
+    await console.log('Success');
   }
 
   async initAllCommit() {
@@ -198,13 +199,17 @@ export class StudentChartComponent implements OnInit {
         this.allAssignmentUserScore.push(userScores);
       }
     }
-    console.log(this.examAvgScoreTable);
+    // console.log(this.examAvgScoreTable);
     if (this.examAvgScoreTable.length === 0) {
       this.selectedExam = '';
     } else {
       this.selectedExam = this.examAvgScoreTable[this.examAvgScoreTable.length - 1].assignmentName;
     }
-    this.selectedAssignment = this.assignmentAvgScoreTable[0].assignmentName;
+    if (this.assignmentAvgScoreTable[0]) {
+      this.selectedAssignment = this.assignmentAvgScoreTable[0].assignmentName;
+    } else {
+      this.selectedAssignment = '';
+    }
     this.updateAssignmentScoreRanking(this.selectedAssignment);
 
     // add average score data to assignment chart
@@ -493,58 +498,59 @@ export class StudentChartComponent implements OnInit {
         break;
       }
     }
-    // Sort array by score
-    const sortedUserScoreList = this.allAssignmentUserScore[selectedAssignmentIndex].sort(
-      function (a, b) {
-        return b.score - a.score;
-      });
+    if (this.allAssignmentUserScore[selectedAssignmentIndex]) {
+      // Sort array by score
+      const sortedUserScoreList = this.allAssignmentUserScore[selectedAssignmentIndex].sort(
+        function (a, b) {
+          return b.score - a.score;
+        });
 
-    while (true) {
-      index += 1;
-      if (sortedScoreListSelected.length === 5) {
-        if (sortedUserScoreList[index]) {
-          while (sortedUserScoreList[index].score === sortedScoreListSelected[4].score) {
-            sortedScoreListSelected.push(sortedUserScoreList[index]);
-            index += 1;
-            if (!sortedUserScoreList[index]) {
-              break;
+      while (true) {
+        index += 1;
+        if (sortedScoreListSelected.length === 5) {
+          if (sortedUserScoreList[index]) {
+            while (sortedUserScoreList[index].score === sortedScoreListSelected[4].score) {
+              sortedScoreListSelected.push(sortedUserScoreList[index]);
+              index += 1;
+              if (!sortedUserScoreList[index]) {
+                break;
+              }
             }
+          } else {
+            break;
           }
-        } else {
           break;
+        } else {
+          sortedScoreListSelected.push(sortedUserScoreList[index]);
         }
-        break;
-      } else {
-        sortedScoreListSelected.push(sortedUserScoreList[index]);
       }
-    }
-
-    for (let i = 0; i < sortedScoreListSelected.length; i++) {
-      // tslint:disable-next-line:max-line-length
-      const response = await this.studentChartService.getPartCommitDetail(sortedScoreListSelected[i].userName, assignmentName, '1').toPromise();
-      sortedScoreListSelected[i].commitTime = Date.parse(response[response.length - 1].time);
-    }
-
-    // 分數、時間排序
-    const result1 = [...sortedScoreListSelected].sort((a, b) => {
-      // 針對分數排序
-      if (a.score < b.score) {
-        return 1;
-      }
-      if (a.score > b.score) {
-        return -1;
+      for (let i = 0; i < sortedScoreListSelected.length; i++) {
+        // tslint:disable-next-line:max-line-length
+        const response = await this.studentChartService.getPartCommitDetail(sortedScoreListSelected[i].userName, assignmentName, '1').toPromise();
+        sortedScoreListSelected[i].commitTime = Date.parse(response[response.length - 1].time);
       }
 
-      // 分數相同，再針對commit time排序
-      if (a.commitTime < b.commitTime) {
-        return -1;
+      // 分數、時間排序
+      const result1 = [...sortedScoreListSelected].sort((a, b) => {
+        // 針對分數排序
+        if (a.score < b.score) {
+          return 1;
+        }
+        if (a.score > b.score) {
+          return -1;
+        }
+
+        // 分數相同，再針對commit time排序
+        if (a.commitTime < b.commitTime) {
+          return -1;
+        }
+        if (a.commitTime > b.commitTime) {
+          return 1;
+        }
+      });
+      for (let i = 0; i < 5; i++) {
+        this.usersRankingByAssignmentScore.push(result1[i].userName);
       }
-      if (a.commitTime > b.commitTime) {
-        return 1;
-      }
-    });
-    for (let i = 0; i < 5; i++) {
-      this.usersRankingByAssignmentScore.push(result1[i].userName);
     }
   }
 
@@ -602,7 +608,15 @@ export class StudentChartComponent implements OnInit {
     // 需修改作業數
     let needRevise = [];
     for (let i = 0; i < this.userList.length; i++) {
-      this.participation.push(0);
+      this.participation.push(
+        {
+          name: this.userList[i].username,
+          participation: [],
+          isPay: 0,
+          isNeedRevise: 0,
+          isRevise: 0
+        }
+      );
       isPay.push(0);
       isRevise.push(0);
       needRevise.push(0);
@@ -630,18 +644,46 @@ export class StudentChartComponent implements OnInit {
     }
     for (let i = 0; i < this.userList.length; i++) {
       // tslint:disable-next-line:max-line-length
-      this.participation[i] = (isPay[i] / this.prAssignmentDetail.length) * 0.25 + (isRevise[i] / needRevise[i]) * 0.25 + (this.peerReviewRound1ParticipationCount[i] / this.allReviewStudentCount) * 0.25 + (this.peerReviewRound2ParticipationCount[i] / this.allReviewStudentCount) * 0.25;
+      this.participation[i].participation = (isPay[i] / this.prAssignmentDetail.length) * 0.25 + (isRevise[i] / needRevise[i]) * 0.25 + (this.peerReviewRound1ParticipationCount[i] / this.allReviewStudentCount) * 0.25 + (this.peerReviewRound2ParticipationCount[i] / this.allReviewStudentCount) * 0.25;
+      this.participation[i].isPay = isPay[i];
+      this.participation[i].isRevise = isRevise[i];
+      this.participation[i].needRevise = needRevise[i];
     }
-    for (let i = 0; i < this.participation.length; i++) {
-      sortParticipation[i] = this.participation[i];
+    const result = [...this.participation].sort((a, b) => {
+      // 參與度排序
+      if (a.participation < b.participation) {
+        return 1;
+      }
+      if (a.participation > b.participation) {
+        return -1;
+      }
+      // 繳交作業數排序
+      if (a.isPay < b.isPay) {
+        return 1;
+      }
+      if (a.isPay > b.isPay) {
+        return -1;
+      }
+      // 需修改Metrics 數排序
+      if (a.needRevise > b.needRevise) {
+        return 1;
+      }
+      if (a.needRevise < b.needRevise) {
+        return -1;
+      }
+      // 已修改 Metrics 數排序
+      if (a.isRevise < b.isRevise) {
+        return 1;
+      }
+      if (a.isRevise > b.isRevise) {
+        return -1;
+      }
+    });
+    // console.log(result);
+    for (let i = 0; i < 5; i++) {
+      this.usersRankingByParticipation[i] = result[i].name;
     }
-    sortParticipation.sort();
-    for (let i = 1; i <= 5; i++) {
-      this.usersRankingByParticipation[i - 1] = this.participation.indexOf(sortParticipation[sortParticipation.length - i]);
-    }
-    for (let i = 0; i < this.usersRankingByParticipation.length; i++) {
-      this.usersRankingByParticipation[i] = this.userList[this.usersRankingByParticipation[i]].name;
-    }
+    // console.log(this.usersRankingByParticipation);
   }
 
   /**
@@ -805,7 +847,7 @@ export class StudentChartComponent implements OnInit {
     }
     await this.calCompleteTime();
     await this.calAbilityToSolveProblem();
-    this.RadarChartData[0].data[2] = (Number(this.starAvg) / 4) * 100 ;
+    this.RadarChartData[0].data[2] = (Number(this.starAvg) / 4) * 100;
     this.RadarChartData[0].data[3] = this.participation[stuIndex] * 100;
     for (let i = 0; i < this.prAssignmentDetail.length; i++) {
       mesteryPassMetricsTotal += this.prAssignmentDetail[i].classAssignmentMasteryPassCount[stuIndex];
@@ -834,7 +876,7 @@ export class StudentChartComponent implements OnInit {
     this.RadarChartData[0].data[0] = sum / this.timePercent.length;
   }
 
-  calTimePercent (i: number, response: any) {
+  calTimePercent(i: number, response: any) {
     for (let j = 1; j <= response.length; j++) {
       // console.log(response[response.length - i].time);
       // tslint:disable-next-line:max-line-length
