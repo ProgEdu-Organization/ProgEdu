@@ -12,7 +12,14 @@ export class ScatterChartComponent implements OnInit {
   @Input() scatterChartLegend: boolean;
   public scatterChartOptions = {
     scaleShowVerticalLines: false,
-    responsive: true
+    responsive: true,
+    scales: {
+      // yAxes: [{
+      //   ticks: {
+      //     // beginAtZero: true,
+      //   }
+      // }]
+    }
   };
 
   // public scatterChartLabels = ['HW1', 'HW2', 'HW3', 'HW4', 'HW5', 'HW6', 'HW7'];

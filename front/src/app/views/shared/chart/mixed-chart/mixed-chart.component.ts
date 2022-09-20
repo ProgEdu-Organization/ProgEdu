@@ -15,6 +15,11 @@ export class MixedChartComponent implements OnInit {
     responsive: true,
     scaleShowVerticalLines: true,
     scales: {
+      yAxes: [{
+        ticks: {
+          beginAtZero: true
+        }
+      }]
     }
   };
   public mixedChartLegend = true;

@@ -308,7 +308,7 @@ export class StudentChartComponent implements OnInit {
           for (let k = 0; k < response.allRecordDetail[j].Detail.length; k++) {
             if (response.allRecordDetail[j].Detail[k].score === 1) {
               // console.log('已通過');
-              if (this.feedbackMsgTop.length < 5) {
+              if (this.feedbackMsgTop.length < 5 && response.allRecordDetail[j].Detail[k].feedback !== '') {
                 this.feedbackMsgTopLabel.push(this.prAssignmentDetail[i].name);
                 this.feedbackMsgTop.push(response.allRecordDetail[j].Detail[k].feedback);
               }
@@ -848,7 +848,7 @@ export class StudentChartComponent implements OnInit {
     await this.calCompleteTime();
     await this.calAbilityToSolveProblem();
     this.RadarChartData[0].data[2] = (Number(this.starAvg) / 4) * 100;
-    this.RadarChartData[0].data[3] = this.participation[stuIndex] * 100;
+    this.RadarChartData[0].data[3] = this.participation[stuIndex].participation * 100;
     for (let i = 0; i < this.prAssignmentDetail.length; i++) {
       mesteryPassMetricsTotal += this.prAssignmentDetail[i].classAssignmentMasteryPassCount[stuIndex];
     }

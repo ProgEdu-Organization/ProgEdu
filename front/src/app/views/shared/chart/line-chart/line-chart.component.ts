@@ -14,6 +14,13 @@ export class LineChartComponent implements OnInit {
     borderJoinStyle: 'miter',
     scaleShowVerticalLines: false,
     responsive: true,
+    scales: {
+      yAxes: [{
+        ticks: {
+          beginAtZero: true
+        }
+      }]
+    }
   };
 
   // public lineChartLabels = ['HW1', 'HW2', 'HW3', 'HW4', 'HW5', 'HW6', 'HW7'];

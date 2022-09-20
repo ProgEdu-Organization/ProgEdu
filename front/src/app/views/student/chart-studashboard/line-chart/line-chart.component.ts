@@ -7,17 +7,24 @@ import {Component, Input, OnInit} from '@angular/core';
 })
 export class LineChartComponent implements OnInit {
 
-  
+
   @Input() lineChartLabels: string[];
   @Input() lineChartData: any[];
   @Input() lineChartLegend: boolean;
-  
+
   public lineChartOptions = {
     borderJoinStyle: 'miter',
     scaleShowVerticalLines: false,
     responsive: true,
+    scales: {
+      y: {
+        beginAtZero: true,
+        min: 0,
+        max: 100
+      }
+    }
   };
-  
+
 
   // public lineChartLabels = ['HW1', 'HW2', 'HW3', 'HW4', 'HW5', 'HW6', 'HW7'];
   //public lineChartType = 'line';

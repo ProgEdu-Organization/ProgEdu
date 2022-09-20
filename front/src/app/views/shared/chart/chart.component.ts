@@ -440,6 +440,37 @@ export class ChartComponent implements OnInit {
     }
   }
 
+  async getPrAssignmentDetail() {
+    const response = await this.chartService.getAllPeerReviewAssignment().toPromise();
+    for (let i = 0; i < response.allReviewAssignments.length; i++) {
+      this.prAssignmentDetail.push(
+        {
+          name: response.allReviewAssignments[i].name,
+          round: response.allReviewAssignments[i].round,
+          amount: response.allReviewAssignments[i].amount,
+          assessmentTimes: response.allReviewAssignments[i].assessmentTimes,
+          // round each metrics 錯誤總數
+          round1: [],
+          round2: [],
+          feedbackScoreMax: 0,
+          feedbackScoreCount: 0,
+          feedbackScoreTotal: 0,
+          passAllMetricsCountRound1: [],
+          passAllMetricsCountRound2: [],
+          isReviseAssignment: []
+        },
+      );
+      for (let j = 0; j < this.allMetrics.length; j++) {
+        this.prAssignmentDetail[i].round1.push(0);
+        this.prAssignmentDetail[i].round2.push(0);
+      }
+      for (let j = 0; j < this.userNameList.length; j++) {
+        this.prAssignmentDetail[i].passAllMetricsCountRound1.push(0);
+        this.prAssignmentDetail[i].passAllMetricsCountRound2.push(0);
+      }
+    }
+  }
+
   /**
    * Get each assignment score of all user in class.
    */
@@ -486,14 +517,14 @@ export class ChartComponent implements OnInit {
         }
       );
     }
-    for (let i = 0; i < this.prAssignmentDetail.length; i++) {
+    for (let i = 0; i < this.prAssignmentDetail[0].round2.length; i++) {
       this.wholeSemesterMetricsChartData[0].data.push(0);
     }
   }
 
-  setWholeSemesterMetricsData() {
+  async setWholeSemesterMetricsData() {
     this.isWholeSemesterMetricsChartReady = false;
-    this.initWholeSemesterMetricsData();
+    await this.initWholeSemesterMetricsData();
     // 整學期Metrics分布圖顏色
     const colors = ['#321fdb', '#9da5b1', '#2eb85c', '#AFCBFF', '#3399ff', '#F0A7A0', '#4f5d73', '#0E1C36', '#f9b115', '#55C6A9'];
     for (let i = 0; i < this.prAssignmentDetail.length; i++) {
@@ -508,7 +539,6 @@ export class ChartComponent implements OnInit {
         this.wholeSemesterMetricsChartData[0].data[j] += this.prAssignmentDetail[i].round2[j];
       }
     }
-    // console.log(this.wholeSemesterMetricsChartData[0].data);
     for (let i = 0; i < this.wholeSemesterMetricsChartData[0].data.length; i++) {
       // console.log(this.wholeSemesterMetricsChartData[0].data[i]);
       // tslint:disable-next-line:max-line-length
@@ -540,37 +570,6 @@ export class ChartComponent implements OnInit {
     this.ispayAssignmentRateReady = true;
     // console.log(this.prAssignmentNameList);
     // console.log(this.payAssignmentRate);
-  }
-
-  async getPrAssignmentDetail() {
-    const response = await this.chartService.getAllPeerReviewAssignment().toPromise();
-    for (let i = 0; i < response.allReviewAssignments.length; i++) {
-      this.prAssignmentDetail.push(
-        {
-          name: response.allReviewAssignments[i].name,
-          round: response.allReviewAssignments[i].round,
-          amount: response.allReviewAssignments[i].amount,
-          assessmentTimes: response.allReviewAssignments[i].assessmentTimes,
-          // round each metrics 錯誤總數
-          round1: [],
-          round2: [],
-          feedbackScoreMax: 0,
-          feedbackScoreCount: 0,
-          feedbackScoreTotal: 0,
-          passAllMetricsCountRound1: [],
-          passAllMetricsCountRound2: [],
-          isReviseAssignment: []
-        },
-      );
-      for (let j = 0; j < this.allMetrics.length; j++) {
-        this.prAssignmentDetail[i].round1.push(0);
-        this.prAssignmentDetail[i].round2.push(0);
-      }
-      for (let j = 0; j < this.userNameList.length; j++) {
-        this.prAssignmentDetail[i].passAllMetricsCountRound1.push(0);
-        this.prAssignmentDetail[i].passAllMetricsCountRound2.push(0);
-      }
-    }
   }
 
   /**
@@ -727,89 +726,8 @@ export class ChartComponent implements OnInit {
         this.countFeedbackScore(i, Detail[l].feedbackScore);
       }
     }
-    // console.log(tmp);
     return tmp;
   }
-
-  // async getReviewFeedback() {
-  //   // 作業審查回合數
-  //   console.log(this.prAssignmentDetail[0].round);
-  //   for (let i = 0; i < this.prAssignmentDetail.length; i++) {
-  //     for (let j = 0; j < this.userNameList.length; j++) {
-  //       const response = await this.chartService.getReviewFeedback(this.prAssignmentDetail[i].name, this.userNameList[j]).toPromise();
-  //       const flagR1 = this.initFlag();
-  //       const flagR2 = this.initFlag();
-  //       console.log('作業名稱 ' + this.prAssignmentDetail[i].name + ' ' + '被審查者' + this.userNameList[j]);
-  //       console.log(response);
-  //       if (response.allRecordDetail[0] !== undefined) {
-  //         for (let k = 0; k < this.prAssignmentDetail[i].amount; k++) {
-  //           let passMetricsCount = 0;
-  //           if (response.allRecordDetail[k].latestCompletedRound === 1) {
-  //             // console.log('last Round1');
-  //             // 回饋意見
-  //             console.log(response.allRecordDetail[k].Detail);
-  //             for (let l = 0; l < response.allRecordDetail[k].Detail.length; l++) {
-  //               if (response.allRecordDetail[k].Detail[l].score === 2) {
-  //                 this.prAssignmentDetail[i].round1[this.allMetrics.indexOf(response.allRecordDetail[k].Detail[l].metrics)] += 1;
-  //               } else if (response.allRecordDetail[k].Detail[l].score === 1) {
-  //                 passMetricsCount += 1;
-  //               }
-  //               if (response.allRecordDetail[k].Detail[l].feedbackScore !== undefined) {
-  //                 this.countFeedbackScore(i, response.allRecordDetail[k].Detail[l].feedbackScore);
-  //               }
-  //             }
-  //             if (passMetricsCount === response.allRecordDetail[k].Detail.length && response.allRecordDetail[k].Detail.length !== 0) {
-  //               // console.log('Round1 All Pass');
-  //               this.prAssignmentDetail[i].passAllMetricsCountRound1 += 1;
-  //               passMetricsCount = 0;
-  //             }
-  //           } else if (response.allRecordDetail[k].latestCompletedRound === 2) {
-  //             // console.log('last Round2');
-  //             // tslint:disable-next-line:max-line-length
-  //             const reviewPageDetailResponse = await this.chartService.getReviewPageDetail(this.userNameList[j], this.prAssignmentNameList[i], response.allRecordDetail[k].id, '1').toPromise();
-  //             console.log(reviewPageDetailResponse.Detail);
-  //             for (let l = 0; l < reviewPageDetailResponse.Detail.length; l++) {
-  //               if (reviewPageDetailResponse.Detail[l].score === 2) {
-  //                 this.prAssignmentDetail[i].round1[this.allMetrics.indexOf(reviewPageDetailResponse.Detail[l].metrics)] += 1;
-  //               } else if (reviewPageDetailResponse.Detail[l].score === 1) {
-  //                 passMetricsCount += 1;
-  //               }
-  //               if (reviewPageDetailResponse.Detail[l].feedbackScore !== undefined) {
-  //                 this.countFeedbackScore(i, reviewPageDetailResponse.Detail[l].feedbackScore);
-  //               }
-  //             }
-  //             if (passMetricsCount === reviewPageDetailResponse.Detail.length && reviewPageDetailResponse.Detail.length !== 0) {
-  //               // console.log('Round1 All Pass');
-  //               this.prAssignmentDetail[i].passAllMetricsCountRound1 += 1;
-  //               passMetricsCount = 0;
-  //             }
-  //             console.log(response.allRecordDetail[k].Detail);
-  //             for (let l = 0; l < response.allRecordDetail[k].Detail.length; l++) {
-  //               if (response.allRecordDetail[k].Detail[l].score === 2) {
-  //                 this.prAssignmentDetail[i].round2[this.allMetrics.indexOf(response.allRecordDetail[k].Detail[l].metrics)] += 1;
-  //               } else if (response.allRecordDetail[k].Detail[l].score === 1) {
-  //                 passMetricsCount += 1;
-  //               }
-  //               if (response.allRecordDetail[k].Detail[l].feedbackScore !== undefined) {
-  //                 this.countFeedbackScore(i, response.allRecordDetail[k].Detail[l].feedbackScore);
-  //               }
-  //             }
-  //             if (passMetricsCount === response.allRecordDetail[k].Detail.length && response.allRecordDetail[k].Detail.length !== 0) {
-  //               // console.log('Round2 All Pass');
-  //               this.prAssignmentDetail[i].passAllMetricsCountRound2 += 1;
-  //               passMetricsCount = 0;
-  //             }
-  //           } else {
-  //             console.log('Not Review');
-  //           }
-  //         }
-  //       } else {
-  //         console.log('Not join this assignment');
-  //       }
-  //     }
-  //   }
-  //   this.testPrAsiignmentInformation();
-  // }
 
   /**
    * Initial ExamBarChartData's data and labels.
@@ -949,7 +867,7 @@ export class ChartComponent implements OnInit {
   async getAllCategorys() {
     const response = await this.chartService.getAllCategory().toPromise();
     this.categories = response['allCategory'];
-    this.getAllMetrics();
+    await this.getAllMetrics();
   }
 
   async getAllMetrics() {
@@ -959,7 +877,6 @@ export class ChartComponent implements OnInit {
         this.allMetrics.push(response.allMetrics[i].metrics);
       }
     }
-    // console.log(this.allMetrics);
   }
 
   setMetricsCountChartData(prAssignmentName: string) {
@@ -987,7 +904,6 @@ export class ChartComponent implements OnInit {
           break;
         }
       }
-      // console.log(this.commits[commitsIndex]);
       // 開放修改作業時間
       // console.log(this.commits[commitsIndex].assessmentTimes[2]);
       // console.log(this.prAssignmentDetail[i].passAllMetricsCountRound1);
@@ -1038,9 +954,6 @@ export class ChartComponent implements OnInit {
           tmp = -1;
         }
       }
-      // console.log(needReviseCount[i]);
-      // console.log(isReviseCount[i]);
-      // console.log(isReviseAndPassCount[i]);
     }
     this.setReviseRate(needReviseCount, isReviseCount, isReviseAndPassCount);
   }
