@@ -110,16 +110,14 @@
                   <table class="table col-md-8" [style.text-align]="'center'">
                     <tbody>
                     <tr class="row justify-content-md-center">
-                      <td class="col-md-1"></td>
                       <td class="col-md-3">作業名稱</td>
-                      <td class="col-md-7">收到的審查訊息</td>
-                      <td class="col-md-1"></td>
+                      <td class="col-md-4">準則名稱</td>
+                      <td class="col-md-5">收到的審查訊息</td>
                     </tr>
                     <tr class="row justify-content-md-center" *ngFor="let feedbackMsg of feedbackMsgTop; index as i">
-                      <td class="col-md-1"></td>
                       <td class="col-md-3">{{feedbackMsgTopLabel[i]}}</td>
-                      <td class="col-md-7">{{feedbackMsg}}</td>
-                      <td class="col-md-1"></td>
+                      <td class="col-md-4">{{feedbackMsgTopMetrics[i]}}</td>
+                      <td class="col-md-5">{{feedbackMsg}}</td>
                     </tr>
                     </tbody>
                   </table>
@@ -137,16 +135,14 @@
                   <table class="table col-md-8" [style.text-align]="'center'">
                     <tbody>
                     <tr class="row justify-content-md-center">
-                      <td class="col-md-1"></td>
                       <td class="col-md-3">作業名稱</td>
-                      <td class="col-md-7">收到的審查訊息</td>
-                      <td class="col-md-1"></td>
+                      <td class="col-md-4">準則名稱</td>
+                      <td class="col-md-5">收到的審查訊息</td>
                     </tr>
                     <tr class="row justify-content-md-center" *ngFor="let feedbackMsg of feedbackMsgLast; index as i">
-                      <td class="col-md-1"></td>
                       <td class="col-md-3">{{feedbackMsgLastLabel[i]}}</td>
-                      <td class="col-md-7">{{feedbackMsg}}</td>
-                      <td class="col-md-1"></td>
+                      <td class="col-md-4">{{feedbackMsgLastMetrics[i]}}</td>
+                      <td class="col-md-5">{{feedbackMsg}}</td>
                     </tr>
                     </tbody>
                   </table>

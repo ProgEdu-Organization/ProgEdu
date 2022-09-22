@@ -81,6 +81,8 @@ export class StudentChartComponent implements OnInit {
   // Feedback
   public feedbackMsgTopLabel: Array<any> = [];
   public feedbackMsgLastLabel: Array<any> = [];
+  public feedbackMsgTopMetrics: Array<any> = [];
+  public feedbackMsgLastMetrics: Array<any> = [];
   public feedbackMsgTop: Array<any> = [];
   public feedbackMsgLast: Array<any> = [];
   public star: Array<any> = [];
@@ -310,12 +312,14 @@ export class StudentChartComponent implements OnInit {
               // console.log('已通過');
               if (this.feedbackMsgTop.length < 5 && response.allRecordDetail[j].Detail[k].feedback !== '') {
                 this.feedbackMsgTopLabel.push(this.prAssignmentDetail[i].name);
+                this.feedbackMsgTopMetrics.push(response.allRecordDetail[j].Detail[k].metrics);
                 this.feedbackMsgTop.push(response.allRecordDetail[j].Detail[k].feedback);
               }
             } else if (response.allRecordDetail[j].Detail[k].score === 2) {
               // console.log('未通過');
               if (this.feedbackMsgLast.length < 5) {
                 this.feedbackMsgLastLabel.push(this.prAssignmentDetail[i].name);
+                this.feedbackMsgLastMetrics.push(response.allRecordDetail[j].Detail[k].metrics);
                 this.feedbackMsgLast.push(response.allRecordDetail[j].Detail[k].feedback);
               }
             } else {

@@ -14,6 +14,11 @@ export class BarChartComponent implements OnInit, OnChanges {
     scaleShowVerticalLines: true,
     responsive: true,
     scales: {
+      yAxes: [{
+        ticks: {
+          beginAtZero: true
+        }
+      }]
     },
     /*
     scales: {
