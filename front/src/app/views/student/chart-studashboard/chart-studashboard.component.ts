@@ -1,4 +1,4 @@
-import {Component, OnInit, NgModule, CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
+import {Component, OnInit, NgModule, CUSTOM_ELEMENTS_SCHEMA, SystemJsNgModuleLoader} from '@angular/core';
 import {User} from '../../../models/user';
 import {JwtService} from '../../../services/jwt.service';
 import {TimeService} from '../../../services/time.service';
@@ -128,7 +128,8 @@ export class StudentChartComponent implements OnInit {
 
   public assignmentScatterChartData: Array<any> = [];
 
-  examBarChartLabel = ['100', '90~99', '80~89', '70~79', '60~69', '50~59', '40~49', '40以下'];
+  // examBarChartLabel = ['100', '90~99', '80~89', '70~79', '60~69', '50~59', '40~49', '40以下'];
+  examBarChartLabel = ['40以下', '40~49', '50~59', '60~69', '70~79', '80~89', '90~99', '100'];
   examBarChartData = [
     {data: [0, 0, 0, 0, 0, 0, 0, 0]},
   ];
@@ -388,6 +389,10 @@ export class StudentChartComponent implements OnInit {
                 // console.log('不通過');
               }
             }
+          } else {
+            if (response.allRecordDetail[k].latestCompletedRound === 2) {
+              count += 6;
+            }
           }
         }
         this.prAssignmentDetail[i].classAssignmentMasteryPassCount.push(count);
@@ -423,7 +428,6 @@ export class StudentChartComponent implements OnInit {
     }
     return scoreList;
   }
-
 
   setExamScoreData(examName: string) {
     this.selectedExam = examName;
@@ -474,11 +478,11 @@ export class StudentChartComponent implements OnInit {
     }
     if (this.allExamUserScore[selectedExamIndex]) {
       for (let i = 0; i < this.allExamUserScore[selectedExamIndex].length; i++) {
-        let scoreRank = Math.floor(this.allExamUserScore[selectedExamIndex][i].score / 10);
+        const scoreRank = Math.floor(this.allExamUserScore[selectedExamIndex][i].score / 10);
         if (scoreRank < 4) {
-          this.examBarChartData[0].data[7] += 1;
+          this.examBarChartData[0].data[0] += 1;
         } else {
-          this.examBarChartData[0].data[10 - scoreRank] += 1;
+          this.examBarChartData[0].data[scoreRank - 3] += 1;
         }
       }
     }
@@ -494,7 +498,7 @@ export class StudentChartComponent implements OnInit {
     this.usersRankingByAssignmentScore = [];
     this.usersRankingIndex = [];
     let selectedAssignmentIndex = 0;
-    let sortedScoreListSelected = [];
+    const sortedScoreListSelected = [];
     let index = -1;
     for (let i = 0; i < this.assignmentNameList.length; i++) {
       if (this.assignmentNameList[i] === assignmentName) {
@@ -576,9 +580,9 @@ export class StudentChartComponent implements OnInit {
       sum += scoreList[i];
     }
     avg = sum / len;
-    let tmp = [];
+    const tmp = [];
     for (let i = 0; i < len; i++) {
-      let dev = scoreList[i] - avg;
+      const dev = scoreList[i] - avg;
       tmp[i] = Math.pow(dev, 2);
     }
     let powSum = 0;
@@ -604,13 +608,13 @@ export class StudentChartComponent implements OnInit {
   }
 
   async updateClassParticipationRanking() {
-    let sortParticipation = [];
+    const sortParticipation = [];
     // 有繳交作業數
-    let isPay = [];
+    const isPay = [];
     // 有修改作業數
-    let isRevise = [];
+    const isRevise = [];
     // 需修改作業數
-    let needRevise = [];
+    const needRevise = [];
     for (let i = 0; i < this.userList.length; i++) {
       this.participation.push(
         {
@@ -857,6 +861,8 @@ export class StudentChartComponent implements OnInit {
       mesteryPassMetricsTotal += this.prAssignmentDetail[i].classAssignmentMasteryPassCount[stuIndex];
     }
     this.RadarChartData[0].data[4] = mesteryPassMetricsTotal / this.prAssignmentDetail.length;
+    this.RadarChartData[0].data[4] = this.RadarChartData[0].data[4] / 18 * 100;
+    console.log(this.RadarChartData[0]);
   }
 
   async calCompleteTime() {
@@ -875,6 +881,9 @@ export class StudentChartComponent implements OnInit {
     }
     let sum = 0;
     for (let i = 0; i < this.timePercent.length; i++) {
+      if (this.timePercent[i] === undefined) {
+        this.timePercent[i] = 0;
+      }
       sum += this.timePercent[i];
     }
     this.RadarChartData[0].data[0] = sum / this.timePercent.length;

@@ -19,7 +19,7 @@ export class RadarChartComponent implements OnInit {
   public radarChartType = 'radar';
 
   public radarChartOptions = {
-    scales: {
+    scale: {
       r: {
         beginAtZero: true,
         min: 0,
@@ -28,7 +28,7 @@ export class RadarChartComponent implements OnInit {
       ticks: {
         suggestedMin: 0,
         suggestedMax: 100,
-        stepSize: 10
+        stepSize: 20
       }
     }
   };

@@ -258,7 +258,8 @@ export class ChartComponent implements OnInit {
   public examScoreMax = -1;
   public examScoreMin = -1;
   public examScoreMAvg = -1;
-  public examRange = ['100', '90~99', '80~89', '70~79', '60~69', '50~59', '40~49', '40以下'];
+  // public examRange = ['100', '90~99', '80~89', '70~79', '60~69', '50~59', '40~49', '40以下'];
+  public examRange = ['40以下', '40~49', '50~59', '60~69', '70~79', '80~89', '90~99', '100'];
   // 圖表資料是否準備好
   public isMixedChartReady: boolean = false;
   public isbubbleChartReady = false;
@@ -789,37 +790,37 @@ export class ChartComponent implements OnInit {
     for (let i = 0; i < this.examScore.length; i++) {
       switch (Math.floor(this.examScore[i] / 10)) {
         case 10 :
-          this.examBarChartData[0].data[0] += 1;
+          this.examBarChartData[0].data[7] += 1;
           break;
         case 9 :
-          this.examBarChartData[0].data[1] += 1;
-          break;
-        case 8 :
-          this.examBarChartData[0].data[2] += 1;
-          break;
-        case 7 :
-          this.examBarChartData[0].data[3] += 1;
-          break;
-        case 6 :
-          this.examBarChartData[0].data[4] += 1;
-          break;
-        case 5 :
-          this.examBarChartData[0].data[5] += 1;
-          break;
-        case 4 :
           this.examBarChartData[0].data[6] += 1;
           break;
+        case 8 :
+          this.examBarChartData[0].data[5] += 1;
+          break;
+        case 7 :
+          this.examBarChartData[0].data[4] += 1;
+          break;
+        case 6 :
+          this.examBarChartData[0].data[3] += 1;
+          break;
+        case 5 :
+          this.examBarChartData[0].data[2] += 1;
+          break;
+        case 4 :
+          this.examBarChartData[0].data[1] += 1;
+          break;
         case 3 :
-          this.examBarChartData[0].data[7] += 1;
+          this.examBarChartData[0].data[0] += 1;
           break;
         case 2 :
-          this.examBarChartData[0].data[7] += 1;
+          this.examBarChartData[0].data[0] += 1;
           break;
         case 1 :
-          this.examBarChartData[0].data[7] += 1;
+          this.examBarChartData[0].data[0] += 1;
           break;
         case 0 :
-          this.examBarChartData[0].data[7] += 1;
+          this.examBarChartData[0].data[0] += 1;
           break;
       }
     }
