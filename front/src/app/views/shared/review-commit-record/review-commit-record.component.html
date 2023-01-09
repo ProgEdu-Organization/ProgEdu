@@ -20,6 +20,7 @@
             <th class='w-5'>審查結果</th>
             <th class='w-70'>審查意見</th>
             <th class='w-5'>審查意見的幫助程度</th>
+            <th class="w-5">申訴</th>
           </tr>
         </thead>
         <tr *ngFor="let reviewDetail of reviewFeedback.Detail;index as j" id='reviewFeedback-bar'>
@@ -47,6 +48,10 @@
               <div *ngIf="reviewDetail.feedbackScore !== undefined">{{getFeedbackScoreDetail(reviewDetail.feedbackScore)}}</div>
           </td>
           <td *ngIf="reviewDetail.score == 1">Pass</td>
+          <td *ngIf="reviewDetail.score == 2">
+            <input type="button" class="btn btn-outline-primary" value="我要申訴"
+                   (click)="appealFormFillModal.show()">
+          </td>
         </tr>
       </table>
       <hr>
@@ -296,6 +301,65 @@
         <div class="modal-footer">
           <button type="button" class="btn btn-primary" [disabled]='feedbackSubmitDisabled'
             (click)="createFeedbackForm();reviewFormFillModal.hide();">Submit</button>
+        </div>
+      </form>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<!-- Appeal Form Fill Modal -->
+<div bsModal #appealFormFillModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+     aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title col-md-8">Appeal Form</h4>
+        <button type="button" class="close" (click)="appealFormFillModal.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <!--Appeal Form Fill Main-->
+      <form class="form-horizontal" [formGroup]="appealForm" novalidate>
+        <div class="modal-body">
+          <div class="form-group row">
+            <div class="col-md-1"></div>
+            <div class="col-md-3">
+              <label class="col-form-label">Appeal Metrics</label>
+            </div>
+            <div class="col-md-8"></div>
+          </div>
+          <div class="form-group row">
+            <div class="col-md-1"></div>
+            <div class="col-md-5">
+              <label class="center-block">Metric:
+                <select id="age" formControlName="age" class="custom-select mb-3" placeholder="Select Metrics">
+                  <option value="">請選擇</option>
+                  <ng-container *ngFor="let metric of reviewMetrics;index as i">
+                    <option value=metric.metrics>{{metric.metrics}}</option>
+                  </ng-container>
+                </select>
+              </label>
+            </div>
+            <div class="col-md-5">
+              <label class="center-block">Opinion:
+                <input class="form-control" formControlName="opinion">
+              </label>
+            </div>
+            <div class="col-md-1" style="margin-top: auto; margin-bottom: auto">
+              <button class="btn" type="button"><i class="fa fa-trash"></i></button>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-md-1"></div>
+            <div>
+              <button class="btn btn-sm" type="button">+</button>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" [disabled]='submitDisabled'
+                    (click)="createReviewForm();reviewFormFillModal.hide();">Submit</button>
+          </div>
         </div>
       </form>
     </div><!-- /.modal-content -->

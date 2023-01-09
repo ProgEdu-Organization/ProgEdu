@@ -6,6 +6,7 @@ import { AddJwtTokenHttpClient } from '../../../services/add-jwt-token.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { PeerReviewAPI } from '../../../api/PeerReviewAPI';
 import { ReviewRecord } from '../../student/review-status-assignment-choose/ReviewRecord';
+import {FormControl, FormGroup} from '@angular/forms';
 
 const commitRow = 5;
 
@@ -52,6 +53,11 @@ export class ReviewCommitRecordComponent implements OnInit, OnChanges {
   @ViewChildren('feedbackInput') public feedbackInput: any;
   @ViewChild('reviewFormFillModal', { static: false }) public reviewFormFillModal: ModalDirective;
   @ViewChild('feedbackFormFillModal', { static: false }) public feedbackFormFillModal: ModalDirective;
+
+  appealForm = new FormGroup({
+    metrics: new FormControl(),
+    opinion: new FormControl()
+  });
 
   constructor(private reviewCommitRecordService: ReviewCommitRecordService, private addJwtTokenHttpClient: AddJwtTokenHttpClient,
     private reviewStatusAssignmentChooseService: ReviewStatusAssignmentChooseService) { }

@@ -4,7 +4,7 @@ import { ChartsModule } from 'ng2-charts';
 
 import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { CarouselModule } from 'ngx-bootstrap/carousel';
-import { FormsModule } from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 import { GroupFilterPipe } from './../../pipe/group-filter.pipe';
 import { FilterPipe } from './../../pipe/filter.pipe';
@@ -39,18 +39,19 @@ import { ScatterChartComponent } from './chart/scatter-chart/scatter-chart.compo
 import { LineChartComponent } from './chart/line-chart/line-chart.component';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    ChartsModule,
-    CKEditorModule,
-    TabsModule.forRoot(),
-    ModalModule.forRoot(),
-    CollapseModule.forRoot(),
-    CarouselModule.forRoot(),
-    PaginationModule.forRoot(),
-    BsDropdownModule.forRoot(),
-  ],
+    imports: [
+        CommonModule,
+        FormsModule,
+        ChartsModule,
+        CKEditorModule,
+        TabsModule.forRoot(),
+        ModalModule.forRoot(),
+        CollapseModule.forRoot(),
+        CarouselModule.forRoot(),
+        PaginationModule.forRoot(),
+        BsDropdownModule.forRoot(),
+        ReactiveFormsModule,
+    ],
   declarations: [AssignmentChooseComponent, ReviewAssignmentChooseComponent, ProjectChooseComponent, GroupDashboardComponent,
     GroupFilterPipe, FilterPipe, CommitRecordComponent, DashboardStatusComponent, ScreenshotComponent, ErrorModalComponent,
     // tslint:disable-next-line:max-line-length
