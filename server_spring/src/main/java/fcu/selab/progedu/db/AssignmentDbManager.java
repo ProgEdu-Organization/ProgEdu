@@ -327,16 +327,18 @@ public class AssignmentDbManager {
       rs = stmt.executeQuery(sql);
 
       while (rs.next()) {
-        Assignment assignment = new Assignment();
-        assignment.setId(rs.getInt("id"));
-        assignment.setName(rs.getString("name"));
-        assignment.setCreateTime(rs.getTimestamp("createTime"));
-        assignment.setDisplay(rs.getBoolean("display"));
-        assignment.setDescription(rs.getString("description"));
-        assignment.setType(atDb.getTypeNameById(rs.getInt("type")));
-        List<AssessmentTime> assessmentTimes = assessmentTimeDbManager.getAssignmentTimeNameById(assignment.getId());
-        assignment.setAssessmentTimeList(assessmentTimes);
-        assignments.add(assignment);
+        if(!atDb.getTypeNameById(rs.getInt("type")).equals(ProjectTypeEnum.EXAM)) {
+          Assignment assignment = new Assignment();
+          assignment.setId(rs.getInt("id"));
+          assignment.setName(rs.getString("name"));
+          assignment.setCreateTime(rs.getTimestamp("createTime"));
+          assignment.setDisplay(rs.getBoolean("display"));
+          assignment.setDescription(rs.getString("description"));
+          assignment.setType(atDb.getTypeNameById(rs.getInt("type")));
+          List<AssessmentTime> assessmentTimes = assessmentTimeDbManager.getAssignmentTimeNameById(assignment.getId());
+          assignment.setAssessmentTimeList(assessmentTimes);
+          assignments.add(assignment);
+        }
       }
     } catch (SQLException e) {
       LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));

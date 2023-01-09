@@ -14,6 +14,7 @@ export class DashboardComponent implements OnInit {
   public allStudentCommitRecord: Array<any> = new Array<any>();
   public search;
   public readonly now_time = Date.now() - (new Date().getTimezoneOffset() * 60 * 1000);
+  public examIndex: Array<any> = new Array<any>();
   constructor(private dashboardService: DashboardService) { }
   async ngOnInit() {
     await this.getAllAssignments();
@@ -26,6 +27,7 @@ export class DashboardComponent implements OnInit {
       //remove exam data
       for(let i = 0; i < this.assignmentTable.length; i++) {
         if(this.assignmentTable[i].type == "EXAM") {
+          this.examIndex.push(i);
           this.assignmentTable.splice(i, 1);
           i--;
         }
@@ -41,8 +43,11 @@ export class DashboardComponent implements OnInit {
       if (this.allStudentCommitRecord[0] === undefined) {
         this.assignmentTable.length = 0;
       }
+
       for(let i = 0; i < this.allStudentCommitRecord.length; i++) {
-        this.allStudentCommitRecord[i].commitRecord.splice(13, 1);
+        for(let j = 0; j < this.examIndex.length; j++) {
+          this.allStudentCommitRecord[i].commitRecord.splice(this.examIndex[j], 1);
+        }
       }
 
     });

@@ -1,0 +1,16 @@
+<div *ngIf='scatterChartData && scatterChartLabels' class="card">
+  <div class="card-header">
+    <div class="card-header-actions">
+      <a href="https://hackmd.io/@chuan1010/Syk2_anCq">
+        <small class="text-muted">docs</small>
+      </a>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="chart-wrapper">
+      <canvas baseChart class="chart" [datasets]="scatterChartData" [labels]="scatterChartLabels"
+              [options]="scatterChartOptions"
+              [legend]="scatterChartLegend" [chartType]="scatterChartType"></canvas>
+    </div>
+  </div>
+</div>

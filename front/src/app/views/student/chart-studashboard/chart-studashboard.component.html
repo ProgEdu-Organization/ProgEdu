@@ -1,0 +1,333 @@
+<div class="animated fadeIn">
+  <div class="row justify-content-md-center">
+    <div class="col-md-10">
+      <div class="card">
+        <h3 class="card-title" style="font-weight: bold; vertical-align: middle; padding-top: 2%;">作業</h3>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title" style="font-weight: bold;">作業成績</h5>
+                <b>
+                  包含自己的作業成績、班上平均作業成績以及班上最高的作業成績。<br><br>
+                </b>
+<!--                <app-line-chart *ngIf="assignmentScoreChartDisplay" [lineChartLabels]="assignmentNameList" [lineChartData]="assignmentScoreChartData" [lineChartLegend]=true></app-line-chart>-->
+                <app-mixed-chart *ngIf='assignmentScoreChartDisplay' [mixedChartLabels]='assignmentNameList' [mixedChartData]='assignmentScoreChartData'>
+                </app-mixed-chart>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title" style="font-weight: bold;">班級分布</h5>
+                <b>
+                  每個點代表一位同學，由此表可得知班上同學大概的成績分布。<br><br>
+                </b>
+                <app-scatter-chart *ngIf='scatterChartDisplay' [scatterChartData]="assignmentScatterChartData"
+                             [scatterChartLabels]="assignmentNameList" [scatterChartLegend]=false></app-scatter-chart>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <h3 class="card-title" style="font-weight: bold; vertical-align: middle; padding-top: 2%;">考試</h3>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="card" [ngStyle]="{'background-color':examBackgroundColor}">
+              <div class="card-body">
+                <h5 class="card-title" style="font-weight: bold;">考試成績</h5>
+                <div class="btn-group" dropdown>
+                  <button dropdownToggle type="button" class="btn btn-primary dropdown-toggle">
+                    {{selectedExam}} <span class="caret"></span>
+                  </button>
+                  <ul *dropdownMenu class="dropdown-menu" role="menu">
+                    <li *ngFor='let examName of examNameList' role="menuitem">
+                      <a class="dropdown-item" href="javascript:void(0);"
+                         (click)='setExamScoreData(examName)'>{{examName}}</a>
+                    </li>
+                  </ul>
+                </div>
+                <div class="row" style="padding-top: 5%;">
+                  <div class="col-md-2"></div>
+                  <table class="table col-md-8" [style.text-align]="'center'">
+                    <tbody>
+                      <tr class="row">
+                        <td class="col-md-6">成績</td>
+                        <td class="col-md-6">{{selectedExamScore}}</td>
+                      </tr>
+                      <tr class="row">
+                        <td class="col-md-6">班級平均</td>
+                        <td class="col-md-6">{{examAvgScore}}</td>
+                      </tr>
+                      <tr class="row">
+                        <td class="col-md-6">班排名</td>
+                        <td class="col-md-6">{{studentExamRank}} / {{userList.length}}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <div class="col-md-2"></div>
+                </div>
+                <b>
+                  <br>考試成績圖包含自己的成績、班級平均以及班排名。<br>
+                </b>
+                <b>
+                  <br>考試成績圖有3種底色<br><br>
+                </b>
+                <ul>
+                  <li>
+                    <p style="line-height: 1.5">
+                      白色 : <br>
+                      成績在班級平均之上。
+                    </p>
+                  </li>
+                  <li>
+                    <p style="line-height: 1.5">
+                      黃色 : <br>
+                      成績在班級平均以下，需要加油。
+                    </p>
+                  </li>
+                  <li>
+                    <p style="line-height: 1.5">
+                      紅色 : <br>
+                      非常危險，有任何問題趕快問。
+                    </p>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title" style="font-weight: bold;">班級分布</h5>
+                <b>
+                  班級分布圖包含全班同學的成績分布。<br><br>
+                </b>
+                <app-bar-chart *ngIf="examBarChartDisplay" [barChartLabels]="examBarChartLabel" [barChartData]="examBarChartData" [barChartLegend]=false></app-bar-chart>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <h3 class="card-title" style="font-weight: bold; vertical-align: middle; padding-top: 2%;">能力</h3>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title" style="font-weight: bold;">能力雷達圖</h5>
+                <app-radar-chart [radarChartLabels]="RadarChartLabel" [radarChartData]="RadarChartData"></app-radar-chart>
+                <b>
+                  <br>Hint: 能力雷達圖包含五種能力<br><br>
+                </b>
+                <ul>
+                  <li>
+                    <p style="line-height: 1.5">
+                      完成時間 : <br>
+                      此能力與繳交時間相關，越早繳交作業則能夠獲得越高的分數。
+                    </p>
+                  </li>
+                  <li>
+                    <p style="line-height: 1.5">
+                      解決問題的能力 : <br>
+                      此能力與在第一次審查同學對你的作業提出的未通過準則你是否在修改作業時修正錯誤相關。
+                    </p>
+                  </li>
+                  <li>
+                    <p style="line-height: 1.5">
+                      找出問題的能力 : <br>
+                      此能力與同學對你給他的審查意見回饋分數相關，審查越公平公正並且意見給的易懂，分數就越高喔!
+                    </p>
+                  </li>
+                  <li>
+                    <p style="line-height: 1.5">
+                      課程參與率 : <br>
+                      此能力與是否繳交作業、是否參與審查、是否依據審查意見進行修改相關，各活動參與率越高，分數就越高喔!
+                    </p>
+                  </li>
+                  <li>
+                    <p style="line-height: 1.5">
+                      課程掌握度 : <br>
+                      此能力與通過的程式碼準則相關，通過的程式碼準則越多，分數越高。
+                    </p>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title" style="font-weight: bold;">學期作業掌握度</h5>
+                <b>
+                  作業掌握度圖包含自己的作業掌握度、班級平均掌握度以及班級最高掌握度。<br>
+                </b>
+                <b>
+                  通過的程式碼準則越多則作業掌握度越高喔!<br><br>
+                </b>
+                <app-mixed-chart *ngIf='assignmentMasteryBarChartDisplay' [mixedChartLabels]='prAssignmentNameList' [mixedChartData]='assignmentMasteryBarChartData'>
+                </app-mixed-chart>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <h3 class="card-title" style="font-weight: bold; vertical-align: middle; padding-top: 2%;">最近收到的審查意見</h3>
+        <b>
+          由最近收到的審查意見可以看到最近五個在通過程式碼準則同學給你的鼓勵以及在未通過程式碼準則的時候同學給你的建議喔!<br>
+        </b>
+        <b>
+          請大家不要吝嗇地給予你的同學鼓勵以及建議喔!<br><br>
+        </b>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title" style="font-weight: bold;">通過</h5>
+                <div class="row" style="padding-top: 5%;">
+                  <div class="col-md-2"></div>
+                  <table class="table col-md-8" [style.text-align]="'center'">
+                    <tbody>
+                    <tr class="row justify-content-md-center">
+                      <td class="col-md-3">作業名稱</td>
+                      <td class="col-md-4">準則名稱</td>
+                      <td class="col-md-5">收到的審查訊息</td>
+                    </tr>
+                    <tr class="row justify-content-md-center" *ngFor="let feedbackMsg of feedbackMsgTop; index as i">
+                      <td class="col-md-3">{{feedbackMsgTopLabel[i]}}</td>
+                      <td class="col-md-4">{{feedbackMsgTopMetrics[i]}}</td>
+                      <td class="col-md-5">{{feedbackMsg}}</td>
+                    </tr>
+                    </tbody>
+                  </table>
+                  <div class="col-md-2"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title" style="font-weight: bold;">未通過</h5>
+                <div class="row" style="padding-top: 5%;">
+                  <div class="col-md-2"></div>
+                  <table class="table col-md-8" [style.text-align]="'center'">
+                    <tbody>
+                    <tr class="row justify-content-md-center">
+                      <td class="col-md-3">作業名稱</td>
+                      <td class="col-md-4">準則名稱</td>
+                      <td class="col-md-5">收到的審查訊息</td>
+                    </tr>
+                    <tr class="row justify-content-md-center" *ngFor="let feedbackMsg of feedbackMsgLast; index as i">
+                      <td class="col-md-3">{{feedbackMsgLastLabel[i]}}</td>
+                      <td class="col-md-4">{{feedbackMsgLastMetrics[i]}}</td>
+                      <td class="col-md-5">{{feedbackMsg}}</td>
+                    </tr>
+                    </tbody>
+                  </table>
+                  <div class="col-md-2"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <h3 class="card-title" style="font-weight: bold; vertical-align: middle; padding-top: 2%;">回饋</h3>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title" style="font-weight: bold;"></h5>
+                <div class="col-md-6">
+                  <div class="card"  style="background-color: #321fdb; border-radius: 10px">
+                    <div class="card-body">
+                      <h5 class="card-title" style="font-weight: bold; color: #FFFFFF">
+                        平均收到星星數
+                      </h5>
+                      <h5 style="font-weight: bold; color: #FFFFFF">
+                        {{starAvg}}
+                      </h5>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <h3 class="card-title" style="font-weight: bold; vertical-align: middle; padding-top: 2%;">排行</h3>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title" style="font-weight: bold;">作業成績排行</h5>
+                <div class="btn-group" dropdown>
+                  <button dropdownToggle type="button" class="btn btn-primary dropdown-toggle">
+                    {{selectedAssignment}} <span class="caret"></span>
+                  </button>
+                  <ul *dropdownMenu class="dropdown-menu" role="menu">
+                    <li *ngFor='let assignmentName of assignmentNameList' role="menuitem">
+                      <a class="dropdown-item" href="javascript:void(0);"
+                         (click)='updateAssignmentScoreRanking(assignmentName)'>{{assignmentName}}</a>
+                    </li>
+                  </ul>
+                </div>
+                <div class="row" style="padding-top: 5%;">
+                  <div class="col-md-2"></div>
+                  <table class="table col-md-8" [style.text-align]="'center'">
+                    <tbody>
+                      <tr class="row justify-content-md-center" *ngFor="let user of usersRankingByAssignmentScore; index as i">
+                        <div *ngIf="user === username; else empty">
+                          <td class="col-md-2"><img src="assets/img/quality.png"></td>
+                        </div>
+                        <ng-template #empty>
+                          <td class="col-md-2"></td>
+                        </ng-template>
+                        <td class="col-md-6">{{i+1}}.&emsp;{{user}}</td>
+                        <td class="col-md-2"></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <div class="col-md-2"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title" style="font-weight: bold;">課程參與率排行</h5>
+                <b>
+                  課程參與率排行榜計算方式與是否繳交作業、是否參與審查以及是否修改作業相關。<br>
+                </b>
+                <div class="row" style="padding-top: 5%;">
+                  <div class="col-md-2"></div>
+                  <table class="table col-md-8" [style.text-align]="'center'">
+                    <tbody>
+                    <tr class="row justify-content-md-center" *ngFor="let user of usersRankingByParticipation; index as i">
+                        <div *ngIf="user === username; else empty">
+                          <td class="col-md-2"><img src="assets/img/quality.png"></td>
+                        </div>
+                        <ng-template #empty>
+                          <td class="col-md-2"></td>
+                        </ng-template>
+                        <td class="col-md-6">{{i+1}}.&emsp;{{user}}</td>
+                        <td class="col-md-2"></td>
+                    </tr>
+                    </tbody>
+                  </table>
+                  <div class="col-md-2"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

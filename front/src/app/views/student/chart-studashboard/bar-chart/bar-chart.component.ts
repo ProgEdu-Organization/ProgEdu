@@ -11,12 +11,13 @@ export class BarChartComponent implements OnInit, OnChanges {
   @Input() barChartLegend: boolean;
   public barChartType = 'bar';
   public barChartOptions: any = {
-    scaleShowVerticalLines: true,
+    scaleShowVerticalLines: true, 
     responsive: true,
     scales: {
       yAxes: [{
         ticks: {
-          beginAtZero: true
+          beginAtZero: true,
+          callback: function(value) {if (value % 1 === 0) {return value;}}
         }
       }]
     },
@@ -51,6 +52,7 @@ export class BarChartComponent implements OnInit, OnChanges {
       data: [65, 59, 80, 81, 56, 55, 40], label: this.status.testFailure.name
     },
   ];*/
+
 
   constructor() { }
 

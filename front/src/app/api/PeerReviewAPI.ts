@@ -5,6 +5,7 @@ let getReviewStatus: string = environment.NEW_SERVER_URL + '/peerReview/status/o
 
 let getReviewMetrics: string = environment.NEW_SERVER_URL + '/peerReview/metrics';
 let getReviewedRecordDetail: string = environment.NEW_SERVER_URL + '/peerReview/record/detail';
+let getReviewPageDetail: string = environment.NEW_SERVER_URL + '/peerReview/record/detail/page';
 let getAllReviewStatus: string = environment.NEW_SERVER_URL + '/peerReview/status/allUsers';
 
 let getReviewStatusDetail: string = environment.NEW_SERVER_URL + '/peerReview/status/detail';
@@ -21,18 +22,19 @@ let getAllReviewRoundStatus: string = environment.NEW_SERVER_URL + '/peerReview/
 let getReviewRoundStatusDetail: string = environment.NEW_SERVER_URL + '/peerReview/status/round/detail';
 
 export const PeerReviewAPI = {
-    getAllReviewedRecord: getAllReviewedRecord,
-    getReviewStatus: getReviewStatus,
-    getReviewMetrics: getReviewMetrics,
-    getReviewedRecordDetail: getReviewedRecordDetail,
-    getAllReviewStatus: getAllReviewStatus,
-    getReviewStatusDetail: getReviewStatusDetail,
-    createReviewRecord: createReviewRecord,
-    createTeacherReviewRecord: createTeacherReviewRecord,
-    createFeedbackScore: createFeedbackScore,
-    getSourceCode: getSourceCode,
-    getOneUserReviewedRecord: getOneUserReviewedRecord,
-    getReviewRoundStatus: getReviewRoundStatus,
-    getAllReviewRoundStatus: getAllReviewRoundStatus,
-    getReviewRoundStatusDetail: getReviewRoundStatusDetail
-}
+  getAllReviewedRecord: getAllReviewedRecord,
+  getReviewStatus: getReviewStatus,
+  getReviewMetrics: getReviewMetrics,
+  getReviewedRecordDetail: getReviewedRecordDetail,
+  getReviewPageDetail: getReviewPageDetail,
+  getAllReviewStatus: getAllReviewStatus,
+  getReviewStatusDetail: getReviewStatusDetail,
+  createReviewRecord: createReviewRecord,
+  createTeacherReviewRecord: createTeacherReviewRecord,
+  createFeedbackScore: createFeedbackScore,
+  getSourceCode: getSourceCode,
+  getOneUserReviewedRecord: getOneUserReviewedRecord,
+  getReviewRoundStatus: getReviewRoundStatus,
+  getAllReviewRoundStatus: getAllReviewRoundStatus,
+  getReviewRoundStatusDetail: getReviewRoundStatusDetail
+};
