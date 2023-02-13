@@ -4,6 +4,9 @@
 docker-compose -version // 1.26.0
 docker -v // 19.03.11
 ```
+最新可以用到 ubuntu 20.04 版
+docker storage driver 只支援 aufs
+
 ## 初步部屬步驟
 1. 在linux系統中 clone 此專案後, cd進入專案的根目錄
 ```
