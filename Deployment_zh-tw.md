@@ -44,7 +44,7 @@ cd ProgEdu
 用瀏覽器依照 `.env`裡的 `GITLAB_HOST` 的網址進入GitLab，
 使用者名稱為root，密碼為 `GITLAB_ROOT_PASSWORD`對應的值
 ### 2. 複製GitLab Token 
-右上方頭像進入 > `Preferences` ,在左邊導覽列找到 `Account Tokens`後， 
+右上方頭像進入 > `Preferences` ,在左邊導覽列找到 `Access Tokens`後， 
 可設定Name為main, Expires不用設定,
 接著全部權限打勾, 接著按下`Create personal access token`, 將產生的 **GitLab Token** (在網頁上半部 的 Your new personal access token 欄位)
 ![](readme-images/How-to-take-token-in-Gitlab.png)
@@ -96,7 +96,7 @@ WEB_JENKINS_ADMIN_USERNAME=admin
 WEB_JENKINS_ADMIN_PASSWORD=admin
 ```
 則在此例下, 就必須設定Jenkins的帳號: `admin`, 密碼: `admin`
-, 按下 `Save and Finish`
+, email隨意填寫 ,按下 `Save and Finish`
 接著持續按下一步， 與登入, 就會完成初步的Jenkins架設流程,
 還剩幾步驟是為了拿權限。
 
@@ -124,8 +124,9 @@ WEB_JENKINS_ADMIN_PASSWORD=admin
    3. 設定 GitLab host URL 為`.env`文件設定的 gitlab 網址
 ![](/readme-images/jenkins-gitlab-api.png)  
    補充:如果在Jenkins找不到設定 **GitLab API Token**的地方，要檢查Jenkins版本和Jenkins套件版本有沒有太舊。
+   太舊的話到`管理 Jenkins`裡可以更新版本, 然後再去管理外掛程式(Plugins)裡安裝Gitlab
 
-   4. 設定 Credentials:  如下步驟
+   5. 設定 Credentials:  如下步驟
       1. 按 Add > Jenkins
       2. Kind = GitLab API token
       3. Scope = Global
