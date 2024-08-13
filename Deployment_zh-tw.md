@@ -22,7 +22,7 @@ cd ProgEdu
    
    3. 如上一步, 修正其它像右邊這種特徵的網址 `http://example.com` 成實際上ProgEdu要架設到的地方, 記得每個服務的 port 都要跟網址後面的 port 一致, 像是 `JENKINS_PORT=8080` 與 `WEB_JENKINS_URL=http://example.com:8080`,可以注意到後面的8080是一樣的, 所以如果因為port號被占用, 而想要把port號更換成38080, 則這兩個的設定要一起更改為 `JENKINS_PORT=38080` 與 `WEB_JENKINS_URL=http://example.com:38080` 。
 
-   4. 更改 `/home/lab232/username/ProgEdu/front/Dockerfile`，第一行 node version 改成 `14.21.3`。
+   4. 確認 `/home/lab232/username/ProgEdu/front/Dockerfile`，第一行 node version 是 `14.21.3`。
  
 
 ## 
