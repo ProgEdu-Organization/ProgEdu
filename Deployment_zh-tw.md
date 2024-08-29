@@ -14,7 +14,7 @@ git clone --branch master https://github.com/fcumselab/ProgEdu.git ProgEdu
 cd ProgEdu
 ```
 
-2. 將 `env-example`檔案改名成 `.env` (注意是 "點 env" ), 並編輯它, 它將用來作為建置的設定。
+2. 將 `env-example`檔案改名成 `.env` (注意是 "點 env" ), 並編輯它, 它將用來作為建置的設定，指令可用 `vim .env`。
    
    1. 更改 `COMPOSE_PROJECT_NAME=progedu`, 後面的`progedu`可以修改成`yourname-progedu`,(注意:一定要是小寫), 這是表示這群容器的唯一識別ID, 所以如果同一電腦部屬了兩組ProgEdu, 則這變數必須不一樣, 才不會有衝突。
    2. 修正 `GITLAB_HOST=http://example.com:22080` 成 
@@ -172,7 +172,7 @@ WEB_JENKINS_ADMIN_PASSWORD=admin
 
 2. 將所有`.example`結尾的檔案改名(去掉`.example`)，並編輯它，它將為後端的相關建置。
 
-   i. 將`course_config.properties.example`，改名為`course_config.properties`，並依照在`.env`中的設定，填入課程相關資訊與TOMCAT IP地址。
+   i. 將`course_config.properties.example`，改名為`course_config.properties`，並依照在`.env`中的設定，填入課程相關資訊與TOMCAT IP地址（TOMCAT IP地址現在為 SPRING_SERVER_EXTERNAL_URL）。
 
    ii. 其他config檔案也是依照在`.env`中的設定填入，總共五個檔案都需要修改。
 
